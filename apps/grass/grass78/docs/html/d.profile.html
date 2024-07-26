@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.profile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.profile</b></em>  - Plots profile of a transect.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_profile.html">profile</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#plot">plot</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.profile</b><br></div>
+<b>d.profile --help</b><br>
+<div id="synopsis"><b>d.profile</b> [-<b>r</b>] <b>map</b>=<em>name</em> <b>coordinates</b>=<em>east,north</em>[,<i>east,north</i>,...]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Use map's range recorded range</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map to be profiled</dd>
+
+<dt><b>coordinates</b>=<em>east,north[,<i>east,north</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Profile coordinate pairs</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This command displays the profile for a specified transect.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.where.html">d.where</a>,
+<a href="r.profile.html">r.profile</a>,
+<a href="r.transect.html">r.transect</a>,
+<a href="wxGUI.html">wxGUI profile tool</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+This program has been completely re-written for 7.0. It bears no
+relation to the interactive d.profile module in previous versions.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.profile">d.profile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.profile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

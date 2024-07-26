@@ -1,0 +1,171 @@
+.TH v.kernel 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.kernel\fR\fR  \- Generates a raster density map from vector points map.
+.br
+Density is computed using a moving kernel. Optionally generates a vector density map on a vector network.
+.SH KEYWORDS
+vector, kernel density, point density, heatmap, hotspot
+.SH SYNOPSIS
+\fBv.kernel\fR
+.br
+\fBv.kernel \-\-help\fR
+.br
+\fBv.kernel\fR [\-\fBoqnm\fR] \fBinput\fR=\fIname\fR  [\fBnet\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\fBnet_output\fR=\fIname\fR]  \fBradius\fR=\fIfloat\fR  [\fBdsize\fR=\fIfloat\fR]   [\fBsegmax\fR=\fIfloat\fR]   [\fBdistmax\fR=\fIfloat\fR]   [\fBmultiplier\fR=\fIfloat\fR]   [\fBnode\fR=\fIstring\fR]   [\fBkernel\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-o\fR" 4m
+.br
+Try to calculate an optimal radius with given \(cqradius\(cq taken as maximum (experimental)
+.IP "\fB\-q\fR" 4m
+.br
+Only calculate optimal radius and exit (no map is written)
+.IP "\fB\-n\fR" 4m
+.br
+In network mode, normalize values by sum of density multiplied by length of each segment. Integral over the output map then gives 1.0 * multiplier
+.IP "\fB\-m\fR" 4m
+.br
+In network mode, multiply the result by number of input points
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map with training points
+.IP "\fBnet\fR=\fIname\fR" 4m
+.br
+Name of input network vector map
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBnet_output\fR=\fIname\fR" 4m
+.br
+Name for output vector density map
+.br
+Outputs vector map if network map is given
+.IP "\fBradius\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Kernel radius in map units
+.IP "\fBdsize\fR=\fIfloat\fR" 4m
+.br
+Discretization error in map units
+.br
+Default: \fI0.\fR
+.IP "\fBsegmax\fR=\fIfloat\fR" 4m
+.br
+Maximum length of segment on network
+.br
+Default: \fI100.\fR
+.IP "\fBdistmax\fR=\fIfloat\fR" 4m
+.br
+Maximum distance from point to network
+.br
+Default: \fI100.\fR
+.IP "\fBmultiplier\fR=\fIfloat\fR" 4m
+.br
+Multiply the density result by this number
+.br
+Default: \fI1.\fR
+.IP "\fBnode\fR=\fIstring\fR" 4m
+.br
+Node method
+.br
+Options: \fInone, split\fR
+.br
+Default: \fInone\fR
+.br
+\fBnone\fR: No method applied at nodes with more than 2 arcs
+.br
+\fBsplit\fR: Equal split (Okabe 2009) applied at nodes
+.IP "\fBkernel\fR=\fIstring\fR" 4m
+.br
+Kernel function
+.br
+Options: \fIuniform, triangular, epanechnikov, quartic, triweight, gaussian, cosine\fR
+.br
+Default: \fIgaussian\fR
+.SH DESCRIPTION
+\fIv.kernel\fR generates a raster density map from vector points
+data using a moving
+kernel. Available kernel
+density functions are \fIuniform, triangular, epanechnikov,
+quartic, triweight, gaussian, cosine\fR, default
+is \fIgaussian\fR.
+.PP
+The module can also generate a vector density map on a vector network.
+Conventional kernel functions produce biased estimates by overestimating
+the densities around network nodes, whereas the equal split method of
+Okabe et al. (2009) produces unbiased density estimates. The equal split
+method uses the kernel function selected with the \fBkernel\fR option
+and can be enabled with \fBnode=split\fR.
+.SH NOTES
+The \fBmultiplier\fR option is needed to overcome the limitation that
+the resulting density in case of a vector map output is stored as category
+(integer). The density result stored as category may be multiplied by this number.
+.PP
+For the \fIgaussian\fR kernel, standard deviation for the
+gaussian function
+is set to 1/4 of the radius.
+.PP
+With the \fB\-o\fR flag (experimental) the command tries to calculate an
+optimal radius. The value of \fIradius\fR is taken
+as maximum value. The radius is calculated based on the gaussian function,
+using ALL points, not just those in the current region.
+.SH EXAMPLES
+Compute density of points (using vector map of schools from North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region region=wake_30m
+v.kernel input=schools_wake output=schools_density radius=5000 multiplier=1000000
+r.colors map=schools_density color=bcyr
+\fR
+.fi
+.br
+School density
+.SH KNOWN ISSUES
+The module only considers the presence of points, but not
+(yet) any attribute values.
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Okabe, A., Satoh, T., Sugihara, K. (2009). \fIA kernel density estimation
+method for networks, its computational method and a GIS\-based tool\fR.
+\fBInternational Journal of Geographical Information Science\fR, Vol 23(1),
+pp. 7\-32.
+.br
+DOI: 10.1080/13658810802475491
+.RE
+.SH SEE ALSO
+\fIv.surf.rst\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHORS
+Stefano Menegon, ITC\-irst, Trento, Italy
+.br
+Radim Blazek (additional kernel density functions and network part)
+.SH SOURCE CODE
+.PP
+Available at: v.kernel source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

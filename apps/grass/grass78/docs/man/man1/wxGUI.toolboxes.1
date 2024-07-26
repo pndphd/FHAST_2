@@ -1,0 +1,220 @@
+.TH wxGUI.toolboxes 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Toolboxes
+.SH DESCRIPTION
+The \fBToolboxes\fR is a way to customize items in \fIwxGUI\fR
+menu. Toolboxes enable to:
+.RS 4n
+.IP \(bu 4n
+hide unused menu items in menu (e.g. Imagery, Database) or submenu (e.g. Wildfire modeling)
+.IP \(bu 4n
+change order of menu items and subitems
+.IP \(bu 4n
+add new menu items (e.g. Temporal)
+.IP \(bu 4n
+add addons modules
+.IP \(bu 4n
+add your own modules
+.RE
+.PP
+Toolboxes are configured through two XML files (main_menu.xml and
+toolboxes.xml) located in your user home
+GRASS directory, subdirectory toolboxes
+($HOME/.grass7/toolboxes/ on UNIX).
+Currently, there is no GUI front\-end for toolboxes,
+however only simple editing of text files is needed.
+.SS Brief description of file main_menu.xml
+.PP
+This file represents the main menu (File, Settings, Raster, ...).
+By modifying this file you show and hide menu items which are
+represented by subtoolbox tag.
+.PP
+Tag user\-toolboxes\-list is interpreted as a menu containing a list of all user\-defined toolboxes. If not needed it can be removed.
+.PP
+Following lines can be copied to .grass7/toolboxes/main_menu.xml
+and by removing, adding or reordering lines users can change the main menu items. See further examples.
+.br
+.nf
+\fC
+<?xml version=\(dq1.0\(dq encoding=\(dqUTF\-8\(dq?>
+<toolbox name=\(dqMyMainMenu\(dq>
+  <label>Default GRASS GIS main menu bar</label>
+  <items>
+    <subtoolbox name=\(dqFile\(dq/>
+    <subtoolbox name=\(dqSettings\(dq/>
+    <subtoolbox name=\(dqRaster\(dq/>
+    <subtoolbox name=\(dqVector\(dq/>
+    <subtoolbox name=\(dqImagery\(dq/>
+    <subtoolbox name=\(dqVolumes\(dq/>
+    <subtoolbox name=\(dqDatabase\(dq/>
+    <user\-toolboxes\-list />
+    <subtoolbox name=\(dqHelp\(dq/>
+  </items>
+</toolbox>
+\fR
+.fi
+.SS Brief description of file toolboxes.xml
+.PP
+This file contains structure and description of individual toolboxes.
+Note that both \fIRaster\fR and e.g. \fIQuery raster maps\fR
+are individual toolboxes although one contains the other.
+Tag toolbox contains subtoolbox tags
+which are defined later in the file. These nested toolboxes are linked
+through name attribute.
+.PP
+Apart from subtoolbox tag, tag toolbox can contain individual items (modules)
+and separators (for visual separation in the menu tree).
+.br
+.nf
+\fC
+<?xml version=\(dq1.0\(dq encoding=\(dqUTF\-8\(dq?>
+<toolboxes>
+  <toolbox name=\(dqRaster\(dq>
+    <label>&amp;Raster</label>
+    <items>
+      <subtoolbox name=\(dqDevelopRasterMap\(dq/>
+      <subtoolbox name=\(dqManageRasterColors\(dq/>
+      <subtoolbox name=\(dqQueryRasterMaps\(dq/>
+      <subtoolbox name=\(dqRasterMapTypeConversions\(dq/>
+      <separator/>
+      <module\-item name=\(dqr.buffer\(dq>
+        <label>Buffer rasters</label>
+      </module\-item>
+      ...
+      ...
+  <toolbox name=\(dqQueryRasterMaps\(dq>
+    <label>Query raster maps</label>
+    <items>
+      <module\-item name=\(dqr.what\(dq>
+        <label>Query values by coordinates</label>
+      </module\-item>
+      <module\-item name=\(dqr.what.color\(dq>
+        <label>Query colors by value</label>
+      </module\-item>
+    </items>
+  </toolbox>
+\fR
+.fi
+.PP
+To redefine a toolbox (or use it as a template),
+copy specific part of file grass7/gui/wxpython/xml/toolboxes.xml
+from GRASS installation to a new file in user home
+(.grass7/toolboxes/toolboxes.xml) and edit it.
+Rename this new toolbox.
+.SH EXAMPLES
+.SS Hiding menu items
+.PP
+If we are for example working only with raster data,
+we can hide menu items \fIVector\fR and \fIDatabase\fR.
+The file main_menu.xml then contains the following lines
+where we omitted the two toolboxes:
+.br
+.nf
+\fC
+<?xml version=\(dq1.0\(dq encoding=\(dqUTF\-8\(dq?>
+<toolbox name=\(dqCustomizedMainMenu\(dq>
+  <label>Default GRASS GIS main menu bar</label>
+  <items>
+    <subtoolbox name=\(dqFile\(dq/>
+    <subtoolbox name=\(dqSettings\(dq/>
+    <subtoolbox name=\(dqRaster\(dq/>
+    <subtoolbox name=\(dqImagery\(dq/>
+    <subtoolbox name=\(dqVolumes\(dq/>
+    <user\-toolboxes\-list />
+    <subtoolbox name=\(dqHelp\(dq/>
+  </items>
+</toolbox>
+\fR
+.fi
+.SS Creating custom toolbox
+.PP
+In this example we create a new toolbox \fIFavorites\fR containing
+existing GRASS module and toolbox, custom module
+created by the user and addon module.
+The toolboxes.xml file contains following lines:
+.br
+.nf
+\fC
+<?xml version=\(dq1.0\(dq encoding=\(dqUTF\-8\(dq?>
+<toolboxes>
+  <toolbox name=\(dqMyFavorites\(dq>
+    <label>&amp;Favorites</label>
+    <items>
+      <module\-item name=\(dqg.region\(dq>
+        <label>Set region</label>
+      </module\-item>
+      <module\-item name=\(dqr.mask\(dq>
+        <label>Mask</label>
+      </module\-item>
+      <separator/>
+      <module\-item name=\(dqm.myown\(dq>
+        <label>Do my own stuff</label>
+      </module\-item>
+      <module\-item name=\(dqi.histo.match\(dq>
+        <label>Calculate histogram matching</label>
+      </module\-item>
+      <subtoolbox name=\(dqRasterReportsAndStatistics\(dq/>
+    </items>
+  </toolbox>
+</toolboxes>
+\fR
+.fi
+.PP
+Optionally, we can add this toolbox to the main menu items.
+The main_menu.xml file contains following lines:
+.br
+.nf
+\fC
+<?xml version=\(dq1.0\(dq encoding=\(dqUTF\-8\(dq?>
+<toolbox name=\(dqCustomizedMainMenu\(dq>
+  <label>Default GRASS GIS main menu bar</label>
+  <items>
+    <subtoolbox name=\(dqFile\(dq/>
+    <subtoolbox name=\(dqSettings\(dq/>
+    <subtoolbox name=\(dqRaster\(dq/>
+    <subtoolbox name=\(dqVector\(dq/>
+    <subtoolbox name=\(dqImagery\(dq/>
+    <subtoolbox name=\(dqVolumes\(dq/>
+    <subtoolbox name=\(dqDatabase\(dq/>
+    <user\-toolboxes\-list />
+    <subtoolbox name=\(dqFavorites\(dq/>
+    <subtoolbox name=\(dqHelp\(dq/>
+  </items>
+</toolbox>
+\fR
+.fi
+.PP
+If we have user\-toolboxes\-list tag in the main_menu.xml file,
+our custom toolbox will be listed in the automatically added \fIToolboxes\fR main menu item. The screenshot shows the resulting menu:
+.br
+.br
+.br
+.SH NOTES
+.PP
+After the first start of wxGUI with custom toolboxes,
+\&.grass/toolboxes directory will contain file
+menudata.xml which is auto\-generated and should not be edited.
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.SH AUTHORS
+Anna Petrasova, OSGeoREL, Faculty of Civil Engineering, Czech Technical University in Prague
+.br
+Vaclav Petras, OSGeoREL, Faculty of Civil Engineering, Czech Technical University in Prague
+.br
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Toolboxes source code (history)
+.PP
+Main index |
+Wxgui index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

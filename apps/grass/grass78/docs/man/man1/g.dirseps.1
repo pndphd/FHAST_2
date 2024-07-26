@@ -1,0 +1,56 @@
+.TH g.dirseps 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.dirseps\fR\fR  \- Internal GRASS utility for converting directory separator characters.
+.br
+Converts any directory separator characters in the input string to or from native host format, and writes the changed path to standard output. Useful in scripts for Windows compatibility.
+.SH KEYWORDS
+general, map management, scripts
+.SH SYNOPSIS
+\fBg.dirseps\fR
+.br
+\fBg.dirseps \-\-help\fR
+.br
+\fBg.dirseps\fR [\-\fBhg\fR]  [\fBpath\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Convert directory separators to native host format
+.IP "\fB\-g\fR" 4m
+.br
+Convert directory separators to GRASS internal format
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBpath\fR=\fIstring\fR" 4m
+.br
+Path to be converted (read from stdin if not specified)
+.SH DESCRIPTION
+\fIg.dirseps\fR is an internal tool only. It copies input string
+to stdout, changing directory separator characters as specified by flags.
+It is used for interoperability between Unix and MS\-Windows pathnames.
+.SH AUTHOR
+Paul Kelly
+.SH SOURCE CODE
+.PP
+Available at: g.dirseps source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

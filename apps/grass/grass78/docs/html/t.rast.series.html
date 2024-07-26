@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.series.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.series.py</b></em>  - Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_aggregation.html">aggregation</a>, <a href="keywords.html#series">series</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.series.py</b><br></div>
+<b>t.rast.series.py --help</b><br>
+<div id="synopsis"><b>t.rast.series.py</b> [-<b>tn</b>] <b>input</b>=<em>name</em> <b>method</b>=<em>string</em>[,<i>string</i>,...]  [<b>quantile</b>=<em>float</em>[,<i>float</i>,...]]   [<b>order</b>=<em>string</em>[,<i>string</i>,...]]   [<b>where</b>=<em>sql_query</em>]  <b>output</b>=<em>name</em>[,<i>name</i>,...]  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Do not assign the space time raster dataset start and end time to the output map</dd>
+
+<dt><b>-n</b></dt>
+<dd>Propagate NULLs</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>method</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Aggregate operation to be performed on the raster maps</dd>
+<dd>Options: <em>average, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis</em></dd>
+<dd>Default: <em>average</em></dd>
+
+<dt><b>quantile</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Quantile to calculate for method=quantile</dd>
+<dd>Options: <em>0.0-1.0</em></dd>
+
+<dt><b>order</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Sort the maps by category</dd>
+<dd>Options: <em>id,  name,  creator,  mapset,  creation_time,  modification_time,  start_time,  end_time,  north,  south,  west,  east,  min,  max</em></dd>
+<dd>Default: <em>start_time</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>output</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map(s)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#estimate-the-average-temperature-for-the-whole-time-series" class="toc">Estimate the average temperature for the whole time series</a></li>
+        <li class="toc"><a href="#estimate-the-average-temperature-for-a-subset-of-the-time-series" class="toc">Estimate the average temperature for a subset of the time series</a></li>
+        <li class="toc"><a href="#climatology:-single-month-in-a-multi-annual-time-series" class="toc">Climatology: single month in a multi-annual time series</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The input of this module is a single space time raster dataset, the
+output is a single raster map layer. A subset of the input space time
+raster dataset can be selected using the <b>where</b> option. The
+sorting of the raster map layer can be set using the <b>order</b>
+option. Be aware that the order of the maps can significantly influence
+the result of the aggregation (e.g.: slope). By default the maps are
+ordered by <b>start_time</b>.
+<p>
+<em>t.rast.series</em> is a simple wrapper for the raster module
+<b>r.series</b>. It supports a subset of the aggregation methods of
+<b>r.series</b>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="estimate-the-average-temperature-for-the-whole-time-series">Estimate the average temperature for the whole time series</a></h3>
+
+Here the entire stack of input maps is considered:
+
+<div class="code"><pre>
+t.rast.series input=tempmean_monthly output=tempmean_average method=average
+</pre></div>
+
+<h3><a name="estimate-the-average-temperature-for-a-subset-of-the-time-series">Estimate the average temperature for a subset of the time series</a></h3>
+
+Here the stack of input maps is limited to a certain period of time:
+
+<div class="code"><pre>
+t.rast.series input=tempmean_daily output=tempmean_season method=average \
+  where="start_time >= '2012-06' and start_time <= '2012-08'"
+</pre></div>
+
+<h3><a name="climatology:-single-month-in-a-multi-annual-time-series">Climatology: single month in a multi-annual time series</a></h3>
+
+By considering only a single month in a multi-annual time series the so-called
+climatology can be computed.
+
+Estimate average temperature for all January maps in the time series:
+
+<div class="code"><pre>
+t.rast.series input=tempmean_monthly \
+    method=average output=tempmean_january \
+    where="strftime('%m', start_time)='01'"
+
+# equivalently, we can use 
+t.rast.series input=tempmean_monthly \
+    output=tempmean_january method=average \
+    where="start_time = datetime(start_time, 'start of year', '0 month')"
+
+# if we want also February and March averages
+
+t.rast.series input=tempmean_monthly \
+    output=tempmean_february method=average \
+    where="start_time = datetime(start_time, 'start of year', '1 month')"
+
+t.rast.series input=tempmean_monthly \
+    output=tempmean_march method=average \
+    where="start_time = datetime(start_time, 'start of year', '2 month')"
+</pre></div>
+
+Generalizing a bit, we can estimate monthly climatologies for all months 
+by means of different methods
+
+<div class="code"><pre>
+for i in `seq -w 1 12` ; do 
+  for m in average stddev minimum maximum ; do 
+    t.rast.series input=tempmean_monthly method=${m} output=tempmean_${m}_${i} \
+    where="strftime('%m', start_time)='${i}'"
+  done
+done
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.series.html">r.series</a>,
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing">Temporal data processing Wiki</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.series">t.rast.series source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.series">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

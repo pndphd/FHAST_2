@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.surf.bspline - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.surf.bspline</b></em>  - Performs bicubic or bilinear spline interpolation with Tykhonov regularization.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#LIDAR">LIDAR</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.surf.bspline</b><br></div>
+<b>v.surf.bspline --help</b><br>
+<div id="synopsis"><b>v.surf.bspline</b> [-<b>ce</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>column</b>=<em>name</em>]   [<b>sparse_input</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [<b>raster_output</b>=<em>name</em>]   [<b>mask</b>=<em>name</em>]   [<b>ew_step</b>=<em>float</em>]   [<b>ns_step</b>=<em>float</em>]   [<b>method</b>=<em>string</em>]   [<b>lambda_i</b>=<em>float</em>]   [<b>solver</b>=<em>name</em>]   [<b>maxit</b>=<em>integer</em>]   [<b>error</b>=<em>float</em>]   [<b>memory</b>=<em>memory in MB</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method</dd>
+
+<dt><b>-e</b></dt>
+<dd>Estimate point density and distance</dd>
+<dd>Estimate point density and distance in map units for the input vector points within the current region extents and quit</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector point map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name of the attribute column with values to be used for approximation</dd>
+<dd>If not given and input is 3D vector map then z-coordinates are used.</dd>
+
+<dt><b>sparse_input</b>=<em>name</em></dt>
+<dd>Name of input vector map with sparse points</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>raster_output</b>=<em>name</em></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>mask</b>=<em>name</em></dt>
+<dd>Raster map to use for masking (applies to raster output only)</dd>
+<dd>Only cells that are not NULL and not zero are interpolated</dd>
+
+<dt><b>ew_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the east-west direction</dd>
+<dd>Default: 4 * east-west resolution</dd>
+
+<dt><b>ns_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the north-south direction</dd>
+<dd>Default: 4 * north-south resolution</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Spline interpolation algorithm</dd>
+<dd>Options: <em>bilinear, bicubic</em></dd>
+<dd>Default: <em>bilinear</em></dd>
+<dd><b>bilinear</b>: Bilinear interpolation</dd>
+<dd><b>bicubic</b>: Bicubic interpolation</dd>
+
+<dt><b>lambda_i</b>=<em>float</em></dt>
+<dd>Tykhonov regularization parameter (affects smoothing)</dd>
+<dd>Default: <em>0.01</em></dd>
+
+<dt><b>solver</b>=<em>name</em></dt>
+<dd>The type of solver which should solve the symmetric linear equation system</dd>
+<dd>Options: <em>cholesky, cg</em></dd>
+<dd>Default: <em>cholesky</em></dd>
+
+<dt><b>maxit</b>=<em>integer</em></dt>
+<dd>Maximum number of iteration used to solve the linear equation system</dd>
+<dd>Default: <em>10000</em></dd>
+
+<dt><b>error</b>=<em>float</em></dt>
+<dd>Error break criteria for iterative solver</dd>
+<dd>Default: <em>0.000001</em></dd>
+
+<dt><b>memory</b>=<em>memory in MB</em></dt>
+<dd>Maximum memory to be used (in MB)</dd>
+<dd>Cache size for raster rows</dd>
+<dd>Default: <em>300</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-interpolation" class="toc">Basic interpolation</a></li>
+        <li class="toc"><a href="#basic-interpolation-and-raster-output-with-a-longer-spline-step" class="toc">Basic interpolation and raster output with a longer spline step</a></li>
+        <li class="toc"><a href="#estimation-of-lambda_i-parameter-with-a-cross-validation-process" class="toc">Estimation of lambda_i parameter with a cross validation process</a></li>
+        <li class="toc"><a href="#estimation-on-sparse-points" class="toc">Estimation on sparse points</a></li>
+        <li class="toc"><a href="#using-attribute-values-instead-z-coordinates" class="toc">Using attribute values instead z-coordinates</a></li>
+        <li class="toc"><a href="#north-carolina-location-example-using-z-coordinates-for-interpolation" class="toc">North carolina location example using z-coordinates for interpolation</a></li>
+    </ul></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.surf.bspline</em> performs a bilinear/bicubic spline
+interpolation with Tykhonov regularization. The <b>input</b> is a 2D
+or 3D vector <em>points</em> map. Values to interpolate can be the z
+values of 3D points or the values in a user-specified attribute column
+in a 2D or 3D vector map. Output can be a raster
+(<b>raster_output</b>) or vector (<b>output</b>) map.  Optionally, a
+"sparse point" vector map can be input which indicates the location
+of <b>output</b> vector points.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>From a theoretical perspective, the interpolating procedure takes 
+place in two parts: the first is an estimate of the linear coefficients 
+of a spline function is derived from the observation points using a 
+least squares regression; the second is the computation of the 
+interpolated surface (or interpolated vector points). As used here, the 
+splines are 2D piece-wise non-zero polynomial functions calculated 
+within a limited, 2D area. The length (in mapping units) of each spline 
+step is defined by <b>ew_step</b> for the east-west direction and 
+<b>ns_step</b> for the north-south direction. For optimal performance, 
+the length of spline step should be no less than the distance between 
+observation points. Each vector point observation is modeled as a 
+linear function of the non-zero splines in the area around the 
+observation. The least squares regression predicts the the coefficients 
+of these linear functions. Regularization, avoids the need to have one 
+observation and one coefficient for each spline (in order to avoid 
+instability). 
+
+<p>With regularly distributed data points, a spline step corresponding
+to the maximum distance between two points in both the east and north
+directions is sufficient. But often data points are not regularly
+distributed and require statistial regularization or estimation. In
+such cases, v.surf.bspline will attempt to minimize the gradient of
+bilinear splines or the curvature of bicubic splines in areas lacking
+point observations. As a general rule, spline step length should be
+greater than the mean distance between observation points (twice the
+distance between points is a good starting point). Separate east-west
+and north-south spline step length arguments allows the user to
+account for some degree of anisotropy in the distribution of
+observation points. Short spline step lengths - especially spline step
+lengths that are less than the distance between observation points -
+can greatly increase the processing time.
+
+<p>Moreover, the maximum number of splines for each direction at each
+time is fixed, regardless of the spline step length. As the total
+number of splines used increases (i.e., with small spline step
+lengths), the region is automatically split into subregions for
+interpolation. Each subregion can contain no more than 150x150
+splines. To avoid subregion boundary problems, subregions are created
+to partially overlap each other. A weighted mean of observations,
+based on point locations, is calculated within each subregion.
+
+<p>The Tykhonov regularization parameter (<b>lambda_i</b>) acts to
+smooth the interpolation. With a small <b>lambda_i</b>, the
+interpolated surface closely follows observation points; a larger
+value will produce a smoother interpolation.
+
+<p>The input can be a 2D or 3D vector points map. If input is 3D
+and <b>column</b> is not given than z-coordinates are used for
+interpolation. Parameter <b>column</b> is required when input is 2D
+vector map.
+
+<p><em>v.surf.bspline</em> can produce a <b>raster_output</b> OR
+a <b>output</b> (but NOT simultaneously). Note that topology is not
+build for output vector point map. The topology can be built if
+required by <em><a href="v.build.html">v.build</a></em>.
+
+<p>If output is a vector points map and a <b>sparse</b> vector points
+map is not specified, the output vector map will contain points at the
+same locations as observation points in the input map, but the values
+of the output points are interpolated values. If instead
+a <b>sparse</b> vector points map is specified, the output vector map
+will contain points at the same locations as the sparse vector map
+points, and values will be those of the interpolated raster surface at
+those points.
+
+<p>A cross validation "leave-one-out" analysis is available to help to
+determine the optimal <b>lambda_i</b> value that produces an
+interpolation that best fits the original observation data. The more
+points used for cross-validation, the longer the time needed for
+computation. Empirical testing indicates a threshold of a maximum of
+100 points is recommended. Note that cross validation can run very
+slowly if more than 100 observations are used. The cross-validation
+output reports <i>mean</i> and <i>rms</i> of the residuals from the
+true point value and the estimated from the interpolation for a fixed
+series of <b>lambda_i</b> values. No vector nor raster output will be
+created when cross-validation is selected.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="basic-interpolation">Basic interpolation</a></h3>
+
+<div class="code"><pre>
+v.surf.bspline input=point_vector output=interpolate_surface method=bicubic
+</pre></div>
+
+A bicubic spline interpolation will be done and a vector points map
+with estimated (i.e., interpolated) values will be created.
+
+<h3><a name="basic-interpolation-and-raster-output-with-a-longer-spline-step">Basic interpolation and raster output with a longer spline step</a></h3>
+
+<div class="code"><pre>
+v.surf.bspline input=point_vector raster=interpolate_surface ew_step=25 ns_step=25
+</pre></div>
+
+A bilinear spline interpolation will be done with a spline step length
+of 25 map units. An interpolated raster map will be created at the
+current region resolution.
+
+<h3><a name="estimation-of-lambda_i-parameter-with-a-cross-validation-process">Estimation of lambda_i parameter with a cross validation process</a></h3>
+
+<div class="code"><pre>
+v.surf.bspline -c input=point_vector 
+</pre></div>
+
+<h3><a name="estimation-on-sparse-points">Estimation on sparse points</a></h3>
+
+<div class="code"><pre>
+v.surf.bspline input=point_vector sparse=sparse_points output=interpolate_surface
+</pre></div>
+
+An output map of vector points will be created, corresponding to the
+sparse vector map, with interpolated values.
+
+<h3><a name="using-attribute-values-instead-z-coordinates">Using attribute values instead z-coordinates</a></h3>
+
+<div class="code"><pre>
+v.surf.bspline input=point_vector raster=interpolate_surface layer=1 \
+  column=attrib_column
+</pre></div>
+
+The interpolation will be done using the values
+in <i>attrib_column</i>, in the table associated with layer 1.
+
+<h3><a name="north-carolina-location-example-using-z-coordinates-for-interpolation">North carolina location example using z-coordinates for interpolation</a></h3>
+
+<div class="code"><pre>
+g.region region=rural_1m res=2 -p
+v.surf.bspline input=elev_lid792_bepts raster=elev_lid792_rast \
+  ew_step=5 ns_step=5 method=bicubic lambda_i=0.1
+</pre></div>
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+Known issues:
+
+<p>
+In order to avoid RAM memory problems, an auxiliary table is needed
+for recording some intermediate calculations. This requires
+the <i>GROUP BY</i> SQL function is used, which is not supported by
+the DBF driver. For this reason, vector map output
+(<b>output</b>) is not permitted with the DBF driver. There are
+no problems with the raster map output from the DBF driver.
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+  <li>Brovelli M. A., Cannata M., and Longoni U.M., 2004, LIDAR Data
+    Filtering and DTM Interpolation Within GRASS, Transactions in GIS,
+    April 2004, vol. 8, iss. 2, pp. 155-174(20), Blackwell Publishing Ltd</li>
+  <li>Brovelli M. A. and Cannata M., 2004, Digital Terrain model
+    reconstruction in urban areas from airborne laser scanning data: the
+    method and an example for Pavia (Northern Italy). Computers and
+    Geosciences 30, pp.325-331</li>
+  <li>Brovelli M. A e Longoni U.M., 2003, Software per il filtraggio di
+    dati LIDAR, Rivista dell'Agenzia del Territorio, n. 3-2003, pp. 11-22
+    (ISSN 1593-2192)</li>
+  <li>Antolin R. and Brovelli M.A., 2007, LiDAR data Filtering with GRASS GIS for the 
+    Determination of Digital Terrain Models. Proceedings of Jornadas de SIG Libre,
+    Girona, Espa&ntilde;a. CD ISBN: 978-84-690-3886-9</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.surf.idw.html">v.surf.idw</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Original version (s.bspline.reg) in GRASS 5.4:
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni, Mirko Reguzzoni<br>
+Update for GRASS 6 and improvements: Roberto Antolin
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.surf.bspline">v.surf.bspline source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.surf.bspline">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

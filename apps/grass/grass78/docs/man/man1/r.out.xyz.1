@@ -1,0 +1,120 @@
+.TH r.out.xyz 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.xyz.py\fR\fR  \- Exports a raster map to a text file as x,y,z values based on cell centers.
+.SH KEYWORDS
+raster, export, output, ASCII, conversion
+.SH SYNOPSIS
+\fBr.out.xyz.py\fR
+.br
+\fBr.out.xyz.py \-\-help\fR
+.br
+\fBr.out.xyz.py\fR [\-\fBi\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...]  [\fBoutput\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Include no data values
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+The \fIr.out.xyz\fR module exports a raster map as a list of x,y,z
+values into an ASCII text file.
+.SH NOTES
+This module will by default not export x,y coordinates for raster cells
+containing a NULL value. This includes cells masked by a raster MASK.
+Using the flag \fB\-i\fR also these raster cells will be included in the
+exported data.
+.PP
+This module, as all GRASS raster modules, will export cells based on the
+current region settings. See the \fIg.region\fR module for details.
+.PP
+The \fIr.out.ascii\fR module should be used to export an array (of
+size row x column) containing z values.
+.PP
+\fIr.out.xyz\fR can combine several input raster maps, which can be
+convenient when it comes to e.g. produce ASCII point cloud files.
+.PP
+\fIr.out.xyz\fR is simply a front\-end to \(dqr.stats \-1g[n]\(dq.
+.SH EXAMPLES
+In this example, a LiDAR elevation map in the
+North Carolina sample dataset location is exported to CSV format.
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m \-p
+r.out.xyz input=elev_lid792_1m output=elev_lid792_1m.csv separator=\(dq,\(dq
+\fR
+.fi
+.PP
+In this example, elevation data from the North Carolina dataset are
+exported along with R,G,B triplet of the related orthophoto into a
+combined file (requires the import of the supplementary high\-resolution
+color orthophoto, here called \(dqortho2010_t792\(dq):
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m res=1 \-a \-p
+r.out.xyz input=elev_lid792_1m,ortho2010_t792.red,ortho2010_t792.green,ortho2010_t792.blue \(rs
+        separator=space output=pointcloud.asc
+# validate: X Y Z R G B
+head \-n 3 pointcloud.asc
+638300.5 220749.5 126.338218689 78 84 71
+638301.5 220749.5 126.3381958008 93 101 86
+638302.5 220749.5 126.3414840698 68 77 59
+\fR
+.fi
+.SH TODO
+Implement this script as a \fIr.out.ascii\fR option?
+.SH SEE ALSO
+\fI
+g.region,
+r.mask
+r.out.ascii,
+r.stats
+\fR
+.SH AUTHOR
+M. Hamish Bowman
+.br
+\fIDept. Marine Science
+.br
+Otago University, New Zealand\fR
+.SH SOURCE CODE
+.PP
+Available at: r.out.xyz source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,288 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.spread - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.spread</b></em>  - Simulates elliptically anisotropic spread.<BR>
+Generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins. It optionally produces raster maps to contain backlink UTM coordinates for tracing spread paths. Usable for fire spread simulations.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_fire.html">fire</a>, <a href="keywords.html#spread">spread</a>, <a href="keywords.html#hazard">hazard</a>, <a href="keywords.html#model">model</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.spread</b><br></div>
+<b>r.spread --help</b><br>
+<div id="synopsis"><b>r.spread</b> [-<b>si</b>] <b>base_ros</b>=<em>string</em> <b>max_ros</b>=<em>string</em> <b>direction_ros</b>=<em>string</em> <b>start</b>=<em>string</em>  [<b>spotting_distance</b>=<em>string</em>]   [<b>wind_speed</b>=<em>string</em>]   [<b>fuel_moisture</b>=<em>string</em>]   [<b>least_size</b>=<em>odd int</em>]   [<b>comp_dens</b>=<em>decimal</em>]   [<b>init_time</b>=<em>int (>= 0)</em>]   [<b>lag</b>=<em>int (>= 0)</em>]   [<b>backdrop</b>=<em>string</em>]  <b>output</b>=<em>string</em>  [<b>x_output</b>=<em>string</em>]   [<b>y_output</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Consider spotting effect (for wildfires)</dd>
+
+<dt><b>-i</b></dt>
+<dd>Use start raster map values in output spread time raster map</dd>
+<dd>Designed to be used with output of previous run of r.spread when computing spread iteratively. The values in start raster map are considered as time. Allowed values in raster map are from zero to the value of init_time option. If not enabled, init_time is used in the area of start raster map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>base_ros</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing base ROS (cm/min)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the ROS values in the directions perpendicular to maximum ROSes' (cm/minute). These ROSes are also the ones without the effect of directional factors.</dd>
+
+<dt><b>max_ros</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing maximal ROS (cm/min)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the maximum ROS values (cm/minute).</dd>
+
+<dt><b>direction_ros</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing directions of maximal ROS (degree)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing directions of the maximum ROSes, clockwise from north (degree).</dd>
+
+<dt><b>start</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing starting sources</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing starting locations of the spread phenomenon. Any positive integers in this map are recognized as starting sources (seeds).</dd>
+
+<dt><b>spotting_distance</b>=<em>string</em></dt>
+<dd>Raster map containing maximal spotting distance (m, required with -s)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the maximum potential spotting distances (meters).</dd>
+
+<dt><b>wind_speed</b>=<em>string</em></dt>
+<dd>Raster map containing midflame wind speed (ft/min, required with -s)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing wind velocities at half of the average flame height (feet/minute).</dd>
+
+<dt><b>fuel_moisture</b>=<em>string</em></dt>
+<dd>Raster map containing fine fuel moisture of the cell receiving a spotting firebrand (%, required with -s)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the 1-hour (&lt;.25") fuel moisture (percentage content multiplied by 100).</dd>
+
+<dt><b>least_size</b>=<em>odd int</em></dt>
+<dd>Basic sampling window size needed to meet certain accuracy (3)</dd>
+<dd>An odd integer ranging 3 - 15 indicating the basic sampling window size within which all cells will be considered to see whether they will be reached by the current spread cell. The default number is 3 which means a 3x3 window.</dd>
+<dd>Options: <em>3, 5, 7, 9, 11, 13, 15</em></dd>
+
+<dt><b>comp_dens</b>=<em>decimal</em></dt>
+<dd>Sampling density for additional computing (range: 0.0 - 1.0 (0.5))</dd>
+<dd>A decimal number ranging 0.0 - 1.0 indicating additional sampling cells will be considered to see whether they will be reached by the current spread cell. The closer to 1.0 the decimal number is, the longer the program will run and the higher the simulation accuracy will be. The default number is 0.5.</dd>
+
+<dt><b>init_time</b>=<em>int (>= 0)</em></dt>
+<dd>Initial time for current simulation (0) (min)</dd>
+<dd>A non-negative number specifying the initial time for the current spread simulation (minutes). This is useful when multiple phase simulation is conducted. The default time is 0.</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>lag</b>=<em>int (>= 0)</em></dt>
+<dd>Simulating time duration LAG (fill the region) (min)</dd>
+<dd>A non-negative integer specifying the simulating duration time lag (minutes). The default is infinite, but the program will terminate when the current geographic region/mask has been filled. It also controls the computational time, the shorter the time lag, the faster the program will run.</dd>
+
+<dt><b>backdrop</b>=<em>string</em></dt>
+<dd>Name of raster map as a display backdrop</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path to be used as the background on which the "live" movement will be shown.</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map to contain output spread time (min)</dd>
+<dd>Name of the new raster map layer to contain the results of the cumulative spread time needed for a phenomenon to reach each cell from the starting sources (minutes).</dd>
+
+<dt><b>x_output</b>=<em>string</em></dt>
+<dd>Name of raster map to contain X back coordinates</dd>
+<dd>Name of the new raster map layer to contain the results of backlink information in UTM easting coordinates for each cell.</dd>
+
+<dt><b>y_output</b>=<em>string</em></dt>
+<dd>Name of raster map to contain Y back coordinates</dd>
+<dd>Name of the new raster map layer to contain the results of backlink information in UTM northing coordinates for each cell.</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.spread</em> is part of the wildfire simulation toolset. Preparational
+steps for the fire simulation are the calculation of the rate of spread (ROS)
+with <em>r.ros</em>, and the creating of spread map with <em>r.spread</em>.
+Eventually, the fire path(s) based on starting point(s) are calculated
+with <em>r.spreadpath</em>.
+<p>
+
+Spread phenomena usually show uneven movement over space. Such unevenness
+is due to two reasons:
+
+<ol>
+<li>the uneven conditions from location to location, which can be called
+<em>spatial heterogeneity</em>, and
+<li>the uneven conditions in different directions, which can be called
+<em>anisotropy</em>.
+</ol>
+
+<p>The anisotropy of spread occurs when any of the determining factors
+have directional components. For example, wind and topography cause anisotropic
+spread of wildfires.
+
+<p>One of the simplest spatial heterogeneous and anisotropic spread
+is elliptical spread, in which, each local spread shape can be thought
+as an ellipse. In a raster setting, cell centers are foci of the spread
+ellipses, and the spread phenomenon moves fastest toward apogees and slowest
+to perigees. The sizes and shapes of spread ellipses may vary cell by cell.
+So the overall spread shape is commonly not an ellipse.
+
+<p><em>r.spread</em>simulates elliptically anisotropic spread phenomena,
+given three raster map layers about ROS (base ROS, maximum ROS and direction
+of the maximum ROS) plus a raster map layer showing the starting sources.
+These ROS layers define unique ellipses for all cell locations in the current
+computational region as if each cell center was a potential spread origin.
+For some wildfire spread, these ROS layers can be generated by another
+GRASS raster program r.ros. The actual locations reached by a spread event
+are constrained by the actual spread origins and the elapsed spread time.
+
+<p><em>r.spread</em>optionally produces raster maps to contain backlink
+UTM coordinates for each raster cell of the spread time map. The spread
+paths can be accurately traced based on the backlink information by
+<em><a href="r.spreadpath.html">r.spreadpath</a></em> module.
+
+<p>Part of the spotting function in r.spread is based on Chase (1984)
+and Rothermel (1983). More information on <em>r.spread</em>,
+<em><a href="r.ros.html">r.ros</a></em> and
+<em><a href="r.spreadpath.html">r.spreadpath</a></em> can be found in
+Xu (1994).
+
+<p>Options <tt>spot_dist</tt>, <tt>w_speed</tt> and <tt>f_mois</tt> must all
+be given if the <tt>-s</tt> (spotting) flag is used.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+Assume we have inputs, the following simulates a spotting- involved wildfire
+and generates three raster maps to contain spread
+time, backlink information in UTM northing and easting coordinates:
+
+<div class="code"><pre>
+r.spread -s max=my_ros.max dir=my_ros.maxdir base=my_ros.base \
+    start=fire_origin spot_dist=my_ros.spotdist w_speed=wind_speed \
+    f_mois=1hour_moisture output=my_spread \
+    x_output=my_spread.x y_output=my_spread.y
+</pre></div>
+
+
+<h2><a name="notes">NOTES</a></h2>
+1. <em>r.spread</em> is a specific implementation of the shortest path
+algorithm. <em><a href="r.cost.html">r.cost</a></em> module served
+as the starting point for the development of <em>r.spread</em>.
+One of the major differences between the two programs is that
+<em><a href="r.cost.html">r.cost</a></em> only simulates
+<em>isotropic</em> spread while <em>r.spread</em> can simulate
+<em>elliptically anisotropic</em> spread, including isotropic spread
+as a special case.
+
+<p>2. Before running r.spread, the user should prepare the ROS (base,
+max and direction) maps using appropriate models. For some wildfire spread,
+the <em><a href="r.ros.html">r.ros</a></em> module based on
+Rothermel's fire equation does such work.
+The combination of the two forms a simulation of wildfire spread.
+
+<p>3. The relationship of the start map and ROS maps should be logically
+correct, i.e. a starting source (a positive value in the start map) should
+not be located in a spread <em>barrier</em> (zero value in the ROS maps).
+Otherwise the program refuses to run.
+
+<p>4. <em>r.spread</em> uses the current computational region settings. The output
+map layer will not go outside the boundaries set in the region, and will
+not be influenced by starting sources outside. So any change of the current
+region may influence the output. The recommendation is to use slightly
+larger region than needed.
+Refer to <em><a href="g.region.html">g.region</a></em> to set an appropriate
+computational region.
+
+<p>5. The user should be sure that the inputs to <em>r.spread</em> are
+in proper units.
+
+<p>6. <em>r.spread</em> is a computationally intensive program. The user may
+need to choose appropriate size of the computational region and resolution.
+
+<p>7. A low and medium (i.e. &lt;= 0.5) sampling density can improve
+accuracy for elliptical simulation significantly, without adding significantly
+extra running time. Further increasing the sample density will not gain
+much accuracy while requiring greatly additional running time.
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>Chase, Carolyn, H., 1984, Spotting distance from wind-driven surface fires
+-- extensions of equations for pocket calculators, US Forest Service, Res.
+Note INT-346, Ogden, Utah.</li>
+
+<li>Rothermel, R. C., 1983, How to predict the spread and intensity
+of forest and range fires. US Forest Service, Gen. Tech. Rep. INT-143.
+Ogden, Utah.</li>
+
+<li>Xu, Jianping, 1994, Simulating the spread of wildfires using a
+geographic information system and remote sensing, Ph. D. Dissertation,
+Rutgers University, New Brunswick, New Jersey
+(<a href="https://dl.acm.org/citation.cfm?id=921466">ref</a>).</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.cost.html">r.cost</a>,
+<a href="r.mask.html">r.mask</a>,
+<a href="r.ros.html">r.ros</a>,
+<a href="r.spreadpath.html">r.spreadpath</a>
+</em>
+
+Sample data download: <a href="https://grass.osgeo.org/download/data/">firedemo.sh</a>
+(run this script within the "Fire simulation data set" location.
+
+<h2><a name="author">AUTHOR</a></h2>
+Jianping Xu and Richard G. Lathrop, Jr., Center for Remote Sensing and
+Spatial Analysis, Rutgers University.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.spread">r.spread source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.spread">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

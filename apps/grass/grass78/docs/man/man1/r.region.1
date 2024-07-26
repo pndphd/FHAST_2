@@ -1,0 +1,129 @@
+.TH r.region 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.region\fR\fR  \- Sets the boundary definitions for a raster map.
+.SH KEYWORDS
+raster, metadata, geometry
+.SH SYNOPSIS
+\fBr.region\fR
+.br
+\fBr.region \-\-help\fR
+.br
+\fBr.region\fR [\-\fBcda\fR] \fBmap\fR=\fIname\fR  [\fBregion\fR=\fIname\fR]   [\fBraster\fR=\fIname\fR]   [\fBvector\fR=\fIname\fR]   [\fBn\fR=\fIvalue\fR]   [\fBs\fR=\fIvalue\fR]   [\fBe\fR=\fIvalue\fR]   [\fBw\fR=\fIvalue\fR]   [\fBalign\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Set from current region
+.IP "\fB\-d\fR" 4m
+.br
+Set from default region
+.IP "\fB\-a\fR" 4m
+.br
+Auto\-adjustment for lat/lon
+.br
+Attempt to fix small precision errors in resolution and extents
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to change
+.IP "\fBregion\fR=\fIname\fR" 4m
+.br
+Set region from named region
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Set region to match this raster map
+.IP "\fBvector\fR=\fIname\fR" 4m
+.br
+Name of vector map
+.br
+Set region to match this vector map
+.IP "\fBn\fR=\fIvalue\fR" 4m
+.br
+Value for the northern edge
+.IP "\fBs\fR=\fIvalue\fR" 4m
+.br
+Value for the southern edge
+.IP "\fBe\fR=\fIvalue\fR" 4m
+.br
+Value for the eastern edge
+.IP "\fBw\fR=\fIvalue\fR" 4m
+.br
+Value for the western edge
+.IP "\fBalign\fR=\fIname\fR" 4m
+.br
+Raster map to align to
+.SH DESCRIPTION
+The \fIr.region\fR program allows the user to manage the boundaries
+of a raster map. These boundaries can be set by the user directly
+and/or set from a region definition file (stored under the
+windows directory in the user\(cqs current mapset), a raster
+or vector map, or a 3dview file.
+.PP
+The \fBalign\fR parameter sets the current resolution equal to
+that of the named raster map, and align the boundaries to a row and column
+edge in the named map.  Alignment only moves the existing boundaries outward
+to the edges of the next nearest cell in the named raster map \-\- not to the
+named map\(cqs edges.  To perform the latter function, use the
+\fBraster=\fR\fIname\fR option.
+.SH NOTES
+After all updates have been applied, the raster map\(cqs resolution
+settings are recomputed from the boundaries and the number of rows and
+columns in the raster map.
+.PP
+The n=\fIvalue\fR may also be specified as a
+function of its current value:  n=n+\fIvalue\fR
+increases the current northing, while n=n\-\fIvalue\fR
+decreases it.  This is also true for s=\fIvalue\fR,
+e=\fIvalue\fR, and w=\fIvalue\fR.
+.SH EXAMPLES
+.PP
+Assign absolute coordinates to map:
+.br
+.nf
+\fC
+r.region map=mymap n=220750 s=220000 w=638300 e=639000
+\fR
+.fi
+.PP
+Shift map (using offset, here by +100 map units in the NS direction, \-50 in the EW direction):
+.br
+.nf
+\fC
+r.region map=mymap n=n+100 e=e\-50 w=w\-50 s=s+100
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.support,
+g.region,
+v.transform
+\fR
+.SH AUTHOR
+Glynn Clements
+.br
+Based upon \fIg.region\fR
+.SH SOURCE CODE
+.PP
+Available at: r.region source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

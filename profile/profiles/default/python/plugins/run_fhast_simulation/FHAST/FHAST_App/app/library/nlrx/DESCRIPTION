@@ -1,0 +1,46 @@
+Package: nlrx
+Type: Package
+Title: Setup, Run and Analyze 'NetLogo' Model Simulations from 'R' via
+        'XML'
+Version: 0.4.4
+Authors@R: c(person("Jan", "Salecker", email = "jan.salecker@posteo.de",
+                     role = c("aut"), comment = c(ORCID = '0000-0002-9000-4229')),
+             person("Marco", "Sciaini", email = "sciaini.marco@gmail.com", 
+                     role = c("aut"), comment = c(ORCID = '0000-0002-3042-5435')),
+             person("Marina", "Papadopoulou", role = "rev",
+                    comment = "Marina reviewed the package for ropensci, see <https://github.com/ropensci/software-review/issues/262>"),
+             person("Sebastian", "Hanss", email = "nlrx@mailbox.org", 
+                     role = c("cre"), comment = "Package maintainer together with Jan Salecker"))
+Description: Setup, run and analyze 'NetLogo' (<https://ccl.northwestern.edu/netlogo/>) model simulations in 'R'.
+    'nlrx' experiments use a similar structure as 'NetLogos' Behavior Space experiments. 
+    However, 'nlrx' offers more flexibility and additional tools for running and analyzing complex simulation designs and sensitivity analyses.
+    The user defines all information that is needed in an intuitive framework, using class objects.
+    Experiments are submitted from 'R' to 'NetLogo' via 'XML' files that are dynamically written, based on specifications defined by the user.
+    By nesting model calls in future environments, large simulation design with many runs can be executed in parallel.
+    This also enables simulating 'NetLogo' experiments on remote high performance computing machines.
+    In order to use this package, 'Java' and 'NetLogo' (>= 5.3.1) need to be available on the executing system.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+URL: https://docs.ropensci.org/nlrx/, https://github.com/ropensci/nlrx/
+BugReports: https://github.com/ropensci/nlrx/issues/
+Imports: XML, lhs, sensitivity, dplyr, readr, purrr, furrr, magrittr,
+        stats, utils, GenSA, genalg, raster, rstudioapi, sf, tidyr,
+        methods, tibble, crayon, igraph, stringr, progressr, EasyABC
+Depends: R (>= 3.3)
+Suggests: testthat, mockery, knitr, rmarkdown, covr
+VignetteBuilder: knitr
+SystemRequirements: NetLogo (>= 5.3.1), Java (>= 11), pandoc, OpenSSL,
+        udunits-2, PROJ.4, GEOS, GDAL, libxml2
+NeedsCompilation: no
+Packaged: 2023-05-16 14:17:33 UTC; jan
+Author: Jan Salecker [aut] (<https://orcid.org/0000-0002-9000-4229>),
+  Marco Sciaini [aut] (<https://orcid.org/0000-0002-3042-5435>),
+  Marina Papadopoulou [rev] (Marina reviewed the package for ropensci,
+    see <https://github.com/ropensci/software-review/issues/262>),
+  Sebastian Hanss [cre] (Package maintainer together with Jan Salecker)
+Maintainer: Sebastian Hanss <nlrx@mailbox.org>
+Repository: CRAN
+Date/Publication: 2023-05-16 14:40:02 UTC
+Built: R 4.2.3; ; 2024-01-10 04:06:37 UTC; windows

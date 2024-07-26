@@ -1,0 +1,6 @@
+coverage_fraction       Compute the fraction of raster cells covered by
+                        a polygon
+exact_extract           Extract or summarize values from rasters
+exact_resample          Resample a raster to a new grid
+rasterize_polygons      Create a raster approximation of a polygon
+                        coverage

@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.category - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.category</b></em>  - Manages category values and labels associated with user-specified raster map layers.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_category.html">category</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.category</b><br></div>
+<b>r.category --help</b><br>
+<div id="synopsis"><b>r.category</b> <b>map</b>=<em>name</em>  [<b>cats</b>=<em>range</em>[,<i>range</i>,...]]   [<b>values</b>=<em>float</em>[,<i>float</i>,...]]   [<b>separator</b>=<em>character</em>]   [<b>raster</b>=<em>name</em>]   [<b>rules</b>=<em>name</em>]   [<b>format</b>=<em>string</em>]   [<b>coefficients</b>=<em>mult1,offset1,mult2,offset2</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map</dd>
+
+<dt><b>cats</b>=<em>range[,<i>range</i>,...]</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>values</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Comma separated value list</dd>
+<dd>Example: 1.4,3.8,13</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>tab</em></dd>
+
+<dt><b>raster</b>=<em>name</em></dt>
+<dd>Raster map from which to copy category table</dd>
+
+<dt><b>rules</b>=<em>name</em></dt>
+<dd>File containing category label rules (or "-" to read from stdin)</dd>
+
+<dt><b>format</b>=<em>string</em></dt>
+<dd>Default label or format string for dynamic labeling</dd>
+<dd>Used when no explicit label exists for the category</dd>
+
+<dt><b>coefficients</b>=<em>mult1,offset1,mult2,offset2</em></dt>
+<dd>Dynamic label coefficients</dd>
+<dd>Two pairs of category multiplier and offsets, for $1 and $2</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#input-from-a-file" class="toc">Input from a file</a></li>
+        <li class="toc"><a href="#default-and-dynamic-category-labels" class="toc">Default and dynamic category labels</a></li>
+    </ul></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#printing-categories" class="toc">Printing categories</a></li>
+        <li class="toc"><a href="#adding-categories" class="toc">Adding categories</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.category</em> prints the category values and labels for the raster map
+layer specified by <b>map=</b><em>name</em> to standard output. You can also
+use it to set category labels for a raster map.
+
+<p>
+The user can specify all needed parameters on the command line, and run the
+program non-interactively. If the user does not specify any categories
+(e.g., using the optional <b>cats=</b><em>range</em>[,<em>range</em>,...]
+argument), then all the category values and labels for the named raster map
+layer that occur in the map are printed.  The entire <em>map</em> is read
+using <em><a href="r.describe.html">r.describe</a></em>, to determine which
+categories occur in the <em>map</em>. If a listing of categories is
+specified, then the labels for those categories only are printed. The
+<em>cats</em> may be specified as single category values, or as ranges of
+values. The user may also (optionally) specify that a field separator other
+than a space or tab be used to separate the category value from its
+corresponding category label in the output, by using the
+<b>separator=</b><em>character</em>|<em>space</em>|<em>tab</em> option (see example
+below). If no field separator is specified by the user, a tab is used to
+separate these fields in the output, by default.
+
+<p>
+The output is sent to standard output in the form of one category per line,
+with the category value first on the line, then an ASCII TAB character (or
+whatever single character or space is specified using the <b>separator</b>
+parameter), then the label for the category.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Any ASCII TAB characters which may be in the label are replaced by spaces. 
+<p>The output from <em>r.category</em> can be redirected into a file, or piped into
+another program.
+
+<h3><a name="input-from-a-file">Input from a file</a></h3>
+
+The <b>rules</b> option allows the user to assign category labels from values
+found in a file (without header). The label can refer to a single category, range of
+categories, floating point value, or a range of floating point values.
+The format is given as follows (when separator is set to colon; no white space
+must be used after the separator):
+<div class="code"><pre>
+cat:Label
+val1:val2:Label
+</pre></div>
+
+If the filename is given as "-", the category labels are read from <tt>stdin</tt>
+
+
+<h3><a name="default-and-dynamic-category-labels">Default and dynamic category labels</a></h3>
+
+Default and dynamic category labels can be created for categories that
+are not explicitly labeled.
+
+The coefficient line can be followed by explicit category labels
+which override the format label generation.
+<div class="code"><pre>
+   0:no data
+   2:	.
+   5:	.		      ## explicit category labels
+   7:	.
+</pre></div>
+explicit labels can be also of the form:
+<div class="code"><pre>
+   5.5:5:9 label description
+   or
+   15:30  label description
+</pre></div>
+<p>In the format line
+<ul>
+<li><tt>$1</tt> refers to the value <tt>num*5.0+1000</tt> (ie, using the first 2 coefficients)
+<li><tt>$2</tt> refers to the value <tt>num*5.0+1005</tt> (ie, using the last 2 coefficients)
+</ul>
+  <tt>$1.2</tt> will print <tt>$1</tt> with 2 decimal places.
+<p>Also, the form <tt>$?xxx$yyy$</tt> translates into <tt>yyy</tt> if the category is 1, xxx 
+otherwise. The <tt>$yyy$</tt> is optional. Thus
+<p>  <tt>$1 meter$?s</tt>
+<p>will become: <br>
+  <tt>1 meter</tt> (for category 1)<br>
+  <tt>2 meters</tt> (for category 2), etc.
+
+<p>
+<tt>format='Elevation: $1.2 to $2.2 feet'   ## Format Statement</tt><br>
+<tt>coefficients="5.0,1000,5.0,1005"	## Coefficients</tt>
+
+<p>The format and coefficients above would be used to generate the
+following statement in creation of the format appropriate category
+string for category "num":
+<p>
+<tt>sprintf(buff,"Elevation: %.2f to %.2f feet", num*5.0+1000, num*5.0*1005)</tt>
+
+<p>Note: while both the format and coefficient lines must be present
+      a blank line for the format string will effectively suppress
+      automatic label generation.
+<!--
+Note: quant rules of Categories structures are heavily dependent
+on the fact that rules are stored in the same order they are entered.
+since i-th rule and i-th label are entered at the same time, we
+know that i-th rule maps fp range to i, thus we know for sure
+that cats.labels[i] corresponds to i-th quant rule
+-->
+<p>To use a "<tt>$</tt>" in the label without triggering the plural test,
+put "<tt>$$</tt>" in the format string.
+<p>Use 'single quotes' when using a "<tt>$</tt>" on the command line to
+avoid unwanted shell substitution.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+North Carolina sample dataset:
+
+<h3><a name="printing-categories">Printing categories</a></h3>
+<div class="code"><pre>
+r.category map=landclass96
+1	developed
+2	agriculture
+3	herbaceous
+4	shrubland
+5	forest
+6	water
+7	sediment
+</pre></div>
+
+prints the values and labels associated with all of the categories in the
+<em>landclass96</em> raster map layer.
+
+<p>
+<div class="code"><pre>
+r.category map=landclass96 cats=2,5-7 
+2	agriculture
+5	forest
+6	water
+7	sediment
+</pre></div>
+
+prints only the category values and labels for <em>landclass96</em> map layer
+categories <tt>2</tt> and <tt>5</tt> through <tt>7</tt>.
+
+<p>
+<div class="code"><pre>
+r.category map=landclass96 cats=3,4 separator=comma
+3,herbaceous
+4,shrubland
+</pre></div>
+
+prints the values and labels for <em>landclass96</em> map layer categories
+<tt>3</tt> and <tt>4</tt>, but uses "<tt>,</tt>" (instead of a tab)
+as the character separating the category values from the category
+values in the output.
+
+<h3><a name="adding-categories">Adding categories</a></h3>
+
+Example for defining new category labels, using a colon as separator:
+<div class="code"><pre>
+r.category diseasemap separator=":" rules=- &lt;&lt; EOF
+1:potential absence
+2:potential presence
+EOF
+</pre></div>
+
+This sets the categoy values 1 and 2 to respective text labels.
+
+Alternatively, the rules can be stored in an ASCII text file and loaded
+via the <em>rules</em> parameter.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+UNIX Manual entries for <i>awk</i> and <i>sort</i>
+
+<p>
+<em>
+<a href="d.what.rast.html">d.what.rast</a>,
+<a href="r.coin.html">r.coin</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.support.html">r.support</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory<br>
+Hamish Bowman, University of Otago, New Zealand (label creation options)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.category">r.category source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.category">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

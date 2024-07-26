@@ -1,0 +1,246 @@
+.TH r.patch 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.patch\fR\fR  \- Creates a composite raster map layer by using known category values from one (or more) map layer(s) to fill in areas of \(dqno data\(dq in another map layer.
+.SH KEYWORDS
+raster, geometry, mosaicking, merge, patching, aggregation, series
+.SH SYNOPSIS
+\fBr.patch\fR
+.br
+\fBr.patch \-\-help\fR
+.br
+\fBr.patch\fR [\-\fBzs\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Use zero (0) for transparency instead of NULL
+.IP "\fB\-s\fR" 4m
+.br
+Do not create color and category files
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of raster maps to be patched together
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for resultant raster map
+.SH DESCRIPTION
+The GRASS program \fIr.patch\fR allows the user to build a new
+raster map the size and resolution of the current region by assigning
+known data values from input raster maps to the cells in this region.
+.br
+In case of overlapping input raster maps this is done by filling in
+\(dqno data\(dq cells, those that do not yet contain data, contain NULL data,
+or, optionally contain 0 data, with the data from the first input map.
+Once this is done the remaining holes are filled in by the next input map,
+and so on.
+.br
+In case of adjacent input raster maps the output map contains the map
+mosaic.
+.PP
+Hence this command is useful for
+.RS 4n
+.IP \(bu 4n
+making a composite raster map layer from two or more adjacent map layers,
+.IP \(bu 4n
+for filling in \(dqholes\(dq in a raster map layer\(cqs data (e.g., in digital
+elevation data), or
+.IP \(bu 4n
+for updating an older map layer with more recent data.
+.RE
+The current geographic region definition and mask settings are respected.
+.PP
+\fIFigure: Result of patching of two raster maps containing NULLs
+using the default settings.\fR
+.SS Stacking order
+.PP
+The first \fIname\fR listed in the string
+\fBinput=\fR\fIname\fR,\fIname\fR,\fIname\fR,... is the name
+of the first map whose data values will be used to fill in
+cells in the current region.
+Then, the second through the last input
+maps (..., \fIname\fR, \fIname\fR, ...) will be used,
+in order, to supply data values for the remaining
+\(dqno data\(dq cells (or cells with value 0 with \fB\-z\fR flag).
+.PP
+In other words, the first raster map is used first and if it had some
+\(dqno data\(dq cells, then second raster map is used for these cells, then
+the third and so on.
+So the formal command line syntax can be also written as
+\fBinput=\fR\fIprimary\fR,\fIsecondary\fR,\fItertiary\fR,...
+For two raster maps, the first one can be viewed as the primary one
+or the default one and the second one as the secondary one or a fallback.
+.PP
+\fIFigure: Result of patching of two raster maps using the
+\fB\-z\fR flag to treat zeros as NULLs. Note the value 1 being preserved
+from the first raster while the value 6 is taken from the second raster
+instead of the value 0 from the first raster because zeros are replaced
+with the \fB\-z\fR flag active.\fR
+.SS Relation to SQL COALESCE() function
+The module is corresponds to the SQL COALESCE() function.
+This function takes two or more arguments and returns
+a copy of its first non\-NULL argument. If all arguments are NULL,
+the function returns NULL.
+.PP
+The \fIr.patch\fR module iterates over all cells and for each cell
+of the output raster map uses the first corresponding non\-NULL cell
+in the series of the input raster maps.
+.SS Example of filling areas
+Below, the raster map layer on the far left is \fBpatched\fR
+with the middle (\fIpatching\fR) raster map layer,
+to produce the \fIcomposite\fR raster map layer on the right.
+The example assumes zero values to be treated as NULLs (\fB\-z\fR flag).
+.br
+.nf
+\fC
+  1 1 1 0 2 2 0 0    0 0 1 1 0 0 0 0    1 1 1 1 2 2 0 0
+  1 1 0 2 2 2 0 0    0 0 1 1 0 0 0 0    1 1 1 2 2 2 0 0
+  3 3 3 3 2 2 0 0    0 0 0 0 0 0 0 0    3 3 3 3 2 2 0 0
+  3 3 3 3 0 0 0 0    4 4 4 4 4 4 4 4    3 3 3 3 4 4 4 4
+  3 3 3 0 0 0 0 0    4 4 4 4 4 4 4 4    3 3 3 4 4 4 4 4
+  0 0 0 0 0 0 0 0    4 4 4 4 4 4 4 4    4 4 4 4 4 4 4 4
+\fR
+.fi
+Switching the \fIpatched\fR and the \fIpatching\fR raster map layers
+produces the following results:
+.br
+.nf
+\fC
+  0 0 1 1 0 0 0 0    1 1 1 0 2 2 0 0    1 1 1 1 2 2 0 0
+  0 0 1 1 0 0 0 0    1 1 0 2 2 2 0 0    1 1 1 1 2 2 0 0
+  0 0 0 0 0 0 0 0    3 3 3 3 2 2 0 0    3 3 3 3 2 2 0 0
+  4 4 4 4 4 4 4 4    3 3 3 3 0 0 0 0    4 4 4 4 4 4 4 4
+  4 4 4 4 4 4 4 4    3 3 3 0 0 0 0 0    4 4 4 4 4 4 4 4
+  4 4 4 4 4 4 4 4    0 0 0 0 0 0 0 0    4 4 4 4 4 4 4 4
+\fR
+.fi
+.SH NOTES
+Frequently, this program is used to patch together adjacent map layers which
+have been digitized separately.  The program
+\fIv.mkgrid\fR can be used to make adjacent
+maps align neatly.
+.PP
+The user should check the current geographic region settings before running
+\fIr.patch\fR, to ensure that the region boundaries encompass all
+of the data desired to be included in the composite map and to ensure that the
+region resolution is the resolution of the desired data. To set the
+geographic region settings to one or several raster maps, the \fIg.region\fR
+program can be used:
+.br
+.nf
+\fC
+g.region raster=map1[,map2[,...]]
+\fR
+.fi
+.PP
+Use of \fIr.patch\fR is generally followed by use of the GRASS programs
+\fIg.remove\fR and
+\fIg.rename\fR;
+\fIg.remove\fR is used to remove the original (un\-patched) raster map
+layers, while \fIg.rename\fR is used to then assign to the newly\-created
+composite (patched) raster map layer the name of the original raster map
+layer.
+.PP
+\fIr.patch\fR reads the existing category label files and color tables
+from the \fIinput\fR maps and creates these files for the patched,
+composite \fIoutput\fR map.  This can be quite time consuming for
+certain maps, especially if there are many different category values
+across the patched maps. The \fI\-s\fR flag allows disabling the reading
+and creation of these support files,  meaning that the \fIoutput\fR
+map will have no category labels and no explicit color table.
+.PP
+Number of raster maps to be processed is given by the limit of the
+operating system. For example, both the hard and soft limits are
+typically 1024. The soft limit can be changed with e.g. ulimit \-n
+1500 (UNIX\-based operating systems) but not higher than the hard
+limit. If it is too low, you can as superuser add an entry in
+.br
+.nf
+\fC
+/etc/security/limits.conf
+# <domain>      <type>  <item>         <value>
+your_username  hard    nofile          1500
+\fR
+.fi
+This would raise the hard limit to 1500 file. Be warned that more
+files open need more RAM. See also the Wiki page
+Hints for large raster data processing.
+.PP
+Operating systems usually limit the length of the command line
+which limits the number of input raster maps user can pass to the module
+using the option \fBinput\fR. In that case,
+\fIr.series\fR can be used instead of
+\fIr.patch\fR.
+.SH EXAMPLES
+.SS Example with three maps
+The input are three maps called roads, water and forest. Primarily,
+we want to use the values from roads, then from water and if no
+other values are available we want to use forest.
+First we set the computation region assuming that the all three maps
+fully overlap and have the same resolution (so we can safely use the
+just the one without further modifications of the region).
+Then we perform the patching.
+.br
+.nf
+\fC
+g.region raster=roads
+r.patch input=roads,water,forest output=result
+\fR
+.fi
+.SS Map mosaic example using Bash syntax
+Create a list of maps matching a pattern, extend the region to include them
+all, and patch them together to create a mosaic. Overlapping maps will be
+used in the order listed.
+.br
+.nf
+\fC
+MAPS=\(gag.list type=raster separator=comma pat=\(dqmap_*\(dq\(ga
+g.region raster=$MAPS \-p
+r.patch input=$MAPS output=maps_mosaic
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+g.remove,
+g.rename,
+r.mapcalc,
+r.support,
+r.series,
+v.mkgrid
+\fR
+.PP
+Hints for large raster data processing
+.SH AUTHOR
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+.br
+\-z flag and performance improvement by Huidae Cho
+.SH SOURCE CODE
+.PP
+Available at: r.patch source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

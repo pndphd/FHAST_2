@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.basins.fill - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.basins.fill</b></em>  - Generates watershed subbasins raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_hydrology.html">hydrology</a>, <a href="keywords.html#watershed">watershed</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.basins.fill</b><br></div>
+<b>r.basins.fill --help</b><br>
+<div id="synopsis"><b>r.basins.fill</b> <b>cnetwork</b>=<em>name</em> <b>tnetwork</b>=<em>name</em> <b>output</b>=<em>name</em> <b>number</b>=<em>integer</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>cnetwork</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input coded stream network raster map</dd>
+
+<dt><b>tnetwork</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input thinned ridge network raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>number</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of passes through the dataset</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.basins.fill</em>
+generates a raster map layer depicting subbasins, based 
+on input raster map layers for the coded stream network 
+(where each channel segment has been "coded" with a unique category value) 
+and for the ridges within a given watershed. 
+The raster map layer depicting ridges should include 
+the ridge which defines the perimeter of the watershed. 
+The coded stream network can be generated 
+as part of the 
+<em><a href="r.watershed.html">r.watershed</a></em> program, 
+but the map layer of ridges will need to be created by hand
+(for example, through digitizing done in <em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em>).
+
+<p>
+The resulting output raster map layer will 
+code the subbasins with category values matching 
+those of the channel segments passing through them. 
+A user-supplied number of passes through the data is 
+made in an attempt to fill in these subbasins. 
+If the resulting map layer from this program appears to 
+have holes within a subbasin, the program should be 
+rerun with a higher number of passes. 
+<br><br>
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+The current geographic region setting is ignored. 
+Instead, the geographic region for the entire input stream's 
+map layer is used. 
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+See Appendix A of the <b>GRASS</b> <a
+href="https://grass.osgeo.org/gdp/raster/r.watershed.ps">Tutorial:
+r.watershed</a> for further details on the combined use of
+<em>r.basins.fill</em> and <em>r.watershed</em>.
+
+<p>
+<em>
+  <a href="r.water.outlet.html">r.water.outlet</a>,
+  <a href="r.watershed.html">r.watershed</a>,
+  <a href="wxGUI.vdigit.html">wxGUI vector digitizer</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Dale White, 
+Dept. of Geography, 
+Pennsylvania State University
+<br>
+Larry Band, Dept. of Geography, University of Toronto, Canada 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.basins.fill">r.basins.fill source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.basins.fill">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

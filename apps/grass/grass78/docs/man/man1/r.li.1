@@ -1,0 +1,230 @@
+.TH r.li 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.li\fR\fR  \- Toolset for multiscale analysis of landscape structure
+.SH KEYWORDS
+raster, landscape structure analysis, diversity index, patch index
+.SH DESCRIPTION
+The \fIr.li\fR suite is a toolset for multiscale analysis of
+landscape structure. It aims at implementing metrics as found in
+external software for quantitative measures of landscape structure like
+FRAGSTATS (McGarigal and Marks 1995).
+.PP
+The \fIr.li\fR suite offers a set of patch and diversity indices.
+It supports analysis of landscapes composed of a mosaic of
+patches, but, more generally, the modules work with any two\-dimensional
+raster map whose cell values are integer (e.g., 1, 2) or floating point
+(e.g., 1.1, 3.2) values. The \fIg.gui.rlisetup\fR module has options for
+controlling the shape, size, number, and distribution of sampling
+areas used to collect information about the landscape structure.
+Sampling area shapes can be the entire map or a moving
+window of square, rectangular or circular shape. The size of
+sampling areas can be changed, so that the landscape can be analyzed
+at a variety of spatial scales simultaneously. Sampling areas may be
+distributed across the landscape in a random, systematic, or
+stratified\-random manner, or as a moving window.
+.PP
+The \fIr.li\fR modules can calculate a number of measures that produce
+single values as output (e.g. mean patch size in the sampling area),
+as well as measures that produce a distribution of values as output
+(e.g. frequency distribution of patch sizes in the sampling area). The
+results are stored as raster maps.
+.PP
+All modules require configuration file which can be created by the
+\fIg.gui.rlisetup\fR module which is a GUI tool providing a convenient
+way to set all necessary parameters. This file can be used repetitively
+saving user from the need to specify all parameters over and over again.
+.SH NOTES
+The general procedure to calculate an index from a raster map is two\-fold:
+.IP
+.IP \fB1\fR
+run \fIg.gui.rlisetup\fR: create a configuration file selecting
+the parts of raster map to be analyzed. This file allows re\-running
+an analysis easily. It is stored on Windows in the directory C:\(rsUsers\(rsuserxy\(rsAppData\(rsRoaming\(rsGRASS7\(rsr.li\(rs, on GNU/Linux in
+$HOME/.grass7/r.li/.
+.IP \fB2\fR
+run one or more of the \fIr.li.\fB[index]\fR\fR modules (e.g.,
+\fIr.li.\fBpatchdensity\fR\fR) to calculate the selected index
+using on the areas selected on configuration file.
+.PP
+.SH EXAMPLES
+Calculate a patch density index on the entire \(cqgeology\(cq raster map
+in the Spearfish sample dataset, using a 5x5 moving window:
+.IP
+.IP \fB1\fR
+CREATE A NEW CONFIGURATION FILE
+.IP
+.IP \fB1.1\fR
+run
+.br
+.nf
+\fC
+  g.gui.rlisetup
+\fR
+.fi
+.IP \fB1.2\fR
+The main \fIg.gui.rlisetup\fR window is displayed, click on \(dqNew\(dq
+.IP \fB1.3\fR
+The new configuration window is now displayed, enter the
+configuration file name (e.g., \(dqmy_conf\(dq, do not use absolute paths)
+Now the new configuration window is displayed.
+Enter the configuration file name (e.g., \(dqmy_conf\(dq, do not use absolute paths)
+and the name of raster map (e.g., \(dqgeology\(dq).
+The other fields are not needed for this configuration.
+.IP \fB1.4\fR
+Click on \(dqSetup sampling frame\(dq, select \(dqWhole map layer\(dq and click \(dqOK\(dq
+.IP \fB1.5\fR
+Click on \(dqSetup sampling areas\(dq, select \(dqMoving window\(dq and click \(dqOK\(dq
+.IP \fB1.6\fR
+Click on \(dqUse keyboard to enter moving window dimension\(dq
+.IP \fB1.7\fR
+Select \(dqRectangle\(dq and enter 5 in the \(dqheight\(dq and \(dqwidth\(dq fields
+.IP \fB1.8\fR
+Click on \(dqSave settings\(dq
+.IP \fB1.9\fR
+Close the \fIg.gui.rlisetup\fR window
+.PP
+.IP \fB2\fR
+CALCULATE PATCHDENSITY INDEX
+.IP
+.IP \fB2.1\fR
+set the region settings to the \(dqgeology\(dq raster map:
+.br
+.nf
+\fC
+  g.region raster=geology \-p
+\fR
+.fi
+.IP \fB2.2\fR
+run \fIr.li.patchdensity\fR:
+.br
+.nf
+\fC
+  r.li.patchdensity input=geology conf=my_conf out=patchdens
+\fR
+.fi
+.PP
+.PP
+The resulting patch density is stored in \(dqpatchdens\(dq raster map.
+You can verify the result for example with contour lines:
+.br
+.nf
+\fC
+  r.contour in=patchdens out=patchdens step=5
+  d.rast patchdens
+  d.vect \-c patchdens
+\fR
+.fi
+Note that if you want to run another index with the same area
+configuration, you don\(cqt have to create another configuration file.
+You can also use the same area configuration file on another map. The
+program rescale it automatically. For instance if you have selected a
+5x5 sample area on 100x100 raster map, and you use the same
+configuration file on a 200x200 raster map, then the sample area is
+10x10.
+.SH SEE ALSO
+\fBGUI tools\fR:
+.RS 4n
+.IP \(bu 4n
+g.gui.rlisetup: Configuration editor for the r.li.* module where * is name of the index
+.RE
+\fBPatch indices\fR:
+.RS 4n
+.IP \(bu 4n
+Indices based on patch number:
+.RS 4n
+.IP \(bu 4n
+r.li.patchdensity: Calculates patch density index on a raster map, using a 4 neighbour algorithm
+.IP \(bu 4n
+r.li.patchnum: Calculates patch number index on a raster map, using a 4 neighbour algorithm
+.RE
+.IP \(bu 4n
+Indices based on patch dimension:
+.RS 4n
+.IP \(bu 4n
+r.li.mps: Calculates mean patch size index on a raster map, using a 4 neighbour algorithm
+.IP \(bu 4n
+r.li.padcv: Calculates coefficient of variation of patch area on a raster map
+.IP \(bu 4n
+r.li.padrange: Calculates range of patch area size on a raster map
+.IP \(bu 4n
+r.li.padsd: Calculates standard deviation of patch area a raster map
+.RE
+.IP \(bu 4n
+Indices based on patch shape:
+.RS 4n
+.IP \(bu 4n
+r.li.shape: Calculates shape index on a raster map
+.RE
+.IP \(bu 4n
+Indices based on patch edge:
+.RS 4n
+.IP \(bu 4n
+r.li.edgedensity: Calculates edge density index on a raster map, using a 4 neighbour algorithm
+.RE
+.IP \(bu 4n
+Indices based on patch attributes:
+.RS 4n
+.IP \(bu 4n
+r.li.cwed: Calculates contrast Weighted Edge Density index on a raster map
+.IP \(bu 4n
+r.li.mpa: Calculates mean pixel attribute index on a raster map
+.RE
+.RE
+\fBDiversity indices\fR:
+.RS 4n
+.IP \(bu 4n
+r.li.dominance: Calculates dominance diversity index on a raster map
+.IP \(bu 4n
+r.li.pielou: Calculates Pielou eveness index on a raster map
+.IP \(bu 4n
+r.li.renyi: Calculates Renyi entropy on a raster map
+.IP \(bu 4n
+r.li.richness: Calculates richness diversity index on a raster map
+.IP \(bu 4n
+r.li.shannon: Calculates Shannon diversity index on a raster map
+.IP \(bu 4n
+r.li.simpson: Calculates Simpson diversity index on a raster map
+.RE
+\fBCore library\fR:
+.RS 4n
+.IP \(bu 4n
+r.li.daemon: library with common functionality (not visible to the user)
+.RE
+.SH ADDING NEW INDICES
+New indices can be defined and implemented by any C programmer, without
+having to deal with all basic functions (IO etc.). The computing
+architecture and the functions are clearly separated, thus allowing an
+easy expandability. Every index is defined separately, placed in a
+directory along with its Makefile for compiling it and a file
+<module_name>.html which describes the index including a simple
+example of use. See r.li.daemon
+for more information about development.
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+McGarigal, K., and B. J. Marks. 1995. FRAGSTATS: spatial pattern
+analysis program for quantifying landscape structure. USDA For. Serv.
+Gen. Tech. Rep. PNW\-351
+(PDF).
+.IP \(bu 4n
+Baker, W.L. and Y. Cai. 1992. The r.le programs for multiscale analysis of
+landscape structure using the GRASS geographical information system.
+Landscape Ecology 7(4):291\-302.
+.RE
+.SH AUTHORS
+Claudio Porta and Lucio Davide Spano, students of Computer Science,
+University of Pisa (Italy).
+.br
+Commission from Faunalia Pontedera (PI)
+.PP
+Partially rewritten by Markus Metz
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

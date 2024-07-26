@@ -1,0 +1,172 @@
+.TH r.clump 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.clump\fR\fR  \- Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.
+.SH KEYWORDS
+raster, statistics, reclass, clumps
+.SH SYNOPSIS
+\fBr.clump\fR
+.br
+\fBr.clump \-\-help\fR
+.br
+\fBr.clump\fR [\-\fBdg\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...]  [\fBoutput\fR=\fIname\fR]   [\fBtitle\fR=\fIstring\fR]   [\fBthreshold\fR=\fIfloat\fR]   [\fBminsize\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Clump also diagonal cells
+.br
+Clumps are also traced along diagonal neighboring cells
+.IP "\fB\-g\fR" 4m
+.br
+Print only the number of clumps in shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for output raster map
+.IP "\fBthreshold\fR=\fIfloat\fR" 4m
+.br
+Threshold to identify similar cells
+.br
+Valid range: 0 = identical to < 1 = maximal difference
+.br
+Default: \fI0\fR
+.IP "\fBminsize\fR=\fIinteger\fR" 4m
+.br
+Minimum clump size in cells
+.br
+Clumps smaller than minsize will be merged to form larger clumps
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIr.clump\fR finds all areas of contiguous cell category values
+(connected components) in the input raster map. NULL values in the
+input are ignored. It assigns a unique category value to each such area
+(\(dqclump\(dq) in the resulting output raster map.
+.PP
+Category distinctions in the input raster map are preserved.  This
+means that if distinct category values are adjacent, they will NOT be
+clumped together. The user can
+run \fIr.reclass\fR prior
+to \fIr.clump\fR to recategorize cells and reassign cell category
+values.
+.PP
+\fIr.clump\fR can also perform \(dqfuzzy\(dq clumping where
+neighboring cells that are not identical but similar to each other are
+clumped together. Here, the spectral distance between two cells is
+scaled to the range [0, 1] and compared to the \fIthreshold\fR
+value. Cells are clumped together if their spectral distance is ≤
+\fIthreshold\fR. The result is very sensitive to this
+\fIthreshold\fR value, a recommended start value is 0.01, then
+increasing or decreasing this value according to the desired output.
+Once a suitable threshold has been determined, noise can be reduced by
+merging small clumps with the \fIminsize\fR option.
+.PP
+\fIr.clump\fR can also use multiple raster maps of any kind (CELL,
+FCELL, DCELL) as input. In this case, the spectral distance between
+cells is used to determine the similarity of two cells. This means that
+input maps must be metric: the difference cell 1 \- cell 2 must make
+sense. Categorical maps, e.g. land cover, can not be used in this case.
+Examples for valid inpat maps are satellite imagery, vegetation
+indices, elevation, climatic parameters etc.
+.SH NOTES
+By default, the resulting clumps are connected only by their four
+direct neighbors (left, right, top, bottom). The \fI\-d\fR flag
+activates also diagonal clump tracing.
+.PP
+\fIr.clump\fR works properly with raster map that contains only
+\(dqfat\(dq areas (more than a single cell in width). Linear
+elements (lines that are a single cell wide) may or may not be clumped
+together depending on the direction of the line \- horizontal and
+vertical lines of cells are considered to be contiguous, but diagonal
+lines of cells are not considered to be contiguous and are broken up
+into separate clumps unless the \fI\-d\fR flag is used.
+.PP
+A random color table and other support files are generated for the
+output raster map.
+.SH EXAMPLES
+.SS Clumping of a raster map
+Perform clumping on \(dqlakes\(dq map (North Carolina sample dataset) and
+report area sizes for each lake individually rather by waterbody type:
+.br
+.nf
+\fC
+g.region raster=lakes \-p
+# report sizes by waterbody type
+r.report lakes units=h
+# clump per raster polygon
+r.clump lakes out=lakes_individual
+# report sizes by individual waterbody
+r.report lakes_individual units=h
+\fR
+.fi
+.br
+\fIFigure: Clumping of rasterized lakes: original lakes map (left) and clumped lakes map (right)\fR
+.SS Fuzzy clumping on Landsat bands
+Perform fuzzy clumping on Landsat 7 2002 imagery (North Carolina sample dataset)
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+r.clump in=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \(rs
+        out=lsat7_2002_clump threshold=0.045
+# reduce noise
+r.clump in=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \(rs
+        out=lsat7_2002_clump_min10 threshold=0.045 minsize=10
+\fR
+.fi
+.br
+\fIFigure: Fuzzy clumping on Landsat bands: original RGB composite (left),
+fuzzy clumped map (middle), and fuzzy clumped with minsize map (right)\fR
+.SH SEE ALSO
+\fI
+r.average,
+r.buffer,
+r.distance,
+r.grow,
+r.mapcalc,
+r.mfilter,
+r.neighbors,
+r.to.vect,
+r.reclass,
+r.statistics,
+r.support
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S. Army Construction Engineering Research
+Laboratory
+.br
+Markus Metz (diagonal clump tracing, fuzzy clumping)
+.SH SOURCE CODE
+.PP
+Available at: r.clump source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

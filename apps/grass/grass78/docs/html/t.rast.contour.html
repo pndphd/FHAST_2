@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.contour.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.contour.py</b></em>  - Produces a space time vector dataset of specified contours from a space time raster dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_contour.html">contour</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.contour.py</b><br></div>
+<b>t.rast.contour.py --help</b><br>
+<div id="synopsis"><b>t.rast.contour.py</b> [-<b>nt</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]  <b>basename</b>=<em>string</em>  [<b>suffix</b>=<em>string</em>]   [<b>step</b>=<em>float</em>]   [<b>levels</b>=<em>float</em>[,<i>float</i>,...]]   [<b>minlevel</b>=<em>float</em>]   [<b>maxlevel</b>=<em>float</em>]   [<b>cut</b>=<em>integer</em>]   [<b>nprocs</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Register empty vector maps</dd>
+
+<dt><b>-t</b></dt>
+<dd>Do not create attribute tables</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time vector dataset</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>basename</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Basename of the new generated output maps</dd>
+<dd>A numerical suffix separated by an underscore will be attached to create a unique identifier</dd>
+
+<dt><b>suffix</b>=<em>string</em></dt>
+<dd>Suffix to add at basename: set 'gran' for granularity, 'time' for the full time format, 'num' for numerical suffix with a specific number of digits (default %05)</dd>
+<dd>Default: <em>gran</em></dd>
+
+<dt><b>step</b>=<em>float</em></dt>
+<dd>Increment between contour levels</dd>
+
+<dt><b>levels</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>List of contour levels</dd>
+
+<dt><b>minlevel</b>=<em>float</em></dt>
+<dd>Minimum contour level</dd>
+
+<dt><b>maxlevel</b>=<em>float</em></dt>
+<dd>Maximum contour level</dd>
+
+<dt><b>cut</b>=<em>integer</em></dt>
+<dd>Minimum number of points for a contour line (0 -&gt; no limit)</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>Number of r.contour processes to run in parallel, more than 1 process works only in conjunction with flag -t</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>t.rast.contour</em> is designed to produce a space time vector dataset of 
+specified contours from a space time raster dataset. This module works as a front-end to
+<a href="r.contour.html">r.contour</a> and therefore supports all parameter
+of this module. Hence, all raster map layers in a space time raster dataset
+are successively passed to <a href="r.contour.html">r.contour</a> that computes 
+the contour lines. 
+Please refer to the <a href="r.contour.html">r.contour</a> documentation 
+for a detailed description.
+The new generated vector contour map
+layers will be registered in the output space time vector dataset, using 
+the same time stamps as their raster map layer origins.
+<p>
+This module supports the parallel processing of <a href="r.contour.html">r.contour</a>
+module instances. The number of parallel processes 
+can be set with the <em>nprocs</em> option. 
+However, this will only work in conjunction with the <em>-t</em>
+flag, that avoids the creation of attribute tables. 
+The parallel creation of attribute tables is not supported.
+<p>
+The <em>where</em> option allows selecting subsets of the input space time raster
+dataset.
+<p>
+The flag <em>-n</em> can be used to force the registration of empty 
+vector map layers. Empty vector maps may occur in case that empty 
+raster map layers should be converted into vector map layers, or in case the
+chosen steps or contour levels are not present in the raster map layers.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.contour.html">r.contour</a>,
+<a href="t.vect.db.select.html">t.rast.db.select</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Geoinformatikb&uuml;ro Dassau
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.contour">t.rast.contour source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.contour">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

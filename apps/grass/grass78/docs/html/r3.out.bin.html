@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.out.bin - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.out.bin</b></em>  - Exports a GRASS 3D raster map to a binary array.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.out.bin</b><br></div>
+<b>r3.out.bin --help</b><br>
+<div id="synopsis"><b>r3.out.bin</b> [-<b>rdi</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>null</b>=<em>float</em>]  <b>bytes</b>=<em>integer</em>  [<b>order</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Switch the row order in output from north->south to south->north</dd>
+
+<dt><b>-d</b></dt>
+<dd>Switch the depth order in output from bottom->top to top->bottom</dd>
+
+<dt><b>-i</b></dt>
+<dd>Write data as integer</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input 3D raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output file</dd>
+
+<dt><b>null</b>=<em>float</em></dt>
+<dd>Value to write out for null</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>bytes</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of bytes per cell in binary file</dd>
+<dd>Options: <em>1, 2, 4, 8</em></dd>
+
+<dt><b>order</b>=<em>string</em></dt>
+<dd>Output byte order</dd>
+<dd>Options: <em>big, little, native, swap</em></dd>
+<dd>Default: <em>native</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">Examples</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>r3.out.bin</em> program exports a GRASS 3D raster map to a binary array
+file. Optionally, output can be send to standard output (stdout) for direct
+input (pipe) into other applications. Data is exported according to the
+original GRASS 3D raster type (float, double).
+
+<h2><a name="notes">NOTES</a></h2>
+
+The write order of the rows (north->south to south->north) and
+the write order of the depths (bottom->top to top->bottom) can be switched.
+<p>
+The region parameters are printed to stderr when setting the verbose flag.
+Export of little and big endian byte order is supported.
+<p>
+Have a look at <a href="r3.out.ascii.html">r3.out.ascii</a> manual page that
+describes the internal layout of the 3D raster maps and the supported
+row and depth switch options.
+
+<h2><a name="examples">Examples</a></h2>
+
+Have a look at the examples in <a href="r3.in.bin.html">r3.in.bin</a>.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.in.bin.html">r3.in.bin</a>,
+<a href="r3.in.ascii.html">r3.in.ascii</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+S&ouml;ren Gebbert, based on r.out.bin from Bob Covill and Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.out.bin">r3.out.bin source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.out.bin">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

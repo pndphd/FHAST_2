@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.out.ogr - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.out.ogr</b></em>  - Exports a vector map layer to any of the supported OGR vector formats.<BR>
+By default a vector map layer is exported to OGC GeoPackage format.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#OGR">OGR</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.out.ogr</b><br></div>
+<b>v.out.ogr --help</b><br>
+<div id="synopsis"><b>v.out.ogr</b> [-<b>uasce2mnl</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em> <b>format</b>=<em>string</em>  [<b>output_layer</b>=<em>string</em>]   [<b>output_type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>dsco</b>=<em>string</em>[,<i>string</i>,...]]   [<b>lco</b>=<em>string</em>[,<i>string</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-u</b></dt>
+<dd>Open an existing OGR datasource for update</dd>
+
+<dt><b>-a</b></dt>
+<dd>Append to existing layer</dd>
+<dd>A new OGR layer is created if it does not exist</dd>
+
+<dt><b>-s</b></dt>
+<dd>Skip export of GRASS category ID ('cat') attribute</dd>
+
+<dt><b>-c</b></dt>
+<dd>Also export features without category (not labeled). Otherwise only features with category are exported.</dd>
+
+<dt><b>-e</b></dt>
+<dd>Use ESRI-style .prj file format (applies to Shapefile output only)</dd>
+
+<dt><b>-2</b></dt>
+<dd>Force 2D output even if input is 3D (applies to Shapefile output only)</dd>
+<dd>Useful if input is 3D but all z coordinates are identical</dd>
+
+<dt><b>-m</b></dt>
+<dd>Export vector data as multi-features</dd>
+
+<dt><b>-n</b></dt>
+<dd>Create a new empty layer in defined OGR datasource and exit. Nothing is read from input.</dd>
+
+<dt><b>-l</b></dt>
+<dd>List supported output formats and exit</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map to export</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Feature type(s)</dd>
+<dd>Combination of types is not supported by all output formats. Default is to use first type found in input vector map.</dd>
+<dd>Options: <em>point, line, boundary, centroid, area, face, kernel, auto</em></dd>
+<dd>Default: <em>auto</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of output OGR datasource</dd>
+<dd>For example: ESRI Shapefile: filename or directory for storage<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PostGIS database: connection string</dd>
+
+<dt><b>format</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Data format to write</dd>
+<dd>Options: <em>AmigoCloud, BNA, CSV, Carto, Cloudant, CouchDB, DB2ODBC, DGN, DXF, ESRI_Shapefile, Elasticsearch, FlatGeobuf, GML, GMLAS, GPKG, GPSBabel, GPSTrackMaker, GPX, GeoJSON, GeoJSONSeq, GeoRSS, Geoconcept, Interlis_1, Interlis_2, JML, JP2OpenJPEG, KML, LIBKML, MBTiles, MSSQLSpatial, MVT, MapInfo_File, MapML, Memory, MySQL, NGW, ODBC, ODS, OGR_GMT, PCIDSK, PDF, PDS4, PGDUMP, PostgreSQL, S57, SQLite, Selafin, TIGER, VDV, VICAR, WAsP, XLSX, netCDF</em></dd>
+<dd>Default: <em>GPKG</em></dd>
+
+<dt><b>output_layer</b>=<em>string</em></dt>
+<dd>Name for output OGR layer. If not specified, input name is used</dd>
+<dd>For example: ESRI Shapefile: shapefile name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PostGIS database: table name</dd>
+
+<dt><b>output_type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Optionally change default output type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em></em></dd>
+<dd><b>line</b>: export area boundaries as linestrings</dd>
+<dd><b>boundary</b>: export lines as polygons</dd>
+
+<dt><b>dsco</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>OGR dataset creation option (format specific, NAME=VALUE)</dd>
+<dd>Default: <em></em></dd>
+
+<dt><b>lco</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>OGR layer creation option (format specific, NAME=VALUE)</dd>
+<dd>Default: <em></em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#export-to-ogc-geopackage" class="toc">Export to OGC GeoPackage</a></li>
+        <li class="toc"><a href="#export-to-esri-shapefile" class="toc">Export to ESRI Shapefile</a></li>
+        <li class="toc"><a href="#export-to-gml" class="toc">Export to GML</a></li>
+        <li class="toc"><a href="#export-to-postgresql/postgis" class="toc">Export to PostgreSQL/PostGIS</a></li>
+        <li class="toc"><a href="#export-to-kml-(google-earth)" class="toc">Export to KML (Google Earth)</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.out.ogr</em> converts GRASS vector map layer to any of the
+supported <a href="http://www.gdal.org/">OGR</a> vector formats
+(including OGC GeoPackage, ESRI Shapefile, SpatiaLite or GML).
+
+<p>
+OGR (Simple Features Library) is part of the
+<a href="http://www.gdal.org">GDAL</a> library, so you need to
+install this library to use <em>v.out.ogr</em>. 
+
+<p>
+The OGR library supports many various formats including:
+
+<ul>
+  <li><a href="http://www.gdal.org/drv_geopackage.html">OGC GeoPackage</a></li>
+  <li><a href="http://www.gdal.org/drv_shapefile.html">ESRI Shapefile</a></li>
+  <li><a href="http://www.gdal.org/drv_pg.html">PostGIS</a></li>
+  <li><a href="http://www.gdal.org/drv_sqlite.html">SpatiaLite</a></li>
+  <li><a href="http://www.gdal.org/drv_csv.html">CSV</a></li>
+  <li><a href="http://www.gdal.org/drv_gml.html">GML</a></li>
+  <li><a href="http://www.gdal.org/drv_kml.html">KML</a></li>
+  <li><a href="http://www.gdal.org/drv_mitab.html">Mapinfo File</a></li>
+  <li><a href="http://www.gdal.org/drv_tiger.html">TIGER</a></li>
+  <li>... and many others</li>
+</ul>
+
+The list of supported formats is printed with the <em>-l</em> flag.
+
+<p>
+For further available other supported formats go 
+<a href="http://www.gdal.org/ogr_formats.html">here</a>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+By default, islands will appear as holes inside surrounding areas. To
+export polygons with holes into, e.g., a Esri Shapefile, and make the
+holes appear as filled areas, the flag <b>-c</b> has to be used.
+
+<p>
+<em>v.out.ogr</em> exports 3D vector data as 2.5D simple features if
+possible (not supported by all formats). For exporting 3D vector data
+as 2D simple features, use <b>-2</b> flag.
+
+<p>
+By default, <em>v.out.ogr</em> converts GRASS vector data to single
+simple features. If GRASS feature has more categories defined in the
+given <b>layer</b>, then this feature is exported multiple
+times. GRASS features without category are skipped by default. To
+export features also without category, the <b>-c</b> flag must be
+given.
+
+<p>
+When <b>-m</b> flag is given, <em>v.out.ogr</em> export GRASS vector
+data as multi-features. Multi-feature is formed by GRASS features with
+the same category. When <b>-c</b> flag is given, the module also
+export GRASS features without category as one multi-feature. Note that
+multi-features are not supported by all formats.
+
+<p>
+ESRI Shapefile export: note that due to the DBF table specifications
+column names may not be longer than 10 characters.
+
+<p>
+Performance: export to SQLite based formats including OGC GeoPackage may
+become faster with the environmental variable <tt>OGR_SQLITE_CACHE=1024</tt>
+being set (value depends on available RAM, see
+<a href="https://trac.osgeo.org/gdal/wiki/ConfigOptions#OGR_SQLITE_CACHE">OGR ConfigOptions</a>).
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="export-to-ogc-geopackage">Export to OGC GeoPackage</a></h3>
+
+Export lines from a GRASS vector map to OGC GeoPackage format:
+
+<div class="code"><pre>
+v.out.ogr input=roadsmajor type=line output=roadsmajor.gpkg
+</pre></div>
+
+<p>
+Export areas from GRASS vector map to OGC GeoPackage format, converting
+islands (holes) to filled polygons:
+
+<div class="code"><pre>
+v.out.ogr -c input=areas_islands type=area output=areas_islands.gpkg
+</pre></div>
+
+<p>
+Export mixed geometry type GRASS vector map to OGC GeoPackage format:
+
+<div class="code"><pre>
+v.out.ogr input=generic_vector output=mixed_geometry.gpkg
+</pre></div>
+
+<h3><a name="export-to-esri-shapefile">Export to ESRI Shapefile</a></h3>
+
+Export lines from GRASS vector map to Shapefile format:
+
+<div class="code"><pre>
+v.out.ogr input=roadsmajor type=line format=ESRI_Shapefile output=lines.shp
+</pre></div>
+
+<p>
+Export areas from GRASS vector map to Shapefile format, converting
+islands (holes) to filled polygons:
+
+<div class="code"><pre>
+v.out.ogr -c input=areas_islands type=area format=ESRI_Shapefile output=areas_islands.shp
+</pre></div>
+
+<p>
+Export 3D lines from GRASS vector map to Shapefile format:
+
+<div class="code"><pre>
+v.out.ogr input=lines_3d type=line format=ESRI_Shapefile output=lines_3d.shp lco="SHPT=ARCZ"
+</pre></div>
+
+<p>
+Export 3D points (e.g., Lidar points) from GRASS vector map to Shapefile format
+
+<div class="code"><pre>
+v.out.ogr points_3d type=point format=ESRI_Shapefile output=points_3d.shp lco="SHPT=POINTZ"
+</pre></div>
+
+<p>
+Export 3D faces from GRASS vector map to Shapefile format:
+<div class="code"><pre>
+v.out.ogr input=objects_3d type=face format=ESRI_Shapefile output=faces_3d.shp lco="SHPT=POLYGONZ"
+</pre></div>
+
+<p>
+Export 3D faces from GRASS vector map to Shapefile format, automatic 3D setting:
+
+<div class="code"><pre>
+v.out.ogr input=objects_3d type=face format=ESRI_Shapefile output=faces_3d.shp"
+</pre></div>
+
+<h3><a name="export-to-gml">Export to GML</a></h3>
+
+Export lines from GRASS vector map to GML format
+ (generates '/tmp/testogr.gml' file with layer 'testogr'):
+
+<div class="code"><pre>
+v.out.ogr input=multi type=line output=/tmp/testogr.gml output_layer=testogr format=GML 
+</pre></div>
+
+<h3><a name="export-to-postgresql/postgis">Export to PostgreSQL/PostGIS</a></h3>
+
+Export areas from GRASS vector map to PostGIS database:
+
+<div class="code"><pre>
+v.out.ogr input=polygons type=area output="PG:host=localhost dbname=postgis user=postgres" output_layer=polymap format=PostgreSQL
+</pre></div>
+
+<i>Note:</i> For exporting GRASS vector data to PostGIS database can
+be also used <em><a href="v.out.postgis.html">v.out.postgis</a></em>
+module. This module is not based on OGR library and supports beside
+simple features also topological format (PostGIS Topology).
+
+<h3><a name="export-to-kml-(google-earth)">Export to KML (Google Earth)</a></h3>
+
+<p>
+Export faces (3D vectors) from GRASS vector map to KML format for Google Earth:
+
+<div class="code"><pre>
+v.out.ogr input=buildings_3d output=buildings_3d.kml output_layer=buildings_3d format=KML type=face
+</pre></div>
+
+<p>
+Generate and export GRASS vector "asteroid" map (faces, 3D vectors) to
+KML format for Google Earth:
+
+<div class="code"><pre>
+# near Raleigh (NC, USA)
+g.region n=35.73952587 s=35.73279182 w=-78.68263928 e=-78.67499517
+
+# two layers of random points
+v.random -z output=random3d_a n=10 zmin=0 zmax=200
+v.random -z output=random3d_b n=15 zmin=400 zmax=600
+
+# merge into one 3D points map
+v.patch input=random3d_a,random3d_b output=random3d
+
+# generate 3D convex hull
+v.hull input=random3d output="random3d_hull"
+
+# export to KML 3D
+v.out.ogr input=random3d_hull output=random3d_hull.kml format=KML type=face dsco="AltitudeMode=absolute"
+
+# now open KML file 'random3d_hull.kml' in Google Earth or NASA WorldWind or ...
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li><a href="http://www.gdal.org/">OGR vector library</a></li>
+<li><a href="http://www.gdal.org/ogr__api_8h.html">OGR vector library C API</a>
+  documentation</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.out.postgis.html">v.out.postgis</a>,
+<a href="db.out.ogr.html">db.out.ogr</a>,
+<a href="v.external.html">v.external</a>,
+<a href="v.external.out.html">v.external.out</a>,
+<a href="v.in.ogr.html">v.in.ogr</a>,
+<a href="v.pack.html">v.pack</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Some contributions: Markus Neteler<br>
+Multi-feature support by Martin Landa, Czech Technical University in Prague, 2013
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.out.ogr">v.out.ogr source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.out.ogr">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

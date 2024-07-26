@@ -1,0 +1,1767 @@
+.TH ps.map 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBps.map\fR\fR  \- Produces hardcopy PostScript map output.
+.SH KEYWORDS
+postscript, printing
+.SH SYNOPSIS
+\fBps.map\fR
+.br
+\fBps.map \-\-help\fR
+.br
+\fBps.map\fR [\-\fBrpeb\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBcopies\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Rotate plot 90 degrees
+.IP "\fB\-p\fR" 4m
+.br
+List paper formats (name width height left right top bottom(margin))
+.IP "\fB\-e\fR" 4m
+.br
+Create EPS (Encapsulated PostScript) instead of PostScript file
+.IP "\fB\-b\fR" 4m
+.br
+Describe map\-box\(cqs position on the page and exit (inches from top\-left of paper)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+File containing mapping instructions
+.br
+Use \(cq\-\(cq to enter instructions from keyboard)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for PostScript output file
+.IP "\fBcopies\fR=\fIinteger\fR" 4m
+.br
+Number of copies to print
+.br
+Options: \fI1\-20\fR
+.SH DESCRIPTION
+\fIps.map\fR is a cartographic mapping program for producing high quality
+hardcopy maps in PostScript format. Output can include a raster map, any
+number of vector overlays, text labels, decorations, and other spatial data.
+.PP
+A file of mapping instructions that describes the various spatial and textual
+information to be printed must be prepared prior to running \fIps.map\fR.
+.SH NOTES
+The order of commands is generally unimportant but may affect how some layers
+are drawn. For example to plot \fBvpoints\fR above \fBvareas\fR list the
+\fBvpoints\fR entry first. Raster maps are always drawn first, and only a
+single raster map (or 3 if part of a RGB group) may be used.
+.PP
+The hash character (\(cq#\(cq) may be used at the beginning of a line
+to indicate that the line is a comment. Blank lines will also be ignored.
+.PP
+Be aware that some mapping instructions require the \fIend\fR command
+and some do not. Any instruction that allows subcommands will require
+it, any instruction that does not allow subcommands will not.
+.PP
+The resolution and extent of raster maps plotted with \fIps.map\fR are
+controlled by the current region settings via the
+g.region module. The output filesize is largely
+a function of the region resolution, so special care should be taken
+if working with large raster datasets. For example if the desired output is
+US\-Letter sized paper at 600dpi, with 1\(dq margins and the raster filling the
+entire page, the usable area on the page will be 6.5\(dq x 9\(dq, which at 600
+dots/inch is equivalent to a region of 3900 columns x 5400 rows (see
+\(dqg.region \-p\(dq). Any higher resolution settings will make the
+output file larger, but with a consumer printer you probably won\(cqt be able
+to resolve any better detail in the hardcopy.
+.PP
+The user can specify negative or greater than 100 percentage values for
+positioning several map decorations and embedded EPS\-files, to move them
+outside the current map box region (for example to position a caption,
+barscale, or legend above or below the map box).
+.PP
+One point (\(dqpixel\(dq) is 1/72 of an inch.
+.PP
+For users wanting to use special characters (such as accented characters) it
+is important to note that \fIps.map\fR uses ISO\-8859\-1 encoding.
+This means that your instructions file will have to be encoded in this
+encoding. If you normally work in a different encoding environment (such as
+UTF\-8), you have to transform your file to the ISO\-8859\-1
+encoding, for example by using the iconv utility:
+.br
+.nf
+\fC
+iconv \-f UTF\-8 \-t ISO_8859\-1 utf_file > iso_file
+\fR
+.fi
+.PP
+.PP
+.SH MAPPING INSTRUCTIONS
+The mapping instructions allow the user to specify various spatial data
+to be plotted. These instructions are normally prepared in a regular
+text file using a system editor. Some instructions are single line
+instructions while others are multiple line. Multiple line instructions
+consist of the main instruction followed by a subsection of one or more
+additional instructions and are terminated with an \fIend\fR instruction.
+.PP
+.SS Instruction keywords:
+[
+border |
+colortable |
+comments |
+copies |
+eps |
+geogrid |
+greyrast |
+grid |
+group |
+header |
+labels |
+line |
+mapinfo |
+maploc |
+maskcolor |
+outline |
+paper |
+point |
+psfile |
+raster |
+read |
+rectangle |
+region |
+rgb |
+scale |
+scalebar |
+setcolor |
+text |
+vareas |
+vlines |
+vpoints |
+vlegend |
+end
+]
+.SS Common instructions
+Instructions that may be included in the subsection under several
+different main instructions are:
+.IP "\fBwhere\fR \fIx y\fR  " 4m
+.br
+The top left corner of the bounding box of the item to be plotted
+is located \fIx\fR inches from the left edge of the paper and
+\fIy\fR inches from the top edge of the paper. If \fIx\fR is less than
+or equal to zero, the default horizontal location is used.  If \fIy\fR
+is less than or equal to zero, the default vertical location is used.
+.IP "\fBfont\fR \fIfont name\fR   " 4m
+.br
+The name of the PostScript font.
+Fonts present in all PostScript implementations are:
+Times\-Roman,
+Times\-Italic,
+Times\-Bold,
+Times\-BoldItalic,
+Helvetica,
+Helvetica\-Oblique,
+Helvetica\-Bold,
+Helvetica\-BoldOblique,
+Courier,
+Courier\-Oblique,
+Courier\-Bold,
+and
+Courier\-BoldOblique.
+.br
+The default is Helvetica.
+.IP "\fBfontsize\fR \fIfont size\fR   " 4m
+.br
+The size of the PostScript font (in 1/72nds of an inch).
+The default is 10 point.
+.IP "\fBcolor\fR \fIname\fR  " 4m
+.br
+The following colors names are accepted by \fIps.map\fR:
+aqua,
+black,
+blue,
+brown,
+cyan,
+gray,
+grey,
+green,
+indigo,
+magenta,
+orange,
+purple,
+red,
+violet,
+white,
+yellow
+\&.
+.br
+.br
+For vectors and some plotting commands you can also specify
+\(cqnone\(cq or \(cqR:G:B\(cq (e.g \(cq255:0:0\(cq).
+.IP "\fByes|no\fR " 4m
+.br
+For options that take a yes or no answer, you can simply use the
+letters \(dqy\(dq or \(dqn\(dq, or type out the full words \(dqYes\(dq or \(dqNo\(dq if you
+prefer. It is not case\-sensitive. Typically the option with have a
+default answer and you only need to specify one if you wish to
+override it.
+.PP
+.br
+.SS Command usage
+.SH border
+Controls the border which is drawn around the map area.
+.br
+.nf
+\fC
+USAGE:  \fBborder\fR [y|n]
+	\fBcolor\fR color
+	\fBwidth\fR #
+	\fBend\fR
+\fR
+.fi
+The \fBcolor\fR may be either a standard GRASS color, a R:G:B triplet,
+or \(dqnone\(dq. The width is specified in points, unless followed by an \(dqi\(dq
+in which case it is measured in inches.
+The default is a black border box of width 1 point.
+.PP
+The border can be turned off completely with the
+\(dqborder n\(dq instruction. In this case
+the \fBend\fR command should not be given as the
+main command will be treated as a single line instruction.
+.PP
+This example would create a grey border 0.1\(dq wide.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBborder\fR
+	\fBcolor\fR grey
+	\fBwidth\fR 0.1i
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH colortable
+Prints the color table legend for the raster map layer anywhere on the page.
+.br
+.nf
+\fC
+USAGE:	\fBcolortable\fR [y|n]
+	\fBwhere\fR x y
+	\fBraster\fR raster map
+	\fBrange\fR minimum maximum
+	\fBwidth\fR table width
+	\fBheight\fR table height (FP legend only)
+	\fBcols\fR table columns
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBcolor\fR text color
+	\fBnodata\fR [Y|n]
+	\fBtickbar\fR [y|N]
+	\fBdiscrete\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+For a categorical (CELL) map the color table will create a legend displaying
+the colors for each of a raster map\(cqs category values along with its
+associated category label. For a floating point (FCELL or DCELL) map a
+continuous gradient legend will be created.
+.PP
+If \fBraster\fR is omitted, the colortable defaults to the previously
+registered raster layer.
+.PP
+The default location for the colortable is immediately below any other
+map legend information, starting at the left margin.
+The default text color is black.
+.PP
+Omitting the \fBcolortable\fR instruction would result in no color table.
+If the colortable is turned off with a \(dqcolortable N\(dq
+instruction the \fBend\fR command should not be given as the
+main command will be treated as a single line instruction.
+.PP
+See also the vlegend command for creating vector map
+legends.
+.SS Categorical (CELL) Maps
+Adding the \fBnodata N\fR instruction will prevent the \(dqno data\(dq box
+from being drawn (category based legends only). If you have manually
+added a \(dqno data\(dq label to the cats/ file it will be shown regardless.
+.PP
+\fBNote\fR:  Be careful about asking for color tables for integer
+raster map layers which have many categories, such as elevation.
+This could result in the printing of an extremely long color table!
+In this situation it is useful to use the \fBdiscrete N\fR instruction
+to force a continuous color gradient legend.
+.PP
+Be aware that the color table only includes categories which
+have a label. You can use the \fIr.category\fR module to add labels.
+.SS Floating point (FCELL and DCELL) Maps
+The legend\(cqs \fBrange\fR can be adjusted for floating point rasters, but if
+set beyond the extent of the map\(cqs range be sure that you have set up color
+rules with \fIr.colors\fR which cover this range.
+If the map has been given a data\-units label with \fIr.support\fR
+then this label will be displayed.
+For floating point legends \fBwidth\fR is width of color
+band only. \fBheight\fR is used only for floating point legend.
+A horizontal gradient legend can be achieved by setting the legend
+width greater than its height.
+Adding the \fBtickbar Y\fR instruction will change the tick mark style
+so that ticks are drawn across the color table instead of protruding out
+to the right (floating point legends only).
+Adding the \fBdiscrete Y\fR instruction will command the program to treat
+the map as a categorical map. In this way the legend can be created with
+discrete range bands instead of a continuous gradient. You must use the
+\fIr.category\fR or \fIr.support\fR module to set up the range labels
+first.
+.br
+.PP
+This example would print a color table immediately below any other map legend
+information, starting at the left margin, with 4 columns:
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBcolortable\fR y
+        \fBcols\fR 4
+        \fBwidth\fR 4
+        \fBend\fR
+\fR
+.fi
+.PP
+.SH comments
+Prints comments anywhere on the page.
+.br
+.nf
+\fC
+USAGE:	\fBcomments\fR commentfile
+	\fBwhere\fR x y
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBcolor\fR text color
+	\fBend\fR
+\fR
+.fi
+The default location is immediately below the last item item printed,
+starting at the left margin. The default text color is black.
+.PP
+If you wish to use parentheses spanning multiple lines you will need to
+quote them with a backslash to prevent the PostScript interpreter from
+getting confused. e.g. \(cq\fB\(rs(\fR\(cq and \(cq\fB\(rs)\fR\(cq
+.PP
+This example prints in blue
+whatever is in the file \fIveg.comments\fR starting at
+1.5 inches from the left edge of the page and 7.25 inches from the top of
+the page, using a 15/72 inch Helvetica Bold font.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBraster\fR vegetation
+	\fBcomments\fR veg.comments
+	\fBwhere\fR 1.5 7.25
+	\fBfont\fR Helvetica Bold
+	\fBfontsize\fR 15
+	\fBcolor\fR blue
+	\fBend\fR
+\fR
+.fi
+Presumably, the file
+\fIveg.comments\fR
+contain comments
+pertaining to the raster map layer \fIvegetation\fR,
+such as \(dqThis map was created by classifying a LANDSAT TM image\(dq.
+.PP
+.SH copies
+Specifies the number of copies to be printed.
+.br
+.nf
+\fC
+USAGE:	\fBcopies\fR n
+\fR
+.fi
+Each page will be printed n times.
+.PP
+This instruction is identical to the \fIcopies\fR command line parameter.
+.PP
+.SH eps
+Places EPS (Encapsulated PostScript) pictures on the output map.
+.br
+.nf
+\fC
+USAGE:	\fBeps\fR east north
+	\fBeps\fR x% y%
+	\fBepsfile\fR EPS file
+	\fBscale\fR #
+	\fBrotate\fR #
+	\fBmasked\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+The EPS picture location is entered in the main
+instruction line by giving either the map
+coordinates or by using percentages of the geographic region.
+The EPS picture will be \fIcentered\fR at the given position.
+The user must specify full EPS file path \fBepsfile\fR.
+The user may also specify the \fBscale\fR of the icon
+(default is 1.0), the \fBrotate\fR i.e. rotation in degrees
+(default is 0)
+and whether the point is to be \fBmasked\fR
+by the current mask.
+(See manual entry for \fIr.mask\fR
+for more information on the mask.)
+.PP
+This example would place a EPS file ./epsf/logo.eps
+at the point (E456000 N7890000).  This picture would be
+rotated 20 degrees clockwise, 3 times bigger than
+in original file and would not be masked by the current mask.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBeps\fR 456000 7890000
+	\fBepsfile\fR ./epsf/logo.eps
+	\fBscale\fR 3
+	\fBrotate\fR 20
+	\fBmasked\fR n
+	\fBend\fR
+\fR
+.fi
+Of course, multiple EPS pictures may be drawn with multiple
+\fIeps\fR
+instructions.
+.PP
+.SH geogrid
+Overlays a geographic grid onto the output map.
+.br
+.nf
+\fC
+USAGE:	\fBgeogrid\fR spacing unit
+	\fBcolor\fR color
+	\fBnumbers\fR # [color]
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBwidth\fR #
+	\fBend\fR
+\fR
+.fi
+The \fBspacing\fR and spacing unit of the geographic grid is given
+on the main instruction line.  The \fBspacing\fR unit is given as one of \fBd\fR for
+degrees, \fBm\fR for minutes, and \fBs\fR for seconds.
+The subsection instructions allow the user to specify
+the \fBcolor\fR of the geographic grid lines,
+whether coordinate \fBnumbers\fR should appear
+on the geographic grid lines, the \fBwidth\fR
+of the lines (accepts decimal points [floating points]
+as well as integers), and
+if they should appear every grid line (1), every other grid line
+(2), etc., and what color the numbers should be.  The defaults are
+black grid lines, unnumbered.
+.PP
+NOTE: The \fBgeogrid\fR draws grid numbers on the east and south borders of the map.
+.PP
+This example would overlay a blue geographic grid with a spacing of 30 minutes
+onto the output map.  Alternate grid
+lines would be numbered with yellow numbers.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBgeogrid\fR 30 m
+	\fBcolor\fR blue
+	\fBnumbers\fR 2 yellow
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH greyrast
+Selects a raster map layer for output in shades of grey.
+.br
+.nf
+\fC
+USAGE:	\fBgreyrast\fR mapname
+\fR
+.fi
+For each
+\fIps.map\fR
+run, only one raster map layer can be requested (using either the
+\fIgreyrast\fR or the \fIraster\fR instruction).
+.PP
+.SH grid
+Overlays a coordinate grid onto the output map.
+.br
+.nf
+\fC
+USAGE:	\fBgrid\fR spacing
+	\fBcolor\fR color
+	\fBnumbers\fR # [color]
+	\fBcross\fR cross size
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBwidth\fR #
+	\fBend\fR
+\fR
+.fi
+The \fBspacing\fR of the grid is given (in the geographic coordinate
+system units) on the main instruction line.  The subsection instructions
+allow the user to specify
+the \fBcolor\fR of the grid lines,
+whether coordinate \fBnumbers\fR should appear
+on the grid lines, and if they
+should appear every grid line (1), every other grid line
+(2), etc., and what color the numbers should be.
+The \fBcross\fR argument draws grid intersection crosses instead of grid lines,
+with cross size given in geographic coordinate system units.
+The defaults are black grid lines, unnumbered.
+.PP
+This example would overlay a green grid with a spacing of 10000 meters
+(for a metered database, like UTM) onto the output map.  Alternate grid
+lines would be numbered with red numbers.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBgrid\fR 10000
+	\fBcolor\fR green
+	\fBnumbers\fR 2 red
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH group
+Selects an RGB imagery group for output.
+.br
+.nf
+\fC
+USAGE:	\fBgroup\fR \fIgroupname\fR
+\fR
+.fi
+This is similar to \fIraster\fR, except that it uses an imagery group
+instead of a raster map layer. The group must contain three raster map
+layers, comprising the red, green and blue bands of the image.
+.PP
+.SH header
+Prints the map header above the map.
+.br
+.nf
+\fC
+USAGE:	\fBheader\fR
+	\fBfile\fR header file
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBcolor\fR text color
+	\fBend\fR
+\fR
+.fi
+If the \fIfile\fR sub\-instruction is absent the header will consist
+of the map\(cqs title
+and the location\(cqs description.
+The text will be centered on the page above the map.
+The default text color is black.
+.PP
+If the \fIfile\fR sub\-instruction is given the header will consist
+of the text in the text file specified, with some special formatting keys:
+.RS 4n
+.IP \(bu 4n
+%%  \- a literal %
+.IP \(bu 4n
+%n  \- ? newline ?
+.IP \(bu 4n
+%_  \- horizontal bar
+.IP \(bu 4n
+%c  \- \(dq<raster name> in mapset <mapset name>\(dq
+.IP \(bu 4n
+%d  \- today\(cqs date
+.IP \(bu 4n
+%l  \- location name
+.IP \(bu 4n
+%L  \- Location\(cqs text description
+.IP \(bu 4n
+%m  \- mapset name
+.IP \(bu 4n
+%u  \- user name
+.IP \(bu 4n
+%x  \- mask info
+.IP \(bu 4n
+%\-  \- advance to this character column number (see example below)
+.RE
+Example header file:
+.br
+.nf
+\fC
+%_
+LOCATION: %\-27l  DATE: %d
+MAPSET:   %\-27m  USER: %u
+RASTER MAP: %c
+MASK:     %x
+%_
+Produced by: US Army CERL, Champaign Illinois
+Software:    GRASS
+%_
+\fR
+.fi
+.PP
+This example prints (in red) whatever is in the file \fIsoils.hdr\fR above
+the map, using a 20/72 inch Courier font.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBheader\fR
+	\fBfile\fR soils.hdr
+	\fBfont\fR Courier
+	\fBfontsize\fR 20
+	\fBcolor\fR red
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH labels
+Selects a labels file for output (see manual entry for
+\fI
+v.label
+).\fR
+.br
+.nf
+\fC
+USAGE:	\fBlabels\fR  labelfile
+	\fBfont\fR font name
+	\fBend\fR
+\fR
+.fi
+.PP
+NOTE: ps.map can read new option \(cqROTATE:\(cq from labels file, which
+specifies counter clockwise rotation in degrees.
+.PP
+This example would paint labels from the labels file called
+\fItown.names\fR.  Presumably, these labels would indicate the names of
+towns on the map.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBlabels\fR town.names
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH line
+Draws lines on the output map.
+.br
+.nf
+\fC
+USAGE:	\fBline\fR east north east north
+	\fBline\fR x% y% x% y%
+	\fBcolor\fR color
+	\fBwidth\fR #
+	\fBmasked\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+The beginning and ending points of the line are entered on the main
+instruction.  These points can be defined either by map coordinates or
+by using percentages of the geographic region.
+The user may also specify line \fBcolor\fR, \fBwidth\fR
+in points (1/72\(dq; accepts decimal values as well as integers),
+and if the line is to be \fBmasked\fR by the current mask.
+(See manual entry for \fIr.mask
+\fR for more information on the mask.)
+The line \fBwidth\fR (if given) is measured in points; an \fIi\fR
+directly following the number indicates that the width is given in
+inches instead.
+.PP
+This example would draw a yellow line from the point x=10% y=80%
+to the point x=30% y=70%.
+This line would be 2 points wide (2/72\(dq) and would appear even if
+there is a mask.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBline\fR 10% 80% 30% 70%
+	\fBcolor\fR yellow
+	\fBwidth\fR 2
+	\fBmasked\fR n
+	\fBend\fR
+\fR
+.fi
+Of course, multiple lines may be drawn with multiple
+\fIline\fR
+instructions.
+.PP
+.SH mapinfo
+Prints the portion of the map legend containing the scale, grid and
+region information, on or below the map.
+.br
+.nf
+\fC
+USAGE:	\fBmapinfo\fR
+	\fBwhere\fR x y
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBcolor\fR text color
+	\fBbackground\fR box color|none
+	\fBborder\fR color|none
+	\fBend\fR
+\fR
+.fi
+The default location is immediately below the map,
+starting at the left edge of the map.
+The default text color is black.
+The default background box color is white.
+.PP
+\fIborder\fR will draw a border around the legend using the specified color.
+(see NAMED COLORS)
+.PP
+This example prints (in brown) the scale, grid and region information
+immediately below the map and starting 1.5 inches from the left edge
+of the page, using a 12/72 inch Courier font.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBmapinfo\fR
+	\fBwhere\fR 1.5 0
+	\fBfont\fR Courier
+	\fBfontsize\fR 12
+	\fBcolor\fR brown
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH maploc
+Positions the map on the page.
+.br
+.nf
+\fC
+USAGE:	\fBmaploc\fR  x y [width height]
+\fR
+.fi
+The upper left corner of the map will be positioned \fIx\fR inches from
+the left edge of the page and \fIy\fR inches from the top of the page.
+If \fIwidth\fR and \fIheight\fR (in inches) are present, the map will be
+rescaled, if necessary, to fit.
+.PP
+This example positions the upper left corner of the map 2.0 inches from
+the left edge and 3.5 inches from the top edge of the map.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBmaploc\fR 2.0 3.5
+\fR
+.fi
+.PP
+.SH maskcolor
+Color to be used for mask.
+.br
+.nf
+\fC
+USAGE:	\fBmaskcolor\fR  color
+\fR
+.fi
+.SH outline
+Outlines the areas of a raster map layer with a specified color.
+.br
+.nf
+\fC
+USAGE:	\fBoutline\fR
+	\fBcolor\fR  color
+	\fBwidth\fR  width of line in points
+	\fBend\fR
+\fR
+.fi
+Distinct areas of the raster map will be separated from each other visually
+by drawing a border (or outline) in the specified
+\fBcolor\fR
+(default: black). For
+\fBwidth\fR
+the program accepts decimal points [floating points] as well as integers.
+Note: it is
+important the user enter the instruction \fBend\fR even if a color is not
+chosen.
+(It is hoped that in the future the outline of a different raster map
+layer other than the one currently being painted may be placed on the map.)
+.PP
+This example would outline the category areas of the
+\fIsoils\fR
+raster map layer
+in grey.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBraster\fR soils
+	\fBoutline\fR
+	\fBcolor\fR grey
+	\fBwidth\fR 2
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH paper
+Specifies paper size and margins.
+.br
+.nf
+\fC
+USAGE:	\fBpaper\fR paper name
+	\fBheight\fR #
+	\fBwidth\fR #
+	\fBleft\fR #
+	\fBright\fR #
+	\fBbottom\fR #
+	\fBtop\fR #
+	\fBend\fR
+\fR
+.fi
+\fBpaper\fR may select predefined paper name
+(a4,a3,a2,a1,a0,us\-legal,us\-letter,us\-tabloid).
+Default paper size is a4. The measures are defined in \fIinches\fR.
+\fBleft\fR, \fBright\fR, \fBbottom\fR and \fBtop\fR are paper margins.
+If the plot is rotated with the \fB\-r\fR command line flag, measures
+are applied to the \fIrotated\fR page.
+.PP
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBpaper\fR a3
+	\fBend\fR
+\fR
+.fi
+.PP
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBpaper\fR
+	\fBwidth\fR 10
+	\fBheight\fR 10
+	\fBleft\fR 2
+	\fBright\fR 2
+	\fBbottom\fR 2
+	\fBtop\fR 2
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH point
+Places additional points or icons on the output map.
+.br
+.nf
+\fC
+USAGE:	\fBpoint\fR east north
+	\fBpoint\fR x% y%
+	\fBcolor\fR color
+	\fBfcolor\fR color
+	\fBsymbol\fR symbol group/name
+	\fBsize\fR #
+	\fBwidth\fR #
+	\fBrotate\fR #
+	\fBmasked\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+The point location is entered in the main instruction line by giving either
+the map coordinates or by using percentages of the geographic region.
+The user may also specify the point \fBcolor\fR,
+the \fBsize\fR of symbol in points,
+the rotation angle (in degrees CCW),
+and whether the point is to be \fBmasked\fR by the current mask.
+(See manual entry for \fI r.mask
+\fR for more information on the mask.)
+The symbol line \fBwidth\fR (if given) is measured in points; an \fIi\fR
+directly following the number indicates that the width is given in inches
+instead. If a \fBwidth\fR is not given it will be set proportional to the
+symbol size.
+.PP
+This example would place a purple diamond (from icon file
+\fIdiamond\fR) at the point (E456000 N7890000).  This diamond would be the
+the size of a 15 points and would not be masked by the current mask.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBpoint\fR 456000 7890000
+	\fBfcolor\fR purple
+	\fBcolor\fR black
+	\fBsymbol\fR basic/diamond
+	\fBsize\fR 15
+	\fBmasked\fR n
+	\fBend\fR
+\fR
+.fi
+Of course, multiple points may be drawn with multiple
+\fIpoint\fR
+instructions.
+.PP
+.SH psfile
+Copies a file containing PostScript commands into the output file.
+.PP
+\fBNote:\fR
+\fIps.map\fR
+will not search for this file.  The user must be in the
+correct directory or specify the full path on the \fBpsfile\fR instruction.
+(Note to /bin/csh users: ~ won\(cqt work with this instruction).
+.br
+.nf
+\fC
+USAGE:	\fBpsfile\fR filename
+\fR
+.fi
+This example copies the file \(dqlogo.ps\(dq into the output file.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBpsfile\fR logo.ps
+\fR
+.fi
+.PP
+.SH raster
+Selects a raster map layer for output.
+.br
+.nf
+\fC
+USAGE:	\fBraster\fR mapname
+\fR
+.fi
+For each \fIps.map\fR run, only one raster map layer (or set
+of layers or imagery group; see below) can be requested. If no
+raster map layer is requested, a completely white map will be
+produced. It can be useful to select no raster map layer in
+order to provide a white background for vector maps.
+.PP
+Note that an imagery group selected with the \fIgroup\fR
+option, or a set of three raster layers selected with the
+\fIrgb\fR option, count as a raster map layer for the
+purposes of the preceding paragraph.
+.PP
+The PostScript file\(cqs internal title will be set to the raster map\(cqs
+title, which in turn may be set with the \fIr.support\fR module.
+.PP
+This example would paint a map of the raster map layer \fIsoils\fR.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBraster\fR soils
+\fR
+.fi
+.PP
+.SH read
+Provides \fIps.map\fR with a previously prepared input stream.
+.br
+.nf
+\fC
+USAGE:	\fBread\fR previously prepared UNIX file
+\fR
+.fi
+Mapping instructions can be placed into a file and read into
+\fIps.map.\fR
+.PP
+\fBNote:\fR
+\fIps.map\fR
+will not search for this file.  The user must be in the
+correct directory or specify the full path on the \fBread\fR instruction.
+(Note to /bin/csh users: ~ won\(cqt work with this instruction).
+.PP
+This example reads the UNIX file \fIpmap.roads\fR into \fIps.map\fR.
+This file may contain all the \fIps.map\fR instructions for placing
+the vector map layer \fIroads\fR onto the output map.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBread\fR pmap.roads
+\fR
+.fi
+The user may have created this file because this vector map layer
+is particularly useful for many \fIps.map\fR
+outputs.  By using the \fBread\fR option, the user need not enter all the input
+for the \fBvector\fR instruction, but simply \fBread\fR the previously prepared
+file with the correct instructions.
+.PP
+.SH rectangle
+Draws rectangle on the output map.
+.br
+.nf
+\fC
+USAGE:	\fBrectangle\fR east north east north
+	\fBrectangle\fR x% y% x% y%
+	\fBcolor\fR color
+	\fBfcolor\fR fill color
+	\fBwidth\fR #
+	\fBmasked\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+The two corners of the rectangle are entered on the main
+instruction.  These points can be defined either by map coordinates or
+by using percentages of the geographic region.
+The user may also specify line
+\fBcolor\fR, fill color \fBfcolor\fR, \fBwidth\fR
+in points (accepts decimal points [floating points] as well as integers),
+and if the rectangle is to be \fBmasked\fR by the current mask.
+(See manual entry for \fIr.mask\fR
+for more information on the mask.)
+The border line \fBwidth\fR (if given) is measured in points; an \fIi\fR
+directly following the number indicates that the width is given in inches
+instead.
+.br
+Multiple rectangles may be drawn by using multiple \fIrectangle\fR instructions.
+.PP
+This example would draw a yellow rectangle filled by green from the point x=10% y=80%
+to the point x=30% y=70%.
+The border line would be 1/16\(dq wide and would appear even if there is a mask.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBrectangle\fR 10% 80% 30% 70%
+	\fBcolor\fR yellow
+	\fBfcolor\fR green
+	\fBwidth\fR 0.0625i
+	\fBmasked\fR n
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH region
+Places the outline of a smaller geographic region
+on the output.
+.br
+.nf
+\fC
+USAGE:	\fBregion\fR regionfile
+	\fBcolor\fR color
+	\fBwidth\fR #
+	\fBend\fR
+\fR
+.fi
+Geographic region settings are created and saved using \fI the
+g.region\fR module.
+The \fIps.map\fR \fIregion\fR option can be used to show an outline of
+a smaller region which was printed on a separate run of \fIps.map\fR
+on other user\-created maps.
+.PP
+The user can specify the \fBcolor\fR
+and the \fBwidth\fR in point units (accepts decimal points
+[floating points] as well as integers) of the outline.
+The default is a black border of one point width (1/72\(dq).
+.PP
+This example would place a white outline, 2 points wide, of the
+geographic region called \fIfire.zones\fR onto the output map.
+This geographic region would have been created and saved using
+\fIg.region\fR.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBregion\fR fire.zones
+	\fBcolor\fR white
+	\fBwidth\fR 2
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH rgb
+Selects three raster map layers for output as an RGB color image.
+.br
+.nf
+\fC
+USAGE:	\fBrgb\fR \fIred\fR \fIgreen\fR \fIblue\fR
+\fR
+.fi
+This is similar to \fIraster\fR, except that it uses three
+raster map layers instead of a single layer. The three layers
+are composed to form a color image, similar to \fId.rgb\fR.
+.PP
+For each layer, only one of the components of the layer\(cqs color
+table is used: the red component for the red layer, and so on.
+This will give the desired result if all of the layers have a
+grey\-scale color table, or if each layer\(cqs color table uses the
+hue appropriate to the layer.
+.PP
+.SH scale
+Selects a scale for the output map.
+.br
+.nf
+\fC
+USAGE:	\fBscale\fR \fIscale\fR
+\fR
+.fi
+The scale can be selected either as:
+.IP "  " 4m
+.br
+a relative ratio, e.g. 1:25000;
+.IP "  " 4m
+.br
+an absolute width of the printed map, e.g. 10 inches;
+.IP "  " 4m
+.br
+the number of printed paper panels, e.g. 3 panels
+\fI.I\fR
+(at the present time, only 1 panel is supported);
+.IP "  " 4m
+.br
+the number of miles per inch, e.g. 1 inch equals 4 miles.
+.PP
+This example would set the scale of the map to 1 unit = 25000
+units.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBscale\fR 1:25000
+\fR
+.fi
+.PP
+.SH scalebar
+Draws a scalebar on the map.
+.br
+.nf
+\fC
+USAGE:	\fBscalebar\fR [f|s]
+	\fBwhere\fR x y
+	\fBlength\fR overall distance in map units
+	\fBunits\fR [auto|meters|kilometers|feet|miles|nautmiles]
+	\fBheight\fR scale height in inches
+	\fBsegment\fR number of segments
+	\fBnumbers\fR #
+	\fBfontsize\fR font size
+	\fBbackground\fR [Y|n]
+	\fBend\fR
+\fR
+.fi
+Draw one of two types of scale bar.
+Fancy (f) draws alternating black and white scale boxes.
+Simple (s) draws a plain line scale. The default type is fancy.
+The subsection instructions allow the user to set \fBwhere\fR the scalebar
+is placed, the \fBlength\fR of the scalebar (in geographic coordinate
+system units, or those given by \fBunits\fR),
+the \fBheight\fR of the scalebar in inches, and the number of
+\fBsegments\fR (or tics for simple). The \fBnumber\fR of annotations
+numbers every n\-th segment.
+The \fBbackground\fR command can turn off the background box for the text.
+.PP
+The scalebar \fBlength\fR is the only required argument. The defaults are a
+fancy scalebar with 4 segments, each segment labeled, and a height of 0.1
+inches. The default location is 2 inches from the top of the page and
+halfway across.
+.PP
+NOTE: The scalebar is centered on the location given.
+.PP
+This example draws a simple scalebar 1000 meters (for a metered database,
+like UTM) long, with tics every 200 meters, labeled every second tic.
+The scalebar is drawn 5 inches from the top and 4 inches from the left
+and is 0.25 inches high.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBscalebar\fR s
+	\fBwhere\fR 4 5
+	\fBlength\fR 1000
+	\fBheight\fR 0.25
+	\fBsegment\fR 5
+	\fBnumbers\fR 2
+	\fBend\fR
+\fR
+.fi
+.SH setcolor
+Overrides the color assigned to one or more categories
+of the raster map layer.
+.br
+.nf
+\fC
+USAGE:	\fBsetcolor\fR cat(s) color
+\fR
+.fi
+This example would set the color for categories 2,5 and 8 of the raster
+map layer \fIwatersheds\fR to white and category 10 to green.
+(\fBNOTE\fR: no spaces are inserted between the category values.)
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBraster\fR watersheds
+	\fBsetcolor\fR 2,5,8 white
+	\fBsetcolor\fR 10 green
+\fR
+.fi
+Of course, \fIsetcolor\fR
+can be requested more than once to override the default color for additional
+categories.  More than one category can be changed for each request by listing
+all the category values separated by commas (but with no spaces). Also ranges
+can be included, for example \(dq1,2,6\-10,12\(dq. Colors for \(dqnull\(dq and the
+\(dqdefault\(dq (i.e. out\-of\-range) color may also be reassigned.
+.PP
+.SH text
+Places text on the map.
+.br
+.nf
+\fC
+USAGE:	\fBtext\fR  east north text
+	\fBtext\fR  x% y% text
+	\fBfont\fR fontname
+	\fBcolor\fR color|none
+	\fBwidth\fR #
+	\fBhcolor\fR color|none
+	\fBhwidth\fR #
+	\fBbackground\fR color|none
+	\fBborder\fR color|none
+	\fBfontsize\fR font size
+	\fBsize\fR #
+	\fBref\fR reference point
+	\fBrotate\fR degrees CCW
+	\fBxoffset\fR #
+	\fByoffset\fR #
+	\fBopaque\fR [y|n]
+	\fBend\fR
+\fR
+.fi
+The user specifies where the text will be placed by
+providing map coordinates or percentages of the geographic region.
+The text follows these coordinates on the same instruction line.
+More than one line of text can be specified by notating the end of a line with
+\fB\(rsn\fR
+(e.g. USA\fB\(rsn\fRCERL).
+.PP
+The user can then specify various text features:
+.PP
+\fBfont:\fR
+the PostScript font. Common possibilities are listed at the start of this
+help page. The default is Helvetica.
+.PP
+\fBcolor\fR
+(see NAMED COLORS);
+.PP
+\fBwidth\fR
+of the lines used to draw the text to make thicker letters
+(accepts decimal points [floating points] as well as integers);
+.PP
+\fBsize\fR and \fBfontsize.\fR 
+\fBsize\fR gives the vertical height of the letters in meters on the
+ground (text size will grow or shrink depending on the scale at which
+the map is painted). Alternatively \fBfontsize\fR can set the font
+size directly. If neither \fBsize\fR or \fBfontsize\fR is given, a
+default font size of 10 will be used;
+.PP
+the highlight color (\fBhcolor\fR) and
+the width of the highlight color (\fBhwidth\fR);
+.PP
+the text\-enclosing\-box \fBbackground\fR color;
+the text box \fBborder\fR color;
+.PP
+\fBref.\fR
+This reference point specifies the text handle \- what
+part of the text should be placed on the location specified by the map
+coordinates.  Reference points can refer to:
+[lower|upper|center] [left|right|center] of the text to be printed;
+The default is center center, i.e. the text is centered on the reference point.
+.PP
+\fBrotate\fR
+sets the text rotation angle, measured in degrees counter\-clockwise.
+.PP
+\fByoffset\fR,
+which provides finer placement of text by shifting the
+text a vertical distance in points (1/72\(dq) from the specified north.
+The vertical offset will shift the location to the south if positive,
+north if negative;
+.PP
+\fBxoffset\fR,
+which shifts the text a horizontal distance in points from
+the specified east The horizontal offset will shift the location east if
+positive, west if negative;
+.PP
+\fBopaque\fR,
+whether or not the text should be \fBopaque\fR to vectors.  Entering \fBno\fR
+to the opaque option will allow the user to see any vectors which go
+through the text\(cqs background box.  Otherwise, they will end at the box\(cqs edge.
+.PP
+.br
+The following example would place the text \fISPEARFISH LAND COVER\fR
+at the coordinates E650000 N7365000. The text would be a total of
+3 points wide (2 pixels of red text and 1 pixel black highlight), have a white
+background enclosed in a red box, and be 500 meters in size.  The lower right
+corner of the text would be centered over the coordinates provided.  All
+vectors on the map would stop at the border of this text.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBtext\fR 650000 7365000 SPEARFISH LAND COVER
+	\fBfont\fR romand
+	\fBcolor\fR red
+	\fBwidth\fR 2
+	\fBhcolor\fR black
+	\fBhwidth\fR 1
+	\fBbackground\fR white
+	\fBborder\fR red
+	\fBsize\fR 500
+	\fBref\fR lower left
+	\fBopaque\fR y
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH vareas
+Selects a vector map layer for output and plots areas.
+.br
+.nf
+\fC
+USAGE:	\fBvareas\fR vectormap
+	\fBlayer\fR # (layer number used with cats/where option)
+	\fBcats\fR list of categories (e.g. 1,3,5\-7)
+	\fBwhere\fR SQL where statement
+	\fBmasked\fR [y|n]
+	\fBcolor\fR color
+	\fBfcolor\fR color
+	\fBrgbcolumn\fR column
+	\fBwidth\fR #
+	\fBlabel\fR label to use in legend
+	\fBlpos\fR position in legend
+	\fBpat\fR pattern file
+	\fBpwidth\fR #
+	\fBscale\fR #
+	\fBend\fR
+\fR
+.fi
+The user can specify:
+.PP
+\fBcolor\fR \- color of the vector lines or area boundaries;
+.PP
+\fBfcolor\fR \- the area fill color;
+.PP
+\fBrgbcolumn\fR \- name of color definition column used for the area fill color;
+.PP
+\fBwidth\fR \- width of the vectors lines or area boundaries in points
+(accepts decimal points [floating points] as well as integers);
+.PP
+\fBmasked\fR \- whether or not the raster map layer is to be masked
+by the current mask;
+(see manual entry \fIr.mask\fR
+for more information on the mask)
+.PP
+\fBcats\fR \- which categories should be plotted (default is all);
+.PP
+\fBwhere\fR \- select features using a SQL where statement.
+For example: vlastnik = \(cqCimrman\(cq;
+.PP
+\fBlabel\fR \- for description in vlegend.
+Default is: map(mapset);
+.PP
+\fBlpos\fR \- position vector is plotted in legend. If lpos is
+0 then this vector is omitted in legend. If more vectors used the
+same lpos then their symbols in legend are merged and label for
+first vector is used.
+.PP
+\fBpat\fR \- full path to pattern file. The pattern file contains header and
+simple PostScript commands. It is similar to EPS but more limited, meaning that
+while each pattern file is a true EPS file, most EPS files are not useful as pattern
+files because they contain restricted commands. Color  of patterns
+are set by \fBfcolor\fR (red, green, ..., none, R:G:B). Color of the boundaries remain set
+by the \fBcolor\fR instruction.
+Pattern may be scaled with the \fBscale\fR command. Several standard hatching
+patterns are provided in $GISBASE/etc/paint/patterns/.
+Demonstrative images can be found on the
+GRASS Wiki site.
+You can also create your own custom pattern files in a text editor.
+Example of pattern file:
+.br
+.nf
+\fC
+%!PS\-Adobe\-2.0 EPSF\-1.2
+%%BoundingBox: 0 0 10 10
+newpath
+5 0 moveto
+5 10 lineto
+stroke
+\fR
+.fi
+.PP
+\fBscale\fR \- pattern scale
+.PP
+\fBpwidth\fR \- pattern line width, width is used by pattern until the width is overwritten
+in pattern file.
+.PP
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBvareas\fR forest
+	\fBcolor\fR blue
+	\fBwidth\fR 1
+	\fBmasked\fR y
+	\fBcats\fR 2,5\-7
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH vlines
+Selects a vector map layer for output and plots lines.
+.br
+.nf
+\fC
+USAGE:	\fBvlines\fR vectormap
+	\fBtype\fR line and/or boundary
+	\fBlayer\fR # (layer number used with cats/where option)
+	\fBcats\fR list of categories (e.g. 1,3,5\-7)
+	\fBwhere\fR SQL where statement like: vlastnik = \(cqCimrman\(cq
+	\fBmasked\fR [y|n]
+	\fBcolor\fR color
+	\fBrgbcolumn\fR column
+	\fBwidth\fR #
+	\fBcwidth\fR #
+	\fBhcolor\fR color
+	\fBhwidth\fR #
+	\fBoffset\fR #
+	\fBcoffset\fR #
+	\fBref\fR left|right
+	\fBstyle\fR 00001111
+	\fBlinecap\fR style
+	\fBlabel\fR label
+	\fBlpos\fR #
+	\fBend\fR
+\fR
+.fi
+The user can specify:
+.PP
+\fBtype\fR \- the default is lines only;
+.PP
+\fBcolor\fR \- color of the vector lines or area boundaries;
+.PP
+\fBrgbcolumn\fR \- name of color definition column used for the vector lines
+or area boundaries;
+.PP
+\fBwidth\fR \- width of the vectors lines or area boundaries in points
+(accepts decimal points [floating points] as well as integers);
+.PP
+\fBcwidth\fR \- width of the vectors lines. If cwidth is used then
+width of line is equal to cwidth * category value and width is
+used in legend;
+.PP
+\fBhcolor\fR \- the highlight color for the vector lines;
+.PP
+\fBhwidth\fR \- the width of the highlight color in points;
+.PP
+\fBoffset\fR (experimental) \- offset for the vectors lines in points (1/72\(dq)
+for plotting parallel lines in distance equal to offset (accepts positive or
+negative decimal points). Useful to print streets with several parallel lanes;
+.PP
+\fBcoffset\fR (experimental) \- offset for the vectors lines. If coffset
+is used then  offset of line is equal to coffset * category value and offset
+is used in legend;
+.PP
+\fBref\fR (experimental) \- line justification.
+.PP
+\fBmasked\fR \- whether or not the raster map layer is to be masked
+by the current mask;
+(see manual entry \fIr.mask\fR
+for more information on the mask);
+.PP
+\fBstyle\fR \- the line style allows the vectors to be dashed in different
+patterns.  This is done by either typing \(dqsolid\(dq, \(dqdashed\(dq, \(dqdotted\(dq, or
+\(dqdashdotted\(dq, or as a series of 0\(cqs and 1\(cqs in a desired sequence or pattern.
+The first block of repeated zeros or ones represents \(dqdraw\(dq, the second
+block represents \(dqblank\(dq.
+An even number of blocks will repeat the pattern, an odd number of blocks
+will alternate the pattern.
+The default is \(dqsolid\(dq;
+.PP
+\fBlinecap\fR \- the linecap specifies the look of the ends of the line,
+or the end of the dashes in a dashed line. The parameters are:
+\(cqbutt\(cq for butt caps (default), \(cqround\(cq for round caps and \(cqextended_butt\(cq
+for extended butt caps. The shape of the round and the extended butt caps
+is related to the line thickness: for round butts the radius is half the
+linewidth, while for extended butt the line will extend for half the linewidth.
+.PP
+\fBcats\fR \- which categories should be plotted (default is all);
+.PP
+\fBlabel\fR \- for description in vlegend.
+Default is: map(mapset);
+.PP
+\fBlpos\fR \- position vector is plotted in legend. If lpos is
+0 then this vector is omitted in legend. If more vectors used the
+same lpos then their symbols in legend are merged and label for
+first vector is used.
+.PP
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBvlines\fR streams
+	\fBcolor\fR blue
+	\fBwidth\fR 2
+	\fBhcolor\fR white
+	\fBhwidth\fR 1
+	\fBmasked\fR y
+	\fBcats\fR 2
+	\fBlabel\fR Streams \- category 2
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH vpoints
+Selects vector point data to be placed on the output map
+.br
+.nf
+\fC
+USAGE:	\fBvpoints\fR vectormap
+	\fBtype\fR point and/or centroid
+	\fBlayer\fR # (layer number used with cats/where/sizecol options)
+	\fBcats\fR list of categories (e.g. 1,3,5\-7)
+	\fBwhere\fR SQL where statement like: vlastnik = \(cqCimrman\(cq
+	\fBmasked\fR [y|n]
+	\fBcolor\fR color
+	\fBfcolor\fR color
+	\fBrgbcolumn\fR column
+	\fBwidth\fR #
+	\fBeps\fR epsfile
+	\fBsymbol\fR symbol group/name
+	\fBsize\fR #
+	\fBsizecolumn\fR attribute column used for symbol sizing
+	\fBscale\fR scaling factor for sizecolumn values
+	\fBrotate\fR #
+	\fBrotatecolumn\fR column
+	\fBlabel\fR legend label
+	\fBlpos\fR position in legend
+	\fBend\fR
+\fR
+.fi
+The user may specify the
+the \fBcolor\fR of the sites (see section on NAMED COLORS);
+either the GRASS \fBsymbol\fR or
+the \fBeps\fR Encapsulated Postscript file to be used to represent the presence of a site
+(if \(cq\fB$\fR\(cq is used in the EPS file path it will be replaced by category number);
+and \fBrotate\fR (in degrees) for counter\-clockwise rotation.
+.br
+The size of the icon (number of times larger than the size it is in
+the icon file) is typically given by the \fBsize\fR option. Alternatively
+the size of the symbol or EPS graphic can be taken from an attribute column
+by using the \fBsizecolumn\fR command. The value given by \fBsizecolumn\fR may be
+scaled by using the \fBscale\fR factor setting (default scaling is 1.0).
+In a similar manner symbol color can be read from \fBrgbcolumn\fR
+and the rotation angle read from \fBrotatecolumn\fR.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBvpoints\fR windmills
+	\fBcolor\fR blue
+	\fBsymbol\fR mills/windmill
+	\fBsize\fR 10
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH vlegend
+Prints the portion of the map legend containing the
+vector information, on or below the map.
+.br
+.nf
+\fC
+USAGE:	\fBvlegend\fR
+	\fBwhere\fR x y
+	\fBfont\fR font name
+	\fBfontsize\fR font size
+	\fBwidth\fR width of color symbol
+	\fBcols\fR number of columns to print
+	\fBspan\fR column separation
+	\fBborder\fR color|none
+	\fBend\fR
+\fR
+.fi
+The default location is immediately below the legend containing the
+scale, grid and region information, starting at the left edge of the map.
+If the \fIwhere\fR instruction is present and \fIy\fR is less than or
+equal to zero, the vector legend will be positioned immediately below
+the map, starting \fIx\fR inches from the left edge of the page.
+.PP
+\fIwidth\fR is the width in inches of the color symbol (for lines)
+in front of the legend text. The default is 1/24 * fontsize inches.
+.PP
+\fIcols\fR is the number of columns to split the legend into. The
+default is one column. The maximum number of columns is 10, or equal
+to the number of legend entries if there are less than 10 entries.
+.PP
+\fIspan\fR is the column separation distance between the left edges of
+two columns in a multicolumn legend. It is given in inches.
+The default is automatic scaling based on the left margin and the right
+hand side of the map box.
+.PP
+\fIborder\fR will draw a border around the legend using the specified color.
+(see NAMED COLORS)
+.PP
+Alternatively, the user can create a custom legend by using the
+rectangle, point, and
+text instructions.
+.PP
+See also the colortable command for creating
+raster map legends.
+.PP
+This example prints the vector legend
+immediately below the map and starting 4.5 inches from the left edge
+of the page, using a 12/72 inch Helvetica font.
+.br
+.nf
+\fC
+EXAMPLE:
+	\fBvlegend\fR
+	\fBwhere\fR 4.5 0
+	\fBfont\fR Courier
+	\fBfontsize\fR 12
+	\fBend\fR
+\fR
+.fi
+.PP
+.SH end
+Terminates input and begin painting the map.
+.br
+.nf
+\fC
+USAGE:	\fBend\fR
+\fR
+.fi
+.br
+.PP
+.SH EXAMPLES
+The following are examples of \fIps.map\fR script files.
+.SS Simple example
+The file has been named \fIsimple_map.txt\fR:
+.br
+.nf
+\fC
+\fI# this ps.map example draws a map of Wake county, NC\fR
+\fBraster\fR elevation
+\fBvlines\fR roadsmajor
+  \fBcolor\fR 30:144:255
+  \fBwidth\fR 2
+  \fBend\fR
+\fBtext\fR 50% 105% Wake County Terrain and Roads
+   \fBsize\fR 550
+   \fBend\fR
+\fBend\fR
+\fR
+.fi
+Generate map as Postsript file:
+.br
+.nf
+\fC
+ps.map input=simple_map.txt output=simple_map.ps
+\fR
+.fi
+.PP
+\fIFigure: Result of for the a simple Wake county terrain and roads example\fR
+.SS More complicated example
+The following is content of a file named \fIelevation_map.txt\fR:
+.br
+.nf
+\fC
+\fI# this ps.map example draws a map of Wake county, NC\fR
+\fBraster\fR elevation
+\fBcolortable\fR y
+  \fBwhere\fR 1 6.0
+  \fBcols\fR 4
+  \fBwidth\fR 4
+  \fBfont\fR Helvetica
+  \fBend\fR
+\fBsetcolor\fR 6,8,9 white
+\fBsetcolor\fR 10 green
+\fBvlines\fR streams
+  \fBwidth\fR 0.1
+  \fBcolor\fR blue
+  \fBmasked\fR n
+  \fBlabel\fR streams
+  \fBend\fR
+\fBvlines\fR roadsmajor
+  \fBwidth\fR 1.5
+  \fBstyle\fR 1111
+  \fBcolor\fR grey
+  \fBmasked\fR n
+  \fBlabel\fR major roads
+  \fBend\fR
+\fBvlegend\fR
+  \fBwhere\fR 4.5 0
+  \fBfont\fR Courier
+  \fBfontsize\fR 8
+  \fBend\fR
+\fBtext\fR 30% 100% Wake County Terrain
+  \fBcolor\fR black
+  \fBwidth\fR 1
+  \fBbackground\fR white
+  \fBsize\fR 550
+  \fBref\fR lower left
+  \fBend\fR
+\fBtext\fR 92% \-25% meters
+  \fBcolor\fR black
+  \fBwidth\fR 1
+  \fBbackground\fR white
+  \fBsize\fR 550
+  \fBref\fR lower left
+  \fBend\fR
+\fBscale\fR 1:125000
+\fBscalebar\fR f
+  \fBwhere\fR 1.5 5.5
+  \fBlength\fR 5000
+  \fBheight\fR 0.05
+  \fBsegment\fR 5
+  \fBnumbers\fR 5
+  \fBend\fR
+\fBgeogrid\fR 60 s
+  \fBcolor\fR gray
+  \fBnumbers\fR 2 black
+  \fBend\fR
+\fBpaper\fR a4
+   \fBend\fR
+\fBend\fR
+\fR
+.fi
+This script file can be entered at the command line:
+.br
+.nf
+\fC
+# First set the region
+g.region raster=elevation
+# Generate map as Postsript file
+ps.map input=elevation_map.txt output=elevation.ps
+\fR
+.fi
+.PP
+\fIFigure: Result of for the more complicated Wake county, NC example\fR
+.PP
+More examples can be found on the
+GRASS Wiki
+help site.
+.PP
+.SH SEE ALSO
+\fI
+g.gui.psmap,
+g.region,
+v.label,
+wxGUI,
+\fR
+.SH AUTHOR
+Paul Carlson, USDA, SCS, NHQ\-CGIS
+.br
+Modifications: Radim Blazek, Glynn Clements, Bob Covill, Hamish Bowman
+.SH SOURCE CODE
+.PP
+Available at: ps.map source code (history)
+.PP
+Main index |
+PostScript index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

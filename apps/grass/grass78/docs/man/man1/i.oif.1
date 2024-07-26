@@ -1,0 +1,129 @@
+.TH i.oif 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.oif.py\fR\fR  \- Calculates Optimum\-Index\-Factor table for spectral bands
+.SH KEYWORDS
+imagery, multispectral, statistics
+.SH SYNOPSIS
+\fBi.oif.py\fR
+.br
+\fBi.oif.py \-\-help\fR
+.br
+\fBi.oif.py\fR [\-\fBgs\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...]  [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Print in shell script style
+.IP "\fB\-s\fR" 4m
+.br
+Process bands serially (default: run in parallel)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.SH DESCRIPTION
+\fIi.oif\fR calculates the Optimum Index Factor for
+multi\-spectral satellite imagery.
+.PP
+The Optimum Index Factor (OIF) determines the three\-band combination
+that maximizes the variability (information) in a multi\-spectral
+scene. The index is a ratio of the total variance (standard
+deviation) within and the correlation between all possible band
+combinations. The bands that comprise the highest scoring
+combination from \fIi.oif\fR are used as the three color channels
+required for \fId.rgb\fR or \fIr.composite\fR.
+.PP
+The analysis is saved to a file in the current directory called \(dqi.oif.result\(dq.
+.SH NOTES
+Landsat 1\-7 TM:
+Colour Composites in BGR order as important Landsat TM band combinations
+(example: 234 in BGR order means: B=2, G=3, R=4):
+.RS 4n
+.IP \(bu 4n
+123: near natural (\(dqtrue\(dq) colour; however, because of
+correlation of the 3 bands in visible spectrum, this combination
+contains not much more info than is contained in single band.
+.IP \(bu 4n
+234: sensitive to green vegetation (portrayed as red),
+coniferous as distinctly darker red than deciduous forests. Roads
+and water bodies are clear.
+.IP \(bu 4n
+243: green vegetation is green but coniferous forests aren\(cqt as
+clear as the 234 combination.
+.IP \(bu 4n
+247: one of the best for info pertaining to forestry. Good for
+operation scale mapping of recent harvest areas and road
+construction.
+.IP \(bu 4n
+345: contains one band from each of the main reflective units
+(vis, nir, shortwave infra). Green vegetation is green and the
+shortwave band shows vegetational stress and mortality. Roads are
+less evident as band 3 is blue.
+.IP \(bu 4n
+347: similar to 345 but depicts burned areas better.
+.IP \(bu 4n
+354: appears more like a colour infrared photo.
+.IP \(bu 4n
+374: similar to 354.
+.IP \(bu 4n
+457: shows soil texture classes (clay, loam, sandy).
+.RE
+.PP
+By default the module will calculate standard deviations for all bands in
+parallel. To run serially use the \fB\-s\fR flag. If the WORKERS
+environment variable is set, the number of concurrent processes will be
+limited to that number of jobs.
+.SH EXAMPLE
+North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+i.oif input=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70
+\fR
+.fi
+.SH REFERENCES
+Jensen, 1996. Introductory digital image processing. Prentice Hall,
+p.98. ISBN 0\-13\-205840\-5
+.SH SEE ALSO
+\fI
+d.rgb,
+r.composite,
+r.covar,
+r.univar
+\fR
+.SH AUTHORS
+Markus Neteler, ITC\-Irst, Trento, Italy
+.br
+Updated to GRASS 5.7 by Michael Barton, Arizona State University
+.SH SOURCE CODE
+.PP
+Available at: i.oif source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.findfile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.findfile</b></em>  - Searches for GRASS data base files and sets variables for the shell.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_map_management.html">map management</a>, <a href="keywords.html#scripts">scripts</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.findfile</b><br></div>
+<b>g.findfile --help</b><br>
+<div id="synopsis"><b>g.findfile</b> [-<b>nl</b>] <b>element</b>=<em>string</em> <b>file</b>=<em>string</em>  [<b>mapset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Do not add quotes</dd>
+
+<dt><b>-l</b></dt>
+<dd>List available elements and exit</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>element</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an element</dd>
+
+<dt><b>file</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an existing map</dd>
+
+<dt><b>mapset</b>=<em>string</em></dt>
+<dd>Name of a mapset (default: search path)</dd>
+<dd>'.' for current mapset</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#shell" class="toc">SHELL</a></li>
+        <li class="toc"><a href="#python" class="toc">PYTHON</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>g.findfile</em> is designed for Bourne shell or Python scripts
+that need to search for mapset <em>elements</em>, including: raster,
+vector maps, region definitions
+and <em><a href="i.group.html">imagery</a></em> groups.
+<p>The list of <b>element</b> names to search for is not fixed; any
+subdirectory of the mapset directory is a valid <b>element</b> name.
+<p>However, the user can find the list of standard GRASS <b>element</b>
+names in the file <tt>$GISBASE/etc/element_list</tt>. This is the file
+which <em><a href="g.remove.html">g.remove</a></em>, <em><a href="g.rename.html">g.rename</a></em>
+and <em><a href="g.copy.html">g.copy</a></em> use to determine which files
+need to be deleted/renamed/copied for a given entity type.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>g.findfile</em> writes four lines to standard output:
+
+<div class="code"><pre>
+name='<em>file_name</em>'
+mapset='<em>mapset_name</em>'
+file='<em>unix_filename</em>'
+fullname='<em>grass_fullname</em>'
+</pre></div>
+
+The output is <em>Bash</em> commands to set the variable
+<em>name</em> to the GRASS data base file name,
+<em>mapset</em> to the mapset in which the file resides,
+and <em>file</em> to the full UNIX path name for the named
+file. These variables may be set in the <em>Bash</em>
+as follows:
+
+<div class="code"><pre>
+eval `g.findfile element=name mapset=name file=name`
+</pre></div>
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="shell">SHELL</a></h3>
+
+<b>Raster map example:</b>
+
+<div class="code"><pre>
+eval `g.findfile element=cell file=elevation`
+</pre></div>
+
+If the specified file (here: raster map) does not exist, the variables
+will be set as follows:
+
+<div class="code"><pre>
+name=
+mapset=
+fullname=
+file=
+</pre></div>
+
+The following is a way to test for this case:
+<div class="code"><pre>
+if [ ! "$file" ]
+then
+	exit 1
+fi
+</pre></div>
+
+<p>
+<b>Vector map example (including error message):</b>
+
+<div class="code"><pre>
+eval `g.findfile element=vector file="$G_OPT_V_INPUT"`
+if [ ! "$file" ] ; then
+   g.message -e "Vector map <$G_OPT_V_INPUT> not found"
+   exit 1
+fi
+</pre></div>
+
+<h3><a name="python">PYTHON</a></h3>
+
+See <em><a href="https://grass.osgeo.org/grass78/manuals/libpython/">Python
+Scripting Library</a></em> for more info.
+<p>
+Note: The Python tab in the <em>wxGUI</em> can be used for entering the
+following code:
+<p>
+<div class="code"><pre>
+import grass.script as gcore
+    
+gcore.find_file('elevation', element = 'cell')
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.filename.html">g.filename</a>,
+<a href="g.gisenv.html">g.gisenv</a>,
+<a href="g.mapsets.html">g.mapsets</a>,
+<a href="g.parser.html">g.parser</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.findfile">g.findfile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.findfile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

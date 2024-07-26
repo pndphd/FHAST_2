@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.kappa - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.kappa</b></em>  - Calculates error matrix and kappa parameter for accuracy assessment of classification result.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#classification">classification</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.kappa</b><br></div>
+<b>r.kappa --help</b><br>
+<div id="synopsis"><b>r.kappa</b> [-<b>whm</b>] <b>classification</b>=<em>name</em> <b>reference</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [<b>title</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-w</b></dt>
+<dd>Wide report</dd>
+<dd>132 columns (default: 80)</dd>
+
+<dt><b>-h</b></dt>
+<dd>No header in the report</dd>
+
+<dt><b>-m</b></dt>
+<dd>Print Matrix only</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>classification</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map containing classification result</dd>
+
+<dt><b>reference</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map containing reference classes</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file containing error matrix and kappa</dd>
+<dd>If not given write to standard output</dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Title for error matrix and kappa</dd>
+<dd>Default: <em>ACCURACY ASSESSMENT</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.kappa</em> tabulates the error matrix of classification result by
+crossing classified map layer with respect to reference map layer.  Both
+overall <em>kappa</em> (accompanied by its <em>variance</em>) and
+conditional <em>kappa</em> values are calculated.  This analysis program
+respects the current geographic region and mask settings.
+<p>
+<em>r.kappa</em> calculates the error matrix of the
+two map layers and prepares the table from which the report
+is to be created.  <em>kappa</em> values for overall and
+each classes are computed along with their variances. Also
+percent of comission and omission error, total correct
+classified result by pixel counts, total area in pixel
+counts and percentage of overall correctly classified
+pixels are tabulated.
+
+<p>
+The report will be write to an output file which is in
+plain text format and named by user at prompt of running
+the program.
+
+<p>
+The body of the report is arranged in panels.  The
+classified result map layer categories is arranged along
+the vertical axis of the table, while the reference map
+layer categories along the horizontal axis.  Each panel has
+a maximum of 5 categories (9 if wide format) across the
+top.  In addition, the last column of the last panel
+reflects a cross total of each column for each row.  All of
+the categories of the map layer arranged along the vertical
+axis, i.e., the reference map layer,  are included in each
+panel.  There is a total at the bottom of each column
+representing the sum of all the rows in that column.
+
+<h2><a name="notes">NOTES</a></h2>
+
+It is recommended to reclassify categories of classified
+result map layer into a more manageable number before
+running <em>r.kappa</em> on the classified raster map
+layer. Because <em>r.kappa</em> calculates and then reports
+information for each and every category.
+
+<p>
+<em>NA</em>'s in output file mean non-applicable in case
+<em>MASK</em> exists.
+
+<p>
+The <b>Estimated kappa value</b> in <em>r.kappa</em> is the value
+only for one class, i.e. the observed agreement between the
+classifications for those observations that have been classified by
+classifier 1 into the class i. In other words, here the choice of
+reference is important.
+<p>
+It is calculated as:
+<p>
+kpp[i] = (pii[i] - pi[i] * pj[i]) / (pi[i] - pi[i] * pj[i]);
+<p>
+where=
+<ul>
+<li>pii[i] is the probability of agreement (i.e. number of pixels for which there is agreement divided by total number of assessed pixels)</li>
+<li>Pi[i] is the probability of classification i having classified the point as i</li>
+<li>Pj[i] is the probability of classification j having classified the point as i.</li>
+</ul>
+
+<H2>EXAMPLE</H2>
+
+Example for North Carolina sample dataset:
+
+<div class="code"><pre>
+g.region raster=landclass96 -p
+r.kappa -w classification=landuse96_28m reference=landclass96
+
+# export Kappa matrix as CSV file "kappa.csv"
+r.kappa classification=landuse96_28m reference=landclass96 output=kappa.csv -m -h
+</pre></div>
+<p>
+
+Verification of classified LANDSAT scene against training areas:
+
+<div class="code"><pre>
+r.kappa -w classification=lsat7_2002_classes reference=training
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="g.region.html">g.region</a></em>,
+<!--<em><a href="m.ipf.html">m.ipf</a></em>,-->
+<em><a href="r.category.html">r.category</a></em>,
+<em><a href="r.mask.html">r.mask</a></em>,
+<em><a href="r.reclass.html">r.reclass</a></em>,
+<em><a href="r.report.html">r.report</a></em>,
+<em><a href="r.stats.html">r.stats</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Tao Wen, University of Illinois at Urbana-Champaign, Illinois
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.kappa">r.kappa source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.kappa">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

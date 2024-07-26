@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.search.modules.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.search.modules.py</b></em>  - Search in GRASS modules using keywords
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_modules.html">modules</a>, <a href="keywords.html#search">search</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.search.modules.py</b><br></div>
+<b>g.search.modules.py --help</b><br>
+<div id="synopsis"><b>g.search.modules.py</b> [-<b>anmkcgj</b>]  [<b>keyword</b>=<em>string</em>[,<i>string</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-a</b></dt>
+<dd>Display only modules where all keywords are available (AND), default: OR</dd>
+
+<dt><b>-n</b></dt>
+<dd>Invert selection (logical NOT)</dd>
+
+<dt><b>-m</b></dt>
+<dd>Search in manual pages too (can be slow)</dd>
+
+<dt><b>-k</b></dt>
+<dd>Search only for the exact keyword in module keyword list</dd>
+<dd>Instead of full text search, search only in actual keywords</dd>
+
+<dt><b>-c</b></dt>
+<dd>Use colorized (more readable) output to terminal</dd>
+
+<dt><b>-g</b></dt>
+<dd>Shell script format</dd>
+
+<dt><b>-j</b></dt>
+<dd>JSON format</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>keyword</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Keyword to be searched</dd>
+<dd>List all modules if not given</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>g.search.module</em> searches for given keyword in GRASS GIS modules name,
+description, keywords and optionally manpages, too. Also installed addons are
+considered in the search.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Multiple keywords may be specified, <em>g.search.modules</em> will search for
+all of them.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Search all modules, where keywords <em>buffer</em> OR <em>clip</em> can be found:
+
+<div class="code"><pre>
+g.search.modules keyword=buffer,clip
+
+r.circle
+    keywords: raster,buffer,geometry,circle
+    description: Creates a raster map containing concentric rings around a
+                 given point.
+
+r.buffer.lowmem
+    keywords: raster,buffer
+    description: Creates a raster map showing buffer zones surrounding cells
+                 that contain non-NULL category values. This is the low-
+                 memory alternative to the classic r.buffer module.
+
+r.buffer
+    keywords: raster,buffer
+    description: Creates a raster map showing buffer zones surrounding cells
+                 that contain non-NULL category values.
+</pre></div>
+
+<p>
+Search all modules, where keywords <em>overlay</em> AND <em>clip</em> can be
+found with some fancy terminal output (not shown here):
+
+<div class="code"><pre>
+g.search.modules keyword=clip,overlay -a -c
+
+v.clip
+    keywords: vector,clip,area
+    description: Extracts features of input map which overlay features
+                 of clip map.
+
+v.overlay
+    keywords: vector,geometry,spatial
+              query,clip,difference,intersection,union
+    description: Overlays two vector maps offering clip, intersection,
+                 difference, symmetrical difference, union operators.
+</pre></div>
+
+<p>
+Search in manual pages as well:
+
+<div class="code"><pre>
+g.search.modules -m keyword=kapri
+
+db.execute
+    keywords: database,attribute table,SQL
+    description: Executes any SQL statement. For SELECT statements use
+                 'db.select'.
+
+db.select
+    keywords: database,attribute table,SQL
+    description: Selects data from attribute table. Performs SQL query
+                 statement(s).
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="g.manual.html">g.manual</a>
+  <!-- <a href="g.search.map.html">g.search.map</a>, -->
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Jachym Cepicky, OpenGeoLabs s.r.o., Czech Republic: original author
+<br>
+Anika Bettge, mundialis, Germany: addon search added
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/g.search.modules">g.search.modules source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/g.search.modules">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

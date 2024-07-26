@@ -1,0 +1,135 @@
+.TH r.cross 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.cross\fR\fR  \- Creates a cross product of the category values from multiple raster map layers.
+.SH KEYWORDS
+raster, statistics
+.SH SYNOPSIS
+\fBr.cross\fR
+.br
+\fBr.cross \-\-help\fR
+.br
+\fBr.cross\fR [\-\fBz\fR] \fBinput\fR=\fIstring\fR[,\fIstring\fR,...] \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Non\-NULL data only
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Names of 2\-30 input raster maps
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIr.cross\fR creates an \fIoutput\fR raster map layer representing
+all unique combinations of category values in the raster input layers
+(\fBinput=\fR\fIname,name,name\fR, ...).  At least two, but not more than
+ten, \fIinput\fR map layers must be specified.  The user must also
+specify a name to be assigned to the \fIoutput\fR raster map layer
+created by \fIr.cross\fR.
+.SH OPTIONS
+The program will be run non\-interactively if the user specifies
+the names of between 2\-10 raster map layers be used as \fIinput\fR,
+and the name of a raster map layer to hold program \fIoutput\fR.
+.PP
+With the \fB\-z\fR flag NULL values are not crossed.
+This means that if a NULL value occurs in any input data layer,
+this combination is ignored,
+even if other data layers contain non\-NULL data.
+In the example given below, use of the \fB\-z\fR option
+would cause 3 categories to be generated instead of 5.
+.PP
+If the \fB\-z\fR flag is not specified, then map layer combinations
+in which some values are NULL will be assigned
+a unique category value in the resulting output map.
+.PP
+Category values in the new \fIoutput\fR map layer will be the
+cross\-product of the category values from these existing \fIinput\fR map
+layers.
+.SH EXAMPLE
+For example, suppose that, using two raster map layers,
+the following combinations occur:
+.br
+.nf
+\fC
+          map1   map2
+          ___________
+          NULL    1
+          NULL    2
+           1      1
+           1      2
+           2      4
+\fR
+.fi
+\fIr.cross\fR would produce a new raster map layer with 5 categories:
+.br
+.nf
+\fC
+          map1   map2   output
+          ____________________
+          NULL    1       0
+          NULL    2       1
+           1      1       2
+           1      2       3
+           2      4       4
+\fR
+.fi
+Note: The actual category value assigned to a particular combination
+in the \fIresult\fR map layer is
+dependent on the order in which the combinations occur in the input map
+layer data and can be considered essentially random.
+The example given here is illustrative only.
+.SH SUPPORT FILES
+The category file created for the \fIoutput\fR raster map
+layer describes the
+combinations of input map layer category values which generated
+each category.
+In the above example, the category labels would be:
+.br
+.nf
+\fC
+          category   category
+          value      label
+          ______________________________
+             0       layer1(0) layer2(1)
+             1       layer1(0) layer2(2)
+             2       layer1(1) layer2(1)
+             3       layer1(1) layer2(2)
+             4       layer1(2) layer2(4)
+\fR
+.fi
+A random color table is also generated for the \fIoutput\fR map layer.
+.SH SEE ALSO
+\fIr.covar\fR,
+\fIr.stats\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.cross source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

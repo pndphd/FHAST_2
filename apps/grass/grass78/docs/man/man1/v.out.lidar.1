@@ -1,0 +1,184 @@
+.TH v.out.lidar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.lidar\fR\fR  \- Exports vector points as LAS point cloud
+.br
+Converts LAS LiDAR point clouds to a GRASS vector map with libLAS
+.SH KEYWORDS
+vector, export, output, LIDAR, points
+.SH SYNOPSIS
+\fBv.out.lidar\fR
+.br
+\fBv.out.lidar \-\-help\fR
+.br
+\fBv.out.lidar\fR [\-\fBrw\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBid_layer\fR=\fIstring\fR]   [\fBreturn_layer\fR=\fIstring\fR]   [\fBclass_layer\fR=\fIstring\fR]   [\fBrgb_layer\fR=\fIstring\fR]   [\fBreturn_column\fR=\fIname\fR]   [\fBn_returns_column\fR=\fIname\fR]   [\fBclass_column\fR=\fIname\fR]   [\fBrgb_column\fR=\fIname\fR]   [\fBred_column\fR=\fIname\fR]   [\fBgreen_column\fR=\fIname\fR]   [\fBblue_column\fR=\fIname\fR]  \fBlas_xyscale\fR=\fIfloat\fR \fBlas_zscale\fR=\fIfloat\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Limit export to the current region
+.IP "\fB\-w\fR" 4m
+.br
+Ignore color table
+.br
+Ignore color table even when set and not other options are present
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output file
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBid_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store generated point ID as category
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.IP "\fBreturn_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store return number as category
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.IP "\fBclass_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store class number as category
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.IP "\fBrgb_layer\fR=\fIstring\fR" 4m
+.br
+Layer number where RGB color is stored as category
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.IP "\fBreturn_column\fR=\fIname\fR" 4m
+.br
+Column with return number
+.br
+Name of attribute column
+.IP "\fBn_returns_column\fR=\fIname\fR" 4m
+.br
+Column with return number
+.br
+Name of attribute column
+.IP "\fBclass_column\fR=\fIname\fR" 4m
+.br
+Column with return number
+.br
+Name of attribute column
+.IP "\fBrgb_column\fR=\fIname\fR" 4m
+.br
+RGB color definition column
+.br
+Color definition in R:G:B form
+.IP "\fBred_column\fR=\fIname\fR" 4m
+.br
+Column with red color
+.br
+Name of attribute column
+.IP "\fBgreen_column\fR=\fIname\fR" 4m
+.br
+Column with green color
+.br
+Name of attribute column
+.IP "\fBblue_column\fR=\fIname\fR" 4m
+.br
+Column with blue color
+.br
+Name of attribute column
+.IP "\fBlas_xyscale\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Internal scale to apply to X and Y values
+.br
+This scale does not change the values itself but only how precisely they are stored, for example 0.01 will preserve two decimal places
+.br
+Default: \fI0.01\fR
+.IP "\fBlas_zscale\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Internal scale to apply to z values
+.br
+This scale does not change the values itself but only how precisely they are stored, for example 0.01 will preserve two decimal places
+.br
+Default: \fI0.01\fR
+.SH DESCRIPTION
+\fIv.out.lidar\fR converts GRASS vector map to a LiDAR point clouds
+in LAS format using the libLAS library.
+.PP
+The \fB\-r\fR flag limits the export to the current computational region
+extent (see \fIg.region\fR).
+The \fBwhere\fR option limits the export by attributes (applied only
+when the columns are used for export).
+.PP
+LAS format stores the coordinates as integers rounding the decimal places.
+Before that a scale is applied to preserve a certain number of decimal
+places. This scale can be set using \fBlas_xyscale\fR and \fBlas_xscale\fR
+options. For example, the scale value 0.01 will preserve two decimal
+places while the value 1.0 will preserve none.
+.SH NOTES
+The typical file extensions for the LAS format are .las and .laz (compressed).
+The compressed LAS (.laz) format can be exported only if libLAS has been
+compiled with LASzip support.
+It is also good when libLAS was compiled with GDAL. This is needed when
+working with projections.
+.SH EXAMPLE
+Generate fractal surface and export is as point in LAS format:
+.br
+.nf
+\fC
+g.region raster=elevation res=100
+r.surf.fractal output=fractals
+r.to.vect input=fractals output=fractals type=point \-z
+v.out.lidar input=fractals output=fractals.las
+\fR
+.fi
+.SH REFERENCES
+ASPRS LAS format
+.br
+LAS library
+.br
+.SH AUTHOR
+Vaclav Petras
+.SH SOURCE CODE
+.PP
+Available at: v.out.lidar source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

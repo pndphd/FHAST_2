@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.vtk - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.vtk</b></em>  - Converts raster maps into the VTK-ASCII format.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#VTK">VTK</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.vtk</b><br></div>
+<b>r.out.vtk --help</b><br>
+<div id="synopsis"><b>r.out.vtk</b> [-<b>pstvoc</b>]  [<b>input</b>=<em>name</em>[,<i>name</i>,...]]   [<b>output</b>=<em>name</em>]   [<b>elevation</b>=<em>name</em>]   [<b>null</b>=<em>float</em>]   [<b>z</b>=<em>float</em>]   [<b>rgbmaps</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vectormaps</b>=<em>string</em>[,<i>string</i>,...]]   [<b>zscale</b>=<em>float</em>]   [<b>precision</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Create VTK point data instead of VTK cell data (if no elevation map is given)</dd>
+
+<dt><b>-s</b></dt>
+<dd>Use structured grid for elevation (not recommended)</dd>
+
+<dt><b>-t</b></dt>
+<dd>Use polydata-trianglestrips for elevation grid creation</dd>
+
+<dt><b>-v</b></dt>
+<dd>Use polydata-vertices for elevation grid creation (to use with vtkDelauny2D)</dd>
+
+<dt><b>-o</b></dt>
+<dd>Scale factor affects the origin (if no elevation map is given)</dd>
+
+<dt><b>-c</b></dt>
+<dd>Correct the coordinates to match the VTK-OpenGL precision</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Raster map(s) to be converted to VTK-ASCII data format</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for VTK-ASCII output file</dd>
+
+<dt><b>elevation</b>=<em>name</em></dt>
+<dd>Name of input elevation raster map</dd>
+
+<dt><b>null</b>=<em>float</em></dt>
+<dd>Value to represent no data cell</dd>
+<dd>Default: <em>-99999.99</em></dd>
+
+<dt><b>z</b>=<em>float</em></dt>
+<dd>Constant elevation (if no elevation map is specified)</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>rgbmaps</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Three (r,g,b) raster maps to create RGB values [redmap,greenmap,bluemap]</dd>
+
+<dt><b>vectormaps</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Three (x,y,z) raster maps to create vector values [xmap,ymap,zmap]</dd>
+
+<dt><b>zscale</b>=<em>float</em></dt>
+<dd>Scale factor for elevation</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>precision</b>=<em>integer</em></dt>
+<dd>Number of significant digits (floating point only)</dd>
+<dd>Options: <em>0-20</em></dd>
+<dd>Default: <em>12</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#difference-between-point--and-celldata" class="toc">Difference between point- and celldata</a></li>
+    </ul></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#simple-spearfish-example" class="toc">Simple Spearfish example</a></li>
+        <li class="toc"><a href="#spearfish-example-with-rgb-data" class="toc">Spearfish example with RGB data</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Outputs <i>raster</i> maps in <i>VTK-ASCII</i> format. <i>Map's</i> are
+valid raster map's in the current mapset.  <i>output</i> is the name of
+an VTK-ASCII file which will be written in the current working directory.
+If <i>output</i> is not specified then <b>stdout</b> is used.  
+The module is sensitive to region settings (set with g.region).
+<p>
+
+Elevation, scaling, point/celldata, vector and RGB Data are supported.
+If the map is in LL projection, the elevation values will automatically scaled to 
+degrees. It is supposed that the elevation values are provided in meters. 
+If the elevation values are in a different unit than meters, use 
+the scale parameter to convert the units. 
+<p>
+
+If no elevation map is given, the user can set the height of the map by one value. 
+Point or cell data are available. Also scaling is supported for this elevation value. 
+The elevation value must be provided in meters.
+<p>
+
+The RGB input requires three raster maps: red, green, blue  - in this order. 
+The maps must have values between 0 and 255, otherwise you will get lots of warnings
+and the values are set to 0.
+More than one RGB dataset (3 maps) is not supported. 
+<p>
+
+The vector input requires three raster maps: x, y, z -- defining the vector coordinates  - in this order. 
+More than one vector dataset (3 maps) is not supported. 
+
+<h2><a name="notes">NOTES</a></h2>
+This filter generates: 
+<ul>
+<li><i>structured points</i> with <i>celldata</i> or <i>pointdata</i> if no elevationfile is given</li>
+
+<li><i>structured grid</i> (not recommendet) with <i>pointdata</i> if an elevationfile is given</li>
+<li><i>polydataset</i> with <i>pointdata</i> if an elevationfile is given (default)</li> 
+</ul>
+and puts this in a simple VTK-ASCII file. Nor XML or 
+binary output are supported. It is possible to choose more then one raster map
+to be written to the VTK-ASCII file. Each cell-/pointdata is named like the raster map it represents.
+You can visualize this file with the 
+<em><a href="http://www.vtk.org">VTK Toolkit</a></em>, 
+<em><a href="http://www.paraview.org">Paraview</a></em> and 
+<em><a href="http://mayavi.sourceforge.net">MayaVi</a></em> which are based on VTK.
+If you have a raster map with partly no data, use the threshold filter in paraview to 
+visualize the valid data. Just filter all data which is greater/lesser than the 
+chosen null value in the VTK-ASCII file.
+<br>
+If elevation map is chosen, a polygonal grid is created with <i>quads</i>, 
+but the user can choose also <i>triangle strips</i> or <i>vertices</i>. 
+These dataformats a documented at <em><a href="http://www.vtk.org">VTK Toolkit</a></em>.
+<p>
+
+If the "-c" flag is used and the data should be visualised together with other data exported via *.out.vtk
+modules, be sure the "-c" flag was also set in these modules.
+But this will only work with data from the SAME location 
+(The reference point for the coordinates transformation is based on the center point of the default region).
+
+<h3><a name="difference-between-point--and-celldata">Difference between point- and celldata</a></h3>
+
+r.out.vtk can export raster cells with different representations.
+<ul>
+   <li>
+      <i>pointdata</i> -- the cells/values are represented by the center of the cell. 
+      Instead of cells, points are created. Each point can hold different values, 
+      but the user can only visualize one value at a time. These points can 
+      be connected in different ways.
+   </li>
+   <li>
+       <i>celldata</i> -- is only provided if no elevation map is given. 
+       The cells are created with the same hight and width as in GRASS. Each cell 
+       can hold different values, but the user can only visualize one value at a time. 
+   </li>
+</ul>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="simple-spearfish-example">Simple Spearfish example</a></h3>
+
+<div class="code"><pre>
+# set region
+g.region n=4926970 s=4914857 w=591583 e=607793 res=50 -p
+
+# export the data
+r.out.vtk input=elevation.10m,slope,aspect elevation=elevation.10m output=/tmp/out.vtk
+
+# visualize in Paraview or other VTK viewer:
+paraview --data=/tmp/out.vtk
+</pre></div>
+
+<h3><a name="spearfish-example-with-rgb-data">Spearfish example with RGB data</a></h3>
+
+<div class="code"><pre>
+#set the region
+g.region n=4926990 s=4914840 w=591570 e=607800 res=30 -p
+
+# using r.in.wms to create RGB data to get a satellite coverage
+r.in.wms layers=global_mosaic mapserver=http://wms.jpl.nasa.gov/wms.cgi \
+         output=wms_global_mosaic
+
+# export the data to VTK
+r.out.vtk rgbmaps=wms_global_mosaic.red,wms_global_mosaic.green,wms_global_mosaic.blue \
+          elevation=elevation.10m output=/tmp/out.vtk
+
+# visualize in Paraview or other VTK viewer:
+paraview --data=/tmp/out.vtk
+</pre></div>
+
+<b>Paraview RGB visualization notes</b><br>
+To achieve proper RGB overlay:
+<ul>
+<li> In Paraview, click "Apply"
+<li> Select the "Display" tab and choose "Color by" to switch from input scalars to rgb scalars
+<li> Disable the "Map Scalars" check button in the display tab to avoid the use of a lookup table 
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.out.vtk.html">r3.out.vtk</a>,
+<a href="r.out.ascii.html">r.out.ascii</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+<br>
+<a href="https://grasswiki.osgeo.org/wiki/GRASS_and_Paraview">GRASS and Paraview Wiki page</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+Soeren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.vtk">r.out.vtk source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.vtk">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

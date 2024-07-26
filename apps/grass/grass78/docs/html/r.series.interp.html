@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.series.interp - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.series.interp</b></em>  - Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_series.html">series</a>, <a href="keywords.html#interpolation">interpolation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.series.interp</b><br></div>
+<b>r.series.interp --help</b><br>
+<div id="synopsis"><b>r.series.interp</b>  [<b>input</b>=<em>name</em>[,<i>name</i>,...]]   [<b>datapos</b>=<em>float</em>[,<i>float</i>,...]]   [<b>infile</b>=<em>name</em>]   [<b>output</b>=<em>name</em>[,<i>name</i>,...]]   [<b>samplingpos</b>=<em>float</em>[,<i>float</i>,...]]   [<b>outfile</b>=<em>name</em>]   [<b>method</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of input raster map(s)</dd>
+
+<dt><b>datapos</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Data point position for each input map</dd>
+
+<dt><b>infile</b>=<em>name</em></dt>
+<dd>Input file with one input raster map name and data point position per line, field separator between name and sample point is |</dd>
+
+<dt><b>output</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>samplingpos</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Sampling point position for each output map</dd>
+
+<dt><b>outfile</b>=<em>name</em></dt>
+<dd>Input file with one output raster map name and sample point position per line, field separator between name and sample point is |</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Interpolation method, currently only linear interpolation is supported</dd>
+<dd>Options: <em>linear</em></dd>
+<dd>Default: <em>linear</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.series.interp</em> 
+interpolates new raster maps located temporal or spatial in between existing raster maps. 
+The interpolation is performed at specific sampling positions. The sampling position for each output map must be specified,
+as well as the data position of the input maps. 
+
+The following interpolation methods are supported.
+<ul> 
+ <li>linear: Linear interpolation. At least two input maps and data positions are required. 
+</ul> 
+
+<h2><a name="examples">EXAMPLES</a></h2>
+Interpolate linear three new maps at 3 sampling positions in the interval (0.0;1.0)
+<br>
+First prepare the input maps:
+<br>
+<div class="code"><pre>
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10 res3=10 -p3
+
+r.mapcalc expr="prec_1 = 100"
+r.mapcalc expr="prec_5 = 500"
+</pre></div>
+
+<p>Interpolate
+
+<div class="code"><pre>
+r.series.interp --v input=prec_1,prec_5 datapos=0.0,1.0 \
+                  output=prec_2,prec_3,prec_4 samplingpos=0.25,0.5,0.75 \
+                  method=linear
+</pre></div>
+
+<p>Interpolate using the file option. 
+First prepare the input file:
+<br>
+<div class="code"><pre>
+echo "prec_2|0.25
+prec_3|0.5
+prec_4|0.75" &gt;&gt; outfile.txt
+</pre></div>
+
+<p>Interpolate:
+
+<div class="code"><pre>
+r.series.interp --v input=prec_1,prec_5 datapos=0.0,1.0 file=outfile.txt method=linear
+</pre></div>
+
+The resulting maps will have the values 200, 300 and 400.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.series.html">r.series</a>,
+<a href="r.series.accumulate.html">r.series.accumulate</a>
+</em>
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/Large_raster_data_processing">Hints for large raster data processing</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.series.interp">r.series.interp source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.series.interp">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

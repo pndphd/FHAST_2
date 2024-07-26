@@ -1,0 +1,177 @@
+.TH v.out.vtk 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.vtk\fR\fR  \- Converts a vector map to VTK ASCII output.
+.SH KEYWORDS
+vector, export, output, VTK
+.SH SYNOPSIS
+\fBv.out.vtk\fR
+.br
+\fBv.out.vtk \-\-help\fR
+.br
+\fBv.out.vtk\fR [\-\fBcn\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBoutput\fR=\fIname\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBprecision\fR=\fIinteger\fR]   [\fBzscale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Correct the coordinates to fit the VTK\-OpenGL precision
+.IP "\fB\-n\fR" 4m
+.br
+Export numeric attribute table fields as VTK scalar variables
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output VTK file
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, kernel, centroid, line, boundary, area, face\fR
+.br
+Default: \fIpoint,kernel,centroid,line,boundary,area,face\fR
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of significant digits (floating point only)
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for elevation
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fIv.out.vtk\fR
+converts a GRASS vector map in binary format to the VTK ASCII
+output.
+.PP
+If the \fBoutput\fR parameter is not given, the output will be send to stdout.
+.SH NOTES
+The following vector types can be exported together in one VTK ascii file:
+.RS 4n
+.IP \(bu 4n
+point
+.IP \(bu 4n
+line
+.IP \(bu 4n
+centroid
+.IP \(bu 4n
+boundary
+.IP \(bu 4n
+area
+.IP \(bu 4n
+face
+.RE
+Category data (cat) for the selected vector type and layer will be written as scalar
+data with name \(dqcat_{vectorname}\(dq. If no cat exists, the value will set to \-1 as normal cat\(cqs are
+always positive.
+If a vector has more categories in one layer, only the first category
+will be exported.
+.br
+.br
+3d vectors are supported by default. The created VTK data always includes x, y and z coordinates
+(z = 0 if not a 3d vector map).
+Note that you can easily convert your 2d vectors into 3d vectors with v.drape.
+.br
+.br
+Because of the 32bit limits of OpenGL which is used by VTK, visualisation errors may occur if
+the grass region contains coordinates greater than 1.000.000 and vector coordinates
+with 0.01 \- 0.001 meters precisison. For this reason, the flag \(dq\-c\(dq was added. The coordinates are
+transformed to smaller coordinates (by decreasing the coordinates with the region center).
+.br
+.br
+If the \(dq\-c\(dq flag is used and the data should be visualised together with other data exported via *.out.vtk
+modules, be sure the \(dq\-c\(dq flag was also set in these modules.
+But this will only work with data from the SAME location
+(The reference point for the coordinates transformation is based on the default region).
+.br
+.br
+The GRASS vector data is converted into the polydata format of VTK:
+.RS 4n
+.IP \(bu 4n
+\fIvtk Vertices\fR \-\- representing points and centroids
+.IP \(bu 4n
+\fIvtk lines\fR \-\- representing lines and boundaries
+.IP \(bu 4n
+\fIvtk polygons\fR \-\- representing areas and faces
+.RE
+.PP
+The VTK file can be visualized with
+\fIVTK Toolkit\fR,
+\fIParaview\fR and
+\fIMayaVi\fR.
+.SS Attention
+.PP
+If areas or faces are exported, the data have to be triangulated within Paraview or
+MayaVi.
+.SH EXAMPLE
+Spearfish example:
+.PP
+Export the soils with cats in layer 1:
+.br
+.nf
+\fC
+v.out.vtk input=soils type=area layer=1 output=/tmp/soils.vtk
+\fR
+.fi
+Export the streams with cats in layer 1:
+.br
+.nf
+\fC
+v.out.vtk input=streams type=line layer=1 output=/tmp/streams.vtk
+\fR
+.fi
+Write the archsite vtk output to stdout with cats in layer 1:
+.br
+.nf
+\fC
+v.out.vtk input=archsites type=point layer=1
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.out.ascii
+.br
+r.out.vtk
+.br
+r3.out.vtk
+.br
+\fR
+.SH AUTHOR
+Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: v.out.vtk source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

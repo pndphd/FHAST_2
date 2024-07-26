@@ -1,0 +1,366 @@
+.TH v.net 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net\fR\fR  \- Performs network maintenance.
+.SH KEYWORDS
+vector, network, network maintenance
+.SH SYNOPSIS
+\fBv.net\fR
+.br
+\fBv.net \-\-help\fR
+.br
+\fBv.net\fR [\-\fBcs\fR]  [\fBinput\fR=\fIname\fR]   [\fBpoints\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]  \fBoperation\fR=\fIstring\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBarc_type\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBnode_layer\fR=\fIstring\fR]   [\fBthreshold\fR=\fIfloat\fR]   [\fBfile\fR=\fIname\fR]   [\fBturn_layer\fR=\fIstring\fR]   [\fBturn_cat_layer\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Assign unique categories to new points
+.br
+For operation \(cqnodes\(cq
+.IP "\fB\-s\fR" 4m
+.br
+Snap points to network
+.br
+For operation \(cqconnect\(cq. By default, a new line from the point to the network is created.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of input vector line map (arcs)
+.br
+Required for operation \(cqnodes\(cq, \(cqconnect\(cq, \(cqreport\(cq and \(cqnreport\(cq
+.IP "\fBpoints\fR=\fIname\fR" 4m
+.br
+Name of input vector point map (nodes)
+.br
+Required for operation \(cqconnect\(cq and \(cqarcs\(cq
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map
+.IP "\fBoperation\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Operation to be performed
+.br
+Options: \fInodes, connect, arcs, report, nreport, turntable\fR
+.br
+\fBnodes\fR: new point is placed on each node (line end) if doesn\(cqt exist
+.br
+\fBconnect\fR: connect still unconnected points to vector network by inserting new line(s)
+.br
+\fBarcs\fR: new line is created from start point to end point
+.br
+\fBreport\fR: print to standard output {line_category start_point_category end_point_category}
+.br
+\fBnreport\fR: print to standard output {point_category line_category[,line_category...]}
+.br
+\fBturntable\fR: create turntable on vector network
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBarc_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Arc type
+.br
+Input feature type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBthreshold\fR=\fIfloat\fR" 4m
+.br
+Threshold
+.br
+Required for operation \(cqconnect\(cq. Connect points in given threshold.
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name of input file
+.br
+Required for operation \(cqarcs\(cq (\(cq\-\(cq for standard input)
+.IP "\fBturn_layer\fR=\fIstring\fR" 4m
+.br
+Turntable layer
+.br
+Layer where turntable will be attached. Format: layer number[/layer name].Required for operation \(cqturntable\(cq.
+.br
+Default: \fI3\fR
+.IP "\fBturn_cat_layer\fR=\fIstring\fR" 4m
+.br
+Layer with unique categories used in turntable
+.br
+Layer with unique categories for every line in arc_layer and point on every node.  The categories are used in turntable. Format: layer number[/layer name]. Required for operation \(cqturntable\(cq.
+.br
+Default: \fI4\fR
+.SH DESCRIPTION
+\fIv.net\fR is used for network preparation and maintenance. Its
+main use is to create a vector network from vector lines (\fIarcs
+\fR) and points (\fInodes\fR) by creating nodes from
+intersections in a map of vector lines (\fInode\fR operator), by
+connecting a vector lines map with a points map (\fIconnect\fR
+operator), and by creating new lines between pairs of vector points
+(\fIarcs\fR operator).
+.PP
+A GIS network consists of topologically correct lines (arcs). That is,
+the lines must be connected by shared vertices where real connections exist.
+In GRASS GIS you also can add nodes to the network. These are specially
+designated vertices used for analyzing network properties or computing
+cost/distance measures. That is, \fBnot all vertices are treated as nodes by
+default\fR. Only \fIv.net.path\fR can use a
+network without nodes, they are required  for all the other network modules.
+In GRASS, network arcs are stored in one data layer (normally layer 1) and
+nodes are stored in a different data layer (normally layer 2).
+.PP
+\fIv.net\fR offers two ways to add nodes to a network of arcs and one
+method to add arcs to a set of nodes:
+.IP
+.IP \fB1\fR
+Use the \fIconnect\fR operation to create nodes from a vector
+points file and add these nodes to an existing vector network of
+arcs (i.e., lines/boundaries). This is useful when the goal is to
+analyze a set of places (points) in relation to a network\-\-for
+example travel costs between places. Only points within the
+\fIthresh\fR (threshold) distance to a line/boundary will be
+connected as network nodes. There are two ways to connect nodes. By
+default, \fIv.net\fR will create new lines connecting each point
+to the closest line of the network. If you use the \fI\-s\fR flag,
+however, the new nodes will be added on the closest line of the
+network at the point closest to the point you wish to add. When using
+the \fIconnect\fR operation, some lines will share the same
+category. In order to assign unique costs to each line, a new layer
+needs to be created with
+.br
+v.category input=yourmap option=add cat=1 step=1 layer=3 output=newmap
+.br
+followed by
+.br
+v.db.addtable map=newmap layer=3 table=tablename.
+.IP \fB2\fR
+Create nodes and arcs from a vector line/boundary file using the
+\fInode\fR operation. This is useful if you are mostly interested
+in the network itself and thus you can use intersections of the
+network as start and end points. Nodes will be created at all
+intersections of two or more lines. For an \fIarc\fR that
+consists of several segments connected by vertices (the typical
+case), only the starting and ending vertices are treated as network
+nodes.
+.IP \fB3\fR
+Create straight\-line arcs between pairs of nodes with the
+\fIarcs\fR option. This produces networks like those of airline
+flights between airports. It is also similar to the kind of network
+created with social networking software, making it possible to
+create georeferenced social networks.
+.PP
+.PP
+While the arcs created with v.net will retain any attribute information
+associated with the input vector line/boundary file in data layer 1, nodes
+created and stored in data layer 2 will not have any associated attribute
+information.
+.PP
+For nodes created using the \fIconnect\fR and \fIarcs\fR
+operations (methods 1 and 3 above), the nodes can be reconnected to
+the attribute table of the input vector points file using the
+attribute table manager (\(dqmanage layers\(dq tab) or by running
+\fIv.db.connect\fR.
+.PP
+For nodes created using the \fInodes\fR operation (method 2
+above), it is possible to create an attribute table for the new
+nodes in layer 2 using the attribute table manager and connect it to
+layer 2 (\(dqmanage layers\(dq tab) or to create a table with
+\fIv.db.addtable\fR,
+connect it to layer 2 with \fIv.db.connect\fR,
+and update the new table with cat values with \fIv.to.db\fR.
+.PP
+The \fIturntable\fR operation creates a turntable
+with the costs for every possible
+turn on every possible node (intersection, crossroad) in given layer (arc_layer).
+U\-turns are taken in account too.
+Turntable is created in \fBturn_layer\fR and \fBturn_cat_layer\fR.
+Building the turntable allows you to model e.g. traffic code, where some turns
+may be prohibited.
+If features in analyzed network are changed, the turntable must be created again
+(e.g. it includes v.net connect operation).
+Turntable name consists of output vector map name + \(dq_turntable_\(dq + \(dqt\(dq + \(dq_\(dq + turn_layer +
+\(dq_\(dq + \(dqtuc\(dq + \(dq_\(dq + turn_cat_layer + \(dq_\(dq + \(dqa\(dq + \(dq_\(dq + arc_layer  e. g. roads_turntable_t_3_tuc_4_a_1
+.PP
+These modules are able to work with the turntable:
+\fIv.net.alloc\fR,
+\fIv.net.iso\fR,
+\fIv.net.path\fR,
+\fIv.net.salesman\fR
+For more information about turns in the vector network analyses see
+wiki page.
+.PP
+Once a vector network has been created, it can be analyzed in a
+number of powerful ways using the suite of \fIv.net\fR.* modules.
+The shortest route between two nodes, following arcs, can be computed
+(\fIv.net.path\fR), as can the
+shortest route that will pass through a set of nodes and return to the
+starting node (\fIv.net.salesman\fR).
+Least cost routes through the network can be calculated on the basis of
+distance only or on the basis of distance weighted by an attribute
+associated with each arc (for example, travel speed along a network segment).
+A network can be divided into concentric zones of equal travel cost around
+one or more nodes (\fIv.net.iso\fR) or
+subdivided so that each node is surrounded by a zone in which all arcs
+can be reached with the same travel costs as all arcs surrounding each
+other node (\fIv.net.alloc\fR).
+In addition to the modules listed above, the GRASS vector networking suite
+includes numerous other modules for analysis of network costs and
+connectivity. These include:
+\fIv.net.allpairs\fR,
+\fIv.net.bridge\fR,
+\fIv.net.centrality\fR,
+\fIv.net.components\fR,
+\fIv.net.distance\fR,
+\fIv.net.flow\fR,
+\fIv.net.spanningtree\fR,
+\fIv.net.steiner\fR,
+\fIv.net.timetable\fR, and
+\fIv.net.visibility\fR.
+.SH NOTES
+For a vector map prepared for network analysis in GRASS, nodes are
+represented by the grass\-internal geometry type \fInode\fR and arcs
+by the geometry type \fIline\fR.
+If vector editing is required to modify the
+graph, \fIg.gui.vdigit\fR
+or \fIv.edit\fR can be used.  See also
+the Linear Referencing System available in
+GRASS GIS.
+.SH EXAMPLES
+The examples are North Carolina dataset based.
+.SS Create nodes globally for all line ends and intersections
+.br
+.nf
+\fC
+v.net input=streets_wake output=streets_node operation=nodes
+# verify result
+v.category streets_node option=report
+\fR
+.fi
+.SS Merge in nodes from a separate map within given threshold
+.br
+.nf
+\fC
+v.net input=streets_wake points=firestations out=streets_net \(rs
+      operation=connect threshold=500
+# verify result
+v.category streets_net option=report
+\fR
+.fi
+The nodes are stored in layer 2 unless node_layer=1 is used.
+.SS Generating network for vector point map
+For generating network for given vector point map an input file in the
+following format is required:
+.br
+.nf
+\fC
+[category of edge] [category of start node] [category of end node]
+\fR
+.fi
+.PP
+Option 1: Save the file (e.g. \(dqpoints.txt\(dq) and generate the map:
+.br
+.nf
+\fC
+v.net points=geodetic_swwake_pts output=geodetic_swwake_pts_net \(rs
+      operation=arcs file=points.txt
+# verify result
+v.category geodetic_swwake_pts_net option=report
+\fR
+.fi
+.PP
+Option 2: Read in from command line:
+.br
+.nf
+\fC
+v.net points=geodetic_swwake_pts output=geodetic_swwake_pts_net \(rs
+      operation=arcs file=\- << EOF
+1 28000 28005
+2 27945 27958
+3 27886 27897
+EOF
+# verify result
+v.category geodetic_swwake_pts_net option=report
+\fR
+.fi
+.SS Generating network with turntable for vector point map
+Following example generates a vector map with turntable:
+.br
+.nf
+\fC
+v.net operation=turntable in=railroads out=railroads_ttb
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.gui.vdigit,
+v.edit,
+Vector Network Analysis Tool
+\fR
+.PP
+\fI
+v.net.alloc,
+v.net.allpairs,
+v.net.bridge,
+v.net.centrality,
+v.net.components,
+v.net.connectivity,
+v.net.distance,
+v.net.flow,
+v.net.iso,
+v.net.path,
+v.net.salesman
+v.net.spanningtree,
+v.net.steiner,
+v.net.timetable,
+v.net.visibility
+\fR
+.SH AUTHORS
+Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Martin Landa, FBK\-irst (formerly ITC\-irst), Trento, Italy and CTU in
+Prague, Czech Republic (operation \(cqconnect\(cq and \(cqarcs\(cq)
+.br
+Markus Metz: important fixes and improvements
+.SS TURNS SUPPORT
+The turns support was implemnented as part of GRASS GIS turns cost project at Czech Technical University in Prague, Czech Republic.
+Eliska Kyzlikova, Stepan Turek, Lukas Bocan and Viera Bejdova participated at the project.
+Implementation: Stepan Turek
+Documentation: Lukas Bocan
+Mentor: Martin Landa
+.SH SOURCE CODE
+.PP
+Available at: v.net source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

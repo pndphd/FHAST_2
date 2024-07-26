@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.net.path - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.net.path</b></em>  - Finds shortest path on vector network.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#shortest path">shortest path</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.net.path</b><br></div>
+<b>v.net.path --help</b><br>
+<div id="synopsis"><b>v.net.path</b> [-<b>tgs</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>arc_layer</b>=<em>string</em> <b>arc_type</b>=<em>string</em>[,<i>string</i>,...] <b>node_layer</b>=<em>string</em>  [<b>file</b>=<em>name</em>]   [<b>arc_column</b>=<em>string</em>]   [<b>arc_backward_column</b>=<em>string</em>]   [<b>node_column</b>=<em>string</em>]   [<b>dmax</b>=<em>float</em>]   [<b>turn_layer</b>=<em>string</em>]   [<b>turn_cat_layer</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Use turntable</dd>
+
+<dt><b>-g</b></dt>
+<dd>Use geodesic calculation for longitude-latitude locations</dd>
+
+<dt><b>-s</b></dt>
+<dd>Write output as original input segments, not each path as one line.</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>arc_layer</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>arc_type</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Arc type</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em>line,boundary</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>Name of file containing start and end points. If not given, read from stdin</dd>
+
+<dt><b>arc_column</b>=<em>string</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>arc_backward_column</b>=<em>string</em></dt>
+<dd>Arc backward direction cost column (number)</dd>
+
+<dt><b>node_column</b>=<em>string</em></dt>
+<dd>Node cost column (number)</dd>
+
+<dt><b>dmax</b>=<em>float</em></dt>
+<dd>Maximum distance to the network</dd>
+<dd>If start/end are given as coordinates. If start/end point is outside this threshold, the path is not found and error message is printed. To speed up the process, keep this value as low as possible.</dd>
+<dd>Default: <em>1000</em></dd>
+
+<dt><b>turn_layer</b>=<em>string</em></dt>
+<dd>Layer with turntable</dd>
+<dd>Relevant only with -t flag</dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>turn_cat_layer</b>=<em>string</em></dt>
+<dd>Layer with unique categories used in turntable</dd>
+<dd>Relevant only with -t flag</dd>
+<dd>Default: <em>4</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a>
+    <ul class="toc">
+        <li class="toc"><a href="#turns-support" class="toc">TURNS SUPPORT</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.net.path</em> determines least costly, e.g. shortest or fastest 
+path(s) on a vector network.
+
+<p>
+Costs may be either line lengths, or attributes saved in a database 
+table. These attribute values are taken as costs of whole segments, not 
+as costs to traverse a length unit (e.g. meter) of the segment. 
+For example, if the speed limit is 100 km / h, the cost to traverse a 
+10 km long road segment must be calculated as 
+<div class="code"><pre>
+length / speed = 10 km / (100 km/h) = 0.1 h.
+</pre></div>
+Supported are cost assignments for both arcs and nodes, 
+and also different costs for both directions of a vector line. 
+For areas, costs will be calculated along boundary lines.
+<p>
+The input vector needs to be prepared with <tt>v.net operation=connect</tt> 
+in order to connect points representing center nodes to the network.
+
+<p>Nodes and arcs can be closed using <tt>cost = -1</tt>. 
+<p>Least cost paths are written to the output vector map with an 
+attached attribute table.
+<p>Nodes can be
+<ul>
+<li> piped into the program from file or from stdin, or
+<li> defined in the graphical user interface ("enter values interactively").
+</ul>
+
+The syntax is as follows:
+<div class="code"><pre>
+id start_point_category end_point_category
+</pre></div>
+
+(Example: 1 1 2)
+<p>
+or
+
+<div class="code"><pre>
+id start_point_x start_point_y end_point_x end_point_y
+</pre></div>
+
+<p>
+Points specified by category must be exactly on network nodes, and the 
+input vector map needs to be prepared with <tt>v.net operation=connect</tt>.
+<p>
+When specifying coordinates, the next network node to a given coordinate 
+pair is used.
+
+<p>
+The attribute table will contain the following attributes:
+
+<ul>
+    <li><tt>cat</tt>  - path unique category assigned by module</li>
+    <li><tt>id</tt>   - path id (read from input)</li>
+    <li><tt>fcat</tt> - from point category</li>
+    <li><tt>tcat</tt> - to point category</li>
+    <li><tt>sp</tt> - result status:
+    <ul>
+        <li>     0 - OK, path found</li>
+        <li>     1 - node is not reachable</li>
+        <li>     2 - point of given category does not exist</li>
+    </ul>
+    <li><tt>cost</tt> - travelling costs (on the network, not to/from network)</li>
+    <li><tt>fdist</tt> - the distance from first point to the network</li>
+    <li><tt>tdist</tt> - the distance from the network to second point</li>
+</ul>
+
+<p>
+
+Application of flag <b>-t</b> enables a turntable support. 
+This flag requires additional parameters <b>turn_layer</b> and <b>turn_cat_layer</b> 
+that are otherwise ignored.
+ The turntable allows 
+to model e.g. traffic code, where some turns may be prohibited. 
+This means that the input layer is expanded by 
+turntable with costs of every possible turn on any possible node 
+(intersection) in both directions. 
+ Turntable can be created by 
+ the <em><a href="v.net.html">v.net</a></em> module. 
+For more information about turns in the vector network analyses see
+<a href="https://grasswiki.osgeo.org/wiki/Turns_in_the_vector_network_analysis">wiki page</a>.
+
+
+<h2><a name="notes">NOTES</a></h2>
+Nodes and arcs can be closed using <tt>cost = -1</tt>. 
+<p>If the cost columns <b>arc_column</b>, <b>arc_backward_column</b> and <b>node_column</b> are not
+specified, the length of network segments is measured and 
+zero costs are assumed for nodes.
+<p>When using attributes, the length of segments is not used. To get
+accurate results, the line length must be taken into account when 
+assigning costs as attributes. For example, to get the <em>fastest path</em>, 
+the columns 'max_speed' and 'length' are required. The correct fastest 
+path can then be found by specifying <tt>arc_column=length/max_speed</tt>. If not yet
+existing, the column containing the line length ("length") has to added to the
+attributes table using <em><a href="v.to.db.html">v.to.db</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Shortest (red) and fastest (blue) path between two digitized nodes (Spearfish):
+
+<p>
+<center>
+<img src="vnetpath.png" alt="v.net.path example" border="1">
+</center>
+
+<div class="code"><pre>
+# Spearfish
+
+echo "1|601955.1|4916944.9|start
+2|594385.6|4921565.2|end" | v.in.ascii in=- cat=1 x=2 y=3 out=startend col="cat integer, \
+                         east double precision, north double precision, label varchar(6)"
+
+v.db.select startend
+
+g.copy vect=roads,myroads
+
+# create lines map connecting points to network
+v.net myroads points=startend out=myroads_net op=connect thresh=500 arc_layer=1 node_layer=2
+
+# set up costs
+
+# create unique categories for each road in layer 3
+v.category in=myroads_net out=myroads_net_time opt=add cat=1 layer=3 type=line
+
+# add new table for layer 3
+v.db.addtable myroads_net_time layer=3 col="cat integer,label varchar(43),length double precision,speed double precision,cost double precision,bcost double precision"
+
+# copy road type to layer 3
+v.to.db myroads_net_time layer=3 qlayer=1 opt=query qcolumn=label columns=label
+
+# upload road length in miles
+v.to.db myroads_net_time layer=3 type=line option=length col=length unit=miles
+
+# set speed limits in miles / hour
+v.db.update myroads_net_time layer=3 col=speed val="5.0"
+v.db.update myroads_net_time layer=3 col=speed val="75.0" where="label='interstate'"
+v.db.update myroads_net_time layer=3 col=speed val="75.0" where="label='primary highway, hard surface'"
+v.db.update myroads_net_time layer=3 col=speed val="50.0" where="label='secondary highway, hard surface'"
+v.db.update myroads_net_time layer=3 col=speed val="25.0" where="label='light-duty road, improved surface'"
+v.db.update myroads_net_time layer=3 col=speed val="5.0" where="label='unimproved road'"
+
+# define traveling costs as traveling time in minutes:
+
+# set forward costs
+v.db.update myroads_net_time layer=3 col=cost val="length / speed * 60"
+# set backward costs
+v.db.update myroads_net_time layer=3 col=bcost val="length / speed * 60"
+
+# ... the 'start' and 'end' nodes have category number 1 and 2
+
+# Shortest path: ID as first number, then cat1 and cat2
+echo "1 1 2" | v.net.path myroads_net_time arc_layer=3 node_layer=2 out=mypath
+
+# Fastest path: ID as first number, then cat1 and cat2
+echo "1 1 2" | v.net.path myroads_net_time arc_layer=3 node_layer=2 arc_column=cost arc_backward_column=bcost out=mypath_time
+</pre></div>
+
+To display the result, run for example:
+
+<div class="code"><pre>
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net
+# show shortest path
+d.vect mypath col=red width=2
+# show fastest path
+d.vect mypath_time col=blue width=2
+
+# start and end point
+d.vect myroads_net icon=basic/triangle fcol=green size=12 layer=2
+d.font font=Vera
+d.vect startend disp=cat type=point lsize=14 layer=2
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="d.path.html">d.path</a>,
+  <a href="v.net.html">v.net</a>,
+  <a href="v.net.alloc.html">v.net.alloc</a>,
+  <a href="v.net.iso.html">v.net.iso</a>,
+  <a href="v.net.salesman.html">v.net.salesman</a>,
+  <a href="v.net.steiner.html">v.net.steiner</a>,
+  <a href="v.to.db.html">v.to.db</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Documentation: Markus Neteler, Markus Metz
+
+<h3><a name="turns-support">TURNS SUPPORT</a></h3>
+
+The turns support was implemnented as part of GRASS GIS turns cost project at Czech Technical University in Prague, Czech Republic.
+
+<p>
+Implementation: Stepan Turek<br>
+Documentation: Lukas Bocan, Eliska Kyzlikova, Viera Bejdova<br>
+Mentor: Martin Landa
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.net.path">v.net.path source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.net.path">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

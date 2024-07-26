@@ -1,0 +1,100 @@
+.TH g.filename 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.filename\fR\fR  \- Prints GRASS data base file names.
+.SH KEYWORDS
+general, map management, scripts
+.SH SYNOPSIS
+\fBg.filename\fR
+.br
+\fBg.filename \-\-help\fR
+.br
+\fBg.filename\fR \fBelement\fR=\fIstring\fR \fBfile\fR=\fIstring\fR  [\fBmapset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelement\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an element
+.IP "\fBfile\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of a database file
+.IP "\fBmapset\fR=\fIstring\fR" 4m
+.br
+Name of a mapset (default: current)
+.SH DESCRIPTION
+\fIg.filename\fR is designed for Bourne shell scripts that need to know
+the full file name, including it\(cqs path, for mapset elements, like raster,
+vector and site maps, region definitions and imagery groups.
+.PP
+The list of element names to search for is not fixed; any subdirectory of the
+mapset directory is a valid element name.
+.PP
+However, the user can find the list of standard GRASS GIS element names in
+the file $GISBASE/etc/element_list. This is the file which
+g.remove/g.rename/g.copy use to determine which files need to be
+deleted/renamed/copied for a given entity type.
+.SH OUTPUT
+\fIg.filename\fR
+writes one line to standard output:
+.br
+file=\(cq\fIfull_file_pathname\(cq\fR
+The output is a \fI/bin/sh\fR command to set the
+variable specified by the file \fIname\fR to the full
+UNIX path name for the data base file.  This variable may
+be set in the \fI/bin/sh\fR as follows:
+.br
+.br
+.nf
+\fC
+eval \(gag.filename element=name mapset=name file=name\(ga
+\fR
+.fi
+.SH NOTES
+This module generates the filename, but does not care if the file (or mapset
+or element) exists or not. This feature allows shell scripts to create new data
+base files as well as use existing ones.
+.PP
+If the mapset is the current mapset, \fIg.filename\fR
+automatically creates the \fIelement\fR specified if it
+doesn\(cqt already exist.  This makes it easy to add new files
+to the data base without having to worry about the
+existence of the required data base directories.  (This
+program will not create a new mapset, however, if that
+specified does not currently exist.)
+.PP
+The program exits with a 0 if everything is ok;  it exits
+with a non\-zero value if there is an error, in which case
+file=\fI\(cqfull_file_pathname\(cq\fR is not output.
+.SH SEE ALSO
+\fI
+g.findfile,
+g.gisenv
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: g.filename source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

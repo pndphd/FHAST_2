@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.eb.eta - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.eb.eta</b></em>  - Actual evapotranspiration for diurnal period (Bastiaanssen, 1995).
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_energy_balance.html">energy balance</a>, <a href="keywords.html#actual evapotranspiration">actual evapotranspiration</a>, <a href="keywords.html#SEBAL">SEBAL</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.eb.eta</b><br></div>
+<b>i.eb.eta --help</b><br>
+<div id="synopsis"><b>i.eb.eta</b> <b>netradiationdiurnal</b>=<em>name</em> <b>evaporativefraction</b>=<em>name</em> <b>temperature</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>netradiationdiurnal</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the diurnal net radiation map [W/m2]</dd>
+<dd>Default: <em>rnetday</em></dd>
+
+<dt><b>evaporativefraction</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the evaporative fraction map [-]</dd>
+<dd>Default: <em>evapfr</em></dd>
+
+<dt><b>temperature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the surface skin temperature [K]</dd>
+<dd>Default: <em>tempk</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output actual evapotranspiration layer [mm/d]</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.eb.eta</em> calculates the actual evapotranspiration (ETa ; mm/d) for
+diurnal period after [1], implemented in [3].
+It takes input of Diurnal Net Radiation (see <em>r.sun</em>), evaporative fraction (see
+<em>i.eb.evapfr</em>) and surface skin temperature. 
+
+<h2><a name="notes">NOTES</a></h2>
+Full ETa processing will need those:
+<ul>
+  <li><em>i.vi</em>, <em>i.albedo</em>, <em>r.latlong</em>, <em>i.emissivity</em>
+  <li><em>i.evapo.potrad</em> (GRASS Addon)
+  <li><em>i.eb.netrad</em>, <em>i.eb.soilheatflux</em>, <em>i.eb.hsebal01</em>
+  <li><em>i.eb.evapfr</em>, <em>i.eb.eta</em>
+</ul>
+
+(for time integration: <em>i.evapo.time_integration</em>) <!-- TODO unknown module -->
+
+<p>For more details on the algorithms see [1][2][3][4].
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.sun.html">r.sun</a>,
+<a href="i.eb.evapfr.html">i.eb.evapfr</a>,
+<a href="i.eb.netrad.html">i.eb.netrad</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<p>[1] Bastiaanssen, W.G.M., 1995.
+Estimation of Land surface parameters by remote sensing under clear-sky
+conditions. PhD thesis, Wageningen University, Wageningen, The Netherlands.
+(<a href="http://edepot.wur.nl/206553">PDF</a>)
+
+<p>[2] Chemin Y., Alexandridis T.A., 2001. Improving spatial resolution of ET
+seasonal for irrigated rice in Zhanghe, China. Asian Journal of Geoinformatics.
+5(1):3-11,2004. 
+
+<p>[3] Alexandridis T.K., Cherif I., Chemin Y., Silleos N.G., Stavrinos E.,
+Zalidis G.C. Integrated methodology for estimating water use in Mediterranean
+agricultural areas. Remote Sensing. 2009, 1, 445-465. 
+(<a href="http://www.mdpi.com/2072-4292/1/3/445">PDF</a>)
+
+<p>[4] Chemin, Y., 2012. 
+A Distributed Benchmarking Framework for Actual ET Models, 
+in: Irmak, A. (Ed.), Evapotranspiration - Remote Sensing and Modeling. InTech.
+(<a href="http://www.intechopen.com/books/evapotranspiration-remote-sensing-and-modeling/a-distributed-benchmarking-framework-for-actual-et-models">PDF</a>)
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Yann Chemin, Asian Institute of Technology, Thailand
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.eb.eta">i.eb.eta source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.eb.eta">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

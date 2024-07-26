@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.univar - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.univar</b></em>  - Calculates univariate statistics of vector map features.<BR>
+Variance and standard deviation is calculated only for points if specified.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#univariate statistics">univariate statistics</a>, <a href="keywords.html#attribute table">attribute table</a>, <a href="keywords.html#geometry">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.univar</b><br></div>
+<b>v.univar --help</b><br>
+<div id="synopsis"><b>v.univar</b> [-<b>gewd</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>column</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>percentile</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print the stats in shell script style</dd>
+
+<dt><b>-e</b></dt>
+<dd>Calculate extended statistics</dd>
+
+<dt><b>-w</b></dt>
+<dd>Weigh by line length or area size</dd>
+
+<dt><b>-d</b></dt>
+<dd>Calculate geometric distances instead of attribute statistics</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area</em></dd>
+<dd>Default: <em>point,line,area</em></dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name of attribute column</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>percentile</b>=<em>integer</em></dt>
+<dd>Percentile to calculate (requires extended statistics flag)</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>90</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example-dataset-preparation" class="toc">Example dataset preparation</a></li>
+        <li class="toc"><a href="#calculate-height-attribute-statistics" class="toc">Calculate height attribute statistics</a></li>
+        <li class="toc"><a href="#compare-to-statistics-of-original-raster-map" class="toc">Compare to statistics of original raster map</a></li>
+        <li class="toc"><a href="#calculate-statistic-of-distance-between-sampling-points" class="toc">Calculate statistic of distance between sampling points</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.univar</em> calculates univariate statistics on (by default) an attribute
+of, or, through the <b>-d</b> flag on distance between, vector map features.
+Attributes are read per feature and per category value. This means that if the 
+map contains several features with the same category value, the attribute is 
+read as many times as there are features. On the other hand, if a feature has 
+more than one category value, each attribute value linked to each of the 
+category values of the feature is read. For statistics on one attribute 
+per category value, instead of one attribute per feature and per category,
+see <a href="v.db.univar.html">v.db.univar</a>.
+
+<p>Extended statistics (<b>-e</b>) adds median, 1st and 3rd quartiles, and 90th
+percentile to the output.
+
+<h2><a name="notes">NOTES</a></h2>
+
+When using the <b>-d</b> flag, univariate statistics of distances 
+between vector features are calculated. The distances from all features 
+to all other features are used. Since the distance from feature A to 
+feature B is the same like the distance from feature B to feature A, 
+that distance is considered only once, i.e. all pairwise distances 
+between features are used. Depending on the selected vector 
+<b>type</b>, distances are calculated as follows:
+
+<ul>
+<li> <b>type=point</b>: point distances are considered;</li>
+<li> <b>type=line</b>: line to line distances are considered;</li>
+<li> <b>type=area</b>: not supported, use <b>type=centroid</b> instead (and see
+	<a href="v.distance.html">v.distance</a> for calculating distances
+	between areas)</li>
+</ul>
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+The examples are based on the North Carolina sample dataset.
+
+<h3><a name="example-dataset-preparation">Example dataset preparation</a></h3>
+
+<div class="code"><pre>
+g.region raster=elevation -p
+v.random output=samples npoints=100
+v.db.addtable map=samples columns="heights double precision"
+v.what.rast map=samples rast=elevation column=heights
+v.db.select map=samples
+</pre></div>
+
+<h3><a name="calculate-height-attribute-statistics">Calculate height attribute statistics</a></h3>
+
+<div class="code"><pre>
+v.univar -e samples column=heights type=point
+    
+number of features with non NULL attribute: 100
+number of missing attributes: 0
+number of NULL attributes: 0
+minimum: 57.2799
+maximum: 148.903
+range: 91.6235
+sum: 10825.6
+mean: 108.256
+mean of absolute values: 108.256
+population standard deviation: 20.2572
+population variance: 410.356
+population coefficient of variation: 0.187123
+sample standard deviation: 20.3593
+sample variance: 414.501
+kurtosis: -0.856767
+skewness: 0.162093
+1st quartile: 90.531
+median (even number of cells): 106.518
+3rd quartile: 126.274
+90th percentile: 135.023
+</pre></div>
+
+<h3><a name="compare-to-statistics-of-original-raster-map">Compare to statistics of original raster map</a></h3>
+
+<div class="code"><pre>
+r.univar -e elevation
+
+total null and non-null cells: 2025000
+total null cells: 0
+
+Of the non-null cells:
+----------------------
+n: 2025000
+minimum: 55.5788
+maximum: 156.33
+range: 100.751
+mean: 110.375
+mean of absolute values: 110.375
+standard deviation: 20.3153
+variance: 412.712
+variation coefficient: 18.4057 %
+sum: 223510266.558102
+1st quartile: 94.79
+median (even number of cells): 108.88
+3rd quartile: 126.792
+90th percentile: 138.66
+</pre></div>
+
+<h3><a name="calculate-statistic-of-distance-between-sampling-points">Calculate statistic of distance between sampling points</a></h3>
+
+<div class="code"><pre>
+v.univar -d samples type=point
+
+number of primitives: 100
+number of non zero distances: 4851
+number of zero distances: 0
+minimum: 69.9038
+maximum: 18727.7
+range: 18657.8
+sum: 3.51907e+07
+mean: 7254.33
+mean of absolute values: 7254.33
+population standard deviation: 3468.53
+population variance: 1.20307e+07
+population coefficient of variation: 0.478132
+sample standard deviation: 3468.89
+sample variance: 1.20332e+07
+kurtosis: -0.605406
+skewness: 0.238688
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.univar.html">db.univar</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="v.db.univar.html">v.db.univar</a>,
+<a href="v.distance.html">v.distance</a>,
+<a href="v.neighbors.html">v.neighbors</a>,
+<a href="v.qcount.html">v.qcount</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-irst
+<p>
+extended by:<br>
+Hamish Bowman, University of Otago, New Zealand<br>
+Martin Landa 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.univar">v.univar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.univar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

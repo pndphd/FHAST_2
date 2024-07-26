@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.vect.observe.strds.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.vect.observe.strds.py</b></em>  - Observes specific locations in a space time raster dataset over a period of time using vector points.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.vect.observe.strds.py</b><br></div>
+<b>t.vect.observe.strds.py --help</b><br>
+<div id="synopsis"><b>t.vect.observe.strds.py</b> <b>input</b>=<em>name</em> <b>strds</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>name</em> <b>vector_output</b>=<em>name</em> <b>columns</b>=<em>string</em>[,<i>string</i>,...]  [<b>where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>strds</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster datasets</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time vector dataset</dd>
+
+<dt><b>vector_output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the new created vector map that stores the sampled values in different layers</dd>
+
+<dt><b>columns</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Names of the vector columns to be created and to store sampled raster values, one name for each STRDS</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The module <em>t.vect.observe.strds</em> is used to observe specific
+locations in a space time raster dataset over a period of time using
+vector points.
+
+The first input is a vector map layer with vector points. The second 
+input is one or several space time raster datasets (STRDS) that should 
+be sampled over time at the vector point positions. The space time 
+raster dataset will be sampled over its whole temporal extent (from 
+start to end). A column name must be specified for each input space
+time raster dataset.
+<p>
+The result is a new space time vector dataset that contains a single
+(new) vector map which links to as many time-stamped attribute tables
+as raster map layers are present in the input space time raster dataset. 
+Hence, for each time step in the space time raster dataset a new 
+attribute table is created. The GRASS GIS Temporal Framework allows 
+to time stamp attribute tables that can be linked to a single vector 
+map layer.
+<p>
+The module <em>v.what.rast</em> is used internally for sampling the 
+time stamped raster map layers. All sampled values of a single time 
+stamped raster map layer are written into a new time stamped attribute 
+table.
+<p>
+Use <em>t.vect.db.select</em> to print attribute values of the space
+time vector dataset to stdout.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The example shows how to create a space time vector dataset and a vector
+layer starting from a point vector and a space time raster dataset:
+
+<div class="code"><pre>
+t.vect.observe.strds input=precip_30ynormals_3d strds=tempmean_monthly \
+                     output=precip_stations vect=precip_stations_monthly \
+                     columns=month
+
+t.info precip_stations type=stvds
+ +-------------------- Space Time Vector Dataset -----------------------------+
+ |                                                                            |
+ +-------------------- Basic information -------------------------------------+
+ | Id: ........................ precip_stations@climate_2009_2012
+ | Name: ...................... precip_stations
+ | Mapset: .................... climate_2009_2012
+ | Creator: ................... lucadelu
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014-12-02 00:42:39.187615
+ | Modification time:.......... 2014-12-02 00:42:55.215169
+ | Semantic type:.............. mean
+ +-------------------- Absolute time -----------------------------------------+
+ | Start time:................. 2009-01-01 00:00:00
+ | End time:................... 2013-01-01 00:00:00
+ | Granularity:................ 1 month
+ | Temporal type of maps:...... interval
+ +-------------------- Spatial extent ----------------------------------------+
+ | North:...................... 306221.830194
+ | South:...................... 27606.895351
+ | East:.. .................... 917004.829165
+ | West:....................... 151768.568246
+ | Top:........................ 1615.44
+ | Bottom:..................... 2.4384
+ +-------------------- Metadata information ----------------------------------+
+ | Vector register table:...... vector_map_register_be074525097c4088997c9a1979f17065
+ | Number of points ........... 6664
+ | Number of lines ............ 0
+ | Number of boundaries ....... 0
+ | Number of centroids ........ 0
+ | Number of faces ............ 0
+ | Number of kernels .......... 0
+ | Number of primitives ....... 6664
+ | Number of nodes ............ 0
+ | Number of areas ............ 0
+ | Number of islands .......... 0
+ | Number of holes ............ 0
+ | Number of volumes .......... 0
+ | Number of registered maps:.. 49
+ |
+ | Title:
+ | Observaion of space time raster dataset(s) tempmean_monthly
+ | Description:
+ | Observation of space time raster dataset(s) tempmean_monthly with vector map precip_30ynormals_3d
+ | Command history:
+ | # 2014-12-02 00:42:39
+ | t.vect.observe.strds input="precip_30ynormals_3d"
+ |     strds="tempmean_monthly" output="precip_stations"
+ |     vect="precip_stations_monthly" columns="month"
+ |
+ +----------------------------------------------------------------------------+
+
+
+v.info precip_stations_monthly
+ +----------------------------------------------------------------------------+
+ | Name:            precip_stations_monthly                                   |
+ | Mapset:          climate_2009_2012                                         |
+ | Location:        nc_spm_temporal_workshop                                  |
+ | Database:        /grassdata                                                |
+ | Title:           North Carolina 30 year precipitation normals (3D)         |
+ | Map scale:       1:1                                                       |
+ | Name of creator: neteler                                                   |
+ | Organization:                                                              |
+ | Source date:     Wed May  9 14:32:39 2007                                  |
+ | Timestamp (first layer): none                                              |
+ |----------------------------------------------------------------------------|
+ | Map format:      native                                                    |
+ |----------------------------------------------------------------------------|
+ |   Type of map: vector (level: 2)                                           |
+ |                                                                            |
+ |   Number of points:       136             Number of centroids:  0          |
+ |   Number of lines:        0               Number of boundaries: 0          |
+ |   Number of areas:        0               Number of islands:    0          |
+ |   Number of faces:        0               Number of kernels:    0          |
+ |   Number of volumes:      0               Number of holes:      0          |
+ |                                                                            |
+ |   Map is 3D:              Yes                                              |
+ |   Number of dblinks:      49                                               |
+ |                                                                            |
+ |   Projection: Lambert Conformal Conic                                      |
+ |                                                                            |
+ |               N:     306221.830194    S:      27606.895351                 |
+ |               E:     917004.829165    W:     151768.568246                 |
+ |               B:            2.4384    T:           1615.44                 |
+ |                                                                            |
+ |   Digitization threshold: 0                                                |
+ |   Comment:                                                                 |
+ |                                                                            |
+ +----------------------------------------------------------------------------+
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>,
+<a href="t.vect.db.select.html">t.vect.db.select</a>,
+<a href="t.vect.what.strds.html">t.vect.what.strds</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.vect.observe.strds">t.vect.observe.strds source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.vect.observe.strds">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

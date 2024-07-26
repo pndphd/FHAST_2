@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.uslek - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.uslek</b></em>  - Computes USLE Soil Erodibility Factor (K).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_hydrology.html">hydrology</a>, <a href="keywords.html#soil">soil</a>, <a href="keywords.html#erosion">erosion</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.uslek</b><br></div>
+<b>r.uslek --help</b><br>
+<div id="synopsis"><b>r.uslek</b> <b>psand</b>=<em>name</em> <b>pclay</b>=<em>name</em> <b>psilt</b>=<em>name</em> <b>pomat</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>psand</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of soil sand fraction raster map [0.0-1.0]</dd>
+
+<dt><b>pclay</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of soil clay fraction raster map [0.0-1.0]</dd>
+
+<dt><b>psilt</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of soil silt fraction raster map [0.0-1.0]</dd>
+
+<dt><b>pomat</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of soil organic matter raster map [0.0-1.0]</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output USLE K factor raster map [t.ha.hr/ha.MJ.mm]</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.uslek</em> calculates the USLE K factor, that is the Soil Erodibility
+Factor. It takes input of soil texture classes (sand, clay, silt) and
+organic matter, all in range of [0.0-1.0]. The FAO World Soil CD
+documentation was used to produce the conversion system between soil
+textures and soil classes. The soil classes are in number of 12 and
+apparently come from a USDA publication of 1951 (p.209). Once the soil
+classes have been identified (by vector cross-products tests), a general
+conversion table was applied for transforming soil classes into K factor.
+
+<h2><a name="notes">NOTES</a></h2>
+<em>r.watershed</em> provides for USLE L, S, LS factors.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Calculate the USLE K factor (synthetic values, North Carolina sample dataset):
+
+<div class="code"><pre>
+# NC data: simulation
+g.region rural_1m -p
+
+r.mapcalc "sand  = 0.11"
+r.mapcalc "clay  = 0.47"
+r.mapcalc "silt  = 0.42"
+r.mapcalc "organ = 0.0136"
+
+r.uslek psand=sand pclay=clay psilt=silt pomat=organ output=usle_k
+r.univar usle_k
+# Result: uslek = 0.25
+</pre></div>
+
+<p>
+Example with small variations (condition: d_sand + d_clay + d_silt =&gt; 1.0)
+<div class="code"><pre>
+# NC data: simulation
+r.mapcalc -s "sand_r = rand(0.09,0.13)"
+r.mapcalc -s "clay_r = rand(0.45,0.49)"
+r.mapcalc -s "silt_r = rand(0.40,0.44)"
+r.mapcalc -s "organ  = rand(0.01,0.70)"
+
+r.mapcalc "temp_sum = sand_r + clay_r + silt_r"
+r.mapcalc "sand = sand_r / temp_sum"
+r.mapcalc "clay = clay_r / temp_sum"
+r.mapcalc "silt = silt_r / temp_sum"
+r.mapcalc "test = sand + clay + silt"
+r.info -r test
+g.remove -f rast name=sand_r,clay_r,silt_r,temp_sum,test
+
+r.uslek psand=sand pclay=clay psilt=silt pomat=organ output=usle_k
+r.univar usle_k
+# Result: uslek =  variable values
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.usler.html">r.usler</a>,
+<a href="r.watershed.html">r.watershed</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Yann Chemin, SIC-ISDC, Turkmenistan<br>
+
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.uslek">r.uslek source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.uslek">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

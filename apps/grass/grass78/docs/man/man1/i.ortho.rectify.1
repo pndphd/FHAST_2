@@ -1,0 +1,192 @@
+.TH i.ortho.rectify 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.ortho.rectify\fR\fR  \- Orthorectifies an image by using the image to photo coordinate transformation matrix.
+.SH KEYWORDS
+imagery, orthorectify
+.SH SYNOPSIS
+\fBi.ortho.rectify\fR
+.br
+\fBi.ortho.rectify \-\-help\fR
+.br
+\fBi.ortho.rectify\fR [\-\fBca\fR] \fBgroup\fR=\fIname\fR  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]  \fBextension\fR=\fIstring\fR  [\fBresolution\fR=\fIfloat\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBangle\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Use current region settings in target location (def.=calculate smallest area)
+.IP "\fB\-a\fR" 4m
+.br
+Rectify all raster maps in group
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBextension\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Output raster map(s) suffix
+.IP "\fBresolution\fR=\fIfloat\fR" 4m
+.br
+Target resolution (ignored if \-c flag used)
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Interpolation method to use
+.br
+Options: \fInearest, linear, cubic, lanczos, linear_f, cubic_f, lanczos_f\fR
+.br
+Default: \fInearest\fR
+.IP "\fBangle\fR=\fIname\fR" 4m
+.br
+Raster map with camera angle relative to ground surface
+.SH DESCRIPTION
+\fIi.photo.rectify\fR rectifies an image by using the image to photo
+coordinate transformation matrix created by i.photo.2image
+and the rectification parameters created by i.photo.2target.
+Rectification is the process by which the geometry of an image is made
+planimetric.  This is accomplished by mapping an image from one coordinate
+system to another. In \fIi.photo.rectify\fR the parameters computed by
+i.photo.2image and
+i.photo.2target are used in equations to
+convert x,y image coordinates to standard map coordinates for each pixel in
+the image.  The result is an image with a standard map coordinate system,
+compensated for relief distortions and photographic tilt. Upon completion of
+the program the rectified image is deposited in a previously targeted GRASS
+LOCATION.
+.PP
+Images can be resampled with various different interpolation methods:
+nearest neighbor assignment, bilinear and bicubic interpolation. The
+bilinear and bicubic interpolation methods are also available with a
+fallback option. These methods \(dqfall back\(dq to simpler interpolation
+methods along NULL borders. That is, from bicubic to bilinear to nearest.
+.PP
+The process may take an hour or more depending on the size of the image,
+the speed of the computer, the number files, and the size and resolution
+of the selected window.
+.PP
+The rectified image will be located in the target LOCATION when the program
+is completed. The original unrectified files are not modified or removed.
+.PP
+The optional \fIangle\fR output holds the camera angle in degrees to
+the local surface, considering local slope and aspect. A value of 90
+degrees indicates that the camera angle was orthogonal to the local
+surface, a value of 0 degrees indicates that the camera angle was
+parallel to the local surface and negative values indicate that the
+surface was invisible to the camera. As a rule of thumb, values below 30
+degrees indicate problem areas where the orthorectified output will
+appear blurred. Because terrain shadowing effects are not considered,
+areas with high camera angles may also appear blurred if they are located
+(viewed from the camera position) behind mountain ridges or peaks.
+.PP
+\fIi.photo.rectify\fR can be run directly, specifying options in the
+command line or the GUI, or it can be invoked as OPTION 8 through
+i.ortho.photo. If invoked though
+i.ortho.photo, an interactive terminal
+is used to determine the options.
+.SS Interactive mode
+.PP
+You are first asked if all images within the imagery group should
+be rectified. If this option is not chosen, you are asked to specify for
+each image within the imagery group whether it should be rectified or not.
+.PP
+More than one file may be rectified at a time. Each file
+should have a unique output file name. The next prompt asks you for an
+extension to be appended to the rectified images.
+.PP
+The next prompt will ask you whether a camera angle map should be
+produced and if yes, what should be its name.
+.PP
+After that you are asked if overwriting existing maps in the target
+location and mapset should be allowed.
+.PP
+The next prompt asks you to select one of two windows:
+.PP
+.br
+.nf
+\fC
+      Please select one of the following options
+      1.   Use the current window in the target location
+      2.   Determine the smallest window which covers the image
+      >
+\fR
+.fi
+.PP
+If you choose option 2, you can also specify a desired target resolution.
+.PP
+\fIi.photo.rectify\fR will only rectify that portion of the
+image that occurs within the chosen window.  Only that portion will be
+relocated in the target database. It is therefore important to check the
+current window in the target LOCATION if choice number one is selected.
+.PP
+Next you are asked to select an interpolation method.
+.br
+.nf
+\fC
+      Please select one of the following interpolation methods
+      1. nearest neighbor
+      2. bilinear
+      3. bicubic
+      4. bilinear with fallback
+      5. bicubic with fallback
+      >
+\fR
+.fi
+.PP
+The last prompt will ask you about the amount of memory to be used by
+\fIi.photo.rectify\fR.
+.SH SEE ALSO
+\fI
+i.ortho.photo
+.br
+i.ortho.camera
+.br
+i.photo.2image
+.br
+i.photo.2target
+.br
+i.ortho.init
+.br
+i.rectify
+\fR
+.SH AUTHOR
+Mike Baba,  DBA Systems, Inc.
+.br
+Updated rectification and elevation map to FP 1/2002 Markus Neteler
+.br
+Bugfixes and enhancements 12/2010 Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: i.ortho.rectify source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,64 @@
+.TH wxGUI.tplot 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Temporal Plot Tool
+.SH DESCRIPTION
+The \fBTemporal Plot Tool\fR is a \fIwxGUI\fR
+component that queries and plots the values of a point, defined by a coordinate
+pair, in one or more temporal datasets (strds, stvds, str3ds).
+.PP
+Supported features:
+.RS 4n
+.IP \(bu 4n
+temporal datasets with interval/point and absolute/relative time,
+.IP \(bu 4n
+pop\-up annotations with values information,
+.IP \(bu 4n
+query and plot multiple points via the command line,
+.IP \(bu 4n
+zoom and pan,
+.IP \(bu 4n
+change labels to x and y axes,
+.IP \(bu 4n
+add title to the plot, and
+.IP \(bu 4n
+export the time series values to a CSV file.
+.RE
+.br
+\fIFigure: Temporal Plot Tool\fR
+To optionally add a title to the temporal plot and/or change the x and y
+axes labels, first type the desired text and then click \fIDraw\fR as
+showed below.
+.br
+\fIFigure: Add title and labels to a time series plot\fR
+To export the time series data to a text file (date and data values), type a
+name for the file and click \fIDraw\fR again. Optionally, set the
+check\-box to print headers, as well.
+.br
+\fIFigure: Export time series values to a text file\fR
+.SH NOTES
+\fIg.gui.tplot\fR requires the Python plotting library
+Matplotlib.
+.SH SEE ALSO
+\fI
+Temporal data processing
+.br
+wxGUI
+.br
+wxGUI components
+\fR
+.SH AUTHOR
+Luca Delucchi,
+Fondazione Edmund Mach, Italy
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Temporal Plot Tool source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

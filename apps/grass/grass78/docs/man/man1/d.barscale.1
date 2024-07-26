@@ -1,0 +1,177 @@
+.TH d.barscale 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.barscale\fR\fR  \- Displays a barscale on the graphics monitor.
+.SH KEYWORDS
+display, cartography
+.SH SYNOPSIS
+\fBd.barscale\fR
+.br
+\fBd.barscale \-\-help\fR
+.br
+\fBd.barscale\fR [\-\fBftn\fR]  [\fBstyle\fR=\fIstring\fR]   [\fBat\fR=\fIx,y\fR]   [\fBlength\fR=\fIinteger\fR]   [\fBunits\fR=\fIstring\fR]   [\fBlabel\fR=\fIstring\fR]   [\fBsegment\fR=\fIinteger\fR]   [\fBcolor\fR=\fIname\fR]   [\fBbgcolor\fR=\fIname\fR]   [\fBtext_position\fR=\fIstring\fR]   [\fBwidth_scale\fR=\fIfloat\fR]   [\fBfont\fR=\fIstring\fR]   [\fBfontsize\fR=\fIfloat\fR]   [\fBpath\fR=\fIname\fR]   [\fBcharset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Use feet/miles instead of meters
+.IP "\fB\-t\fR" 4m
+.br
+Draw the scale bar without text
+.IP "\fB\-n\fR" 4m
+.br
+Display north\-arrow symbol.
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBstyle\fR=\fIstring\fR" 4m
+.br
+Type of barscale to draw
+.br
+Options: \fIclassic, line, solid, hollow, full_checker, part_checker, mixed_checker, tail_checker, up_ticks, down_ticks, both_ticks, arrow_ends\fR
+.br
+Default: \fIclassic\fR
+.br
+\fB classic\fR: Classic style
+.br
+\fB line\fR: Line style
+.br
+\fB solid\fR: Solid style
+.br
+\fB hollow\fR: Hollow style
+.br
+\fB full_checker\fR: Full checker style
+.br
+\fB part_checker\fR: Part checker style
+.br
+\fB mixed_checker\fR: Mixed checker style
+.br
+\fB tail_checker\fR: Tail checker style
+.br
+\fB up_ticks\fR: Up ticks style
+.br
+\fB down_ticks\fR: Down ticks style
+.br
+\fB both_ticks\fR: Both ticks style
+.br
+\fB arrow_ends\fR: Arrow ends style
+.IP "\fBat\fR=\fIx,y\fR" 4m
+.br
+Screen coordinates of the rectangle\(cqs top\-left corner
+.br
+(0,0) is lower\-left of the display frame
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI0.0,10.0\fR
+.IP "\fBlength\fR=\fIinteger\fR" 4m
+.br
+Length of barscale in map units
+.br
+Options: \fI0\-\fR
+.br
+Default: \fI0\fR
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Barscale units to display
+.br
+Options: \fImeters,  kilometers,  feet,  miles\fR
+.IP "\fBlabel\fR=\fIstring\fR" 4m
+.br
+Custom label of unit
+.IP "\fBsegment\fR=\fIinteger\fR" 4m
+.br
+Number of segments
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI10\fR
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Bar scale and text color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color (drawn behind the bar)
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIwhite\fR
+.IP "\fBtext_position\fR=\fIstring\fR" 4m
+.br
+Text position
+.br
+Options: \fIunder, over, left, right\fR
+.br
+Default: \fIright\fR
+.IP "\fBwidth_scale\fR=\fIfloat\fR" 4m
+.br
+Scale factor to change bar width
+.br
+Options: \fI0.5\-100\fR
+.br
+Default: \fI1\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBfontsize\fR=\fIfloat\fR" 4m
+.br
+Font size
+.br
+Options: \fI1\-360\fR
+.br
+Default: \fI12\fR
+.IP "\fBpath\fR=\fIname\fR" 4m
+.br
+Path to font file
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Text encoding (only applicable to TrueType fonts)
+.SH DESCRIPTION
+\fId.barscale\fR displays a barscale on the graphics monitor at the
+given screen coordinates. If no coordinates are given it will draw the
+barscale in the bottom left of the display.
+.PP
+The barscale can drawn in a number of styles (see \fBstyle\fR
+parameter for their previews).
+.SH NOTE
+\fId.barscale\fR will not work in Lat/Lon locations as the horizontal
+scale distance changes with latitude.
+Try \fId.grid\fR instead.
+.SH SEE ALSO
+\fI
+d.graph,
+d.grid,
+d.legend,
+d.northarrow,
+g.region
+\fR
+.SH AUTHOR
+unknown, but from USACE/CERL.
+.br
+Major rewrite for GRASS 7 by Hamish Bowman
+.SH SOURCE CODE
+.PP
+Available at: d.barscale source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

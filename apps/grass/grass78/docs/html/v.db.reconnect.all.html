@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.db.reconnect.all.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.db.reconnect.all.py</b></em>  - Reconnects attribute tables for all vector maps from the current mapset to a new database.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#database">database</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.db.reconnect.all.py</b><br></div>
+<b>v.db.reconnect.all.py --help</b><br>
+<div id="synopsis"><b>v.db.reconnect.all.py</b> [-<b>cd</b>]  [<b>old_database</b>=<em>name</em>]   [<b>old_schema</b>=<em>name</em>]   [<b>new_driver</b>=<em>string</em>]   [<b>new_database</b>=<em>name</em>]   [<b>new_schema</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Copy attribute tables to the target database if not exist</dd>
+
+<dt><b>-d</b></dt>
+<dd>Delete attribute tables from the source database</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>old_database</b>=<em>name</em></dt>
+<dd>Name of source database</dd>
+
+<dt><b>old_schema</b>=<em>name</em></dt>
+<dd>Name of source database schema</dd>
+<dd>Do not use this option if schemas are not supported by driver/database server</dd>
+
+<dt><b>new_driver</b>=<em>string</em></dt>
+<dd>Name for target driver</dd>
+
+<dt><b>new_database</b>=<em>name</em></dt>
+<dd>Name for target database</dd>
+
+<dt><b>new_schema</b>=<em>name</em></dt>
+<dd>Name for target database schema</dd>
+<dd>Do not use this option if schemas are not supported by driver/database server</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#reconnect-dbf-attribute-tables-to-sqlite-database" class="toc">Reconnect DBF attribute tables to SQLite database</a></li>
+        <li class="toc"><a href="#convert-dbf-attribute-tables-to-sqlite-database" class="toc">Convert DBF attribute tables to SQLite database</a></li>
+        <li class="toc"><a href="#convert-grass-6-vector-map-to-grass-7-including-attribute-transfer-from-dbf-to-sqlite" class="toc">Convert GRASS 6 vector map to GRASS 7 including attribute transfer from DBF to SQLite</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+ 
+<em>v.db.reconnect.all</em> changes database connection of all layers
+of all vector maps in the current mapset from the source
+(<b>old_database</b>) to the target (<b>new_database</b>) database. If
+a link does not match the <b>old_database</b> it is left untouched.
+
+<p>
+If no new database is given, the default datase of the mapset is used as 
+printed by <tt>db.connect -g</tt>. If no old database is given, all 
+layers without a link in the new database will be liniked to the new 
+database. If an old database is given, only links in the old database 
+will be changed.
+
+<p>
+Optionally attribute tables in <b>new_database</b> can be created if
+not exist by <b>-c</b> flag. In this case <em>v.db.reconnect.all</em>
+also tries to create an index on key column (usually &quot;cat&quot;
+column).
+ 
+<h2><a name="notes">NOTES</a></h2>
+ 
+The value of the <b>old_database</b> option needs to be the exact
+string which appears as the fourth field printed by
+<tt>v.db.connect -g</tt>. 
+
+<div class="code"><pre>
+v.db.connect -g map=census 
+1/census|census|cat|/home/user/grassdata/nc_spm_base/PERMANENT/dbf/|dbf
+</pre></div>
+
+<em>v.db.reconnect.all</em> respect also variables to be
+substituted. In the example above,
+database <tt>/home/user/grassdata/nc_spm_base/PERMANENT/dbf/</tt> can
+be also defined as <tt>'$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/'</tt>
+(see examples).
+ 
+<p>
+Attribute tables from <b>old_database</b> are after reconnecting left
+untouched. <em>v.db.reconnect.all</em> deletes those tables
+automatically only when <b>-d</b> flag is given.
+
+<p>
+Also note that <em>v.db.reconnect.all</em> doesn't change default
+database driver or database (<tt>db.connect -p</tt>). Default database
+connection settings for newly created attribute data can be defined
+by <em><a href="db.connect.html">db.connect</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+In the examples below are assumed, that attribute tables are linked to
+the vector maps through <a href="grass-dbf.html">DBF</a> database
+driver.
+ 
+<h3><a name="reconnect-dbf-attribute-tables-to-sqlite-database">Reconnect DBF attribute tables to SQLite database</a></h3>
+
+Reconnect <a href="grass-dbf.html">DBF</a> attribute tables linked to
+the vector maps in the current mapset
+to <a href="grass-sqlite.html">SQLite</a> database:
+
+<div class="code"><pre>
+v.db.reconnect.all old_database='$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/' \
+ new_driver=sqlite new_database='$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db'
+</pre></div>
+
+If attribute table doesn't exist in the target database
+(<b>new_database</b>) then the module prints an error message.
+
+<h3><a name="convert-dbf-attribute-tables-to-sqlite-database">Convert DBF attribute tables to SQLite database</a></h3>
+
+For coping DBF tables to SQLite database and reconnecting them for all
+vector maps in the current mapset must be defined also <b>-c</b> flag.
+
+<div class="code"><pre>
+v.db.reconnect.all -c old_database='$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/' \
+ new_driver=sqlite new_database='$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db'
+</pre></div>
+
+or alternatively
+
+<div class="code"><pre>
+# set default connection (sqlite)
+db.connect -d
+# verify default connection
+db.connect -g
+# reconnect
+v.db.reconnect.all -c old_database='$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/'
+</pre></div>
+
+To automatically remove original DBF attribute tables after
+reconnecting the vector maps use <b>-d</b> flag. Note that attribute
+tables will be deleted <i>permanently</i> from the source
+database. This option should be used very carefully!
+
+
+<h3><a name="convert-grass-6-vector-map-to-grass-7-including-attribute-transfer-from-dbf-to-sqlite">Convert GRASS 6 vector map to GRASS 7 including attribute transfer from DBF to SQLite</a></h3>
+
+To become usable in GRASS 7, all vector maps in a mapset need to be updated:
+
+<div class="code"><pre>
+# first rebuild topology for all vector maps
+v.build.all
+
+# set new default db connection (to SQLite default)
+db.connect -d
+
+# copy attribute tables from old DB to new SQLite DB, delete old tables in DBF format
+v.db.reconnect.all -cd
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="v.db.connect.html">v.db.connect</a>,
+  <a href="db.connect.html">db.connect</a>,
+  <a href="db.copy.html">db.copy</a>,
+  <a href="db.createdb.html">db.createdb</a>,
+  <a href="db.droptable.html">db.droptable</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek<br>
+Major update by Martin Landa, Czech Technical University in Prague, Czech Republic
+ 
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.db.reconnect.all">v.db.reconnect.all source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.db.reconnect.all">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

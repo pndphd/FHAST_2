@@ -1,0 +1,170 @@
+.TH r.grow.distance 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.grow.distance\fR\fR  \- Generates a raster map containing distances to nearest raster features and/or the value of the nearest non\-null cell.
+.SH KEYWORDS
+raster, distance, proximity
+.SH SYNOPSIS
+\fBr.grow.distance\fR
+.br
+\fBr.grow.distance \-\-help\fR
+.br
+\fBr.grow.distance\fR [\-\fBmn\fR] \fBinput\fR=\fIname\fR  [\fBdistance\fR=\fIname\fR]   [\fBvalue\fR=\fIname\fR]   [\fBmetric\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Output distances in meters instead of map units
+.IP "\fB\-n\fR" 4m
+.br
+Calculate distance to nearest NULL cell
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBdistance\fR=\fIname\fR" 4m
+.br
+Name for distance output raster map
+.IP "\fBvalue\fR=\fIname\fR" 4m
+.br
+Name for value output raster map
+.IP "\fBmetric\fR=\fIstring\fR" 4m
+.br
+Metric
+.br
+Options: \fIeuclidean, squared, maximum, manhattan, geodesic\fR
+.br
+Default: \fIeuclidean\fR
+.SH DESCRIPTION
+\fIr.grow.distance\fR generates raster maps representing the
+distance to the nearest non\-null cell in the input map and/or the
+value of the nearest non\-null cell.
+.SH NOTES
+The flag \fB\-n\fR calculates the respective pixel distances to the
+nearest NULL cell.
+.PP
+The user has the option of specifying five different metrics which
+control the geometry in which grown cells are created, (controlled by
+the \fBmetric\fR parameter): \fIEuclidean\fR, \fISquared\fR,
+\fIManhattan\fR, \fIMaximum\fR, and \fIGeodesic\fR.
+.PP
+The \fIEuclidean distance\fR or \fIEuclidean metric\fR is the \(dqordinary\(dq distance
+between two points that one would measure with a ruler, which can be
+proven by repeated application of the Pythagorean theorem.
+The formula is given by:
+.br
+.nf
+\fC
+d(dx,dy) = sqrt(dx^2 + dy^2)
+\fR
+.fi
+Cells grown using this metric would form isolines of distance that are
+circular from a given point, with the distance given by the \fBradius\fR.
+.PP
+The \fISquared\fR metric is the \fIEuclidean\fR distance squared,
+i.e. it simply omits the square\-root calculation. This may be faster,
+and is sufficient if only relative values are required.
+.PP
+The \fIManhattan metric\fR, or \fITaxicab geometry\fR, is a form of geometry in
+which the usual metric of Euclidean geometry is replaced by a new
+metric in which the distance between two points is the sum of the (absolute)
+differences of their coordinates. The name alludes to the grid layout of
+most streets on the island of Manhattan, which causes the shortest path a
+car could take between two points in the city to have length equal to the
+points\(cq distance in taxicab geometry.
+The formula is given by:
+.br
+.nf
+\fC
+d(dx,dy) = abs(dx) + abs(dy)
+\fR
+.fi
+where cells grown using this metric would form isolines of distance that are
+rhombus\-shaped from a given point.
+.PP
+The \fIMaximum metric\fR is given by the formula
+.br
+.nf
+\fC
+d(dx,dy) = max(abs(dx),abs(dy))
+\fR
+.fi
+where the isolines of distance from a point are squares.
+.PP
+The \fIGeodesic metric\fR is calculated as geodesic distance, to
+be used only in latitude\-longitude locations. It is recommended
+to use it along with the \fI\-m\fR flag in order to output
+distances in meters instead of map units.
+.SH EXAMPLES
+.SS Distance from the streams network
+North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region raster=streams_derived \-p
+r.grow.distance input=streams_derived distance=dist_from_streams
+r.colors map=dist_from_streams color=rainbow
+\fR
+.fi
+.br
+\fIEuclidean distance from the streams network in meters (map subset)\fR
+.br
+\fIEuclidean distance from the streams network in meters (detail, numbers shown
+with d.rast.num)\fR
+.SS Distance from sea in meters in latitude\-longitude location
+.br
+.nf
+\fC
+g.region raster=sea \-p
+r.grow.distance \-m input=sea distance=dist_from_sea_geodetic metric=geodesic
+r.colors map=dist_from_sea_geodetic color=rainbow
+\fR
+.fi
+.PP
+.br
+\fIGeodesic distances to sea in meters\fR
+.SH SEE ALSO
+\fI
+r.grow,
+r.distance,
+r.buffer,
+r.cost,
+r.patch
+\fR
+.PP
+\fI
+Wikipedia Entry:
+Euclidean Metric
+.br
+Wikipedia Entry:
+Manhattan Metric
+\fR
+.SH AUTHORS
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.grow.distance source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.net.connectivity - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.net.connectivity</b></em>  - Computes vertex connectivity between two sets of nodes in the network.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#connectivity">connectivity</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.net.connectivity</b><br></div>
+<b>v.net.connectivity --help</b><br>
+<div id="synopsis"><b>v.net.connectivity</b> <b>input</b>=<em>name</em>  [<b>arc_layer</b>=<em>string</em>]   [<b>node_layer</b>=<em>string</em>]   [<b>arc_column</b>=<em>name</em>]   [<b>arc_backward_column</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [<b>node_column</b>=<em>name</em>]   [<b>set1_cats</b>=<em>range</em>]   [<b>set1_where</b>=<em>sql_query</em>]   [<b>set2_cats</b>=<em>range</em>]   [<b>set2_where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>arc_layer</b>=<em>string</em></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>arc_column</b>=<em>name</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>arc_backward_column</b>=<em>name</em></dt>
+<dd>Arc backward direction cost column (number)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>node_column</b>=<em>name</em></dt>
+<dd>Node cost column (number)</dd>
+
+<dt><b>set1_cats</b>=<em>range</em></dt>
+<dd>Set1 category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>set1_where</b>=<em>sql_query</em></dt>
+<dd>Set1 WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>set2_cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Set2 category values</dd>
+
+<dt><b>set2_where</b>=<em>sql_query</em></dt>
+<dd>Set2 WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.net.connectivity</em> computes vertex connectivity between two sets,
+ i.e. the minimum number of vertices whose removal would separate two 
+ given sets. 
+
+<h2><a name="notes">NOTES</a></h2>
+Two sets (<em>set1</em> and <em>set2</em>) are specified by respective
+<b>layer</b>, <b>where</b> and <b>cats</b> parameters. Similarly to
+<a href="v.net.flow.html">v.net.flow</a> module, capacities of nodes can
+be given by <b>node_column</b> option. <em>v.net.connectivity</em> finds the
+set of nodes of minimum total capacitiy separating the two given sets and
+outputs map containing points on the positions of these nodes. Default
+capacity, which is used when no column is specified, is one.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+The following command finds the minimum number of intersections separating
+roads on the left bank from roads on the right bank. 
+<div class="code"><pre>
+v.net.connectivity input=roads output=roads_conn set1_where="bank=left" \
+      set2_where="bank=right"
+</pre></div>
+<p>
+
+<div class="code"><pre>
+v.net.connectivity input=airtraffic output=connectivity \
+      set1_where="name=JFK" set2_where="name=Heathrow" node_column=capacity
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.net.html">v.net</a>,
+<a href="v.net.flow.html">v.net.flow</a>,
+<a href="v.net.bridge.html">v.net.bridge</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Daniel Bundala, Google Summer of Code 2009, Student<br>
+Wolf Bergenheim, Mentor
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.net.connectivity">v.net.connectivity source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.net.connectivity">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

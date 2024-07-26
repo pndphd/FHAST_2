@@ -1,0 +1,45 @@
+DBA                     DTW Barycenter Averaging
+GAK                     Fast global alignment kernels
+NCCc                    Cross-correlation with coefficient
+                        normalization
+SBD                     Shape-based distance
+TADPole                 TADPole clustering
+TSClusters-class        Class definition for 'TSClusters' and derived
+                        classes
+as.matrix               as.matrix
+compare_clusterings     Compare different clustering configurations
+compare_clusterings_configs
+                        Create clustering configurations.
+compute_envelope        Time series warping envelopes
+cvi                     Cluster validity indices
+cvi_evaluators          Cluster comparison based on CVIs
+dtw2                    DTW distance with L2 norm
+dtw_basic               Basic DTW distance
+dtw_lb                  DTW distance matrix guided by Lemire's improved
+                        lower bound
+dtwclust-package        Time series clustering along with optimizations
+                        for the Dynamic Time Warping distance
+dtwclustTimings         Results of timing experiments
+interactive_clustering
+                        A shiny app for interactive clustering
+lb_improved             Lemire's improved DTW lower bound
+lb_keogh                Keogh's DTW lower bound
+pam_cent                Centroid for partition around medoids
+pdc_configs             Helper function for
+                        preprocessing/distance/centroid configurations
+reinterpolate           Wrapper for simple linear reinterpolation
+repeat_clustering       Repeat a clustering configuration
+sdtw                    Soft-DTW distance
+sdtw_cent               Centroid calculation based on soft-DTW
+shape_extraction        Shape average of several time series
+ssdtwclust              A shiny app for semi-supervised DTW-based
+                        clustering
+tsclust                 Time series clustering
+tsclust-controls        Control parameters for clusterings with
+                        'tsclust()'
+tsclustFamily-class     Class definition for 'tsclustFamily'
+tsclusters-methods      Methods for 'TSClusters'
+tslist                  Coerce matrices or data frames to a list of
+                        time series
+uciCT                   Subset of character trajectories data set
+zscore                  Wrapper for z-normalization

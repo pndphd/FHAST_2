@@ -1,0 +1,414 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.vect - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.vect</b></em>  - Displays user-specified vector map in the active graphics frame.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_graphics.html">graphics</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#level1">level1</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.vect</b><br></div>
+<b>d.vect --help</b><br>
+<div id="synopsis"><b>d.vect</b> [-<b>cirs</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>display</b>=<em>string</em>[,<i>string</i>,...]  [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>color</b>=<em>name</em>]   [<b>fill_color</b>=<em>name</em>]   [<b>rgb_column</b>=<em>name</em>]   [<b>zcolor</b>=<em>style</em>]   [<b>width</b>=<em>integer</em>]   [<b>width_column</b>=<em>name</em>]   [<b>width_scale</b>=<em>float</em>]   [<b>icon</b>=<em>string</em>]   [<b>size</b>=<em>float</em>]   [<b>size_column</b>=<em>name</em>]   [<b>rotation_column</b>=<em>name</em>]   [<b>icon_area</b>=<em>string</em>]   [<b>icon_line</b>=<em>string</em>]   [<b>legend_label</b>=<em>string</em>]   [<b>label_layer</b>=<em>string</em>]   [<b>attribute_column</b>=<em>name</em>]   [<b>label_color</b>=<em>name</em>]   [<b>label_bgcolor</b>=<em>name</em>]   [<b>label_bcolor</b>=<em>name</em>]   [<b>label_size</b>=<em>integer</em>]   [<b>font</b>=<em>string</em>]   [<b>encoding</b>=<em>string</em>]   [<b>xref</b>=<em>string</em>]   [<b>yref</b>=<em>string</em>]   [<b>minreg</b>=<em>float</em>]   [<b>maxreg</b>=<em>float</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Random colors according to category number (or layer number if 'layer=-1' is given)</dd>
+
+<dt><b>-i</b></dt>
+<dd>Use values from 'cats' option as feature id</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use square root of the value of size_column</dd>
+<dd>This makes circle areas proportionate to the size_column values instead of circle radius</dd>
+
+<dt><b>-s</b></dt>
+<dd>Do not show this layer in vector legend</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>display</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Display</dd>
+<dd>Options: <em>shape, cat, topo, vert, dir, zcoor</em></dd>
+<dd>Default: <em>shape</em></dd>
+<dd><b>shape</b>: Display geometry of features</dd>
+<dd><b>cat</b>: Display category numbers of features</dd>
+<dd><b>topo</b>: Display topology information (nodes, edges)</dd>
+<dd><b>vert</b>: Display vertices of features</dd>
+<dd><b>dir</b>: Display direction of linear features</dd>
+<dd><b>zcoor</b>: Display z-coordinate of features (only for 3D vector maps)</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area, face</em></dd>
+<dd>Default: <em>point,line,area,face</em></dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Feature color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>fill_color</b>=<em>name</em></dt>
+<dd>Area fill color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>200:200:200</em></dd>
+
+<dt><b>rgb_column</b>=<em>name</em></dt>
+<dd>Colorize features according to color definition column</dd>
+<dd>Color definition in R:G:B form</dd>
+
+<dt><b>zcolor</b>=<em>style</em></dt>
+<dd>Colorize point or area features according to z-coordinate</dd>
+<dd>Options: <em>aspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave</em></dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspect.png" alt="aspect"> aspect</b>: aspect oriented grey colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspectcolr.png" alt="aspectcolr"> aspectcolr</b>: aspect oriented rainbow colors [range: 0 to 360]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bcyr.png" alt="bcyr"> bcyr</b>: blue through cyan through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bgyr.png" alt="bgyr"> bgyr</b>: blue through green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/blues.png" alt="blues"> blues</b>: white to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byg.png" alt="byg"> byg</b>: blue through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byr.png" alt="byr"> byr</b>: blue through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/celsius.png" alt="celsius"> celsius</b>: blue to red for degree Celsius temperature [range: -80 to 80]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/corine.png" alt="corine"> corine</b>: EU Corine land cover colors [range: 111 to 995]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/curvature.png" alt="curvature"> curvature</b>: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/differences.png" alt="differences"> differences</b>: differences oriented colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/elevation.png" alt="elevation"> elevation</b>: maps relative ranges of raster values to elevation color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/etopo2.png" alt="etopo2"> etopo2</b>: colors for ETOPO2 worldwide bathymetry/topography [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/evi.png" alt="evi"> evi</b>: enhanced vegetative index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/fahrenheit.png" alt="fahrenheit"> fahrenheit</b>: blue to red for Fahrenheit temperature [range: -112 to 176]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/forest_cover.png" alt="forest_cover"> forest_cover</b>: percentage of forest cover [range: 0 to 100]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gdd.png" alt="gdd"> gdd</b>: accumulated growing degree days [range: 0 to 6000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grass.png" alt="grass"> grass</b>: GRASS GIS green (perceptually uniform) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/greens.png" alt="greens"> greens</b>: white to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.png" alt="grey"> grey</b>: grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.eq.png" alt="grey.eq"> grey.eq</b>: histogram-equalized grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.log.png" alt="grey.log"> grey.log</b>: histogram logarithmic transformed grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey1.0.png" alt="grey1.0"> grey1.0</b>: grey scale for raster values between 0.0-1.0 [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey255.png" alt="grey255"> grey255</b>: grey scale for raster values between 0-255 [range: 0 to 255]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gyr.png" alt="gyr"> gyr</b>: green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/haxby.png" alt="haxby"> haxby</b>: relative colors for bathymetry or topography [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/inferno.png" alt="inferno"> inferno</b>: perceptually uniform sequential color table inferno [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/kelvin.png" alt="kelvin"> kelvin</b>: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/magma.png" alt="magma"> magma</b>: perceptually uniform sequential color table magma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndvi.png" alt="ndvi"> ndvi</b>: Normalized Difference Vegetation Index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndwi.png" alt="ndwi"> ndwi</b>: Normalized Difference Water Index colors [range: -200 to 200]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/nlcd.png" alt="nlcd"> nlcd</b>: US National Land Cover Dataset colors [range: 0 to 95]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/oranges.png" alt="oranges"> oranges</b>: white to orange [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/plasma.png" alt="plasma"> plasma</b>: perceptually uniform sequential color table plasma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population.png" alt="population"> population</b>: color table covering human population classification breaks [range: 0 to 2e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population_dens.png" alt="population_dens"> population_dens</b>: color table covering human population density classification breaks [range: 0 to 1e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation.png" alt="precipitation"> precipitation</b>: precipitation color table (0..2000mm) [range: 0 to 7000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_daily.png" alt="precipitation_daily"> precipitation_daily</b>: precipitation color table (0..1000mm) [range: 0 to 10000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_monthly.png" alt="precipitation_monthly"> precipitation_monthly</b>: precipitation color table (0..1000mm) [range: 0 to 1000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rainbow.png" alt="rainbow"> rainbow</b>: rainbow color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ramp.png" alt="ramp"> ramp</b>: color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/random.png" alt="random"> random</b>: random color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/reds.png" alt="reds"> reds</b>: white to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/roygbiv.png" alt="roygbiv"> roygbiv</b>:  [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rstcurv.png" alt="rstcurv"> rstcurv</b>: terrain curvature (from r.resamp.rst) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryb.png" alt="ryb"> ryb</b>: red through yellow to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryg.png" alt="ryg"> ryg</b>: red through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/sepia.png" alt="sepia"> sepia</b>: yellowish-brown through to white [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/slope.png" alt="slope"> slope</b>: r.slope.aspect-type slope colors for raster values 0-90 [range: 0 to 90]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/soilmoisture.png" alt="soilmoisture"> soilmoisture</b>: soilmoisture color table (0.0-1.0) [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm.png" alt="srtm"> srtm</b>: color palette for Shuttle Radar Topography Mission elevation [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm_plus.png" alt="srtm_plus"> srtm_plus</b>: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/terrain.png" alt="terrain"> terrain</b>: global elevation color table covering -11000 to +8850m [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/viridis.png" alt="viridis"> viridis</b>: perceptually uniform sequential color table viridis [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/water.png" alt="water"> water</b>: water depth [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/wave.png" alt="wave"> wave</b>: color wave [range: map values]</dd>
+
+<dt><b>width</b>=<em>integer</em></dt>
+<dd>Line width</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>width_column</b>=<em>name</em></dt>
+<dd>Name of numeric column containing line width</dd>
+<dd>These values will be scaled by width_scale</dd>
+
+<dt><b>width_scale</b>=<em>float</em></dt>
+<dd>Scale factor for width_column</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>icon</b>=<em>string</em></dt>
+<dd>Point and centroid symbol</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>basic/x</em></dd>
+
+<dt><b>size</b>=<em>float</em></dt>
+<dd>Symbol size</dd>
+<dd>When used with the size_column option this becomes the scale factor</dd>
+<dd>Default: <em>5</em></dd>
+
+<dt><b>size_column</b>=<em>name</em></dt>
+<dd>Name of numeric column containing symbol size</dd>
+
+<dt><b>rotation_column</b>=<em>name</em></dt>
+<dd>Name of numeric column containing symbol rotation angle</dd>
+<dd>Measured in degrees CCW from east</dd>
+
+<dt><b>icon_area</b>=<em>string</em></dt>
+<dd>Area/boundary symbol for legend</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>legend/area</em></dd>
+
+<dt><b>icon_line</b>=<em>string</em></dt>
+<dd>Line symbol for legend</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>legend/line</em></dd>
+
+<dt><b>legend_label</b>=<em>string</em></dt>
+<dd>Label to display after symbol in vector legend</dd>
+
+<dt><b>label_layer</b>=<em>string</em></dt>
+<dd>Layer number for labels (default: the given layer number)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>attribute_column</b>=<em>name</em></dt>
+<dd>Name of column to be displayed as a label</dd>
+
+<dt><b>label_color</b>=<em>name</em></dt>
+<dd>Label color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>red</em></dd>
+
+<dt><b>label_bgcolor</b>=<em>name</em></dt>
+<dd>Label background color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>label_bcolor</b>=<em>name</em></dt>
+<dd>Label border color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>label_size</b>=<em>integer</em></dt>
+<dd>Label size (pixels)</dd>
+<dd>Default: <em>8</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>encoding</b>=<em>string</em></dt>
+<dd>Text encoding</dd>
+
+<dt><b>xref</b>=<em>string</em></dt>
+<dd>Label horizontal justification</dd>
+<dd>Options: <em>left, center, right</em></dd>
+<dd>Default: <em>left</em></dd>
+
+<dt><b>yref</b>=<em>string</em></dt>
+<dd>Label vertical justification</dd>
+<dd>Options: <em>top, center, bottom</em></dd>
+<dd>Default: <em>center</em></dd>
+
+<dt><b>minreg</b>=<em>float</em></dt>
+<dd>Minimum region size (average from height and width) when map is displayed</dd>
+
+<dt><b>maxreg</b>=<em>float</em></dt>
+<dd>Maximum region size (average from height and width) when map is displayed</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.vect</em> displays vector maps in the active frame on the
+graphics monitor.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>d.vect</em> can simply be used typing <tt>d.vect
+map=vector_map</tt>. There are a large variety of optional parameters
+which allow the user to specify vector type, colors, data fields, SQL
+queries, label size and justification, etc.
+
+<p>By default <em>d.vect</em> areas are filled with <b>fill_color</b> and 
+outlined with <b>color</b>. Area outlines can be suppressed with
+<div class="code"><pre>
+d.vect map=vector_map color=none
+</pre></div>
+and areas can be made transparent with
+<div class="code"><pre>
+d.vect map=vector_map fill_color=none
+</pre></div>
+
+<p>In order to display attributes in the map, <b>attribute_column</b> must
+be specified.
+
+<p>Feature colors may be specified
+by <em><a href="v.colors.html">v.colors</a></em> in a form of color
+table or in an attribute table column containing <tt>RRR:GGG:BBB</tt>
+values.
+
+<p>A table for a vector map might look like this:
+
+<div class="code"><pre>
+db.select sql="select * from testisola"
+cat|label|GRASSRGB
+0|no data|255:255:255
+90|FRASSILONGO|23:245:67
+104|LEVICO|23:145:67
+139|PERGINE VALSUGANA|223:45:237
+168|SANT'ORSOLA|223:45:67
+190|TENNA|123:45:67
+</pre></div>
+
+<p>To add the GRASSRGB color column, use <em><a href="v.db.addcolumn.html">v.db.addcolumn</a></em>:
+<div class="code"><pre>
+v.db.addcolumn map=testisola columns="GRASSRGB varchar(11)"
+</pre></div>
+
+<p>To add/change a color, use <em><a href="v.db.update.html">v.db.update</a></em>:
+<div class="code"><pre>
+v.db.update map=testisola column=GRASSRGB value="123:45:237" where="cat=139"
+</pre></div>
+
+<p>A much simpler method of color coding is by using the <b>-c</b> flag
+which displays vector elements of like category number with a random
+color.
+
+<p>This module can use FreeType/TrueType fonts if they have already been selected with
+<em><a href="d.font.html">d.font</a></em>.
+
+<p>Parameter <b>width</b> is set by default to '0'. XDRIVER specifies the
+precise behaviour for non-zero line width, but drivers have some
+freedom as to how zero-width lines are handled, so they can use the
+hardware's &quot;thin line&quot; drawing primitive, if it has one. A
+width of zero can potentially result in significantly faster operation. On
+drivers where there is no such thing as a "thin" line, the driver will
+use a sensible default (which might not be the same as '1').
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Spearfish examples:
+
+<div class="code"><pre>
+# display roads with category numbers:
+d.vect map=roads display=shape,cat label_color=green
+
+# display randomly colorized soils map with attributes
+d.vect -c map=soils attribute_column=label
+
+# display randomly colorized selected vectors from soils map
+d.vect -c map=soils where="label='VBF'" display=shape attribute_column=label
+</pre></div>
+
+<p>3D points, 3D lines and 3D polygons colorized according to z height
+(for 3D lines and polygons a z height is computed by a midpoint of
+line/area bounding box):
+  
+<div class="code"><pre>
+g.region raster=elevation.10m
+r.random input=elevation.10m n=5000 vector=random3d -d
+d.mon start=x0
+# display as black points
+d.vect map=random3d
+# display 3D points colorized according to z height
+d.vect map=random3d zcolor=gyr
+
+# 3D contour lines
+r.contour input=elevation.10m output=contour20m step=20
+d.vect map=contour20m zcolor=gyr
+
+# generate 3D triangles
+v.delaunay input=random3d output=random3d_del
+# display 3D polygons colorized according to z height
+d.vect map=random3d_del type=area zcolor=gyr
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="v.colors.html">v.colors</a>,
+  <a href="d.erase.html">d.erase</a>,
+  <a href="d.rast.html">d.rast</a>,
+  <a href="v.colors.html">v.colors</a>,
+  <a href="v.db.addcolumn.html">v.db.addcolumn</a>,
+  <a href="v.db.update.html">v.db.update</a>
+</em>
+<p>
+<em>
+  <a href="sql.html">GRASS SQL interface</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+CERL<br>
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Support for color tables by Martin Landa, Czech Technical University in Prague (8/2011)<br>
+and many other GRASS developers
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.vect">d.vect source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.vect">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

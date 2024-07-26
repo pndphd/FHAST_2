@@ -1,0 +1,198 @@
+.TH v.import 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.import.py\fR\fR  \- Imports vector data into a GRASS vector map using OGR library and reprojects on the fly.
+.SH KEYWORDS
+vector, import, projection
+.SH SYNOPSIS
+\fBv.import.py\fR
+.br
+\fBv.import.py \-\-help\fR
+.br
+\fBv.import.py\fR [\-\fBflo\fR] \fBinput\fR=\fIstring\fR  [\fBlayer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBextent\fR=\fIstring\fR]   [\fBencoding\fR=\fIstring\fR]   [\fBsnap\fR=\fIfloat\fR]   [\fBepsg\fR=\fIinteger\fR]   [\fBdatum_trans\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+List supported OGR formats and exit
+.IP "\fB\-l\fR" 4m
+.br
+List available OGR layers in data source and exit
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has the same projection as the current location
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of OGR datasource to be imported
+.IP "\fBlayer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+OGR layer name. If not given, all available layers are imported
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map (default: input)
+.IP "\fBextent\fR=\fIstring\fR" 4m
+.br
+Output vector map extent
+.br
+Options: \fIinput, region\fR
+.br
+Default: \fIinput\fR
+.br
+\fBinput\fR: extent of input map
+.br
+\fBregion\fR: extent of current region
+.IP "\fBencoding\fR=\fIstring\fR" 4m
+.br
+Encoding value for attribute data
+.IP "\fBsnap\fR=\fIfloat\fR" 4m
+.br
+Snapping threshold for boundaries (map units)
+.br
+A suitable threshold is estimated during import
+.br
+Default: \fI\-1\fR
+.IP "\fBepsg\fR=\fIinteger\fR" 4m
+.br
+EPSG projection code
+.br
+Options: \fI1\-1000000\fR
+.IP "\fBdatum_trans\fR=\fIinteger\fR" 4m
+.br
+Index number of datum transform parameters
+.br
+\-1 to list available datum transform parameters
+.br
+Options: \fI\-1\-100\fR
+.SH DESCRIPTION
+\fIv.import\fR imports vector data from files and database connections
+supported by the OGR library) into the
+current location and mapset. If the projection of the input
+does not match the projection of the location, the input is reprojected
+into the current location. In case that the projection of the input map
+does match the projection of the location, the input is imported directly.
+.SS Supported Vector Formats
+\fIv.import\fR uses the OGR library which supports various vector data
+formats including ESRI
+Shapefile, Mapinfo
+File, UK .NTF, SDTS, TIGER, IHO S\-57 (ENC), DGN, GML, GPX, AVCBin, REC,
+Memory, OGDI, and PostgreSQL, depending on the local OGR installation.
+For details see the OGR web
+site. The OGR (Simple Features Library) is part of the
+GDAL library, hence GDAL needs to be
+installed to use \fIv.in.ogr\fR.
+.PP
+The list of actually supported formats can be printed by \fB\-f\fR flag.
+.SH NOTES
+\fIv.import\fR checks the projection metadata of the dataset to be
+imported against the current location\(cqs projection. If not identical a
+related error message is shown.
+.br
+To override this projection check (i.e. to use current location\(cqs projection)
+by assuming that the dataset has the same projection as the current location
+the \fB\-o\fR flag can be used. This is also useful when geodata to be
+imported do not contain any projection metadata at all. The user must be
+sure that the projection is identical in order to avoid to introduce data
+errors.
+.SS Topology cleaning
+When importing polygons, non\-topological polygons are converted to
+topological areas. If the input polygons contain errors (unexpected
+overlapping areas, small gaps between polygons, or warnings about being
+unable to calculate centroids), the import might need to be repeated
+using a \fIsnap\fR value as suggested in the output messages. The
+default value of snap=\-1 means that no snapping will be done.
+.PP
+The \fIsnap\fR threshold defines the maximal distance from one to another
+vertex in map units (for latitude\-longitude locations in degrees). If there
+is no other vertex within \fIsnap\fR distance, no snapping will be done.
+Note that a too large value can severely damage area topology, beyond repair.
+.PP
+\fIPost\-processing:\fR Snapped boundaries may need to be cleaned with
+\fIv.clean\fR, using its tools \fIbreak,rmdupl,rmsa\fR. For details,
+refer to the \fIv.clean\fR manual page.
+.SH EXAMPLE
+.br
+.nf
+\fC
+# import SHAPE file at full extent and reproject to current location projection
+v.import input=research_area.shp output=research_area extent=input
+\fR
+.fi
+.SH ERROR MESSAGES
+.SS SQL syntax errors
+Depending on the currently selected SQL driver, error messages such as follows may arise:
+.br
+.nf
+\fC
+DBMI\-SQLite driver error:
+Error in sqlite3_prepare():
+near \(dqORDER\(dq: syntax error
+\fR
+.fi
+Or:
+.br
+.nf
+\fC
+DBMI\-DBF driver error:
+SQL parser error:
+syntax error, unexpected DESC, expecting NAME processing \(cqDESC
+\fR
+.fi
+This indicates that a column name in the input dataset corresponds to a reserved
+SQL word (here: \(cqORDER\(cq and \(cqDESC\(cq respectively). A different column name has to be
+used in this case. The \fBcolumns\fR parameter can be used to assign different
+column names on the fly in order to avoid using reserved SQL words.
+For a list of SQL reserved words for SQLite (the default driver),
+see here.
+.SS Projection errors
+.br
+.nf
+\fC
+Projection of dataset does not appear to match the current location.
+\fR
+.fi
+Here you need to create or use a location whose projection matches that
+of the vector data you wish to import. Try using \fBlocation\fR parameter to
+create a new location based upon the projection information in the file. If
+desired, you can then re\-project it to another location
+with \fIv.proj\fR.
+.SH SEE ALSO
+\fI
+v.clean,
+v.in.lines,
+v.in.ogr,
+v.proj
+\fR
+.SH AUTHORS
+Markus Metz
+.br
+Improvements: Martin Landa, Anna Petrasova
+.SH SOURCE CODE
+.PP
+Available at: v.import source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

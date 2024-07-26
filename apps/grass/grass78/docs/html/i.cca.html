@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.cca - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.cca</b></em>  - Canonical components analysis (CCA) program for image processing.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#CCA">CCA</a>, <a href="keywords.html#canonical components analysis">canonical components analysis</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.cca</b><br></div>
+<b>i.cca --help</b><br>
+<div id="synopsis"><b>i.cca</b> <b>group</b>=<em>name</em> <b>subgroup</b>=<em>name</em> <b>signature</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>subgroup</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery subgroup</dd>
+
+<dt><b>signature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>File containing spectral signatures</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output raster map prefix name</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#parameters:" class="toc">Parameters:</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+
+<b>i.cca</b> is an image processing program that takes any number of
+(raster) band files and a signature file, and outputs the same number of
+raster band files transformed to provide maximum separability of the
+categories indicated by the signatures.  This implementation of the
+canonical components transformation is based on the algorithm contained in
+the <a href="http://dbwww.essc.psu.edu/lasdoc/user/canal.html">LAS image
+processing system</a>. CCA is also known as "Canonical components
+transformation".
+
+<p>
+Typically the user will use the 
+<em><a href="g.gui.iclass.html">g.gui.iclass</a></em>
+program to collect a set of signatures and then pass those
+signatures along with the raster band files to
+<em>i.cca</em>.  The raster band file names are specified
+on the command line by giving the group and subgroup that
+were used to collect the signatures.
+
+<p>
+The output raster map names are built by appending a ".1",
+".2", etc. to the output raster map name specified on the
+command line.
+
+<h3><a name="parameters:">Parameters:</a></h3>
+
+<dl>
+
+<dt><b>group=</b><em>name</em> 
+
+<dd>Name of the <a href="i.group.html">imagery</a> group
+to which the raster band files used belong.
+
+<dt><b>subgroup=</b><em>name</em> 
+
+<dd>Name of the <a href="i.group.html">imagery</a>
+subgroup to which the raster band files used
+belong.
+
+<dt><b>signature=</b><em>name</em> 
+
+<dd>Name of an ASCII file containing spectral signatures.
+
+<dt><b>output=</b><em>name</em> 
+
+<dd>Output raster map prefix name.  The output raster map
+layer names are built by appending a ".1", ".2", etc. onto
+the <em>output</em> name specified by the user.
+
+</dl>
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>i.cca</em> respects the current geographic region definition
+and the current mask setting while performing the transformation.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.gui.iclass.html">g.gui.iclass</a>,
+<a href="i.pca.html">i.pca</a>,
+<a href="r.covar.html">r.covar</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+Schowengerdt, Robert A.  <b>Techniques for Image Processing and
+Classification in Remote Sensing</b>,  Academic Press, 1983.
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+David Satnik, GIS Laboratory, 
+Central Washington University
+
+<br>
+
+Ali R. Vali, 
+University of Texas
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.cca">i.cca source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.cca">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

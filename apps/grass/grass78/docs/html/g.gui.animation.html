@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.gui.animation - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.gui.animation</b></em>  - Tool for animating a series of raster and vector maps or a space time raster or vector dataset.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_GUI.html">GUI</a>, <a href="keywords.html#display">display</a>, <a href="keywords.html#animation">animation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.gui.animation</b><br></div>
+<b>g.gui.animation --help</b><br>
+<div id="synopsis"><b>g.gui.animation</b>  [<b>raster</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vector</b>=<em>name</em>[,<i>name</i>,...]]   [<b>strds</b>=<em>name</em>]   [<b>stvds</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>raster</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Raster maps to animate</dd>
+
+<dt><b>vector</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Vector maps to animate</dd>
+<dd>Or data source(s) for direct OGR access</dd>
+
+<dt><b>strds</b>=<em>name</em></dt>
+<dd>Space time raster dataset to animate</dd>
+
+<dt><b>stvds</b>=<em>name</em></dt>
+<dd>Space time vector dataset to animate</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<!-- meta page description: wxGUI Animation tool -->
+<!-- meta page index: topic_gui|GUI -->
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <b>Animation Tool</b> is a <em><a href="wxGUI.html">wxGUI</a></em> component
+for animating series of GRASS raster or vector maps or space time datasets (created by t.* modules).
+
+<p>
+Animation Tool allows you to:
+
+<ul>
+  <li>display up to 4 synchronized animations</li>
+  <li>each animation can consist of base map layer(s) and (multiple) series in arbitrary order
+      (for example, raising water level with elevation)</li>
+  <li>control the animation speed</li>
+  <li>interactively change active frame using a slider</li>
+  <li>visualize space time datasets with unequally spaced intervals</li>
+  <li>animate 3d view (partially implemented, not supported on Windows)</li>
+  <li>export animation as a series of images, animated GIF, AVI or SWF</li>
+  <li>choose format of time labels in case of animating maps with absolute time</li>
+  <li>choose background color</li>
+  <li>set starting and ending region in order to change region during animation
+  (alternatively you can set N-S/E-W values instead of the ending region;
+  these are used for making the region smaller or larger for each step)</li>
+</ul>
+
+<p>
+3D view animation enables to animate raster (as an elevation map or a
+color map) or vector map (points, lines). Internally,
+module <em><a href="m.nviz.image.html">m.nviz.image</a></em> is used.
+To display 3D view animation follow these steps:
+<ul>
+  <li>open GRASS GUI, load maps and start 3D view</li>
+  <li>set view, light and other parameters as you like</li>
+  <li>save workspace file</li>
+  <li>add new animation in Animation Tool, choose 3D view mode</li>
+  <li>choose data (series of maps or space time dataset) used for animation</li>
+  <li>set workspace file</li>
+  <li>choose parameter (parameter
+  of <em><a href="m.nviz.image.html">m.nviz.image</a></em>) to animate
+  (e.g. color_map)</li>
+
+</ul>
+
+<center>
+<br>
+<img src="wxGUI_animation_tool.jpg" border="1" alt="Animation Tool screenshot">
+<br>
+<br>
+</center>
+
+<h2><a name="note">NOTE</a></h2>
+The Animation Tool follows the computational region settings,
+so please be sure your computational region is set to the geographic extent of maps you are animating.
+You can change the computational region (using <em><a href="g.region.html">g.region</a></em>)
+and then reload the maps to update the animation.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<div class="code"><pre>
+g.gui.animation raster=rmap1,rmap2,rmap3
+
+g.gui.animation vector=vmap1,vmap2,vmap3
+
+g.gui.animation strds=precipitation_2000_2010
+</pre></div>
+
+The loading of a series of maps into the Animation Tool can be simplified
+with <em><a href="g.list.html">g.list</a></em> (back ticks syntax works for Linux and Mac only):
+<div class="code"><pre>
+g.gui.animation raster=`g.list type=raster mapset=. separator=comma pattern="precip*"`
+</pre></div>
+
+Using extended regular expressions, the list of a series of raster maps can be subset by
+e.g., numeric range (here: precipitation for the years 1997-2012):
+<div class="code"><pre>
+g.gui.animation raster=`g.list -e type=raster mapset=. separator=comma pattern="precip_total.(199[7-9]|200[0-9]|201[0-2]).sum"`
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="wxGUI.html">wxGUI</a><br>
+  <a href="wxGUI.components.html">wxGUI components</a>
+</em>
+
+<p>
+<em>
+  <a href="g.gui.timeline.html">g.gui.timeline</a>,
+  <a href="g.list.html">g.list</a>,
+  <a href="m.nviz.image.html">m.nviz.image</a>
+</em>
+
+<p>
+See also related <a href="https://grasswiki.osgeo.org/wiki/WxGUI_Animation_Tool">wiki page</a>.
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Anna Kratochvilova,
+<a href="http://www.cvut.cz">Czech Technical University in Prague</a>, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/gui/wxpython/animation">wxGUI Animation tool source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/gui/wxpython/animation">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topic_gui.html">GUI index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

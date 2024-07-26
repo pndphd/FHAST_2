@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.out.ascii - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.out.ascii</b></em>  - Converts a 3D raster map layer into a ASCII text file.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#voxel">voxel</a>, <a href="keywords.html#conversion">conversion</a>, <a href="keywords.html#ASCII">ASCII</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.out.ascii</b><br></div>
+<b>r3.out.ascii --help</b><br>
+<div id="synopsis"><b>r3.out.ascii</b> [-<b>hrdcm</b>] <b>input</b>=<em>string</em>  [<b>output</b>=<em>name</em>]   [<b>precision</b>=<em>integer</em>]   [<b>null_value</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Suppress printing of header information</dd>
+
+<dt><b>-r</b></dt>
+<dd>Switch the row order in output from north->south to south->north</dd>
+
+<dt><b>-d</b></dt>
+<dd>Switch the depth order in output from bottom->top to top->bottom</dd>
+
+<dt><b>-c</b></dt>
+<dd>Print grass6 compatible format. Flags -d and -r are ignored.</dd>
+
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists) with input map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>3D raster map to be converted to ASCII</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for ASCII output file</dd>
+
+<dt><b>precision</b>=<em>integer</em></dt>
+<dd>Number of decimal places for floats</dd>
+<dd>Options: <em>0-20</em></dd>
+<dd>Default: <em>8</em></dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>*</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">Example</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.out.ascii</em> exports a 3D raster map in ASCII format. The <em>input</em> parameter is
+a valid 3D raster map in the current mapset search path. The <em>output</em> 
+parameter is the name of an ASCII file which will be written in the 
+current working directory.
+<p>If <em>output</em> is not specified then standard output (stdout) is used.
+The <em>-h</em> flag may be used to suppress header information. The
+module is sensitive to region settings (set with <em>g.region</em>).
+<p>The <em>-c</em> flag will create GRASS 6 <em>r3.in.ascii</em> compatible
+output.
+
+<h2><a name="notes">NOTES</a></h2>
+The default format of the exported ASCII file is equivalent to that required
+by <em>r3.in.ascii</em>. In particular, files output by
+<em>r3.out.ascii</em> with header information may be converted back to
+3D raster maps with <em>r3.in.ascii</em>.
+
+<p>
+The format of the ASCII file is:
+<div class="code"><pre>
+version: <i>"grass7"</i>
+order:   <i>"nsbt" or "nstb" or "snbt" or "sntb"</i>
+north:   <i>floating point</i>
+south:   <i>floating point</i>
+east:    <i>floating point</i>
+west:    <i>floating point</i>
+top:     <i>floating point</i>
+bottom:  <i>floating point</i>
+rows:    <i>integer</i>
+cols:    <i>integer</i>
+levels:  <i>integer</i>
+</pre></div>
+
+The <b>version</b> and <b>order</b> options have been introduced in GRASS 7 in June 2011.
+The <b>order</b> option describes the order of rows and depths in the output. 
+It is possible to create output of different row order using the <em>-r</em> flag 
+and output of different depths order using the  <em>-d</em> flag. The default order is:
+<p><div class="code"><pre>
+west -&gt; east for columns
+north -&gt; south for rows
+bottom -&gt; top for depths
+</pre></div>
+<p>
+This header is followed by the cell values in <em>floating point</em> format 
+organized in rows with constant <em>col</em> and <em>level</em> coordinate.
+The rows are organized by constant <em>level</em> coordinate. Individual cell
+values are separated by <em>space</em> or <em>CR</em>.
+Cell values are exported as a series of horizontal slices in row-major
+order. The data starts with the upper left corner (NW) at the bottom of the data set.
+The values at the following coordinates are exported:
+
+<div class="code"><pre>
+(x, y + rows,     z) (x + 1, y + rows,     z) ... (x + cols, y + rows,     z)
+(x, y + rows,     z) (x + 1, y + rows - 1, z) ... (x + cols, y + rows - 1, z)
+          .                     .                                .
+          .                     .                                .
+          .                     .                                .
+(x, y,   z + depths) (x + 1, y,   z + depths) ... (x + cols, y,   z + depths)
+</pre></div>
+
+This order is compatible with the <em>r.in.ascii</em> row -&gt; column ordering.
+<p>
+Supported orders are:
+<ul>
+<li><b>nsbt</b>: north -&gt; south and bottom -&gt; top ordering which is the default (no flags)</li>
+<li><b>snbt</b>: south -&gt; north and bottom -&gt; top ordering using <em>-r</em> flag</li>
+<li><b>nstb</b>: north -&gt; south and top -&gt; bottom ordering using <em>-d</em> flag</li>
+<li><b>sntb</b>: south -&gt; north and top -&gt; bottom ordering using <em>-rd</em> flag</li>
+</ul>
+<p>
+The internal storage scheme of 3D raster maps is visualized in the following picture:
+<center>
+<img src="raster3d_layout.png" border=0><br>
+<table border=0 width=700>
+<tr><td><center>
+<i>The coordinate system and tile layout of a voxel map in GRASS</i>
+</center></td></tr>
+</table>
+</center>
+
+<p>
+One level maps can be imported with <em>r.in.ascii</em> (2D raster) using
+the default <b>nsbt</b> order and removing the header lines "version",
+"order", "top", "bottom" and "levels".
+
+<h2><a name="example">Example</a></h2>
+We define a small region with 4 columns, 3 rows and 2 depths (4x3x2) and export
+it using different ordering definitions: 
+<div class="code"><pre>
+g.region res3=1 t=2 b=0 w=0 e=4 s=0 n=3
+r3.mapcalc "simple_example = row() + col() + depth()"
+</pre></div>
+
+Default order:
+<div class="code"><pre>
+r3.out.ascii input=simple_example dp=0
+
+version: grass7
+order: nsbt
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+3 4 5 6 
+4 5 6 7 
+5 6 7 8 
+4 5 6 7 
+5 6 7 8 
+6 7 8 9 
+</pre></div>
+Inverse row order (-r) 
+<div class="code"><pre>
+r3.out.ascii input=simple_example dp=0 -r
+
+version: grass7
+order: snbt
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+5 6 7 8 
+4 5 6 7 
+3 4 5 6 
+6 7 8 9 
+5 6 7 8 
+4 5 6 7
+</pre></div>
+Inverse depth order (-d) 
+<div class="code"><pre>
+r3.out.ascii input=simple_example dp=0 -d
+version: grass7
+order: nstb
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+4 5 6 7 
+5 6 7 8 
+6 7 8 9 
+3 4 5 6 
+4 5 6 7 
+5 6 7 8
+</pre></div>
+Inverse row and depth order (-rd) 
+<div class="code"><pre>
+r3.out.ascii input=simple_example dp=0 -rd
+
+version: grass7
+order: sntb
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+6 7 8 9 
+5 6 7 8 
+4 5 6 7 
+5 6 7 8 
+4 5 6 7 
+3 4 5 6
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.in.ascii.html">r3.in.ascii</a>,
+<a href="r.out.ascii.html">r.out.ascii</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+Roman Waupotitsch, Michael Shapiro, 
+Helena Mitasova, Bill Brown, Lubos Mitas, Jaro Hofierka, S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.out.ascii">r3.out.ascii source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.out.ascii">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

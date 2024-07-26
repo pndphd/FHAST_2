@@ -1,0 +1,268 @@
+.TH r.what 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.what\fR\fR  \- Queries raster maps on their category values and category labels.
+.SH KEYWORDS
+raster, querying, position
+.SH SYNOPSIS
+\fBr.what\fR
+.br
+\fBr.what \-\-help\fR
+.br
+\fBr.what\fR [\-\fBnfricv\fR] \fBmap\fR=\fIname\fR[,\fIname\fR,...]  [\fBcoordinates\fR=\fIeast,north\fR]   [\fBpoints\fR=\fIname\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBoutput\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBcache\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Output header row
+.IP "\fB\-f\fR" 4m
+.br
+Show the category labels of the grid cell(s)
+.IP "\fB\-r\fR" 4m
+.br
+Output color values as RRR:GGG:BBB
+.IP "\fB\-i\fR" 4m
+.br
+Output integer category values, not cell values
+.IP "\fB\-c\fR" 4m
+.br
+Turn on cache reporting
+.IP "\fB\-v\fR" 4m
+.br
+Show the category for vector points map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of existing raster map(s) to query
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Coordinates for query
+.IP "\fBpoints\fR=\fIname\fR" 4m
+.br
+Name of vector points map for query
+.br
+Or data source for direct OGR access
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBcache\fR=\fIinteger\fR" 4m
+.br
+Size of point cache
+.br
+Default: \fI500\fR
+.SH DESCRIPTION
+\fIr.what\fR outputs the category values and (optionally) the category
+labels associated with user\-specified locations on raster input map(s).
+Locations are specified as geographic x,y coordinate pairs (i.e., pair of
+eastings and northings); the user can also (optionally) associate a label
+with each location.
+.PP
+The input coordinates can be entered directly on the command line
+via \fBcoordinates\fR parameter, or redirected via stdin
+from an input text file, script, or piped from another program
+(like \fIv.out.ascii\fR). Coordinates
+can be given also as a vector points map (\fBpoints\fR).
+.PP
+If none of the above input methods are used and the module is run from the
+terminal prompt, the program will interactively query the user for point
+locations and labels.
+.PP
+Each line of the input consists of an easting, a northing, and an optional
+label, which are separated by spaces. In interactive mode, the word
+\(dqend\(dq must be typed after the last pair of input coordinates.
+.PP
+\fIr.what\fR output consists of the input geographic location and label,
+and, for each user\-named raster map layer, the category value, and (if
+the \fB\-f\fR label flag is specified) the category label associated with
+the cell(s) at this geographic location.
+.SH EXAMPLES
+.SS Input coordinates given as an option
+The module\(cqs \fBcoordinates\fR parameter can be used to enter coordinate
+pairs directly. The maximum number of pairs will be limited by your system\(cqs
+maximum input line length (e.g. 4096 characters).
+.br
+.nf
+\fC
+g.region raster=landuse96_28m,aspect \-p
+r.what map=landuse96_28m,aspect coordinates=633614.08,224125.12,632972.36,225382.87 \-f
+633614.08|224125.12||2|Low Intensity Developed|209.5939|209 degrees ccw from east
+632972.36|225382.87||15|Southern Yellow Pine|140.7571|140 degrees ccw from east
+\fR
+.fi
+.SS Input coordinates given as a vector points map
+Coordinates can be read from existing vector points map by
+specifying \fBpoints\fR option. Other features than points or
+centroids are ignored. Example: query North Carolina county number for
+each community college:
+.br
+.nf
+\fC
+g.region raster=boundary_county_500m \-p
+r.what map=boundary_county_500m points=comm_colleges
+145096.859150|154534.264884||39
+616341.437150|146049.750884||51
+\&...
+\fR
+.fi
+.SS Input coordinates given as a vector points map with cats
+Coordinates can be read from existing vector points map by
+specifying \fBpoints\fR option. Other features than points or
+centroids are ignored. Using the \fBv\fR flag you can get also
+the cat for each feature. Example: query North Carolina county
+number for each community college:
+.br
+.nf
+\fC
+g.region raster=boundary_county_500m \-p
+r.what map=boundary_county_500m points=comm_colleges \-v
+1|145096.859150|154534.264884||39
+2|616341.437150|146049.750884||51
+\&...
+\fR
+.fi
+.SS Input coordinates given as a vector points map, output into CSV file
+Coordinates can be read from existing vector points map by
+specifying \fBpoints\fR option. Other features than points or
+centroids are ignored. The output is stored in a CSV file including header
+row. Example: query North Carolina county number for each community college:
+.br
+.nf
+\fC
+g.region raster=boundary_county_500m \-p
+r.what map=boundary_county_500m points=comm_colleges \(rs
+       separator=comma output=result.csv \-n
+cat result.csv
+easting,northing,site_name,boundary_county_500m
+145096.859150,154534.264884,,39
+616341.437150,146049.750884,,51
+410595.719150,174301.828884,,71
+\&...
+\fR
+.fi
+.SS Input from a text file containing coordinates
+The contents of an ASCII text file can be redirected to \fIr.what\fR
+as follows. If we have a file called \fIinput_coord.txt\fR containing the
+whitespace separated coordinates and optionally labels, the resulting
+raster map values are extracted:
+.br
+.nf
+\fC
+cat input_coord.txt
+633614.08 224125.12 site 1
+632972.36 225382.87 site 2
+r.what map=landuse96_28m,aspect < input_coord.txt
+633614.08|224125.12|site 1|2|209.5939
+632972.36|225382.87|site 2|15|140.7571
+\fR
+.fi
+.SS Input from standard input on the command line
+Input coordinates may be given directly from standard input (stdin),
+for example (input data appears between the \(dqEOF\(dq markers):
+.br
+.nf
+\fC
+r.what map=landuse96_28m,aspect << EOF
+633614.08 224125.12 site 1
+632972.36 225382.87 site 2
+EOF
+633614.08|224125.12|site 1|2|209.5939
+632972.36|225382.87|site 2|15|140.7571
+\fR
+.fi
+.br
+.nf
+\fC
+echo \(dq633614.08 224125.12\(dq | r.what map=landuse96_28m,aspect
+633614.08|224125.12||2|209.5939
+\fR
+.fi
+.SS Input coordinates piped from another program
+The input coordinates may be \(dqpiped\(dq from the standard output
+(stdout) of another program. In the next example, vector
+point coordinates are piped from the
+\fIv.out.ascii\fR module.
+.br
+.nf
+\fC
+v.out.ascii comm_colleges separator=space | r.what map=boundary_county_500m
+145096.8591495|154534.26488388|1|39
+616341.4371495|146049.75088388|2|51
+410595.7191495|174301.82888388|3|71
+\&...
+\fR
+.fi
+.SS Output containing raster map category labels
+Here we use the \fB\-f\fR label flag to enable the output of category labels
+associated with the raster cell(s), as well as values (categorical maps only).
+.br
+.nf
+\fC
+r.what \-f map=landuse96_28m,aspect << EOF
+633614.08 224125.12 site 1
+632972.36 225382.87 site 2
+EOF
+633614.08|224125.12|site 1|2|Low Intensity Developed|209.5939|209 degrees ccw from east
+632972.36|225382.87|site 2|15|Southern Yellow Pine|140.7571|140 degrees ccw from east
+\fR
+.fi
+.SH NOTE
+The maximum number of raster map layers that can be queried at one time is 400.
+.SH TODO
+.RS 4n
+.IP \(bu 4n
+Fix \fB400 maps\fR limit
+.RE
+.SH SEE ALSO
+\fI
+r.category,
+r.report,
+r.stats,
+r.series,
+r.univar,
+v.what,
+v.what.rast,
+v.what.vect
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+Vector point input added by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: r.what source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,174 @@
+.TH v.split 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.split\fR\fR  \- Splits vector lines to shorter segments.
+.SH KEYWORDS
+vector, geometry, densification, node, segment, vertex
+.SH SYNOPSIS
+\fBv.split\fR
+.br
+\fBv.split \-\-help\fR
+.br
+\fBv.split\fR [\-\fBnf\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBlength\fR=\fIfloat\fR]   [\fBunits\fR=\fIstring\fR]   [\fBvertices\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Add new vertices, but do not split
+.br
+Applies only to \(cqlength\(cq option
+.IP "\fB\-f\fR" 4m
+.br
+Force segments to be exactly of given length, except for last one
+.br
+Applies only to \(cqlength\(cq option
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBlength\fR=\fIfloat\fR" 4m
+.br
+Maximum segment length
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Length units
+.br
+Options: \fImap, meters, kilometers, feet, surveyfeet, miles, nautmiles\fR
+.br
+Default: \fImap\fR
+.IP "\fBvertices\fR=\fIinteger\fR" 4m
+.br
+Maximum number of vertices in segment
+.SH DESCRIPTION
+\fIv.split\fR splits vector lines into shorter segments using
+a maximal distance between nodes. The resulting length of all segments
+is expected to be equal and not higher than the given \fBlength\fR
+parameter.
+.SH NOTES
+\fIv.split\fR does not change the layer, nor the category information,
+nor the attribute table links of the original file. It just splits each
+line in segments and attributes the same category to all segments of the same
+original line. As the attribute table is linked to the features with
+their category as key, all segments originating from the same original
+line are linked to the same line in the original attribute table which
+is just copied to the new map.
+.SS Notes on individual segment information
+When running \fIv.to.db\fR on a map produced by \fIv.split\fR,
+\fIv.to.db\fR will add length information for each segment in its
+respective attribute line, but since all the segments of the same
+original line share the same attribute table line, it only gets
+updated once.
+.PP
+To obtain the length of each segment, the user will have to attribute
+different category values to each of them. The best way to do this on
+a separate layer, using \fIv.category\fR
+.br
+.nf
+\fC
+v.category v_split op=add layer=2 output=v_split_2
+\fR
+.fi
+and then run the following commands on the new layer 2:
+.br
+.nf
+\fC
+v.db.addtable v_split_2 layer=2
+v.db.addcolumn map=v_split_2 column=\(dqlength double precision\(dq layer=2
+v.to.db map=v_split_2 type=line option=length columns=length units=meters layer=2
+\fR
+.fi
+To link the new segments in the new layer to the original segments, use:
+.br
+.nf
+\fC
+v.db.addcolumn map=v_split_2 layer=2 column=\(dqcat_1 int\(dq
+v.to.db map=v_split_2 layer=2 option=query query_layer=1 query_column=cat columns=cat_1
+\fR
+.fi
+.SH EXAMPLES
+The examples are based on the North Carolina sample data location.
+.SS Example 1: Inserting nodes to railroad lines map
+.br
+.nf
+\fC
+# extract one railroad line for this example
+v.extract input=railroads output=myrr cats=1
+# show line, category, direction (to find the beginning)
+g.region vector=myrr
+d.erase
+d.vect myrr display=shape,cat,dir
+# insert nodes at a distance not longer than 1000m
+v.split input=myrr output=myrr_split_1km length=1000
+d.vect myrr_split_1km display=shape,topo
+\fR
+.fi
+.PP
+Note: In case that the vector line data are not polylines,
+generate first polylines as the second step, eg.:
+.br
+.nf
+\fC
+# join segments into polyline
+v.build.polylines input=myrr output=myrr_polylines
+# regenerate categories
+v.category input=myrr_polylines output=myrailroads option=add
+\fR
+.fi
+.SS Example 2: Inserting vertices to railroad lines map
+Note: first run the two steps from example 1.
+.br
+.nf
+\fC
+# insert vertices at a distance not longer than 1000m
+v.split \-n input=myrr output=myrr_split length=1000
+d.vect myrr_split display=shape,topo
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.edit,
+v.build.polylines,
+v.to.points,
+v.segment
+\fR
+.SH AUTHOR
+Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.split source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

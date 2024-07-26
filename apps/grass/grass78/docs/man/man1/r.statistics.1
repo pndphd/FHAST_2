@@ -1,0 +1,161 @@
+.TH r.statistics 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.statistics\fR\fR  \- Calculates category or object oriented statistics.
+.SH KEYWORDS
+raster, statistics, zonal statistics
+.SH SYNOPSIS
+\fBr.statistics\fR
+.br
+\fBr.statistics \-\-help\fR
+.br
+\fBr.statistics\fR [\-\fBc\fR] \fBbase\fR=\fIname\fR \fBcover\fR=\fIname\fR \fBmethod\fR=\fIstring\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Cover values extracted from the category labels of the cover map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBbase\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of base raster map
+.IP "\fBcover\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of cover raster map
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Method of object\-based statistic
+.br
+Options: \fIdiversity, average, mode, median, avedev, stddev, variance, skewness, kurtosis, min, max, sum\fR
+.br
+\fBdiversity\fR: Diversity of values in specified objects in %%
+.br
+\fBaverage\fR: Average of values in specified objects
+.br
+\fBmode\fR: Mode of values in specified objects
+.br
+\fBmedian\fR: Median of values in specified objects
+.br
+\fBavedev\fR: Average deviation of values in specified objects
+.br
+\fBstddev\fR: Standard deviation of values in specified objects
+.br
+\fBvariance\fR: Variance of values in specified objects
+.br
+\fBskewness\fR: Skewnes of values in specified objects
+.br
+\fBkurtosis\fR: Kurtosis of values in specified objects
+.br
+\fBmin\fR: Minimum of values in specified objects
+.br
+\fBmax\fR: Maximum of values in specified objects
+.br
+\fBsum\fR: Sum of values in specified objects
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Resultant raster map
+.SH DESCRIPTION
+\fIr.statistics\fR is a tool to analyse exploratory statistics of a categorical
+\(dqcover layer\(dq according to how it intersects with objects in a \(dqbase layer\(dq.  A
+variety of standard statistical measures are possible (called \(dqzonal statistics\(dq
+in some GIS).
+All cells in the base layer are considered one object for the analysis.  For
+some applications, one will first want to prepare the input data so that
+all areas of contiguous cell category values in the base layer are uniquely
+identified, which can be done with \fIr.clump\fR.
+.br
+The available methods are the following:
+.RS 4n
+.IP \(bu 4n
+average deviation
+.IP \(bu 4n
+average
+.IP \(bu 4n
+diversity
+.IP \(bu 4n
+kurtosis
+.IP \(bu 4n
+maximum
+.IP \(bu 4n
+median
+.IP \(bu 4n
+minimum
+.IP \(bu 4n
+mode
+.IP \(bu 4n
+skewness
+.IP \(bu 4n
+standard deviation
+.IP \(bu 4n
+sum
+.IP \(bu 4n
+variance
+.RE
+The calculations will be performed on each area of data of the
+cover layers which fall within each unique value, or category, of the base layer.
+.PP
+Setting the \fI\-c\fR flag the category labels of the covering raster
+layer will be used.  This is nice to avoid the GRASS limitation to integer
+in raster maps because using category values floating point numbers can be
+stored.
+.PP
+All calculations create an output layer.  The output
+layer is a reclassified version of the base layer with identical
+category values, but modified category labels \- the results of the calculations
+are stored in the category labels of the output layer.
+.SH NOTES
+For floating\-point cover map support, see the alternative
+\fIr.stats.zonal\fR.
+For quantile calculations with support for floating\-point cover maps, see the
+alternative \fIr.stats.quantile\fR.
+.SH EXAMPLES
+Calculation of average elevation of each field in the Spearfish region:
+.br
+.nf
+\fC
+r.statistics base=fields cover=elevation.dem out=elevstats method=average
+r.category elevstats
+r.mapcalc \(dqfieldelev = @elevstats\(dq
+r.univar fieldelev
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.category,
+r.clump,
+r.mode,
+r.mapcalc,
+r.neighbors,
+r.stats.quantile,
+r.stats.zonal,
+r.univar
+\fR
+.SH AUTHOR
+Martin Schroeder, Geographisches Institut Heidelberg, Germany
+.SH SOURCE CODE
+.PP
+Available at: r.statistics source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

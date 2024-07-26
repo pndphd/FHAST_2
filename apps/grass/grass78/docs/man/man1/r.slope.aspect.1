@@ -1,0 +1,337 @@
+.TH r.slope.aspect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.slope.aspect\fR\fR  \- Generates raster maps of slope, aspect, curvatures and partial derivatives from an elevation raster map.
+.br
+Aspect is calculated counterclockwise from east.
+.SH KEYWORDS
+raster, terrain, aspect, slope, curvature
+.SH SYNOPSIS
+\fBr.slope.aspect\fR
+.br
+\fBr.slope.aspect \-\-help\fR
+.br
+\fBr.slope.aspect\fR [\-\fBaen\fR] \fBelevation\fR=\fIname\fR  [\fBslope\fR=\fIname\fR]   [\fBaspect\fR=\fIname\fR]   [\fBformat\fR=\fIstring\fR]   [\fBprecision\fR=\fIstring\fR]   [\fBpcurvature\fR=\fIname\fR]   [\fBtcurvature\fR=\fIname\fR]   [\fBdx\fR=\fIname\fR]   [\fBdy\fR=\fIname\fR]   [\fBdxx\fR=\fIname\fR]   [\fBdyy\fR=\fIname\fR]   [\fBdxy\fR=\fIname\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBmin_slope\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Do not align the current region to the raster elevation map
+.IP "\fB\-e\fR" 4m
+.br
+Compute output at edges and near NULL values
+.IP "\fB\-n\fR" 4m
+.br
+Create aspect as degrees clockwise from North (azimuth), with flat = \-9999
+.br
+Default: degrees counter\-clockwise from East, with flat = 0
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBslope\fR=\fIname\fR" 4m
+.br
+Name for output slope raster map
+.IP "\fBaspect\fR=\fIname\fR" 4m
+.br
+Name for output aspect raster map
+.IP "\fBformat\fR=\fIstring\fR" 4m
+.br
+Format for reporting the slope
+.br
+Options: \fIdegrees, percent\fR
+.br
+Default: \fIdegrees\fR
+.IP "\fBprecision\fR=\fIstring\fR" 4m
+.br
+Type of output aspect and slope maps
+.br
+Storage type for resultant raster map
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+Default: \fIFCELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBpcurvature\fR=\fIname\fR" 4m
+.br
+Name for output profile curvature raster map
+.IP "\fBtcurvature\fR=\fIname\fR" 4m
+.br
+Name for output tangential curvature raster map
+.IP "\fBdx\fR=\fIname\fR" 4m
+.br
+Name for output first order partial derivative dx (E\-W slope) raster map
+.IP "\fBdy\fR=\fIname\fR" 4m
+.br
+Name for output first order partial derivative dy (N\-S slope) raster map
+.IP "\fBdxx\fR=\fIname\fR" 4m
+.br
+Name for output second order partial derivative dxx raster map
+.IP "\fBdyy\fR=\fIname\fR" 4m
+.br
+Name for output second order partial derivative dyy raster map
+.IP "\fBdxy\fR=\fIname\fR" 4m
+.br
+Name for output second order partial derivative dxy raster map
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Multiplicative factor to convert elevation units to horizontal units
+.br
+Default: \fI1.0\fR
+.IP "\fBmin_slope\fR=\fIfloat\fR" 4m
+.br
+Minimum slope value (in percent) for which aspect is computed
+.br
+Default: \fI0.0\fR
+.SH DESCRIPTION
+\fIr.slope.aspect\fR generates raster maps of slope, aspect, curvatures and
+first and second order partial derivatives from a raster map of true
+elevation values. The user must specify the input \fBelevation\fR raster map
+and at least one output raster maps. The user can also specify the
+\fBformat\fR for slope (degrees, percent; default=degrees), and the
+\fBzscale\fR: multiplicative factor to convert elevation units to horizontal units;
+(default 1.0).
+.PP
+The \fBelevation\fR input raster map specified by the user must contain true
+elevation values, \fInot\fR rescaled or categorized data. If the elevation
+values are in other units than in the horizontal units,
+they must be converted to horizontal units using the parameter \fBzscale\fR.
+\fIIn GRASS GIS 7, vertical units are not assumed to be meters any more.
+For example, if both your vertical and horizontal units are feet,
+parameter \fBzscale\fR must not be used\fR.
+.PP
+The \fBaspect\fR output raster map indicates the direction that slopes
+are facing counterclockwise from East: 90 degrees is North, 180 is
+West, 270 is South, 360 is East. Zero aspect indicates flat areas with
+zero slope. Category and color table files are also generated for the
+aspect raster map.
+.br
+Note: These values can be transformed to
+azimuth values (90 is East, 180 is South, 270 is West, 360 is North)
+using r.mapcalc:
+.br
+.nf
+\fC
+# convert angles from CCW from East to CW from North
+# modulus (%) can not be used with floating point aspect values
+r.mapcalc \(dqazimuth_aspect = if(ccw_aspect == 0, 0, \(rs
+                            if(ccw_aspect < 90, 90 \- ccw_aspect, \(rs
+                            450 \- ccw_aspect)))\(dq
+\fR
+.fi
+Alternatively, the \fB\-n\fR flag can be used to produce aspect as
+degrees CW from North. Aspect for flat areas is then set to \-9999
+(default: 0). Note: The reason for using \-9999 is to be compliant with
+\fBgdaldem\fR which uses \-9999 by default as the nodata value.
+.PP
+The aspect for slope equal to zero (flat areas) is set to zero (\-9999
+with \fB\-n\fR flag). Thus, most cells with a very small slope end up
+having category 0, 45, ..., 360 in \fBaspect\fR output. It is possible
+to reduce the bias in these directions by filtering out the aspect in
+areas where the terrain is almost flat. A option \fBmin_slope\fR can
+be used to specify the minimum slope for which aspect is computed. For
+all cells with slope < \fBmin_slope\fR, both slope and
+aspect are set to zero.
+.PP
+The \fBslope\fR output raster map contains slope values, stated in degrees of
+inclination from the horizontal if \fBformat\fR=degrees option (the default)
+is chosen, and in percent rise if \fBformat\fR=percent option is chosen.
+Category and color table files are generated.
+.PP
+Profile and tangential curvatures are the curvatures in the direction of
+steepest slope and in the direction of the contour tangent respectively. The
+curvatures are expressed as 1/metres, e.g. a curvature of 0.05 corresponds to a
+radius of curvature of 20m. Convex form values are positive and concave form values
+are negative.
+.PP
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60.
+T{
+Example DEM
+T}	 	T{
+T}
+.sp 1
+T{
+Slope (degree) from example DEM
+T}	 	T{
+Aspect (degree) from example DEM
+T}
+.sp 1
+T{
+Tangential curvature (m\u\-1\d) from example DEM
+T}	 	T{
+Profile curvature (m\u\-1\d) from example DEM
+T}	 	T{
+T}
+.sp 1
+.TE
+.PP
+For some applications, the user will wish to use a reclassified raster map
+of slope that groups slope values into ranges of slope. This can be done using
+\fIr.reclass\fR. An example of a useful
+reclassification is given below:
+.br
+.nf
+\fC
+          category      range   category labels
+                     (in degrees)    (in percent)
+             1         0\-  1             0\-  2%
+             2         2\-  3             3\-  5%
+             3         4\-  5             6\- 10%
+             4         6\-  8            11\- 15%
+             5         9\- 11            16\- 20%
+             6        12\- 14            21\- 25%
+             7        15\- 90            26% and higher
+     The following color table works well with the above
+     reclassification.
+          category   red   green   blue
+             0       179    179     179
+             1         0    102       0
+             2         0    153       0
+             3       128    153       0
+             4       204    179       0
+             5       128     51      51
+             6       255      0       0
+             7         0      0       0
+\fR
+.fi
+.SH NOTES
+To ensure that the raster elevation map is not inappropriately resampled,
+the settings for the current region are modified slightly (for the execution
+of the program only): the resolution is set to match the resolution of
+the elevation raster map and the edges of the region (i.e. the north, south, east
+and west) are shifted, if necessary, to line up along edges of the nearest
+cells in the elevation map. If the user really wants the raster elevation map
+resampled to the current region resolution, the \fB\-a\fR flag should be specified.
+.PP
+The current mask is ignored.
+.PP
+The algorithm used to determine slope and aspect uses a 3x3
+neighborhood around each cell in the raster elevation map. Thus,
+slope and aspect are not determineed for cells adjacent to
+the edges and NULL cells in the elevation map layer. These cells are
+by default set to nodata in output raster maps. With the \fB\-e\fR flag,
+output values are estimated for these cells, avoiding cropping along
+the edges.
+.PP
+Horn\(cqs formula is used to find the first order derivatives in x and y directions.
+.PP
+Only when using integer elevation models, the aspect is biased in 0,
+45, 90, 180, 225, 270, 315, and 360 directions; i.e., the distribution
+of aspect categories is very uneven, with peaks at 0, 45,..., 360 categories.
+When working with floating point elevation models, no such aspect bias occurs.
+.SH EXAMPLES
+.SS Calculation of slope, aspect, profile and tangential curvature
+In this example a slope, aspect, profile and tangential curvature map
+are computed from an elevation raster map (North Carolina sample
+dataset):
+.br
+.nf
+\fC
+g.region raster=elevation
+r.slope.aspect elevation=elevation slope=slope aspect=aspect pcurvature=pcurv tcurvature=tcurv
+# set nice color tables for output raster maps
+r.colors \-n map=slope color=sepia
+r.colors map=aspect color=aspectcolr
+r.colors map=pcurv color=curvature
+r.colors map=tcurv color=curvature
+\fR
+.fi
+.PP
+Figure: Slope, aspect, profile and tangential curvature raster map (North Carolina dataset)
+.SS Classification of major aspect directions in compass orientation
+In the following example (based on the North Carolina sample dataset)
+we first generate the standard aspect map (oriented CCW from East), then
+convert it to compass orientation, and finally classify four major aspect
+directions (N, E, S, W):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# generate integer aspect map with degrees CCW from East
+r.slope.aspect elevation=elevation aspect=myaspect precision=CELL
+# generate compass orientation and classify four major directions (N, E, S, W)
+r.mapcalc \(dqaspect_4_directions = eval( \(rs\(rs
+   compass=(450 \- myaspect ) % 360, \(rs\(rs
+     if(compass >=0. && compass < 45., 1)  \(rs\(rs
+   + if(compass >=45. && compass < 135., 2) \(rs\(rs
+   + if(compass >=135. && compass < 225., 3) \(rs\(rs
+   + if(compass >=225. && compass < 315., 4) \(rs\(rs
+   + if(compass >=315., 1) \(rs\(rs
+)\(dq
+# assign text labels
+r.category aspect_4_directions separator=comma rules=\- << EOF
+1,north
+2,east
+3,south
+4,west
+EOF
+# assign color table
+r.colors aspect_4_directions rules=\- << EOF
+1 253,184,99
+2 178,171,210
+3 230,97,1
+4 94,60,153
+EOF
+\fR
+.fi
+.br
+Aspect map classified to four major compass directions (zoomed subset shown)
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Horn, B. K. P. (1981). \fIHill Shading and the Reflectance Map\fR, Proceedings
+of the IEEE, 69(1):14\-47.
+.IP \(bu 4n
+Mitasova, H. (1985). \fICartographic aspects of computer surface modeling. PhD thesis.\fR
+Slovak Technical University , Bratislava
+.IP \(bu 4n
+Hofierka, J., Mitasova, H., Neteler, M., 2009. \fIGeomorphometry in GRASS GIS.\fR
+In: Hengl, T. and Reuter, H.I. (Eds), \fIGeomorphometry: Concepts, Software, Applications. \fR
+Developments in Soil Science, vol. 33, Elsevier, 387\-410 pp,
+http://www.geomorphometry.org
+.RE
+.SH SEE ALSO
+\fI
+r.mapcalc,
+r.neighbors,
+r.reclass,
+r.rescale
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S.Army Construction Engineering Research Laboratory
+.br
+Olga Waupotitsch, U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.slope.aspect source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

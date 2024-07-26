@@ -1,0 +1,113 @@
+.TH i.aster.toar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.aster.toar\fR\fR  \- Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.
+.SH KEYWORDS
+imagery, radiometric conversion, radiance, reflectance, brightness temperature, satellite, ASTER
+.SH SYNOPSIS
+\fBi.aster.toar\fR
+.br
+\fBi.aster.toar \-\-help\fR
+.br
+\fBi.aster.toar\fR [\-\fBrabcde\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBdayofyear\fR=\fIfloat\fR \fBsun_elevation\fR=\fIfloat\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Output is radiance (W/m2)
+.IP "\fB\-a\fR" 4m
+.br
+VNIR is High Gain
+.IP "\fB\-b\fR" 4m
+.br
+SWIR is High Gain
+.IP "\fB\-c\fR" 4m
+.br
+VNIR is Low Gain 1
+.IP "\fB\-d\fR" 4m
+.br
+SWIR is Low Gain 1
+.IP "\fB\-e\fR" 4m
+.br
+SWIR is Low Gain 2
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Names of ASTER DN layers (15 layers)
+.IP "\fBdayofyear\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Day of Year of satellite overpass [0\-366]
+.IP "\fBsun_elevation\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Sun elevation angle (degrees, < 90.0)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Base name of the output layers (will add .x)
+.SH DESCRIPTION
+\fIi.aster.toar\fR calculates the Top Of Atmosphere (TOA) reflectance
+for Terra\-ASTER L1B in the visible, NIR and SWIR bands (9+1 bands) and
+brigthness temperature for the TIR bands (5 bands), all from L1B DN values.
+It is useful to apply after import of original ASTER imagery that
+is generally in standard DN values range.
+.PP
+The order of input bands is
+.RS 4n
+.IP \(bu 4n
+VNIR: 1,2,3N,3B
+.IP \(bu 4n
+SWIR: 4,5,6,7,8,9
+.IP \(bu 4n
+TIR: 10,11,12,13,14
+.RE
+in one comma\-separated list.
+.SH NOTES
+Internally, a gain code is defined to modify gains according to spectral
+bands following the GeoSystems GmbH ATCOR Ver. 2.0 Calibration Files.
+The function is defined in gain_aster.c file.
+.br
+.nf
+\fC
+/*Gain Code*/
+    /*0 \- High (Not Applicable for band 10\-14: TIR)*/
+    /*1 \- Normal*/
+    /*2 \- Low 1(Not Applicable for band 10\-14: TIR)*/
+    /*3 \- Low 2(Not Applicable for Band 1\-3N/B and 10\-14)*/
+\fR
+.fi
+.SH SEE ALSO
+\fI
+i.landsat.toar,
+r.in.aster
+\fR
+.PP
+ASTER sensor data download:
+ASTER: Advanced Spaceborne Thermal Emission and Reflection Radiometer
+.SH AUTHOR
+Yann Chemin, CSU, Australia
+.SH SOURCE CODE
+.PP
+Available at: i.aster.toar source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

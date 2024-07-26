@@ -1,0 +1,1 @@
+Rscript.exe --vanilla scripts\main\run_all.R

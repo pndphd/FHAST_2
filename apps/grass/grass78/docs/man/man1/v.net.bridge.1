@@ -1,0 +1,122 @@
+.TH v.net.bridge 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.bridge\fR\fR  \- Computes bridges and articulation points in the network.
+.SH KEYWORDS
+vector, network, articulation points
+.SH SYNOPSIS
+\fBv.net.bridge\fR
+.br
+\fBv.net.bridge \-\-help\fR
+.br
+\fBv.net.bridge\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]   [\fBarc_column\fR=\fIname\fR]   [\fBarc_backward_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIstring\fR]  \fBmethod\fR=\fIstring\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIname\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIstring\fR" 4m
+.br
+Node cost column (number)
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Feature type
+.br
+Options: \fIbridge, articulation\fR
+.br
+\fBbridge\fR: Finds bridges
+.br
+\fBarticulation\fR: Finds articulation points
+.SH DESCRIPTION
+\fIv.net.bridge\fR finds bridges and articulation points in a network.
+.SH NOTES
+Bridge in a network is an edge/line whose removal would disconnect
+the (sub\-)network. A node is an articulation point if its removal
+would disconnect the (sub\-)network. For more information and formal
+definitions check the wikipedia entries:
+bridge
+and articulation
+point.
+.PP
+The output of the module contains the selected
+features. For \fBmethod=bridge\fR, lines corresponding to
+bridges are copied from the input map to the output map. On the
+other hand, for \fBmethod=articulation\fR, points are created on
+the positions of articulation points.
+.PP
+.br
+In GRASS GIS, \fIline\fR is not always a single line
+segment. It might be, and often is, a sequence of line segments
+between two intersections. Also, articulation point is a standard
+graph theoretic terminology which is slightly misleading in GRASS.
+An articulation point in graph theory is an articulation
+\fInode\fR in GRASS terminology.
+.SH EXAMPLES
+.br
+.nf
+\fC
+	TBD
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net,
+v.category,
+\fR
+.SH AUTHORS
+Daniel Bundala, Google Summer of Code 2009, Student
+.br
+Wolf Bergenheim, Mentor
+.SH SOURCE CODE
+.PP
+Available at: v.net.bridge source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

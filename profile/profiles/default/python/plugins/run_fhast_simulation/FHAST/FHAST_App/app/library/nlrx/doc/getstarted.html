@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jan Salecker" />
+
+<meta name="date" content="2023-05-16" />
+
+<title>Get Started</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Get Started</h1>
+<h4 class="author">Jan Salecker</h4>
+<h4 class="date">2023-05-16</h4>
+
+
+
+<div id="nlrx" class="section level1">
+<h1>nlrx</h1>
+<p>The nlrx package provides tools to setup and execute NetLogo
+simulations from R. NetLogo is a free, open-source and cross-platform
+modelling environment for simulating natural and social phenomena.
+NetLogo focusses on implementation of agent-based and spatially explicit
+simulation models, although system dynamics models are supported as
+well. NetLogo is developed and maintained at the Center for Connected
+Learning and Computer-Based Modeling, Northwestern University, Evanston,
+IL. More details on NetLogo itself are available online: <a href="https://ccl.northwestern.edu/netlogo/docs/">NetLogo online
+documentation</a></p>
+<p>NetLogo comes with the built-in experiment tool <a href="https://ccl.northwestern.edu/netlogo/docs/behaviorspace.html">Behavior
+Space</a> that allows to setup and execute model simulations with
+different settings and parameter variations and to collect model output.
+This experiment tool can be executed via command line in combination
+with an XML file that contains the experiment specifications, such as
+runtime, variables, output measurements, stop conditions, and more. One
+limitation of Behavior Space is, that it only supports full-factorial
+parameter designs, which may not be appropriate for complex model
+analyses. Furthermore, Behavior Space experiment specifications are
+stored within the NetLogo file and are not easily accessible from R.
+However, in many cases it is useful to store such specifications along
+with the model output and analyses results in order to enable fully
+reproducible model analyses.</p>
+<p>The nlrx package utilizes the commandline functionality of Behavior
+Space to execute NetLogo simulations directly from R. Instead of
+defining experiments within NetLogo Behavior Space, experiments are
+defined in R using the class objects of the nlrx package. These class
+objects hold all the information that is needed to run these experiments
+remotely from R, such as path to NetLogo installation folder, path to
+the model file and the experiment specifications itself. nlrx provides
+useful helper functions to generate parameter input matrices from
+parameter range definitions that cover a wide range of parameter
+exploration approaches. By storing all relevant information on
+simulation experiments, including the output of the model simulations in
+one class object, experiments can be easily stored and shared.</p>
+<p>In summary, the nlrx package uses a similar structure as NetLogos
+Behavior Space but offers more flexibility and additional tools for
+running reproducible complex model analyses directly from R.</p>
+<div id="publication" class="section level2">
+<h2>Publication</h2>
+<p>Further information on the package functionality and detailed code
+examples can be found in our accompanying publication: Salecker J,
+Sciaini M, Meyer KM, Wiegand K. The nlrx r package: A next-generation
+framework for reproducible NetLogo model analyses. Methods Ecol Evol.
+2019;2041-210X. <a href="https://doi.org/10.1111/2041-210X.13286">https://doi.org/10.1111/2041-210X.13286</a>.</p>
+<p>Get citation information for <code>nlrx</code> in R doing
+<code>citation(package = &#39;nlrx&#39;)</code>.</p>
+</div>
+<div id="prerequirements" class="section level2">
+<h2>Prerequirements</h2>
+<div id="netlogo" class="section level3">
+<h3>NetLogo</h3>
+<p>In order to use the nlrx package, <a href="http://netlogoweb.org/">NetLogo</a> (&gt;=5.3.1) needs to be
+installed on the system that is used to execute model simulations
+(local/remote). For remote execution, NetLogo needs to be installed on
+remote machines as well. The nlrx package provides a utility function
+(<code>download_netlogo()</code>) that can be used to download and unzip
+(only unix systems) a specified NetLogo version to a local folder. For
+windows machines, the downloaded file needs to be executed in order to
+install NetLogo on the local system. If you are running MacOS, please
+use the Linux tar.gz version of NetLogo (either from the NetLogo
+Homepage or by using the <code>download_netlogo()</code> function). The
+dmg version from the NetLogo homepage is not compatible with nlrx.</p>
+<p>All code snippets on this homepage should be compatible with Netlogo
+&lt;= 6.2.2. In version 6.3.0, the folder structure of NetLogo was
+slighlty updated, thus the modelpath in the code snippets need to be
+adjusted accordingly (the <code>&quot;app/&quot;</code> folder needs to be removed
+from the modelpath).</p>
+</div>
+<div id="java" class="section level3">
+<h3>Java</h3>
+<p>Because NetLogo is executed in a Java virtual machine, Java needs to
+be installed on the local/remote system as well. We recommend the <a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">Oracle
+Java SE Development Kit 8</a> or the <a href="https://github.com/ojdkbuild/ojdkbuild">openjdk</a>. While the
+nlrx package might work without setting the Java system path explicitly,
+we recommend to make sure that JAVA_HOME points to the correct Java
+installation of the system.</p>
+</div>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the released version of nlrx from <a href="https://CRAN.R-project.org">CRAN</a> with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;nlrx&quot;</span>)</span></code></pre></div>
+<p>And the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/nlrx&quot;</span>)</span></code></pre></div>
+</div>
+<div id="get-started" class="section level2">
+<h2>Get started</h2>
+<p>General information that is needed to run NetLogo simulations
+remotely, such as path to the NetLogo installation folder is stored
+within a <code>nl</code> class object. Nested within this
+<code>nl</code> class are the classes <code>experiment</code> and
+<code>simdesign</code>. The <code>experiment</code> class stores all
+experiment specifications. After attaching a valid experiment, a
+<code>simdesign</code> class object can be attached to the
+<code>nl</code> class object, by using one of the simdesign helper
+functions. These helper functions create different parameter input
+matrices from the experiment variable definitions that can then be
+executed by the <code>run_nl_one()</code> and <code>run_nl_all()</code>
+functions. The nested design allows to store everything related to the
+experiment within one R object. Additionally, different simdesign helper
+functions can be applied to the same <code>nl</code> object in order to
+repeat the same experiment with different parameter exploration methods
+(simdesigns).</p>
+<div id="step-by-step-application-example" class="section level3">
+<h3>Step by step application example</h3>
+<p>The “Wolf Sheep Predation” model from the NetLogo models library is
+used to present a basic example on how to setup and run NetLogo model
+simulations from R.</p>
+<div id="step-1-create-a-nl-object" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<p>The nl object holds all information on the NetLogo version, a path to
+the NetLogo directory with the defined version, a path to the model
+file, and the desired memory for the java virtual machine. Depending on
+the operation system, paths to NetLogo and the model need to be
+adjusted.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>The experiment object is organized in a similar fashion as NetLogo
+Behavior Space experiments. It contains all information that is needed
+to generate a simulation parameter matrix and to execute the NetLogo
+simulations. Details on the specific slots of the experiment class can
+be found in the package documentation (<code>?experiment</code>) and the
+“Advanced configuration” vignette.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;true&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">50</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">evalticks=</span><span class="fu">seq</span>(<span class="dv">40</span>,<span class="dv">50</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>, <span class="st">&quot;count patches with [pcolor = green]&quot;</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">20</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>While the experiment defines the variables and specifications of the
+model, the simulation design creates a parameter input table based on
+these model specifications and the chosen simulation design method. nlrx
+provides a bunch of different simulation designs, such as
+full-factorial, latin-hypercube, sobol, morris and eFast (see “Simdesign
+Examples” vignette for more information on simdesigns). All simdesign
+helper functions need a properly defined nl object with a valid
+experiment design. Each simdesign helper also allows to define a number
+of random seeds that are randomly generated and can be used to execute
+repeated simulations of the same parameter matrix with different
+random-seeds (see “Advanced configuration” vignette for more information
+on random-seed and repetition management). A simulation design is
+attached to a nl object by using one of the simdesign helper
+functions:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_lhs</span>(<span class="at">nl=</span>nl,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">samples=</span><span class="dv">100</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">nseeds=</span><span class="dv">3</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">precision=</span><span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>All information that is needed to run the simulations is now stored
+within the nl object. The <code>run_nl_one()</code> function allows to
+run one specific simulation from the siminput parameter table. The
+<code>run_nl_all()</code> function runs a loop over all simseeds and
+rows of the parameter input table siminput. The loops are constructed in
+a way that allows easy parallelisation, either locally or on remote HPC
+machines (see “Advanced configuration” vignette for more information on
+parallelisation). Before running your simulations you might want to
+check your current nl object setup.
+<code>eval_variables_constants(nl)</code> evaluates if the defined
+variables and constants are correctly defined and are consistent with
+the attached model. <code>print(nl)</code> prints a complete summary of
+the provided nl object including checkmarks that might help to indicate
+potential problems.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate nl object:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_variables_constants</span>(nl)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nl)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Run all simulations (loop over all siminputrows and simseeds)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_all</span>(nl)</span></code></pre></div>
+</div>
+<div id="step-5-attach-results-to-nl-and-run-analysis" class="section level4">
+<h4>Step 5: Attach results to nl and run analysis</h4>
+<p>nlrx provides method specific analysis functions for each simulation
+design. Depending on the chosen design, the function reports a tibble
+with aggregated results or sensitivity indices. In order to run the
+analyze_nl function, the simulation output has to be attached to the nl
+object first. The simdesign class within the nl object provides a slot
+for attaching output results (simoutput). An output results tibble can
+be attached to this slot by using the simdesign setter function
+<code>setsim(nl, &quot;simoutput&quot;)</code>. After attaching the simulation
+results, these can also be written to the defined outpath of the
+experiment object.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach results to nl object:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Write output to outpath of experiment within nl</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write_simoutput</span>(nl)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Do further analysis:</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_nl</span>(nl)</span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="complete-code-example" class="section level2">
+<h2>Complete code example</h2>
+<p>This code block contains the above code example for easy copy-pasting
+into your R script:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup nl object</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach experiment</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep&quot;</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;true&quot;</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">50</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                            <span class="at">evalticks=</span><span class="fu">seq</span>(<span class="dv">40</span>,<span class="dv">50</span>),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>, <span class="st">&quot;count patches with [pcolor = green]&quot;</span>),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">20</span>,</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach simdesign</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_lhs</span>(<span class="at">nl=</span>nl,</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>                               <span class="at">samples=</span><span class="dv">100</span>,</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>                               <span class="at">nseeds=</span><span class="dv">3</span>,</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>                               <span class="at">precision=</span><span class="dv">3</span>)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate nl object:</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_variables_constants</span>(nl)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(nl)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Run all simulations (loop over all siminputrows and simseeds)</span></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_all</span>(nl)</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Attach results to nl object:</span></span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Write output to outpath of experiment within nl</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="fu">write_simoutput</span>(nl)</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Do further analysis:</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a><span class="fu">analyze_nl</span>(nl)</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

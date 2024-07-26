@@ -1,0 +1,170 @@
+.TH v.voronoi 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.voronoi\fR\fR  \- Creates a Voronoi diagram constrained to the extents of the current region from an input vector map containing points or centroids.
+.SH KEYWORDS
+vector, geometry, triangulation, skeleton
+.SH SYNOPSIS
+\fBv.voronoi\fR
+.br
+\fBv.voronoi \-\-help\fR
+.br
+\fBv.voronoi\fR [\-\fBaslt\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBsmoothness\fR=\fIfloat\fR]   [\fBthin\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Create Voronoi diagram for input areas
+.IP "\fB\-s\fR" 4m
+.br
+Extract skeletons for input areas
+.IP "\fB\-l\fR" 4m
+.br
+Output tessellation as a graph (lines), not areas
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBsmoothness\fR=\fIfloat\fR" 4m
+.br
+Factor for output smoothness
+.br
+Applies to input areas only. Smaller values produce smoother output but can cause numerical instability.
+.br
+Default: \fI0.25\fR
+.IP "\fBthin\fR=\fIfloat\fR" 4m
+.br
+Maximum dangle length of skeletons
+.br
+Applies only to skeleton extraction. Default = \-1 will extract the center line.
+.br
+Default: \fI\-1\fR
+.SH DESCRIPTION
+\fIv.voronoi\fR creates a Voronoi diagram (Thiessen polygons) from
+points or centroids.
+.PP
+The bounds of the output map are limited by the current region
+(see \fIg.region\fR).
+.PP
+The \fI\-a\fR flag can be used to create a Voronoi diagram for areas.
+.PP
+The \fI\-s\fR flag can be used to extract the center line of areas or
+skeletons of areas with \fIthin\fR >= 0. Smaller values for the
+\fIthin\fR option will preserve more detail, while negative values
+will extract only the center line.
+.SH NOTES
+\fIv.voronoi\fR suffers from numerical instability, results can
+sometimes contain many artefacts. When creating Voronoi diagrams for areas
+or skeletons for areas, it is highly recommended to simplify the areas first
+with \fIv.generalize\fR.
+.PP
+Voronoi diagrams may be used for nearest\-neighbor flood filling.
+Give the centroids attributes (start with
+\fIv.db.addcolumn\fR),
+then optionally convert the result to a raster map with
+\fIv.to.rast\fR.
+.PP
+The extraction of skeletons and center lines with the \fI\-s\fR flag
+is a brute force approach. Faster and more accurate algorithms to
+extract skeletons from areas exist but are not yet implemented. In the
+meantime, skeletons and center lines can be simplified with the
+Douglas\-Peucker algorithm:
+\fIv.generalize method=douglas\fR.
+.SH EXAMPLE
+.SS Voronoi diagram for points
+This example uses the hospitals in the North Carolina dataset.
+.br
+.nf
+\fC
+g.region \-p raster=elev_state_500m
+v.voronoi input=hospitals output=hospitals_voronoi
+\fR
+.fi
+Result:
+.br
+\fIVoronoi diagram for hospitals in North Carolina\fR
+.SS Voronoi diagram for areas
+This example uses urban areas in the North Carolina dataset.
+.br
+.nf
+\fC
+g.region \-p n=162500 s=80000 w=727000 e=846000 res=500
+v.voronoi input=urbanarea output=urbanarea_voronoi \-a
+\fR
+.fi
+Result:
+.br
+\fIVoronoi diagram for urban areas in North Carolina\fR
+.SS Skeletons and center lines of areas
+This example uses urban areas in the North Carolina dataset.
+.br
+.nf
+\fC
+g.region \-p n=161000 s=135500 w=768500 e=805500 res=500
+v.voronoi input=urbanarea output=urbanarea_centerline \-s
+v.voronoi input=urbanarea output=urbanarea_skeleton \-s thin=2000
+\fR
+.fi
+Result:
+.br
+\fISkeleton (blue) and center line (red) for urban areas in North Carolina\fR
+.SH REFERENCES
+\fISteve J. Fortune,  (1987).  A Sweepline Algorithm for
+Voronoi Diagrams, Algorithmica 2, 153\-174
+(DOI).\fR
+.SH SEE ALSO
+\fI
+g.region,
+v.delaunay,
+v.hull
+\fR
+.SH AUTHORS
+James Darrell McCauley, Purdue University
+.br
+GRASS 5 update, improvements: Andrea Aime, Modena, Italy
+.br
+GRASS 5.7 update: Radim Blazek
+.br
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: v.voronoi source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

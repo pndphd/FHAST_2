@@ -1,0 +1,72 @@
+.TH test.raster3d.lib 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBtest.raster3d.lib\fR\fR  \- Performs unit and integration tests for the raster3d library
+.SH KEYWORDS
+raster3d, unit test
+.SH SYNOPSIS
+\fBtest.raster3d.lib\fR
+.br
+\fBtest.raster3d.lib \-\-help\fR
+.br
+\fBtest.raster3d.lib\fR [\-\fBul\fR]  [\fBunit\fR=\fIstring\fR]   [\fBdepths\fR=\fIinteger\fR]   [\fBrows\fR=\fIinteger\fR]   [\fBcols\fR=\fIinteger\fR]   [\fBtile_size\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-u\fR" 4m
+.br
+Run all unit tests
+.IP "\fB\-l\fR" 4m
+.br
+Switch zip compression on
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBunit\fR=\fIstring\fR" 4m
+.br
+Choose the unit tests to run
+.br
+Options: \fIcoord, putget, large\fR
+.IP "\fBdepths\fR=\fIinteger\fR" 4m
+.br
+The number of depths to be used for the large file put/get value test
+.br
+Default: \fI20\fR
+.IP "\fBrows\fR=\fIinteger\fR" 4m
+.br
+The number of rows to be used for the large file put/get value test
+.br
+Default: \fI5400\fR
+.IP "\fBcols\fR=\fIinteger\fR" 4m
+.br
+The number of columns to be used for the large file put/get value test
+.br
+Default: \fI10800\fR
+.IP "\fBtile_size\fR=\fIinteger\fR" 4m
+.br
+The tile size in kilo bytes to be used for the large file put/get value test. Set the tile size to 2048 and the number of row*cols*depths > 130000 to reproduce the tile rle error.
+.br
+Default: \fI32\fR
+.SH DESCRIPTION
+\fItest.raster3d.lib\fR
+is a module dedicated for testing the raster 3d library functionality and to perform benchmark runs.
+This module is used by the testing framework to perform library tests.
+.SH AUTHOR
+Sören Gebbert
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

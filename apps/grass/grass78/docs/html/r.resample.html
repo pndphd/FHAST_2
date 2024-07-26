@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.resample - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.resample</b></em>  - GRASS raster map layer data resampling capability.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_resample.html">resample</a>, <a href="keywords.html#nearest neighbor">nearest neighbor</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.resample</b><br></div>
+<b>r.resample --help</b><br>
+<div id="synopsis"><b>r.resample</b> <b>input</b>=<em>string</em> <b>output</b>=<em>string</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an input layer</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an output layer</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.resample</em> resamples the data values in a user-specified raster
+input map layer <em>name</em> (bounded by the current geographic region
+and masked by the current mask), and produces a new raster output map layer
+<em>name</em> containing the results of the resampling.
+The category values in the new raster output map layer will be the same
+as those in the original, except that the resolution and extent of the
+new raster output map layer will match those of the current geographic region
+settings (see <em><a href="g.region.html">g.region</a></em>).
+<em>r.resample</em> is intended for resampling of discrete raster data
+(such as land cover, geology or soil type) to a different resolution.
+Continuous data (such as elevation or temperature) usually require reinterpolation
+when changing resolution, see <em><a href="r.resamp.interp.html">r.resamp.interp</a></em>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The method by which resampling is conducted is "nearest neighbor"
+(see <em><a href="r.neighbors.html">r.neighbors</a></em>).  
+The resulting raster map layer will have the same
+resolution as the resolution of the current geographic region
+(set using <em><a href="g.region.html">g.region</a></em>).
+
+<p>The resulting raster map layer may be identical to the original raster
+map layer.  The <em>r.resample</em> program will copy the color table
+and history file associated with the original raster map
+layer for the resulting raster map layer and will create a modified
+category file which contains description of only those categories
+which appear in resampled file.
+
+<p>
+When the user resamples a GRASS <em>reclass</em> file, a true raster map
+is created by <em>r.resample</em>.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.mfilter.html">r.mfilter</a>,
+<a href="r.neighbors.html">r.neighbors</a>,
+<a href="r.rescale.html">r.rescale</a>,
+<a href="r.resamp.interp.html">r.resamp.interp</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.resample">r.resample source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.resample">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

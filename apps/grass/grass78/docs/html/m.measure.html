@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>m.measure - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>m.measure</b></em>  - Measures the lengths and areas of features.
+<h2>KEYWORDS</h2>
+<a href="miscellaneous.html">miscellaneous</a>, <a href="topic_measurement.html">measurement</a>, <a href="keywords.html#distance">distance</a>, <a href="keywords.html#area">area</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>m.measure</b><br></div>
+<b>m.measure --help</b><br>
+<div id="synopsis"><b>m.measure</b> [-<b>g</b>] <b>coordinates</b>=<em>east,north</em>[,<i>east,north</i>,...]  [<b>units</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Shell script style</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>coordinates</b>=<em>east,north[,<i>east,north</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Coordinates</dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Units</dd>
+<dd>Default: location map units</dd>
+<dd>Options: <em>miles, feet, meters, kilometers, acres, hectares</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>m.measure</em> provides the user with a way to measure the lengths
+and areas of lines and polygons. Areas can be stated in acres,
+hectares, square miles, square feet, square meters and square kilometers.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Distance example in a latitude-longitude location (on great circle, i.e. an orthodrome):
+
+<div class="code"><pre>
+Bonn_DE="7.09549,50.73438"
+Philadelphia_US="-75.16379,39.95233"
+
+m.measure coordinates="$Bonn_DE,$Philadelphia_US" units=kilometers 
+Length:  6217.916452 kilometers
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="m_measure_distance.png">
+<img src="m_measure_distance.png" width="600" height="290" alt="Visualization (with d.geodesic) of m.measure distance example" border=0><br>
+</a>
+<i>Visualization (with d.geodesic) of m.measure distance example</i>
+</div>
+
+<p>
+As an example for the North Carolina sample dataset, here four points
+describing a square of 1000m side length:
+
+<div class="code"><pre>
+m.measure units=meters \
+  coordinates=922000,2106000,923000,2106000,923000,2107000,922000,2107000
+Length:  3000.000000 meters
+Area:    1000000.000000 square meters
+
+# script style output:
+m.measure -g units=hectares \
+  coordinates=922000,2106000,923000,2106000,923000,2107000,922000,2107000
+units=meters,square meters
+length=3000.000000
+area=1000000.000000
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.geodesic.html">d.geodesic</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Glynn Clements
+<br>
+Some updates by Martin Landa, CTU in Prague, Czech Republic
+<br><br>
+Derived from d.measure by James Westervelt, Michael Shapiro, U.S. Army
+Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/misc/m.measure">m.measure source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/misc/m.measure">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="miscellaneous.html">Miscellaneous index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

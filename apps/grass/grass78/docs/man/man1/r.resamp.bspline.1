@@ -1,0 +1,240 @@
+.TH r.resamp.bspline 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.resamp.bspline\fR\fR  \- Performs bilinear or bicubic spline interpolation with Tykhonov regularization.
+.SH KEYWORDS
+raster, surface, resample, interpolation, splines, bilinear, bicubic, no\-data filling
+.SH SYNOPSIS
+\fBr.resamp.bspline\fR
+.br
+\fBr.resamp.bspline \-\-help\fR
+.br
+\fBr.resamp.bspline\fR [\-\fBnc\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBgrid\fR=\fIname\fR]   [\fBmask\fR=\fIname\fR]   [\fBew_step\fR=\fIfloat\fR]   [\fBns_step\fR=\fIfloat\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBlambda\fR=\fIfloat\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Only interpolate null cells in input raster map
+.IP "\fB\-c\fR" 4m
+.br
+Find the best Tykhonov regularizing parameter using a \(dqleave\-one\-out\(dq cross validation method
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBgrid\fR=\fIname\fR" 4m
+.br
+Name for output vector map with interpolation grid
+.IP "\fBmask\fR=\fIname\fR" 4m
+.br
+Name of raster map to use for masking
+.br
+Only cells that are not NULL and not zero are interpolated
+.IP "\fBew_step\fR=\fIfloat\fR" 4m
+.br
+Length of each spline step in the east\-west direction. Default: 1.5 * ewres.
+.IP "\fBns_step\fR=\fIfloat\fR" 4m
+.br
+Length of each spline step in the north\-south direction. Default: 1.5 * nsres.
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Spline interpolation algorithm
+.br
+Options: \fIbilinear, bicubic\fR
+.br
+Default: \fIbicubic\fR
+.br
+\fBbilinear\fR: Bilinear interpolation
+.br
+\fBbicubic\fR: Bicubic interpolation
+.IP "\fBlambda\fR=\fIfloat\fR" 4m
+.br
+Tykhonov regularization parameter (affects smoothing)
+.br
+Default: \fI0.01\fR
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIr.resamp.bspline\fR performs a bilinear/bicubic spline interpolation with
+Tykhonov regularization. The input is a raster surface map, e.g. elevation,
+temperature, precipitation etc. Output is a raster map. Optionally, only
+input NULL cells are interpolated, useful to fill NULL cells, an alternative
+to \fIr.fillnulls\fR. Using the \fB\-n\fR flag to only
+interpolate NULL cells will considerably speed up the module.
+.PP
+The input raster map is read at its native resolution, the output raster
+map will be produced for the current computational region set with
+\fIg.region\fR. Any MASK will be respected, masked
+values will be treated as NULL cells in both the input and the output map.
+.PP
+Spline step values \fBew_step\fR for the east\-west direction and
+\fBns_step\fR for the north\-south direction should not be smaller than
+the east\-west and north\-south resolutions of the input map. For a raster
+map without NULL cells, 1 * resolution can be used, but check for
+undershoots and overshoots. For very large areas with missing values
+(NULL cells), larger spline step values may be required, but most of the
+time the defaults (1.5 x resolution) should be fine.
+.PP
+The Tykhonov regularization parameter (\fBlambda\fR) acts to
+smooth the interpolation. With a small \fBlambda\fR, the
+interpolated surface closely follows observation points; a larger value
+will produce a smoother interpolation. Reasonable values are 0.0001,
+0.001, 0.005, 0.01, 0.02, 0.05, 0.1 (needs more testing). For seamless
+NULL cell interpolation, a small value is required. The default \fBlambda\fR
+value is set to 0.01.
+.PP
+From a theoretical perspective, the interpolating procedure takes place in two
+parts: the first is an estimate of the linear coefficients of a spline function;
+these are derived from the observation points using a least squares regression; the
+second is the computation of the interpolated surface (or interpolated vector
+points). As used here, the splines are 2D piece\-wise non\-zero polynomial
+functions calculated within a limited 2D area. The length of each spline step
+is defined by \fBew_step\fR for the east\-west direction and
+\fBns_step\fR for the north\-south direction. For optimal performance, the
+spline step values should be no less than the east\-west and north\-south
+resolutions of the input map. Each non\-NULL cell observation is modeled as a
+linear function of the non\-zero splines in the area around the observation.
+The least squares regression predicts the the coefficients of these linear functions.
+Regularization avoids the need to have one one observation and one coefficient
+for each spline (in order to avoid instability).
+.PP
+A cross validation \(dqleave\-one\-out\(dq analysis is available to help to determine
+the optimal \fBlambda\fR value that produces an interpolation that
+best fits the original observation data. The more points used for
+cross\-validation, the longer the time needed for computation. Empirical testing
+indicates a threshold of a maximum of 100 points is recommended. Note that cross
+validation can run very slowly if more than 100 observations are used. The
+cross\-validation output reports \fImean\fR and \fIrms\fR of the residuals from
+the true point value and the estimated from the interpolation for a fixed series
+of \fBlambda\fR values. No vector nor raster output will be created
+when cross\-validation is selected.
+.SH EXAMPLES
+.SS Basic interpolation
+.br
+.nf
+\fC
+r.resamp.bspline input=raster_surface output=interpolated_surface method=bicubic
+\fR
+.fi
+A bicubic spline interpolation will be done and a raster map with estimated
+(i.e., interpolated) values will be created.
+.SS Interpolation of NULL cells and patching
+General procedure:
+.br
+.nf
+\fC
+# set region to area with NULL cells, align region to input map
+g.region n=north s=south e=east w=west align=input \-p
+# interpolate NULL cells
+r.resamp.bspline \-n input=input_raster output=interpolated_nulls method=bicubic
+# set region to area with NULL cells, align region to input map
+g.region raster=input \-p
+# patch original map and interpolated NULLs
+r.patch input=input_raster,interpolated_nulls output=input_raster_gapfilled
+\fR
+.fi
+.SS Interpolation of NULL cells and patching (NC data)
+In this example, the SRTM elevation map in the
+North Carolina sample dataset location is filtered for outlier
+elevation values; missing pixels are then re\-interpolated to obtain
+a complete elevation map:
+.br
+.nf
+\fC
+g.region raster=elev_srtm_30m \-p
+d.mon wx0
+d.histogram elev_srtm_30m
+r.univar \-e elev_srtm_30m
+# remove too low elevations (esp. lakes)
+# Threshold: thresh = Q1 \- 1.5 * (Q3 \- Q1)
+r.mapcalc \(dqelev_srtm_30m_filt = if(elev_srtm_30m < 50.0, null(), elev_srtm_30m)\(dq
+# verify
+d.histogram elev_srtm_30m_filt
+d.erase
+d.rast elev_srtm_30m_filt
+r.resamp.bspline \-n input=elev_srtm_30m_filt output=elev_srtm_30m_complete \(rs
+  method=bicubic
+d.histogram elev_srtm_30m_complete
+d.rast elev_srtm_30m_complete
+\fR
+.fi
+.SS Estimation of \fBlambda\fR parameter with a cross validation process
+A random sample of points should be generated first with
+\fIr.random\fR, and the current region should not
+include more than 100 non\-NULL random cells.
+.br
+.nf
+\fC
+r.resamp.bspline \-c input=input_raster
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Brovelli M. A., Cannata M., and Longoni U.M., 2004, LIDAR Data
+Filtering and DTM Interpolation Within GRASS, Transactions in GIS,
+April 2004, vol. 8, iss. 2, pp. 155\-174(20), Blackwell Publishing Ltd
+.IP \(bu 4n
+Brovelli M. A. and Cannata M., 2004, Digital Terrain model
+reconstruction in urban areas from airborne laser scanning data: the
+method and an example for Pavia (Northern Italy). Computers and
+Geosciences 30, pp.325\-331
+.IP \(bu 4n
+Brovelli M. A e Longoni U.M., 2003, Software per il filtraggio di
+dati LIDAR, Rivista dell\(cqAgenzia del Territorio, n. 3\-2003, pp. 11\-22
+(ISSN 1593\-2192)
+.IP \(bu 4n
+Antolin R. and Brovelli M.A., 2007, LiDAR data Filtering with GRASS GIS for the Determination of Digital Terrain Models. Proceedings of Jornadas de SIG Libre,
+Girona, España. CD ISBN: 978\-84\-690\-3886\-9
+.RE
+.SH SEE ALSO
+\fI
+r.fillnulls,
+r.resamp.rst,
+r.resamp.interp,
+v.surf.bspline
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHORS
+Markus Metz
+.br
+.br
+based on \fIv.surf.bspline\fR by
+.br
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni, Mirko Reguzzoni, Roberto Antolin
+.SH SOURCE CODE
+.PP
+Available at: r.resamp.bspline source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

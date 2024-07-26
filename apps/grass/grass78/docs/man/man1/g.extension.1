@@ -1,0 +1,345 @@
+.TH g.extension 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.extension.py\fR\fR  \- Maintains GRASS Addons extensions in local GRASS installation.
+.br
+Downloads and installs extensions from GRASS Addons repository or other source into the local GRASS installation or removes installed extensions.
+.SH KEYWORDS
+general, installation, extensions, addons, download
+.SH SYNOPSIS
+\fBg.extension.py\fR
+.br
+\fBg.extension.py \-\-help\fR
+.br
+\fBg.extension.py\fR [\-\fBlcgasdiftj\fR] \fBextension\fR=\fIname\fR \fBoperation\fR=\fIstring\fR  [\fBurl\fR=\fIurl\fR]   [\fBprefix\fR=\fIpath\fR]   [\fBproxy\fR=\fIproxy\fR[,\fIproxy\fR,...]]   [\fBbranch\fR=\fIbranch\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-l\fR" 4m
+.br
+List available extensions in the official GRASS GIS Addons repository
+.IP "\fB\-c\fR" 4m
+.br
+List available extensions in the official GRASS GIS Addons repository including module description
+.IP "\fB\-g\fR" 4m
+.br
+List available extensions in the official GRASS GIS Addons repository (shell script style)
+.IP "\fB\-a\fR" 4m
+.br
+List locally installed extensions
+.IP "\fB\-s\fR" 4m
+.br
+Install system\-wide (may need system administrator rights)
+.IP "\fB\-d\fR" 4m
+.br
+Download source code and exit
+.IP "\fB\-i\fR" 4m
+.br
+Do not install new extension, just compile it
+.IP "\fB\-f\fR" 4m
+.br
+Force removal when uninstalling extension (operation=remove)
+.IP "\fB\-t\fR" 4m
+.br
+Operate on toolboxes instead of single modules (experimental)
+.IP "\fB\-j\fR" 4m
+.br
+Generates JSON file containing the download URLs of the official Addons
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBextension\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of extension to install or remove
+.br
+Name of toolbox (set of extensions) when \-t flag is given
+.IP "\fBoperation\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Operation to be performed
+.br
+Options: \fIadd, remove\fR
+.br
+Default: \fIadd\fR
+.IP "\fBurl\fR=\fIurl\fR" 4m
+.br
+URL or directory to get the extension from (supported only on Linux and Mac)
+.br
+The official repository is used by default. User can specify a ZIP file, directory or a repository on common hosting services. If not identified, Subversion repository is assumed. See manual for all options.
+.IP "\fBprefix\fR=\fIpath\fR" 4m
+.br
+Prefix where to install extension (ignored when flag \-s is given)
+.br
+Default: \fI$GRASS_ADDON_BASE\fR
+.IP "\fBproxy\fR=\fIproxy[,\fIproxy\fR,...]\fR" 4m
+.br
+Set the proxy with: \(dqhttp=<value>,ftp=<value>\(dq
+.IP "\fBbranch\fR=\fIbranch\fR" 4m
+.br
+Specific branch to fetch addon from (only used when fetching from git)
+.br
+Default: \fImain\fR
+.SH DESCRIPTION
+\fIg.extension\fR downloads and installs, removes or updates
+extensions (addons) from the official
+GRASS GIS Addons repository
+or from user\-specified source code repositories into the local GRASS GIS
+installation.
+.PP
+Two types of extensions are supported:
+.RS 4n
+.IP \(bu 4n
+Python scripts: they are installed without the need of compilation or (usually)
+the need of special dependencies.
+.IP \(bu 4n
+Source code (mostly written in C programming language; may also be written
+in C++, Fortran or other languages): while on MS\-Windows systems the requested
+GRASS GIS extension is downloaded pre\-compiled from the GRASS GIS site, on Unix
+based systems the installation is preceded by the automated download of the
+extension\(cqs source code along with subsequent compilation and installation.
+This requires a compiler environment to be present on the user\(cqs computer.
+.RE
+.SS Managing installed extensions
+.PP
+Re\-running \fIg.extension\fR on an installed GRASS GIS Addon
+extension re\-installs the requested extension which may include
+updates.
+.PP
+To bulk\-update all locally installed GRASS GIS extensions,
+\fIg.extension.all\fR module
+is available.
+.SS Where the extensions are installed
+GRASS GIS extensions are installed by \fIg.extension\fR into a dedicated
+directory.
+The default is a directory for application data and settings inside
+the user\(cqs home directory.
+On GNU/Linux it is $HOME/.grass7/addons,
+on MS\-Windows it is $APPDATA\(rsGRASS7\(rsaddons.
+The name of the directory is stored in the GRASS_ADDON_BASE
+environmental variable.
+.PP
+The flag \fB\-s\fR changes this install target directory to the GRASS GIS
+installation directory
+(determined by GISBASE environmental variable, e.g. /usr/)
+rather than the default directory defined as per  GRASS_ADDON_BASE
+(see also documentation for variables).
+\fIg.extension\fR checks if the user has permission to write to
+GISBASE or GRASS_ADDON_BASE.
+.PP
+The place where the extensions are installed can be customized by
+the option \fBprefix\fR. Ensuring that these extensions will be accessible
+in GRASS GIS is in this case in the responsibility of the user.
+.SS Source code sources and repositories
+.SS GRASS GIS Addons repository on GitHub
+By default, \fIg.extension\fR installs extensions from the official
+GRASS GIS Addons GitHub repository. However, different sources can be specified
+using the \fBurl\fR option.
+.PP
+Individual extensions can also be installed by providing a URL to the
+source code on GitHub or OSGeo Trac. The latter, however, works only for certain
+directories where the download of ZIP files was enabled by project administrators
+of the trac server.
+.SS Local source code directory
+Optionally, new extension can be also installed from a source code placed
+in a local directory on disk. This is advantageous when developing
+a new module.
+To keep the directory clean, the directory content is copied
+to a temporary directory and the compilation happens there.
+.SS Local source code ZIP file
+In addition, new extension can be also installed from a ZIP file
+or an archive file from the TAR family (e.g., .tar.gz or .bz2).
+The file can be on disk (specified with a path), or on web (specified by
+an URL).
+.SS Online repositories: GitHub, GitLab and Bitbucket
+For well known general hosting services, namely GitHub, GitLab and Bitbucket,
+\fIg.extension\fR supports the download of a repository as a ZIP file.
+Here the user only needs to provide a base URL to the repository web page
+(with or without the https:// part).
+For GitLab and Bitbucket, the latest source code in the default branch is
+downloaded, for GitHub, the latest source code in the master branch is downloaded.
+Of course, a user can still specify the full URL of a ZIP file
+and install a specific branch or release in this way (ZIP file mechanism
+will be applied).
+.PP
+For the official repository, \fIg.extension\fR supports listing available
+extensions (addons) and few other metadata\-related operations which
+depend on a specific infrastructure.
+For other sources and repositories, this is not supported because it is
+assumed that other sources contain only one extension, typically a module
+or group of modules.
+.SS Needed directory layout
+When none of the above sources is identified, \fIg.extension\fR assumes
+that the source is in a GitHub repository and uses the \fIsvn\fR command
+line tool to obtain the source code. The expected structure of the repository
+should be the same as the one of the official repository.
+.PP
+Non\-official sources are supported on all operating systems except for
+MS\-Windows.
+.SS Compilation and installation
+On MS\-Windows systems, where compilation tools are typically not readily
+locally installed, \fIg.extension\fR downloads a precompiled executable
+from the GRASS GIS project server. On all other operating systems
+where it is not difficult to install compilation tools,
+\fIg.extension\fR downloads the source code of the requested
+extension (addon) and compiles it locally.
+This applies for both C and Python modules
+as well as any other extensions. The reason is that more things such
+as manual page are compiled, not only the source code (which is really
+necessary to compile just in case of C).
+.SH EXAMPLES
+.SS Download and install of an extension
+Download and install \fIr.stream.distance\fR into current GRASS installation
+.br
+.nf
+\fC
+g.extension extension=r.stream.distance
+\fR
+.fi
+This installs the extension from the official repository.
+For convenience, a shorter syntax can be used:
+.br
+.nf
+\fC
+g.extension r.stream.distance
+\fR
+.fi
+.SS Download and install of an extension when behind a proxy
+Example for an open http proxy:
+.br
+.nf
+\fC
+# syntax: http://proxyurl:proxyport
+g.extension extension=r.stream.distance proxy=\(dqhttp=http://proxy.example.com:8080\(dq
+\fR
+.fi
+.PP
+Example for a proxy with proxy authentication:
+.br
+.nf
+\fC
+# syntax: http://username:password@proxyurl:proxyport
+g.extension extension=r.stream.distance proxy=\(dqhttp=http://username:password@proxy.example.com:8080\(dq
+\fR
+.fi
+.SS Managing the extensions
+List all available extensions in the official GRASS GIS Addons repository:
+.br
+.nf
+\fC
+g.extension \-l
+\fR
+.fi
+List all locally installed extensions:
+.br
+.nf
+\fC
+g.extension \-a
+\fR
+.fi
+Removal of a locally installed extension:
+.br
+.nf
+\fC
+g.extension extension=r.stream.distance operation=remove
+\fR
+.fi
+.SS Installing from various online repositories: GitHub, GitLab, Bitbucket
+Simple URL to GitHub, GitLab, Bitbucket repositories:
+.br
+.nf
+\fC
+g.extension r.example.plus url=\(dqhttps://github.com/wenzeslaus/r.example.plus\(dq
+\fR
+.fi
+Simple URL to GitHub, GitLab, Bitbucket repositories from a specific (e.g. development) branch:
+.br
+.nf
+\fC
+g.extension r.example.plus url=\(dqhttps://github.com/wenzeslaus/r.example.plus\(dq branch=master
+\fR
+.fi
+Simple URL to OSGeo Trac (downloads a ZIP file, requires download to be enabled in Trac):
+.br
+.nf
+\fC
+g.extension r.example url=trac.osgeo.org/.../r.example
+\fR
+.fi
+In general, when a ZIP file or other archive is provided, the full URL can be used:
+.br
+.nf
+\fC
+g.extension r.example url=http://example.com/.../r.example?format=zip
+\fR
+.fi
+Note that because of MS\-Windows operating system architecture,
+only official repository is supported on this platform.
+.SS Install a specific version from Addons
+To install a specific version from GRASS GIS Addons, specify the full
+URL pointing to Trac code browser and include Subversion revision
+number. For example, this installs the version number 57854 of
+r.local.relief module:
+.br
+.nf
+\fC
+g.extension r.local.relief url=\(dqhttps://trac.osgeo.org/grass/browser/grass\-addons/grass7/raster/r.local.relief?rev=57854&format=zip\(dq
+\fR
+.fi
+.SS Installing when writing a module locally
+Having source code of a GRASS module in a directory on disk
+one can install it using:
+.br
+.nf
+\fC
+g.extension r.example url=/local/directory/r.example/
+\fR
+.fi
+.SH KNOWN ISSUES
+Toolboxes in the official repository cannot be downloaded.
+.PP
+On MS\-Windows, only the official repository is working
+because there is no way of compiling the modules
+(a Python replacement for Python scripts should be implemented).
+.SH TROUBLESHOOTING
+Since extensions have to be compiled on Unix based systems (Linux, Mac OSX etc.)
+unless a Python extension is installed, a full compiler environment must be
+present on the user\(cqs computer.
+.SS ERROR: Please install GRASS development package
+While GRASS GIS is available on the user\(cqs computer, the respective development
+package is lacking. If GRASS was installed from a (Linux) repository, also the
+grass\-dev* package (commonly named \(dqgrass\-dev\(dq or \(dqgrass\-devel\(dq, sometimes along
+with the version number) must be installed.
+.SH SEE ALSO
+\fI
+g.extension.all
+\fR
+.PP
+GRASS GIS 7 Addons Manual pages
+.br
+GRASS Addons wiki page.
+.SH AUTHORS
+Markus Neteler (original shell script)
+.br
+Martin Landa, Czech Technical University in Prague, Czech Republic (Python rewrite)
+.br
+Vaclav Petras, NCSU OSGeoREL (support for general sources, partial refactoring)
+.SH SOURCE CODE
+.PP
+Available at: g.extension source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

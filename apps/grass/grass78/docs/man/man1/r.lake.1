@@ -1,0 +1,172 @@
+.TH r.lake 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.lake\fR\fR  \- Fills lake at given point to given level.
+.SH KEYWORDS
+raster, hydrology, hazard, flood
+.SH SYNOPSIS
+\fBr.lake\fR
+.br
+\fBr.lake \-\-help\fR
+.br
+\fBr.lake\fR [\-\fBno\fR] \fBelevation\fR=\fIname\fR \fBwater_level\fR=\fIfloat\fR  [\fBlake\fR=\fIname\fR]   [\fBcoordinates\fR=\fIeast,north\fR]   [\fBseed\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Use negative depth values for lake raster map
+.IP "\fB\-o\fR" 4m
+.br
+Overwrite seed map with result (lake) map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBwater_level\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Water level
+.IP "\fBlake\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Seed point coordinates
+.br
+Either this coordinates pair or a seed map have to be specified
+.IP "\fBseed\fR=\fIname\fR" 4m
+.br
+Input raster map with given starting point(s) (at least 1 cell > 0)
+.br
+Either this parameter or a coordinates pair have to be specified
+.SH DESCRIPTION
+.PP
+The module fills a lake to a target water level from a given start point. The user
+can think of it as \fIr.grow\fR with additional
+checks for elevation. The resulting
+raster map contains cells with values representing lake depth and NULL for all other
+cells beyond the lake. Lake depth is reported relative to specified water level
+(specified level = 0 depth).
+.PP
+This module uses a 3x3 moving window approach to find all cells that
+match three criteria and to define the lake:
+.RS 4n
+.IP \(bu 4n
+cells are below the specified elevation (i.e., water level);
+.IP \(bu 4n
+cells are connected with an initial cell (seed or coordinates pair value);
+.IP \(bu 4n
+cells are not NULL or masked.
+.RE
+.PP
+The water level must be in DEM units.
+.SH NOTES
+The seed (starting) point can be a raster map with at least one
+cell value greater than zero, or a seed point can be specified as an E,
+N coordinate pair. If the seed is specified as a coordinate pair, an additional
+check is done to make sure that the target water level is above the level of
+the DEM. When a raster map is used as a seed, however, no such checks are done.
+Specifying a target water level below surface represented by DEM will result in an
+empty map. Note: a raster lake map created in a previous run can also be used
+as a seed map for a new run to simulate rising water levels.
+.PP
+The module will create a new map (\fBlake=foo\fR) or can be set to replace
+the input (\fBseed=bar\fR) map if the \fB\-o\fR flag is used.  The user can use
+\fB\-o\fR flag to create animations of rising water level without
+producing a separate map for each frame.  An initial seed map must be created
+to start the sequence, and will be overwritten during subsequent runs with resulting
+water levels maps (i.e., a single file serves for both input and output).
+.PP
+Negative output (the \fB\-n\fR flag) is useful for visualisations in NVIZ.
+It equals the mapcalc\(cqs expression \fI\(dqnegative = 0 \- positive\(dq\fR.
+.SS r.mapcalc equivalent \- for GRASS hackers
+This module was initially created as a script using
+\fIr.mapcalc\fR.
+This had some limitations \- it was slow and no
+checks where done to find out required iteration count. The shell script
+code (using \fIr.mapcalc\fR) used
+in the original script is shown below:
+.br
+.nf
+\fC
+${seedmap} = if( ${dem}, \(rs
+if( if( isnull(${seedmap}),0,${seedmap}>0), ${wlevel}\-${dem}, \(rs
+ if( \(rs
+  if(isnull(${seedmap}[\-1,0]),0, ${seedmap}[\-1,0]>0 && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[\-1,1]),0, ${seedmap}[\-1,1]>0 && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[0,1]), 0, ${seedmap}[0,1]>0  && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[1,1]), 0, ${seedmap}[1,1]>0  && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[1,0]), 0, ${seedmap}[1,0]>0  && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[1,\-1]),0, ${seedmap}[1,\-1]>0 && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[0,\-1]),0, ${seedmap}[0,\-1]>0 && ${wlevel}>${dem}) ||\(rs
+  if(isnull(${seedmap}[\-1,\-1]),0, ${seedmap}[\-1,\-1]>0 && ${wlevel}>${dem}),\(rs
+ ${wlevel}\-${dem}, null() )))
+\fR
+.fi
+.PP
+The ${seedmap} variable is replaced by seed map names, ${dem}
+with DEM map name, and ${wlevel} with target water level. To get
+single water level, this code block is
+called with same level numerous times (in a loop) as the lake grows by single cells
+during single run.
+.SH KNOWN ISSUES
+.RS 4n
+.IP \(bu 4n
+The entire map is loaded into RAM.
+.IP \(bu 4n
+A completely negative seed map will not work! At least one cell must have
+a value > 0. Output from r.lake \-n \fIcannot\fR be used
+as input in the next run.
+.RE
+.SH EXAMPLE
+Example of small flooding along a street (North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m \-p
+# water accumulation next to street dam
+r.lake elev_lid792_1m coordinates=638759.3,220264.1 water_level=113.4 lake=flooding
+# draw resulting lake map over shaded terrain map
+r.relief input=elev_lid792_1m output=elev_lid792_1m_shade
+d.rast elev_lid792_1m_shade
+d.rast flooding
+d.vect streets_wake
+\fR
+.fi
+.PP
+.br
+Small flooding along a street (\fIr.lake\fR, using Lidar 1m DEM)
+.SH SEE ALSO
+\fI
+r.mapcalc,
+r.grow,
+r.plane
+\fR
+.SH AUTHOR
+Maris Nartiss (maris.nartiss gmail.com)
+.SH SOURCE CODE
+.PP
+Available at: r.lake source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

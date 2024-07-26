@@ -1,0 +1,140 @@
+.TH display_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+Go to display introduction | topics
+.PP
+.SS Display modules:
+.RS 4n
+.IP \(bu 4n
+\fCd.barscale\fR \fCDisplays a barscale on the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.colorlist\fR \fCOutputs a list of all available display colors.\fR
+.IP \(bu 4n
+\fCd.colortable\fR \fCDisplays the color table associated with a raster map layer.\fR
+.IP \(bu 4n
+\fCd.correlate\fR \fCPrints a graph of the correlation between raster maps (in pairs).\fR
+.IP \(bu 4n
+\fCd.erase\fR \fCErases the contents of the active graphics display frame with user defined color.\fR
+.IP \(bu 4n
+\fCd.font\fR \fCSelects the font in which text will be displayed on the user\(cqs graphics monitor.\fR
+.IP \(bu 4n
+\fCd.fontlist\fR \fCLists the available fonts.\fR
+.IP \(bu 4n
+\fCd.frame\fR \fCManages display frames on the user\(cqs graphics monitor.\fR
+.IP \(bu 4n
+\fCd.geodesic\fR \fCDisplays a geodesic line, tracing the shortest distance between two geographic points along a great circle, in a longitude/latitude data set.\fR
+.IP \(bu 4n
+\fCd.graph\fR \fCProgram for generating and displaying simple graphics on the display monitor.\fR
+.IP \(bu 4n
+\fCd.grid\fR \fCOverlays a user\-specified grid in the active display frame on the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.his\fR \fCDisplays the result obtained by combining hue, intensity, and saturation (HIS) values from user\-specified input raster map layers.\fR
+.IP \(bu 4n
+\fCd.histogram\fR \fCDisplays a histogram in the form of a pie or bar chart for a user\-specified raster map.\fR
+.IP \(bu 4n
+\fCd.info\fR \fCDisplays information about the active display monitor.
+.br
+\fR
+.IP \(bu 4n
+\fCd.labels\fR \fCDisplays text labels (created with v.label) to the active frame on the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.legend\fR \fCDisplays a legend for a 2D or 3D raster map in the active frame of the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.legend.vect\fR \fCDisplays a vector legend in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.linegraph\fR \fCGenerates and displays simple line graphs in the active graphics monitor display frame.\fR
+.IP \(bu 4n
+\fCd.mon\fR \fCControls graphics display monitors from the command line.\fR
+.IP \(bu 4n
+\fCd.northarrow\fR \fCDisplays a north arrow on the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.out.file\fR \fCSaves the contents of the active display monitor to a graphics file.\fR
+.IP \(bu 4n
+\fCd.path\fR \fCFinds shortest path for selected starting and ending node.\fR
+.IP \(bu 4n
+\fCd.polar\fR \fCDraws polar diagram of angle map such as aspect or flow directions\fR
+.IP \(bu 4n
+\fCd.profile\fR \fCPlots profile of a transect.\fR
+.IP \(bu 4n
+\fCd.rast.arrow\fR \fCDraws arrows representing cell aspect direction for a raster map containing aspect data.\fR
+.IP \(bu 4n
+\fCd.rast.edit\fR \fCEdits cell values in a raster map.\fR
+.IP \(bu 4n
+\fCd.rast\fR \fCDisplays user\-specified raster map in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.rast.leg\fR \fCDisplays a raster map and its legend on a graphics window\fR
+.IP \(bu 4n
+\fCd.rast.num\fR \fCOverlays cell category values on a raster map displayed in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.redraw\fR \fCRedraws the content of currently selected monitor.\fR
+.IP \(bu 4n
+\fCd.rgb\fR \fCDisplays three user\-specified raster maps as red, green, and blue overlays in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.rhumbline\fR \fCDisplays the rhumbline joining two longitude/latitude coordinates.\fR
+.IP \(bu 4n
+\fCd.shade\fR \fCDrapes a color raster over an shaded relief or aspect map.\fR
+.IP \(bu 4n
+\fCd.text\fR \fCDraws text in the active display frame on the graphics monitor using the current font.\fR
+.IP \(bu 4n
+\fCd.title\fR \fCCreate a TITLE for a raster map in a form suitable for display with d.text.\fR
+.IP \(bu 4n
+\fCd.to.rast\fR \fCSaves the contents of the active display monitor to a raster map.\fR
+.IP \(bu 4n
+\fCd.vect.chart\fR \fCDisplays charts of vector data in the active frame on the graphics monitor.\fR
+.IP \(bu 4n
+\fCd.vect\fR \fCDisplays user\-specified vector map in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.vect.thematic\fR \fCDisplays a thematic vector map in the active graphics frame.\fR
+.IP \(bu 4n
+\fCd.what.rast\fR \fCAllows the user to interactively query raster map layers at user\-selected locations.\fR
+.IP \(bu 4n
+\fCd.what.vect\fR \fCAllows the user to interactively query vector map layers at user\-selected locations.\fR
+.IP \(bu 4n
+\fCd.where\fR \fCIdentifies the geographic coordinates associated with point locations given in display coordinates.\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

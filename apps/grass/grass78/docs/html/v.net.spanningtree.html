@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.net.spanningtree - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.net.spanningtree</b></em>  - Computes minimum spanning tree for the network.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#spanning tree">spanning tree</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.net.spanningtree</b><br></div>
+<b>v.net.spanningtree --help</b><br>
+<div id="synopsis"><b>v.net.spanningtree</b> [-<b>g</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>arc_layer</b>=<em>string</em>]   [<b>node_layer</b>=<em>string</em>]   [<b>arc_column</b>=<em>name</em>]   [<b>node_column</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Use geodesic calculation for longitude-latitude locations</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>arc_layer</b>=<em>string</em></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>arc_column</b>=<em>name</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>node_column</b>=<em>name</em></dt>
+<dd>Node cost column (number)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.net.spanningtree</em> finds the minimum spanning tree in a 
+network. 
+
+<h2><a name="notes">NOTES</a></h2>
+A spanning tree is a minimum cost subnetwork connecting all nodes in an 
+undirected network (same forward and backward costs). If a network is 
+disconnected then the module computes the minimum spanning tree for 
+each (weakly) connected component. So, strictly speaking, 
+<em>v.net.spanningtree</em> does not compute spanning tree but a 
+spanning forest. As the name suggests, a spanning tree is a tree. That 
+is, it contains no cycles and if a component has N nodes then the tree 
+has N-1 edges connecting all nodes. <b>Accol</b> is used to specify the 
+costs of the edges. The <b>output</b> consists of the edges in the 
+spanning tree.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Find cheapest set of pipelines connecting all nodes.
+<div class="code"><pre>
+v.net.spanningtree input=projected_pipelines output=spanningtree accol=cost 
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.net.html">v.net</a>,
+<a href="v.net.steiner.html">v.net.steiner</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Daniel Bundala, Google Summer of Code 2009, Student<br>
+Wolf Bergenheim, Mentor
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.net.spanningtree">v.net.spanningtree source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.net.spanningtree">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

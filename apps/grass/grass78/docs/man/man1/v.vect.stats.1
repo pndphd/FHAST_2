@@ -1,0 +1,334 @@
+.TH v.vect.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.vect.stats\fR\fR  \- Count points in areas, calculate statistics from point attributes.
+.SH KEYWORDS
+vector, attribute table, database, univariate statistics, zonal statistics
+.SH SYNOPSIS
+\fBv.vect.stats\fR
+.br
+\fBv.vect.stats \-\-help\fR
+.br
+\fBv.vect.stats\fR [\-\fBp\fR] \fBpoints\fR=\fIname\fR \fBareas\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBpoints_layer\fR=\fIstring\fR]   [\fBpoints_cats\fR=\fIrange\fR]   [\fBpoints_where\fR=\fIsql_query\fR]   [\fBareas_layer\fR=\fIstring\fR]   [\fBareas_cats\fR=\fIrange\fR]   [\fBareas_where\fR=\fIsql_query\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBpoints_column\fR=\fIname\fR]   [\fBcount_column\fR=\fIname\fR]   [\fBstats_column\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print output to stdout, do not update attribute table
+.br
+First column is always area category
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBpoints\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing vector map with points
+.br
+Or data source for direct OGR access
+.IP "\fBareas\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing vector map with areas
+.br
+Or data source for direct OGR access
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type
+.br
+Input feature type
+.br
+Options: \fIpoint, centroid\fR
+.br
+Default: \fIpoint\fR
+.IP "\fBpoints_layer\fR=\fIstring\fR" 4m
+.br
+Layer number for points map
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBpoints_cats\fR=\fIrange\fR" 4m
+.br
+Category values for points map
+.br
+Example: 1,3,7\-9,13
+.IP "\fBpoints_where\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword for points map
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBareas_layer\fR=\fIstring\fR" 4m
+.br
+Layer number for area map
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBareas_cats\fR=\fIrange\fR" 4m
+.br
+Category values for area map
+.br
+Example: 1,3,7\-9,13
+.IP "\fBareas_where\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword for area map
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Method for aggregate statistics
+.br
+Options: \fIsum, average, median, mode, minimum, min_cat, maximum, max_cat, range, stddev, variance, diversity\fR
+.IP "\fBpoints_column\fR=\fIname\fR" 4m
+.br
+Column name of points map to use for statistics
+.br
+Column of points map must be numeric
+.IP "\fBcount_column\fR=\fIname\fR" 4m
+.br
+Column name to upload points count
+.br
+Column to hold points count, must be of type integer, will be created if not existing
+.IP "\fBstats_column\fR=\fIname\fR" 4m
+.br
+Column name to upload statistics
+.br
+Column to hold statistics, must be of type double, will be created if not existing
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIv.vect.stats\fR counts the number of points in vector map
+\fIpoints\fR falling into each area in vector map \fIareas\fR.
+Optionally statistics on point attributes in \fIpoints\fR are
+calculated for each area. The results are either uploaded to the
+attribute table of the vector map \fIareas\fR or printed to stdout.
+.SS Statistical methods
+Using numeric attribute values of all points falling into a given area,
+a new value is determined with the selected method.
+\fIv.vect.stats\fR can perform the following operations:
+.PP
+.IP "\fBsum\fR " 4m
+.br
+The sum of values.
+.IP "\fBaverage\fR " 4m
+.br
+The average value of all point attributes (sum / count).
+.IP "\fBmedian\fR " 4m
+.br
+The value found half\-way through a list of the
+attribute values, when these are ranged in numerical order.
+.IP "\fBmode\fR " 4m
+.br
+The most frequently occurring value.
+.IP "\fBminimum\fR " 4m
+.br
+The minimum observed value.
+.IP "\fBmin_cat\fR " 4m
+.br
+The point category corresponding to the minimum observed value.
+.IP "\fBmaximum\fR " 4m
+.br
+The maximum observed value.
+.IP "\fBmax_cat\fR " 4m
+.br
+The point category corresponding to the maximum observed value.
+.IP "\fBrange\fR " 4m
+.br
+The range of the observed values.
+.IP "\fBstddev\fR " 4m
+.br
+The statistical standard deviation of the attribute values.
+.IP "\fBvariance\fR " 4m
+.br
+The statistical variance of the attribute values.
+.IP "\fBdiversity\fR " 4m
+.br
+The number of different attribute values.
+.SH NOTES
+Points not falling into any area are ignored. Areas without category
+(no centroid attached or centroid without category) are ignored.
+If no points are falling into a given area, the point count is set to 0
+(zero) and the statistics result to \(dqnull\(dq.
+.PP
+The columns \fIcount_column\fR and \fIstats_column\fR are created if not
+yet existing. If they do already exist, the \fIcount_column\fR must be of
+type integer and the \fIstats_column\fR of type double precision.
+.PP
+In case that \fIv.vect.stats\fR complains about the \fIpoints_column\fR
+of the input points vector map not being numeric, the module
+\fIv.db.update\fR can be used to perform type casting, i.e. adding and
+populating an additional numeric column with the values type converted from
+string attributes to floating point numbers.
+.SH EXAMPLES
+.SS Preparation for examples
+The subsequent examples are based on randomly sampled
+elevation data (North Carolina sample database):
+.br
+.nf
+\fC
+# work on map copy for attribute editing
+g.copy vector=zipcodes_wake,myzipcodes_wake
+# set computational region: extent of ZIP code map, raster pixels
+# aligned to raster map
+g.region vector=myzipcodes_wake align=elev_state_500m \-p
+#  generate random elevation points
+r.random elev_state_500m vector=rand5000 n=5000
+v.colors rand5000 color=elevation
+# visualization
+d.mon wx0
+d.vect myzipcodes_wake \-c
+d.vect rand5000
+\fR
+.fi
+These vector maps are used for the examples below.
+.SS Count points per polygon with printed output
+\fISee above for the creation of the input maps.\fR
+.PP
+Counting points per polygon, print results to terminal:
+.br
+.nf
+\fC
+v.vect.stats points=rand5000 area=myzipcodes_wake \-p
+\fR
+.fi
+.SS Count points per polygon with column update
+\fISee above for the creation of the input maps.\fR
+.PP
+Counting of points per polygon, with update of \(dqnum_points\(dq column
+(will be automatically created):
+.br
+.nf
+\fC
+v.vect.stats points=rand5000 area=myzipcodes_wake count_column=num_points
+# verify result
+v.db.select myzipcodes_wake column=ZIPCODE_,ZIPNAME,num_points
+\fR
+.fi
+.SS Average values of points in polygon with printed output
+\fISee above for the creation of the input maps.\fR
+.PP
+Calculation of average point elevation per ZIP code
+polygon, printed to terminal in comma separated style:
+.br
+.nf
+\fC
+# check name of point map column:
+v.info \-c rand5000
+v.vect.stats points=rand5000 area=myzipcodes_wake \(rs
+  method=average points_column=value separator=comma \-p
+\fR
+.fi
+.SS Average values of points in polygon with column update
+\fISee above for the creation of the input maps.\fR
+.PP
+Calculation of average point elevation per ZIP code polygon,
+with update of \(dqavg_elev\(dq column and counting of points per polygon,
+with update of \(dqnum_points\(dq column (new columns will be automatically
+created):
+.br
+.nf
+\fC
+# check name of point map column:
+v.info \-c rand5000
+v.vect.stats points=rand5000 area=myzipcodes_wake count_column=num_points \(rs
+  method=average points_column=value stats_column=avg_elev
+# verify result
+v.db.select myzipcodes_wake column=ZIPCODE_,ZIPNAME,avg_elev
+\fR
+.fi
+.SS Point statistics in a hexagonal grid
+The grid extent and size is influenced by the current computational
+region. The extent is based on the vector map
+\fIpoints_of_interest\fR from the basic North Carolina sample dataset.
+.br
+.nf
+\fC
+g.region vector=points_of_interest res=2000 \-pa
+\fR
+.fi
+The hexagonal grid is created using
+the \fIv.mkgrid\fR module
+as a vector map based on the previously
+selected extent and size of the grid.
+.br
+.nf
+\fC
+v.mkgrid map=hexagons \-h
+\fR
+.fi
+The \fIv.vect.stats\fR module
+counts the number of points and does one statistics on a selected
+column (here: \fIelev_m\fR).
+.br
+.nf
+\fC
+v.vect.stats points=points_of_interest areas=hexagons method=average \(rs
+  points_column=elev_m count_column=count stats_column=average
+\fR
+.fi
+User should note that some of the points may be outside the grid
+since the hexagons cannot cover all the area around the edges
+(the computational region extent needs to be enlarged if all points
+should be considered).
+The last command sets the vector map color table to \fCviridis\fR
+based on the \fCcount\fR column.
+.br
+.nf
+\fC
+v.colors map=hexagons use=attr column=average color=viridis
+\fR
+.fi
+.br
+Point statistics in a hexagonal grid (count of points, average of values
+associated with point, standard deviation)
+.SH SEE ALSO
+.RS 4n
+.IP \(bu 4n
+\fIv.rast.stats\fR
+for zonal statistics of raster maps using vector zones
+(univariate statistics of a raster map),
+.IP \(bu 4n
+\fIr.stats.zonal\fR
+for zonal statistics of raster map using raster zones
+(univariate statistics using two raster maps),
+.IP \(bu 4n
+\fIv.what.vect\fR
+for querying one vector map by another,
+.IP \(bu 4n
+\fIv.distance\fR
+for finding nearest features,
+.IP \(bu 4n
+\fIr.distance\fR
+for computing distances between objects in raster maps,
+.IP \(bu 4n
+\fIv.mkgrid\fR
+for creating vector grids to aggregate point data.
+.RE
+.SH AUTHOR
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: v.vect.stats source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

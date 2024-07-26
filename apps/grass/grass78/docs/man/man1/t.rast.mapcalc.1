@@ -1,0 +1,264 @@
+.TH t.rast.mapcalc 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.mapcalc.py\fR\fR  \- Performs spatio\-temporal mapcalc expressions on temporally sampled maps of space time raster datasets.
+.SH KEYWORDS
+temporal, algebra, raster, time
+.SH SYNOPSIS
+\fBt.rast.mapcalc.py\fR
+.br
+\fBt.rast.mapcalc.py \-\-help\fR
+.br
+\fBt.rast.mapcalc.py\fR [\-\fBns\fR] \fBinputs\fR=\fIname\fR[,\fIname\fR,...] \fBexpression\fR=\fIstring\fR  [\fBmethod\fR=\fIname\fR[,\fIname\fR,...]]  \fBoutput\fR=\fIname\fR \fBbasename\fR=\fIbasename\fR  [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register Null maps
+.IP "\fB\-s\fR" 4m
+.br
+Check the spatial topology of temporally related maps and process only spatially related maps
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster datasets
+.IP "\fBexpression\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Spatio\-temporal mapcalc expression
+.IP "\fBmethod\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+The method to be used for sampling the input dataset
+.br
+Options: \fIstart, during, overlap, contain, equal, follows, precedes\fR
+.br
+Default: \fIequal\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time raster dataset
+.IP "\fBbasename\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+Basename for output raster maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r.mapcalc processes to run in parallel
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIt.rast.mapcalc\fR performs spatio\-temporal
+\fImapcalc\fR expressions on maps of temporally sampled space time
+raster datasets (STRDS). Spatial and temporal operators and internal
+variables are available in the expression string. The description of
+the spatial operators, functions and internal variables is available in
+the r.mapcalc manual page. The temporal
+functions are described in detail below.
+.PP
+This module expects several parameters. All space time raster datasets
+that are referenced in the \fImapcalc expression\fR must be listed
+in the \fIinput\fR option. The \fIfirst\fR space time raster
+dataset that is listed as input will be used to temporally sample all
+other space time raster datasets. The temporal sampling method can be
+chosen using the \fImethod\fR option. The order of the STRDS\(cqs in
+the mapcalc expression can be different to the order of the STRDS\(cqs in
+the input option. The resulting space time raster dataset must be
+specified in the \fIoutput\fR option together with the \fIbasename\fR
+of generated raster maps that are registered in the resulting
+STRDS. Empty maps resulting from map\-calculation are not registered by
+default. This behavior can be changed with the \fI\-n\fR flag. The
+flag \fI\-s\fR can be used to assure that only spatially related maps
+in the STRDS\(cqs are processed. Spatially related means that temporally
+related maps overlap in their spatial extent.
+.PP
+The module \fIt.rast.mapcalc\fR supports parallel processing. The option
+\fInprocs\fR specifies the number of processes that can be started in
+parallel.
+.PP
+A mapcalc expression must be provided to process the temporal
+sampled maps. Temporal internal variables are available in addition to
+the \fIr.mapcalc\fR spatial operators and functions:
+.PP
+The supported internal variables for relative and absolute time are:
+.RS 4n
+.IP \(bu 4n
+\fItd()\fR \- This internal variable represents the size of the
+current sample time interval in days and fraction of days for absolute
+time, and in relative units in case of relative time.
+.IP \(bu 4n
+\fIstart_time()\fR \- This internal variable represents
+the time difference between the start time of the sample space time
+raster dataset and the start time of the current sample interval or instance.
+The time is measured in days and fraction of days for absolute time,
+and in relative units in case of relative time.
+.IP \(bu 4n
+\fIend_time()\fR \- This internal variable represents
+the time difference between the start time of the sample space time
+raster dataset and the end time of the current sample interval. The
+time is measured in days and fraction of days for absolute time,
+and in relative units in case of relative time.
+The end_time() will be represented by null() in case of a time instance.
+.RE
+.PP
+The supported internal variables for the current sample interval or instance
+for absolute time are:
+.RS 4n
+.IP \(bu 4n
+\fIstart_doy()\fR \- Day of year (doy) from the start time [1 \- 366]
+.IP \(bu 4n
+\fIstart_dow()\fR \- Day of week (dow) from the start time [1 \- 7],
+the start of the week is Monday == 1
+.IP \(bu 4n
+\fIstart_year()\fR \- The year of the start time [0 \- 9999]
+.IP \(bu 4n
+\fIstart_month()\fR \- The month of the start time [1 \- 12]
+.IP \(bu 4n
+\fIstart_week()\fR \- Week of year of the start time [1 \- 54]
+.IP \(bu 4n
+\fIstart_day()\fR \- Day of month from the start time [1 \- 31]
+.IP \(bu 4n
+\fIstart_hour()\fR \- The hour of the start time [0 \- 23]
+.IP \(bu 4n
+\fIstart_minute()\fR \- The minute of the start time [0 \- 59]
+.IP \(bu 4n
+\fIstart_second()\fR \- The second of the start time [0 \- 59]
+.IP \(bu 4n
+\fIend_doy()\fR \- Day of year (doy) from the end time [1 \- 366]
+.IP \(bu 4n
+\fIend_dow()\fR \- Day of week (dow) from the end time [1 \- 7],
+the start of the week is Monday == 1
+.IP \(bu 4n
+\fIend_year()\fR \- The year of the end time [0 \- 9999]
+.IP \(bu 4n
+\fIend_month()\fR \- The month of the end time [1 \- 12]
+.IP \(bu 4n
+\fIend_woy()\fR \- Week of year (woy) of the end time [1 \- 54]
+.IP \(bu 4n
+\fIend_day()\fR \- Day of month from the start time [1 \- 31]
+.IP \(bu 4n
+\fIend_hour()\fR \- The hour of the end time [0 \- 23]
+.IP \(bu 4n
+\fIend_minute()\fR \- The minute of the end time [0 \- 59]
+.IP \(bu 4n
+\fIend_second()\fR \- The second of the end time [0 \- 59].
+.RE
+The \fIend_*\fR functions are represented by the null() internal variable
+in case of time instances.
+.SH NOTES
+We will discuss the internal work of \fIt.rast.mapcalc\fR with an
+example. Imagine we have two STRDS as input, each one of monthly
+granularity. The first one \fIA\fR has 6 raster maps (a3 ... a8)
+with a temporal range from March to August. The second STRDS \fIB\fR
+has 12 raster maps (b1 ... b12) ranging from January to December. The
+value of the raster maps is the number of the month from their interval
+start time. Dataset \fIA\fR will be used to sample dataset
+\fIB\fR to create a dataset \fIC\fR. We want to add all maps with
+equal time stamps if the month of the start time is May or June,
+otherwise we multiply the maps. The command will look as follows:
+.PP
+.br
+.nf
+\fC
+t.rast.mapcalc input=A,B output=C basename=c method=equal \(rs
+    expression=\(dqif(start_month() == 5 || start_month() == 6, (A + B), (A * B))\(dq
+\fR
+.fi
+.PP
+The resulting raster maps in dataset C can be listed with \fIt.rast.list\fR:
+.PP
+.br
+.nf
+\fC
+name    start_time              min     max
+c_1     2001\-03\-01 00:00:00     9.0     9.0
+c_2     2001\-04\-01 00:00:00     16.0    16.0
+c_3     2001\-05\-01 00:00:00     10.0    10.0
+c_4     2001\-06\-01 00:00:00     12.0    12.0
+c_5     2001\-07\-01 00:00:00     49.0    49.0
+c_6     2001\-08\-01 00:00:00     64.0    64.0
+\fR
+.fi
+.PP
+Internally the spatio\-temporal expression will be analyzed for each
+time interval of the sample dataset A, the temporal functions will be
+replaced by numerical values, the names of the space time raster
+datasets will be replaced by the corresponding raster maps. The final
+expression will be passed to \fIr.mapcalc\fR, resulting in 6 runs:
+.PP
+.br
+.nf
+\fC
+r.mapcalc expression=\(dqc_1 = if(3 == 5 || 3 == 6, (a3 + b3), (a3 * b3))\(dq
+r.mapcalc expression=\(dqc_2 = if(4 == 5 || 4 == 6, (a4 + b4), (a4 * b4))\(dq
+r.mapcalc expression=\(dqc_3 = if(5 == 5 || 5 == 6, (a5 + b5), (a5 * b5))\(dq
+r.mapcalc expression=\(dqc_4 = if(6 == 5 || 6 == 6, (a6 + b6), (a6 * b6))\(dq
+r.mapcalc expression=\(dqc_5 = if(7 == 5 || 7 == 6, (a7 + b7), (a7 * b7))\(dq
+r.mapcalc expression=\(dqc_6 = if(8 == 5 || 8 == 6, (a8 + b8), (a8 * b8))\(dq
+\fR
+.fi
+.PP
+.SH EXAMPLE
+The following command creates a new space time raster dataset
+january_under_0 that will set to null all cells with
+temperature above zero in the January maps while keeping all the rest
+as in the original time series. This will change the maximum values
+of all January maps in the new STRDS as compared to the original one,
+tempmean_monthly.
+.br
+.nf
+\fC
+t.rast.mapcalc input=tempmean_monthly output=january_under_0 basename=january_under_0 \(rs
+    expression=\(dqif(start_month() == 1 && tempmean_monthly > 0, null(), tempmean_monthly)\(dq
+# print minimum and maximum only for January in the new strds
+t.rast.list january_under_0 columns=name,start_time,min,max | grep 01\-01
+name|start_time|min|max
+january_under_0_01|2009\-01\-01 00:00:00|\-3.380823|\-7e\-06
+january_under_0_13|2010\-01\-01 00:00:00|\-5.266929|\-0.000154
+january_under_0_25|2011\-01\-01 00:00:00|\-4.968747|\-6.1e\-05
+january_under_0_37|2012\-01\-01 00:00:00|\-0.534994|\-0.014581
+# print minimum and maximum only for January in the original strds,
+# note that the maximum is different
+t.rast.list tempmean_monthly columns=name,start_time,min,max | grep 01\-01
+2009_01_tempmean|2009\-01\-01 00:00:00|\-3.380823|7.426054
+2010_01_tempmean|2010\-01\-01 00:00:00|\-5.266929|5.71131
+2011_01_tempmean|2011\-01\-01 00:00:00|\-4.968747|4.967295
+2012_01_tempmean|2012\-01\-01 00:00:00|\-0.534994|9.69511
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.mapcalc,
+t.register,
+t.rast.list,
+t.info
+\fR
+.PP
+Temporal data processing Wiki
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.mapcalc source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

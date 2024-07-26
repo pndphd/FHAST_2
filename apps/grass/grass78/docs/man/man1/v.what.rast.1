@@ -1,0 +1,174 @@
+.TH v.what.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.what.rast\fR\fR  \- Uploads raster values at positions of vector points to the table.
+.SH KEYWORDS
+vector, sampling, raster, position, querying, attribute table, surface information
+.SH SYNOPSIS
+\fBv.what.rast\fR
+.br
+\fBv.what.rast \-\-help\fR
+.br
+\fBv.what.rast\fR [\-\fBip\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBraster\fR=\fIname\fR  [\fBcolumn\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Interpolate values from the nearest four cells
+.IP "\fB\-p\fR" 4m
+.br
+Print categories and values instead of updating the database
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector points map for which to edit attributes
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, centroid\fR
+.br
+Default: \fIpoint\fR
+.IP "\fBraster\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing raster map to be queried
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column to be updated with the query result
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.SH DESCRIPTION
+\fIv.what.rast\fR retrieves raster value from a given raster map for each point
+or centroid stored in a given vector map. It can update a \fBcolumn\fR in the linked
+vector attribute table with the retrieved raster cell value or print it.
+.PP
+The column type needs to be numeric (integer, float, double,
+\&...). If the column doesn\(cqt exist in the vector attribute table than
+the module will create the new column of type corresponding with the
+input raster map.
+.PP
+If the \fB\-p\fR flag is used, then the attribute table is not updated
+and the results are printed to standard output.
+.PP
+If the \fB\-i\fR flag is used, then the value to be uploaded to the database
+is interpolated from the four nearest raster cells values using an inverse
+distance weighting method (IDW). This is useful for cases when the vector
+point density is much higher than the raster cell size.
+.SH NOTES
+.PP
+Points and centroid with shared category number cannot be processed.
+To solved this, unique categories may be added
+with \fIv.category\fR in a separate
+layer.
+.PP
+If multiple points have the same category, the attribute value is set to NULL.
+If the raster value is NULL, then attribute value is set to NULL.
+.PP
+\fIv.what.rast\fR operates on the attribute table. To modify the vector
+geometry instead, use \fIv.drape\fR.
+.PP
+Categories and values are output unsorted with the print flag. To sort them
+pipe the output of this module into the UNIX sort tool
+(sort \-n). If you need coordinates, after sorting use
+\fIv.out.ascii\fR and the UNIX paste tool
+(paste \-d\(cq|\(cq). In the case of a NULL result, a \(dq*\(dq
+will be printed in lieu of the value.
+.PP
+The interpolation flag is only useful for continuous value raster maps,
+if a categorical raster is given as input the results will be nonsense.
+Since the search window is limited to four raster cells there may still
+be raster cell\-edge artifacts visible in the results, this compromise
+has been made for processing speed. If one or more of the nearest four
+raster cells is NULL, then only the raster cells containing values will
+be used in the weighted average.
+.SH EXAMPLES
+.SS Transferring raster values into existing attribute table of vector points map
+Reading values from raster map at position of vector points,
+writing these values into a column of the attribute table
+connected to the vector map:
+.PP
+.br
+.nf
+\fC
+# work on copy of original geodetic points map
+g.copy vector=geodetic_pts,mygeodetic_pts
+# set computational region to raster map to be queried
+g.region raster=elev_state_500m \-p
+# query raster cells (a new column will be added to existing table)
+v.what.rast map=mygeodetic_pts raster=elev_state_500m column=height
+# compare official geodetic heights to those of elevation model
+v.db.select map=mygeodetic_pts columns=Z_VALUE,height separator=comma
+\fR
+.fi
+.SS Transferring raster values into new vector points map
+In case of a vector map without attached attribute table, first add
+a new attribute table. This table is then populated with values
+queried from the raster map:
+.PP
+.br
+.nf
+\fC
+# create new random vector points map
+v.random pnts n=100
+# add new table, link to map
+v.db.addtable map=pnts column=\(dqheight double precision\(dq
+# set computational region to raster map to be queried
+g.region raster=elevation \-p
+# query raster map and upload values to vector table into specified column
+v.what.rast map=pnts raster=elevation column=height
+# verify new attribute table:
+v.db.select pnts
+# verify statistics of uploaded values:
+v.univar map=pnts column=height type=point
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.category,
+v.db.addtable,
+v.db.select,
+v.drape,
+v.univar,
+v.rast.stats,
+v.what.vect
+\fR
+.SH AUTHORS
+Radim Blazek
+.br
+Hamish Bowman (interpolation)
+.SH SOURCE CODE
+.PP
+Available at: v.what.rast source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

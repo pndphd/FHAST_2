@@ -1,0 +1,93 @@
+.TH i.in.spotvgt 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.in.spotvgt.py\fR\fR  \- Imports SPOT VGT NDVI data into a raster map.
+.SH KEYWORDS
+imagery, import, NDVI, SPOT
+.SH SYNOPSIS
+\fBi.in.spotvgt.py\fR
+.br
+\fBi.in.spotvgt.py \-\-help\fR
+.br
+\fBi.in.spotvgt.py\fR [\-\fBa\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Also import quality map (SM status map layer) and filter NDVI map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input SPOT VGT NDVI HDF file
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIi.in.spotvgt\fR imports SPOT Vegetation (1km, global) NDVI data sets.
+After import the digital numbers (DN) are remapped to VEGETATION NDVI
+values and the NDVI color table is applied. The imported DN map is
+removed after remapping.
+.PP
+Apparently missing raster cells due to bad pixel quality are reconstructed
+by the SPOT operating team in the NDVI file. The differences between the
+filtered (\-a flag) and raw NDVI map should be compared.
+.SH NOTES
+The SPOT VGT files are delivered in HDF4 (Hierarchical Data Format Release 4)
+format. It is required to have the GDAL libraries installed with HDF4 support.
+.SS Export of entire world SPOT VGT maps
+When working with SPOT VGT with entire world extent, it is recommended
+to zoom to \fIw=180W\fR and \fIe=180E\fR instead of using the map
+extent for map export. These entire world SPOT VGT data are exceeding
+\-180.0 degree which can lead to unhelpful large East\-West coordinates in
+the exported file. It is also recommended to then use an export command
+which respects the user settings. Example:
+.br
+.nf
+\fC
+# import:
+i.in.spotvgt 0001_NDV.HDF
+# export:
+g.region w=180W e=180E n=75:00:16.071429N s=56:00:16.069919S res=0:00:32.142857 \-p
+r.out.gdal 0001_NDV format=GTiff out=spotndvi.tif
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.in.gdal,
+r.out.gdal
+\fR
+.SH REFERENCES
+SPOT Vegetation (1km, global) NDVI data set server
+.br
+SPOT Vegetation FAQ
+.br
+1.13 How must I read the 8 bits of the status map? \- Quality map
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: i.in.spotvgt source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

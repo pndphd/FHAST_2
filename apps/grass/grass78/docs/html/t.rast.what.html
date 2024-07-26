@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.what.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.what.py</b></em>  - Sample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.what.py</b><br></div>
+<b>t.rast.what.py --help</b><br>
+<div id="synopsis"><b>t.rast.what.py</b> [-<b>niv</b>]  [<b>points</b>=<em>name</em>]   [<b>coordinates</b>=<em>east,north</em>]  <b>strds</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>null_value</b>=<em>string</em>]   [<b>separator</b>=<em>character</em>]   [<b>order</b>=<em>string</em>[,<i>string</i>,...]]   [<b>layout</b>=<em>string</em>]   [<b>nprocs</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Output header row</dd>
+
+<dt><b>-i</b></dt>
+<dd>Use stdin as input and ignore coordinates and point option</dd>
+
+<dt><b>-v</b></dt>
+<dd>Show the category for vector points map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>points</b>=<em>name</em></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>coordinates</b>=<em>east,north</em></dt>
+<dd>Comma separated list of coordinates</dd>
+
+<dt><b>strds</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for the output file or "-" in case stdout should be used</dd>
+<dd>Default: <em>-</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>order</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Sort the maps by category</dd>
+<dd>Options: <em>id,  name,  creator,  mapset,  creation_time,  modification_time,  start_time,  end_time,  north,  south,  west,  east,  min,  max</em></dd>
+<dd>Default: <em>start_time</em></dd>
+
+<dt><b>layout</b>=<em>string</em></dt>
+<dd>The layout of the output. One point per row (row), one point per column (col), all timsteps in one row (timerow)</dd>
+<dd>Options: <em>row,  col,  timerow</em></dd>
+<dd>Default: <em>row</em></dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>Number of r.what processes to run in parallel</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#data-preparation" class="toc">Data preparation</a></li>
+        <li class="toc"><a href="#example-1" class="toc">Example 1</a></li>
+        <li class="toc"><a href="#example-2" class="toc">Example 2</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>t.rast.what</em> is designed to sample space time raster datasets
+at specific point coordinates using <a href="r.what.html">r.what</a>
+internally. The output of <a href="r.what.html">r.what</a> is transformed
+to different output layouts.
+The output layouts can be specified using the <em>layout</em> option.
+<p>
+Three layouts can be specified:
+<ul>
+    <li><em>row</em> - Row order, one vector sample point value per row</li>
+    <li><em>col</em> - Column order, create a column for each vector sample
+     point of a single time step/raster layer</li>
+    <li><em>timerow</em> - Time order, create a column for each time step, 
+     this order is the original <em>r.what</em> output, except that the column
+     names are the timestamps</li>
+</ul>
+
+Please have a look at the example to see the supported layouts.
+<p>
+This module is designed to run several instances of <em>r.what</em> to sample
+subsets of a space time raster dataset in parallel. Several intermediate
+text files will be created that are merged into a single file at the
+end of the processing.
+<p>
+Coordinates can be provided as vector map using the <em>points</em> option
+or as comma separated coordinate list with the <em>coordinates </em>option.
+<p>
+An output file can be specified using the <em>output</em> option. 
+Stdout will be used if no output is specified or if the 
+<em>output</em> option is set to "-".
+    
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="data-preparation">Data preparation</a></h3>
+In the following examples we sample a space time raster dataset that contains
+4 raster map layers. First we create the STRDS that will be sampled with
+<em>t.rast.what</em>.
+
+<div class="code"><pre>
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10
+
+# Generate data
+r.mapcalc expression="a_1 = 1" -s
+r.mapcalc expression="a_2 = 2" -s
+r.mapcalc expression="a_3 = 3" -s
+r.mapcalc expression="a_4 = 4" -s
+
+t.create type=strds output=A title="A test" descr="A test"
+
+t.register -i type=raster input=A maps=a_1,a_2,a_3,a_4 \
+    start='1990-01-01' increment="1 month"
+</pre></div>
+
+<h3><a name="example-1">Example 1</a></h3>
+
+The first approach uses text coordinates as input and stdout as output,
+the layout is one coordinate(point per column:
+
+
+<div class="code"><pre>
+t.rast.what strds=A coordinates="115,36,79,45" layout=col -n
+
+start|end|115.0000000000;36.0000000000|79.0000000000;45.0000000000
+1990-01-01 00:00:00|1990-02-01 00:00:00|1|1
+1990-02-01 00:00:00|1990-03-01 00:00:00|2|2
+1990-03-01 00:00:00|1990-04-01 00:00:00|3|3
+1990-04-01 00:00:00|1990-05-01 00:00:00|4|4
+</pre></div>
+
+<h3><a name="example-2">Example 2</a></h3>
+
+A vector map layer can be used as input to sample the STRDS. All
+three available layouts are demonstrated using the vector map for sampling.
+
+<div class="code"><pre>
+# First create the vector map layer based on random points
+v.random output=points n=3 seed=1
+
+# Row layout using a text file as output
+t.rast.what strds=A points=points output=result.txt layout=row -n
+
+cat result.txt
+
+115.0043586274|36.3593955783|1990-01-01 00:00:00|1990-02-01 00:00:00|1
+115.0043586274|36.3593955783|1990-02-01 00:00:00|1990-03-01 00:00:00|2
+115.0043586274|36.3593955783|1990-03-01 00:00:00|1990-04-01 00:00:00|3
+115.0043586274|36.3593955783|1990-04-01 00:00:00|1990-05-01 00:00:00|4
+79.6816763826|45.2391522853|1990-01-01 00:00:00|1990-02-01 00:00:00|1
+79.6816763826|45.2391522853|1990-02-01 00:00:00|1990-03-01 00:00:00|2
+79.6816763826|45.2391522853|1990-03-01 00:00:00|1990-04-01 00:00:00|3
+79.6816763826|45.2391522853|1990-04-01 00:00:00|1990-05-01 00:00:00|4
+97.4892579600|79.2347263950|1990-01-01 00:00:00|1990-02-01 00:00:00|1
+97.4892579600|79.2347263950|1990-02-01 00:00:00|1990-03-01 00:00:00|2
+97.4892579600|79.2347263950|1990-03-01 00:00:00|1990-04-01 00:00:00|3
+97.4892579600|79.2347263950|1990-04-01 00:00:00|1990-05-01 00:00:00|4
+
+
+# Column layout order using stdout as output
+t.rast.what strds=A points=points layout=col -n
+
+start|end|115.0043586274;36.3593955783|79.6816763826;45.2391522853|97.4892579600;79.2347263950
+1990-01-01 00:00:00|1990-02-01 00:00:00|1|1|1
+1990-02-01 00:00:00|1990-03-01 00:00:00|2|2|2
+1990-03-01 00:00:00|1990-04-01 00:00:00|3|3|3
+1990-04-01 00:00:00|1990-05-01 00:00:00|4|4|4
+
+# Timerow layout, one time series per row 
+# using the where statement to select a subset of the STRDS
+# and stdout as output
+t.rast.what strds=A points=points \
+    where="start_time >= '1990-03-01'" layout=timerow -n
+
+x|y|1990-03-01 00:00:00;1990-04-01 00:00:00|1990-04-01 00:00:00;1990-05-01 00:00:00
+115.004358627375|36.3593955782903|3|4
+79.681676382576|45.2391522852909|3|4
+97.4892579600048|79.2347263950131|3|4
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.mask.html">r.mask</a>
+<a href="r.neighbors.html">r.neighbors</a>,
+<a href="r.what.html">r.what</a>,
+<a href="t.info.html">t.info</a>,
+<a href="t.rast.aggregate.ds.html">t.rast.aggregate.ds</a>,
+<a href="t.rast.extract.html">t.rast.extract</a>,
+<a href="v.what.strds.html">v.what.strds</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.what">t.rast.what source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.what">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/jdk-11/lib/modules filter=lfs diff=lfs merge=lfs -text
+bin/oraociei12.dll filter=lfs diff=lfs merge=lfs -text
+apps/Qt5/bin/Qt5WebEngineCore.dll filter=lfs diff=lfs merge=lfs -text
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/FHAST_App/app/library/sf/libs/x64/sf.dll filter=lfs diff=lfs merge=lfs -text
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/FHAST_App/dist/NetLogo[[:space:]]6.2.2/runtime/bin/jfxwebkit.dll filter=lfs diff=lfs merge=lfs -text
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/FHAST_App/dist/NetLogo[[:space:]]6.2.2/runtime/lib/rt.jar filter=lfs diff=lfs merge=lfs -text
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/FHAST_App/app/library/terra/libs/x64/terra.dll filter=lfs diff=lfs merge=lfs -text
+profile/profiles/default/python/plugins/run_fhast_simulation/FHAST/FHAST_App/dist/Pandoc/pandoc.exe filter=lfs diff=lfs merge=lfs -text

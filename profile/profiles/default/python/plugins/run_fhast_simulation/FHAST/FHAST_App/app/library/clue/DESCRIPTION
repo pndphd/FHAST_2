@@ -1,0 +1,25 @@
+Package: clue
+Version: 0.3-64
+Encoding: UTF-8
+Title: Cluster Ensembles
+Description: CLUster Ensembles.
+Authors@R: c(person("Kurt", "Hornik", role = c("aut", "cre"),
+                    email = "Kurt.Hornik@R-project.org",
+		    comment = c(ORCID = "0000-0003-4198-9911")),
+             person("Walter", "Böhm", role = "ctb"))
+License: GPL-2
+Depends: R (>= 3.2.0)
+Imports: stats, cluster, graphics, methods
+Suggests: e1071, lpSolve (>= 5.5.7), quadprog (>= 1.4-8), relations
+Enhances: RWeka, ape, cba, cclust, flexclust, flexmix, kernlab, mclust,
+        movMF, modeltools
+NeedsCompilation: yes
+Packaged: 2023-01-31 13:42:53 UTC; hornik
+Author: Kurt Hornik [aut, cre] (<https://orcid.org/0000-0003-4198-9911>),
+  Walter Böhm [ctb]
+Maintainer: Kurt Hornik <Kurt.Hornik@R-project.org>
+Repository: CRAN
+Date/Publication: 2023-01-31 15:26:44 UTC
+Built: R 4.2.2; x86_64-w64-mingw32; 2023-02-21 01:52:28 UTC; windows
+ExperimentalWindowsRuntime: ucrt
+Archs: x64

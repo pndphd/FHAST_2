@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.gensig - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.gensig</b></em>  - Generates statistics for i.maxlik from raster map.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_classification.html">classification</a>, <a href="keywords.html#supervised classification">supervised classification</a>, <a href="keywords.html#Maximum Likelihood Classification">Maximum Likelihood Classification</a>, <a href="keywords.html#MLC">MLC</a>, <a href="keywords.html#signatures">signatures</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.gensig</b><br></div>
+<b>i.gensig --help</b><br>
+<div id="synopsis"><b>i.gensig</b> <b>trainingmap</b>=<em>name</em> <b>group</b>=<em>name</em> <b>subgroup</b>=<em>name</em> <b>signaturefile</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>trainingmap</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Ground truth training map</dd>
+
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>subgroup</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery subgroup</dd>
+
+<dt><b>signaturefile</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output file containing result signatures</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#options" class="toc">OPTIONS</a>
+    <ul class="toc">
+        <li class="toc"><a href="#parameters" class="toc">Parameters</a></li>
+    </ul></li>
+    <li class="toc"><a href="#interactive-mode" class="toc">INTERACTIVE MODE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.gensig</em>
+is a non-interactive method for generating input into 
+<em><a href="i.maxlik.html">i.maxlik</a></em>.
+It can be used as the first pass in the GRASS two-pass 
+classification process (instead of 
+<em><a href="i.cluster.html">i.cluster</a></em>
+ or 
+<em><a href="g.gui.iclass.html">g.gui.iclass</a>)</em>.
+
+It reads a raster map layer, called the training map, which
+has some of the pixels or regions already classified.
+<em>i.gensig</em> will then extract spectral signatures
+from an image based on the classification of the pixels in
+the training map and make these signatures available to
+<em><a href="i.maxlik.html">i.maxlik</a></em>.
+
+<p>
+The user would then execute the GRASS program 
+<em><a href="i.maxlik.html">i.maxlik</a></em>
+to actually create the final classified map.
+
+<h2><a name="options">OPTIONS</a></h2>
+
+<h3><a name="parameters">Parameters</a></h3>
+
+<dl>
+<dt><b>trainingmap=</b><em>name</em>
+<dd>ground truth training map
+<p>
+This map must be prepared by the user in advance using vector or
+raster digitizer. Of course other methods could be devised by the user
+for creating this training map - <em>i.gensig</em> makes no assumption
+about the origin of this map layer. It simply creates signatures for
+the classes defined in the training map for the image to be classified
+(the image is specified in other options - see below). The
+<em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em> can be
+used for interactively creating the training map.
+
+<dt><b>group=</b><em>name</em> 
+<dd>imagery group
+<p>
+This is the name of the group that contains the band files
+which comprise the image to be analyzed. The <em>
+<a href="i.group.html">i.group</a> </em> command is
+used to construct groups of raster layers which comprise an
+image.
+
+<p>
+<dt><A NAME="subgroup"></a><b>subgroup=</b><em>name</em>
+
+<dd>subgroup containing image files
+<p>
+This names the subgroup within the group that selects a
+subset of the bands to be analyzed. The <em>
+<a href="i.group.html">i.group</a> </em> command is
+also used to prepare this subgroup.  The subgroup mechanism
+allows the user to select a subset of all the band files
+that form an image.
+
+
+<dt><b>signaturefile=</b><em>name</em> 
+<dd>resultant signature file
+<p>
+This is the resultant signature file (containing the means
+and covariance matrices) for each class in the training map
+that is associated with the band files in the subgroup
+select (see <a href="#subgroup">above</a>).
+</dl>
+
+<h2><a name="interactive-mode">INTERACTIVE MODE</a></h2>
+
+If none of the arguments are specified on the command line, 
+<em>i.gensig</em>
+will interactively prompt for the names of these maps and files.
+
+<p>
+It should be noted that interactive mode here only means
+interactive prompting for maps and files.
+It does not mean visualization of the signatures that
+result from the process.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The structure of the SIG files generated by <em>i.gensig</em> is
+as follows (ASCII file, used internally by <em>i.maxlik</em>):
+<br>
+<i>Note: the line numbers are not present in the file but have been
+added here for explanation only</i>:
+<p>
+SIG file "lsat7_2000_gensig":
+<div class="code"><pre>
+ 1 #
+ 2 #water
+ 3 4186
+ 4 67.9508 48.7346 37.8915 15.3129 13.8473 12.0855 
+ 5 1.74334 
+ 6 0.439504 2.07267 
+ 7 0.662523 1.63501 4.21189 
+ 8 0.530339 2.40757 5.52857 22.433 
+ 9 0.561184 2.30762 5.18846 20.5364 20.4926 
+10 0.393218 1.2184 2.63628 9.61528 9.36025 5.85314 
+</pre></div>
+
+<ul>
+<li> Line 2: text label
+<li> Line 3: number of points in class
+<li> Line 4: mean values per band of the class
+<li> Line 5-10: (semi)-matrix of band-band covariance
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.gui.iclass.html">g.gui.iclass</a>,
+<a href="i.group.html">i.group</a>,
+<a href="i.smap.html">i.smap</a>,
+<a href="r.info.html">r.info</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="wxGUI.vdigit.html">wxGUI vector digitizer</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.gensig">i.gensig source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.gensig">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

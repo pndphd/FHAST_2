@@ -1,0 +1,173 @@
+.TH v.surf.idw 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.surf.idw\fR\fR  \- Provides surface interpolation from vector point data by Inverse Distance Squared Weighting.
+.SH KEYWORDS
+vector, surface, interpolation, IDW
+.SH SYNOPSIS
+\fBv.surf.idw\fR
+.br
+\fBv.surf.idw \-\-help\fR
+.br
+\fBv.surf.idw\fR [\-\fBn\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBcolumn\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\fBnpoints\fR=\fIcount\fR]   [\fBpower\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Don\(cqt index points by raster cell
+.br
+Slower but uses less memory and includes points from outside region in the interpolation
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column with values to interpolate
+.br
+If not given and input is 2D vector map then category values are used. If input is 3D vector map then z\-coordinates are used.
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBnpoints\fR=\fIcount\fR" 4m
+.br
+Number of interpolation points
+.br
+Default: \fI12\fR
+.IP "\fBpower\fR=\fIfloat\fR" 4m
+.br
+Power parameter
+.br
+Greater values assign greater influence to closer points
+.br
+Default: \fI2.0\fR
+.SH DESCRIPTION
+.PP
+\fIv.surf.idw\fR fills a raster matrix with interpolated values
+generated from a set of irregularly spaced vector data points using
+numerical approximation (weighted averaging) techniques. The
+interpolated value of a cell is determined by values of nearby data
+points and the distance of the cell from those input points.  In
+comparison with other methods, numerical approximation allows
+representation of more complex surfaces (particularly those with
+anomalous features), restricts the spatial influence of any errors,
+and generates the interpolated surface from the data points.
+.PP
+Values to interpolate are read from \fBcolumn\fR option. If this
+option is not given than the program uses \fIcategories\fR as values
+to interpolate or \fIz\-coordinates\fR if the input vector map is 3D.
+.SH NOTES
+.PP
+The amount of memory used by this program is related to the number
+of vector points in the current region.  If the vector point map is
+very dense (i.e., contains many data points), the program may
+not be able to get all the memory it needs from the
+system.  The time required to execute is related to the
+resolution of the current region, after an initial delay
+determined by the time taken to read the input vector points map.
+.PP
+Note that vector features without category in given \fBlayer\fR are
+\fIskipped\fR.
+.PP
+If the user has a mask set, then interpolation is only done
+for those cells that fall within the mask. The module has two separate
+modes of operation for selecting the vector points that are used in the
+interpolation:
+.IP "Simple, non\-indexed mode (activated by \fB\-n\fR flag)" 4m
+.br
+When the \fB\-n\fR flag is specified, all vector points in the
+input vector map are searched through in order to find the
+\fBnpoints\fR closest points to the centre of each cell in the output
+raster map. This mode of operation can be slow in the case of a very
+large number of vector points.
+.IP "Default, indexed mode" 4m
+.br
+By default (i.e. if \fB\-n\fR flag is \fInot\fR specified), prior to
+the interpolation, input vector points are indexed according to which
+output raster cell they fall into. This means that only cells nearby
+the one being interpolated need to be searched to find the
+\fBnpoints\fR closest input points, and the module can run many times
+faster on dense input maps. It should be noted that:
+.RS 4n
+.IP \(bu 4n
+Only vector points that lie within the current region are used in
+the interpolation. If there are points outside the current region,
+this may have an effect on the interpolated value of cells near the
+edges of the region, and this effect will be more pronounced the fewer
+points there are. If you wish to also include points outside the
+region in the interpolation, then either use the \fB\-n\fR flag, or
+set the region to a larger extent (covering all input points) and use
+a mask to limit interpolation to a smaller area.
+.IP \(bu 4n
+If more than \fBnpoints\fR points fall within a given cell then,
+rather than interpolating, these points are aggregated by taking the
+mean. This avoids the situation where some vector points can be
+discarded and not used in the interpolation, for very dense input
+maps. Again, use the \fB\-n\fR flag if you wish to use only the
+\fBnpoints\fR closest points to the cell centre under all
+circumstances.
+.RE
+.PP
+The \fBpower\fR parameter defines an exponential distance weight.
+Greater values assign greater influence to values closer to the
+point to be interpolated. The interpolation function peaks sharply over
+the given data points for 0 < \fIp\fR < 1 and more smoothly for
+larger values. The default value for the power parameter is 2.
+.PP
+By setting \fBnpoints\fR=1, the module can be used to calculate
+raster Voronoi diagrams (Thiessen polygons).
+.SH SEE ALSO
+\fI
+g.region,
+r.surf.contour,
+r.surf.idw,
+r.surf.gauss,
+r.surf.fractal,
+r.surf.random,
+v.surf.rst
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHORS
+Michael Shapiro,
+U.S. Army Construction Engineering
+Research Laboratory
+.br
+Improved algorithm (indexes points according to cell and ignores
+points outside current region) by Paul Kelly
+.SH SOURCE CODE
+.PP
+Available at: v.surf.idw source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

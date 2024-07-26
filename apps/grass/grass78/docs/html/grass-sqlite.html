@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>GRASS GIS Manual: SQLite DATABASE DRIVER</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+<h2>SQLite DATABASE DRIVER</h2>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#creating-a-sqlite-database" class="toc">Creating a SQLite database</a></li>
+    <li class="toc"><a href="#connecting-grass-to-sqlite" class="toc">Connecting GRASS to SQLite</a></li>
+    <li class="toc"><a href="#supported-sql-commands" class="toc">Supported SQL commands</a></li>
+    <li class="toc"><a href="#operators-available-in-conditions" class="toc">Operators available in conditions</a></li>
+    <li class="toc"><a href="#browsing-table-data-in-db" class="toc">Browsing table data in DB</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+</ul>
+</div>
+<!-- meta page description: SQLite DATABASE DRIVER -->
+
+The SQLite driver is the default DBMI backend.
+
+<h2><a name="creating-a-sqlite-database">Creating a SQLite database</a></h2>
+
+GRASS is automatically creating the SQLite database if it is not yet
+existing when the first table is created in the SQLite database. It
+is sufficient to define the connection (see next step).
+
+<h2><a name="connecting-grass-to-sqlite">Connecting GRASS to SQLite</a></h2>
+
+The database name 'sqlite.db' is at user's choice.
+Also the file storage location can be freely chosen. If the database
+does not exist, it will be automatically created when database content
+is created:
+
+<div class="code"><pre>
+# example for storing DB in mapset directory (keep single quotes):
+db.connect driver=sqlite database='$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db'
+db.connect -p
+</pre></div>
+
+<h2><a name="supported-sql-commands">Supported SQL commands</a></h2>
+
+All SQL commands supported by SQLite (for limitations, see
+SQLite help page:
+<a href="http://www.sqlite.org/lang.html">SQL As Understood By SQLite</a> and
+<a href="http://www.sqlite.org/omitted.html">Unsupported SQL</a>).
+
+<h2><a name="operators-available-in-conditions">Operators available in conditions</a></h2>
+
+All SQL operators supported by SQLite.
+
+<h2><a name="browsing-table-data-in-db">Browsing table data in DB</a></h2>
+
+A convenient SQLite front-end is <a href="http://sqlitebrowser.sourceforge.net/">sqlitebrowser</a>.
+To open a DB file stored within the current mapset,
+the following way is suggested (corresponds to above database connection):
+
+<div class="code"><pre>
+# fetch GRASS variables as shell environment variables:
+eval `g.gisenv`
+# use double quotes:
+sqlitebrowser "$GISDBASE/$LOCATION_NAME/$MAPSET"/sqlite/sqlite.db
+</pre></div>
+
+<!-- doesn't work yet, why?:
+  ah, pending patch: http://www.sqlite.org/cvstrac/tktview?tn=1476
+
+<h2><a name="adding-an-unique-id-column">Adding an unique ID column</a></h2>
+
+Import vector module require an unique ID column which can
+be generated as follows for a SQLite table:
+
+<div class="code"><pre>
+echo "
+ ALTER TABLE mytable ADD ID integer;
+ CREATE SEQUENCE mytable_seq;
+ UPDATE mytabe SET ID = nextval('mytable_seq');
+ DROP SEQUENCE mytable_seq;
+" | db.execute
+</pre></div>
+-->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="db.connect.html">db.connect</a>,
+  <a href="db.execute.html">db.execute</a>,
+  <a href="db.select.html">db.select</a>
+  <br><br>
+  <a href="sql.html">SQL support in GRASS GIS</a>
+  <br><br>
+  <a href="http://www.sqlite.org">SQLite web site</a>,
+  <a href="http://www.sqlite.org/quickstart.html">SQLite manual</a>,
+  <a href="http://www.sqlite.org/cvstrac/wiki?p=ManagementTools">sqlite - Management Tools</a>
+</em>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

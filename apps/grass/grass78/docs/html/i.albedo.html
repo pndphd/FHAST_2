@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.albedo - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.albedo</b></em>  - Computes broad band albedo from surface reflectance.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_albedo.html">albedo</a>, <a href="keywords.html#reflectance">reflectance</a>, <a href="keywords.html#satellite">satellite</a>, <a href="keywords.html#Landsat">Landsat</a>, <a href="keywords.html#ASTER">ASTER</a>, <a href="keywords.html#AVHRR">AVHRR</a>, <a href="keywords.html#MODIS">MODIS</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.albedo</b><br></div>
+<b>i.albedo --help</b><br>
+<div id="synopsis"><b>i.albedo</b> [-<b>mnl8acd</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>MODIS (7 input bands:1,2,3,4,5,6,7)</dd>
+
+<dt><b>-n</b></dt>
+<dd>NOAA AVHRR (2 input bands:1,2)</dd>
+
+<dt><b>-l</b></dt>
+<dd>Landsat 5+7 (6 input bands:1,2,3,4,5,7)</dd>
+
+<dt><b>-8</b></dt>
+<dd>Landsat 8 (7 input bands:1,2,3,4,5,6,7)</dd>
+
+<dt><b>-a</b></dt>
+<dd>ASTER (6 input bands:1,3,5,6,8,9)</dd>
+
+<dt><b>-c</b></dt>
+<dd>Aggressive mode (Landsat)</dd>
+<dd>Albedo dry run to calculate some water to beach/sand/desert stretching, a kind of simple atmospheric correction</dd>
+
+<dt><b>-d</b></dt>
+<dd>Soft mode (MODIS)</dd>
+<dd>Albedo dry run to calculate some water to beach/sand/desert stretching, a kind of simple atmospheric correction</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">References</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.albedo</em> calculates the albedo, that is the Shortwave surface
+reflectance in the range of 0.3-3 micro-meters.  It takes as input
+individual bands of surface reflectance originating from MODIS, AVHRR, Landsat
+or Aster satellite sensors and calculates the albedo for those.  This is
+a precursor to <em>r.sun</em> and any energy-balance processing.
+
+<h2><a name="notes">NOTES</a></h2>
+
+It uses for Landsat 8 the weighted average reflectance (temporary solution
+until an algorithm is found).
+<p>
+It assumes MODIS product surface reflectance in [0;10000].
+
+<h2><a name="example">EXAMPLE</a></h2>
+The following example creates the raster map "albedo_lsat7_1987" from the 
+LANDSAT-TM5 bands in the North Carolina dataset:
+<div class="code"><pre>
+g.region raster=lsat5_1987_10 -p
+i.albedo -l input=lsat5_1987_10,lsat5_1987_20,lsat5_1987_30,lsat5_1987_40,lsat5_1987_50,lsat5_1987_70 output=albedo_lsat7_1987
+</pre></div>
+<p>
+<center>
+<img src="i_albedo_landsat5.png" alt="i.albedo LANDSAT-TM5 1987 example"><br>
+<i>Figure: Resulting albedo map from LANDSAT 5</i>
+</center>
+<p>
+The following example creates the raster map "albedo_lsat7_2000" from the 
+LANDSAT-TM7 bands in the North Carolina dataset:
+<div class="code"><pre>
+g.region raster=lsat7_2000_10 -p
+i.albedo -l input=lsat7_2000_10,lsat7_2000_20,lsat7_2000_30,lsat7_2000_40,lsat7_2000_50,lsat7_2000_70 output=albedo_lsat7_2000
+</pre></div>
+<p>
+<center>
+<img src="i_albedo_landsat7.png" alt="i.albedo LANDSAT-TM7 2000 example"><br>
+<i>Figure: Resulting albedo map from LANDSAT 7</i>
+</center>
+
+<h2><a name="todo">TODO</a></h2>
+
+Maybe change input requirement of MODIS to [0.0-1.0]?
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.sun.html">r.sun</a>,
+<a href="i.vi.html">i.vi</a>
+</em>
+
+<h2><a name="references">References</a></h2>
+For a 2 band determination of the Aster BB Albedo see the following:
+<p>
+Salleh and Chan, 2014. Land Surface Albedo Determination: Remote Sensing
+and Statistical Validation. in proceedings of FIG 2014
+(<a href="https://www.fig.net/resources/proceedings/fig_proceedings/fig2014/papers/ts05g/TS05G_salleh_chan_6910.pdf">PDF</a>)
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Yann Chemin
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.albedo">i.albedo source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.albedo">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+.TH t.rast3d.mapcalc 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast3d.mapcalc.py\fR\fR  \- Performs r3.mapcalc expressions on maps of sampled space time 3D raster datasets.
+.SH KEYWORDS
+temporal, algebra, raster3d, voxel, time
+.SH SYNOPSIS
+\fBt.rast3d.mapcalc.py\fR
+.br
+\fBt.rast3d.mapcalc.py \-\-help\fR
+.br
+\fBt.rast3d.mapcalc.py\fR [\-\fBns\fR] \fBinputs\fR=\fIname\fR[,\fIname\fR,...] \fBexpression\fR=\fIstring\fR  [\fBmethod\fR=\fIname\fR[,\fIname\fR,...]]  \fBoutput\fR=\fIname\fR \fBbasename\fR=\fIstring\fR  [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register Null maps
+.IP "\fB\-s\fR" 4m
+.br
+Check the spatial topology of temporally related maps and process only spatially related maps
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster3d datasets
+.IP "\fBexpression\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+r3.mapcalc expression applied to each time step of the sampled data
+.IP "\fBmethod\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+The method to be used for sampling the input dataset
+.br
+Options: \fIstart, during, overlap, contain, equal, follows, precedes\fR
+.br
+Default: \fIduring,overlap,contain,equal\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time raster3d dataset
+.IP "\fBbasename\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r3.mapcalc processes to run in parallel
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIt.rast3d.mapcalc\fR provides exact the same functionality as
+\fIt.rast.mapcalc\fR, but for space time 3D raster datasets. Please
+refer to t.rast.mapcalc for
+documentation.
+.PP
+It is a simple wrapper for r3.mapcalc
+enhanced with temporal functions.
+.SH SEE ALSO
+\fI
+t.rast.mapcalc,
+t.rast3d.algebra,
+r3.mapcalc,
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast3d.mapcalc source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

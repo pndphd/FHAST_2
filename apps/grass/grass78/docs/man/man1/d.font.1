@@ -1,0 +1,132 @@
+.TH d.font 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.font\fR\fR  \- Selects the font in which text will be displayed on the user\(cqs graphics monitor.
+.SH KEYWORDS
+display, settings
+.SH SYNOPSIS
+\fBd.font\fR
+.br
+\fBd.font \-\-help\fR
+.br
+\fBd.font\fR [\-\fBlv\fR]  [\fBfont\fR=\fIstring\fR]   [\fBpath\fR=\fIname\fR]   [\fBcharset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-l\fR" 4m
+.br
+List fonts
+.IP "\fB\-v\fR" 4m
+.br
+List fonts verbosely
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Choose new current font
+.br
+Default: \fIromans\fR
+.IP "\fBpath\fR=\fIname\fR" 4m
+.br
+Path to Freetype\-compatible font including file name
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Character encoding
+.br
+Default: \fIUTF\-8\fR
+.SH DESCRIPTION
+\fId.font\fR allows the user to select use of a specific text font for
+display of text on the graphics monitor.
+If the user does not specify a font when using other GRASS programs
+that display text, the font type \fIromans\fR is used by default.
+.PP
+The user can run this program either non\-interactively or interactively.
+If the user specifies a font type name on the command line the program will
+run non\-interactively.
+Alternately, the user can simply type \fBd.font\fR on the command line;
+in this case, the program will prompt the user for a display
+text font type.
+.PP
+\fBParameter:\fR
+.IP "\fBfont=\fR\fIname\fR " 4m
+.br
+Name of a font type, from among the font types italicized below.
+.br
+Default: \fIromans\fR
+.br
+Options: (italized)
+.br
+\fIcyrilc\fR Cyrillic
+.br
+\fIgothgbt\fR Gothic Great Britain triplex
+.br
+\fIgothgrt\fR Gothic German triplex
+.br
+\fIgothitt\fR Gothic Italian triplex
+.br
+\fIgreekc\fR Greek complex
+.br
+\fIgreekcs\fR Greek complex script
+.br
+\fIgreekp\fR Greek plain
+.br
+\fIgreeks\fR Greek simplex
+.br
+\fIitalicc\fR Italian complex
+.br
+\fIitaliccs\fR Italian complex small
+.br
+\fIitalict\fR Italian triplex
+.br
+\fIromanc\fR Roman complex
+.br
+\fIromancs\fR Roman complex small
+.br
+\fIromand\fR Roman duplex
+.br
+\fIromanp\fR Roman plain
+.br
+\fIromans\fR Roman simplex
+.br
+\fIromant\fR Roman triplex
+.br
+\fIscriptc\fR Script complex
+.br
+\fIscripts\fR Script simplex
+.SH NOTES
+The font type
+\fIromans\fR
+is the fastest font type to display to the graphics monitor.
+.SH SEE ALSO
+\fId.text\fR
+.br
+\fId.title\fR
+.SH AUTHOR
+James Westervelt, U.S. Army Construction Engineering
+Research Laboratory
+.PP
+\fId.font\fR uses the public domain version of the Hershey Fonts created
+by Dr. A.V. Hershey while working at the U.S. National Bureau of
+Standards.
+.SH SOURCE CODE
+.PP
+Available at: d.font source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,202 @@
+[general]
+name=QuickMapServices
+qgisMinimumVersion=3.00
+qgisMaximumVersion=3.99
+description=Easy to add basemaps and geoservices
+about=Easy to use list of services and search for finding datasets and basemaps. Please contribute new services via https://qms.nextgis.com. Developed by NextGIS. Any feedback is welcome at https://nextgis.com/contact
+version=0.19.34
+author=NextGIS
+email=info@nextgis.com
+
+
+# End of mandatory metadata
+
+# Optional items:
+
+# Uncomment the following line and add your changelog:
+changelog=
+      0.19.34
+        * Update contrib package link
+        * Set minimum qgis version to 3.00
+      0.19.33
+        * Update link to contrib package
+      0.19.32
+        * Fix add new services link
+      0.19.31
+        * Bug fixes
+      0.19.30
+        * Fixed warning
+        * Added UTM codes for better stats
+      0.19.29
+        * Bug fixes and other minor improvements
+      0.19.28
+        * Bug fixes
+      0.19.27
+        * Fixed locale initialization
+      0.19.26
+        * QGIS3 compatibility fixed
+      0.19.25
+        * Added request timeout
+      0.19.24
+        * Fixed bug when getting user locales
+        * Fixed error: 'sys' has no attribute 'exc_type'
+        * Fixed a bug that caused keyboard shortcuts to work incorrectly
+      0.19.23
+        * Removed CustomTranslator from QCoreApplication
+      0.19.22
+        * Fixed bug when getting user locales
+      0.19.21
+        * Fixed a bug when adding geoservice without parameters
+      0.19.20
+        * The 'Enable EPSG:3857 (OTF) on adding TMS' option also changes the project CRS
+      0.19.19
+        * The settings option 'Enable EPSG:3857 (OTF) on adding TMS' is ignored if a geoservice is added that has a different CRS
+        * Updated translation
+      0.19.18
+        * Fixed ignoring the 'Enable OTF 3857' settings option when adding a geoservice via search panel.
+        * Fixed a no attribute 'nodeType' bug when adding a geoservice
+        * Default services clean-up
+      0.19.17
+        * Fixed QmsSearchResultItemWidget layout
+      0.19.16
+        * Removed the 'Move plugin to Manage Layers panel' option from the settings. QMS is now only displayed in the Web menu.
+        * SSL certificate verification enabled
+        * Fixed proxy settings in request
+      0.19.15
+        * Fixed deprecated CRS constructor
+        * Disabled InsecureRequestWarning
+      0.19.14
+        * Fix bugs after "Optimizing the geoservices search speed"
+      0.19.13
+        * Bug fix: Removed the double slash from the URL in qms_external_api_python
+      0.19.12
+        * Optimizing the geoservices search speed
+        * Fix bugs
+      0.19.11
+        * Update internal data sources
+      0.19.10
+        * Set qgisMaximumVersion to 3.99
+      0.19.9
+        * Fix no native tile layer property dialog (for QGIS 2.18)
+        * Fix Search QMS panel for previously saved services
+      0.19.8
+        * Add subdomain support for TMS url
+        * Fix contributed services package download
+      0.19.7
+        * Fix bugs
+      0.19.6
+        * Up to QGIS3
+      0.19.4
+        * Help us upgrade QMS to QGIS3 http://nextgis.com/qms-plugin-crowdfunding/
+      0.19.2
+        * Fix small bugs
+      0.19.1
+        * Add filter for service status
+        * Icon optimizations
+        * Fix small bugs
+      0.19.0
+        * Fix bugs
+      0.18.9
+        * Fix bugs
+      0.18.8
+        * GeoFilter
+        * Status of services
+        * Fix bugs
+      0.18.7
+        * Add native renderer
+      0.18.6
+        * Fix custom wms parameters processing.
+      0.18.5
+        * Fix TMS services rendering 'ripple' effect due to broken tiles.
+      0.18.4
+        * Fix open settings dialog bug
+        * Do not duplicate services in last used services list
+      0.18.3
+        * Add report a problem link
+      0.18.2
+        * Use rediration url, if tms service return 301 http status
+      0.18.1
+        * Fix adding wms errors
+        * Add action for create service in qms.nextgis.com
+      0.18
+        * New search results list design
+        * Show last used services
+        * Add service to a group, if selected
+        * Support for custom tiling grids (experimental)
+        * Fix work with qgis proxy
+        * Fix local wfs service creation
+        * Fix loading wfs services from qms.nextgis.com
+      0.17.8
+        * Fix saving and restoring grayscale parameter of a basemap with a project
+        * Fix saving and restoring TMS services
+        * Add custom user-agent (required for OSM tile servers)
+      0.17.5
+        * Fix yOriginTop parameters for services added through search panel
+      0.17.4
+        * Fix qgis hanging when searching for a service
+      0.17.3:
+        * Fix errors
+        * Remove PIL from requirements
+        * Improve QMS Service panel
+      0.17.2:
+        * Fix reqs
+      0.17.1:
+        * Fix build error
+      0.17:
+        * WFS and GeoJSON geoservices
+        * QMS Service panel
+        * Fix small errors
+      0.16.2:
+        * Fix build scripts
+      0.16.1:
+        * Fix visibility management on MacOS
+      0.16:
+        * Convenient forms for adding, editing, removing services or groups
+        * It is now possible to hide and show services/groups to shorten the list
+        * Fixed plugin start if user name has non-ASCII symbols
+      0.15:
+        * Grayscale mode for tile layers
+        * Brightness setting for tile layers
+        * Contrast setting for tile layers
+        * Icon for data source and groups is not required now
+      0.14:
+        * CRS for tiled layers (epsg, postgis or custom proj)
+        * Fix contrib pack with proxy
+      0.13:
+        * yOriginTop settings for TMS layers
+        * Contrib pack of data sources
+        * Settings form
+        * Adding quadkeys possibility of using, as variables in the url
+      0.12:
+        * WMS layers order fix
+      0.11:
+        * Config files translation support added
+        * Russian translation for some config files appended
+      0.10:
+        * Refactor WMS provider
+        * Add NASA WMS layers
+      0.9:
+        * Fix #7 "Web" menu disapeared
+      0.8:
+        * Sort menu items in groups
+        * Thunderforest tile services
+        * Mapquest osm and aerial
+      0.7:
+        * TMS zmin and zmax params wsa added to the ini configs
+        * MapSurfer tile services was added
+        * OSM Veloroad Style tile services was added
+      0.6:
+        * Fix imports
+
+# Tags are comma separated with spaces allowed
+tags=service, internet, tms, wms, qms, wfs, geojson, openstreetmap, osm, basemap
+
+homepage=http://nextgis.com/blog/quickmapservices/
+tracker=https://github.com/nextgis/quickmapservices/issues
+repository=https://github.com/nextgis/quickmapservices
+icon=icons/mapservices.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False

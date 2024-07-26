@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.in.wfs.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.in.wfs.py</b></em>  - Imports GetFeature from a WFS server.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#OGC web services">OGC web services</a>, <a href="keywords.html#OGC WFS">OGC WFS</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.in.wfs.py</b><br></div>
+<b>v.in.wfs.py --help</b><br>
+<div id="synopsis"><b>v.in.wfs.py</b> [-<b>lr</b>] <b>url</b>=<em>string</em> <b>output</b>=<em>name</em>  [<b>name</b>=<em>string</em>[,<i>string</i>,...]]   [<b>srs</b>=<em>string</em>]   [<b>maximum_features</b>=<em>integer</em>]   [<b>start_index</b>=<em>integer</em>]   [<b>username</b>=<em>string</em>]   [<b>password</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>Download server capabilities to 'wms_capabilities.xml' in the current directory and exit</dd>
+
+<dt><b>-r</b></dt>
+<dd>Restrict fetch to features which touch the current region</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>url</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Base URL starting with 'http' and ending in '?'</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>name</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Comma separated names of data layers to download</dd>
+
+<dt><b>srs</b>=<em>string</em></dt>
+<dd>Specify alternate spatial reference system (example: EPSG:4326)</dd>
+<dd>The given code must be supported by the server, consult the capabilities file</dd>
+
+<dt><b>maximum_features</b>=<em>integer</em></dt>
+<dd>Maximum number of features to download</dd>
+<dd>(default: unlimited)</dd>
+
+<dt><b>start_index</b>=<em>integer</em></dt>
+<dd>Skip earlier feature IDs and start downloading at this one</dd>
+<dd>(default: start with the first feature)</dd>
+
+<dt><b>username</b>=<em>string</em></dt>
+<dd>Username or file with username or environment variable name with username</dd>
+
+<dt><b>password</b>=<em>string</em></dt>
+<dd>Password or file with password or environment variable name with password</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#wfs-import-without-credentials" class="toc">WFS import without credentials</a></li>
+        <li class="toc"><a href="#wfs-import-with-api-key" class="toc">WFS import with API key</a></li>
+    </ul></li>
+    <li class="toc"><a href="#requirements" class="toc">REQUIREMENTS</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.in.wfs</em> imports OGC WFS maps (Web Feature Service) from
+external servers.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="wfs-import-without-credentials">WFS import without credentials</a></h3>
+Import of Copernicus Sentinel-2 satellite scene footprints:
+
+<p>
+<div class="code"><pre>
+# run in Latitude-Longitude location (EPGS code 4326):
+# download "sentinel:mgrs" layer:
+v.in.wfs url="https://geoserver.mundialis.de/geoserver/sentinel/wfs?" name="sentinel:mgrs" output=sentinel2_mgrs
+</pre></div>
+
+<h3><a name="wfs-import-with-api-key">WFS import with API key</a></h3>
+
+Download 25 ship wrecks from LINZ data service:
+<br>
+(first create yourself a free API key at
+  <a href="http://data.linz.govt.nz/p/web-services/">http://data.linz.govt.nz/p/web-services/</a>)
+
+<p>
+<div class="code"><pre>
+# run in LatLong location:
+URL='http://wfs.data.linz.govt.nz/&lt;PUT YOUR API KEY HERE&gt;/wfs?'
+
+# download list of available layers to wms_capabilities.xml
+v.in.wfs -l url="$URL" 
+</pre></div>
+
+From that file we learn that the shipwreck layer is called "<tt>v:x633</tt>"
+and that EPSG code 4326 (LatLong WGS84) is a supported SRS for this data layer.
+
+<div class="code"><pre>
+v.in.wfs url="$URL" output=linz_hydro_25_wrecks name="v:x633" srs="EPSG:4326" max=25
+</pre></div>
+
+<h2><a name="requirements">REQUIREMENTS</a></h2>
+
+The OGR library on the system needs to be compiled with Xerces C++ XML
+Parser support (for GML).
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.in.wms.html">r.in.wms</a>,
+<a href="v.import.html">v.import</a>,
+<a href="v.in.ogr.html">v.in.ogr</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Markus Neteler, Hamish Bowman
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.in.wfs">v.in.wfs source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.in.wfs">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

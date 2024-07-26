@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.what.strds.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.what.strds.py</b></em>  - Uploads space time raster dataset values at positions of vector points to the table.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_temporal.html">temporal</a>, <a href="keywords.html#sampling">sampling</a>, <a href="keywords.html#position">position</a>, <a href="keywords.html#querying">querying</a>, <a href="keywords.html#attribute table">attribute table</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.what.strds.py</b><br></div>
+<b>v.what.strds.py --help</b><br>
+<div id="synopsis"><b>v.what.strds.py</b> [-<b>u</b>] <b>input</b>=<em>name</em> <b>strds</b>=<em>name</em>[,<i>name</i>,...]  [<b>output</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>t_where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-u</b></dt>
+<dd>Update attribute table of input vector map</dd>
+<dd>Instead of creating a new vector map update the attribute table with value(s)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>strds</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster datasets</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>t_where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.what.strds</em> retrieves raster values from a given space-time raster datasets
+(STRDS) using a point vector map.
+
+<h2><a name="notes">NOTES</a></h2>
+
+TBD.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<div class="code"><pre>
+v.what.strds input=mypoints strds=mystrds output=newvector
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.what.rast.html">v.what.rast</a>,
+<a href="t.vect.observe.strds.html">t.vect.observe.strds</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Luca Delucchi
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.what.strds">v.what.strds source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.what.strds">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

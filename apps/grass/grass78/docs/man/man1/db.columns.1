@@ -1,0 +1,109 @@
+.TH db.columns 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.columns\fR\fR  \- List all columns for a given table.
+.SH KEYWORDS
+database, attribute table
+.SH SYNOPSIS
+\fBdb.columns\fR
+.br
+\fBdb.columns \-\-help\fR
+.br
+\fBdb.columns\fR \fBtable\fR=\fIname\fR  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtable\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute table
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.SH DESCRIPTION
+\fIdb.columns\fR lists all columns for a give table. Connection to
+databases are supported through dbf, shp, odbc and pg drivers.
+.SH NOTE
+If parameters for database connection are already set with
+db.connect, they are taken as default values
+and do not need to be spcified each time.
+.SH EXAMPLES
+.SS List columns of a PostgreSQL attribute table
+.br
+.nf
+\fC
+db.columns table=zipcodes_wake driver=pg database=grassdb
+\fR
+.fi
+.PP
+\fIIf the database parameters are already set, the columns can be listed
+directly\fR
+.br
+.br
+.nf
+\fC
+db.columns table=zipcodes_wake
+\fR
+.fi
+.SS List columns from Shape file with DBF attribute table
+.br
+.nf
+\fC
+db.columns table=zipcodes_wake driver=dbf database=/grassdata/nc_spm_08/PERMANENT/dbf/
+\fR
+.fi
+.SS List columns of table in SQLite database
+Note that the SQLite backend is the default setting.
+.br
+.nf
+\fC
+db.columns driver=sqlite table=archsites database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.describe,
+db.drivers,
+db.droptable,
+db.execute,
+db.login,
+db.tables,
+GRASS SQL interface
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: db.columns source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

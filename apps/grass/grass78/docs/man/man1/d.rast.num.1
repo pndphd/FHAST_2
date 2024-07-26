@@ -1,0 +1,126 @@
+.TH d.rast.num 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rast.num\fR\fR  \- Overlays cell category values on a raster map displayed in the active graphics frame.
+.SH KEYWORDS
+display, map annotations, raster
+.SH SYNOPSIS
+\fBd.rast.num\fR
+.br
+\fBd.rast.num \-\-help\fR
+.br
+\fBd.rast.num\fR [\-\fBaf\fR] \fBmap\fR=\fIname\fR  [\fBtext_color\fR=\fIname\fR]   [\fBgrid_color\fR=\fIname\fR]   [\fBprecision\fR=\fIinteger\fR]   [\fBfont\fR=\fIstring\fR]   [\fBpath\fR=\fIname\fR]   [\fBcharset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Align grids with raster cells
+.IP "\fB\-f\fR" 4m
+.br
+Get text color from cell color value
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map
+.IP "\fBtext_color\fR=\fIname\fR" 4m
+.br
+Text color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBgrid_color\fR=\fIname\fR" 4m
+.br
+Grid color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIgray\fR
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of significant digits (floating point only)
+.br
+Options: \fI0, 1, 2, 3, 4, 5, 6, 7, 8, 9\fR
+.br
+Default: \fI1\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBpath\fR=\fIname\fR" 4m
+.br
+Path to font file
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Text encoding (only applicable to TrueType fonts)
+.SH DESCRIPTION
+\fId.rast.num\fR
+overlays cell category values onto a raster map layer displayed
+on the user\(cqs graphics monitor.
+Category values will be displayed in the text color given and scaled
+to fit within a single cell. A grid outlining each map cell will also
+be overlain in a user\-specified color, unless it has been set to \(dqnone\(dq.
+.PP
+If no grid color is given the default will be used. If no map layer
+is specified, the program will use whatever raster map layer is
+currently displayed in the active frame on the graphics monitor.
+.PP
+If the \fB\-f\fR flag is given the displayed number will take on the color
+of the base map in that cell.
+.SH NOTES
+The user is advised to set the current region to a relatively
+small area (i.e., less than 100 rows by 100 columns);
+otherwise, the individual cells being displayed will be small
+and the category value associated with each will be difficult to see.
+No data cells are indicated with \(dqNull\(dq.
+.SH EXAMPLE
+A) Distance from the streams network (North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region raster=streams_derived \-p
+r.grow.distance input=streams_derived distance=dist_from_streams
+d.rast.num dist_from_streams \-a
+\fR
+.fi
+.br
+\fIEuclidean distance from the streams network in meters (detail, numbers shown
+with d.rast.num)\fR
+.SH SEE ALSO
+\fI
+d.frame,
+d.grid,
+d.rast,
+d.rast.arrow,
+d.rast.edit,
+g.region,
+r.slope.aspect
+\fR
+.SH AUTHORS
+Raghavan Srinivasan,
+and Chris Rewerts,
+.br
+Agricultural Engineering, Purdue University
+.SH SOURCE CODE
+.PP
+Available at: d.rast.num source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

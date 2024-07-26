@@ -1,0 +1,82 @@
+.TH d.to.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.to.rast.py\fR\fR  \- Saves the contents of the active display monitor to a raster map.
+.SH KEYWORDS
+display, export, raster
+.SH SYNOPSIS
+\fBd.to.rast.py\fR
+.br
+\fBd.to.rast.py \-\-help\fR
+.br
+\fBd.to.rast.py\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fId.to.rast\fR saves the content of the currently selected
+monitor into a raster map. The active monitor can be selected
+with \fId.mon\fR. \fId.to.rast\fR can be run from GUI
+Console tab, too. This module is not sensitive to computational region settings.
+.SH EXAMPLE
+We combine different raster and vector map layers to create a composite layer
+which can be draped over elevation in 3D view.
+First, we add a couple of maps to layer manager:
+.br
+.nf
+\fC
+g.region raster=elevation
+d.rast map=elevation
+d.rast map=lakes
+d.vect map=roadsmajor width=4
+d.vect map=roadsmajor width=2 color=yellow
+# create a raster map from the display
+d.to.rast output=composite
+\fR
+.fi
+.PP
+Then uncheck all layers except for elevation and switch to 3D view.
+In Data tab, set color map to the newly created composite map.
+.PP
+.PP
+Figure: Raster map created by \fId.to.rast\fR draped over digital elevation model.
+.SH SEE ALSO
+\fI
+d.out.file,
+d.erase,
+d.rast,
+d.vect,
+d.mon
+\fR
+.SH AUTHOR
+Anna Petrasova, NCSU OSGeoREL
+.SH SOURCE CODE
+.PP
+Available at: d.to.rast source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

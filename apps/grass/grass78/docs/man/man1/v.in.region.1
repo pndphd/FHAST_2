@@ -1,0 +1,91 @@
+.TH v.in.region 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.region\fR\fR  \- Creates a vector polygon from the current region extent.
+.SH KEYWORDS
+vector, geometry
+.SH SYNOPSIS
+\fBv.in.region\fR
+.br
+\fBv.in.region \-\-help\fR
+.br
+\fBv.in.region\fR [\-\fBd\fR] \fBoutput\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR]   [\fBcat\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Densify lines using region resolution
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Select type: line or area
+.br
+Options: \fIline, area\fR
+.br
+Default: \fIarea\fR
+.IP "\fBcat\fR=\fIinteger\fR" 4m
+.br
+Category value
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIv.in.region\fR creates a new vector map from current region
+extent.
+.PP
+If the output of \fIv.in.region\fR is to be used for raster
+reprojection, the \fB\-d\fR flag should be used after setting the
+region to the raster map to be reprojected with
+\fIr.proj\fR.
+.SH EXAMPLE
+The example is based on the North Carolina sample data location.
+To create a bounding box vector map based on a raster map, the
+computational region is first set to the raster map. Then a
+vector bounding box is created based on the actual computational
+region (in this case precisely reflecting the pixel geometry of
+the raster map), resulting in a new vector polygon:
+.br
+.nf
+\fC
+g.region raster=soils_Kfactor \-p
+v.in.region output=soils_Kfactor_bbox
+v.info map=soils_Kfactor_bbox
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r.proj,
+v.info
+\fR
+.SH AUTHOR
+Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.in.region source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

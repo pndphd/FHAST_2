@@ -1,0 +1,82 @@
+.TH r.transect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.transect\fR\fR  \- Outputs raster map layer values lying along user defined transect line(s).
+.SH KEYWORDS
+raster, profile, transect
+.SH SYNOPSIS
+\fBr.transect\fR
+.br
+\fBr.transect \-\-help\fR
+.br
+\fBr.transect\fR [\-\fBg\fR] \fBmap\fR=\fIname\fR \fBline\fR=\fIeast,north,azimuth,distance\fR[,\fIeast,north,azimuth,distance\fR,...]  [\fBnull_value\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Output easting and northing in first two columns of four column output
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map to be queried
+.IP "\fBline\fR=\fIeast,north,azimuth,distance[,\fIeast,north,azimuth,distance\fR,...]\fR \fB[required]\fR" 4m
+.br
+Transect definition
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.SH DESCRIPTION
+This program outputs, in ASCII, the values in a raster map
+which lie along one or more user\-defined transect lines.
+The transects are described by their starting coordinates,
+azimuth, and distance.
+.PP
+The \fBline\fR parameter is a definition of (each) transect line,
+specified by the geographic coordinates of its starting point (\fIeasting,
+northing\fR), the angle and direction of its travel (\fIazimuth\fR),
+and its distance (\fIdistance\fR).
+.PP
+The \fIazimuth\fR is an angle, in degrees, measured to
+the east of north.  The \fIdistance\fR is in map units
+(meters for a metered database, like UTM).
+.PP
+The \fBnull\fR parameter can optionally be set to change the character
+string representing null values.
+.SH NOTES
+This program is a front\-end to the \fI
+r.profile\fR program.  It simply converts the
+azimuth and distance to an ending coordinate and then runs \fI
+r.profile\fR.
+There once were \fBwidth=\fR and \fBresult=\fR\fIraw|median|average\fR
+options which are not currently implemented.
+.SH SEE ALSO
+\fIr.profile\fR,
+\fIwxGUI profile tool\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.transect source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

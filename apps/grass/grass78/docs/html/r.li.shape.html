@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.li.shape - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.li.shape</b></em>  - Calculates shape index on a raster map
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_landscape_structure_analysis.html">landscape structure analysis</a>, <a href="keywords.html#patch index">patch index</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.li.shape</b><br></div>
+<b>r.li.shape --help</b><br>
+<div id="synopsis"><b>r.li.shape</b> <b>input</b>=<em>name</em> <b>config</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>config</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Configuration file</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.li.shape</em> calculates the landscape shape index as:
+<div class="code"><pre>
+LSI = 0.25 * E / sqrt(A)
+</pre></div>
+
+with:
+<ul>
+  <li><b>E</b>: sum of all edges</li>
+  <li><b>A</b>: sum of all patch areas</li>
+</ul>
+
+<h2><a name="notes">NOTES</a></h2>
+
+Do not use absolute path names for the <b>config</b> and <b>output</b>
+file/map parameters.
+
+If the "moving window" method was selected in <b>g.gui.rlisetup</b>, then the
+output will be a raster map, otherwise an ASCII file will be generated in
+the folder <tt>C:\Users\userxy\AppData\Roaming\GRASS7\r.li\output\</tt>
+(MS-Windows) or <tt>$HOME/.grass7/r.li/output/</tt> (GNU/Linux).
+<p>
+<!-- TODO: verify next: -->
+If the input raster map contains only NULL values then <em>r.li.shape</em>
+returns NULL.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+To calculate the shape index on map <em>my_map</em>, using
+<em>my_conf</em> configuration file (previously defined with
+<em>g.gui.rlisetup</em>) and saving results in <em>my_out</em>, run:
+<div class="code"><pre>
+r.li.shape input=my_map conf=my_conf output=my_out
+</pre></div>
+<p>
+
+Forest map (Spearfish sample dataset) example:
+<div class="code"><pre>
+g.region raster=landcover.30m -p
+r.mapcalc "forests = if(landcover.30m >= 41 && landcover.30m <= 43,1,null())"
+r.li.shape input=forests conf=movwindow7 out=forests_shape_mov7
+r.univar forests_shape_mov7
+</pre></div>
+<p>
+
+Forest map (North Carolina sample dataset) example:
+<div class="code"><pre>
+g.region raster=landclass96 -p
+r.mapcalc "forests = if(landclass96 == 5, 1, null() )"
+r.li.shape input=forests conf=movwindow7 out=forests_shape_mov7
+
+# verify
+r.univar forests_shape_mov7
+r.to.vect input=forests output=forests type=area
+d.mon wx0
+d.rast forests_shape_mov7
+d.vect forests type=boundary
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="r.li.html">r.li</a> - package overview<br>
+<a href="g.gui.rlisetup.html">g.gui.rlisetup</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+McGarigal, K., and B. J. Marks. 1995. FRAGSTATS: spatial pattern
+analysis program for quantifying landscape structure. USDA For. Serv.
+Gen. Tech. Rep. PNW-351. (<a href="http://treesearch.fs.fed.us/pubs/3064">PDF</a>)
+
+<h2><a name="authors">AUTHORS</a></h2>
+Claudio Porta and Lucio Davide Spano, students of Computer Science 
+University of Pisa (Italy).<br>
+Commission from Faunalia Pontedera (PI) (www.faunalia.it)<br>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.li/r.li.shape">r.li.shape source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.li/r.li.shape">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

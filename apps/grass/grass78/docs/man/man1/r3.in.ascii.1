@@ -1,0 +1,190 @@
+.TH r3.in.ascii 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.in.ascii\fR\fR  \- Converts a 3D ASCII raster text file into a (binary) 3D raster map.
+.SH KEYWORDS
+raster3d, import, voxel, conversion, ASCII
+.SH SYNOPSIS
+\fBr3.in.ascii\fR
+.br
+\fBr3.in.ascii \-\-help\fR
+.br
+\fBr3.in.ascii\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBnull_value\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR]   [\fBprecision\fR=\fIstring\fR]   [\fBcompression\fR=\fIstring\fR]   [\fBtiledimension\fR=\fIXxYxZ\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file to be imported
+.br
+\(cq\-\(cq for standard input
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value data cell (use \(cqnone\(cq if no such value)
+.br
+Default: \fI*\fR
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Data type used in the output raster3d map
+.br
+Options: \fIdefault, double, float\fR
+.br
+Default: \fIdefault\fR
+.IP "\fBprecision\fR=\fIstring\fR" 4m
+.br
+Number of digits used as mantissa in the internal map storage, 0 \-23 for float, 0 \- 52 for double, max or default
+.br
+Default: \fIdefault\fR
+.IP "\fBcompression\fR=\fIstring\fR" 4m
+.br
+The compression method used in the output raster3d map
+.br
+Options: \fIdefault, zip, none\fR
+.br
+Default: \fIdefault\fR
+.IP "\fBtiledimension\fR=\fIXxYxZ\fR" 4m
+.br
+The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8)
+.br
+Default: \fIdefault\fR
+.SH DESCRIPTION
+\fIr3.in.ascii\fR allows a user to create a (binary) GRASS 3D raster map
+layer from a 3D ASCII raster input file.
+.PP
+The \fItiledimension\fR parameter defines the dimension of the tiles
+used in the output file. The format is: XxYxZ
+.PP
+The \fInv\fR parameter specifies which value to convert to NULL\-value.
+If the specified value is \fInone\fR, no conversion is performed.
+Default is \fInone\fR.
+.SH NOTES
+The data is automatically imported into the correct internal coordinate system,
+that is visualized in the following picture, independently from the specified
+ordering in the ASCII input file:
+.br
+.TS
+expand;
+lw60.
+T{
+\fIThe volume coordinate system and tile layout of the imported voxel map\fR
+T}
+.sp 1
+.TE
+.SH NOTES
+The format of the 3D ASCII file:
+.br
+.nf
+\fC
+version: \fI\(dqgrass7\(dq\fR
+order:   \fI\(dqnsbt\(dq or \(dqnstb\(dq or \(dqsnbt\(dq or \(dqsntb\(dq\fR
+north:   \fIfloating point\fR
+south:   \fIfloating point\fR
+east:    \fIfloating point\fR
+west:    \fIfloating point\fR
+top:     \fIfloating point\fR
+bottom:  \fIfloating point\fR
+rows:    \fIinteger\fR
+cols:    \fIinteger\fR
+levels:  \fIinteger\fR
+\fR
+.fi
+The version and order option have been introduced in GRASS 7 in June 2011.
+The version option is self explaining. The order option specifies the row
+and depth order of the data in the input file.
+The supported row/depth ordering is documented in the \fIr3.out.ascii\fR
+manual page. The order of the data in the input file does not specify the
+data order in the generated output 3D raster map which is in any case
+\fInorth \-> south, west \-> east, bottom \-> top\fR order.
+So dependent on the order information the data is automatically imported
+into the correct internal coordinate system.
+.PP
+The version and order options are not mandatory. In case no version and
+order option is specified, the default GRASS 6 ASCII format is assumed.
+.PP
+This header is followed by the cell values in \fIfloating point\fR format
+organized in rows with constant \fIcol\fR and \fIlevel\fR coordinate.
+The rows are organized by constant \fIlevel\fR coordinate. Individual cell
+values are separated by \fIspace\fR or \fICR\fR.
+.SH EXAMPLES
+4x3x2 sample. Note in case no specific ordering is specified in the input
+file the upper\-left (NW) corner of the bottom level comes first. The according
+order option is: nsbt for north \-> south, bottom \-> top ordering. This is
+identical with \fIr.in.ascii\fR for single level data. So the y coordinate
+is 0 at the northern edge.
+north: 3.0
+.br
+south: 0.0
+.br
+east: 4.0
+.br
+west: 0.0
+.br
+top: 2.0
+.br
+bottom: 0.0
+.br
+rows: 3
+.br
+cols: 4
+.br
+levels: 2
+.br
+w111x1,y1,z1  w211x2,y1,z1  w311x3,y1,z1  w411x4,y1,z1
+.br
+w121x1,y2,z1  w221x2,y2,z1  w321x3,y2,z1  w421x4,y2,z1
+.br
+w131x1,y3,z1  w231x2,y3,z1  w331x3,y3,z1  w431x4,y3,z1
+.br
+w112x1,y1,z2  w212x2,y1,z2  w312x3,y1,z2  w412x4,y1,z2
+.br
+w122x1,y2,z2  w222x2,y2,z2  w322x3,y2,z2  w422x4,y2,z2
+.br
+w132x1,y3,z2  w232x2,y3,z2  w332x3,y3,z2  w432x4,y3,z2
+.br
+.PP
+Note that unit tests for \fIr3.in.ascii\fR are implemented in the
+\fItest.r3.out.ascii.sh\fR script located in the
+\fIr3.out.ascii\fR directory.
+.SH EXAMPLES
+Please refer to the detailed examples in
+r3.out.ascii.
+.SH AUTHORS
+Roman Waupotitsch, Michael Shapiro,
+Helena Mitasova, Bill Brown, Lubos Mitas, Jaro Hofierka, Sören Gebbert
+.SH SEE ALSO
+\fI
+r.in.ascii,
+r3.out.ascii,
+v.to.rast3,
+g.region
+\fR
+.SH SOURCE CODE
+.PP
+Available at: r3.in.ascii source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

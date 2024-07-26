@@ -1,0 +1,128 @@
+.TH v.dissolve 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.dissolve.py\fR\fR  \- Dissolves boundaries between adjacent areas sharing a common category number or attribute.
+.SH KEYWORDS
+vector, dissolve, area, line
+.SH SYNOPSIS
+\fBv.dissolve.py\fR
+.br
+\fBv.dissolve.py \-\-help\fR
+.br
+\fBv.dissolve.py\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBcolumn\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name.
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column used to dissolve common boundaries
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.SH DESCRIPTION
+The \fIv.dissolve\fR module is used to merge adjacent areas in a vector
+map which share the same category value. The resulting merged area(s) retains
+this category value. Alternatively an integer or string column can be defined
+which is used to find adjacent polygons with identical attribute for common
+boundary dissolving. In this case the categories are not retained, only the
+values of the new key column. See the \fIv.reclass\fR help page for details.
+.SH NOTES
+GRASS defines a vector area as composite entity consisting of a set of
+closed boundaries and a centroid. The centroids must contain a
+category number
+(see \fIv.centroids\fR), this number is linked to area attributes and
+database links.
+.PP
+Multiple attributes may be linked to a single vector entity through
+numbered fields referred to as layers. Refer to \fIv.category\fR for
+more details.
+.PP
+Merging of areas can also be accomplished using
+v.extract \-d which provides some additional options.
+In fact, \fIv.dissolve\fR is simply a
+front\-end to that module. The use of the \fIcolumn\fR parameter
+adds a call to \fIv.reclass\fR before.
+.SH EXAMPLES
+.SS Basic use
+.br
+.nf
+\fC
+v.dissolve input=undissolved output=dissolved
+\fR
+.fi
+.SS Dissolving based on column attributes
+North Carolina data set:
+.br
+.nf
+\fC
+g.copy vect=soils_general,mysoils_general
+v.dissolve mysoils_general output=mysoils_general_families column=GSL_NAME
+\fR
+.fi
+.SS Dissolving adjacent SHAPE files to remove tile boundaries
+If tile boundaries of adjacent maps (e.g. CORINE Landcover SHAPE files)
+have to be removed, an extra step is required to remove duplicated
+boundaries:
+.br
+.nf
+\fC
+# patch tiles after import:
+v.patch \-e \(gag.list type=vector pat=\(dqclc2000_*\(dq separator=\(dq,\(dq\(ga out=clc2000_patched
+# remove duplicated tile boundaries:
+v.clean clc2000_patched out=clc2000_clean tool=snap,break,rmdupl thresh=.01
+# dissolve based on column attributes:
+v.dissolve input=clc2000_clean output=clc2000_final col=CODE_00
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.category,
+v.centroids,
+v.extract,
+v.reclass
+\fR
+.SH AUTHORS
+module: M. Hamish Bowman, Dept. Marine Science, Otago University, New Zealand
+.br
+Markus Neteler for column support
+.br
+help page: Trevor Wiens
+.SH SOURCE CODE
+.PP
+Available at: v.dissolve source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

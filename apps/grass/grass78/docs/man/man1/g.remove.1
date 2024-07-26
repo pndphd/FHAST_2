@@ -1,0 +1,121 @@
+.TH g.remove 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.remove\fR\fR  \- Removes data base element files from the user\(cqs current mapset using the search pattern.
+.SH KEYWORDS
+general, map management, remove
+.SH SYNOPSIS
+\fBg.remove\fR
+.br
+\fBg.remove \-\-help\fR
+.br
+\fBg.remove\fR [\-\fBirefb\fR] \fBtype\fR=\fIdatatype\fR[,\fIdatatype\fR,...]  [\fBname\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBignore\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBpattern\fR=\fIstring\fR]   [\fBexclude\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Ignore case
+.IP "\fB\-r\fR" 4m
+.br
+Use basic regular expressions instead of wildcards
+.IP "\fB\-e\fR" 4m
+.br
+Use extended regular expressions instead of wildcards
+.IP "\fB\-f\fR" 4m
+.br
+Force removal (required for actual deletion of files)
+.IP "\fB\-b\fR" 4m
+.br
+Remove base raster maps
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtype\fR=\fIdatatype[,\fIdatatype\fR,...]\fR \fB[required]\fR" 4m
+.br
+Data type(s)
+.br
+Options: \fIraster, raster_3d, vector, label, region, group, all\fR
+.br
+\fBraster\fR: raster map(s)
+.br
+\fBraster_3d\fR: 3D raster map(s)
+.br
+\fBvector\fR: vector map(s)
+.br
+\fBlabel\fR: paint label file(s)
+.br
+\fBregion\fR: region definition(s)
+.br
+\fBgroup\fR: imagery group(s)
+.br
+\fBall\fR: all types
+.IP "\fBname\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Name of file(s) to remove
+.IP "\fBignore\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Name of file(s) to ignore (default: none)
+.IP "\fBpattern\fR=\fIstring\fR" 4m
+.br
+File name search pattern
+.IP "\fBexclude\fR=\fIstring\fR" 4m
+.br
+File name exclusion pattern (default: none)
+.SH DESCRIPTION
+\fIg.remove\fR removes data files matching a pattern given by wildcards or
+POSIX Extended Regular Expressions. If the \fB\-f\fR force flag is not given
+then nothing is removed, instead the list of selected file names is printed to
+stdout as a preview of the files to be deleted.
+.SH EXAMPLES
+Delete map1 and map2 raster maps in the current mapset:
+.br
+.nf
+\fC
+g.remove \-f type=raster name=tmp1,tmp2
+\fR
+.fi
+Delete all raster and vector maps starting with \(dqtmp_\(dq in the current
+mapset:
+.br
+.nf
+\fC
+# show matching raster and vector maps but do not delete yet (as verification)
+g.remove type=raster,vector pattern=\(dqtmp_*\(dq
+# actually delete the matching raster and vector maps
+g.remove \-f type=raster,vector pattern=\(dqtmp_*\(dq
+\fR
+.fi
+Delete all vector maps starting with \(dqstream_\(dq in the current mapset,
+but exclude those ending with \(dq_final\(dq:
+.br
+.nf
+\fC
+g.remove \-f type=vector pattern=\(dqstream_*\(dq exclude=\(dq*_final\(dq
+\fR
+.fi
+.SH AUTHOR
+Huidae Cho
+.br
+grass4u@gmail.com
+.SH SOURCE CODE
+.PP
+Available at: g.remove source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

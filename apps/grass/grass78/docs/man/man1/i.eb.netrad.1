@@ -1,0 +1,109 @@
+.TH i.eb.netrad 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.eb.netrad\fR\fR  \- Net radiation approximation (Bastiaanssen, 1995).
+.SH KEYWORDS
+imagery, energy balance, net radiation, SEBAL
+.SH SYNOPSIS
+\fBi.eb.netrad\fR
+.br
+\fBi.eb.netrad \-\-help\fR
+.br
+\fBi.eb.netrad\fR \fBalbedo\fR=\fIname\fR \fBndvi\fR=\fIname\fR \fBtemperature\fR=\fIname\fR \fBlocalutctime\fR=\fIname\fR \fBtemperaturedifference2m\fR=\fIname\fR \fBemissivity\fR=\fIname\fR \fBtransmissivity_singleway\fR=\fIname\fR \fBdayofyear\fR=\fIname\fR \fBsunzenithangle\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBalbedo\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of albedo raster map [0.0;1.0]
+.IP "\fBndvi\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of NDVI raster map [\-1.0;+1.0]
+.IP "\fBtemperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of surface temperature raster map [K]
+.IP "\fBlocalutctime\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of time of satellite overpass raster map [local time in UTC]
+.IP "\fBtemperaturedifference2m\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the difference map of temperature from surface skin to about 2 m height [K]
+.IP "\fBemissivity\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the emissivity map [\-]
+.IP "\fBtransmissivity_singleway\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the single\-way atmospheric transmissivitymap [\-]
+.IP "\fBdayofyear\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the Day Of Year (DOY) map [\-]
+.IP "\fBsunzenithangle\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the sun zenith angle map [degrees]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output net radiation layer
+.SH DESCRIPTION
+\fIi.eb.netrad\fR calculates the net radiation at the time of satellite
+overpass, the way it is in the SEBAL model of Bastiaanssen (1995).
+It takes input of Albedo, NDVI, Surface Skin temperature, time of satellite
+overpass, surface emissivity, difference of temperature from surface skin and
+about 2 m height (dT), instantaneous satellite overpass single\-way atmospheric
+transmissivity (tsw), Day of Year (DOY), and sun zenith angle.
+.SH NOTES
+In the old methods, dT was taken as flat images (dT=5.0), if you don\(cqt have a dT
+map from ground data, you would want to try something in this line, this is to
+calculate atmospherical energy balance. In the same way, a standard tsw is used
+in those equations. Refer to r_net.c for that and for other non\-used equations,
+but stored in there for further research convenience.
+.SH TODO
+Add more explanations.
+.SH SEE ALSO
+\fI
+i.eb.soilheatflux,
+i.eb.hsebal01,
+i.albedo
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Bastiaanssen, W.G.M., 1995. Regionalization of surface flux
+densities and moisture indicators in composite terrain; a remote
+sensing approach under clear skies in mediterranean climates. PhD
+thesis, Wageningen Agricultural Univ., The Netherland, 271 pp.
+(PDF)
+.IP \(bu 4n
+Chemin, Y., 2012.
+A Distributed Benchmarking Framework for Actual ET Models,
+in: Irmak, A. (Ed.), Evapotranspiration \- Remote Sensing and Modeling. InTech.
+(PDF)
+.RE
+.SH AUTHOR
+Yann Chemin, International Rice Research Institute, The Philippines
+.SH SOURCE CODE
+.PP
+Available at: i.eb.netrad source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

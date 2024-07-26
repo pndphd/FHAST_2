@@ -1,0 +1,452 @@
+.TH v.in.ascii 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.ascii\fR\fR  \- Creates a vector map from an ASCII points file or ASCII vector file.
+.SH KEYWORDS
+vector, import, ASCII, level1, area, line, point
+.SH SYNOPSIS
+\fBv.in.ascii\fR
+.br
+\fBv.in.ascii \-\-help\fR
+.br
+\fBv.in.ascii\fR [\-\fBzentbri\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBformat\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBtext\fR=\fIcharacter\fR]   [\fBskip\fR=\fIinteger\fR]   [\fBcolumns\fR=\fIstring\fR]   [\fBx\fR=\fIinteger\fR]   [\fBy\fR=\fIinteger\fR]   [\fBz\fR=\fIinteger\fR]   [\fBcat\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Create 3D vector map
+.IP "\fB\-e\fR" 4m
+.br
+Create a new empty vector map and exit. Nothing is read from input.
+.IP "\fB\-n\fR" 4m
+.br
+Do not expect a header when reading in standard format
+.IP "\fB\-t\fR" 4m
+.br
+Do not create table in points mode
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Do not build topology in points mode
+.IP "\fB\-r\fR" 4m
+.br
+Only import points falling within current region (points mode)
+.IP "\fB\-i\fR" 4m
+.br
+Ignore broken line(s) in points mode
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file to be imported
+.br
+\(cq\-\(cq for standard input
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBformat\fR=\fIstring\fR" 4m
+.br
+Input file format
+.br
+Options: \fIpoint, standard\fR
+.br
+Default: \fIpoint\fR
+.br
+\fBpoint\fR: simple x,y[,z] list
+.br
+\fBstandard\fR: GRASS vector ASCII format
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBtext\fR=\fIcharacter\fR" 4m
+.br
+Text delimiter
+.br
+Special characters: doublequote, singlequote, none
+.IP "\fBskip\fR=\fIinteger\fR" 4m
+.br
+Number of header lines to skip at top of input file (points mode)
+.br
+Default: \fI0\fR
+.IP "\fBcolumns\fR=\fIstring\fR" 4m
+.br
+Column definition in SQL style (points mode)
+.br
+For example: \(cqx double precision, y double precision, cat int, name varchar(10)\(cq
+.IP "\fBx\fR=\fIinteger\fR" 4m
+.br
+Number of column used as x coordinate (points mode)
+.br
+First column is 1
+.br
+Default: \fI1\fR
+.IP "\fBy\fR=\fIinteger\fR" 4m
+.br
+Number of column used as y coordinate (points mode)
+.br
+First column is 1
+.br
+Default: \fI2\fR
+.IP "\fBz\fR=\fIinteger\fR" 4m
+.br
+Number of column used as z coordinate (points mode)
+.br
+First column is 1. If 0, z coordinate is not used
+.br
+Default: \fI0\fR
+.IP "\fBcat\fR=\fIinteger\fR" 4m
+.br
+Number of column used as category (points mode)
+.br
+First column is 1. If 0, unique category is assigned to each row and written to new column \(cqcat\(cq
+.br
+Default: \fI0\fR
+.SH DESCRIPTION
+\fIv.in.ascii\fR converts a vector map
+in GRASS ASCII vector format to a
+vector map in binary format. The module may import two formats:
+.RS 4n
+.IP \(bu 4n
+\fBstandard\fR contains all data types, each coordinate on one row
+.IP \(bu 4n
+\fBpoint\fR (default) reads only points, each point defined on
+one row. Values are separated by a user\-definable delimiter. If
+the \fBcolumns\fR option is not defined, default names are used. It
+is possible to specify the column order for the x,y,z coordinates
+and category values.
+.RE
+.PP
+\fIv.out.ascii\fR performs the
+function of \fIv.in.ascii\fR in reverse; i.e., it converts vector
+maps in binary format to GRASS ASCII vector format. These two companion programs
+are useful both for importing and exporting vector maps between GRASS
+and other software, and for transferring data between machines.
+.SH NOTES
+The input is read from the file specified by the \fBinput\fR option or
+from standard input.
+.PP
+The field separator may be a character, the word \(cqtab\(cq
+(or \(cq\(rst\(cq) for tab, \(cqspace\(cq (or \(cq \(cq) for a blank,
+or \(cqcomma\(cq (or \(cq,\(cq) for a comma.
+.PP
+An attribute table is only created if it is needed, i.e. when at
+least one attribute column is present in the input file besides
+geometry columns. The attribute column will be auto\-scanned for type, but
+may be explicitly declared along with the geometry columns using the
+\fBcolumns\fR parameter.
+.PP
+Use the \fB\-z\fR flag to convert ASCII data into a 3D vector map.
+.PP
+In special cases of data import, such as the import of large LIDAR
+datasets (millions of data points), it may be necessary to disable
+topology support (vector level 1) due to memory constraints.  This is
+done with the \fB\-b\fR flag. As only very few vector modules support
+points data processing at vector level 1, usually topology is required
+(vector level 2). Therefore it is recommended that the user first try
+to import the data without creating a database (the \fB\-t\fR flag) or
+within a subregion (the \fB\-r\fR flag) before resorting to the
+disabling of topology.
+.PP
+If old version is requested, the \fBoutput\fR files
+from \fIv.out.ascii\fR is placed in
+the $LOCATION/$MAPSET/dig_ascii/
+and $LOCATION/$MAPSET/dig_att directory.
+.SS Import of files without category column
+If the input file does not contain a category column, there is the
+possibility to auto\-generate these IDs (categories). To automatically
+add an additional column named \(cqcat\(cq, the \fBcat\fR parameter must be
+set to the virtual column number 0 (cat=0). This is the
+default action if the \fBcat\fR parameter is not set.
+.SS Importing from a spreadsheet
+Data may be imported from many spreadsheet programs by saving the
+spreadsheet as a comma separated variable (.csv) text file, and then
+using the \fBseparator=\(cq,\(cq\fR or \fBseparator=comma\fR option
+with \fIv.in.ascii\fR in \fBpoints\fR mode.  If the input file
+contains any header lines, such as column headings, the
+\fBskip\fR parameter should be used. These skipped header lines will
+be written to the map\(cqs history file for later reference (read with
+v.info \-h). The skip option only works in \fBpoints\fR mode.
+.PP
+Any line starting with the hash character (\(cq#\(cq) will be treated as
+a comment and skipped completely if located in the main data file. If located
+in the header, as defined by the \fBskip\fR parameter, it will be treated as
+a header line and written to the history file.
+.SS Import of sexagesimal degree (degree, minutes, seconds, DMS)
+The import of DMS formatted degrees is supported (in this case no sign
+but N/S, E/W characters are used to indicate the hemispheres).  While
+the positions are internally translated into decimal degrees during
+the import, the original DMS values are maintained in the attribute
+table. This requires both the latitude and the longitude columns to be
+defined as varchar(), not as numbers.  A warning will be
+issued which can be ignored. See GRASS
+ASCII vector format specification for details.
+.SS Importing only selected columns
+Although \fIv.in.ascii\fR doesn\(cqt have an option to specify which columns
+should be imported, you can use a shell filter to achieve the same effect,
+e.g.:
+.br
+.nf
+\fC
+# Print out the column number for each field, supposing the file has a header
+head \-1 input_file | tr \(cq<the_field_separator_character>\(cq \(cq\(rsn\(cq | cat \-n
+# From the listing, select the columns you want and feed them to v.in.ascii
+# use input=\- to read from stdin
+cut \-d<the_field_separator_character> \-f<comma\-separated_list_of_columns> input_file | v.in.ascii in=\- <your_options>
+\fR
+.fi
+.SH EXAMPLES
+.SS Example 1a) \- standard format mode
+Sample ASCII polygon vector map for \(cqstandard\(cq format mode.
+The two areas will be assigned categories 20 and 21. For details on the structure of
+standard format data files see the second reference at the bottom of this page.
+.PP
+.br
+.nf
+\fC
+echo \(dqORGANIZATION: GRASS Development Team
+DIGIT DATE:   1/9/2005
+DIGIT NAME:   \-
+MAP NAME:     test
+MAP DATE:     2005
+MAP SCALE:    10000
+OTHER INFO:   Test polygons
+ZONE:  0
+MAP THRESH:   0.500000
+VERTI:
+B  6
+ 5958812.48844435 3400828.84221011
+ 5958957.29887089 3400877.11235229
+ 5959021.65906046 3400930.7458436
+ 5959048.47580612 3400973.65263665
+ 5959069.92920264 3401032.64947709
+ 5958812.48844435 3400828.84221011
+C  1 1
+ 5958952.42189184 3400918.23126419
+ 1 20
+B  4
+ 5959010.9323622 3401338.36037757
+ 5959096.7459483 3401370.54047235
+ 5959091.38259917 3401450.99070932
+ 5959010.9323622 3401338.36037757
+C  1 1
+ 5959063.08352122 3401386.98533277
+ 1 21\(dq | v.in.ascii in=\- format=standard output=test_polygons
+\fR
+.fi
+.SS Example 1b) \- standard format mode
+Sample ASCII 3D line vector map for \(cqstandard\(cq format mode with simplified input
+(note the space field separator).
+Note the \fB\-z\fR flag indicating 3D vector input, and the \fB\-n\fR flag
+indicating no vector header should be expected from the input file.
+.br
+.nf
+\fC
+echo \(dqL 5 1
+591336 4927369 1224
+594317 4925341 1292
+599356 4925162 1469
+602396 4926653 1235
+607524 4925431 1216
+1 321 \(dq | v.in.ascii \-zn in=\- out=line3d format=standard
+\fR
+.fi
+This can be used to create a vector line of a GPS track: the GPS points have
+to be stored into a file with a preceding \(cqL\(cq and the number of points (per line).
+.SS Example 2 \- point format mode
+Generate a 2D points vector map \(cqcoords.txt\(cq as ASCII file:
+.br
+.nf
+\fC
+1664619|5103481
+1664473|5095782
+1664273|5101919
+1663427|5105234
+1663709|5102614
+\fR
+.fi
+.PP
+Import into GRASS:
+.br
+.nf
+\fC
+v.in.ascii input=coords.txt output=mymap
+\fR
+.fi
+As the \fBcat\fR option is set to 0 by default, an extra column \(cqcat\(cq
+containing the category numbers will be auto\-generated.
+.SS Example 3 \- point format mode
+Generate a 2D points vector map \(cqpoints.dat\(cq as ASCII file:
+.br
+.nf
+\fC
+1|1664619|5103481|studna
+2|1664473|5095782|kadibudka
+3|1664273|5101919|hruska
+4|1663427|5105234|mysi dira
+5|1663709|5102614|mineralni pramen
+\fR
+.fi
+.PP
+Import into GRASS:
+.br
+.nf
+\fC
+cat points.dat | v.in.ascii in=\- out=mypoints x=2 y=3 cat=1 \(rs
+    columns=\(cqcat int, x double precision, y double precision, label varchar(20)\(cq
+\fR
+.fi
+.PP
+The module is reading from standard input, using the default \(cq|\(cq (pipe) delimiter.
+.SS Example 4 \- point format mode \- CSV table
+Import of a 3D points CSV table (\(cqpoints3d.csv\(cq) with attributes:
+.br
+.nf
+\fC
+\(dqnum\(dq,\(dqX\(dq,\(dqY\(dq,\(dqZ\(dq,\(dqT\(dq
+1,2487491.643,5112118.33,120.5,18.62
+2,2481985.459,5109162.78,123.9,18.46
+3,2478284.289,5105331.04,98.3,19.61
+\fR
+.fi
+.PP
+Import into GRASS:
+.br
+.nf
+\fC
+# import: skipping the header line, categories generated automatically,
+# column names defined with type:
+v.in.ascii \-z in=points3d.csv out=mypoints3D separator=comma \(rs
+  columns=\(dqnum integer, x double precision, y double precision, z double precision, temp double precision\(dq \(rs
+  x=2 y=3 z=4 skip=1
+# verify column types
+v.info \-c mypoints3D
+# verify table content
+v.db.select mypoints3D
+\fR
+.fi
+.SS Example 5 \- point format mode
+Generating a 3D points vector map from DBMS (idcol must be an integer column):
+.br
+.br
+.nf
+\fC
+echo \(dqselect east,north,elev,idcol from mytable\(dq | db.select \-c | v.in.ascii in=\- \-z out=mymap
+\fR
+.fi
+With \fBin=\-\fR, the module is reading from standard input, using the default \(cq|\(cq (pipe) delimiter.
+.br
+The import works for 2D maps as well (no elev column and no \(cq\-z\(cq flag).
+.SS Example 6 \- point format mode
+Generate a 3D points vector map \(cqpoints3d.dat\(cq with attributes as ASCII file:
+.br
+.nf
+\fC
+593493.1|4914730.2|123.1|studna|well
+591950.2|4923000.5|222.3|kadibudka|outhouse
+589860.5|4922000.0|232.3|hruska|pear
+590400.5|4922820.8|143.2|mysi dira|mouse hole
+593549.3|4925500.7|442.6|mineralni pramen|mineral spring
+600375.7|4925235.6|342.2|kozi stezka|goat path
+\fR
+.fi
+.PP
+Import into GRASS:
+.br
+.nf
+\fC
+#As the \(cqcat\(cq option is set to 0 by default, an extra column \(cqcat\(cq
+#containing the IDs will be auto\-generated (no need to define that):
+cat points3d.dat | v.in.ascii in=\- \-z z=3 cat=0 out=mypoints3D \(rs
+    columns=\(cqx double precision, y double precision, z double precision, \(rs
+    label_cz varchar(20), label_en varchar(20)\(cq
+v.info \-c mypoints3D
+v.info mypoints3D
+\fR
+.fi
+.SS Example 7 \- point format mode
+Generate points file by clicking onto the map:
+.br
+.nf
+\fC
+#For LatLong locations:
+d.where \-d \-l | awk \(cq{printf \(dq%f|%f|point\(rsn\(dq, $1, $2}\(cq | v.in.ascii in=\- out=points \(rs
+    columns=\(cqx double precision, y double precision, label varchar(20)\(cq
+#For other projections:
+d.where | awk \(cq{printf \(dq%f|%f|point\(rsn\(dq, $1, $2}\(cq | v.in.ascii in=\- out=points \(rs
+    columns=\(cqx double precision, y double precision, label varchar(20)\(cq
+\fR
+.fi
+The \(cqpoint\(cq string (or some similar entry) is required to generate a database table.
+When simply piping the coordinates (and optionally height) without additional column(s)
+into \fIv.in.ascii\fR, only the vector map geometry will be generated.
+.SS Example 8 \- point format mode
+Convert ground control points into vector points:
+.br
+.nf
+\fC
+cat $MAPSET/group/$GROUP/POINTS | v.in.ascii in=\- out=$GROUP_gcp separator=space skip=3 \(rs
+    col=\(cqx double precision, y double precision, x_target double precision, \(rs
+    y_target double precision, ok int\(cq
+\fR
+.fi
+.SH REFERENCES
+SQL command notes for creating databases
+.br
+GRASS ASCII vector format specification
+.SH SEE ALSO
+\fI
+db.execute,
+r.in.ascii,
+r.in.poly,
+r.in.xyz,
+v.build,
+v.build.polylines,
+v.centroids,
+v.clean,
+v.db.connect,
+v.import,
+v.info,
+v.in.lines,
+v.in.mapgen,
+v.out.ascii
+\fR
+.SH AUTHORS
+Michael Higgins,
+U.S.Army Construction Engineering
+Research Laboratory
+.br
+James Westervelt, U.S.Army Construction Engineering
+Research Laboratory
+.br
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.in.ascii source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

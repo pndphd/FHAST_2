@@ -1,0 +1,188 @@
+.TH grass-odbc 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH ODBC DATABASE DRIVER
+Communication between GRASS and ODBC database for attribute management:
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60.
+T{
+GRASS module <\-> 
+T}	 	T{
+<\-\->
+T}	 	T{
+ODBC Interface
+T}	 	T{
+<\-\->
+T}	 	T{
+RDBMS
+T}
+.sp 1
+T{
+\fI\fBGRASS\fR\fR
+T}	 	T{
+\fI\fBDBMI driver\fR\fR
+T}	 	T{
+\fI\fBunixODBC\fR\fR
+T}	 	T{
+\fI\fBODBC driver\fR\fR
+T}	 	T{
+\fI\fBPostgreSQL\fR\fR
+T}
+.sp 1
+T{
+\fI\fBOracle\fR\fR
+T}
+.sp 1
+T{
+\fI\fB...\fR\fR
+T}
+.sp 1
+.TE
+.SH Supported SQL commands
+All SQL commands supported by ODBC.
+.SH Operators available in conditions
+All SQL operators supported by ODBC.
+.SH EXAMPLE
+In this example we copy the dbf file of a SHAPE map into ODBC, then connect
+GRASS to the ODBC DBMS. Usually the table will be already present in the
+DBMS.
+.SS Defining the ODBC connection
+.SS MS\-Windows
+On MS\-Windows, in order to be able to connect, the ODBC connection
+needs to be configured using dedicated tools (tool called \(dqODBC Data Source
+Administrator\(dq) and give a name to that connection. This name is then used
+as database name when accessing from a client via ODBC.
+.SS Linux
+Configure ODBC driver for selected database (manually or with \(cqODBCConfig\(cq).
+ODBC drivers are defined in /etc/odbcinst.ini. Here an example:
+.PP
+.br
+.nf
+\fC
+ [PostgreSQL]
+ Description     = ODBC for PostgreSQL
+ Driver          = /usr/lib/libodbcpsql.so
+ Setup           = /usr/lib/libodbcpsqlS.so
+ FileUsage       = 1
+\fR
+.fi
+.PP
+Create DSN (data source name). The DSN is used as database name in db.*
+modules. Then DSN must be defined in $HOME/.odbc.ini (for this user only) or in
+/etc/odbc.ini for (for all users) [watch out for the database name which
+appears twice and also for the PostgreSQL protocol version]. Omit blanks at
+the beginning of lines:
+.PP
+.br
+.nf
+\fC
+ [grass6test]
+ Description             = PostgreSQL
+ Driver                  = PostgreSQL
+ Trace                   = No
+ TraceFile               =
+ Database                = grass6test
+ Servername              = localhost
+ UserName                = neteler
+ Password                =
+ Port                    = 5432
+ Protocol                = 8.0
+ ReadOnly                = No
+ RowVersioning           = No
+ ShowSystemTables        = No
+ ShowOidColumn           = No
+ FakeOidIndex            = No
+ ConnSettings            =
+\fR
+.fi
+Configuration of an DSN without GUI is described on
+http://www.unixodbc.org/odbcinst.html,
+but odbc.ini and .odbc.ini may be created by the \(cqODBCConfig\(cq tool. You can
+easily view your DSN structure by \(cqDataManager\(cq. Configuration with
+GUI is described on http://www.unixodbc.org/doc/UserManual/
+.PP
+To find out about your PostgreSQL protocol, run:
+.br
+.br
+.nf
+\fC
+psql \-V
+\fR
+.fi
+.SS Using the ODBC driver
+Now create a new database if not yet existing:
+.PP
+.br
+.nf
+\fC
+db.createdb driver=odbc database=grass6test
+\fR
+.fi
+.PP
+To store a table \(cqmytable.dbf\(cq (here: in current directory) into
+PostgreSQL through ODBC, run:
+.PP
+.br
+.nf
+\fC
+db.connect driver=odbc database=grass6test
+db.copy from_driver=dbf from_database=./ from_table=mytable \(rs
+        to_driver=odbc to_database=grass6test to_table=mytable
+\fR
+.fi
+.PP
+Next link the map to the attribute table (now the ODBC table
+is used, not the dbf file):
+.PP
+.br
+.nf
+\fC
+v.db.connect map=mytable.shp table=mytable key=ID \(rs
+             database=grass6test driver=odbc
+v.db.connect \-p
+\fR
+.fi
+.PP
+Finally a test: Here we should see the table columns (if the ODBC connection works):
+.br
+.nf
+\fC
+db.tables \-p
+db.columns table=mytable
+\fR
+.fi
+.PP
+Now the table name \(cqmytable\(cq should appear.
+.br
+Doesn\(cqt work? Check with \(cqisql <databasename>\(cq if the ODBC\-PostgreSQL
+connection is really established.
+.PP
+Note that you can also connect mySQL, Oracle etc. through ODBC to GRASS.
+.PP
+You can also check the vector map itself concerning a current link to a
+table:
+.PP
+.br
+.nf
+\fC
+v.db.connect \-p mytable.shp
+\fR
+.fi
+.PP
+which should print the database connection through ODBC to the defined RDBMS.
+.SH SEE ALSO
+\fI
+db.connect,
+v.db.connect,
+unixODBC web site,
+SQL support in GRASS GIS
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

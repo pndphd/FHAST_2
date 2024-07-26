@@ -1,0 +1,89 @@
+.TH i.ortho.elev 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.ortho.elev\fR\fR  \- Select or modify the target elevation model.
+.SH KEYWORDS
+imagery, orthorectify
+.SH SYNOPSIS
+\fBi.ortho.elev\fR
+.br
+\fBi.ortho.elev \-\-help\fR
+.br
+\fBi.ortho.elev\fR [\-\fBp\fR] \fBgroup\fR=\fIname\fR  [\fBlocation\fR=\fIname\fR]   [\fBmapset\fR=\fIname\fR]   [\fBelevation\fR=\fIname\fR]   [\fBmath_expression\fR=\fIstring\fR]   [\fBunits\fR=\fIstring\fR]   [\fBnull_value\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print currently selected elevation map and exit
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of imagery group for ortho\-rectification
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Location name
+.br
+Name of the target location
+.IP "\fBmapset\fR=\fIname\fR" 4m
+.br
+Name of mapset (default: current search path)
+.br
+Name of the target mapset
+.IP "\fBelevation\fR=\fIname\fR" 4m
+.br
+Name of elevation map to use for ortho\-rectification
+.IP "\fBmath_expression\fR=\fIstring\fR" 4m
+.br
+Math expression to convert to real elevation
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Unit of the elevation map
+.br
+Options: \fImiles, feet, meters, kilometers, acres, hectares\fR
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+No data value
+.SH DESCRIPTION
+\fIi.ortho.elev\fR is used to select or modify the target elevation model.
+.SH SEE ALSO
+\fI
+i.ortho.photo
+.br
+i.ortho.camera
+.br
+i.photo.2image
+.br
+i.photo.2target
+.br
+i.ortho.init
+.br
+i.rectify
+\fR
+.SH AUTHOR
+Mike Baba,  DBA Systems, Inc.
+.br
+Bugfixes and enhancements for GRASS GIS 7 by Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: i.ortho.elev source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

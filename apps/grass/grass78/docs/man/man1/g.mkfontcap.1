@@ -1,0 +1,105 @@
+.TH g.mkfontcap 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.mkfontcap\fR\fR  \- Generates the font configuration file by scanning various directories for fonts.
+.SH KEYWORDS
+general
+.SH SYNOPSIS
+\fBg.mkfontcap\fR
+.br
+\fBg.mkfontcap \-\-help\fR
+.br
+\fBg.mkfontcap\fR [\-\fBos\fR]  [\fBextradirs\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-o\fR" 4m
+.br
+Overwrite font configuration file if already existing
+.IP "\fB\-s\fR" 4m
+.br
+Write font configuration file to standard output instead of $GISBASE/etc
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBextradirs\fR=\fIstring\fR" 4m
+.br
+List of extra directories to scan
+.br
+Comma\-separated list of extra directories to scan for Freetype\-compatible fonts as well as the defaults (see documentation)
+.SH DESCRIPTION
+\fIg.mkfontcap\fR is a utilty to generate a GRASS font configuration file
+(\(dqfontcap\(dq) containing details of the fonts available on the current system.
+If Freetype is not installed,
+the font list will be limited to the set of Hershey stroke fonts supplied
+with GRASS. With Freetype enabled however, the module will recursively scan
+all files within a predefined hierarchy to find Freetype\-compatible scalable
+fonts. The list of directories scanned is currently:
+.br
+.nf
+\fC
+    /usr/lib/X11/fonts
+    /usr/share/X11/fonts
+    /usr/share/fonts
+    /usr/local/share/fonts
+    ${HOME}/Library/Fonts
+    /Library/Fonts
+    /System/Library/Fonts
+    ${WINDIR}/Fonts
+\fR
+.fi
+.PP
+These correspond to directories where fonts can be found on some common
+operating systems. Extra directories to search can easily by added using the
+\fBextradirs\fR parameter, which accepts a comma\-separated list. An extra
+directory may optionally contain an environment variable \fIat the start\fR
+of the string, if enclosed in ${xxx} syntax (see examples above).
+.PP
+The module will normally write to the standard fontcap file location,
+$GISBASE/etc/fontcap. If the environment variable
+GRASS_FONT_CAP is set, the output will instead be written
+to the file specified by that variable. This is useful if you don\(cqt have
+permission to modify $GISBASE/etc/fontcap: in this case you can
+use e.g.
+.br
+.nf
+\fC
+# use local file version instead of system copy
+GRASS_FONT_CAP=$HOME/.gfontcap
+export GRASS_FONT_CAP
+g.mkfontcap
+\fR
+.fi
+.PP
+to create a personal copy and then to make GRASS use that file
+instead of the system copy.
+.PP
+The output list of fonts is sorted first by type (Stroke fonts first,
+followed by Freetype) and within each type by the short name of the font.
+.SH SEE ALSO
+\fI
+d.font
+\fR
+.SH AUTHOR
+Paul Kelly
+.SH SOURCE CODE
+.PP
+Available at: g.mkfontcap source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

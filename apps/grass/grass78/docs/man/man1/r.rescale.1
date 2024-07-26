@@ -1,0 +1,113 @@
+.TH r.rescale 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.rescale\fR\fR  \- Rescales the range of category values in a raster map layer.
+.SH KEYWORDS
+raster, rescale
+.SH SYNOPSIS
+\fBr.rescale\fR
+.br
+\fBr.rescale \-\-help\fR
+.br
+\fBr.rescale\fR \fBinput\fR=\fIname\fR  [\fBfrom\fR=\fImin,max\fR]  \fBoutput\fR=\fIname\fR \fBto\fR=\fImin,max\fR  [\fBtitle\fR=\fIphrase\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The name of the raster map to be rescaled
+.IP "\fBfrom\fR=\fImin,max\fR" 4m
+.br
+The input data range to be rescaled (default: full range of input map)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The resulting raster map name
+.IP "\fBto\fR=\fImin,max\fR \fB[required]\fR" 4m
+.br
+The output data range
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for new raster map
+.SH DESCRIPTION
+The \fIr.rescale\fR program rescales the range of
+category values appearing in a raster map layer. A new
+raster map layer, and an appropriate category file and
+color table based upon the original raster map layer, are
+generated with category labels that reflect the original
+category values that produced each category.  This command
+is useful for producing representations with a reduced
+number of categories from a raster map layer with a large
+range of category values (e.g., elevation).
+\fIRescaled\fR map layers are appropriate for use in
+such GRASS GIS commands as
+\fIr.stats\fR,
+\fIr.report\fR, and
+\fIr.coin\fR.
+.SH EXAMPLE
+To rescale an elevation raster map layer with category
+values ranging from 1090 meters to 1800 meters into the
+range 0\-255, the following command line could be used
+(without the \fIfrom\fR parameter, the full value range will
+be used):
+.br
+.nf
+\fC
+r.rescale input=elevation from=1090,1800 output=elevation.255 to=0,255
+\fR
+.fi
+.SH NOTES
+Category values that fall beyond the input range will
+become NULL.  This allows the user to select a subset of
+the full category value range for rescaling if desired.
+This also means that the user should know the category
+value range for the input raster map layer.  The user can
+request the \fIr.rescale\fR program to determine
+this range, or can obtain it using the
+\fIr.describe\fR or \fIr.info\fR
+command.  If the category value range is determined using
+\fIr.rescale\fR, the input raster map layer is examined,
+and the minimum and maximum non\-NULL category values are
+selected as the input range.
+.SH SEE ALSO
+\fI
+r.coin,
+r.describe,
+r.info,
+r.mapcalc,
+r.reclass,
+r.rescale.eq,
+r.report,
+r.resample,
+r.stats,
+r.univar
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.rescale source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

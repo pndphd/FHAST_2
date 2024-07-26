@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.build.polylines - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.build.polylines</b></em>  - Builds polylines from lines or boundaries.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_topology.html">topology</a>, <a href="keywords.html#geometry">geometry</a>, <a href="keywords.html#line">line</a>, <a href="keywords.html#node">node</a>, <a href="keywords.html#vertex">vertex</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.build.polylines</b><br></div>
+<b>v.build.polylines --help</b><br>
+<div id="synopsis"><b>v.build.polylines</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>cats</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>cats</b>=<em>string</em></dt>
+<dd>Category number mode</dd>
+<dd>Options: <em>no, first, multi, same</em></dd>
+<dd>Default: <em>no</em></dd>
+<dd><b>no</b>: Do not assign any category number to polyline</dd>
+<dd><b>first</b>: Assign category number of first line to polyline</dd>
+<dd><b>multi</b>: Assign multiple category numbers to polyline</dd>
+<dd><b>same</b>: Create polyline from lines with same categories</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em>line,boundary</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#acknowledgements" class="toc">ACKNOWLEDGEMENTS</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.build.polylines</em> builds polylines from the lines or
+boundaries in a vector map.
+
+<p>A line is defined by one start node, one end node and any number of
+vertices between the start and end nodes. The shortest possible line
+consists of only two vertices where the coordinates of the start and end
+nodes are identical to those of the two vertices.
+
+<p><em>v.build.polylines</em> picks a line and from its start node, walks
+back as long as exactly one other line of the same type is connected to
+this node. Line directions are reversed as required, i.e. it does not
+matter if the next line is connected to the current node by its start or
+end node. Once the start line of a polyline is identified, it walks
+forward and adds all vertices (in reverse order if needed) of
+connected lines to the start line, i.e. the start line and connecting
+lines are reversed as needed. That is, if a line is reversed depends
+on what node is initially picked for building polylines. If the
+direction of lines is important (it's not for boundaries to build
+areas), you have to manually change line directions with
+either <em><a href="v.edit.html">v.edit</a></em> or
+the <em><a href="wxGUI.vdigit.html">wxGUI vector
+digitizer</a></em>.
+
+<p>Polylines provide the most appropriate representation of curved lines when
+it is important that nodes serve to define topology rather than geometry.
+Curved lines are usually digitized as polylines, but these are sometimes broken
+into their constituent straight line segments during conversion from one data
+format to another. <em>v.build.polylines</em> can be used to rebuild such
+broken polylines. 
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>v.build.polylines</em> combines only lines of the same type to
+a new polyline, i.e. lines and boundaries are kept separate.
+
+<p>Category number(s) are assigned to a polyline based on <b>cats</b> parameter.
+
+<ul>
+  <li><b>cats=no</b> - No category number is assigned to a
+  polyline. Also attributes tables linked to the input vector map are
+  not copied to the output vector map.</li>
+  <li><b>cats=first</b> - Assign to a polyline category number of the
+  first line. All linked attributes tables are copied to the output
+  vector map without filtering, but the categories are processed according 
+  to the cats option.</li>
+  <li><b>cats=multi</b> - If the lines that make up a polyline have
+  different category numbers then <em>v.build.polylines</em> will
+  set the multiple category numbers to a polyline.  Also all linked
+  attributes tables are copied to the output vector map.</li>
+  <li><b>cats=same</b> - Assigned lines to a polyline have
+  same category numbers in all layers. Linked
+  attributes tables are copied to the output vector map.</li>
+</ul>
+
+<em>v.build.polylines</em> correctly handles <b>input</b> vector maps
+containing lines, boundaries, centroids and points. Lines and
+boundaries will be converted to polylines.  Areas
+are guaranteed to be preserved.
+
+<!-- Points will remain points provided that <b>type</b> has been set
+to `source'.  It is possible to convert lines and area edges to points
+or vice versa, but this is rarely useful.  [type no longer exists,
+other behaviour still true??] -->
+
+<h2><a name="acknowledgements">ACKNOWLEDGEMENTS</a></h2>
+
+This program was originally written during Mark Lake's tenure of a 
+Leverhulme Special Research Fellowship at University College London. 
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.build.html">v.build</a>,
+<a href="v.in.ascii.html">v.in.ascii</a>,
+<a href="v.edit.html">v.edit</a>,
+<a href="v.split.html">v.split</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+Mark Lake, Institute of Archaeology, University College London.<br> 
+Major rewrite by Radim Blazek, October 2002<br>
+Category mode added by Martin Landa, FBK-irst, Trento, Italy, October 2007<br>
+Support for categories, attributes, and different line types by Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.build.polylines">v.build.polylines source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.build.polylines">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

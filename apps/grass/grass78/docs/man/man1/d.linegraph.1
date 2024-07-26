@@ -1,0 +1,384 @@
+.TH d.linegraph 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.linegraph\fR\fR  \- Generates and displays simple line graphs in the active graphics monitor display frame.
+.SH KEYWORDS
+display, cartography
+.SH SYNOPSIS
+\fBd.linegraph\fR
+.br
+\fBd.linegraph \-\-help\fR
+.br
+\fBd.linegraph\fR [\-\fBxysl\fR] \fBx_file\fR=\fIstring\fR \fBy_file\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBdirectory\fR=\fIstring\fR]   [\fBy_color\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcolor_table\fR=\fIstyle\fR]   [\fBwidth\fR=\fIinteger\fR[,\fIinteger\fR,...]]   [\fBtitle_color\fR=\fIstring\fR]   [\fBx_title\fR=\fIstring\fR]   [\fBy_title\fR=\fIstring\fR]   [\fBtitle\fR=\fIstring\fR]   [\fBy_range\fR=\fImin,max\fR]   [\fBy_tics\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBx_scale\fR=\fIfloat\fR]   [\fBy_scale\fR=\fIfloat\fR]   [\fBicon\fR=\fIstring\fR]   [\fBpoint_size\fR=\fIfloat\fR]   [\fBsecondary_color\fR=\fIname\fR]   [\fBsecondary_width\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-x\fR" 4m
+.br
+Scale only X labels, not values
+.IP "\fB\-y\fR" 4m
+.br
+Scale only Y labels, not values
+.IP "\fB\-s\fR" 4m
+.br
+Draw points
+.IP "\fB\-l\fR" 4m
+.br
+Do not draw lines
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBx_file\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of data file for X axis of graph
+.IP "\fBy_file\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of data file(s) for Y axis of graph
+.IP "\fBdirectory\fR=\fIstring\fR" 4m
+.br
+Path to files
+.br
+Path to the directory where the input files are located
+.IP "\fBy_color\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Color for Y data
+.IP "\fBcolor_table\fR=\fIstyle\fR" 4m
+.br
+Name of color table
+.br
+Options: \fIaspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave\fR
+.br
+\fB aspect\fR: aspect oriented grey colors [range: map values]
+.br
+\fB aspectcolr\fR: aspect oriented rainbow colors [range: 0 to 360]
+.br
+\fB bcyr\fR: blue through cyan through yellow to red [range: map values]
+.br
+\fB bgyr\fR: blue through green through yellow to red [range: map values]
+.br
+\fB blues\fR: white to blue [range: map values]
+.br
+\fB byg\fR: blue through yellow to green [range: map values]
+.br
+\fB byr\fR: blue through yellow to red [range: map values]
+.br
+\fB celsius\fR: blue to red for degree Celsius temperature [range: \-80 to 80]
+.br
+\fB corine\fR: EU Corine land cover colors [range: 111 to 995]
+.br
+\fB curvature\fR: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]
+.br
+\fB differences\fR: differences oriented colors [range: map values]
+.br
+\fB elevation\fR: maps relative ranges of raster values to elevation color ramp [range: map values]
+.br
+\fB etopo2\fR: colors for ETOPO2 worldwide bathymetry/topography [range: \-11000 to 8850]
+.br
+\fB evi\fR: enhanced vegetative index colors [range: \-1 to 1]
+.br
+\fB fahrenheit\fR: blue to red for Fahrenheit temperature [range: \-112 to 176]
+.br
+\fB forest_cover\fR: percentage of forest cover [range: 0 to 100]
+.br
+\fB gdd\fR: accumulated growing degree days [range: 0 to 6000]
+.br
+\fB grass\fR: GRASS GIS green (perceptually uniform) [range: map values]
+.br
+\fB greens\fR: white to green [range: map values]
+.br
+\fB grey\fR: grey scale [range: map values]
+.br
+\fB grey.eq\fR: histogram\-equalized grey scale [range: map values]
+.br
+\fB grey.log\fR: histogram logarithmic transformed grey scale [range: map values]
+.br
+\fB grey1.0\fR: grey scale for raster values between 0.0\-1.0 [range: 0 to 1]
+.br
+\fB grey255\fR: grey scale for raster values between 0\-255 [range: 0 to 255]
+.br
+\fB gyr\fR: green through yellow to red [range: map values]
+.br
+\fB haxby\fR: relative colors for bathymetry or topography [range: map values]
+.br
+\fB inferno\fR: perceptually uniform sequential color table inferno [range: map values]
+.br
+\fB kelvin\fR: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]
+.br
+\fB magma\fR: perceptually uniform sequential color table magma [range: map values]
+.br
+\fB ndvi\fR: Normalized Difference Vegetation Index colors [range: \-1 to 1]
+.br
+\fB ndwi\fR: Normalized Difference Water Index colors [range: \-200 to 200]
+.br
+\fB nlcd\fR: US National Land Cover Dataset colors [range: 0 to 95]
+.br
+\fB oranges\fR: white to orange [range: map values]
+.br
+\fB plasma\fR: perceptually uniform sequential color table plasma [range: map values]
+.br
+\fB population\fR: color table covering human population classification breaks [range: 0 to 2e+009]
+.br
+\fB population_dens\fR: color table covering human population density classification breaks [range: 0 to 1e+009]
+.br
+\fB precipitation\fR: precipitation color table (0..2000mm) [range: 0 to 7000]
+.br
+\fB precipitation_daily\fR: precipitation color table (0..1000mm) [range: 0 to 10000]
+.br
+\fB precipitation_monthly\fR: precipitation color table (0..1000mm) [range: 0 to 1000]
+.br
+\fB rainbow\fR: rainbow color table [range: map values]
+.br
+\fB ramp\fR: color ramp [range: map values]
+.br
+\fB random\fR: random color table [range: map values]
+.br
+\fB reds\fR: white to red [range: map values]
+.br
+\fB roygbiv\fR:  [range: map values]
+.br
+\fB rstcurv\fR: terrain curvature (from r.resamp.rst) [range: map values]
+.br
+\fB ryb\fR: red through yellow to blue [range: map values]
+.br
+\fB ryg\fR: red through yellow to green [range: map values]
+.br
+\fB sepia\fR: yellowish\-brown through to white [range: map values]
+.br
+\fB slope\fR: r.slope.aspect\-type slope colors for raster values 0\-90 [range: 0 to 90]
+.br
+\fB soilmoisture\fR: soilmoisture color table (0.0\-1.0) [range: 0 to 1]
+.br
+\fB srtm\fR: color palette for Shuttle Radar Topography Mission elevation [range: \-11000 to 8850]
+.br
+\fB srtm_plus\fR: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: \-11000 to 8850]
+.br
+\fB terrain\fR: global elevation color table covering \-11000 to +8850m [range: \-11000 to 8850]
+.br
+\fB viridis\fR: perceptually uniform sequential color table viridis [range: map values]
+.br
+\fB water\fR: water depth [range: map values]
+.br
+\fB wave\fR: color wave [range: map values]
+.IP "\fBwidth\fR=\fIinteger[,\fIinteger\fR,...]\fR" 4m
+.br
+Width of the lines
+.IP "\fBtitle_color\fR=\fIstring\fR" 4m
+.br
+Color for axis, tics, numbers, and title
+.br
+Default: \fIblack\fR
+.IP "\fBx_title\fR=\fIstring\fR" 4m
+.br
+Title for X data
+.br
+Default: \fI\fR
+.IP "\fBy_title\fR=\fIstring\fR" 4m
+.br
+Title for Y data
+.br
+Default: \fI\fR
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for Graph
+.br
+Default: \fI\fR
+.IP "\fBy_range\fR=\fImin,max\fR" 4m
+.br
+Minimum and maximun value for Y axis (min,max)
+.IP "\fBy_tics\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Tic values for the Y axis
+.IP "\fBx_scale\fR=\fIfloat\fR" 4m
+.br
+Scale for X values
+.IP "\fBy_scale\fR=\fIfloat\fR" 4m
+.br
+Scale for Y values
+.IP "\fBicon\fR=\fIstring\fR" 4m
+.br
+Symbol for point
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIbasic/circle\fR
+.IP "\fBpoint_size\fR=\fIfloat\fR" 4m
+.br
+Point size
+.br
+Default: \fI5\fR
+.IP "\fBsecondary_color\fR=\fIname\fR" 4m
+.br
+Color
+.br
+Color for point symbol edge color
+.br
+Default: \fIblack\fR
+.IP "\fBsecondary_width\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Width of point symbol lines
+.br
+Default: \fI0.1\fR
+.SH DESCRIPTION
+\fId.linegraph\fR is a module to draw simple x,y line graphs
+(plots) based on numerical data contained in separate files.
+.SS Data format
+The X and Y data files for the graph are essentially a column of numbers in
+each file, with one input number per line.  The program expects that each X
+value will have a corresponding Y value, therefore the number of lines in
+each data input file should be the same.  Essentially, the X data becomes
+the X axis reference to which the Y data is plotted as a line. Therefore,
+the X data should be a monotonically increasing progression of numbers (i.e.
+\(dq1,2,3,...\(dq; \(dq0, 10, 100, 1000,...\(dq; \(dq...\-5,\-1,0,1,5...\(dq).  If multiple Y
+data files are used, the Y axis scale will be based on the range of minimum
+and maximum values from all Y files, then all Y data given will be graphed
+according to that Y scale. Therefore, if multiple Y data inputs are used
+with dissimilar units, the graph produced comparing the two will be
+deceptive.
+.SS File inputs
+If the \fBdirectory\fR option is provided, the paths to files can (and
+should) be only relative paths to these files. While this is not recommended
+for scripting, it can be advantageous when typing the paths
+manually. For example when all files are stored in the directory
+/home/john/data, the user can provide the following in the command
+line:
+.br
+.nf
+\fC
+d.linegraph directory=/home/john/data x_file=x.txt y_file=y1.txt,y2.txt
+\fR
+.fi
+.SS Managing colors
+The user can specify the \fBy_color\fR option, the \fBcolor_table\fR
+option or just leave the defaults to influence the color of the
+plotted lines.
+.PP
+Colors specified by \fBy_color\fR option are used for drawing the lines
+in the graph. If multiple Y data files are used, an equal number of
+colors may be used to control the colors of the lines. Colors will be
+assigned to Y data in respect to the sequence of instantiation on the
+command line. It can be one of GRASS GIS named colors or the RGB
+values from 0\-255 separated by colons (RRR:GGG:BBB).
+.PP
+Alternatively, the user can use the \fBcolor_table\fR option to specify one
+of the GRASS GIS predefined color tables.
+.PP
+By default, a series of colors will be chosen by the module if none are
+provided upon invocation. The order of default colors is red, green,
+violet, blue, orange, gray, brown, magenta, white, and indigo. The user is
+advised not to rely on the order of default colors but to either use the
+\fBy_color\fR or the \fBcolor_table\fR option to obtain predictable and
+reproducible results.
+.PP
+The color to be used for titles, axis lines, tics, and scale numbers
+is determined by the \fBtitle_color\fR option. The user can provide
+one of the GRASS GIS named colors (such as gray, white, or black)
+or use the GRASS GIS colon\-separated format for RGB (RRR:GGG:BBB).
+.SS Titles, labels, and tics
+The \fBtitle\fR option specifies the text for the title of the graph.
+It will be centered over the top of graph.
+The \fBx_title\fR option is a text to describe data for X axis. It will be
+centered beneath the graph. Default is no text unless there is a need
+for a unit descriptor determined by the \fId.linegraph\fR module,
+then string such as \(dqin hundreds\(dq is generated.
+The \fBy_title\fR option is a text to describe data for Y axis. It
+will be centered beneath the X data description. Similarly, to the
+\fBx_title\fR option, default is no text unless there is a need for an
+auto\-generated description. In the case of graphs with multiple lines
+(multiple inputs for Y axis), user may wish to use more specific text
+placement using the \fId.text\fR or
+\fIv.label\fR programs.
+.SH NOTES
+For historical reasons, the \fId.linegraph\fR module accepts
+titles of more than one word where the underscore character (\(dq_\(dq)
+is used to represent spaces (\(dq \(dq). For example \(dqCensus_data_1990\(dq would be
+printed over the graph as \(dqCensus data 1990\(dq. The use of underscores is not
+necessary to use as long as the parameter is quoted in the command line.
+In general, use of underscores is not recommended and there is no need to use
+it at all in the GUI or when using \fId.linegraph\fR in Python scripts.
+.PP
+The way the program locates and labels tic marks is less than perfect:
+.br
+1) although distances between Y tics are proportional to the value, they are
+not proportional on the X axis;
+.br
+2) decimal values between \-1 and 1 can be printed on the X axis, but not
+on Y. (With respect to the later, the input for Y values can all be
+multiplied by a factor of 10 before graphing).
+.PP
+Depending on the user\(cqs needs, it might be easier or more appropriate
+to use a 3rd party tool such as xgraph, gnuplot, Matplotlib in Python,
+or R instead of \fId.linegraph\fR.
+For a more general solution for plotting in GRASS GIS, the user is
+advised to use the \fId.graph\fR module.
+.SH EXAMPLE
+The following can be executed in Bash to create the input data for this
+example. The user can just create these files in a text editor, save
+them and specify path to them.
+.br
+.nf
+\fC
+cat > x.txt <<EOF
+1
+3
+4
+6
+9
+EOF
+cat > y1.txt <<EOF
+50
+58
+65
+34
+27
+EOF
+cat > y2.txt <<EOF
+10
+20
+35
+50
+45
+EOF
+\fR
+.fi
+.PP
+The next command sequence creates a file plot.png in the current
+directory which is the drawing made by \fId.linegraph\fR.
+.br
+.nf
+\fC
+d.mon start=cairo output=plot.png width=400 height=400
+d.linegraph x_file=x.txt y_file=y1.txt,y2.txt
+d.mon stop=cairo
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.frame,
+d.text,
+v.label,
+d.graph,
+d.histogram
+\fR
+.SH AUTHOR
+Chris Rewerts, Agricultural Engineering, Purdue University
+.SH SOURCE CODE
+.PP
+Available at: d.linegraph source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

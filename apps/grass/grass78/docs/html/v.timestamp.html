@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.timestamp - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.timestamp</b></em>  - Modifies a timestamp for a vector map.<BR>
+Print/add/remove a timestamp for a vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_metadata.html">metadata</a>, <a href="keywords.html#timestamp">timestamp</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.timestamp</b><br></div>
+<b>v.timestamp --help</b><br>
+<div id="synopsis"><b>v.timestamp</b> <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>date</b>=<em>timestamp</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>date</b>=<em>timestamp</em></dt>
+<dd>Datetime, datetime1/datetime2, or 'none' to remove</dd>
+<dd>Format: '15 jan 1994' (absolute) or '2 years' (relative)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This command has 2 modes of operation. If no <b>date</b> argument is
+supplied, then the current timestamp for the vector map is printed. If
+a date argument is specified, then the timestamp for the vector map is
+set to the specified date(s). See examples below.
+
+<p>
+See <a href="r.timestamp.html#timestamp-format">TIMESTAMP FORMAT</a>
+description for details.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Strings containing spaces should be quoted. For specifying a range of
+time, the two timestamps should be separated by a forward slash. To
+remove the timestamp from a vector map, use <b>date=none</b>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Prints the timestamp for the "lidar" vector map. If there is no
+timestamp for "lidar", nothing is printed. If there is a timestamp,
+one or two time strings are printed, depending on if the timestamp for
+the map consists of a single date or two dates (ie start and end
+dates).
+
+<div class="code"><pre>
+v.timestamp map=lidar
+</pre></div>
+
+Sets the timestamp for "lidar" to the single date "15 sep 1987".
+
+<div class="code"><pre>
+v.timestamp map=lidar date='15 sep 1987'
+</pre></div>
+
+Sets the timestamp for "lidar" to have the start date "15 sep 1987"
+and the end date "20 feb 1988".
+
+<div class="code"><pre>
+v.timestamp map=lidar date='15 sep 1987/20 feb 1988'
+</pre></div>
+
+Removes the timestamp for the "lidar" vector map.
+
+<div class="code"><pre>
+v.timestamp map=lidar date=none
+</pre></div>
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+Spaces in the timestamp value are required.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="v.info.html">v.info</a>,
+  <a href="r.timestamp.html">r.timestamp</a>,
+  <a href="r3.timestamp.html">r3.timestamp</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro, U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.timestamp">v.timestamp source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.timestamp">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

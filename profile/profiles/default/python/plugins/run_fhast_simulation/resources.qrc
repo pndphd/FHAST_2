@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/run_fhast_simulation" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>

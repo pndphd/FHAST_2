@@ -1,0 +1,153 @@
+.TH v.perturb 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.perturb\fR\fR  \- Random location perturbations of vector points.
+.SH KEYWORDS
+vector, geometry, statistics, random, point pattern, level1
+.SH SYNOPSIS
+\fBv.perturb\fR
+.br
+\fBv.perturb \-\-help\fR
+.br
+\fBv.perturb\fR [\-\fBb\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBdistribution\fR=\fIstring\fR]  \fBparameters\fR=\fIfloat\fR[,\fIfloat\fR,...]  [\fBminimum\fR=\fIfloat\fR]   [\fBseed\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBdistribution\fR=\fIstring\fR" 4m
+.br
+Distribution of perturbation
+.br
+Options: \fIuniform, normal\fR
+.br
+Default: \fIuniform\fR
+.IP "\fBparameters\fR=\fIfloat[,\fIfloat\fR,...]\fR \fB[required]\fR" 4m
+.br
+Parameter(s) of distribution
+.br
+If the distribution is uniform, only one parameter, the maximum, is needed. For a normal distribution, two parameters, the mean and standard deviation, are required.
+.IP "\fBminimum\fR=\fIfloat\fR" 4m
+.br
+Minimum deviation in map units
+.br
+Default: \fI0.0\fR
+.IP "\fBseed\fR=\fIinteger\fR" 4m
+.br
+Seed for random number generation
+.br
+Default: \fI0\fR
+.SH DESCRIPTION
+\fIv.perturb\fR
+reads a vector map of points and writes the same points but
+\fIperturbs\fR the eastings and northings by adding either a uniform
+or normal delta value. Perturbation means that a variating spatial
+deviation is added to the coordinates.
+.SH NOTES
+The uniform distribution is always centered about zero.
+The associated \fIparameter\fR is constrained to be positive and
+specifies the maximum of the distribution; the minimum is
+the negation of that parameter. Do perturb into a ring around the
+center, the \fIminimum\fR parameter can be used.
+.PP
+Usually, the mean (first parameter) of the normal
+distribution is zero (i.e., the distribution is centered at
+zero). The standard deviation (second parameter) is
+naturally constrained to be positive.
+.PP
+Output vector points are not guaranteed to be contained within the
+current geographic region.
+.SH EXAMPLES
+.SS Random, uniformly distributed selection
+To create a random, uniformly distributed selection of possible new points
+with a radius of 100,000 map units, use the following command:
+.br
+.nf
+\fC
+v.perturb input=comm_colleges output=uniform_perturb parameters=100000
+\fR
+.fi
+Your map should look similar to this figure:
+.br
+\fIFigure: Map showing the actual community college points and uniformly
+random chosen points.\fR
+.SS Normal distributed selection
+For a normal distribution with a mean of 5000 and standard deviation of
+2000, use the following command:
+.br
+.nf
+\fC
+v.perturb input=comm_colleges output=normal_perturb distribution=normal parameters=5000,2000
+\fR
+.fi
+.br
+\fIFigure: Map showing the actual community college points and normally
+random chosen and colored points. Notice that each point is closer
+to the original point.\fR
+.SS Normal distributed selection with a minimum value
+In order to include a minimum value of 500, use the following command:
+.br
+.nf
+\fC
+v.perturb input=comm_colleges output=min_perturb distribution=normal parameters=100000,1000 minimum=500
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.random,
+v.univar
+\fR
+.SH AUTHOR
+James Darrell McCauley
+.br
+when he was at:
+Agricultural Engineering
+Purdue University
+.PP
+Random number generators originally written in FORTRAN by Wes Peterson and
+translated to C using \fIf2c\fR.
+.SH SOURCE CODE
+.PP
+Available at: v.perturb source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

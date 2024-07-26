@@ -1,0 +1,223 @@
+.TH r.to.vect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.to.vect\fR\fR  \- Converts a raster map into a vector map.
+.SH KEYWORDS
+raster, conversion, geometry, vectorization
+.SH SYNOPSIS
+\fBr.to.vect\fR
+.br
+\fBr.to.vect \-\-help\fR
+.br
+\fBr.to.vect\fR [\-\fBsvzbt\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBtype\fR=\fIstring\fR  [\fBcolumn\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Smooth corners of area features
+.IP "\fB\-v\fR" 4m
+.br
+Use raster values as categories instead of unique sequence (CELL only)
+.IP "\fB\-z\fR" 4m
+.br
+Write raster values as z coordinate
+.br
+Table is not created. Currently supported only for points.
+.IP "\fB\-b\fR" 4m
+.br
+Do not build vector topology
+.br
+Recommended for massive point conversion
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBtype\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Output feature type
+.br
+Options: \fIpoint, line, area\fR
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column to store value
+.br
+Name must be SQL compliant
+.br
+Default: \fIvalue\fR
+.SH DESCRIPTION
+\fIr.to.vect\fR scans the named \fBinput\fR raster map
+layer, extracts points, lines or area edge features from it, converts data
+to GRASS vector format.
+.SS Point conversion
+The \fIr.to.vect\fR program extracts data from a GRASS raster map
+layer and stores output in a new GRASS \fIvector\fR file.
+.SS Line conversion
+\fIr.to.vect\fR assumes that the \fIinput\fR map has been thinned
+using \fIr.thin\fR.
+.PP
+\fIr.to.vect\fR extracts vectors (aka, \(dqarcs\(dq) from a
+raster map.  These arcs may represent linear features
+(like roads or streams), or may represent area edge
+features (like political boundaries, or soil mapping
+units).
+.PP
+\fIr.thin\fR and \fIr.to.vect\fR
+may create excessive nodes at every junction, and may create small spurs
+or \(dqdangling lines\(dq during the thinning and vectorization process.
+These excessive nodes and spurs may be removed using
+\fIv.clean\fR.
+.SS Area conversion
+\fIr.to.vect\fR first traces the perimeter of each unique
+area in the raster map layer and creates vector data to
+represent it.  The cell category values for the raster map
+layer will be used to create attribute information for the
+resultant vector area edge data.
+.PP
+A true vector tracing of the area edges might appear
+blocky, since the vectors outline the edges of raster data
+that are stored in rectangular cells. To produce a
+better\-looking vector map, \fIr.to.vect\fR smoothes the
+corners of the vector data as they are being extracted. At
+each change in direction (i.e., each corner), the two
+midpoints of the corner cell (half the cell\(cqs height and
+width) are taken, and the line segment connecting them is
+used to outline this corner in the resultant vector map.
+(The cell\(cqs cornermost node is ignored.) Because vectors
+are smoothed by this program, the resulting vector map will
+not be \(dqtrue\(dq to the raster map from which it was created.
+The user should check the resolution of the geographic
+region (and the original data) to estimate the possible
+error introduced by smoothing.
+.PP
+\fIr.to.vect\fR extracts only area edges from the named raster
+input file. If the raster map contains other data (i.e., line edges,
+or point data) the output may be wrong.
+.SH EXAMPLES
+The examples are based on the North Carolina sample dataset:
+.PP
+\fBConversion of raster points to vector points:\fR
+.PP
+Random sampling of points:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# random sampling of points (note that r.random also writes vector points)
+r.random elevation raster_output=elevrand1000 n=1000
+r.to.vect input=elevrand1000 output=elevrand1000 type=point
+# univariate statistics of sample points
+v.univar elevrand1000 column=value type=point
+# compare to univariate statistics on original full raster map
+r.univar elevation
+\fR
+.fi
+.PP
+\fBConversion of raster lines to vector lines:\fR
+.PP
+Vectorization of streams in watershed basins map:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.watershed elev=elevation stream=elev.streams thresh=50000
+r.to.vect \-s input=elev.streams output=elev_streams type=line
+# drop \(dqlabel\(dq column which is superfluous in this example
+v.db.dropcolumn map=elev_streams column=label
+v.db.renamecolumn map=elev_streams column=value,basin_id
+# report length per basin ID
+v.report map=elev_streams option=length units=meters sort=asc
+\fR
+.fi
+.PP
+\fBConversion of raster polygons to vector polygons:\fR
+.PP
+Vectorization of simplified landuse class map:
+.br
+.nf
+\fC
+g.region raster=landclass96 \-p
+# we smooth corners of area features
+r.to.vect \-s input=landclass96 output=my_landclass96 type=area
+v.colors my_landclass96 color=random
+\fR
+.fi
+.SH KNOWN ISSUES
+For type=line the input raster map MUST be thinned by
+\fIr.thin\fR;
+if not, \fIr.to.vect\fR may crash.
+.SH SEE ALSO
+\fI
+g.region,
+r.thin,
+v.clean
+\fR
+.SH AUTHORS
+\fBPoint support\fR
+.br
+Bill Brown
+.br
+.br
+\fBLine support\fR
+.br
+Mike Baba
+.br
+DBA Systems, Inc.
+.br
+10560 Arrowhead Drive
+.br
+Fairfax, Virginia 22030
+.br
+.br
+\fBArea support\fR
+.br
+\fIOriginal\fR version of \fIr.poly\fR:
+.br
+Jean Ezell and Andrew Heekin,
+.br
+U.S. Army Construction Engineering
+Research Laboratory
+.PP
+\fIModified\fR program for smoothed lines:
+.br
+David Satnik,
+Central Washington University
+.br
+Updated 2001 by Andrea Aime, Modena, Italy
+.br
+.br
+\fBUpdate\fR
+.br
+Original r.to.sites, r.line and r.poly merged and updated to 5.7 by Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: r.to.vect source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

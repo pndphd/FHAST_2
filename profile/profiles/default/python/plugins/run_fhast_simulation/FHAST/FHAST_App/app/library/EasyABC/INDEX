@@ -1,0 +1,13 @@
+ABC_emulation           Rejection sampling scheme for ABC using an
+                        emulator
+ABC_mcmc                Coupled to MCMC schemes for ABC
+ABC_rejection           Rejection sampling scheme for ABC
+ABC_sequential          Sequential sampling schemes for ABC
+EasyABC-package         EasyABC: performing efficient approximate
+                        Bayesian computation sampling schemes using R
+SABC                    Simulated Annealing approach to Approximate
+                        Bayesian Computation (SABC)
+binary_model            Wrapper for a binary executable for
+                        non-parallel simulations
+binary_model_cluster    Wrapper for a binary executable for parallel
+                        simulations

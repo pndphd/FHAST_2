@@ -1,0 +1,200 @@
+.TH r.mapcalc.simple 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.mapcalc.simple.py\fR\fR  \- Calculates a new raster map from a simple r.mapcalc expression.
+.SH KEYWORDS
+raster, algebra, simple
+.SH SYNOPSIS
+\fBr.mapcalc.simple.py\fR
+.br
+\fBr.mapcalc.simple.py \-\-help\fR
+.br
+\fBr.mapcalc.simple.py\fR [\-\fBsqc\fR] \fBexpression\fR=\fIstring\fR  [\fBa\fR=\fIname\fR]   [\fBb\fR=\fIname\fR]   [\fBc\fR=\fIname\fR]   [\fBd\fR=\fIname\fR]   [\fBe\fR=\fIname\fR]   [\fBf\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\fBseed\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Generate random seed (result is non\-deterministic)
+.IP "\fB\-q\fR" 4m
+.br
+Quote the map names
+.IP "\fB\-c\fR" 4m
+.br
+Case sensitive variable names
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBexpression\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Formula (e.g. A\-B or A*C+B)
+.IP "\fBa\fR=\fIname\fR" 4m
+.br
+Name of input A raster map
+.IP "\fBb\fR=\fIname\fR" 4m
+.br
+Name of input B raster map
+.IP "\fBc\fR=\fIname\fR" 4m
+.br
+Name of input C raster map
+.IP "\fBd\fR=\fIname\fR" 4m
+.br
+Name of input D raster map
+.IP "\fBe\fR=\fIname\fR" 4m
+.br
+Name of input E raster map
+.IP "\fBf\fR=\fIname\fR" 4m
+.br
+Name of input F raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBseed\fR=\fIinteger\fR" 4m
+.br
+Seed for rand() function
+.SH DESCRIPTION
+\fIr.mapcalc.simple\fR provides a wrapper to \fIr.mapcalc\fR.
+Up to 6 maps can be combined using simple expressions.
+.PP
+The general syntax for the \fBexpression\fR follows
+\fIr.mapcalc\fR expression format,
+for example, A + B or exp(A + B) are valid.
+The variables A, B, ..., F represent raster maps which are provided
+as options \fBa\fR, \fBb\fR, ..., \fBf\fR.
+.PP
+The result name, i.e. the output raster map, is provided using the
+option \fBoutput\fR and, unlike \fIr.mapcalc\fR it is not part
+of the expression.
+.PP
+This module is meant for convenience (for users and programmers) while
+the \fIr.mapcalc\fR module is a better choice for more complex
+expressions and advanced usage.
+.SH NOTES
+Differences to \fIr.mapcalc\fR module:
+.RS 4n
+.IP \(bu 4n
+The input raster map names and the output map raster name are
+separate from the expression (formula) which uses generic
+variable names (A, B, C, ...).
+.IP \(bu 4n
+The output raster name is not included in the expression.
+.IP \(bu 4n
+The expression is expected to be a single short one liner
+without the function eval().
+.RE
+Differences to \fIr.mapcalc.simple\fR module in GRASS GIS 5 and 6:
+.RS 4n
+.IP \(bu 4n
+The primary purpose is not being a GUI front end to
+\fIr.mapcalc\fR, but a wrapper which allows easy building of
+interfaces to \fIr.mapcalc\fR (including GUIs).
+.IP \(bu 4n
+Whitespace (most notably spaces) are allowed
+(in the same way as for \fIr.mapcalc\fR).
+.IP \(bu 4n
+The variable names are case\-insensitive to allow the original
+uppercase as well as lowercase as in option names
+(unless the \fB\-c\fR flag is used).
+.IP \(bu 4n
+Option names for each map are just one letter (not amap, etc.).
+.IP \(bu 4n
+Output option name is \fBoutput\fR as for other modules
+(not outfile).
+.IP \(bu 4n
+Raster map names can be optionally quoted (the \fB\-q\fR flag).
+.IP \(bu 4n
+There is no expert mode
+(which was just running \fIr.mapcalc\fR).
+.IP \(bu 4n
+The \fBexpression\fR option is first, so it is possible to
+omit its name in the command line
+(just like with \fIr.mapcalc\fR).
+.IP \(bu 4n
+Overwriting of outputs is done in the same way as with other
+modules, so there is no flag to not overwrite outputs.
+.RE
+.SH EXAMPLES
+.SS Basic examples
+.br
+.nf
+\fC
+r.mapcalc.simple expression=\(dq0\(dq output=zeros
+r.mapcalc.simple expression=\(dq1\(dq output=ones
+r.mapcalc.simple expression=\(dq2\(dq output=twos
+\fR
+.fi
+.br
+.nf
+\fC
+r.mapcalc.simple expression=\(dqA + B + C\(dq a=zeros b=ones c=twos output=result1
+\fR
+.fi
+.br
+.nf
+\fC
+r.mapcalc.simple expression=\(dq(A * B) / 2 + 3 * C\(dq a=zeros b=ones c=twos output=result2
+\fR
+.fi
+.br
+\fIFigure: r.mapcalc.simple graphical user interface\fR
+.SS Example expressions
+Addition:
+.br
+.nf
+\fC
+A + B
+\fR
+.fi
+No spaces around operators are not recommended for readability,
+but allowed in the expression:
+.br
+.nf
+\fC
+A+B
+\fR
+.fi
+More complex expression with a function:
+.PP
+.br
+.nf
+\fC
+exp(A+C)+(B\-2)*7
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.mapcalc,
+r3.mapcalc,
+t.rast.mapcalc,
+g.region
+\fR
+.SH AUTHORS
+Vaclav Petras, NCSU GeoForAll Lab
+.br
+Michael Barton, Arizona State University (updated to GRASS 5.7)
+.br
+R. Brunzema (original 5.0 Bash version)
+.SH SOURCE CODE
+.PP
+Available at: r.mapcalc.simple source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

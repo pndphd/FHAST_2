@@ -1,0 +1,103 @@
+.TH t.vect.what.strds 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.vect.what.strds.py\fR\fR  \- Stores raster map values at spatial and temporal positions of vector points as vector attributes.
+.SH KEYWORDS
+temporal, sampling, vector, time
+.SH SYNOPSIS
+\fBt.vect.what.strds.py\fR
+.br
+\fBt.vect.what.strds.py \-\-help\fR
+.br
+\fBt.vect.what.strds.py\fR \fBinput\fR=\fIname\fR \fBstrds\fR=\fIname\fR  [\fBcolumn\fR=\fIstring\fR]  \fBmethod\fR=\fIstring\fR  [\fBwhere\fR=\fIsql_query\fR]   [\fBt_where\fR=\fIsql_query\fR]   [\fBsampling\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time vector dataset
+.IP "\fBstrds\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBcolumn\fR=\fIstring\fR" 4m
+.br
+Name of the vector column to be created and to store sampled raster values
+.br
+The use of a column name forces t.vect.what.rast to sample only values from the first map found in an interval. Otherwise the raster map names are used as column names
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Aggregate operation to be performed on the raster maps
+.br
+Options: \fIdisabled, average, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis\fR
+.br
+Default: \fIdisabled\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBt_where\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBsampling\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+The method to be used for sampling the input dataset
+.br
+Options: \fIstart, during, overlap, contain, equal, follows, precedes\fR
+.br
+Default: \fIstart\fR
+.SH DESCRIPTION
+The module \fIt.vect.what.strds\fR samples a space time raster dataset
+(STRDS) at the spatio\-temporal locations of a space time vector dataset (STVDS).
+.SH EXAMPLE
+The example is based on the space time vector dataset \(dqprecip_stations@climate_2009_2012\(dq
+created in the t.vect.observe.strds example.
+In the example below, the module fills the new column \(dqnew_temp\(dq with values
+extracted from the \(dqtempmean_monthly\(dq space time raster dataset:
+.br
+.nf
+\fC
+t.vect.what.strds input=precip_stations@climate_2009_2012 \(rs
+                  strds=tempmean_monthly@climate_2009_2012 \(rs
+                  column=new_temp method=average
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.univar,
+v.univar,
+v.what.rast,
+v.what.rast3,
+v.what.strds,
+v.what.vect,
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.vect.what.strds source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

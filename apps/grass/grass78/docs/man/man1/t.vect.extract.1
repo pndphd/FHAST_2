@@ -1,0 +1,171 @@
+.TH t.vect.extract 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.vect.extract.py\fR\fR  \- Extracts a subset of a space time vector dataset.
+.SH KEYWORDS
+temporal, extract, vector, time
+.SH SYNOPSIS
+\fBt.vect.extract.py\fR
+.br
+\fBt.vect.extract.py \-\-help\fR
+.br
+\fBt.vect.extract.py\fR [\-\fBn\fR] \fBinput\fR=\fIname\fR  [\fBwhere\fR=\fIsql_query\fR]   [\fBexpression\fR=\fIsql_query\fR]  \fBoutput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBbasename\fR=\fIstring\fR]   [\fBsuffix\fR=\fIstring\fR]   [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register empty maps
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time vector dataset
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBexpression\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time vector dataset
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint,line,boundary,centroid,area\fR
+.IP "\fBbasename\fR=\fIstring\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBsuffix\fR=\fIstring\fR" 4m
+.br
+Suffix to add at basename: set \(cqgran\(cq for granularity, \(cqtime\(cq for the full time format, \(cqnum\(cq for numerical suffix with a specific number of digits (default %05)
+.br
+Default: \fIgran\fR
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+The number of v.extract processes to run in parallel. Use only if database backend is used which supports concurrent writing
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+The purpose of \fBt.vect.extract\fR is to extract a subset of a space
+time vector dataset and to store that subset in a different space time
+vector dataset.
+.SH EXAMPLE
+In the following example a new space time vector dataset will be create
+with all the data later than 2000:
+.br
+.nf
+\fC
+t.vect.extract input=shoreline where=\(dqstart_time > 2000\(dq \(rs
+               output=shoreline_later_2000 basename=new_shoreline
+t.info shoreline_later_2000@shoreline type=stvds
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Space Time Vector Dataset \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Basic information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Id: ........................ shoreline_later_2000@shoreline
+ | Name: ...................... shoreline_later_2000
+ | Mapset: .................... shoreline
+ | Creator: ................... lucadelu
+ | Temporal type: ............. relative
+ | Creation time: ............. 2014\-11\-29 08:43:50.043219
+ | Modification time:.......... 2014\-11\-29 08:43:50.085407
+ | Semantic type:.............. mean
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Relative time \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Start time:................. 2003
+ | End time:................... 2009
+ | Relative time unit:......... years
+ | Granularity:................ 1
+ | Temporal type of maps:...... point
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Spatial extent \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | North:...................... 1039175.31479
+ | South:...................... 34705.216018
+ | East:.. .................... 3052322.44671
+ | West:....................... 2130004.16779
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Metadata information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Vector register table:...... vector_map_register_8395740fc8de42149fef74a3d25bbb05
+ | Number of points ........... 0
+ | Number of lines ............ 407
+ | Number of boundaries ....... 0
+ | Number of centroids ........ 0
+ | Number of faces ............ 0
+ | Number of kernels .......... 0
+ | Number of primitives ....... 407
+ | Number of nodes ............ 767
+ | Number of areas ............ 0
+ | Number of islands .......... 0
+ | Number of holes ............ 0
+ | Number of volumes .......... 0
+ | Number of registered maps:.. 3
+ |
+ | Title:
+ | North Carolina shoreline
+ | Description:
+ | North Caroline shoreline from 2000 to 2009
+ | Command history:
+ | # 2014\-11\-29 08:43:50
+ | t.vect.extract input=\(dqshoreline\(dq
+ |     where=\(dqstart_time > 2000\(dq output=\(dqshoreline_later_2000\(dq
+ |     basename=\(dqnew_shoreline\(dq
+ | # 2014\-11\-29 08:44:14
+ | t.support type=\(dqstvds\(dq
+ |     input=\(dqshoreline_later_2000@shoreline\(dq
+ |     descr=\(dqNorth Caroline shoreline from 2000 to 2009\(dq
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+t.vect.list shoreline_later_2000
+name|layer|mapset|start_time|end_time
+shoreline_2003|None|shoreline|2003|None
+shoreline_2004|None|shoreline|2004|None
+shoreline_2009|None|shoreline|2009|None
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.vect.extract source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,214 @@
+.TH db.select 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.select\fR\fR  \- Selects data from attribute table.
+.br
+Performs SQL query statement(s).
+.SH KEYWORDS
+database, attribute table, SQL
+.SH SYNOPSIS
+\fBdb.select\fR
+.br
+\fBdb.select \-\-help\fR
+.br
+\fBdb.select\fR [\-\fBcdvt\fR]  [\fBsql\fR=\fIsql_query\fR]   [\fBinput\fR=\fIname\fR]   [\fBtable\fR=\fIname\fR]   [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBvertical_separator\fR=\fIcharacter\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Do not include column names in output
+.IP "\fB\-d\fR" 4m
+.br
+Describe query only (don\(cqt run it)
+.IP "\fB\-v\fR" 4m
+.br
+Vertical output (instead of horizontal)
+.IP "\fB\-t\fR" 4m
+.br
+Only test query, do not execute
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBsql\fR=\fIsql_query\fR" 4m
+.br
+SQL SELECT statement
+.br
+Example: select * from towns where population > 10000
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of file containing SQL select statement(s)
+.br
+\(cq\-\(cq for standard input
+.IP "\fBtable\fR=\fIname\fR" 4m
+.br
+Name of table to query
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBvertical_separator\fR=\fIcharacter\fR" 4m
+.br
+Vertical record separator (requires \-v flag)
+.br
+Special characters: pipe, comma, space, tab, newline
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.SH DESCRIPTION
+\fIdb.select\fR prints result of selection from database based on
+SQL statement read from input file or from standard input to standard
+output. Each individual query has to be written on one single line and
+different queries have to be written on separate lines.
+.SH NOTE
+If parameters for database connection are already set with
+\fIdb.connect\fR, they are taken as
+default values and do not need to be specified each time. Output will
+be displayed to standard output or can be directed to a file
+(option \fBoutput\fR).
+.SH EXAMPLES
+.SS Basic usage
+.br
+.nf
+\fC
+db.select sql=\(dqselect * from roads\(dq
+\fR
+.fi
+or
+.br
+.nf
+\fC
+echo \(dqselect * from roads\(dq | db.select input=\-
+\fR
+.fi
+or
+.br
+.nf
+\fC
+db.select input=file.sql
+\fR
+.fi
+or
+.br
+.nf
+\fC
+cat file.sql | db.select input=\-
+\fR
+.fi
+.PP
+Select all from table roads:
+.br
+.nf
+\fC
+db.select \-c driver=odbc database=mydb table=hospitals \(rs
+          input=file.sql output=result.csv
+\fR
+.fi
+.PP
+Select some string attribute, exclude others:
+.br
+.nf
+\fC
+db.select sql=\(dqSELECT * FROM archsites WHERE str1 <> \(cqNo Name\(cq\(dq
+\fR
+.fi
+.PP
+Select some string attribute with ZERO length:
+.br
+.nf
+\fC
+db.select sql=\(dqSELECT * FROM archsites WHERE str1 IS NULL\(dq
+\fR
+.fi
+.PP
+Select coordinates from PostGIS table:
+.br
+.nf
+\fC
+db.select sql=\(dqSELECT x(geo),y(geo) FROM localizzazione\(dq
+\fR
+.fi
+.SS Execute multiple SQL statements
+.br
+.nf
+\fC
+cat file.sql
+SELECT * FROM busstopsall WHERE cat = 1
+SELECT cat FROM busstopsall WHERE cat > 4 AND cat < 8
+db.select input=file.sql
+\fR
+.fi
+.PP
+.SS Count number of cases falling into same position
+When multiple observation have the spatial coordinates, they can still
+be counted (if needed, coordinates can be uploaded to the attribute
+table by \fIv.to.db\fR:
+.br
+.nf
+\fC
+db.select sql=\(dqSELECT long,lat,site_id,department,obs,COUNT(long) as count_cases \(rs
+               FROM diseases GROUP BY long,lat\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.describe,
+db.drivers,
+db.droptable,
+db.execute,
+db.login,
+db.tables
+\fR
+.PP
+\fI
+GRASS SQL interface
+\fR
+.SH AUTHORS
+Original author unknown (probably CERL)
+.br
+Modifications by Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Support for multiple statements by Martin Landa, Czech Technical University in Prague
+.SH SOURCE CODE
+.PP
+Available at: db.select source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

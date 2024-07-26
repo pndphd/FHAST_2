@@ -1,0 +1,700 @@
+.TH i.vi 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.vi\fR\fR  \- Calculates different types of vegetation indices.
+.br
+Uses red and nir bands mostly, and some indices require additional bands.
+.SH KEYWORDS
+imagery, vegetation index, biophysical parameters, NDVI
+.SH SYNOPSIS
+\fBi.vi\fR
+.br
+\fBi.vi \-\-help\fR
+.br
+\fBi.vi\fR \fBoutput\fR=\fIname\fR \fBviname\fR=\fItype\fR  [\fBred\fR=\fIname\fR]   [\fBnir\fR=\fIname\fR]   [\fBgreen\fR=\fIname\fR]   [\fBblue\fR=\fIname\fR]   [\fBband5\fR=\fIname\fR]   [\fBband7\fR=\fIname\fR]   [\fBsoil_line_slope\fR=\fIfloat\fR]   [\fBsoil_line_intercept\fR=\fIfloat\fR]   [\fBsoil_noise_reduction\fR=\fIfloat\fR]   [\fBstorage_bit\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBviname\fR=\fItype\fR \fB[required]\fR" 4m
+.br
+Type of vegetation index
+.br
+Options: \fIarvi, dvi, evi, evi2, gvi, gari, gemi, ipvi, msavi, msavi2, ndvi, ndwi, pvi, savi, sr, vari, wdvi\fR
+.br
+Default: \fIndvi\fR
+.br
+\fBarvi\fR: Atmospherically Resistant Vegetation Index
+.br
+\fBdvi\fR: Difference Vegetation Index
+.br
+\fBevi\fR: Enhanced Vegetation Index
+.br
+\fBevi2\fR: Enhanced Vegetation Index 2
+.br
+\fBgvi\fR: Green Vegetation Index
+.br
+\fBgari\fR: Green Atmospherically Resistant Vegetation Index
+.br
+\fBgemi\fR: Global Environmental Monitoring Index
+.br
+\fBipvi\fR: Infrared Percentage Vegetation Index
+.br
+\fBmsavi\fR: Modified Soil Adjusted Vegetation Index
+.br
+\fBmsavi2\fR: second Modified Soil Adjusted Vegetation Index
+.br
+\fBndvi\fR: Normalized Difference Vegetation Index
+.br
+\fBndwi\fR: Normalized Difference Water Index
+.br
+\fBpvi\fR: Perpendicular Vegetation Index
+.br
+\fBsavi\fR: Soil Adjusted Vegetation Index
+.br
+\fBsr\fR: Simple Ratio
+.br
+\fBvari\fR: Visible Atmospherically Resistant Index
+.br
+\fBwdvi\fR: Weighted Difference Vegetation Index
+.IP "\fBred\fR=\fIname\fR" 4m
+.br
+Name of input red channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBnir\fR=\fIname\fR" 4m
+.br
+Name of input nir channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBgreen\fR=\fIname\fR" 4m
+.br
+Name of input green channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBblue\fR=\fIname\fR" 4m
+.br
+Name of input blue channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBband5\fR=\fIname\fR" 4m
+.br
+Name of input 5th channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBband7\fR=\fIname\fR" 4m
+.br
+Name of input 7th channel surface reflectance map
+.br
+Range: [0.0;1.0]
+.IP "\fBsoil_line_slope\fR=\fIfloat\fR" 4m
+.br
+Value of the slope of the soil line (MSAVI only)
+.IP "\fBsoil_line_intercept\fR=\fIfloat\fR" 4m
+.br
+Value of the intercept of the soil line (MSAVI only)
+.IP "\fBsoil_noise_reduction\fR=\fIfloat\fR" 4m
+.br
+Value of the factor of reduction of soil noise (MSAVI only)
+.IP "\fBstorage_bit\fR=\fIinteger\fR" 4m
+.br
+Maximum bits for digital numbers
+.br
+If data is in Digital Numbers (i.e. integer type), give the max bits (i.e. 8 for Landsat \-> [0\-255])
+.br
+Options: \fI7, 8, 10, 16\fR
+.br
+Default: \fI8\fR
+.SH DESCRIPTION
+\fIi.vi\fR calculates vegetation indices based on biophysical
+parameters.
+.RS 4n
+.IP \(bu 4n
+ARVI: atmospherically resistant vegetation indices
+.IP \(bu 4n
+DVI: Difference Vegetation Index
+.IP \(bu 4n
+EVI: Enhanced Vegetation Index
+.IP \(bu 4n
+EVI2: Enhanced Vegetation Index 2
+.IP \(bu 4n
+GARI: Green atmospherically resistant vegetation index
+.IP \(bu 4n
+GEMI: Global Environmental Monitoring Index
+.IP \(bu 4n
+GVI: Green Vegetation Index
+.IP \(bu 4n
+IPVI: Infrared Percentage Vegetation Index
+.IP \(bu 4n
+MSAVI2: second Modified Soil Adjusted Vegetation Index
+.IP \(bu 4n
+MSAVI: Modified Soil Adjusted Vegetation Index
+.IP \(bu 4n
+NDVI: Normalized Difference Vegetation Index
+.IP \(bu 4n
+NDWI: Normalized Difference Water Index
+.IP \(bu 4n
+PVI: Perpendicular Vegetation Index
+.IP \(bu 4n
+RVI: ratio vegetation index
+.IP \(bu 4n
+SAVI: Soil Adjusted Vegetation Index
+.IP \(bu 4n
+SR: Simple Vegetation ratio
+.IP \(bu 4n
+WDVI: Weighted Difference Vegetation Index
+.RE
+.SS Background for users new to remote sensing
+Vegetation Indices are often considered the entry point of remote
+sensing for Earth land monitoring. They are suffering from their
+success, in terms that often people tend to harvest satellite images
+from online sources and use them directly in this module.
+.PP
+From Digital number to Radiance:
+.br
+Satellite imagery is commonly stored in Digital Number (DN) for
+storage purposes; e.g., Landsat5 data is stored in 8bit values
+(ranging from 0 to 255), other satellites maybe stored in 10 or 16
+bits. If the data is provided in DN, this implies that this imagery
+is \(dquncorrected\(dq. What this means is that the image is what the
+satellite sees at its position and altitude in space (stored in DN).
+This is not the signal at ground yet. We call this data at\-satellite
+or at\-sensor. Encoded in the 8bits (or more) is the amount of energy
+sensed by the sensor inside the satellite platform. This energy is
+called radiance\-at\-sensor. Generally, satellites image providers
+encode the radiance\-at\-sensor into 8bit (or more) through an affine
+transform equation (y=ax+b). In case of using Landsat imagery, look
+at the \fIi.landsat.toar\fR for an easy way to transform DN to
+radiance\-at\-sensor. If using Aster data, try the \fIi.aster.toar\fR
+module.
+.PP
+From Radiance to Reflectance:
+.br
+Finally, once having obtained the radiance at sensor values, still
+the atmosphere is between sensor and Earth\(cqs surface. This fact
+needs to be corrected to account for the atmospheric interaction
+with the sun energy that the vegetation reflects back into space.
+This can be done in two ways for Landsat. The simple way is through
+\fIi.landsat.toar\fR, use e.g. the DOS correction. The more
+accurate way is by using \fIi.atcorr\fR (which works for many
+satellite sensors). Once the atmospheric correction has been applied
+to the satellite data, data vales are called surface reflectance.
+Surface reflectance is ranging from 0.0 to 1.0 theoretically (and
+absolutely). This level of data correction is the proper level of
+correction to use with \fIi.vi\fR.
+.SS Vegetation Indices
+\fBARVI: Atmospheric Resistant Vegetation Index\fR
+.PP
+ARVI is resistant to atmospheric effects (in comparison to
+the NDVI) and is accomplished by a self correcting process
+for the atmospheric effect in the red channel, using the
+difference in the radiance between the blue and the red
+channels (Kaufman and Tanre 1996).
+.br
+.nf
+\fC
+arvi( redchan, nirchan, bluechan )
+ARVI = (nirchan \- (2.0*redchan \- bluechan)) /
+       ( nirchan + (2.0*redchan \- bluechan))
+\fR
+.fi
+.PP
+\fBDVI: Difference Vegetation Index\fR
+.br
+.nf
+\fC
+dvi( redchan, nirchan )
+DVI = ( nirchan \- redchan )
+\fR
+.fi
+.PP
+\fBEVI: Enhanced Vegetation Index\fR
+.PP
+The enhanced vegetation index (EVI) is an optimized index designed
+to enhance the vegetation signal with improved sensitivity in high
+biomass regions and improved vegetation monitoring through a
+de\-coupling of the canopy background signal and a reduction in
+atmosphere influences (Huete A.R., Liu H.Q., Batchily K., van Leeuwen
+W. (1997). A comparison of vegetation indices global set of TM
+images for EOS\-MODIS. Remote Sensing of Environment, 59:440\-451).
+.br
+.nf
+\fC
+evi( bluechan, redchan, nirchan )
+EVI = 2.5 * ( nirchan \- redchan ) /
+      ( nirchan + 6.0 * redchan \- 7.5 * bluechan + 1.0 )
+\fR
+.fi
+.PP
+\fBEVI2: Enhanced Vegetation Index 2\fR
+.PP
+A 2\-band EVI (EVI2), without a blue band, which has the best
+similarity with the 3\-band EVI, particularly when atmospheric
+effects are insignificant and data quality is good (Zhangyan Jiang ;
+Alfredo R. Huete ; Youngwook Kim and Kamel Didan 2\-band enhanced
+vegetation index without a blue band and its application to AVHRR
+data. Proc. SPIE 6679, Remote Sensing and Modeling of Ecosystems for
+Sustainability IV, 667905 (october 09, 2007)
+doi:10.1117/12.734933).
+.br
+.nf
+\fC
+evi2( redchan, nirchan )
+EVI2 = 2.5 * ( nirchan \- redchan ) /
+       ( nirchan + 2.4 * redchan + 1.0 )
+\fR
+.fi
+.PP
+\fBGARI: green atmospherically resistant vegetation index\fR
+.PP
+The formula was actually defined:
+Gitelson, Anatoly A.; Kaufman, Yoram J.; Merzlyak, Mark N. (1996)
+Use of a green channel in remote sensing of global vegetation from EOS\-
+MODIS, Remote Sensing of Environment 58 (3), 289\-298.
+doi:10.1016/s0034\-4257(96)00072\-7
+.br
+.nf
+\fC
+gari( redchan, nirchan, bluechan, greenchan )
+GARI = ( nirchan \- (greenchan \- (bluechan \- redchan))) /
+       ( nirchan + (greenchan \- (bluechan \- redchan)))
+\fR
+.fi
+.PP
+\fBGEMI: Global Environmental Monitoring Index\fR
+.br
+.nf
+\fC
+gemi( redchan, nirchan )
+GEMI = (( (2*((nirchan * nirchan)\-(redchan * redchan)) +
+       1.5*nirchan+0.5*redchan) / (nirchan + redchan + 0.5)) *
+       (1 \- 0.25 * (2*((nirchan * nirchan)\-(redchan * redchan)) +
+       1.5*nirchan+0.5*redchan) / (nirchan + redchan + 0.5))) \-
+       ( (redchan \- 0.125) / (1 \- redchan))
+\fR
+.fi
+.PP
+\fBGVI: Green Vegetation Index\fR
+.br
+.nf
+\fC
+gvi( bluechan, greenchan, redchan, nirchan, chan5chan, chan7chan)
+GVI = ( \-0.2848 * bluechan \- 0.2435 * greenchan \-
+      0.5436 * redchan + 0.7243 * nirchan + 0.0840 * chan5chan\-
+      0.1800 * chan7chan)
+\fR
+.fi
+.PP
+\fBIPVI: Infrared Percentage Vegetation Index\fR
+.br
+.nf
+\fC
+ipvi( redchan, nirchan )
+IPVI = nirchan/(nirchan+redchan)
+\fR
+.fi
+.PP
+\fBMSAVI2: second Modified Soil Adjusted Vegetation Index\fR
+.br
+.nf
+\fC
+msavi2( redchan, nirchan )
+MSAVI2 = (1/2)*(2*NIR+1\-sqrt((2*NIR+1)^2\-8*(NIR\-red)))
+\fR
+.fi
+.PP
+\fBMSAVI: Modified Soil Adjusted Vegetation Index\fR
+.br
+.nf
+\fC
+msavi( redchan, nirchan )
+MSAVI = s(NIR\-s*red\-a) / (a*NIR+red\-a*s+X*(1+s*s))
+\fR
+.fi
+where a is the soil line intercept, s is the
+soil line slope, and X 	is an adjustment factor
+which is set to minimize soil noise (0.08 in
+original papers).
+.PP
+\fBNDVI: Normalized Difference Vegetation Index\fR
+.br
+.nf
+\fC
+ndvi( redchan, nirchan )
+Satellite specific band numbers ([NIR, Red]):
+  MSS Bands        = [ 7,  5]
+  TM1\-5,7 Bands    = [ 4,  3]
+  TM8 Bands        = [ 5,  4]
+  Sentinel\-2 Bands = [ 8,  4]
+  AVHRR Bands      = [ 2,  1]
+  SPOT XS Bands    = [ 3,  2]
+  AVIRIS Bands     = [51, 29]
+NDVI = (NIR \- Red) / (NIR + Red)
+\fR
+.fi
+.PP
+\fBNDWI: Normalized Difference Water Index\fR (after McFeeters, 1996)
+.PP
+This index is suitable to detect water bodies.
+.br
+.nf
+\fC
+ndwi( greenchan, nirchan )
+NDWI = (green \- NIR) / (green + NIR)
+\fR
+.fi
+.PP
+The water content of leaves can be estimated with another NDWI (after
+Gao, 1996):
+.br
+.nf
+\fC
+ndwi( greenchan, nirchan )
+NDWI = (NIR \- SWIR) / (NIR + SWIR)
+\fR
+.fi
+This index is important for monitoring vegetation health (not implemented).
+.PP
+\fBPVI: Perpendicular Vegetation Index\fR
+.br
+.nf
+\fC
+pvi( redchan, nirchan )
+PVI = sin(a)NIR\-cos(a)red
+\fR
+.fi
+for a isovegetation lines (lines of equal vegetation)
+would all be parallel to the soil line therefore a=1.
+.PP
+\fBSAVI: Soil Adjusted Vegetation Index\fR
+.br
+.nf
+\fC
+savi( redchan, nirchan )
+SAVI = ((1.0+0.5)*(nirchan \- redchan)) / (nirchan + redchan +0.5)
+\fR
+.fi
+.PP
+\fBSR: Simple Vegetation ratio\fR
+.br
+.nf
+\fC
+sr( redchan, nirchan )
+SR = (nirchan/redchan)
+\fR
+.fi
+.PP
+\fBVARI: Visible Atmospherically Resistant Index\fR
+VARI was designed to introduce an atmospheric self\-correction
+(Gitelson A.A., Kaufman Y.J., Stark R., Rundquist D., 2002. Novel
+algorithms for estimation of vegetation fraction Remote Sensing of
+Environment (80), pp76\-87.)
+.br
+.nf
+\fC
+vari = ( bluechan, greenchan, redchan )
+VARI = (green \- red ) / (green + red \- blue)
+\fR
+.fi
+.PP
+\fBWDVI: Weighted Difference Vegetation Index\fR
+.br
+.nf
+\fC
+wdvi( redchan, nirchan, soil_line_weight )
+WDVI = nirchan \- a * redchan
+if(soil_weight_line == None):
+   a = 1.0   #slope of soil line
+\fR
+.fi
+.SH EXAMPLES
+.SS Calculation of DVI
+The calculation of DVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.1 \-p
+i.vi blue=band.1 red=band.3 nir=band.4 viname=dvi output=dvi
+r.univar \-e dvi
+\fR
+.fi
+.SS Calculation of EVI
+The calculation of EVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.1 \-p
+i.vi blue=band.1 red=band.3 nir=band.4 viname=evi output=evi
+r.univar \-e evi
+\fR
+.fi
+.SS Calculation of EVI2
+The calculation of EVI2 from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=evi2 output=evi2
+r.univar \-e evi2
+\fR
+.fi
+.SS Calculation of GARI
+The calculation of GARI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.1 \-p
+i.vi blue=band.1 green=band.2 red=band.3 nir=band.4 viname=gari output=gari
+r.univar \-e gari
+\fR
+.fi
+.SS Calculation of GEMI
+The calculation of GEMI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=gemi output=gemi
+r.univar \-e gemi
+\fR
+.fi
+.SS Calculation of GVI
+The calculation of GVI (Green Vegetation Index \- Tasseled Cap) from the
+reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+# assuming Landsat\-7
+i.vi blue=band.1 green=band.2 red=band.3 nir=band.4 band5=band.5 band7=band.7 viname=gvi output=gvi
+r.univar \-e gvi
+\fR
+.fi
+.SS Calculation of IPVI
+The calculation of IPVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=ipvi output=ipvi
+r.univar \-e ipvi
+\fR
+.fi
+.SS Calculation of MSAVI
+The calculation of MSAVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=msavi output=msavi
+r.univar \-e msavi
+\fR
+.fi
+.SS Calculation of NDVI
+The calculation of NDVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=ndvi output=ndvi
+r.univar \-e ndvi
+\fR
+.fi
+.SS Calculation of NDWI
+The calculation of NDWI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.2 \-p
+i.vi green=band.2 nir=band.4 viname=ndwi output=ndwi
+r.colors ndwi color=byg \-n
+r.univar \-e ndwi
+\fR
+.fi
+.SS Calculation of PVI
+The calculation of PVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=pvi output=pvi
+r.univar \-e pvi
+\fR
+.fi
+.SS Calculation of SAVI
+The calculation of SAVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=savi output=savi
+r.univar \-e savi
+\fR
+.fi
+.SS Calculation of SR
+The calculation of SR from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi red=band.3 nir=band.4 viname=sr output=sr
+r.univar \-e sr
+\fR
+.fi
+.SS Calculation of VARI
+The calculation of VARI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=band.3 \-p
+i.vi blue=band.2 green=band.3 red=band.4 viname=vari output=vari
+r.univar \-e vari
+\fR
+.fi
+.SS Landsat TM7 example
+The following examples are based on a LANDSAT TM7 scene included in the North Carolina
+sample dataset.
+.SS Preparation: DN to reflectance
+As a first step, the original DN (digital number) pixel values must be
+converted to reflectance using \fIi.landsat.toar\fR. To do so, we
+make a copy (or rename the channels) to match \fIi.landsat.toar\fR\(cqs
+input scheme:
+.PP
+.br
+.nf
+\fC
+g.copy raster=lsat7_2002_10,lsat7_2002.1
+g.copy raster=lsat7_2002_20,lsat7_2002.2
+g.copy raster=lsat7_2002_30,lsat7_2002.3
+g.copy raster=lsat7_2002_40,lsat7_2002.4
+g.copy raster=lsat7_2002_50,lsat7_2002.5
+g.copy raster=lsat7_2002_61,lsat7_2002.61
+g.copy raster=lsat7_2002_62,lsat7_2002.62
+g.copy raster=lsat7_2002_70,lsat7_2002.7
+g.copy raster=lsat7_2002_80,lsat7_2002.8
+\fR
+.fi
+.PP
+Calculation of reflectance values from DN using DOS1 (metadata obtained
+from p016r035_7x20020524.met.gz):
+.PP
+.br
+.nf
+\fC
+i.landsat.toar input=lsat7_2002. output=lsat7_2002_toar. sensor=tm7 \(rs
+  method=dos1 date=2002\-05\-24 sun_elevation=64.7730999 \(rs
+  product_date=2004\-02\-12 gain=HHHLHLHHL
+\fR
+.fi
+The resulting Landsat channels are names lsat7_2002_toar.1 .. lsat7_2002_toar.8.
+.SS Calculation of NDVI
+The calculation of NDVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_toar.3 \-p
+i.vi red=lsat7_2002_toar.3 nir=lsat7_2002_toar.4 viname=ndvi \(rs
+     output=lsat7_2002.ndvi
+r.colors lsat7_2002.ndvi color=ndvi
+d.mon wx0
+d.rast.leg lsat7_2002.ndvi
+\fR
+.fi
+.br
+North Carolina dataset: NDVI
+.SS Calculation of ARVI
+The calculation of ARVI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_toar.3 \-p
+i.vi blue=lsat7_2002_toar.1 red=lsat7_2002_toar.3 nir=lsat7_2002_toar.4 \(rs
+     viname=arvi output=lsat7_2002.arvi
+d.mon wx0
+d.rast.leg lsat7_2002.arvi
+\fR
+.fi
+.br
+North Carolina dataset: ARVI
+.SS Calculation of GARI
+The calculation of GARI from the reflectance values is done as follows:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_toar.3 \-p
+i.vi blue=lsat7_2002_toar.1 green=lsat7_2002_toar.2 red=lsat7_2002_toar.3 \(rs
+     nir=lsat7_2002_toar.4 viname=gari output=lsat7_2002.gari
+d.mon wx0
+d.rast.leg lsat7_2002.gari
+\fR
+.fi
+.br
+North Carolina dataset: GARI
+.SH NOTES
+Originally from kepler.gps.caltech.edu (FAQ):
+.PP
+A FAQ on Vegetation in Remote Sensing
+.br
+Written by Terrill W. Ray, Div. of Geological and Planetary Sciences,
+California Institute of Technology, email: terrill@mars1.gps.caltech.edu
+.PP
+Snail Mail:  Terrill Ray
+.br
+Division of Geological and Planetary Sciences
+.br
+Caltech, Mail Code 170\-25
+.br
+Pasadena, CA  91125
+.SH SEE ALSO
+\fI
+i.albedo,
+i.aster.toar,
+i.landsat.toar,
+i.atcorr,
+i.tasscap
+\fR
+.SH REFERENCES
+AVHRR, Landsat TM5:
+.RS 4n
+.IP \(bu 4n
+Bastiaanssen, W.G.M., 1995. Regionalization of surface flux
+densities and moisture indicators in composite terrain; a remote
+sensing approach under clear skies in mediterranean climates. PhD
+thesis, Wageningen Agricultural Univ., The Netherland, 271 pp.
+(PDF)
+.IP \(bu 4n
+Index DataBase: List of available Indices
+.RE
+.SH AUTHORS
+Baburao Kamble, Asian Institute of Technology, Thailand
+.br
+Yann Chemin, Asian Institute of Technology, Thailand
+.SH SOURCE CODE
+.PP
+Available at: i.vi source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

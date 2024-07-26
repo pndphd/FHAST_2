@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>GRASS GIS Manual: ODBC DATABASE DRIVER</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+<h2>ODBC DATABASE DRIVER</h2>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#supported-sql-commands" class="toc">Supported SQL commands</a></li>
+    <li class="toc"><a href="#operators-available-in-conditions" class="toc">Operators available in conditions</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#defining-the-odbc-connection" class="toc">Defining the ODBC connection</a></li>
+        <li class="toc"><a href="#using-the-odbc-driver" class="toc">Using the ODBC driver</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+</ul>
+</div>
+<!-- meta page description: ODBC DATABASE DRIVER -->
+
+Communication between GRASS and ODBC database for attribute management:
+
+<table align="center" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td align="center" bgcolor="#ffbb99" valign="top">GRASS module &lt;-&gt;&nbsp;</td>
+      <td align="center" bgcolor="#ffbb99" valign="top">&lt;--&gt; </td>
+
+      <td align="center" bgcolor="#ffbb99" valign="top">ODBC Interface</td>
+      <td align="center" bgcolor="#ffbb99" valign="top">&lt;--&gt; </td>
+      <td align="center" bgcolor="#ffbb99" valign="top">RDBMS</td>
+    </tr>
+    <tr>
+      <td rowspan="3" align="center" bgcolor="#bbffbb" valign="middle"><i><b>GRASS</b></i></td>
+
+      <td rowspan="3" align="center" bgcolor="#bbffbb" valign="middle"><i><b>DBMI driver</b></i></td>
+      <td rowspan="3" align="center" valign="middle"><i><b>unixODBC</b></i></td>
+      <td rowspan="3" align="center" valign="middle"><i><b>ODBC driver</b></i></td>
+      <td align="center" bgcolor="#ffffbb" valign="top"><i><b>PostgreSQL</b></i></td>
+    </tr>
+    <tr>
+      <td align="center" bgcolor="#ffffbb" valign="top"><i><b>Oracle</b></i></td>
+
+    </tr>
+    <tr>
+      <td align="center" bgcolor="#ffffbb" valign="top"><i><b>...</b></i></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<h2><a name="supported-sql-commands">Supported SQL commands</a></h2>
+
+All SQL commands supported by ODBC.
+
+<h2><a name="operators-available-in-conditions">Operators available in conditions</a></h2>
+
+All SQL operators supported by ODBC.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In this example we copy the dbf file of a SHAPE map into ODBC, then connect
+GRASS to the ODBC DBMS. Usually the table will be already present in the
+DBMS.
+
+<h3><a name="defining-the-odbc-connection">Defining the ODBC connection</a></h3>
+
+<h4>MS-Windows</h4>
+On MS-Windows, in order to be able to connect, the ODBC connection
+needs to be configured using dedicated tools (tool called "ODBC Data Source
+Administrator") and give a name to that connection. This name is then used
+as database name when accessing from a client via ODBC.
+
+<h4>Linux</h4>
+
+Configure ODBC driver for selected database (manually or with 'ODBCConfig').
+ODBC drivers are defined in /etc/odbcinst.ini. Here an example:
+<p>
+<div class="code"><pre>
+&nbsp;[PostgreSQL]
+&nbsp;Description&nbsp;&nbsp;&nbsp;&nbsp; = ODBC for PostgreSQL
+&nbsp;Driver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = /usr/lib/libodbcpsql.so
+&nbsp;Setup&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = /usr/lib/libodbcpsqlS.so
+&nbsp;FileUsage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 1
+</pre></div>
+
+<p>
+Create DSN (data source name). The DSN is used as database name in db.*
+modules. Then DSN must be defined in $HOME/.odbc.ini (for this user only) or in
+/etc/odbc.ini for (for all users) [watch out for the database name which
+appears twice and also for the PostgreSQL protocol version]. Omit blanks at
+the beginning of lines:
+<p>
+
+<div class="code"><pre>
+&nbsp;[grass6test]
+&nbsp;Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = PostgreSQL
+&nbsp;Driver&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = PostgreSQL
+&nbsp;Trace&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;TraceFile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+
+&nbsp;Database&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = grass6test
+&nbsp;Servername&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = localhost
+&nbsp;UserName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = neteler
+&nbsp;Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =
+&nbsp;Port&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 5432
+&nbsp;Protocol&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = 8.0 
+
+&nbsp;ReadOnly&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;RowVersioning&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;ShowSystemTables&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;ShowOidColumn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;FakeOidIndex&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = No
+&nbsp;ConnSettings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =</pre></div>
+
+Configuration of an DSN without GUI is described on
+<a href="http://www.unixodbc.org/odbcinst.html">http://www.unixodbc.org/odbcinst.html</a>,
+but odbc.ini and .odbc.ini may be created by the 'ODBCConfig' tool. You can
+easily view your DSN structure by 'DataManager'. Configuration with
+GUI is described on <a href="http://www.unixodbc.org/doc/UserManual/">http://www.unixodbc.org/doc/UserManual/</a>
+<p>
+To find out about your PostgreSQL protocol, run:<br>
+<div class="code"><pre>
+psql -V
+</pre></div>
+
+
+<h3><a name="using-the-odbc-driver">Using the ODBC driver</a></h3>
+
+Now create a new database if not yet existing:
+<p>
+<div class="code"><pre>
+db.createdb driver=odbc database=grass6test
+</pre></div>
+<p>
+To store a table 'mytable.dbf' (here: in current directory) into 
+PostgreSQL through ODBC, run:
+<p>
+<div class="code"><pre>
+db.connect driver=odbc database=grass6test
+db.copy from_driver=dbf from_database=./ from_table=mytable \
+        to_driver=odbc to_database=grass6test to_table=mytable
+</pre></div>
+<p>
+Next link the map to the attribute table (now the ODBC table
+is used, not the dbf file):
+<p>
+<div class="code"><pre>
+v.db.connect map=mytable.shp table=mytable key=ID \
+             database=grass6test driver=odbc
+v.db.connect -p
+</pre></div>
+<p>
+Finally a test: Here we should see the table columns (if the ODBC connection works):
+<div class="code"><pre>
+db.tables -p
+db.columns table=mytable
+</pre></div>
+<p>
+Now the table name 'mytable' should appear.
+<br>
+Doesn't work? Check with 'isql &lt;databasename&gt;' if the ODBC-PostgreSQL
+connection is really established.
+<p>
+
+Note that you can also connect mySQL, Oracle etc. through ODBC to GRASS.
+<p>
+You can also check the vector map itself concerning a current link to a
+table:
+<p>
+<div class="code"><pre>
+v.db.connect -p mytable.shp
+</pre></div>
+<p>
+which should print the database connection through ODBC to the defined RDBMS.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.connect.html">db.connect</a>,
+<a href="v.db.connect.html">v.db.connect</a>,
+<a href="http://www.unixODBC.org">unixODBC web site</a>,
+<a href="sql.html">SQL support in GRASS GIS</a>
+</em>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

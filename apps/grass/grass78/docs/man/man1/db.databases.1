@@ -1,0 +1,100 @@
+.TH db.databases 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.databases\fR\fR  \- Lists all databases for a given driver and location.
+.SH KEYWORDS
+database, attribute table, SQL
+.SH SYNOPSIS
+\fBdb.databases\fR
+.br
+\fBdb.databases \-\-help\fR
+.br
+\fBdb.databases\fR  [\fBdriver\fR=\fIname\fR]   [\fBlocation\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Location
+.br
+Path for SQLite driver, or connection string for PostgreSQL driver
+.SH DESCRIPTION
+\fIdb.databases\fR lists all databases for a given \fBdriver\fR
+and optionally \fBlocation\fR.
+.SH NOTES
+Currently supported database drivers are
+\fISQLite\fR, \fIPostgreSQL\fR,
+and \fIODBC\fR.
+.PP
+Default \fBlocation\fR for SQLite driver is the full path for the
+current mapset. For PostgreSQL driver it\(cqs empty connection string.
+.SH EXAMPLES
+List SQLite databases in the current mapset:
+.br
+.nf
+\fC
+db.databases driver=sqlite
+\fR
+.fi
+.PP
+List SQLite databases in a given directory:
+.br
+.nf
+\fC
+db.databases driver=sqlite location=/opt/sqlite
+\fR
+.fi
+.PP
+List PostgreSQL databases from database server running on given port:
+.br
+.nf
+\fC
+db.databases driver=pg location=\(dqhost=server_name port=5333\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.columns,
+db.describe,
+db.drivers,
+db.execute,
+db.login,
+db.tables
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHORS
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Updated for GRASS 7 by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: db.databases source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

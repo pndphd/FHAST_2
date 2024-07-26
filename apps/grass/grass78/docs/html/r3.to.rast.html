@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.to.rast - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.to.rast</b></em>  - Converts 3D raster maps to 2D raster maps
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_conversion.html">conversion</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.to.rast</b><br></div>
+<b>r3.to.rast --help</b><br>
+<div id="synopsis"><b>r3.to.rast</b> [-<b>mr</b>] <b>input</b>=<em>string</em> <b>output</b>=<em>string</em>  [<b>type</b>=<em>string</em>]   [<b>multiply</b>=<em>float</em>]   [<b>add</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists) with input map</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use the same resolution as the input 3D raster map for the 2D output maps, independent of the current region settings</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>3D raster map(s) to be converted to 2D raster slices</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Basename for resultant raster slice maps</dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Type of raster map to be created</dd>
+<dd>Storage type for resultant raster map</dd>
+<dd>Options: <em>CELL, FCELL, DCELL</em></dd>
+<dd><b>CELL</b>: Integer</dd>
+<dd><b>FCELL</b>: Single precision floating point</dd>
+<dd><b>DCELL</b>: Double precision floating point</dd>
+
+<dt><b>multiply</b>=<em>float</em></dt>
+<dd>Value to multiply the raster values with</dd>
+<dd>Coefficient a in the equation y = ax + b</dd>
+
+<dt><b>add</b>=<em>float</em></dt>
+<dd>Value to add to the raster values</dd>
+<dd>Coefficient b in the equation y = ax + b</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#map-type-conversions" class="toc">Map type conversions</a></li>
+        <li class="toc"><a href="#modifying-the-values" class="toc">Modifying the values</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Converts one 3D raster map into several 2D raster maps (depends on depths). 
+If the 2D and 3D region settings are different, the 3D resolution will be 
+adjusted to the 2D resolution (the depths are not touched).
+The user can force <em>r3.to.rast</em> to use the 2D resolution of the input 
+3D raster map for the output maps, independently from the current region settings.
+
+<center>
+<img src="r3.to.rast.png" border="0"><br>
+<table border="0" width="700">
+<tr><td><center>
+<em>How r3.to.rast works</em>
+</center></td></tr>
+</table>
+</center>
+
+<h3><a name="map-type-conversions">Map type conversions</a></h3>
+
+Type of resulting 2D raster maps is determined by the type of the
+input 3D raster, i.e. 3D raster of type DCELL (double) will result in
+DCELL 2D rasters. A specific type for 2D rasters can be requested using
+the <b>type</b> option.
+
+<p>
+The <b>type</b> option is especially advantageous when the 3D raster
+map stores categories (which need to be stored as floating point numbers)
+and the 2D raster map should be also categorical, i.e. use integers.
+The type is set to <tt>CELL</tt> in this case. 
+
+
+<h3><a name="modifying-the-values">Modifying the values</a></h3>
+
+The values in the 3D raster map can be modified prior to storing in
+the 2D raster map. The values can be scaled using the option <b>multiply</b>
+and a constant value can be added using the option <b>add</b>.
+The new value is computed using the following equation:
+
+<pre>
+y = ax + b
+</pre>
+
+where <em>x</em> is the original value, <em>a</em> is the value of
+<b>multiply</b> option, <em>b</em> is the value of <b>add</b> option,
+and <em>y</em> is the new value. When <b>multiply</b> is not provided,
+the value of <em>a</em> is 1. When <b>add</b> is not provided, the value
+of <em>b</em> is 0.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Every slice of the 3D raster map is copied to one 2D raster map. The maps
+are named like <b>output</b><em>_slicenumber</em>. Slices are counted from bottom
+to the top, so the bottom slice has number 1. 
+
+<p>
+The number of slices is equal to the number of depths.
+
+<p>
+To round floating point values to integers when using <tt>type=CELL</tt>,
+the <b>add</b> option should be set to 0.5.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.cross.rast.html">r3.cross.rast</a>,
+<a href="r3.out.vtk.html">r3.out.vtk</a>,
+<a href="r3.out.ascii.html">r3.out.ascii</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+S&ouml;ren Gebbert
+Vaclav Petras, <a href="http://geospatial.ncsu.edu/osgeorel/">NCSU GeoForAll Lab</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.to.rast">r3.to.rast source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.to.rast">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

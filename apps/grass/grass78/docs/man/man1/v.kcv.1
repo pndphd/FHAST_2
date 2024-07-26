@@ -1,0 +1,123 @@
+.TH v.kcv 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.kcv\fR\fR  \- Randomly partition points into test/train sets.
+.SH KEYWORDS
+vector, statistics, points, point pattern, sampling
+.SH SYNOPSIS
+\fBv.kcv\fR
+.br
+\fBv.kcv \-\-help\fR
+.br
+\fBv.kcv\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBnpartitions\fR=\fIinteger\fR  [\fBcolumn\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnpartitions\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of partitions
+.br
+Must be > 1
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name for new column to which partition number is written
+.br
+Default: \fIpart\fR
+.SH DESCRIPTION
+\fIv.kcv\fR randomly divides a points lists into \fIk\fR sets of
+test/train data (for \fBnpartitions\fR\-fold \fBc\fRross \fBv\fRalidation).
+Test partitions are mutually exclusive. That is, a point will appear in
+only one test partition and \fIk\-1\fR training partitions.
+The module generates a random point using the selected random number
+generator and then finds the closest point to it. This site is removed
+from the candidate list (meaning that it will not be selected for any
+other test set) and saved in the first test partition file. This is
+repeated until enough points have been selected for the test partition.
+The number of points chosen for test partitions depends upon the number
+of sites available and the number of partitions chosen (this number is
+made as consistent as possible while ensuring that all sites will be
+chosen for testing). This process of filling up a test partition is
+done \fIk\fR times.
+.SH NOTES
+An ideal random sites generator will follow a Poisson distribution and
+will only be as random as the original sites. This module simply
+divides vector points up in a random manner.
+.PP
+Be warned that random number generation occurs over the
+intervals defined by the current region of the map.
+.PP
+This program may not work properly with Lat\-long data.
+.SH EXAMPLES
+All examples are based on the North Carolina sample dataset.
+.br
+.nf
+\fC
+g.copy vect=geonames_wake,my_geonames_wake
+v.kcv map=my_geonames_wake column=part npartitions=10
+\fR
+.fi
+.PP
+.br
+.nf
+\fC
+g.copy vect=geodetic_pts,my_geodetic_pts
+v.kcv map=my_geodetic_pts column=part npartitions=10
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.random,
+g.region
+\fR
+.SH AUTHOR
+James Darrell McCauley,
+.br
+when he was at:
+Agricultural Engineering
+Purdue University
+.PP
+27 Jan 1994: fixed RAND_MAX for Solaris 2.3
+.br
+13 Sep 2000: released under GPL
+.br
+Updated to 5.7 Radim Blazek 10 / 2004
+.br
+OGR support by Martin Landa (2009)
+.br
+Speed\-up by Jan Vandrol and Jan Ruzicka (2013)
+.SH SOURCE CODE
+.PP
+Available at: v.kcv source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

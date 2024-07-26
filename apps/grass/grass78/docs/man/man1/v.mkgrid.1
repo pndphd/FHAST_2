@@ -1,0 +1,262 @@
+.TH v.mkgrid 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.mkgrid\fR\fR  \- Creates a vector map of a user\-defined grid.
+.SH KEYWORDS
+vector, geometry, grid, point pattern, hexagon
+.SH SYNOPSIS
+\fBv.mkgrid\fR
+.br
+\fBv.mkgrid \-\-help\fR
+.br
+\fBv.mkgrid\fR [\-\fBhad\fR] \fBmap\fR=\fIname\fR  [\fBgrid\fR=\fIrows,columns\fR]   [\fBposition\fR=\fIstring\fR]   [\fBcoordinates\fR=\fIeast,north\fR]   [\fBbox\fR=\fIwidth,height\fR]   [\fBangle\fR=\fIfloat\fR]   [\fBbreaks\fR=\fIinteger\fR]   [\fBtype\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Create hexagons (default: rectangles)
+.IP "\fB\-a\fR" 4m
+.br
+Allow asymmetric hexagons
+.IP "\fB\-d\fR" 4m
+.br
+EXPERIMENTAL: Add diagonals to rectangular lines
+.br
+Applies only to lines for rectangles
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBgrid\fR=\fIrows,columns\fR" 4m
+.br
+Number of rows and columns in grid
+.IP "\fBposition\fR=\fIstring\fR" 4m
+.br
+Where to place the grid
+.br
+Options: \fIregion, coor\fR
+.br
+Default: \fIregion\fR
+.br
+\fBregion\fR: current region
+.br
+\fBcoor\fR: use \(cqcoor\(cq and \(cqbox\(cq options
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Lower left easting and northing coordinates of map
+.IP "\fBbox\fR=\fIwidth,height\fR" 4m
+.br
+Width and height of boxes in grid
+.IP "\fBangle\fR=\fIfloat\fR" 4m
+.br
+Angle of rotation (in degrees counter\-clockwise)
+.br
+Default: \fI0\fR
+.IP "\fBbreaks\fR=\fIinteger\fR" 4m
+.br
+Number of vertex points per grid cell
+.br
+Options: \fI0\-60\fR
+.br
+Default: \fI0\fR
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Output feature type
+.br
+Options: \fIpoint, line, area\fR
+.br
+Default: \fIarea\fR
+.SH DESCRIPTION
+\fIv.mkgrid\fR creates a vector map representation of a regular
+coordinate grid. Point, line, and area vector grids can be created.
+.SH NOTES
+Grid points created with the \fBtype=point\fR option will be placed at
+the \fIcenter\fR of each grid cell, like centroids with the default
+\fBtype=area\fR option.
+.PP
+Grid lines created with the \fBtype=line\fR option will be identical to
+the edges of each grid cell, like boundaries with the default
+\fBtype=area\fR option.
+.PP
+The resultant grid can be rotated around the origin (center of the
+grid) with the \fBangle\fR option.
+.PP
+Optionally hexagons can be created with the \fB\-h\fR flag. Hexagons
+are by default symmetric. Asymmetric hexagons can be allowed with the
+\fB\-a\fR flag.
+.PP
+This module is NOT to be used to generate a vector map of USGS
+quadrangles, because USGS quads are not exact rectangles.
+.SH EXAMPLES
+.SS Creating a global grid in a latitude\-longitude
+To be run in a latitude\-longitude location (WGS84)
+.br
+.nf
+\fC
+# set the region:
+g.region n=90 s=\-90 w=\-180 e=180 res=10 \-p
+projection: 3 (Latitude\-Longitude)
+zone:       0
+datum:      wgs84
+ellipsoid:  wgs84
+north:      90N
+south:      90S
+west:       180W
+east:       180E
+nsres:      10
+ewres:      10
+rows:       18
+cols:       36
+cells:      648
+# create 10 degree size grid:
+v.mkgrid map=grid_10deg
+# create 20 degree size grid:
+v.mkgrid map=grid_20deg box=20,20
+\fR
+.fi
+.SS Creating a grid in a metric projection
+Creating a 4x3 grid, cells 20km a side, with lower left corner at 2716500,6447000:
+.br
+.nf
+\fC
+v.mkgrid map=coro_grid grid=4,3 position=coor coordinates=2716500,6447000 box=20000,20000
+\fR
+.fi
+.SS Creating a positioned grid in a latitude\-longitude
+Creating a 10x12 lat/lon grid, cells 2 arc\-min a side, with lower left corner
+at 167deg 52min east, 47deg 6min south. For use with e.g. QGIS you can then
+pull this grid into a projected location with \fIv.proj\fR before
+exporting as a Shapefile with \fIv.out.ogr\fR (within GRASS GIS you could
+just use \fId.grid \-w\fR from the projected location for the same effect):
+.br
+.nf
+\fC
+v.mkgrid map=p2min_grid grid=10,12 position=coor coordinates=167:52E,47:06S box=0:02,0:02
+\fR
+.fi
+.SS Creating a simple point pattern
+North Carolina sample dataset example, creating a 1km spaced point grid
+based on the current region extent defined by the \(dqelevation\(dq map:
+.br
+.nf
+\fC
+g.region raster=elevation res=1000 \-pa
+v.mkgrid type=point map=pointpattern
+\fR
+.fi
+.PP
+.SS Creating a regular point pattern
+North Carolina sample dataset example, creating a regular spaced point grid
+based on the current region extent defined by the \(dqelevation\(dq map, using
+a two\-step approach:
+.br
+.nf
+\fC
+# create first set of points, covering extent of \(dqelevation\(dq raster map
+g.region raster=elevation res=1000 \-pa
+v.mkgrid type=point map=pointpattern1
+# shift grid by half point distance (map units)
+g.region n=n+500 w=w+500 e=e+500 s=s+500 \-p
+# create second set of points
+v.mkgrid type=point map=pointpattern2
+# merge into final point pattern
+v.patch input=pointpattern1,pointpattern2 output=pointpattern3
+\fR
+.fi
+.br
+Different point patterns for sampling design
+.SS Creating hexagons in a metric projection
+North Carolina sample dataset example, creating regular hexagons
+based on the current region extent defined by the \(dqelevation\(dq map and
+raster resolution for the hexagon size:
+.br
+.nf
+\fC
+g.region raster=elevation res=5000 \-pa
+v.mkgrid map=hexagons \-h
+d.grid 5000
+\fR
+.fi
+.br
+Hexagon map
+.SS Using hexagons for point density
+To compute point density in a hexagonal grid for the vector map
+\fIpoints_of_interest\fR in the basic North Carolina sample dataset,
+the vector map itself is used to set extent of the computational region.
+The resolution is based on the desired size of hexagons.
+.br
+.nf
+\fC
+g.region vector=points_of_interest res=2000 \-pa
+\fR
+.fi
+The hexagonal grid is created as a vector map based on the previously
+selected extent and size of the grid.
+.br
+.nf
+\fC
+v.mkgrid map=hexagons \-h
+\fR
+.fi
+The following counts the number of points per hexagon using the
+\fIv.vect.stats\fR module.
+.br
+.nf
+\fC
+v.vect.stats points=points_of_interest areas=hexagons count_column=count
+\fR
+.fi
+User should note that some of the points may be outside the grid
+since the hexagons cannot cover all the area around the edges
+(the computational region extent needs to be enlarged if all points
+should be considered).
+The last command sets the vector map color table to viridis
+based on the count column.
+.br
+.nf
+\fC
+v.colors map=hexagons use=attr column=count color=viridis
+\fR
+.fi
+.br
+Point density in a hexagonal grid
+.SH SEE ALSO
+\fI
+d.grid,
+v.in.region,
+v.patch,
+v.vect.stats
+\fR
+.SH AUTHORS
+Michael Higgins,
+U.S.Army Construction Engineering
+Research Laboratory
+.PP
+Update for new vectors Radim Blazek 10/2004
+.SH SOURCE CODE
+.PP
+Available at: v.mkgrid source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

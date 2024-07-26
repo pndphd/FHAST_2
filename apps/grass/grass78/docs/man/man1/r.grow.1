@@ -1,0 +1,163 @@
+.TH r.grow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.grow.py\fR\fR  \- Generates a raster map layer with contiguous areas grown by one cell.
+.SH KEYWORDS
+raster, distance, proximity
+.SH SYNOPSIS
+\fBr.grow.py\fR
+.br
+\fBr.grow.py \-\-help\fR
+.br
+\fBr.grow.py\fR [\-\fBm\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBradius\fR=\fIfloat\fR]   [\fBmetric\fR=\fIstring\fR]   [\fBold\fR=\fIinteger\fR]   [\fBnew\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Radius is in map units rather than cells
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBradius\fR=\fIfloat\fR" 4m
+.br
+Radius of buffer in raster cells
+.br
+Default: \fI1.01\fR
+.IP "\fBmetric\fR=\fIstring\fR" 4m
+.br
+Metric
+.br
+Options: \fIeuclidean, maximum, manhattan\fR
+.br
+Default: \fIeuclidean\fR
+.IP "\fBold\fR=\fIinteger\fR" 4m
+.br
+Value to write for input cells which are non\-NULL (\-1 => NULL)
+.IP "\fBnew\fR=\fIinteger\fR" 4m
+.br
+Value to write for \(dqgrown\(dq cells
+.SH DESCRIPTION
+\fIr.grow\fR adds cells around the perimeters of all areas
+in a user\-specified raster map layer and stores the output in
+a new raster map layer. The user can use it to grow by one or
+more than one cell (by varying the size of the \fBradius\fR
+parameter), or like \fIr.buffer\fR, but with the
+option of preserving the original cells (similar to combining
+\fIr.buffer\fR and \fIr.patch\fR).
+.PP
+If \fBradius\fR is negative,\fIr.grow\fR shrinks areas by removing
+cells around the perimeters of all areas.
+.SH NOTES
+The user has the option of specifying three different metrics which
+control the geometry in which grown cells are created, (controlled by
+the \fBmetric\fR parameter): \fIEuclidean\fR, \fIManhattan\fR, and
+\fIMaximum\fR.
+.PP
+The \fIEuclidean distance\fR or \fIEuclidean metric\fR is the \(dqordinary\(dq distance
+between two points that one would measure with a ruler, which can be
+proven by repeated application of the Pythagorean theorem.
+The formula is given by:
+.br
+.nf
+\fC
+d(dx,dy) = sqrt(dx^2 + dy^2)
+\fR
+.fi
+Cells grown using this metric would form isolines of distance that are
+circular from a given point, with the distance given by the \fBradius\fR.
+.PP
+The \fIManhattan metric\fR, or \fITaxicab geometry\fR, is a form of geometry in
+which the usual metric of Euclidean geometry is replaced by a new
+metric in which the distance between two points is the sum of the (absolute)
+differences of their coordinates. The name alludes to the grid layout of
+most streets on the island of Manhattan, which causes the shortest path a
+car could take between two points in the city to have length equal to the
+points\(cq distance in taxicab geometry.
+The formula is given by:
+.br
+.nf
+\fC
+d(dx,dy) = abs(dx) + abs(dy)
+\fR
+.fi
+where cells grown using this metric would form isolines of distance that are
+rhombus\-shaped from a given point.
+.PP
+The \fIMaximum metric\fR is given by the formula
+.br
+.nf
+\fC
+d(dx,dy) = max(abs(dx),abs(dy))
+\fR
+.fi
+where the isolines of distance from a point are squares.
+.PP
+If there are two cells which are equal candidates to grow into an empty space,
+\fIr.grow\fR will choose the northernmost candidate; if there are multiple
+candidates with the same northing, the westernmost is chosen.
+.SH EXAMPLE
+In this example, the lakes map in the
+North Carolina sample dataset location is buffered:
+.br
+.nf
+\fC
+g.region raster=lakes \-p
+# the lake raster map pixel resolution is 10m
+r.grow input=lakes output=lakes_grown_100m radius=10
+\fR
+.fi
+Shrinking instead of growing:
+.br
+.nf
+\fC
+g.region raster=lakes \-p
+# the lake raster map pixel resolution is 10m
+r.grow input=lakes output=lakes_shrunk_100m radius=\-10
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.buffer,
+r.grow.distance,
+r.patch
+\fR
+.PP
+\fIWikipedia Entry: Euclidean Metric\fR
+.br
+\fIWikipedia Entry: Manhattan Metric\fR
+.SH AUTHORS
+Marjorie Larson,
+U.S. Army Construction Engineering Research Laboratory
+.PP
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.grow source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,99 @@
+.TH i.evapo.pt 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.evapo.pt\fR\fR  \- Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.
+.SH KEYWORDS
+imagery, evapotranspiration
+.SH SYNOPSIS
+\fBi.evapo.pt\fR
+.br
+\fBi.evapo.pt \-\-help\fR
+.br
+\fBi.evapo.pt\fR [\-\fBz\fR] \fBnet_radiation\fR=\fIname\fR \fBsoil_heatflux\fR=\fIname\fR \fBair_temperature\fR=\fIname\fR \fBatmospheric_pressure\fR=\fIname\fR \fBpriestley_taylor_coeff\fR=\fIfloat\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Set negative ETa to zero
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBnet_radiation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input net radiation raster map [W/m2]
+.IP "\fBsoil_heatflux\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input soil heat flux raster map [W/m2]
+.IP "\fBair_temperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input air temperature raster map [K]
+.IP "\fBatmospheric_pressure\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input atmospheric pressure raster map [millibars]
+.IP "\fBpriestley_taylor_coeff\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Priestley\-Taylor coefficient
+.br
+Default: \fI1.26\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of output evapotranspiration raster map [mm/d]
+.SH DESCRIPTION
+\fIi.evapo.pt\fR Calculates the diurnal evapotranspiration after Prestley
+and Taylor (1972). The Priestley\-Taylor model (Priestley and Taylor, 1972)
+is a modification of Penman\(cqs more theoretical equation.
+.SH NOTES
+RNETD optional output from \fIi.evapo.potrad\fR is giving good results as input
+for net radiation in this module.
+.PP
+Alpha values:
+.RS 4n
+.IP \(bu 4n
+1.32 for estimates from vegetated areas as a result of the increase in
+surface roughness (Morton, 1983; Brutsaert and Stricker, 1979)
+.IP \(bu 4n
+1.26 is applicable in humid climates (De Bruin and Keijman, 1979;
+Stewart and Rouse, 1976; Shuttleworth and Calder, 1979), and temperate
+hardwood swamps (Munro, 1979)
+.IP \(bu 4n
+1.74 has been recommended for estimating potential evapotranspiration
+in more arid regions (ASCE, 1990). This worked well in Greece with University
+of Thessaloniki.
+.RE
+Alpha values extracted from:
+Watflood manual.
+.SH SEE ALSO
+\fI
+i.evapo.mh,
+i.evapo.pm,
+i.evapo.time,
+i.eb.netrad,
+r.sun
+\fR
+.SH AUTHORS
+Yann Chemin, GRASS Development Team, 2007\-08
+.SH SOURCE CODE
+.PP
+Available at: i.evapo.pt source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

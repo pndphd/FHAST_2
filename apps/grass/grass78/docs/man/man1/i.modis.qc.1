@@ -1,0 +1,999 @@
+.TH i.modis.qc 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.modis.qc\fR\fR  \- Extracts quality control parameters from MODIS QC layers.
+.SH KEYWORDS
+imagery, imagery quality assessment, reflectance, land surface temperature, vegetation, satellite, MODIS
+.SH SYNOPSIS
+\fBi.modis.qc\fR
+.br
+\fBi.modis.qc \-\-help\fR
+.br
+\fBi.modis.qc\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBproductname\fR=\fIstring\fR \fBqcname\fR=\fIstring\fR  [\fBband\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input surface reflectance QC layer [bit array]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output QC type classification layer
+.IP "\fBproductname\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of MODIS product type
+.br
+Options: \fImod09Q1, mod09A1, mod09A1s, mod09GA, mod09GAs, mod09CMG, mod09CMGs, mod09CMGi, mod11A1, mod11A2, mod13A2, mcd43B2, mcd43B2q, mod13Q1\fR
+.br
+\fBmod09Q1\fR: surf. refl. 250m 8\-days
+.br
+\fBmod09A1\fR: surf. refl. 500m 8\-days
+.br
+\fBmod09A1s\fR: surf. refl. 500m 8\-days, State QA
+.br
+\fBmod09GA\fR: surf. refl. 500m daily
+.br
+\fBmod09GAs\fR: surf. refl. 500m daily, State QA
+.br
+\fBmod09CMG\fR: surf. refl. 5000m daily
+.br
+\fBmod09CMGs\fR: surf. refl. 5000m daily, State QA
+.br
+\fBmod09CMGi\fR: surf. refl. 5000m daily, Internal Climatology
+.br
+\fBmod11A1\fR: LST 1km daily (Day/Night)
+.br
+\fBmod11A2\fR: LST 1km 8\-days (Day/Night)
+.br
+\fBmod13A2\fR: VI 1km 16\-days
+.br
+\fBmcd43B2\fR: Brdf\-Albedo Quality (Ancillary SDS) 1km 8\-days
+.br
+\fBmcd43B2q\fR: Brdf\-Albedo Quality (BRDF SDS) 1km 8\-days
+.br
+\fBmod13Q1\fR: VI 250m 16\-days
+.IP "\fBqcname\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of QC type to extract
+.br
+Options: \fIadjcorr, atcorr, cloud, data_quality, diff_orbit_from_500m, modland_qa, mandatory_qa_11A1, data_quality_flag_11A1, emis_error_11A1, lst_error_11A1, data_quality_flag_11A2, emis_error_11A2, mandatory_qa_11A2, lst_error_11A2, aerosol_quantity, brdf_correction_performed, cirrus_detected, cloud_shadow, cloud_state, internal_cloud_algorithm, internal_fire_algorithm, internal_snow_mask, land_water, mod35_snow_ice, pixel_adjacent_to_cloud, salt_pan, icm_cloudy, icm_clear, icm_high_clouds, icm_low_clouds, icm_snow, icm_fire, icm_sun_glint, icm_dust, icm_cloud_shadow, icm_pixel_is_adjacent_to_cloud, icm_cirrus, icm_pan_flag, icm_criteria_for_aerosol_retrieval, icm_aot_has_clim_val, modland_qa, vi_usefulness, aerosol_quantity, pixel_adjacent_to_cloud, brdf_correction_performed, mixed_clouds, land_water, possible_snow_ice, possible_shadow, platform, land_water, sun_z_angle_at_local_noon, brdf_correction_performed, modland_qa, vi_usefulness, aerosol_quantity, pixel_adjacent_to_cloud, brdf_correction_performed, mixed_clouds, land_water, possible_snow_ice, possible_shadow\fR
+.br
+\fBadjcorr\fR: mod09: Adjacency Correction
+.br
+\fBatcorr\fR: mod09: Atmospheric Correction
+.br
+\fBcloud\fR: mod09: Cloud State
+.br
+\fBdata_quality\fR: mod09: Band\-Wise Data Quality Flag
+.br
+\fBdiff_orbit_from_500m\fR: mod09: 250m Band is at Different Orbit than 500m
+.br
+\fBmodland_qa\fR: mod13Q1: MODIS Land General Quality Assessment
+.br
+\fBmandatory_qa_11A1\fR: mod11A1: MODIS Land General Quality Assessment
+.br
+\fBdata_quality_flag_11A1\fR: mod11A1: Detailed Quality Indications
+.br
+\fBemis_error_11A1\fR: mod11A1: Average Emissivity Error Classes
+.br
+\fBlst_error_11A1\fR: mod11A1: Average LST Error Classes
+.br
+\fBdata_quality_flag_11A2\fR: mod11A2: Detailed Quality Indications
+.br
+\fBemis_error_11A2\fR: mod11A2: Average Emissivity Error Classes
+.br
+\fBmandatory_qa_11A2\fR: mod11A2: MODIS Land General Quality Assessment
+.br
+\fBlst_error_11A2\fR: mod11A2: Average LST Error Classes
+.br
+\fBaerosol_quantity\fR: mod13Q1: Quantity range of Aerosol
+.br
+\fBbrdf_correction_performed\fR: mod13Q1: if BRDF correction performed
+.br
+\fBcirrus_detected\fR: mod09*s: StateQA Cirrus Detected
+.br
+\fBcloud_shadow\fR: mod09*s: StateQA Cloud Shadow
+.br
+\fBcloud_state\fR: mod09*s: StateQA Cloud State
+.br
+\fBinternal_cloud_algorithm\fR: mod09*s: StateQA Internal Cloud Algorithm
+.br
+\fBinternal_fire_algorithm\fR: mod09*s: StateQA Internal Fire Algorithm
+.br
+\fBinternal_snow_mask\fR: mod09*s: StateQA Internal Snow Mask
+.br
+\fBland_water\fR: mod13Q1: separate land from various water objects
+.br
+\fBmod35_snow_ice\fR: mod09*s: StateQA mod35 Snow Ice
+.br
+\fBpixel_adjacent_to_cloud\fR: mod13Q1: if pixel is a cloud neighbour
+.br
+\fBsalt_pan\fR: mod09*s: StateQA Salt Pan (mod09GAs)
+.br
+\fBicm_cloudy\fR: mod09*i: Internal CM: Cloudy
+.br
+\fBicm_clear\fR: mod09*i: Internal CM: Clear
+.br
+\fBicm_high_clouds\fR: mod09*i: Internal CM: High Clouds
+.br
+\fBicm_low_clouds\fR: mod09*i: Internal CM: Low Clouds
+.br
+\fBicm_snow\fR: mod09*i: Internal CM: Snow
+.br
+\fBicm_fire\fR: mod09*i: Internal CM: Fire
+.br
+\fBicm_sun_glint\fR: mod09*i: Internal CM: Sun Glint
+.br
+\fBicm_dust\fR: mod09*i: Internal CM: Dust
+.br
+\fBicm_cloud_shadow\fR: mod09*i: Internal CM: Cloud Shadow
+.br
+\fBicm_pixel_is_adjacent_to_cloud\fR: mod09*i: Internal CM: Pixel is Adjacent to Cloud
+.br
+\fBicm_cirrus\fR: mod09*i: Internal CM: Cirrus
+.br
+\fBicm_pan_flag\fR: mod09*i: Internal CM: Pan Flag
+.br
+\fBicm_criteria_for_aerosol_retrieval\fR: mod09*i: Internal CM: Criteria for Aerosol Retrieval
+.br
+\fBicm_aot_has_clim_val\fR: mod09*i: Internal CM: AOT (aerosol optical depth) has clim. val.
+.br
+\fBvi_usefulness\fR: mod13Q1: Quality estimation of the pixel
+.br
+\fBmixed_clouds\fR: mod13Q1: if pixel mixed with clouds
+.br
+\fBpossible_snow_ice\fR: mod13Q1: if snow/ice present in pixel
+.br
+\fBpossible_shadow\fR: mod13Q1: if shadow is present in pixel
+.br
+\fBplatform\fR: mcd43B2: Quality of BRDF correction performed
+.br
+\fBsun_z_angle_at_local_noon\fR: mcd43B2: Quality of BRDF correction performed
+.IP "\fBband\fR=\fIstring\fR" 4m
+.br
+Band number of MODIS product (mod09Q1=[1,2],mod09A1=[1\-7],m[o/y]d09GA=[1\-7],m[o/y]d09CMG=[1\-7], mcd43B2q=[1\-7])
+.br
+Options: \fI1, 2, 3, 4, 5, 6, 7\fR
+.br
+\fB1\fR: Band 1: Red
+.br
+\fB2\fR: Band 2: NIR
+.br
+\fB3\fR: Band 3: Blue
+.br
+\fB4\fR: Band 4: Green
+.br
+\fB5\fR: Band 5: SWIR 1
+.br
+\fB6\fR: Band 6: SWIR 2
+.br
+\fB7\fR: Band 7: SWIR 3
+.SH DESCRIPTION
+\fIi.modis.qc\fR extracts Requested Quality Assessment flags from the
+following MODIS products: MOD09A1, MOD09Q1, MOD11A1, MOD11A2, MOD13A2, MOD13Q1,
+MCD43B2. This does include MOD09A1 QA_state_500m layer (see Notes).
+.br
+Added MOD09GA support in 2016, it follows MOD09A1 and its StateQA, but does not have BRDF State QA, instead has Salt Pan State QA.
+.SS MOD09A1 and MOD09Q1
+.br
+.nf
+\fC
+\fIMOD09A1/Q1: MODLAND QA Bits. bits=[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Corrected product produced at ideal quality \-\- all bands
+.IP \(bu 4n
+[01]= class 1: Corrected product produced at less than ideal quality \-\- some or all bands
+.IP \(bu 4n
+[10]= class 2: Corrected product NOT produced due to cloud effect \-\- all bands
+.IP \(bu 4n
+[11]= class 3: Corrected product NOT produced due to other reasons \-\-
+some or all bands maybe be fill value (Note that a value of [11] overrides a value of [01])
+.RE
+.br
+.nf
+\fC
+\fIMOD09Q1: Cloud State. bits=[2\-3] \fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Clear \-\- No clouds
+.IP \(bu 4n
+[01]= class 1: Cloudy
+.IP \(bu 4n
+[10]= class 2: Mixed
+.IP \(bu 4n
+[11]= class 3: Not Set ; Assumed Clear
+.RE
+.br
+.nf
+\fC
+\fIMOD09Q1: Band\-wise Data Quality 250m bits=[4\-7][8\-11]\fR
+\fIMOD09A1: Band\-wise Data Quality 500m bits=[2\-5][6\-9][10\-13][14\-17][18\-21][22\-25][26\-29]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0000]= class 0: highest quality
+.IP \(bu 4n
+[0111]= class 1: noisy detector
+.IP \(bu 4n
+[1000]= class 2: dead detector; data interpolated in L1B
+.IP \(bu 4n
+[1001]= class 3: solar zenith ≥ 86 degrees
+.IP \(bu 4n
+[1010]= class 4: solar zenith ≥ 85 and < 86 degrees
+.IP \(bu 4n
+[1011]= class 5: missing input
+.IP \(bu 4n
+[1100]= class 6: internal constant used in place of climatological data for at least one atmospheric constant
+.IP \(bu 4n
+[1101]= class 7: correction out of bounds, pixel constrained to extreme allowable value
+.IP \(bu 4n
+[1110]= class 8: L1B data faulty
+.IP \(bu 4n
+[1111]= class 9: not processed due to deep ocean or cloud
+.IP \(bu 4n
+Class 10\-15: Combination of bits unused
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1/Q1: Atmospheric correction bit=[12]/[30]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: Not Corrected product
+.IP \(bu 4n
+[1]= class 1: Corrected product
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1/Q1: Adjacency correction bit=[13]/[31]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: Not Corrected product
+.IP \(bu 4n
+[1]= class 1: Corrected product
+.RE
+.br
+.nf
+\fC
+\fIMOD09Q1: Different orbit from 500m product, bit=[14]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: same orbit as 500m
+.IP \(bu 4n
+[1]= class 1: different orbit from 500m
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Cloud State bits=[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: clear
+.IP \(bu 4n
+[01]= class 1: cloudy
+.IP \(bu 4n
+[10]= class 2: mixed
+.IP \(bu 4n
+[11]= class 3: not set, assumed clear
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Cloud shadow bits=[2]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: no
+.IP \(bu 4n
+[1]= class 1: yes
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Land/Water Flag bits=[3\-5]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[000]= class 0: Shallow ocean
+.IP \(bu 4n
+[001]= class 1: Land
+.IP \(bu 4n
+[010]= class 2: Ocean coastlines and lake shorelines
+.IP \(bu 4n
+[011]= class 3: Shallow inland water
+.IP \(bu 4n
+[100]= class 4: Ephemeral water
+.IP \(bu 4n
+[101]= class 5: Deep inland water
+.IP \(bu 4n
+[110]= class 6: Continental/moderate ocean
+.IP \(bu 4n
+[111]= class 7: Deep ocean
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Aerosol Quantity bits=[6\-7]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Climatology
+.IP \(bu 4n
+[01]= class 1: Low
+.IP \(bu 4n
+[10]= class 2: Average
+.IP \(bu 4n
+[11]= class 3: High
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Cirrus detected bits=[8\-9]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: None
+.IP \(bu 4n
+[01]= class 1: Small
+.IP \(bu 4n
+[10]= class 2: Average
+.IP \(bu 4n
+[11]= class 3: High
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Internal Cloud Algorithm Flag bits=[10]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No cloud
+.IP \(bu 4n
+[1]= class 1: Cloud
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Internal Fire Algorithm Flag bits=[11]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No fire
+.IP \(bu 4n
+[1]= class 1: Fire
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: MOD35 snow/ice flag bits=[12]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Pixel adjacent to cloud bits=[13]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: BRDF correction performed bits=[14]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD09A1s: Internal Snow Mask bits=[15]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No snow
+.IP \(bu 4n
+[1]= class 1: Snow
+.RE
+.SS MOD11A1
+.br
+.nf
+\fC
+\fIMOD11A1: Mandatory QA Flags bits=[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: LST produced, good quality, not necessary to examine more detailed QA
+.IP \(bu 4n
+[01]= class 1: LST produced, other quality, recommend examination of more detailed QA
+.IP \(bu 4n
+[10]= class 2: LST not produced due to cloud effects
+.IP \(bu 4n
+[11]= class 3: LST not produced primarily due to reasons other than cloud
+.RE
+.br
+.nf
+\fC
+\fIMOD11A1: Data Quality Flag bits=[2\-3]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Good data quality of L1B in bands 31 and 32
+.IP \(bu 4n
+[01]= class 1: Other quality data
+.IP \(bu 4n
+[10]= class 2: TBD
+.IP \(bu 4n
+[11]= class 3: TBD
+.RE
+.br
+.nf
+\fC
+\fIMOD11A1: Emis Error Flag bits=[4\-5]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Average emissivity error ≤ 0.01
+.IP \(bu 4n
+[01]= class 1: Average emissivity error ≤ 0.02
+.IP \(bu 4n
+[10]= class 2: Average emissivity error ≤ 0.04
+.IP \(bu 4n
+[11]= class 3: Average emissivity error > 0.04
+.RE
+.br
+.nf
+\fC
+\fIMOD11A1: LST Error Flag bits=[6\-7]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Average LST error ≤ 1
+.IP \(bu 4n
+[01]= class 1: Average LST error ≤ 2
+.IP \(bu 4n
+[10]= class 2: Average LST error ≤ 3
+.IP \(bu 4n
+[11]= class 3: Average LST error > 3
+.RE
+.SS MOD11A2
+.br
+.nf
+\fC
+\fIMOD11A2: Mandatory QA Flags bits=[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: LST produced, good quality, not necessary to examine more detailed QA
+.IP \(bu 4n
+[01]= class 1: LST produced, other quality, recommend examination of more detailed QA
+.IP \(bu 4n
+[10]= class 2: LST not produced due to cloud effects
+.IP \(bu 4n
+[11]= class 3: LST not produced primarily due to reasons other than cloud
+.RE
+.br
+.nf
+\fC
+\fIMOD11A2: Data Quality Flag bits=[2\-3]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Good data quality of L1B in 7 TIR bands
+.IP \(bu 4n
+[01]= class 1: Other quality data
+.IP \(bu 4n
+[10]= class 2: TBD
+.IP \(bu 4n
+[11]= class 3: TBD
+.RE
+.br
+.nf
+\fC
+\fIMOD11A2: Emis Error Flag bits=[4\-5]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Average emissivity error ≤ 0.01
+.IP \(bu 4n
+[01]= class 1: Average emissivity error ≤ 0.02
+.IP \(bu 4n
+[10]= class 2: Average emissivity error ≤ 0.04
+.IP \(bu 4n
+[11]= class 3: Average emissivity error > 0.04
+.RE
+.br
+.nf
+\fC
+\fIMOD11A2: LST Error Flag bits=[6\-7]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Average LST error ≤ 1
+.IP \(bu 4n
+[01]= class 1: Average LST error ≤ 2
+.IP \(bu 4n
+[10]= class 2: Average LST error ≤ 3
+.IP \(bu 4n
+[11]= class 3: Average LST error > 3
+.RE
+.SS MOD13A2
+.br
+.nf
+\fC
+\fIMOD13A2: Mandatory QA Flags 1km bits[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: VI produced, good quality
+.IP \(bu 4n
+[01]= class 1: VI produced, but check other QA
+.IP \(bu 4n
+[10]= class 2: Pixel produced, but most probably cloud
+.IP \(bu 4n
+[11]= class 3: Pixel not produced due to other reasons than clouds
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: VI Usefulness Flag bits[2\-5]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0000]= class 0: Highest quality
+.IP \(bu 4n
+[0001]= class 1: Lower quality
+.IP \(bu 4n
+[0010]= class 2: Decreasing quality
+.IP \(bu 4n
+[0100]= class 3: Decreasing quality
+.IP \(bu 4n
+[1000]= class 4: Decreasing quality
+.IP \(bu 4n
+[1001]= class 5: Decreasing quality
+.IP \(bu 4n
+[1010]= class 6: Decreasing quality
+.IP \(bu 4n
+[1100]= class 7: Lowest quality
+.IP \(bu 4n
+[1101]= class 8: Quality so low that it is not useful
+.IP \(bu 4n
+[1110]= class 9: L1B data faulty
+.IP \(bu 4n
+[1111]= class 10: Not useful for any other reason/not processed
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Aerosol quantity Flags 1km bits[6\-7]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Climatology
+.IP \(bu 4n
+[01]= class 1: Low
+.IP \(bu 4n
+[10]= class 2: Average
+.IP \(bu 4n
+[11]= class 3: High
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Adjacent cloud detected 1km bit[8]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Atmosphere BRDF correction performed 1km bit[9]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Mixed clouds 1km bit[10]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Land/Water Flags 1km bits[11\-13]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[000]= class 0: Shallow Ocean
+.IP \(bu 4n
+[001]= class 1: Land (Nothing else but land)
+.IP \(bu 4n
+[010]= class 2: Ocean Coastlines and lake shorelines
+.IP \(bu 4n
+[011]= class 3: Shallow inland water
+.IP \(bu 4n
+[100]= class 4: Ephemeral water
+.IP \(bu 4n
+[101]= class 5: Deep inland water
+.IP \(bu 4n
+[110]= class 6: Moderate or continental ocean
+.IP \(bu 4n
+[111]= class 7: Deep ocean
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Possible Snow/Ice 1km bits[14]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13A2: Possible Shadow 1km bits[15]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.SS MOD13Q1
+.br
+.nf
+\fC
+\fIMOD13Q1: Mandatory QA Flags 250m bits[0\-1]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: VI produced, good quality
+.IP \(bu 4n
+[01]= class 1: VI produced, but check other QA
+.IP \(bu 4n
+[10]= class 2: Pixel produced, but most probably cloud
+.IP \(bu 4n
+[11]= class 3: Pixel not produced due to other reasons than clouds
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: VI Usefulness Flag 250m bits[2\-5]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0000]= class 0: Highest quality
+.IP \(bu 4n
+[0001]= class 1: Lower quality
+.IP \(bu 4n
+[0010]= class 2: Decreasing quality
+.IP \(bu 4n
+[0100]= class 3: Decreasing quality
+.IP \(bu 4n
+[1000]= class 4: Decreasing quality
+.IP \(bu 4n
+[1001]= class 5: Decreasing quality
+.IP \(bu 4n
+[1010]= class 6: Decreasing quality
+.IP \(bu 4n
+[1100]= class 7: Lowest quality
+.IP \(bu 4n
+[1101]= class 8: Quality so low that it is not useful
+.IP \(bu 4n
+[1110]= class 9: L1B data faulty
+.IP \(bu 4n
+[1111]= class 10: Not useful for any other reason/not processed
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Aerosol quantity Flags 250m bits[6\-7]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: Climatology
+.IP \(bu 4n
+[01]= class 1: Low
+.IP \(bu 4n
+[10]= class 2: Average
+.IP \(bu 4n
+[11]= class 3: High
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Adjacent cloud detected 250m bit[8]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Atmosphere BRDF correction performed 250m bit[9]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Mixed clouds 250m bit[10]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[00]= class 0: No
+.IP \(bu 4n
+[01]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Land/Water Flags 250m bits[11\-13]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[000]= class 0: Shallow Ocean
+.IP \(bu 4n
+[001]= class 1: Land (Nothing else but land)
+.IP \(bu 4n
+[010]= class 2: Ocean Coastlines and lake shorelines
+.IP \(bu 4n
+[011]= class 3: Shallow inland water
+.IP \(bu 4n
+[100]= class 4: Ephemeral water
+.IP \(bu 4n
+[101]= class 5: Deep inland water
+.IP \(bu 4n
+[110]= class 6: Moderate or continental ocean
+.IP \(bu 4n
+[111]= class 7: Deep ocean
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Possible Snow/Ice 250m bits[14]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.br
+.nf
+\fC
+\fIMOD13Q1: Possible Shadow 250m bits[15]\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0]= class 0: No
+.IP \(bu 4n
+[1]= class 1: Yes
+.RE
+.SS MCD43B2
+.br
+.nf
+\fC
+\fIMCD43B2: Albedo Quality Ancillary Platform Data 1km bits[0\-3]\fR
+\fISDS: BRDF_Albedo_Ancillary\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0000]= class 0: Satellite Platform: Terra
+.IP \(bu 4n
+[0001]= class 1: Satellite Platform: Terrra/Aqua
+.IP \(bu 4n
+[0010]= class 2: Satellite Platform: Aqua
+.IP \(bu 4n
+[1111]= class 15: Fill Value
+.IP \(bu 4n
+Classes 3\-14: Not used
+.RE
+.br
+.nf
+\fC
+\fIMCD43B2: Albedo Quality Ancillary Land/Water Data 1km bits[4\-7]\fR
+\fISDS: BRDF_Albedo_Ancillary\fR
+\fR
+.fi
+.RS 4n
+.IP \(bu 4n
+[0000] class 0: Shallow Ocean
+.IP \(bu 4n
+[0001] class 1: Land (Nothing else but land)
+.IP \(bu 4n
+[0010] class 2: Ocean and lake shorelines
+.IP \(bu 4n
+[0011] class 3: Shallow inland water
+.IP \(bu 4n
+[0100] class 4: Ephemeral water
+.IP \(bu 4n
+[0101] class 5: Deep inland water
+.IP \(bu 4n
+[0110] class 6: Moderate or continental ocean
+.IP \(bu 4n
+[0111] class 7: Deep ocean
+.IP \(bu 4n
+[1111] class 15: Fill Value
+.IP \(bu 4n
+Classes 8\-14: Not used
+.RE
+.br
+.nf
+\fC
+\fIMCD43B2: Albedo Quality Ancillary Sun Zenith Angle at Local Solar Noon Data 1km bits[8\-14]\fR
+\fISDS: BRDF_Albedo_Ancillary\fR
+\fR
+.fi
+.RS 4n
+Returns integer value [0\-90], 127 is Fill Value
+.RE
+.br
+.nf
+\fC
+\fIMCD43B2: Band\-wise Albedo Quality Data 1km\fR
+\fISDS: BRDF_Albedo_Band_Quality\fR
+\fR
+.fi
+bits[0\-3][4\-7][8\-11][12\-15][16\-19][20\-23][24\-27]
+.br
+.RS 4n
+.IP \(bu 4n
+[0000]= class 0: best quality, 75% or more with best full inversions
+.IP \(bu 4n
+[0001]= class 1: good quality, 75% or more with full inversions
+.IP \(bu 4n
+[0010]= class 2: Mixed, 50% or less full inversions and 25% or less fill values
+.IP \(bu 4n
+[0011]= class 3: All magnitude inversions or 50% or less fill values
+.IP \(bu 4n
+[0100]= class 4: 75% or more fill values
+.IP \(bu 4n
+Classes 5\-14: Not Used
+.IP \(bu 4n
+[1111]= class 15: Fill Value
+.RE
+.SH NOTES
+In MOD09A1: It seems that cloud related info is not filled properly in the
+standard QC (MOD09A1 in this module) since version 3, State\-QA 500m images
+(MOD09A1s in this module) should be used (see Vermote et al., 2008).
+MOD11A2 quality control (QC) bands do not have a FillValue (No\-data) according
+to MODIS Land Products site.
+However, the metadata of the QC bands (i.e.: gdalinfo QC_band) shows No\-data=0.
+This value is then transformed into GRASS NULLs when data is imported through
+r.in.gdal. Applying \fIi.modis.qc\fR on those QC bands
+will not give the expected range of values in the different QC bits. Therefore,
+before using \fIi.modis.qc\fR, the user needs to set the NULL value in QC bands
+back to zero (i.e.: r.null map=QC_band null=0) or just edit the metadata with GDAL
+utilities before importing into GRASS GIS. This is a known issue for MOD11A2
+(8\-day LST product), but other MODIS products might be affected as well.
+.SH TODO
+Add more daily products.
+.SH SEE ALSO
+\fI
+i.vi
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+MODIS Products
+.IP \(bu 4n
+Vermote E.F., Kotchenova S.Y., Ray J.P. MODIS Surface Reflectance User\(cqs Guide.
+Version 1.2. June 2008. MODIS Land Surface Reflectance Science Computing Facility.
+Homepage
+.RE
+.SH AUTHOR
+Yann Chemin
+.SH SOURCE CODE
+.PP
+Available at: i.modis.qc source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

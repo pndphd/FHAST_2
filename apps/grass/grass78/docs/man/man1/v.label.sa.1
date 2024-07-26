@@ -1,0 +1,170 @@
+.TH v.label.sa 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.label.sa\fR\fR  \- Create optimally placed labels for vector map(s)
+.SH KEYWORDS
+vector, paint labels
+.SH SYNOPSIS
+\fBv.label.sa\fR
+.br
+\fBv.label.sa \-\-help\fR
+.br
+\fBv.label.sa\fR \fBmap\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIstring\fR \fBlabels\fR=\fIname\fR \fBfont\fR=\fIstring\fR  [\fBsize\fR=\fIfloat\fR]   [\fBisize\fR=\fIfloat\fR]   [\fBcharset\fR=\fIstring\fR]   [\fBcolor\fR=\fIstring\fR]   [\fBhcolor\fR=\fIstring\fR]   [\fBhwidth\fR=\fIfloat\fR]   [\fBbackground\fR=\fIstring\fR]   [\fBopaque\fR=\fIyes|no\fR]   [\fBborder\fR=\fIstring\fR]   [\fBwidth\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, area\fR
+.br
+Default: \fIpoint,line,area\fR
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to be used for labels
+.IP "\fBlabels\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for new paint\-label file
+.IP "\fBfont\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of TrueType font (as listed in the fontcap)
+.IP "\fBsize\fR=\fIfloat\fR" 4m
+.br
+Label size (in map\-units)
+.br
+Default: \fI100\fR
+.IP "\fBisize\fR=\fIfloat\fR" 4m
+.br
+Icon size of point features (in map\-units)
+.br
+Default: \fI10\fR
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Character encoding (default: UTF\-8)
+.br
+Default: \fIUTF\-8\fR
+.IP "\fBcolor\fR=\fIstring\fR" 4m
+.br
+Text color
+.br
+Options: \fIaqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow\fR
+.br
+Default: \fIblack\fR
+.IP "\fBhcolor\fR=\fIstring\fR" 4m
+.br
+Highlight color for text
+.br
+Options: \fInone, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow\fR
+.br
+Default: \fInone\fR
+.IP "\fBhwidth\fR=\fIfloat\fR" 4m
+.br
+Width of highlight coloring
+.br
+Default: \fI0\fR
+.IP "\fBbackground\fR=\fIstring\fR" 4m
+.br
+Background color
+.br
+Options: \fInone, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow\fR
+.br
+Default: \fInone\fR
+.IP "\fBopaque\fR=\fIyes|no\fR" 4m
+.br
+Opaque to vector (only relevant if background color is selected)
+.br
+Options: \fIyes, no\fR
+.br
+Default: \fIyes\fR
+.IP "\fBborder\fR=\fIstring\fR" 4m
+.br
+Border color
+.br
+Options: \fInone, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow\fR
+.br
+Default: \fInone\fR
+.IP "\fBwidth\fR=\fIfloat\fR" 4m
+.br
+Border width (only for ps.map output)
+.br
+Default: \fI0\fR
+.SH DESCRIPTION
+\fIv.label.sa\fR makes a label\-file from a GRASS vector map
+with labels created from attributes in the attached table. The labels are
+placed in as optimal place as possible. The label file has the same syntax
+as the one created by v.label
+.SH EXAMPLE
+North Carolina example:
+.PP
+.br
+.nf
+\fC
+# get font names:
+d.font \-L
+v.label.sa roadsmajor labels=roads_labels column=ROAD_NAME color=red \(rs
+           background=white size=250 font=Vera
+# set region:
+g.region raster=lsat7_2002_10 \-p
+# display:
+d.rgb b=lsat7_2002_10 g=lsat7_2002_20 r=lsat7_2002_30
+d.vect roadsmajor col=yellow
+d.labels roads_labels
+\fR
+.fi
+.PP
+.br
+\fIRoad labeling with v.label.sa (Raleigh, North Carolina, USA, area)\fR
+.SH REFERENCES
+Edmondson, Christensen, Marks and Shieber: A General Cartographic
+Labeling Algorithm, Cartographica, Vol. 33, No. 4, Winter 1996, pp. 13\-23
+The algorithm works by the principle of Simulated Annealing.
+.SH SEE ALSO
+\fI
+d.label
+.br
+d.labels
+.br
+ps.map
+Wikipedia article on simulated annealing
+\fR
+.br
+.SH AUTHOR
+Wolf Bergenheim
+.br
+.SH SOURCE CODE
+.PP
+Available at: v.label.sa source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

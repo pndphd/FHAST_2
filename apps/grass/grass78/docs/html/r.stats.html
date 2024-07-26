@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.stats - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.stats</b></em>  - Generates area statistics for raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.stats</b><br></div>
+<b>r.stats --help</b><br>
+<div id="synopsis"><b>r.stats</b> [-<b>acpl1gxArnNCi</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...]  [<b>output</b>=<em>name</em>]   [<b>separator</b>=<em>character</em>]   [<b>null_value</b>=<em>string</em>]   [<b>nsteps</b>=<em>integer</em>]   [<b>sort</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-a</b></dt>
+<dd>Print area totals in square meters</dd>
+
+<dt><b>-c</b></dt>
+<dd>Print cell counts (sortable)</dd>
+
+<dt><b>-p</b></dt>
+<dd>Print approximate (total percent may not be 100%) percents</dd>
+
+<dt><b>-l</b></dt>
+<dd>Print category labels</dd>
+
+<dt><b>-1</b></dt>
+<dd>One cell (range) per line</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print grid coordinates (east and north)</dd>
+
+<dt><b>-x</b></dt>
+<dd>Print x and y (column and row)</dd>
+<dd>Indexing starts with 1: first column and row are 1</dd>
+
+<dt><b>-A</b></dt>
+<dd>Print averaged values instead of intervals (floating-point maps only)</dd>
+
+<dt><b>-r</b></dt>
+<dd>Print raw indexes of floating-point ranges (floating-point maps only)</dd>
+
+<dt><b>-n</b></dt>
+<dd>Do not report no data value</dd>
+
+<dt><b>-N</b></dt>
+<dd>Do not report cells where all maps have no data</dd>
+
+<dt><b>-C</b></dt>
+<dd>Report for cats floating-point ranges (floating-point maps only)</dd>
+
+<dt><b>-i</b></dt>
+<dd>Read floating-point map as integer (use map's quant rules)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map(s) to report on</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file (if omitted or "-" output to stdout)</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>space</em></dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>*</em></dd>
+
+<dt><b>nsteps</b>=<em>integer</em></dt>
+<dd>Number of floating-point subranges to collect stats from</dd>
+<dd>Default: <em>255</em></dd>
+
+<dt><b>sort</b>=<em>string</em></dt>
+<dd>Sort output statistics by cell counts</dd>
+<dd>Default: sorted by categories or intervals</dd>
+<dd>Options: <em>asc, desc</em></dd>
+<dd><b>asc</b>: Sort by cell counts in ascending order</dd>
+<dd><b>desc</b>: Sort by cell counts in descending order</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#report-area-for-each-category" class="toc">Report area for each category</a></li>
+        <li class="toc"><a href="#report-sorted-number-of-cells-for-each-category" class="toc">Report sorted number of cells for each category</a></li>
+        <li class="toc"><a href="#report-area,-number-of-cells,-and-percents-in-multiple-raster-maps" class="toc">Report area, number of cells, and percents in multiple raster maps</a></li>
+        <li class="toc"><a href="#report-sorted-area-intervals-of-floating-point-raster-map" class="toc">Report sorted area intervals of floating-point raster map</a></li>
+        <li class="toc"><a href="#report-raster-cell-counts-in-multiple-raster-maps" class="toc">Report raster cell counts in multiple raster maps</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.stats</em> calculates the area present in each of the categories
+or floating-point intervals of user-selected <b>input</b> raster map. Area
+statistics are given in units of square meters and/or cell
+counts. This analysis uses the current geographic region
+(<em><a href="g.region.html">g.region</a></em>) and mask settings
+(<em><a href="r.mask.html">r.mask</a></em>). The output statistics can
+be saved to a <b>output</b> file.
+
+<p>
+Area statistics is printed in square meters for each category
+when <b>-a</b> is given. Similarly if <b>-c</b> flag is chosen, areas
+will be stated also in number of cells.
+
+<h2><a name="notes">NOTES</a></h2>
+
+If a single raster map is specified, a list of categories will be printed.
+The <b>-x</b> flag will print x and y (column and row) starting with 1
+(both first row and first column are indexed with 1). If multiple raster maps
+are specified, a cross-tabulation table for each combination of categories in
+the raster maps will be printed.
+
+<p>
+For example, if one raster map was specified, the output would look like:
+<div class="code"><pre>
+1 1350000.00
+2 4940000.00
+3 8870000.00
+</pre></div>
+
+If three raster maps were specified, the output would look like:
+<div class="code"><pre>
+0 0 0 8027500.00
+0 1 0 1152500.00
+1 0 0 164227500.00
+1 0 1 2177500.00
+1 1 0 140092500.00
+1 1 1 3355000.00
+2 0 0 31277500.00
+2 0 1 2490000.00
+2 1 0 24207500.00
+2 1 1 1752500.00
+3 0 0 17140000.00
+3 1 0 11270000.00
+3 1 1 2500.00
+</pre></div>
+
+Within each grouping, the first field represents the category value of
+first raster map, the second represents the category values associated
+with second raster map, the third represents category values for third
+raster map, and the last field gives the area in square meters for the
+particular combination of these three raster maps' categories. For
+example, above, combination 3,1,1 covered 2500 square meters. Fields
+are separated by the <b>separator</b> option.
+
+<!-- do not use bash commands in the manual
+<p>If a nicely formatted output is desired, pipe the output into a command
+which can create columnar output.  For example, the command:
+
+<p>    <b>r.stats input=</b>a,b,c | pr -3 | cat -s
+
+<p>will create a three-column output 
+<div class="code"><pre>
+1:4:4:10000.00       2:1:5:290000.00      2:4:5:2090000.00
+1:4:5:1340000.00     2:2:5:350000.00      3:1:2:450000.00
+2:1:1:1090000.00     2:4:1:700000.00      3:1:3:5280000.00
+2:1:3:410000.00      2:4:3:10000.00       3:1:5:3140000.00
+</pre></div>
+-->
+
+The output from <em>r.stats</em> is sorted by category or category
+intervals (for floating-point raster maps).
+
+<p>
+Note that the user has only the option of printing out cell statistics
+in terms of cell counts and/or area totals. Users wishing to use
+different units than are available here should
+use <em><a href="r.report.html">r.report</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="report-area-for-each-category">Report area for each category</a></h3>
+
+Report area for each category in the single raster map:
+
+<div class="code"><pre>
+g.region raster=geology_30m
+r.stats -a in=geology_30m nv=no-data sep=tab
+
+217     71960000.000000
+262     19760000.000000
+270     67760000.000000
+405     25120000.000000
+583     2520000.000000
+720     480000.000000
+766     840000.000000
+862     6560000.000000
+910     4360000.000000
+921     1200000.000000
+946     360000.000000
+948     80000.000000
+no-data 33375200000.000004
+</pre></div>
+
+<h3><a name="report-sorted-number-of-cells-for-each-category">Report sorted number of cells for each category</a></h3>
+
+Report sorted number of cells for each category in the single raster
+map (suppress NULL data):
+
+<div class="code"><pre>
+g.region raster=geology_30m
+r.stats -cn input=geology_30m sort=desc
+
+217 1799
+270 1694
+405 628
+262 494
+862 164
+910 109
+583 63
+921 30
+766 21
+720 12
+946 9
+948 2
+</pre></div>
+
+<h3><a name="report-area,-number-of-cells,-and-percents-in-multiple-raster-maps">Report area, number of cells, and percents in multiple raster maps</a></h3>
+
+Report area, number of cells, and percents (separated by tabs) for
+each category in multiple raster maps (suppress NULL data):
+
+<div class="code"><pre>
+g.region raster=towns
+r.stats -nacp input=towns,urban separator=tab
+
+1       55      23840000.000000 596     11.89%
+2       55      13680000.000000 342     6.82%
+3       55      1360000.000000  34      0.68%
+4       55      16040000.000000 401     8.00%
+5       55      98240000.000000 2456    48.98%
+6       55      19760000.000000 494     9.85%
+</pre></div>
+
+<h3><a name="report-sorted-area-intervals-of-floating-point-raster-map">Report sorted area intervals of floating-point raster map</a></h3>
+
+Report sorted area for each interval of floating-point input raster
+map. Number of intervals are given by <b>nsteps</b> option.
+
+<div class="code"><pre>
+g.region raster=elevation
+r.stats -an input=elevation nsteps=10 sort=desc separator=tab
+
+95.879221-105.954329    36440000.000000
+85.804114-95.879221     30800000.000000
+105.954329-116.029436   30080000.000000
+116.029436-126.104543   27960000.000000
+126.104543-136.17965    26440000.000000
+136.17965-146.254757    20880000.000000
+75.729007-85.804114     15880000.000000
+65.6539-75.729007       6040000.000000
+146.254757-156.329865   5720000.000000
+55.578793-65.6539       760000.000000
+</pre></div>
+
+<h3><a name="report-raster-cell-counts-in-multiple-raster-maps">Report raster cell counts in multiple raster maps</a></h3>
+
+Report raster cell counts of landuse and geological categories within
+zipcode areas:
+
+<div class="code"><pre>
+g.region raster=zipcodes
+# landuse/landcover and zipcodes
+r.stats -c input=landclass96,zipcodes separator=comma 
+
+# landuse/landcover, geology and zipcodes with category labels
+r.stats -c input=landclass96,zipcodes,geology_30m separator=comma -l
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.report.html">r.report</a>,
+<a href="r.coin.html">r.coin</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.stats.quantile.html">r.stats.quantile</a>,
+<a href="r.stats.zonal.html">r.stats.zonal</a>,
+<a href="r.statistics.html">r.statistics</a>,
+<a href="r.univar.html">r.univar</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory<br>
+Sort option by Martin Landa, Czech Technical University in Prague, 2013
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.stats">r.stats source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.stats">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

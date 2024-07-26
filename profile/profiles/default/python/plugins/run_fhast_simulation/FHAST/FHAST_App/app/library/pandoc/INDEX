@@ -1,0 +1,50 @@
+pandoc_activate         Activate a specific Pandoc version to be used
+pandoc_available        Check if active Pandoc version meet a
+                        requirement
+pandoc_available_releases
+                        Fetch all versions available to install
+pandoc_bin              Get path to the pandoc binary
+pandoc_browse_citation
+                        Open Pandoc's documentation about citation
+                        processing
+pandoc_browse_exit_code
+                        Open Pandoc's documentation about exit codes
+pandoc_browse_extension
+                        Open Pandoc's documentation about an extension
+pandoc_browse_manual    Open Pandoc's MANUAL
+pandoc_browse_option    Open Pandoc's documentation about a command
+                        line option
+pandoc_browse_release   Open Pandoc's release page in browser
+pandoc_citeproc_bin     Get path to the pandoc-citeproc binary.
+pandoc_convert          Run Pandoc to convert a document or a text
+pandoc_export_data_file
+                        Export Pandoc internal data file
+pandoc_export_highlight_theme
+                        Export highlighting style as JSON file
+pandoc_export_template
+                        Retrieve Pandoc template for a format
+pandoc_install          Install a pandoc binary for Github release page
+pandoc_installed_versions
+                        Check Pandoc versions already installed
+pandoc_is_active        Is a pandoc version active ?
+pandoc_list_abbreviations
+                        List system default abbreviations
+pandoc_list_extensions
+                        List supported extensions for a format
+pandoc_list_formats     List available supported formats
+pandoc_list_highlight_languages
+                        List supported languages for Pandoc syntax
+                        highlighting
+pandoc_list_highlight_style
+                        List supported styles for Pandoc syntax
+                        highlighting
+pandoc_locate           Locate a specific Pandoc version installed with
+                        this package
+pandoc_run              Run the pandoc binary from R
+pandoc_uninstall        Uninstall a Pandoc version
+pandoc_version          Get Pandoc version
+rstudio_pandoc          Retrieve path and version of Pandoc shipped
+                        with RStudio
+system_pandoc           Retrieve path and version of Pandoc found on
+                        the system PATH
+with_pandoc_version     Execute any code with a specific Pandoc version

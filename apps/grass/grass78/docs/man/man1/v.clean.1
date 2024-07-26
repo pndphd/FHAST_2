@@ -1,0 +1,418 @@
+.TH v.clean 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.clean\fR\fR  \- Toolset for cleaning topology of vector map.
+.SH KEYWORDS
+vector, topology, geometry, snapping
+.SH SYNOPSIS
+\fBv.clean\fR
+.br
+\fBv.clean \-\-help\fR
+.br
+\fBv.clean\fR [\-\fBbc\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBerror\fR=\fIname\fR]  \fBtool\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBthreshold\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology for the output vector
+.IP "\fB\-c\fR" 4m
+.br
+Combine tools with recommended follow\-up tools
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel\fR
+.br
+Default: \fIpoint,line,boundary,centroid,area,face,kernel\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBerror\fR=\fIname\fR" 4m
+.br
+Name of output map where errors are written
+.IP "\fBtool\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Cleaning tool
+.br
+Options: \fIbreak, snap, rmdangle, chdangle, rmbridge, chbridge, rmdupl, rmdac, bpol, prune, rmarea, rmline, rmsa\fR
+.br
+\fBbreak\fR: break lines at each intersection
+.br
+\fBsnap\fR: snap lines to vertex in threshold
+.br
+\fBrmdangle\fR: remove dangles, threshold ignored if < 0
+.br
+\fBchdangle\fR: change the type of boundary dangle to line, threshold ignored if < 0, input line type is ignored
+.br
+\fBrmbridge\fR: remove bridges connecting area and island or 2 islands
+.br
+\fBchbridge\fR: change the type of bridges connecting area and island or 2 islands from boundary to line
+.br
+\fBrmdupl\fR: remove duplicate geometry features (pay attention to categories!)
+.br
+\fBrmdac\fR: remove duplicate area centroids (\(cqtype\(cq option ignored)
+.br
+\fBbpol\fR: break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different
+.br
+\fBprune\fR: remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachment of centroid), first and last segment of the boundary is never changed
+.br
+\fBrmarea\fR: remove small areas, the longest boundary with adjacent area is removed
+.br
+\fBrmline\fR: remove all lines or boundaries of zero length, threshold is ignored
+.br
+\fBrmsa\fR: remove small angles between lines at nodes
+.IP "\fBthreshold\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Threshold in map units, one value for each tool
+.br
+Default: 0.0[,0.0,...])
+.SH DESCRIPTION
+\fIv.clean\fR allows the user to automatically fix topology of vector
+maps. Several tools may be listed to be executed sequentially. In this
+case, also the threshold parameter requires several values to be listed
+accordingly. An error map is optionally written which stores the erroneous
+geometries.
+.SS Break lines/boundaries
+\fItool=break\fR
+.PP
+The \fIbreak\fR tool breaks lines/boundaries at intersections and it
+also breaks lines/boundaries forming a collapsed loop.
+For example, 0.0;1.0;0.0 is broken at 1.0.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.PP
+Hint: Breaking lines should be followed by removing duplicates, e.g.
+\fIv.clean ... tool=break,rmdupl\fR. If the \fI\-c\fR flag is used with
+\fIv.clean ... tool=break\fR, duplicates are automatically removed.
+.SS Remove duplicate geometry features
+\fItool=rmdupl\fR
+.PP
+The \fIrmdupl\fR tool removes geometry features with identical
+coordinates. Categories are merged. If a point and a centroid have
+identical coordinates, one of them will be removed if both points and
+centroids are selected with \fIv.clean ... type=point,centroid\fR.
+The  same applies for lines and boundaries.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.PP
+The \fIrmdupl\fR tool should be used after breaking lines and
+breaking polygons.
+.SS Remove dangles or change boundary dangles to type line
+\fItool=rmdangle\fR and \fItool=chdangle\fR
+.PP
+A line/boundary is considered to be a dangle if no other line of given
+\fItype\fR is on at least one end node. If a dangle is formed by
+several lines, such a string of lines is taken as one dangle and line
+lengths are summarized. The \fIrmdangle\fR tool deletes a dangle if
+the (combined) length is shorter than \fIthresh\fR or \fIthresh\fR
+< 0. If the combined length is larger than \fIthresh\fR, nothing
+is deleted.
+.PP
+Threshold has to be given as maximum line/boundary length in map units;
+for latitude\-longitude locations in degree. Dangles shorter than
+\fIthresh\fR are removed sequentially. All dangles will be removed if
+\fIthresh\fR < 0.
+.PP
+With \fIthresh\fR < 0, only closed loops and lines connecting
+loops will remain. This is useful to remove all incorrect boundaries
+after other cleaning operations with \fIthres\fR is < 0. Areas can
+then be successfully built.
+.PP
+To preferentially remove shortest dangles first, a first pass with a
+small \fIthresh\fR value can be followed by subsequent passes with
+higher \fIthresh\fR values. This can be done as one \fIv.clean\fR
+job by listing the tool several times and by defining a list of increasing
+\fIthresh\fR values.
+.PP
+The \fIchdangle\fR tool is similar to the \fIrmdangle\fR tool, but
+works only on boundaries and changes dangling boundaries to lines
+instead of removing them.
+.SS Remove or change bridges connecting an area and an island or two islands
+\fItool=rmbridge\fR and \fItool=chbridge\fR
+.PP
+A bridge is an area type connection of an island (polygon in a polygon)
+to the outer polygon. This is topologically incorrect (but OGC Simple
+Features allow it). The \fIrmbridge\fR tool removes bridges and the
+\fIchbridge\fR tool changes bridges to type line:
+.br
+.nf
+\fC
+    +\-\-\-\-\-\-\-\-\-\-\-\-\-+             +\-\-\-\-\-\-\-\-\-\-\-\-\-+   +\-\-\-\-\-\-\-\-\-\-\-\-\-+
+    |            P|  P: polygon |            P|   |            P|
+    |    +\-\-\-+    |  I: island  |    +\-\-\-+    |   |    +\-\-\-+    |
+    |    | I |    |  B: bridge  |    | I |    |   |    | I |    |
+    |    |   |    |  L: line    |    |   |    |   |    |   |    |
+    |    +\-+\-+    |             |    +\-\-\-+    |   |    +\-.\-+    |
+    |      |      |             |             |   |      .      |
+    |      | B    |             |             |   |      . L    |
+    |      |      |             |             |   |      .      |
+    +\-\-\-\-\-\-+\-\-\-\-\-\-+             +\-\-\-\-\-\-\-\-\-\-\-\-\-+   +\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+.PP
+Islands and areas must be already clean, i.e. without dangles or small
+angles, e.g.
+\fIv.clean ... type=boundary tool=rmdangle,rmsa,break,rmdupl,rmbridge
+thresh=\-1,0,0,0,0\fR.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.SS Snap lines to vertex in threshold
+\fItool=snap\fR
+.PP
+The \fIsnap\fR tool snaps vertices to another vertex not farther away
+than \fIthresh\fR. If there is no other vertex within \fIthresh\fR,
+no snapping will be done. The \fItype\fR option can have a strong
+influence on the result. A too large threshold and \fItype=boundary\fR
+can severely damage area topology, beyond repair.
+.PP
+Threshold gives maximum distance to another vertex in map units,
+for latitude\-longitude locations in degree.
+.PP
+Snapped boundaries may need to be cleaned with \fIbreak,rmdupl,rmsa\fR.
+If the \fI\-c\fR flag is used with \fIv.clean tool=snap\fR, the
+sequence of \fIbreak,rmdupl,rmsa\fR is automatically repeated after
+snapping until no more small angles a left. Additional cleaning with e.g.
+\fItool=rmdangle\fRmay be necessary.
+.SS Remove duplicate area centroids
+\fItool=rmdac\fR
+.PP
+The \fIrmdac\fR tool removes duplicate area centroids that can result
+from deleting boundaries.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.SS Break (topologically clean) areas (imported from a non topological
+format like ShapeFile)
+\fItool=bpol\fR
+.PP
+The \fIbpol\fR tool breaks boundaries on each point shared between 2
+and more areas where angles of boundary segments are different and on
+all boundary nodes (start and end points of each boundary). The
+\fIbpol\fR tool behaves similar to \fIbreak\fR for boundaries, but
+does not break collapsed loops. The \fIbpol\fR tool is faster than
+the \fIbreak\fR tool but needs more memory.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.PP
+The \fIbpol\fR tool should be followed by \fIrmdupl\fR. If the
+\fI\-c\fR flag is used with \fIv.clean ... tool=bpol\fR, duplicates are
+automatically removed.
+.SS Remove vertices in threshold from lines and boundaries
+\fItool=prune\fR
+.PP
+The \fIprune\fR tool simplifies lines and boundaries by removing
+vertices according to threshold. This tool preserves area topology,
+areas are never deleted and centroid attachment is never changed.
+\fIv.generalize\fR offers much more
+functionality for line simplification but does not preserve area
+topology.
+.SS Remove small areas
+\fItool=rmarea\fR
+.PP
+The \fIrmarea\fR tool removes all areas <= \fIthresh\fR. The
+longest boundary with an adjacent area is removed or all boundaries if
+there is no adjacent area. Area categories are not combined when a small
+area is merged with a larger area.
+.PP
+Threshold must always be in square meters, also for latitude\-longitude
+locations or locations with units other than meters.
+.SS Remove all lines or boundaries of zero length
+\fItool=rmline\fR
+.PP
+The \fIrmline\fR tool removes all lines or boundaries of zero length
+that may have resulted from other cleaning operations. Zero length
+boundaries are redundant and do not influence area topology.
+.PP
+Threshold does not apply (it is ignored), use an arbitrary value (e.g., 0)
+if \fIv.clean\fR is run with several tools.
+.SS Remove small angles between lines at nodes
+\fItool=rmsa\fR
+.PP
+The \fIrmsa\fR tool only concerns angles which are so small that the
+calculated angle is 0. The following figure should help demonstrate what
+the tool does.
+.PP
+Threshold does not apply, use dummy value if \fIv.clean\fR is
+run with several tools.
+.PP
+.TS
+expand;
+lw60.
+T{
+T}
+.sp 1
+T{
+\fItool=rmsa\fR
+T}
+.sp 1
+.TE
+.PP
+The \fIrmsa\fR tool should be followed by \fIbreak,rmdupl\fR. The
+\fIrmsa\fR tool followed by \fIbreak,rmdupl\fR may need to be run
+more than once to remove all small angles. If the \fI\-c\fR flag is
+used with \fIv.clean ... tool=rmsa\fR, the sequence of
+\fIrmsa,break,rmdupl\fR is automatically repeated until no more small
+angles a left.
+.SH NOTES
+The user does \fBnot\fR have to run \fIv.build\fR
+on the \fIoutput\fR vector, unless the \fI\-b\fR flag was used. The
+\fI\-b\fR flag affects \fBonly\fR the \fIoutput\fR vector \-
+topology is always built for \fIerror\fR vector.
+.SH EXAMPLES
+.SS Snap lines to vertex in threshold
+.br
+.nf
+\fC
+v.clean input=testmap output=cleanmap tool=snap threshold=1
+\fR
+.fi
+.SS Inspecting the topological errors visually
+Both \fIv.build\fR and \fIv.clean\fR can
+collect the topological errors into a vector map:
+.br
+.nf
+\fC
+v.build \-e map=imported error=build_errors
+v.clean \-c input=imported output=clean error=cleaning_errors tool=snap,rmdangle,rmbridge,chbridge,bpol,prune threshold=5
+\fR
+.fi
+The vector maps can be visualized together with the original data
+by the following set of display commands:
+.br
+.nf
+\fC
+d.vect map=imported color=26:26:26 fill_color=77:77:77 width=5
+d.vect map=build_errors color=255:33:36 fill_color=none width=5 icon=basic/point size=30
+d.vect map=cleaning_errors color=255:33:36 fill_color=none width=5 icon=basic/point size=30
+\fR
+.fi
+.br
+\fIFigure: Topological errors detected in the original data (left)
+and cleaned data (right)\fR
+.SS Cleaning OGR imported data (Simple Feature data) such as SHAPE file
+The import of areas with \fIv.in.ogr \-c\fR
+(no cleaning) requires a subsequent run of \fIv.clean\fR to update
+the map to a topologically valid structure (removal of duplicate
+collinear lines etc). The tools used for that are \fIbpol\fR and
+\fIrmdupl\fR:
+.br
+.nf
+\fC
+v.clean input=areamap output=areamap_clean tool=bpol,rmdupl type=boundary
+\fR
+.fi
+.SS Extracting intersection points of vector lines
+.br
+.nf
+\fC
+v.clean input=lines1 output=lines2 err=points tool=break type=line
+\fR
+.fi
+Intersection points are written to \(cqpoints\(cq map.
+.SS Break lines
+\fIv.clean\fR will break the lines where they cross,
+creating new node if needed. Example:
+.br
+.nf
+\fC
+v.in.ascii \-n out=crossed_lines format=standard << EOF
+L 2
+ 0 5
+ 10 5
+L 2
+ 5 0
+ 5 10
+EOF
+v.clean in=crossed_lines out=crossed_lines_brk \(rs
+        error=intersection tool=break type=line
+\fR
+.fi
+.SS Remove all lines of zero length
+.br
+.nf
+\fC
+v.out.ascii zero format=standard
+L  2 1
+ \-819832.09065589 \-987825.2187231
+ \-806227.28362601 \-971104.80702988
+ 1     1
+L  2 1
+ \-799165.24638913 \-972974.16982788
+ \-799165.24638913 \-972974.16982788
+ 1     2
+v.clean input=zero output=zero_clean tool=rmline type=line
+v.out.ascii zero_clean format=standard
+L  2 1
+ \-819832.09065589 \-987825.2187231
+ \-806227.28362601 \-971104.80702988
+ 1     1
+\fR
+.fi
+v.clean type=boundary would remove nothing.
+.SS Repeatedly remove dangling lines up to 50m length
+.br
+.nf
+\fC
+v.clean input=testmap output=cleanmap type=line \(rs
+        tool=rmdangle,rmdangle,rmdangle,rmdangle threshold=5,10,20,50
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.info,
+v.build,
+g.gui.vdigit,
+v.edit,
+v.generalize
+\fR
+.SH AUTHORS
+David Gerdes, U.S. Army Construction Engineering Research Laboratory
+.br
+Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Martin Landa, FBK\-irst (formerly ITC\-irst), Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.clean source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

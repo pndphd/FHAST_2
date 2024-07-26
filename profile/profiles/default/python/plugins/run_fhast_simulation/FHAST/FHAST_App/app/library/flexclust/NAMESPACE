@@ -1,0 +1,108 @@
+useDynLib("flexclust", .registration = TRUE, .fixes = "C_")
+
+importFrom(grDevices, chull, grey, hcl, hsv)
+importFrom(stats, aggregate, approx, as.dist, complete.cases,
+           cor, cov, cutree, density, dist, dpois,
+           kruskal.test, median, optim, p.adjust, quantile,
+           rnorm, rpois, runif)
+importFrom(utils, tail)
+
+import(methods)
+import(graphics)
+import(grid)
+import(lattice)
+import(modeltools)
+
+importFrom(parallel, mclapply, parLapply)
+importFrom(stats, fitted, predict)
+importFrom(stats4, summary)
+importFrom(class, knn1)
+
+exportPattern("^cent[A-Z].+", "^dist[A-Z].+", "^exp[A-Z].+",
+              "^panelShadow.+", ".+[a-z]Family$")
+
+export(
+       as.kcca,
+       bclust,
+       bootFlexclust,
+       bundestag,
+       cclust,
+       clusterSim,
+       # clusterValues,
+       # clusterwiseScheme,
+       Cutree,
+       dist2,
+       flxColors,
+       flxPalette,
+       groupBWplot,
+       kcca,
+       kcca2df,
+       priceFeature,
+       projAxes,
+       propBarchart,
+       qtclust,
+       randIndex,
+       randomTour,
+       randomTourMatrix,
+       # resampleFlexclust, #
+       shadow,
+       shadowStars,
+       Silhouette,
+       slsaplot, #
+       slswFlexclust, #
+       stepcclust,
+       stepFlexclust,
+       stripes
+       # transitions
+       )
+
+
+exportClasses(
+              bootFlexclust,
+              cclustControl,
+              flexclust,
+              flexclustControl,
+              kcca,
+              kccasimple,
+              kccaFamily,
+              projAxes,
+              propBarchart,
+              stepFlexclust
+              ) 
+
+exportMethods(
+              "[[",
+              barchart,
+              barplot,
+              boxplot,
+              bwplot,
+#              chIndex,
+              clusters,
+              clusterSim,
+              coerce,
+              comPart,
+              densityplot,
+              histogram,
+              getModel,
+              image,
+              info,
+              pairs,
+              parameters,
+              placeLabels,
+              plot,
+              predict,
+              randIndex,
+              randomTour,
+              relabel,
+              shadow,
+              Silhouette,
+              show,
+              summary
+              )
+
+
+S3method(as.kcca, hclust)
+S3method(as.kcca, kmeans)
+S3method(as.kcca, partition)
+S3method(as.kcca, skmeans)
+S3method(plot, priceFeature)

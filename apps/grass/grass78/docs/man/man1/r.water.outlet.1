@@ -1,0 +1,107 @@
+.TH r.water.outlet 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.water.outlet\fR\fR  \- Creates watershed basins from a drainage direction map.
+.SH KEYWORDS
+raster, hydrology, watershed
+.SH SYNOPSIS
+\fBr.water.outlet\fR
+.br
+\fBr.water.outlet \-\-help\fR
+.br
+\fBr.water.outlet\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBcoordinates\fR=\fIeast,north\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input drainage direction map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output watershed basin map
+.IP "\fBcoordinates\fR=\fIeast,north\fR \fB[required]\fR" 4m
+.br
+Coordinates of outlet point
+.SH DESCRIPTION
+\fIr.water.outlet\fR generates a watershed basin from a drainage
+direction map and a set of coordinates representing the outlet point
+of watershed.
+.PP
+Input drainage direction map indicates the \(dqaspect\(dq for each
+cell. Multiplying positive values by 45 will give the direction in
+degrees that the surface runoff will travel from that cell. The value
+\-1 indicates that the cell is a depression area. Other negative values
+indicate that surface runoff is leaving the boundaries of the current
+geographic region. The absolute value of these negative cells
+indicates the direction of flow. This raster map is generated from
+\fIr.watershed\fR.
+.PP
+Output raster map values of one (1) indicate the watershed
+basin. Values of zero (0) are not in the watershed basin.
+.SH NOTES
+In the context of this program, a watershed basin is the region
+upstream of an outlet point. Thus, if the user chooses an outlet point
+on a hill slope, the resulting map will be a thin silver of land
+representing the overland slope uphill of the point.
+.SH EXAMPLE
+A watershed in
+the North
+Carolina sample dataset region:
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m \-p
+# the watershed outlet position should be placed on a stream (from
+# accumulation map):
+r.watershed elev_lid792_1m threshold=5000 accumulation=accum_5K drainage=draindir_5K basin=basin_5K
+r.water.outlet input=draindir_5K output=basin_A30 coordinates=638740.423248,220271.519225
+d.mon wx0
+d.rast map=accum_5K
+d.rast map=basin_A30
+# overlay with transparency
+r.colors map=basin_A30 color=grey
+d.his h=accum_5K i=basin_A30
+# report outlet size in ha
+r.report map=basin_A30 units=h
+\fR
+.fi
+.PP
+.br
+\fIFigure: Watershed draped over flow accumulation\fR
+.SH SEE ALSO
+\fI
+r.wateroutlet.lessmem (addon),
+d.where,
+r.basins.fill,
+r.watershed,
+r.topidx
+\fR
+.SH AUTHOR
+Charles Ehlschlaeger, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.water.outlet source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

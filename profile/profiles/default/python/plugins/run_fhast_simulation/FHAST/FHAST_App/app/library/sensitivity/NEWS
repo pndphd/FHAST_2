@@ -1,0 +1,352 @@
+
+Changes in version 1.28.0:
+
+  o New fct correlratio()
+  
+  o Many bugs corrected in fct sensiHSIC()
+  
+  o Many additional options added in fct sensiHSIC(), especially HSIC-ANOVA indices
+  
+  o New fct testHSIC() for independence testing based on HSIC indices
+  
+  o New benchmark matyas.fun() added in "testmodels.R"
+
+Changes in version 1.27.1:
+
+  o Adding the topic of 'interpretability of machine learning models' 
+  in the description of the package
+
+  o emvd() fct and names have been changed to pmvd()
+
+  o Several bugs corrected in pme_knn()
+  
+  o R requirements: Changes from 'class()' to 'inherits()' in several fcts
+  
+  o Corrections in parameterSets(), 
+  see https://github.com/cran/sensitivity/pull/2
+  
+Changes in version 1.27.0:
+
+  o New fct pme_knn() for proportional marginal effects computation
+  
+  o Addition of an example about visualiz. of perturbed law in PLI() fct
+  
+Changes in version 1.26.1:
+
+  o Simplification in shapleyBlockestimation.R and 
+  parameter values changes in shapleyBlockestimation.Rd
+  
+  o extract and ggplot functionalities added in shapleysobol_knn() fct
+  
+  o new examples for nice visualizations (via plotCI() of plotrix package)
+  in fcts PLIquantile(), PLIsuperquantile(), PLIquantile_multivar() 
+  and PLIsuperquantile_multivar()
+  
+Changes in version 1.26.0:
+
+  o New function shapleysobol_knn() which allows optimized and parallelized 
+  computations of Shapley effects/Sobol' indices using the 
+  nearest-neighbors method. This fct also replicates the same functionalities 
+  than sobolshap_knn() that will be removed in a future package's version
+  
+  o \donttest examples have been changed in the .Rd of several functions 
+  in order to shorten their execution (because the tests are judged too long
+  by CRAN)
+
+  o Bug corrected in all PLIxxx() fcts:
+    - conditions (delta != 0) replaced by conditions (delta != mu), 
+    mu being the input mean)
+    - pti=phi(lambda[K]) is not recomputed at each bootstrap iteration 
+    (causing numerical instabilities)
+  
+  o Bug corrected in PLIquantile_multivar() and PLIsuperquantile_multivar()
+  fcts (conditions "|" instead of "&")
+  
+  o Correction in docs of PLIquantile_multivar() and 
+  PLIsuperquantile_multivar() to precise that the delta are perturbed means
+  
+  o In the fct shapleyPermrand(), the test about 'Multiserver queue model'
+  has been suppressed (unsolved bug in Xset)
+
+Changes in version 1.25.0:
+
+  o New function PLIsuperquantile_multivar()
+
+  o Bootstrap added in PLIquantile_multivar()
+  
+  o Bug corrected in weightTSA() (data structures)
+  
+  o Change in lmg(): new \code{max.iter} argument to increase the maximum
+  number of iterative optimization step for logistic regression
+  
+  o Change in emvd():
+	  - new \code{max.iter} argument to increase the maximum number of 
+	  iterative optimization step for logistic regression
+	  - new \code{tol} argument to detect spurious variables
+	  - faster implementation
+	  - recursive emvd computation can now be partially done in parallel 
+	  
+	o Add an example with Gaussian inverse transforms in PLI() fct
+
+Changes in version 1.24.1:
+
+  o Bug for y format in lmg() and emvd(): allow dataframe
+  
+Changes in version 1.24.0:
+
+  o New function lmg() for LMG sensitivity indices
+
+  o New function emvd() for E-MVD sensitivity indices
+  
+  o Package foreach is necessary (Imports)
+  
+Changes in version 1.23.1:
+
+  o Bug of tests of sensiHSIC()
+  
+  o Bug in sobolshap_knn() (matrix option in argument U)
+  
+Changes in version 1.23.0:
+
+  o New function qosa() computing quantile-oriented sensitivity analysis
+  via the contrast-function formulation
+
+  o Corrections in sensiHSIC() for 
+    - taking into account categorical inputs (and the choice of their 
+    hyperparameters)
+    - taking into account multiple outputs when some are categorical 
+  
+  o Corrections in sobolshap_knn() for taking into account categorical  
+  inputs 
+  
+  o Correction in bootstats() relative to the use of sobolrep() fct
+  
+Changes in version 1.22.2:
+
+  o Correction in PLIsuperquantile() for "bias=TRUE" & "type=VAR" case
+  
+  o New toy function in testmodels(): Friedman function
+  
+  o New argument 'varoutput' in delsa() in order to be able to
+  take the output variance as the empirical variance from the sample
+  
+  o New argument 'randperm' in sobolshap_knn() in order to use or not
+  random permutations to estimate Shapley effects
+  
+Changes in version 1.22.1:
+
+  o Correction in sensiHSIC.R with test.method = "No" in order to
+  not perform the statistical tests
+  
+  o Correction in nested.cpp
+
+  o Change of colors in shapleyBlockEstimation.Rd
+  
+Changes in version 1.22.0:
+
+  o New function shapleyBlockEstimation()
+  
+  o New functionalities in sensiHSIC(): PCA, kernel for categorical 
+  inputs and/or outputs, optimization of permutations numbers,
+  convergence plot for p-values, U-stat estimator for conditional HSIC
+  
+  o Corrected plot with new fct plotMultOut() (for ubiquitous Sobol' 
+  indices) in sobolMultOut() and associated sobolxxx() fcts
+  
+  o New bootstrap process in PLIquantile() and PLIsuperquantile() via 
+  the new argument bootsample
+  
+Changes in version 1.21.0:
+
+  o New function sobolshap_knn() (sensitivity analysis via 
+  ranking / nearest neighbours)
+  
+  o New functionalities in sensiHISIC(): aggregated HSIC
+  
+Changes in version 1.20.0:
+
+  o New functions sobolrep() (Sobol' indices estimation based on 
+  replicated orthogonal arrays) and sobolrec() (Recursive estimation 
+  of Sobol' indices), which use the new functions addelman_const(),
+  discrepancyCriteria_cplus() and maximin_cplus() (discrepancy and
+  maximin criteria using a C++ implementation)
+
+  o bootstrap implemented in sobolrank()
+  
+  o New function shapleyLinearGaussian() which computes Shapley effects
+  for linear models with Gaussian inputs
+  
+  o bug corrected in shapleySubsetMc() with the modified line:
+    cost=sum(apply(U,1,function(u) round(Ntot/choose(p,sum(u))/(p-1))))
+
+Changes in version 1.19.0:
+
+  o New author Sebastien Da veiga
+  
+  o New function sobolrank()
+  
+  o Functions src() and pcc() adapted to work with logistic GLM model
+  (via the new argument logistic = TRUE)
+  
+  o New argument 'title' in ggplot.shapleyPermRand and
+  ggplot.shapleyPermEx
+  
+  o bug solved in shapleyPermEx() in order to compute the CI for the 
+  full first order and independent total Sobol' indices
+  
+  o New argument 'noise' to consider noisy observations in 
+  shapleySubsetMc()
+
+Changes in version 1.18.1:
+
+  o New argument semi (= TRUE or FALSE) in function pcc() in order
+  to compute semi-partial correlation coefficient (SPCC)
+  
+  o bug (caused by new R version 4.0.0) solved in:
+    - sobolmartinez.R, base.R, morris.R, morris_oat.R and simplex.R
+    (matrix objects now also inherit from class "array")
+    - sobolMultOut.Rd, testmodels.Rd and delsa.Rd (screen devices 
+    x11() should not be used in examples)
+  
+Changes in version 1.18.0:
+
+  o New function: weightTSA.R in order to perform Target Sensitivity 
+  Analysis by transforming the output sample using  aspecific weight 
+  function
+  
+  o Improvements in sensiHSIC(): 1) for the parameters estimation via 
+  the new argument crit.option, 2) for a sequential estimation of the
+  pvalue (independence test based on permutations), 3) new argument
+  target in order to perform Target Sensitivity Analysis
+  
+  o New argument 'bias' in PLIsuperquantile(): "TRUE" gives the 
+  previous computation; "FALSE" corrects this computation (the sample 
+  points were not weighted by the likelihood ratio when computing the 
+  perturbed superquantile)
+
+Changes in version 1.17.1:
+
+  o bug (caused by new R version 4.0.0) solved in morris_oat.R
+  (matrix objects now also inherit from class "array")
+  
+  o exception "multiIndex[inputIndex] == 0 & der" solved in 
+  PoincareChaosSqCoef.R
+  
+  o example with given data in sensiHSIc()
+  
+Changes in version 1.17.0:
+
+    o New functions: squaredIntEstim.R and PoincareChaosSqCoef.R
+    (which allows to compute the squared coefficients in 
+    generalized chaos via Poincare differential operators)
+    
+    o Modification in PoincareOptimal.Rd concerning the 
+    returned eigenvalues
+
+Changes in version 1.16.3:
+
+    o Unresolved matrix/array classes related bug on R4.0.0 version
+    in morris.R, morris_oat.R, soboljansen.R, sobolmartinez.R
+    and sobolroalhs.R
+    Examples that do not work have been put in \donttest{} (these
+    examples work in practice)
+    
+    o Resolved bug in plot.soboljansen() and plot.sobolmartinez
+    when dealing with matrice-type model outputs
+    
+    o ylabel changed (from S to PLI) when plotting PLI examples
+    
+    o legends precised (between full and independent Sobol' indices) 
+    when plotting Shapley effects
+
+Changes in version 1.16.2:
+
+    o   New functionalities in sensiHSIC() function
+    (statistical tests of independence)
+    
+    o Graph legends corrected in sensiHSIC(), sensiFdiv(), sb() and
+  sobolMultOut() functions
+  
+    o   Corrected bug in nodeggplot()
+    
+Changes in version 1.16.1:
+
+    o   New function nodeggplot() (in order to ebautify the plots) 
+    
+    o   ggplot functions for the following functions:
+    pcc, src, sensiFdiv, sensiHSIC, shapleyPermEx, shapleyPermrand,
+    sobol, sobol2002, sobol2007, sobolEff, soboljansen, sobolmara, 
+    sobolmartinez, sobolMultOut, sobolowen, sobolroalhs, sobolroauc,
+    sobolsalt, sobolTIIlo, sobolTIIpf, soboltouati
+    
+    o   Functions sobolroalhs() and sobolSalt(): Modifications of 
+    plot functions in order to have "XiXj" instead of "Xij""
+
+    o   New output of function delsa(): Brute values of derivatives
+
+    o   Test case corrected in pcc.Rd
+
+Changes in version 1.16.0:
+
+    o   Added functions for calculating Shapley indices from data: 
+    shapleySubsetMC()
+    
+    o   Added functions for calculating PLI: PLIsuperquantile() and
+    PLIquantile_multivar()
+    
+    o In the 3 PLI functions related to quantiles:
+      - new arguments in order to have the PLI in percentage
+      - the result also contains the perturbed quantiles values
+      - bootstrap confidence intervals can be obtained
+    
+    o   Added the toy function heterdisc.fun()
+    
+Changes in version 1.15.2:
+
+    o   Added functions for Morris method for multidimensional outputs:
+    morrisMultOut()
+    
+    o   Added the toy function linkletter.fun()
+    
+    o   Change the names of the fcts (dtnorm, ..., dtgumbel, ...) by 
+    (dnorm.trunc, ...) (reverse dependency pb with ATmet package).
+    Export now the fcts, documentation entries in truncateddistrib.Rd
+    
+    o   Corrected bug: Replace \dontrun by \donttest in all Rd-files
+    
+    o   Corrected bug: package triangle is suggested and called in 
+    PoincareOptimal.Rd
+    
+    o Function in sobolGPmethods.R and sobolpickfreeze.R have been 
+    integrated in sobolGP.R
+    
+    o   Detected bug (not corrected) in tell.sobolGP() 
+    Unused argument in km(), passed by eval(), update(), tell.sobolGP() ??)
+
+    => comment in the example of sobolGP.Rd
+    
+Changes in version 1.15.1:
+
+    o   Functions shapleyPermEx() corrected (confidence intervals)
+
+Changes in version 1.15.0:
+
+    o   Function "sobolCert.R" has been (temporarily) suppressed
+    (compilation bug unresolved)
+    
+    o   Function "support.R" has been changed by O. Roustant (new plotting
+    functionalities are available, as the function "scatterplot")
+    
+    o   Resolved bug about "sobolmartinez" method (now suppressed) in 
+    the sobolMultOut() function
+
+    o   sobolMultOut() now returns the functional Sobol' indices via
+    the attributes "Sfct" and "Tfct" of the output object
+
+Changes in version 1.14.0:
+
+    o   Added functions for calculating Shapley indices: shapleyPermEx()
+    and shapleyPermRand()
+
+    o   Added function for calculating first order Sobol' indices via
+    smoothing technique: sobolSmthSpl()

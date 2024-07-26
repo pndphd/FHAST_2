@@ -1,0 +1,131 @@
+.TH v.normal 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.normal\fR\fR  \- Tests for normality for vector points.
+.SH KEYWORDS
+vector, statistics, points, point pattern
+.SH SYNOPSIS
+\fBv.normal\fR
+.br
+\fBv.normal \-\-help\fR
+.br
+\fBv.normal\fR [\-\fBrl\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBtests\fR=\fIrange\fR[,\fIrange\fR,...] \fBcolumn\fR=\fIname\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Use only points in current region
+.IP "\fB\-l\fR" 4m
+.br
+Lognormality instead of normality
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtests\fR=\fIrange[,\fIrange\fR,...]\fR \fB[required]\fR" 4m
+.br
+Lists of tests (1\-15)
+.br
+E.g. 1,3\-8,13
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column
+.SH DESCRIPTION
+\fIv.normal\fR
+computes tests of normality on vector points.
+.SH NOTES
+The tests that \fIv.normal\fR performs are indexed
+below.  The tests that are performed are specified by
+giving an index, ranges of indices, or multiple thereof.
+.IP
+.IP \fB1\fR
+Sample skewness and kurtosis
+.IP \fB2\fR
+Geary\(cqs a\-statistic and an approximate normal transformation
+.IP \fB3\fR
+Extreme normal deviates
+.IP \fB4\fR
+D\(cqAgostino\(cqs D\-statistic
+.IP \fB5\fR
+Modified Kuiper V\-statistic
+.IP \fB6\fR
+Modified Watson U^2\-statistic
+.IP \fB7\fR
+Durbin\(cqs Exact Test (modified Kolmogorov)
+.IP \fB8\fR
+Modified Anderson\-Darling statistic
+.IP \fB9\fR
+Modified Cramer\-Von Mises W^2\-statistic
+.IP \fB10\fR
+Kolmogorov\-Smirnov D\-statistic (modified for normality testing)
+.IP \fB11\fR
+Chi\-Square test statistic (equal probability classes) and
+the number of degrees of freedom
+.IP \fB12\fR
+Shapiro\-Wilk W Test
+.IP \fB13\fR
+Weisberg\-Binghams W\(cq\(cq (similar to Shapiro\-Francia\(cqs W\(cq)
+.IP \fB14\fR
+Royston\(cqs extension of W for large samples
+.IP \fB15\fR
+Kotz Separate\-Families Test for Lognormality vs. Normality
+.PP
+.SH EXAMPLE
+Compute the sample skewness and kurtosis, Geary\(cqs
+a\-statistic and an approximate normal transformation,
+extreme normal deviates, and Royston\(cqs W for the
+\fIrandom\fR vector points:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+v.random random n=200
+v.db.addtable random column=\(dqelev double precision\(dq
+v.what.rast random rast=elevation column=elev
+v.normal random tests=1\-3,14 column=elev
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.univar
+\fR
+.SH AUTHOR
+James Darrell McCauley
+<darrell@mccauley\-usa.com>,
+.br
+when he was at:
+Agricultural Engineering
+Purdue University
+.SH SOURCE CODE
+.PP
+Available at: v.normal source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

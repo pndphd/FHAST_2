@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/add_column" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>

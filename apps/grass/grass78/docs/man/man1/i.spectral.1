@@ -1,0 +1,111 @@
+.TH i.spectral 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.spectral.py\fR\fR  \- Displays spectral response at user specified locations in group or images.
+.SH KEYWORDS
+imagery, querying, raster, multispectral
+.SH SYNOPSIS
+\fBi.spectral.py\fR
+.br
+\fBi.spectral.py \-\-help\fR
+.br
+\fBi.spectral.py\fR [\-\fBcgt\fR]  [\fBgroup\fR=\fIname\fR]   [\fBsubgroup\fR=\fIname\fR]   [\fBraster\fR=\fIname\fR[,\fIname\fR,...]]  \fBcoordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]  [\fBoutput\fR=\fIname\fR]   [\fBformat\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Show sampling coordinates instead of numbering in the legend
+.IP "\fB\-g\fR" 4m
+.br
+Use gnuplot for display
+.IP "\fB\-t\fR" 4m
+.br
+output to text file
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBsubgroup\fR=\fIname\fR" 4m
+.br
+Name of input imagery subgroup
+.IP "\fBraster\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBcoordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR \fB[required]\fR" 4m
+.br
+Coordinates
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output image (or text file for \-t)
+.IP "\fBformat\fR=\fIstring\fR" 4m
+.br
+Graphics format for output file
+.br
+Options: \fIpng, eps, svg\fR
+.br
+Default: \fIpng\fR
+.SH DESCRIPTION
+\fIi.spectral\fR displays spectral response at user specified
+locations in images.
+.SH NOTES
+This script needs gnuplot to be installed.
+.SH EXAMPLE
+Analysis of LANDSAT TM7 channels (North Carolina dataset):
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+i.spectral \-g input=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \(rs
+           coordinates=636069,215440,637958,223393,633277,223605
+\fR
+.fi
+.br
+Spectral plot of 3 different land cover types: (1) water, (2) green vegetation, and (3) highway
+.PP
+North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+LIST=\(gag.list type=raster pattern=\(dqlsat7_2002_[1\-5,7]0\(dq separator=\(dq,\(dq\(ga
+i.spectral input=$LIST coordinates=637502.25,221744.25
+\fR
+.fi
+This will search all LANDSAT map for 2002 but select only the B, G, R,
+NIR, and MIR channels.
+.SH SEE ALSO
+\fI
+d.where,
+r.what
+\fR
+.SH AUTHOR
+Markus Neteler
+.br
+Francesco Pirotti
+.SH SOURCE CODE
+.PP
+Available at: i.spectral source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

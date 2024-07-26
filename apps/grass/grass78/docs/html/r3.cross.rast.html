@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.cross.rast - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.cross.rast</b></em>  - Creates cross section 2D raster map from 3D raster map based on 2D elevation map
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_profile.html">profile</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.cross.rast</b><br></div>
+<b>r3.cross.rast --help</b><br>
+<div id="synopsis"><b>r3.cross.rast</b> [-<b>m</b>] <b>input</b>=<em>string</em> <b>elevation</b>=<em>string</em> <b>output</b>=<em>string</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists) with input map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map for cross section</dd>
+
+<dt><b>elevation</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>2D elevation map used to create the cross section map</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Resulting cross section 2D raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#simple-spearfish-example" class="toc">Simple Spearfish example</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This module creates a cross section 2D map from one 3D raster volume
+map based on a 2D elevation map. It checks if the value of the
+elevation map is located in the z-coordinate space of the 3D map. If
+so, the 3D voxel value for this position is transferred to the related
+cross section output map cell, otherwise the NULL value is set.
+
+<center>
+<img src="r3.cross.rast.png" border="0"><br>
+<table border="0" width="700">
+<tr><td><center>
+<i>How r3.cross.rast works</i>
+</center></td></tr>
+</table>
+</center>
+
+<p>If the 2D and 3D region settings are different,
+the 2D resolution will be adjust to the 3D resolution.
+
+<h2><a name="notes">NOTES</a></h2>
+
+To create a cut plane elevation map use <em>r.mapcalc</em>. Some examples:
+<ul>
+<li>To create a cut plane elevation map in x direction type
+ <br><i>r.mapcalc "cutplane = col()*x"</i>,<br> x be the value for
+ the elevation. If the range of col() is 1 ... 10, the elevation map
+ has the range 1 ... 10 if x == 1 and if x == 10 the range 10
+ ... 100</li>
+
+<li>To create a cut plane elevation map in y direction type
+ <br><i>r.mapcalc "cutplane = row()*x"</i>,<br> x be the value for
+ the elevation. If the range of col() is 1 ... 10, the elevation map
+ has the range 1 ... 10 if x == 1 and if x == 10 the range 10
+ ... 100</li>
+
+<li>The user can also make a cut in y and x direction with <em>r.mapcalc</em> by
+     using <br><i>r.mapcalc "cutplane = (row()+col())*x"</i></li>
+</ul>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="simple-spearfish-example">Simple Spearfish example</a></h3>
+
+<div class="code"><pre>
+g.region -d
+g.region res=150 res3=150 t=1000 b=0 tbres=100
+
+# synthetic data, could be geological structures:
+r3.mapcalc "map3d = sin(row())+sin(col())+sin(depth()*depth())"
+
+#create a cutplane map
+r.mapcalc "cutplane = col()*10"
+
+#create the cross section map
+r3.cross.rast input=map3d elevation=cutplane output=crosssection
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r3.mapcalc.html">r3.mapcalc</a>,
+<a href="r3.to.rast.html">r3.to.rast</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.cross.rast">r3.cross.rast source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.cross.rast">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

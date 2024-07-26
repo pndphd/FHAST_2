@@ -1,0 +1,149 @@
+.TH grass-pg 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH PostgreSQL DATABASE DRIVER
+PostgreSQL database driver enables GRASS to store vector attributes in
+PostgreSQL server.
+.SH Creating a PostgreSQL database
+A new database is created with createdb, see
+the PostgreSQL
+manual for details.
+.SH Connecting GRASS to PostgreSQL
+.br
+.nf
+\fC
+# example for connecting to a PostgreSQL server:
+db.connect driver=pg database=mydb
+db.login user=myname password=secret host=myserver.osgeo.org  # port=5432
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.SS Username and password
+From the PostgresQL manual:
+.PP
+The file \fI.pgpass\fR in a user\(cqs home directory can contain
+passwords to be used if the connection requires a password (and no
+password has been specified otherwise). On Microsoft Windows the file
+is named \fI%APPDATA%\(rspostgresql\(rspgpass.conf\fR (where
+\fI%APPDATA%\fR refers to the Application Data subdirectory in the
+user\(cqs profile). Alternatively, a password file can be specified using
+the connection parameter passfile or the environment variable
+PGPASSFILE.
+This file should contain lines of the following format:
+.br
+.nf
+\fC
+hostname:port:database:username:password
+\fR
+.fi
+.SH Supported SQL commands
+All SQL commands supported by PostgreSQL.
+It\(cqs not possible to use C\-like escapes (with backslash like \(rsn etc)
+within the SQL syntax.
+.SH Operators available in conditions
+All SQL operators supported by PostgreSQL.
+.SH Adding an unique ID column
+Import vector module require an unique ID column which can
+be generated as follows in a PostgreSQL table:
+.br
+.nf
+\fC
+db.execute sql=\(dqALTER TABLE mytable ADD ID integer\(dq
+db.execute sql=\(dqCREATE SEQUENCE mytable_seq\(dq
+db.execute sql=\(dqUPDATE mytable SET ID = nextval(\(cqmytable_seq\(cq)\(dq
+db.execute sql=\(dqDROP SEQUENCE mytable_seq\(dq
+\fR
+.fi
+.SH Attribute import into PostgreSQL
+CSV import into PostgreSQL:
+.br
+.nf
+\fC
+\(rsh copy
+COPY t1 FROM \(cqfilename\(cq USING DELIMITERS \(cq,\(cq;
+\fR
+.fi
+.SH Geometry import from PostgreSQL table into GRASS
+\fIv.in.db\fR creates a new vector
+(points) map from a database table containing
+coordinates. See here for examples.
+.SH PostGIS: PostgreSQL with vector geometry
+PostGIS:
+adds geographic object support to PostgreSQL.
+.SS Example: Import from PostGIS
+In an existing PostGIS database, create the following table:
+.br
+.nf
+\fC
+CREATE TABLE test
+(
+ id serial NOT NULL,
+ mytime timestamp DEFAULT now(),
+ text varchar,
+ wkb_geometry geometry,
+ CONSTRAINT test_pkey PRIMARY KEY (id)
+) WITHOUT OIDS;
+# insert value
+INSERT INTO test (text, wkb_geometry)
+ VALUES (\(cqName\(cq,geometryFromText(\(cqPOLYGON((600000 200000,650000
+ 200000,650000 250000,600000 250000,600000 200000))\(cq,\-1));
+# register geometry column
+select AddGeometryColumn (\(cqpostgis\(cq, \(cqtest\(cq, \(cqgeometry\(cq, \-1, \(cqGEOMETRY\(cq, 2);
+\fR
+.fi
+GRASS can import this PostGIS polygon map as follows:
+.br
+.nf
+\fC
+v.in.ogr input=\(dqPG:host=localhost dbname=postgis user=neteler\(dq layer=test \(rs
+         output=test type=boundary,centroid
+v.db.select test
+v.info \-t test
+\fR
+.fi
+.SS Geometry Converters
+.RS 4n
+.IP \(bu 4n
+PostGIS with shp2pgsql:
+.br
+shp2pgsql \-D lakespy2 lakespy2 test > lakespy2.sql
+.IP \(bu 4n
+e00pg: E00 to PostGIS filter,
+see also \fIv.in.e00\fR.
+.IP \(bu 4n
+GDAL/OGR ogrinfo and ogr2ogr:
+GIS vector format converter and library, e.g. ArcInfo or SHAPE to PostGIS.
+.br
+ogr2ogr \-f \(dqPostgreSQL\(dq shapefile ??
+.RE
+.SH SEE ALSO
+\fI
+db.connect,
+db.execute
+\fR
+.PP
+Database management in GRASS GIS
+.br
+Help pages for database modules
+.br
+SQL support in GRASS GIS
+.br
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+PostgreSQL web site
+.IP \(bu 4n
+pgAdmin graphical user interface
+.IP \(bu 4n
+GDAL/OGR PostgreSQL
+driver documentation
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,210 @@
+.TH v.to.points 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.to.points\fR\fR  \- Creates points along input lines in new vector map with 2 layers.
+.SH KEYWORDS
+vector, geometry, 3D, line, node, vertex, point
+.SH SYNOPSIS
+\fBv.to.points\fR
+.br
+\fBv.to.points \-\-help\fR
+.br
+\fBv.to.points\fR [\-\fBiprt\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBuse\fR=\fIstring\fR]   [\fBdmax\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Interpolate points between line vertices (only for use=vertex)
+.IP "\fB\-p\fR" 4m
+.br
+Use dmax as percentage of line length
+.IP "\fB\-r\fR" 4m
+.br
+Start from the end node
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Line layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel\fR
+.br
+Default: \fIpoint,line,boundary,centroid,face\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBuse\fR=\fIstring\fR" 4m
+.br
+Use line nodes (start/end) or vertices only
+.br
+Options: \fInode, start, end, vertex\fR
+.IP "\fBdmax\fR=\fIfloat\fR" 4m
+.br
+Maximum distance between points in map units or percentage with \-p
+.br
+Default: \fI100\fR
+.SH DESCRIPTION
+\fIv.to.points\fR creates points along input 2D or 3D lines,
+boundaries and faces. Point features including centroids and kernels
+are copied from input vector map to the output. For details see notes
+about \fBtype\fR parameter.
+.PP
+The output is a vector map with 2 layers. Layer 1 holds the category
+of the input features; all points created along the same line have the
+same category, equal to the category of that line. In layer 2 each
+point has its unique category; other attributes stored in layer 2
+are \fIlcat\fR \- the category of the input line and \fIalong\fR
+\- the distance from line\(cqs start.
+.PP
+By default only features with category are processed,
+see \fBlayer\fR parameter for details.
+.SH NOTES
+The \fBdmax\fR parameter is the maximum limit but not an exact
+distance. To place points with exact distance from the beginning of
+the vector line the user should use
+\fIv.segment\fR.
+.PP
+Set \fBlayer\fR to \-1 to process features from all layers including
+features without category. Features will be assigned new unique
+categories at layer 1. Option \fBlayer=\-1\fR should be used to
+convert boundaries, as in most of cases boundaries lack category
+values.
+.PP
+The \fBtype\fR parameter is used to control which input vector
+geometry types to convert into points. Some caveats to consider about
+this parameter:
+.RS 4n
+.IP \(bu 4n
+Points and centroids can be considered as \(dqlines\(dq with only one
+node. Consequently, the result of selecting \fIpoint\fR or
+\fIcentroid\fR as the type parameter is that all
+points/centroids get written into the output vector map. The
+original category numbers of the input points/centroids get
+written to the \(cq\fIlcat\fR\(cq attribute in layer 2 of the output
+vector map. All values for \fIalong\fR are zero in the output
+vector map, as only point geometry was used for input (there is no
+linear distance to calculate
+\fIalong\fR, as each point/centroid is the start \fIand\fR
+end of its own \(dqline\(dq).
+.IP \(bu 4n
+Boundaries are treated as lines, with points getting interpolated
+along the boundary perimeter according to \fBdmax\fR. If two
+adjoining polygons share a topological boundary, the boundary only
+gets converted to points once.
+.IP \(bu 4n
+If the \fBtype\fR parameter is set to \fIarea\fR, the boundary of
+each area is converted to points \fIregardless\fR of whether or not
+there is a topological boundary between adjacent areas. In other
+words, the common boundary of two adjoining areas, for example, gets
+converted to points twice. The centroid is not converted to a point in
+the output vector for \fItype=area\fR.
+.RE
+.PP
+The \fBuse=vertex\fR option is used to digitize points that fall on
+the line\(cqs vertices \fIonly\fR. Parameter \fBdmax\fR is ignored in
+this case. Similarly to \fBuse=node\fR when only line\(cqs node are
+used. To filter only starting/ending nodes use \fBuse=start/end\fR.
+.PP
+If the \fB\-i\fR flag is used in conjunction with the \fBuse=vertex\fR option,
+\fIv.to.points\fR will digitize points on the line vertices, as
+well as interpolate points between line vertices using \fBdmax\fR as
+the maximum allowable spacing.
+.PP
+Use the \fB\-p\fR flag to treat \fBdmax\fR as a percentage of each line
+length.  For example, to get points created for the beginning, middle and end
+only, use the \fB\-p\fR flag and set \fBdmax\fR so that:
+.br
+.nf
+\fC
+ 50 < \fIdmax\fR <= 100
+\fR
+.fi
+Hence, if \fBdmax\fR is between 0.5x and 1.0x the line length, you will
+always get points created at exactly the beginning, middle and end of
+the input line.
+.PP
+Use the \fB\-r\fR flag to create points starting from the end node.
+.SH EXAMPLES
+.SS Points along the input lines
+In this example, the \(cqrailroads\(cq vector lines map of the North Carolina
+sample dataset is used to create points along the input lines:
+.br
+.nf
+\fC
+# The North Carolina data are metric.
+# 200m distance for points (maximum limit but not an exact distance)
+v.to.points input=railroads output=railroads_points dmax=200
+# verify the two layers in the resulting map
+v.category input=railroads_points option=report
+# vector info
+v.info map=railroads_points
+\fR
+.fi
+.SS Extract nodes as points
+.br
+.nf
+\fC
+v.to.points input=railroads output=railroads_nodes use=node
+\fR
+.fi
+.SS Extract starting/ending nodes as points
+.br
+.nf
+\fC
+v.to.points input=railroads output=railroads_start use=start
+v.to.points input=railroads output=railroads_end use=end
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.segment,
+v.split,
+v.to.rast,
+v.to.db
+\fR
+.SH AUTHOR
+Radim Blazek
+.br
+Updated to GRASS 7 by Martin Landa, Czech Technical University in
+Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.to.points source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,89 @@
+.TH g.manual 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.manual.py\fR\fR  \- Displays the manual pages of GRASS modules.
+.SH KEYWORDS
+general, manual, help
+.SH SYNOPSIS
+\fBg.manual.py\fR
+.br
+\fBg.manual.py \-\-help\fR
+.br
+\fBg.manual.py\fR [\-\fBitmo\fR] \fBentry\fR=\fIstring\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Display index
+.IP "\fB\-t\fR" 4m
+.br
+Display topics
+.IP "\fB\-m\fR" 4m
+.br
+Display as MAN text page instead of HTML page in browser
+.IP "\fB\-o\fR" 4m
+.br
+Display online manuals instead of locally installed
+.br
+Use online manuals available at https://grass.osgeo.org website. This flag has no effect when displaying MAN text pages.
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBentry\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Manual entry to be displayed
+.SH DESCRIPTION
+\fIg.manual\fR displays the manual pages of GRASS in HTML and MAN
+format.
+.SH NOTES
+The name of the browser is defined in the environment variable
+GRASS_HTML_BROWSER. For most platforms this should be an
+executable in your PATH, or the full path to an executable. See
+variables for details.
+.SH EXAMPLES
+Show index page in the browser.
+.br
+.nf
+\fC
+g.manual \-i
+\fR
+.fi
+Show manual page of \fId.vect\fR module
+in the browser.
+.br
+.nf
+\fC
+g.manual d.vect
+\fR
+.fi
+Show module manual page in terminal.
+.br
+.nf
+\fC
+g.manual \-m d.vect
+\fR
+.fi
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: g.manual source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

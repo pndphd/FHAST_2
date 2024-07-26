@@ -1,0 +1,666 @@
+.TH r.watershed 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.watershed\fR\fR  \- Calculates hydrological parameters and RUSLE factors.
+.SH KEYWORDS
+raster, hydrology, watershed, accumulation, drainage, stream network, stream power index, topographic index
+.SH SYNOPSIS
+\fBr.watershed\fR
+.br
+\fBr.watershed \-\-help\fR
+.br
+\fBr.watershed\fR [\-\fBs4mab\fR] \fBelevation\fR=\fIname\fR  [\fBdepression\fR=\fIname\fR]   [\fBflow\fR=\fIname\fR]   [\fBdisturbed_land\fR=\fIname\fR]   [\fBblocking\fR=\fIname\fR]   [\fBretention\fR=\fIname\fR]   [\fBthreshold\fR=\fIinteger\fR]   [\fBmax_slope_length\fR=\fIfloat\fR]   [\fBaccumulation\fR=\fIname\fR]   [\fBtci\fR=\fIname\fR]   [\fBspi\fR=\fIname\fR]   [\fBdrainage\fR=\fIname\fR]   [\fBbasin\fR=\fIname\fR]   [\fBstream\fR=\fIname\fR]   [\fBhalf_basin\fR=\fIname\fR]   [\fBlength_slope\fR=\fIname\fR]   [\fBslope_steepness\fR=\fIname\fR]   [\fBconvergence\fR=\fIinteger\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+SFD (D8) flow (default is MFD)
+.br
+SFD: single flow direction, MFD: multiple flow direction
+.IP "\fB\-4\fR" 4m
+.br
+Allow only horizontal and vertical flow of water
+.IP "\fB\-m\fR" 4m
+.br
+Enable disk swap memory option: Operation is slow
+.br
+Only needed if memory requirements exceed available RAM; see manual on how to calculate memory requirements
+.IP "\fB\-a\fR" 4m
+.br
+Use positive flow accumulation even for likely underestimates
+.br
+See manual for a detailed description of flow accumulation output
+.IP "\fB\-b\fR" 4m
+.br
+Beautify flat areas
+.br
+Flow direction in flat areas is modified to look prettier
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBdepression\fR=\fIname\fR" 4m
+.br
+Name of input depressions raster map
+.br
+All non\-NULL and non\-zero cells are considered as real depressions
+.IP "\fBflow\fR=\fIname\fR" 4m
+.br
+Name of input raster representing amount of overland flow per cell
+.IP "\fBdisturbed_land\fR=\fIname\fR" 4m
+.br
+Name of input raster map percent of disturbed land
+.br
+For USLE
+.IP "\fBblocking\fR=\fIname\fR" 4m
+.br
+Name of input raster map blocking overland surface flow
+.br
+For USLE. All non\-NULL and non\-zero cells are considered as blocking terrain.
+.IP "\fBretention\fR=\fIname\fR" 4m
+.br
+Name of input raster map with percentages for flow accumulation.
+.IP "\fBthreshold\fR=\fIinteger\fR" 4m
+.br
+Minimum size of exterior watershed basin
+.IP "\fBmax_slope_length\fR=\fIfloat\fR" 4m
+.br
+Maximum length of surface flow in map units
+.br
+For USLE
+.IP "\fBaccumulation\fR=\fIname\fR" 4m
+.br
+Name for output accumulation raster map
+.br
+Number of cells that drain through each cell
+.IP "\fBtci\fR=\fIname\fR" 4m
+.br
+Name for output topographic index ln(a / tan(b)) map
+.IP "\fBspi\fR=\fIname\fR" 4m
+.br
+Name for output stream power index a * tan(b)
+.br
+Name for output raster map
+.IP "\fBdrainage\fR=\fIname\fR" 4m
+.br
+Name for output drainage direction raster map
+.br
+Directions numbered from 1 to 8
+.IP "\fBbasin\fR=\fIname\fR" 4m
+.br
+Name for output basins raster map
+.IP "\fBstream\fR=\fIname\fR" 4m
+.br
+Name for output stream segments raster map
+.IP "\fBhalf_basin\fR=\fIname\fR" 4m
+.br
+Name for output half basins raster map
+.br
+Each half\-basin is given a unique value
+.IP "\fBlength_slope\fR=\fIname\fR" 4m
+.br
+Name for output slope length raster map
+.br
+Slope length and steepness (LS) factor for USLE
+.IP "\fBslope_steepness\fR=\fIname\fR" 4m
+.br
+Name for output slope steepness raster map
+.br
+Slope steepness (S) factor for USLE
+.IP "\fBconvergence\fR=\fIinteger\fR" 4m
+.br
+Convergence factor for MFD (1\-10)
+.br
+1 = most diverging flow, 10 = most converging flow. Recommended: 5
+.br
+Default: \fI5\fR
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIr.watershed\fR generates a set of maps indicating: 1) flow
+accumulation, drainage direction, the location of streams and
+watershed basins, and 2) the LS and S factors of the Revised Universal
+Soil Loss Equation (RUSLE).
+.SH NOTES
+Without flag \fB\-m\fR set, the entire analysis is run in memory
+maintained by the operating system. This can be limiting, but is very
+fast. Setting this flag causes the program to manage memory on disk
+which allows very large maps to be processed but is slower.
+.PP
+Flag \fB\-s\fR force the module to use single flow direction (SFD, D8)
+instead of multiple flow direction (MFD). MFD is enabled by default.
+.PP
+By \fB\-4\fR flag the user allow only horizontal and vertical flow of
+water. Stream and slope lengths are approximately the same as outputs
+from default surface flow (allows horizontal, vertical, and diagonal
+flow of water).  This flag will also make the drainage basins look
+more homogeneous.
+.PP
+When \fB\-a\fR flag is specified the module will use positive flow
+accumulation even for likely underestimates. When this flag is not
+set, cells with a flow accumulation value that is likely to be an
+underestimate are converted to the negative. See below for a detailed
+description of flow accumulation output.
+.PP
+Option \fBconvergence\fR specifies convergence factor for MFD. Lower
+values result in higher divergence, flow is more widely
+distributed. Higher values result in higher convergence, flow is less
+widely distributed, becoming more similar to SFD.
+.PP
+Option \fBelevation\fR specifies the elevation data on which entire
+analysis is based. NULL (nodata) cells are ignored, zero and negative
+values are valid elevation data.  Gaps in the elevation map that are
+located within the area of interest must be filled beforehand,
+e.g. with \fIr.fillnulls\fR, to
+avoid distortions.  The elevation map need not be sink\-filled because
+the module uses a least\-cost algorithm.
+.PP
+Option \fBdepression\fR specifies the optional map of actual
+depressions or sinkholes in the landscape that are large
+enough to slow and store surface runoff from a storm event.  All cells
+that are not NULL and not zero indicate depressions. Water will flow
+into but not out of depressions.
+.PP
+Raster \fBflow\fR map specifies amount of overland flow per cell.
+This map indicates the amount of overland flow units that each cell
+will contribute to the watershed basin model. Overland flow units
+represent the amount of overland flow each cell contributes to surface
+flow. If omitted, a value of one (1) is assumed.
+.PP
+Raster \fBretention\fR map specifies correction factors per cell for
+flow distribution. This map indicates the percentage of overland flow
+units leaving each cell. Values should be between zero and 100. If
+omitted, a value of 100 is assumed.
+.PP
+Input Raster map or value containing the percent of disturbed land
+(i.e., croplands, and construction sites) where the raster or input
+value of 17 equals 17%.  If no map or value is
+given, \fIr.watershed\fR assumes no disturbed land. This input is
+used for the RUSLE calculations.
+.PP
+Option \fBblocking\fR specifies terrain that will block overland
+surface flow. Blocking cells and streams stop the slope length for the
+RUSLE.  All cells that are not NULL and not zero indicate blocking
+terrain.
+.PP
+Option \fBthreshold\fR specifies the minimum size of an exterior
+watershed basin in cells, if no flow map is input, or overland flow
+units when a flow map is given.  Warning: low threshold values will
+dramactically increase run time and generate difficult to read basin
+and half_basin results.  This parameter also controls the level of
+detail in the \fBstream\fR segments map.
+.PP
+Value given by \fBmax_slope_length\fR option indicates the maximum
+length of overland surface flow in meters. If overland flow travels
+greater than the maximum length, the program assumes the maximum
+length (it assumes that landscape characteristics not discernible in
+the digital elevation model exist that maximize the slope length).
+This input is used for the RUSLE calculations and is a sensitive
+parameter.
+.PP
+Output \fBaccumulation\fR map contains the absolute value of the
+amount of overland flow that traverses each cell. This value will be
+the number of upland cells plus one if no overland flow map is given.
+If the overland flow map is given, the value will be in overland flow
+units. Negative numbers indicate that those cells possibly have surface
+runoff from outside of the current geographic region. Thus, any cells
+with negative values cannot have their surface runoff and sedimentation
+yields calculated accurately.
+.PP
+Output \fBtci\fR raster map contains topographic index TCI,
+computed as
+ln(α / tan(β)) where α is the cumulative
+upslope area draining through a point per unit contour length and
+tan(β) is the local slope angle. The TCI reflects the
+tendency of water to accumulate at any point in the catchment and the
+tendency for gravitational forces to move that water downslope (Quinn
+et al. 1991).  This value will be negative if α /
+tan(β) < 1.
+.PP
+Output \fBspi\fR raster map contains stream power index SPI,
+computed as
+α * tan(β) where α is the cumulative
+upslope area draining through a point per unit contour length and
+tan(β) is the local slope angle. The SPI reflects the
+power of water flow at any point in the catchment and the
+tendency for gravitational forces to move that water downslope (Moore
+et al. 1991).  This value will be negative if α < 0,
+i.e. for cells with possible surface runoff from outside of the current
+geographic region.
+.PP
+Output \fBdrainage\fR raster map contains drainage direction.
+Provides the \(dqaspect\(dq for each cell measured CCW from East.
+.br
+\fIFigure: Drainage is 8 directions numbered counter\-clockwise
+starting from 1 in north\-east direction
+(source)\fR
+Multiplying positive values by 45 will give the direction in degrees
+that the surface runoff will travel from that cell.  The value 0
+(zero) indicates that the cell is a depression area (defined by the
+depression input map).  Negative values indicate that surface runoff
+is leaving the boundaries of the current geographic region.  The
+absolute value of these negative cells indicates the direction of
+flow. For MFD, drainage indicates the direction of maximum flow.
+.PP
+The output \fBbasin\fR map contains unique label for each watershed
+basin. Each basin will be given a unique positive even integer.  Areas
+along edges may not be large enough to create an exterior watershed
+basin.  NULL values indicate that the cell is not part of a complete
+watershed basin in the current geographic region.
+.PP
+The output \fBstream\fR contains stream segments. Values correspond
+to the watershed basin values.  Can be vectorized after thinning
+(\fIr.thin\fR) with
+\fIr.to.vect\fR.
+.PP
+The output \fBhalf_basin\fR raster map stores each half\-basin is
+given a unique value. Watershed basins are divided into left and right
+sides. The right\-hand side cell of the watershed basin (looking
+upstream) are given even values corresponding to the values in basin.
+The left\-hand side cells of the watershed basin are given odd values
+which are one less than the value of the watershed basin.
+.PP
+The output \fBlength_slope\fR raster map stores slope length and
+steepness (LS) factor for the Revised Universal Soil Loss Equation
+(RUSLE).  Equations taken from \fIRevised Universal Soil Loss
+Equation for Western Rangelands\fR (Weltz et al. 1987). Since the LS
+factor is a small number (usually less than one), the GRASS output map
+is of type DCELL.
+.PP
+The output \fBslope_steepness\fR raster map stores slope steepness
+(S) factor for the Universal Soil Loss Equation (RUSLE).  Equations
+taken from article entitled
+\fIRevised Slope Steepness Factor for the Universal Soil
+Loss Equation\fR (McCool et al. 1987).  Since the S factor is a small
+number (usually less than one), the GRASS output map is of type DCELL.
+.SS A\uT\d least\-cost search algorithm
+\fIr.watershed\fR uses an A\uT\d least\-cost search algorithm
+(see REFERENCES section) designed to minimize the impact of DEM data
+errors. Compared
+to \fIr.terraflow\fR, this algorithm
+provides more accurate results in areas of low slope as well as DEMs
+constructed with techniques that mistake canopy tops as the ground
+elevation. Kinner et al. (2005), for example, used SRTM and IFSAR DEMs
+to compare \fIr.watershed\fR
+against \fIr.terraflow\fR results in
+Panama. \fIr.terraflow\fR was unable
+to replicate stream locations in the larger valleys
+while \fIr.watershed\fR performed much better. Thus, if forest
+canopy exists in valleys, SRTM, IFSAR, and similar data products will
+cause major errors in \fIr.terraflow\fR stream output. Under
+similar conditions, \fIr.watershed\fR will generate
+better \fBstream\fR and \fBhalf_basin\fR results. If watershed
+divides contain flat to low slope, \fIr.watershed\fR will generate
+better basin results
+than \fIr.terraflow\fR. (\fIr.terraflow\fR
+uses the same type of algorithm as ESRI\(cqs ArcGIS watershed software
+which fails under these conditions.) Also, if watershed divides
+contain forest canopy mixed with uncanopied areas using SRTM, IFSAR,
+and similar data products, \fIr.watershed\fR will generate better
+basin results
+than \fIr.terraflow\fR. The
+algorithm produces results similar to those obtained when running
+\fIr.cost\fR and
+\fIr.drain\fR on every cell on the raster map.
+.SS Multiple flow direction (MFD)
+\fIr.watershed\fR offers two methods to calculate surface flow:
+single flow direction (SFD, D8) and multiple flow direction
+(MFD). With MFD, water flow is distributed to all neighbouring cells
+with lower elevation, using slope towards neighbouring cells as a
+weighing factor for proportional distribution. The A\uT\d
+least\-cost path is always included. As a result, depressions and
+obstacles are traversed with a graceful flow convergence before the
+overflow. The convergence factor causes flow accumulation to converge
+more strongly with higher values. The supported range is 1 to 10,
+recommended is a convergence factor of 5 (Holmgren, 1994). If many
+small sliver basins are created with MFD, setting the convergence
+factor to a higher value can reduce the amount of small sliver basins.
+.SS In\-memory mode and disk swap mode
+There are two versions of this program: \fIram\fR and \fIseg\fR.
+\fIram\fR is used by default, \fIseg\fR can be used by setting
+the \fB\-m\fR flag.
+.PP
+The \fIram\fR version requires a maximum of 31 MB of RAM for 1
+million cells. Together with the amount of system memory (RAM)
+available, this value can be used to estimate whether the current
+region can be processed with the \fIram\fR version.
+.PP
+The \fIram\fR version uses virtual memory managed by the operating
+system to store all the data structures and is faster than
+the \fIseg\fR version; \fIseg\fR uses the GRASS segmentation
+library which manages data in disk files. \fIseg\fR uses only as
+much system memory (RAM) as specified with the \fBmemory\fR option,
+allowing other processes to operate on the same system, even when the
+current geographic region is huge.
+.PP
+Due to memory requirements of both programs, it is quite easy to run
+out of memory when working with huge map regions. If the \fIram\fR
+version runs out of memory and the resolution size of the current
+geographic region cannot be increased, either more memory needs to be
+added to the computer, or the swap space size needs to be
+increased. If \fIseg\fR runs out of memory, additional disk space
+needs to be freed up for the program to run.
+The \fIr.terraflow\fR module was
+specifically designed with huge regions in mind and may be useful here
+as an alternative, although disk space requirements
+of \fIr.terraflow\fR are several times higher than of \fIseg\fR.
+.SS Large regions with many cells
+The upper limit of the \fIram\fR version is 2 billion
+(2\u31\d \- 1) cells, whereas the upper limit for
+the \fIseg\fR version is 9 billion\-billion (2\u63\d \- 1 =
+9.223372e+18)
+cells.
+.br
+In some situations, the region size (number of cells) may
+be too large for the amount of time or memory
+available. Running \fIr.watershed\fR may then require use of a
+coarser resolution. To make the results more closely resemble the
+finer terrain data, create a map layer containing the lowest elevation
+values at the coarser resolution. This is done by: 1) Setting the
+current geographic region equal to the elevation map layer
+with \fIg.region\fR, and 2) Use
+the \fIr.neighbors\fR or
+\fIr.resamp.stats\fR command to
+find the lowest value for an area equal in size to the desired
+resolution. For example, if the resolution of the elevation data is 30
+meters and the resolution of the geographic region
+for \fIr.watershed\fR will be 90 meters: use the minimum function
+for a 3 by 3 neighborhood. After changing to the resolution at
+which \fIr.watershed\fR will be run, \fIr.watershed\fR should be
+run using the values from the \fBneighborhood\fR output map layer
+that represents the minimum elevation within the region of the coarser
+cell.
+.SS Basin threshold
+The minimum size of drainage basins, defined by the \fBthreshold\fR
+parameter, is only relevant for those watersheds with a single stream
+having at least the \fBthreshold\fR of cells flowing into it.
+(These watersheds are called exterior basins.)  Interior drainage
+basins contain stream segments below multiple tributaries.  Interior
+drainage basins can be of any size because the length of an interior
+stream segment is determined by the distance between the tributaries
+flowing into it.
+.SS MASK and no data
+The \fIr.watershed\fR program does not require the user to have the
+current geographic region filled with elevation values.  Areas without
+elevation data (masked or NULL cells) are ignored. It is NOT necessary
+to create a raster map (or raster reclassification)
+named MASK for NULL cells.  Areas without elevation data will
+be treated as if they are off the edge of the region. Such areas will
+reduce the memory necessary to run the program.  Masking out
+unimportant areas can significantly reduce processing time if the
+watersheds of interest occupy a small percentage of the overall area.
+.PP
+Gaps (NULL cells) in the elevation map that are located within the
+area of interest will heavily influence the analysis: water will flow
+into but not out of these gaps. These gaps must be filled beforehand,
+e.g. with \fIr.fillnulls\fR.
+.PP
+Zero (0) and negative values will be treated as elevation data (not
+no_data).
+.SS Further processing of output layers
+Problem areas, i.e. those parts of a basin with a likely underestimate
+of flow accumulation, can be easily identified with e.g.
+.br
+.nf
+\fC
+  r.mapcalc \(dqproblems = if(flow_acc < 0, basin, null())\(dq
+\fR
+.fi
+If the region of interest contains such problem areas, and this is not
+desired, the computational region must be expanded until the catchment
+area for the region of interest is completely included.
+.PP
+To isolate an individual river network using the output of this
+module, a number of approaches may be considered.
+.IP
+.IP \fB1\fR
+Use a resample of the basins catchment raster map as a MASK.
+.br
+The equivalent vector map method is similar
+using \fIv.select\fR or
+\fIv.overlay\fR.
+.IP \fB2\fR
+Use the \fIr.cost\fR module with a
+point in the river as a starting point.
+.IP \fB3\fR
+Use the \fIv.net.iso\fR module
+with a node in the river as a starting point.
+.PP
+All individual river networks in the stream segments output can be
+identified through their ultimate outlet points. These points are all
+cells in the stream segments output with negative drainage direction.
+These points can be used as start points
+for \fIr.water.outlet\fR or
+\fIv.net.iso\fR.
+.PP
+To create \fIriver mile\fR segmentation from a vectorized streams
+map, try
+the \fIv.net.iso\fR
+or \fIv.lrs.segment\fR
+modules.
+.PP
+The stream segments output can be easily vectorized after thinning
+with
+\fIr.thin\fR. Each stream segment in the
+vector map will have the value of the associated basin. To isolate
+subbasins and streams for a larger basin, a MASK for the larger basin
+can be created with
+\fIr.water.outlet\fR. The stream
+segments output serves as a guide where to place the outlet point used
+as input to \fIr.water.outlet\fR.
+The basin threshold must have been sufficiently small to isolate a
+stream network and subbasins within the larger basin.
+.PP
+Given that the \fBdrainage\fR is 8 directions numbered
+counter\-clockwise starting from 1 in north\-east direction,
+multiplying the output
+by 45 (by 45. to get a double precision floating point raster
+map in \fIr.mapcalc\fR) gives
+the directions in degrees. For most applications, zeros
+which indicate depressions specified by \fBdepression\fR
+and negative values which indicate runoff leaving the region
+should be replaced by NULL (null() in
+\fIr.mapcalc\fR).
+The following command performs these replacements:
+.br
+.nf
+\fC
+r.mapcalc \(dqdrainage_degrees = if(drainage > 0, 45. * drainage, null())\(dq
+\fR
+.fi
+Alternatively, the user can use the \fB\-a\fR flag or later the
+abs() function in
+\fIr.mapcalc\fR if the runoff is leaving
+the region.
+.SH EXAMPLES
+These examples use the Spearfish sample dataset.
+.SS Convert \fIr.watershed\fR streams map output to a vector map
+If you want a detailed stream network, set the threshold option small
+to create lots of catchment basins, as only one stream is presented
+per catchment. The r.to.vect \-v flag preserves the catchment
+ID as the vector category number.
+.br
+.nf
+\fC
+  r.watershed elev=elevation.dem stream=rwater.stream
+  r.to.vect \-v in=rwater.stream out=rwater_stream
+\fR
+.fi
+.PP
+Set a different color table for the accumulation map:
+.br
+.nf
+\fC
+  MAP=rwater.accum
+  r.watershed elev=elevation.dem accum=$MAP
+  eval \(gar.univar \-g \(dq$MAP\(dq\(ga
+  stddev_x_2=\(gaecho $stddev | awk \(cq{print $1 * 2}\(cq\(ga
+  stddev_div_2=\(gaecho $stddev | awk \(cq{print $1 / 2}\(cq\(ga
+  r.colors $MAP col=rules << EOF
+    0% red
+    \-$stddev_x_2 red
+    \-$stddev yellow
+    \-$stddev_div_2 cyan
+    \-$mean_of_abs blue
+    0 white
+    $mean_of_abs blue
+    $stddev_div_2 cyan
+    $stddev yellow
+    $stddev_x_2 red
+    100% red
+  EOF
+\fR
+.fi
+.PP
+Create a more detailed stream map using the accumulation map and
+convert it to a vector output map. The accumulation cut\-off, and
+therefore fractal dimension, is arbitrary; in this example we use the
+map\(cqs mean number of upstream catchment cells (calculated in the above
+example by \fIr.univar\fR) as the
+cut\-off value. This only works with SFD, not with MFD.
+.br
+.nf
+\fC
+  r.watershed elev=elevation.dem accum=rwater.accum
+  r.mapcalc \(cqMASK = if(!isnull(elevation.dem))\(cq
+  r.mapcalc \(dqrwater.course = \(rs
+   if( abs(rwater.accum) > $mean_of_abs, \(rs
+       abs(rwater.accum), \(rs
+       null() )\(dq
+  r.colors \-g rwater.course col=bcyr
+  g.remove \-f type=raster name=MASK
+  # \fIThinning is required before converting raster lines to vector\fR
+  r.thin in=rwater.course out=rwater.course.Thin
+  r.colors \-gn rwater.course.Thin color=grey
+  r.to.vect in=rwater.course.Thin out=rwater_course type=line
+  v.db.dropcolumn map=rwater_course column=label
+\fR
+.fi
+.SS Create watershed basins map and convert to a vector polygon map
+.br
+.nf
+\fC
+  r.watershed elev=elevation.dem basin=rwater.basin thresh=15000
+  r.to.vect \-s in=rwater.basin out=rwater_basins type=area
+  v.db.dropcolumn map=rwater_basins column=label
+  v.db.renamecolumn map=rwater_basins column=value,catchment
+\fR
+.fi
+.PP
+Display output in a nice way
+.br
+.nf
+\fC
+  r.relief map=elevation.dem
+  d.shade shade=elevation.dem.shade color=rwater.basin bright=40
+  d.vect rwater_course color=orange
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Ehlschlaeger C. (1989). \fIUsing the A\uT\d Search Algorithm
+to Develop Hydrologic Models from Digital Elevation Data\fR,
+\fBProceedings of International Geographic Information Systems (IGIS)
+Symposium \(cq89\fR, pp 275\-281 (Baltimore, MD, 18\-19 March 1989).
+.br
+URL:
+http://chuck.ehlschlaeger.info/older/IGIS/paper.html
+.IP \(bu 4n
+Holmgren P. (1994). \fIMultiple flow direction algorithms for runoff
+modelling in grid based elevation models: An empirical evaluation.\fR
+\fBHydrological Processes\fR Vol 8(4), 327\-334.
+.br
+DOI: 10.1002/hyp.3360080405
+.IP \(bu 4n
+Kinner D., Mitasova H., Harmon R., Toma L., Stallard R. (2005).
+\fIGIS\-based Stream Network Analysis for The Chagres River Basin,
+Republic of Panama\fR. \fBThe Rio Chagres: A Multidisciplinary Profile of
+a Tropical Watershed\fR, R. Harmon (Ed.), Springer/Kluwer, p.83\-95.
+.br
+URL:
+http://www4.ncsu.edu/~hmitaso/measwork/panama/panama.html
+.IP \(bu 4n
+McCool et al. (1987). \fIRevised Slope Steepness Factor for the Universal
+Soil Loss Equation\fR, \fBTransactions of the ASAE\fR Vol 30(5).
+.IP \(bu 4n
+Metz M., Mitasova H., Harmon R. (2011). \fIEfficient extraction of
+drainage networks from massive, radar\-based elevation models with least
+cost path search\fR, \fBHydrol. Earth Syst. Sci.\fR Vol 15, 667\-678.
+.br
+DOI: 10.5194/hess\-15\-667\-2011
+.IP \(bu 4n
+Moore I.D., Grayson R.B., Ladson A.R. (1991). \fIDigital terrain
+modelling: a review of hydrogical, geomorphological, and biological
+applications\fR, \fBHydrological Processes\fR, Vol 5(1), 3\-30
+.br
+DOI: 10.1002/hyp.3360050103
+.IP \(bu 4n
+Quinn P., K. Beven K., Chevallier P., Planchon O. (1991). \fIThe
+prediction of hillslope flow paths for distributed hydrological modelling
+using Digital Elevation Models\fR, \fBHydrological Processes\fR Vol 5(1),
+p.59\-79.
+.br
+DOI: 10.1002/hyp.3360050106
+.IP \(bu 4n
+Weltz M. A., Renard K.G., Simanton J. R. (1987). \fIRevised Universal Soil
+Loss Equation for Western Rangelands\fR, \fBU.S.A./Mexico Symposium of
+Strategies for Classification and Management of Native Vegetation for
+Food Production In Arid Zones\fR (Tucson, AZ, 12\-16 Oct. 1987).
+.RE
+.SH SEE ALSO
+\fI
+g.region,
+r.cost,
+r.drain,
+r.fillnulls,
+r.flow,
+r.mask,
+r.neighbors,
+r.param.scale,
+r.resamp.interp,
+r.terraflow,
+r.topidx,
+r.water.outlet,
+r.stream.extract
+\fR
+.SH AUTHORS
+Original version:
+Charles Ehlschlaeger, U.S. Army Construction Engineering Research Laboratory
+.br
+Faster sorting algorithm and MFD support:
+Markus Metz <markus.metz.giswork at gmail.com>
+.br
+Retention for flow distribution by Andreas Gericke (IGB Berlin)
+.SH SOURCE CODE
+.PP
+Available at: r.watershed source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.buffer - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.buffer</b></em>  - Creates a raster map showing buffer zones surrounding cells that contain non-NULL category values.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_buffer.html">buffer</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.buffer</b><br></div>
+<b>r.buffer --help</b><br>
+<div id="synopsis"><b>r.buffer</b> [-<b>z</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>distances</b>=<em>float</em>[,<i>float</i>,...]  [<b>units</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-z</b></dt>
+<dd>Ignore zero (0) data cells instead of NULL cells</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>distances</b>=<em>float[,<i>float</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Distance zone(s)</dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Units of distance</dd>
+<dd>Options: <em>meters, kilometers, feet, miles, nautmiles</em></dd>
+<dd>Default: <em>meters</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.buffer</em> creates a new raster map showing
+buffer (a.k.a. "distance" or "proximity") zones around all
+cells that contain non-NULL category values in an existing
+raster map. The distances of buffer zones from cells with
+non-zero category values are user-chosen and must be positive value(s).
+Suppose, for example, that you want to place buffer zones around
+roads.  This program could create the raster map 
+shown below on the right based on road information
+contained in the raster map shown on the left.
+
+<div class="code"><pre>
+      000000000000000000000000 222233333333333333444444 
+      111000000000000000000000 111222222222223333333333 
+      000111111111100000000000 222111111111122223333333 
+      000000001000011100000000 332222221222211122222222 
+      000000001000000011111111 333333321233222211111111 
+      000000001000000000000000 433333321233333222222222 
+      000000001000000000000000 444443321233333333333333 
+      000000001000000000000000 444443321233443333333333 
+      000000001000000000000000 444443321233444444444444 
+
+      Category 0: No roads
+      Category 1: Road location 
+      Category 2: Buffer Zone 1 around roads 
+      Category 3: Buffer Zone 2 around roads 
+      Category 4: Buffer Zone 3 around roads 
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+The user has the option of identifying up to 250 continuous zones.
+The zones are identified by specifying the upper limit of each desired
+zone (<em>r.buffer</em> assumes that <tt>0</tt> is the starting
+point).  "Continuous" is used in the sense that each category zone's
+lower value is the previous zone's upper value. The first buffer zone
+always has distance <tt>0</tt> as its lower bound. Buffer distances
+can be specified using one of five units with the <b>units</b> parameter.
+
+<p>
+<!-- ??? is this the real method used or some ancient option ??? -->
+Distances from cells containing the user-specified category values
+are calculated using the "fromcell" method. This method locates each
+cell that contains a category value from which distances are to be
+calculated, and draws the requested distance rings around
+them. This method works very fast when there are few cells
+containing the category values of interest, but works
+slowly when there are numerous cells containing the
+category values of interest spread throughout the area.
+<p>
+<em>r.buffer</em> measures distances from center of cell to
+center of cell using Euclidean distance measure for
+planimetric locations (like UTM) and using ellipsoidal
+geodesic distance measure for latitude/longitude locations.
+<p>
+<em>r.buffer</em> calculates distance zones from all cells having
+non-NULL category values in the <b>input</b> map. If the user wishes
+to calculate distances from only selected <b>input</b> map category
+values, the user should run (for example)
+<em><a href="r.reclass.html">r.reclass</a></em> prior to 
+<em>r.buffer</em>, to reclass all categories from which distance zones 
+are not desired to be calculated into category NULL. 
+<p>
+The <b>-z</b> flag can be used to ignore raster values of zero instead of NULL
+values in the input raster map.
+<p>
+When working with massive raster regions consider
+the <em><a href="r.buffer.lowmem.html">r.buffer.lowmem</a></em> module
+if RAM use becomes a problem. The lowmem version can be &gt; 40x
+slower, but will work with minimal memory requirements. The
+classic <em>r.buffer</em> should be able to deal with raster maps of
+32000x32000 size on a system with 1 GB RAM, and rasters of 90000x90000
+on a system with 8 GB RAM without going into swap.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In the following example (North Carolina sample dataset), the buffer zones
+would be (in the default map units of meters):  0-100, 101-200, 201-300,
+301-400 and 401-500.
+<br>
+<div class="code"><pre>
+g.region raster=roadsmajor -p
+r.buffer input=roadsmajor output=roadsmajor_buf distances=100,200,300,400,500
+</pre></div>
+
+Result:
+
+<div class="code"><pre>
+r.category input=roads.buf
+      1       distances calculated from these locations
+      2       0-100 meters
+      3       100-200 meters
+      4       200-300 meters
+      5       300-400 meters
+      6       400-500 meters
+</pre></div>
+
+<center>
+<img src="r_buffer_road.png" border=1><br>
+<i>Distances to road</i>
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.buffer.lowmem.html">r.buffer.lowmem</a>,
+<a href="r.grow.html">r.grow</a>,
+<a href="v.buffer.html">v.buffer</a>
+</em>
+
+<p>
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.cost.html">r.cost</a>,
+<a href="r.distance.html">r.distance</a>,
+<a href="r.grow.distance.html">r.grow.distance</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.reclass.html">r.reclass</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering 
+Research Laboratory
+<br>
+James Westervelt, U.S. Army Construction Engineering 
+Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.buffer">r.buffer source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.buffer">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

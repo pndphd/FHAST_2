@@ -1,0 +1,89 @@
+.TH v.colors.out 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.colors.out\fR\fR  \- Exports the color table associated with a vector map.
+.SH KEYWORDS
+vector, color table, export
+.SH SYNOPSIS
+\fBv.colors.out\fR
+.br
+\fBv.colors.out \-\-help\fR
+.br
+\fBv.colors.out\fR [\-\fBp\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBrules\fR=\fIname\fR]   [\fBcolumn\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Output values as percentages
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Path to output rules file
+.br
+If not given write to standard output
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute (numeric) column to which refer color rules
+.br
+If not given, color rules refer to categories
+.SH DESCRIPTION
+\fIv.colors.out\fR allows the user to export the color table for a
+vector map to a file which is suitable as input
+to \fIv.colors\fR.
+.SH EXAMPLES
+.br
+.nf
+\fC
+v.colors.out map=soils_general rules=rules.txt
+v.colors map=soils_wake rules=rules.txt
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.colors,
+r.colors,
+r3.colors,
+r.colors.out,
+r3.colors.out
+\fR
+.SH AUTHOR
+Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.colors.out source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

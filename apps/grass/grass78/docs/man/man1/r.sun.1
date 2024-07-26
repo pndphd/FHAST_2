@@ -1,0 +1,673 @@
+.TH r.sun 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.sun\fR\fR  \- Solar irradiance and irradiation model.
+.br
+Computes direct (beam), diffuse and reflected solar irradiation raster maps for given day, latitude, surface and atmospheric conditions. Solar parameters (e.g. sunrise, sunset times, declination, extraterrestrial irradiance, daylight length) are saved in the map history file. Alternatively, a local time can be specified to compute solar incidence angle and/or irradiance raster maps. The shadowing effect of the topography is optionally incorporated.
+.SH KEYWORDS
+raster, solar, sun energy, shadow
+.SH SYNOPSIS
+\fBr.sun\fR
+.br
+\fBr.sun \-\-help\fR
+.br
+\fBr.sun\fR [\-\fBpm\fR] \fBelevation\fR=\fIstring\fR  [\fBaspect\fR=\fIstring\fR]   [\fBaspect_value\fR=\fIfloat\fR]   [\fBslope\fR=\fIstring\fR]   [\fBslope_value\fR=\fIfloat\fR]   [\fBlinke\fR=\fIstring\fR]   [\fBlinke_value\fR=\fIfloat\fR]   [\fBalbedo\fR=\fIstring\fR]   [\fBalbedo_value\fR=\fIfloat\fR]   [\fBlat\fR=\fIstring\fR]   [\fBlong\fR=\fIstring\fR]   [\fBcoeff_bh\fR=\fIstring\fR]   [\fBcoeff_dh\fR=\fIstring\fR]   [\fBhorizon_basename\fR=\fIbasename\fR]   [\fBhorizon_step\fR=\fIfloat\fR]   [\fBincidout\fR=\fIstring\fR]   [\fBbeam_rad\fR=\fIstring\fR]   [\fBdiff_rad\fR=\fIstring\fR]   [\fBrefl_rad\fR=\fIstring\fR]   [\fBglob_rad\fR=\fIstring\fR]   [\fBinsol_time\fR=\fIstring\fR]  \fBday\fR=\fIinteger\fR  [\fBstep\fR=\fIfloat\fR]   [\fBdeclination\fR=\fIfloat\fR]   [\fBsolar_constant\fR=\fIfloat\fR]   [\fBtime\fR=\fIfloat\fR]   [\fBnprocs\fR=\fIinteger\fR]   [\fBdistance_step\fR=\fIfloat\fR]   [\fBnpartitions\fR=\fIinteger\fR]   [\fBcivil_time\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Do not incorporate the shadowing effect of terrain
+.IP "\fB\-m\fR" 4m
+.br
+Use the low\-memory version of the program
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of the input elevation raster map [meters]
+.IP "\fBaspect\fR=\fIstring\fR" 4m
+.br
+Name of the input aspect map (terrain aspect or azimuth of the solar panel) [decimal degrees]
+.IP "\fBaspect_value\fR=\fIfloat\fR" 4m
+.br
+A single value of the orientation (aspect), 270 is south
+.br
+Default: \fI270\fR
+.IP "\fBslope\fR=\fIstring\fR" 4m
+.br
+Name of the input slope raster map (terrain slope or solar panel inclination) [decimal degrees]
+.IP "\fBslope_value\fR=\fIfloat\fR" 4m
+.br
+A single value of inclination (slope)
+.br
+Default: \fI0.0\fR
+.IP "\fBlinke\fR=\fIstring\fR" 4m
+.br
+Name of the Linke atmospheric turbidity coefficient input raster map [\-]
+.IP "\fBlinke_value\fR=\fIfloat\fR" 4m
+.br
+A single value of the Linke atmospheric turbidity coefficient [\-]
+.br
+Default: \fI3.0\fR
+.IP "\fBalbedo\fR=\fIstring\fR" 4m
+.br
+Name of the ground albedo coefficient input raster map [\-]
+.IP "\fBalbedo_value\fR=\fIfloat\fR" 4m
+.br
+A single value of the ground albedo coefficient [\-]
+.br
+Default: \fI0.2\fR
+.IP "\fBlat\fR=\fIstring\fR" 4m
+.br
+Name of input raster map containing latitudes [decimal degrees]
+.IP "\fBlong\fR=\fIstring\fR" 4m
+.br
+Name of input raster map containing longitudes [decimal degrees]
+.IP "\fBcoeff_bh\fR=\fIstring\fR" 4m
+.br
+Name of real\-sky beam radiation coefficient (thick cloud) input raster map [0\-1]
+.IP "\fBcoeff_dh\fR=\fIstring\fR" 4m
+.br
+Name of real\-sky diffuse radiation coefficient (haze) input raster map [0\-1]
+.IP "\fBhorizon_basename\fR=\fIbasename\fR" 4m
+.br
+The horizon information input map basename
+.IP "\fBhorizon_step\fR=\fIfloat\fR" 4m
+.br
+Angle step size for multidirectional horizon [degrees]
+.IP "\fBincidout\fR=\fIstring\fR" 4m
+.br
+Output incidence angle raster map (mode 1 only)
+.IP "\fBbeam_rad\fR=\fIstring\fR" 4m
+.br
+Output beam irradiance [W.m\-2] (mode 1) or irradiation raster map [Wh.m\-2.day\-1] (mode 2)
+.IP "\fBdiff_rad\fR=\fIstring\fR" 4m
+.br
+Output diffuse irradiance [W.m\-2] (mode 1) or irradiation raster map [Wh.m\-2.day\-1] (mode 2)
+.IP "\fBrefl_rad\fR=\fIstring\fR" 4m
+.br
+Output ground reflected irradiance [W.m\-2] (mode 1) or irradiation raster map [Wh.m\-2.day\-1] (mode 2)
+.IP "\fBglob_rad\fR=\fIstring\fR" 4m
+.br
+Output global (total) irradiance/irradiation [W.m\-2] (mode 1) or irradiance/irradiation raster map [Wh.m\-2.day\-1] (mode 2)
+.IP "\fBinsol_time\fR=\fIstring\fR" 4m
+.br
+Output insolation time raster map [h] (mode 2 only)
+.IP "\fBday\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+No. of day of the year (1\-365)
+.br
+Options: \fI1\-365\fR
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Time step when computing all\-day radiation sums [decimal hours]
+.br
+Default: \fI0.5\fR
+.IP "\fBdeclination\fR=\fIfloat\fR" 4m
+.br
+Declination value (overriding the internally computed value) [radians]
+.IP "\fBsolar_constant\fR=\fIfloat\fR" 4m
+.br
+Solar constant [W/m^2]
+.br
+Default: \fI1367\fR
+.IP "\fBtime\fR=\fIfloat\fR" 4m
+.br
+Local (solar) time (to be set for mode 1 only) [decimal hours]
+.br
+Options: \fI0\-24\fR
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of threads which will be used for parallel computing
+.br
+Options: \fI1\-1000\fR
+.br
+Default: \fI1\fR
+.IP "\fBdistance_step\fR=\fIfloat\fR" 4m
+.br
+Sampling distance step coefficient (0.5\-1.5)
+.br
+Default: \fI1.0\fR
+.IP "\fBnpartitions\fR=\fIinteger\fR" 4m
+.br
+Read the input files in this number of chunks
+.br
+Default: \fI1\fR
+.IP "\fBcivil_time\fR=\fIfloat\fR" 4m
+.br
+Civil time zone value, if none, the time will be local solar time
+.SH DESCRIPTION
+\fBr.sun\fR computes beam (direct), diffuse and ground reflected solar
+irradiation raster maps for given day, latitude, surface and atmospheric
+conditions. Solar parameters (e.g. time of sunrise and sunset, declination,
+extraterrestrial irradiance, daylight length) are stored in the resultant maps\(cq
+history files. Alternatively, the local time can be specified to compute solar
+incidence angle and/or irradiance raster maps. The shadowing effect of the
+topography is incorporated by default. This can be done either internally by
+calculatoion of the shadowing effect directly from the digital elevation model
+or by specifying raster maps of the horizon height which is much faster. These
+horizon raster maps can be calculated using r.horizon.
+.PP
+For latitude\-longitude coordinates it requires that the elevation map is in meters.
+The rules are:
+.RS 4n
+.IP \(bu 4n
+lat/lon coordinates: elevation in meters;
+.IP \(bu 4n
+Other coordinates: elevation in the same unit as the easting\-northing coordinates.
+.RE
+The solar geometry of the model is based on the works of Krcho (1990), later
+improved by Jenco (1992). The equations describing Sun \-\- Earth position as
+well as an interaction of the solar radiation with atmosphere were originally
+based on the formulas suggested by Kitler and Mikler (1986). This component
+was considerably updated by the results and suggestions of the working group
+co\-ordinated by Scharmer and Greif (2000) (this algorithm might be replaced
+by SOLPOS algorithm\-library included in GRASS within
+r.sunmask
+command). The model computes all three components of global radiation (beam,
+diffuse and reflected) for the clear sky conditions, i.e. not taking into
+consideration the spatial and temporal variation of clouds. The extent and
+spatial resolution of the modelled area, as well as integration over time,
+are limited only by the memory and data storage resources. The model is built
+to fulfil user needs in various fields of science (hydrology, climatology,
+ecology and environmental sciences, photovoltaics, engineering, etc.) for
+continental, regional up to the landscape scales.
+.PP
+The model considers a shadowing effect of the local topography unless switched
+off with the \fI\-p\fR flag.
+\fBr.sun\fR works in two modes: In the first mode it calculates for the set
+local time a solar incidence angle [degrees] and solar irradiance values [W.m\-2].
+In the second mode daily sums of solar radiation [Wh.m\-2.day\-1] are computed
+within a set day. By a scripting the two modes can be used separately or
+in a combination to provide estimates for any desired time interval. The
+model accounts for sky obstruction by local relief features. Several solar
+parameters are saved in the resultant maps\(cq history files, which may be viewed
+with the r.info command.
+.PP
+The solar incidence angle raster map \fIincidout\fR is computed specifying
+elevation raster map \fIelevation\fR, aspect raster map \fIaspect\fR, slope
+steepness raster map \fIslope,\fR given the day \fIday\fR and local time
+\fItime\fR. There is no need to define latitude for locations with known
+and defined projection/coordinate system (check it with the
+g.proj
+command). If you have undefined projection, (x,y) system, etc. then the latitude
+can be defined explicitly for large areas by input raster map \fIlat_in\fR
+with interpolated latitude values. All input raster maps must
+be floating point (FCELL) raster maps. Null data in maps are excluded from
+the computation (and also speeding\-up the computation), so each output raster
+map will contain null data in cells according to all input raster maps. The
+user can use r.null
+command to create/reset null file for your input raster maps.
+.br
+The specified day \fIday\fR is the number of the day of the general year
+where January 1 is day no.1 and December 31 is 365. Time \fItime\fR must
+be a local (solar) time (i.e. NOT a zone time, e.g. GMT, CET) in decimal system,
+e.g. 7.5 (= 7h 30m A.M.), 16.1 = 4h 6m P.M..
+.PP
+The solar \fIdeclination\fR parameter is an option to override
+the value computed by the internal routine for the day of the year. The value
+of geographical latitude can be set as a constant for the whole computed
+region or, as an option, a grid representing spatially distributed values
+over a large region. The geographical latitude must be also in decimal system
+with positive values for northern hemisphere and negative for southern one.
+In similar principle the Linke turbidity factor (\fIlinke\fR, \fIlin\fR
+) and ground albedo (\fIalbedo\fR, \fIalb\fR) can be set.
+.PP
+Besides clear\-sky radiations, the user can compute a real\-sky radiation (beam,
+diffuse) using \fIcoeff_bh\fR and \fIcoeff_dh\fR input raster maps defining
+the fraction of the respective clear\-sky radiations reduced by atmospheric
+factors (e.g. cloudiness). The value is between 0\-1. Usually these
+coefficients can be obtained from a long\-terms meteorological measurements
+provided as raster maps with spatial distribution of these coefficients separately
+for beam and diffuse radiation (see Suri and Hofierka, 2004, section 3.2).
+.PP
+The solar irradiation or irradiance raster maps \fIbeam_rad\fR, \fIdiff_rad\fR,
+\fIrefl_rad\fR are computed for a given day \fIday,\fR latitude \fIlat_in\fR,
+elevation \fIelevation\fR, slope \fIslope\fR and aspect \fIaspect\fR raster maps.
+For convenience, the output raster given as \fIglob_rad\fR
+will output the sum of the three radiation components. The program uses
+the Linke atmosphere turbidity factor and ground albedo coefficient.
+A default, single value of Linke factor is \fIlin\fR=3.0 and
+is near the annual average for rural\-city areas. The Linke
+factor for an absolutely clear atmosphere is \fIlin\fR=1.0. See notes below
+to learn more about this factor. The incidence solar angle is the angle between
+horizon and solar beam vector.
+.PP
+The solar radiation maps for a given day are computed by integrating the
+relevant irradiance between sunrise and sunset times for that day. The
+user can set a finer or coarser time step used for all\-day radiation
+calculations with the \fIstep\fR option. The default value of \fIstep\fR is
+0.5 hour. Larger steps (e.g. 1.0\-2.0) can speed\-up calculations but produce
+less reliable (and more jagged) results. As the sun moves through approx.
+15° of the sky in an hour, the default \fIstep\fR of half an hour will
+produce 7.5° steps in the data. For relatively smooth output with the
+sun placed for every degree of movement in the sky you should set the
+\fIstep\fR to 4 minutes or less. \fIstep\fR=0.05 is equivalent
+to every 3 minutes. Of course setting the time step to be very fine
+proportionally increases the module\(cqs running time.
+.PP
+The output units are in Wh per squared meter per given
+day [Wh/(m*m)/day]. The incidence angle and irradiance/irradiation maps are
+computed with the shadowing influence of relief by default. It is also possible
+for them to be computed without this influence using the planar flag (\fI\-p\fR).
+In mountainous areas this can lead to very different results! The user should be
+aware that taking into account the shadowing effect of relief can slow
+down the speed of computation, especially when the sun altitude is low.
+.PP
+When considering the shadowing effect, speed and precision of computation
+can be controlled by the \fIdistance_step\fR parameter, which defines the sampling density
+at which the visibility of a grid cell is computed in the direction of a
+path of the solar flow. It also defines the method by which the obstacle\(cqs
+altitude is computed. When choosing a \fIdistance_step\fR less than 1.0 (i.e. sampling
+points will be computed at \fIdistance_step\fR * cellsize distance), \fIr.sun\fR takes
+the altitude from the nearest grid point. Values above 1.0 will use the maximum
+altitude value found in the nearest 4 surrounding grid points. The default
+value \fIdistance_step\fR=1.0 should give reasonable results for most cases (e.g.
+on DEM). The \fIdistance_step\fR value defines a multiplying coefficient for sampling
+distance. This basic sampling distance equals to the arithmetic average of
+both cell sizes. The reasonable values are in the range 0.5\-1.5.  The values
+below 0.5 will decrease and values above 1.0 will increase the computing
+speed. Values greater than 2.0 may produce estimates with lower accuracy
+in highly dissected relief. The fully shadowed areas are written to the output
+maps as zero values. Areas with NULL data are considered as no barrier with
+shadowing effect.
+.PP
+The maps\(cq history files are generated containing the following listed
+parameters used in the computation:
+.br
+\- Solar constant used W.m\-2
+.br
+\- Extraterrestrial irradiance on a plane perpendicular to the solar beam [W.m\-2]
+.br
+\- Day of the year
+.br
+\- Declination [radians]
+.br
+\- Decimal hour (Alternative 1 only)
+.br
+\- Sunrise and sunset (min\-max) over a horizontal plane
+.br
+\- Daylight lengths
+.br
+\- Geographical latitude (min\-max)
+.br
+\- Linke turbidity factor (min\-max)
+.br
+\- Ground albedo (min\-max)
+.PP
+The user can use a nice shellcript with variable
+day to compute radiation for some time interval within the year (e.g. vegetation
+or winter period). Elevation, aspect and slope input values should not be
+reclassified into coarser categories. This could lead to incorrect results.
+.SH  OPTIONS
+.PP
+Currently, there are two modes of r.sun.
+In the first mode it calculates solar incidence angle and solar irradiance
+raster maps using the set local time. In the second mode daily sums of solar
+irradiation [Wh.m\-2.day\-1] are computed for a specified day.
+.SH NOTES
+Solar energy is an important input parameter in different models concerning
+energy industry, landscape, vegetation, evapotranspiration, snowmelt or remote
+sensing. Solar rays incidence angle maps can be effectively used in radiometric
+and topographic corrections in mountainous and hilly terrain where very accurate
+investigations should be performed.
+.PP
+The clear\-sky solar radiation model applied in the r.sun is based on the
+work undertaken for development of European Solar Radiation Atlas (Scharmer
+and Greif 2000, Page et al. 2001, Rigollier 2001). The clear sky model estimates
+the global radiation from the sum of its beam, diffuse and reflected components.
+The main difference between solar radiation models for inclined surfaces
+in Europe is the treatment of the diffuse component. In the European climate
+this component is often the largest source of estimation error. Taking into
+consideration the existing models and their limitation the European Solar
+Radiation Atlas team selected the Muneer (1990) model as it has a sound theoretical
+basis and thus more potential for later improvement.
+.PP
+Details of underlying equations used in this program can be found in the
+reference literature cited below or book published by Neteler and Mitasova:
+Open Source GIS: A GRASS GIS Approach (published in Kluwer Academic Publishers
+in 2002).
+.PP
+Average monthly values of the Linke turbidity coefficient for a mild climate
+in the northern hemisphere (see reference literature for your study area):
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60.
+T{
+Month
+T}	 	T{
+Jan
+T}	 	T{
+Feb
+T}	 	T{
+Mar
+T}	 	T{
+Apr
+T}	 	T{
+May
+T}	 	T{
+Jun
+T}	 	T{
+Jul
+T}	 	T{
+Aug
+T}	 	T{
+Sep
+T}	 	T{
+Oct
+T}	 	T{
+Nov
+T}	 	T{
+Dec
+T}	 	T{
+annual
+T}
+.sp 1
+T{
+mountains
+T}	 	T{
+1.5
+T}	 	T{
+1.6
+T}	 	T{
+1.8
+T}	 	T{
+1.9
+T}	 	T{
+2.0
+T}	 	T{
+2.3
+T}	 	T{
+2.3
+T}	 	T{
+2.3
+T}	 	T{
+2.1
+T}	 	T{
+1.8
+T}	 	T{
+1.6
+T}	 	T{
+1.5
+T}	 	T{
+1.90
+T}
+.sp 1
+T{
+rural
+T}	 	T{
+2.1
+T}	 	T{
+2.2
+T}	 	T{
+2.5
+T}	 	T{
+2.9
+T}	 	T{
+3.2
+T}	 	T{
+3.4
+T}	 	T{
+3.5
+T}	 	T{
+3.3
+T}	 	T{
+2.9
+T}	 	T{
+2.6
+T}	 	T{
+2.3
+T}	 	T{
+2.2
+T}	 	T{
+2.75
+T}
+.sp 1
+T{
+city
+T}	 	T{
+3.1
+T}	 	T{
+3.2
+T}	 	T{
+3.5
+T}	 	T{
+4.0
+T}	 	T{
+4.2
+T}	 	T{
+4.3
+T}	 	T{
+4.4
+T}	 	T{
+4.3
+T}	 	T{
+4.0
+T}	 	T{
+3.6
+T}	 	T{
+3.3
+T}	 	T{
+3.1
+T}	 	T{
+3.75
+T}
+.sp 1
+T{
+industrial
+T}	 	T{
+4.1
+T}	 	T{
+4.3
+T}	 	T{
+4.7
+T}	 	T{
+5.3
+T}	 	T{
+5.5
+T}	 	T{
+5.7
+T}	 	T{
+5.8
+T}	 	T{
+5.7
+T}	 	T{
+5.3
+T}	 	T{
+4.9
+T}	 	T{
+4.5
+T}	 	T{
+4.2
+T}	 	T{
+5.00
+T}
+.sp 1
+.TE
+.PP
+Planned improvements include the use of the SOLPOS algorithm for solar
+geometry calculations and internal computation of aspect and slope.
+.SS Solar time
+By default r.sun calculates times as true solar time, whereby solar noon is
+always exactly 12 o\(cqclock everywhere in the current region. Depending on where
+the zone of interest is located in the related time zone, this may cause
+differences of up to an hour, in some cases (like Western Spain) even more.
+On top of this, the offset varies during the year according to the Equation
+of Time.
+.PP
+To overcome this problem, the user can use the option \fIcivil_time=<timezone_offset>\fR
+in r.sun to make it use real\-world (wall clock) time. For example, for Central
+Europe the timezone offset is +1, +2 when daylight saving time is in effect.
+.PP
+.SS Extraction of shadow maps
+A map of shadows can be extracted from the solar incidence angle map
+(incidout). Areas with NULL values are shadowed. This will not work
+if the \fI\-p\fR flag has been used.
+.SS Large maps and out of memory problems
+With a large number or columns and rows, \fBr.sun\fR can consume
+significant amount of memory. While output raster maps are not
+partitionable, the input raster maps are using the \fInpartitions\fR
+parameter.
+In case of out of memory error (ERROR: G_malloc: out of memory), the
+\fInpartitions\fR parameter can be used to run a segmented calculation
+which consumes less memory during the computations.
+The amount of memory by \fBr.sun\fR is estimated as follows:
+.br
+.nf
+\fC
+# without input raster map partitioning:
+#  memory requirements: 4 bytes per raster cell
+#  rows,cols: rows and columns of current region (find out with g.region)
+#  IR: number of input raster maps without horizon maps
+#  OR: number of output raster maps
+memory_bytes = rows*cols*(IR*4 + horizon_steps + OR*4)
+# with input raster map partitioning:
+memory_bytes = rows*cols*((IR*4+horizon_steps)/npartitions  + OR*4)
+\fR
+.fi
+.SH EXAMPLES
+North Carolina example (considering also cast shadows):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# calculate horizon angles (to speed up the subsequent r.sun calculation)
+r.horizon elevation=elevation step=30 bufferzone=200 output=horangle \(rs
+    maxdistance=5000
+# slope + aspect
+r.slope.aspect elevation=elevation aspect=aspect.dem slope=slope.dem
+# calculate global radiation for day 180 at 2p.m., using r.horizon output
+r.sun elevation=elevation horizon_basename=horangle horizon_step=30 \(rs
+      aspect=aspect.dem slope=slope.dem glob_rad=global_rad day=180 time=14
+# result: output global (total) irradiance/irradiation [W.m\-2] for given day/time
+r.univar global_rad
+\fR
+.fi
+.PP
+Calculation of the integrated daily irradiation for a region in North\-Carolina
+for a given day of the year at 30m resolution. Here day 172 (i.e., 21 June
+in non\-leap years):
+.br
+.nf
+\fC
+g.region raster=elev_ned_30m \-p
+# considering cast shadows
+r.sun elevation=elev_ned_30m linke_value=2.5 albedo_value=0.2 day=172 \(rs
+      beam_rad=b172 diff_rad=d172 \(rs
+      refl_rad=r172 insol_time=it172
+d.mon wx0
+# show irradiation raster map [Wh.m\-2.day\-1]
+d.rast.leg b172
+# show insolation time raster map [h]
+d.rast.leg it172
+\fR
+.fi
+We can compute the day of year from a specific date in Python:
+.br
+.nf
+\fC
+>>> import datetime
+>>> datetime.datetime(2014, 6, 21).timetuple().tm_yday
+172
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.horizon,
+r.slope.aspect,
+r.sunhours,
+r.sunmask,
+g.proj,
+r.null,
+v.surf.rst
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Hofierka, J., Suri, M. (2002): The solar radiation model for Open source
+GIS: implementation and applications. International
+GRASS users conference in Trento, Italy, September 2002.
+(PDF)
+.IP \(bu 4n
+Hofierka, J. (1997). Direct solar radiation modelling within an open GIS
+environment. Proceedings of JEC\-GI\(cq97 conference in Vienna, Austria, IOS
+Press Amsterdam, 575\-584.
+.IP \(bu 4n
+Jenco, M. (1992). Distribution of direct solar radiation on georelief and
+its modelling by means of complex digital model of terrain (in Slovak). Geograficky
+casopis, 44, 342\-355.
+.IP \(bu 4n
+Kasten, F. (1996). The Linke turbidity factor based on improved values of
+the integral Rayleigh optical thickness. Solar Energy, 56 (3), 239\-244.
+.IP \(bu 4n
+Kasten, F., Young, A. T. (1989). Revised optical air mass tables and approximation
+formula. Applied Optics, 28, 4735\-4738.
+.IP \(bu 4n
+Kittler, R., Mikler, J. (1986): Basis of the utilization of solar radiation
+(in Slovak). VEDA, Bratislava, p. 150.
+.IP \(bu 4n
+Krcho, J. (1990). Morfometrická analza a digitálne modely georeliéfu
+(Morphometric analysis and digital models of georelief, in Slovak).
+VEDA, Bratislava.
+.IP \(bu 4n
+Muneer, T. (1990). Solar radiation model for Europe. Building services engineering
+research and technology, 11, 4, 153\-163.
+.IP \(bu 4n
+Neteler, M., Mitasova, H. (2002): Open Source GIS: A GRASS GIS Approach, Kluwer
+Academic Publishers. (Appendix explains formula;
+r.sun script download)
+.IP \(bu 4n
+Page, J. ed. (1986). Prediction of solar radiation on inclined surfaces. Solar
+energy R&D in the European Community, series F \- Solar radiation data,
+Dordrecht (D. Reidel), 3, 71, 81\-83.
+.IP \(bu 4n
+Page, J., Albuisson, M., Wald, L. (2001). The European solar radiation atlas:
+a valuable digital tool. Solar Energy, 71, 81\-83.
+.IP \(bu 4n
+Rigollier, Ch., Bauer, O., Wald, L. (2000). On the clear sky model of the
+ESRA \- European Solar radiation Atlas \- with respect to the Heliosat method.
+Solar energy, 68, 33\-48.
+.IP \(bu 4n
+Scharmer, K., Greif, J., eds., (2000). The European solar radiation atlas,
+Vol. 2: Database and exploitation software. Paris (Les Presses de l\(cqÉcole
+des Mines).
+.IP \(bu 4n
+Joint Research Centre: GIS solar radiation database for Europe and
+Solar radiation and GIS
+.RE
+.SH AUTHORS
+Jaroslav Hofierka, GeoModel, s.r.o. Bratislava, Slovakia
+.br
+Marcel Suri, GeoModel, s.r.o. Bratislava, Slovakia
+.br
+Thomas Huld, JRC, Italy
+.br
+© 2007, Jaroslav Hofierka, Marcel Suri. This program is free software under the GNU General Public License (>=v2)
+hofierka@geomodel.sk
+suri@geomodel.sk
+.SH SOURCE CODE
+.PP
+Available at: r.sun source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

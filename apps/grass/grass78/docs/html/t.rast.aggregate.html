@@ -1,0 +1,342 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.aggregate.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.aggregate.py</b></em>  - Aggregates temporally the maps of a space time raster dataset by a user defined granularity.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_aggregation.html">aggregation</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.aggregate.py</b><br></div>
+<b>t.rast.aggregate.py --help</b><br>
+<div id="synopsis"><b>t.rast.aggregate.py</b> [-<b>n</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>basename</b>=<em>string</em>  [<b>suffix</b>=<em>string</em>]  <b>granularity</b>=<em>string</em> <b>method</b>=<em>string</em>  [<b>offset</b>=<em>integer</em>]   [<b>nprocs</b>=<em>integer</em>]   [<b>file_limit</b>=<em>integer</em>]   [<b>sampling</b>=<em>name</em>[,<i>name</i>,...]]   [<b>where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Register Null maps</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time raster dataset</dd>
+
+<dt><b>basename</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Basename of the new generated output maps</dd>
+<dd>Either a numerical suffix or the start time (s-flag) separated by an underscore will be attached to create a unique identifier</dd>
+
+<dt><b>suffix</b>=<em>string</em></dt>
+<dd>Suffix to add at basename: set 'gran' for granularity, 'time' for the full time format, 'num' for numerical suffix with a specific number of digits (default %05)</dd>
+<dd>Default: <em>gran</em></dd>
+
+<dt><b>granularity</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Aggregation granularity, format absolute time "x years, x months, x weeks, x days, x hours, x minutes, x seconds" or an integer value for relative time</dd>
+
+<dt><b>method</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Aggregate operation to be performed on the raster maps</dd>
+<dd>Options: <em>average, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis</em></dd>
+<dd>Default: <em>average</em></dd>
+
+<dt><b>offset</b>=<em>integer</em></dt>
+<dd>Offset that is used to create the output map ids, output map id is generated as: basename_ (count + offset)</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>Number of r.series processes to run in parallel</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>file_limit</b>=<em>integer</em></dt>
+<dd>The maximum number of open files allowed for each r.series process</dd>
+<dd>Default: <em>1000</em></dd>
+
+<dt><b>sampling</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>The method to be used for sampling the input dataset</dd>
+<dd>Options: <em>equal, overlaps, overlapped, starts, started, finishes, finished, during, contains</em></dd>
+<dd>Default: <em>contains</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#aggregation-of-monthly-data-into-yearly-data" class="toc">Aggregation of monthly data into yearly data</a></li>
+        <li class="toc"><a href="#different-aggregations-and-map-name-suffix-variants" class="toc">Different aggregations and map name suffix variants</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>t.rast.aggregate</em> temporally aggregates space time raster
+datasets by a specific temporal granularity. This module support
+<em>absolute</em> and <em>relative time</em>. The temporal granularity
+of absolute time can be <em>seconds, minutes, hours, days, weeks,
+months</em> or <em>years</em>. Mixing of granularities eg. "1 year, 3
+months 5 days" is not supported. In case of relative time the temporal
+unit of the input space time raster dataset is used. The granularity
+must be specified with an integer value.
+<p>
+This module is sensitive to the current region and mask settings,
+hence spatial extent and spatial resolution. In case the registered
+raster maps of the input space time raster dataset have different
+spatial resolutions, the default nearest neighbor resampling method
+is used for runtime spatial aggregation.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The raster module <em>r.series</em> is used internally. Hence all
+aggregate methods of <em>r.series</em> are supported. See the
+<a href="r.series.html">r.series</a> manual page for details.
+<p>
+This module will shift the start date for each aggregation process
+depending on the provided temporal granularity. The following shifts
+will performed:
+
+<ul>
+    <li><em>granularity years</em>: will start at the first of January,
+      hence 14-08-2012 00:01:30 will be shifted to 01-01-2012 00:00:00</li>
+    <li><em>granularity months</em>: will start at the first day of a month,
+      hence 14-08-2012 will be shifted to 01-08-2012 00:00:00</li>
+    <li><em>granularity weeks</em>: will start at the first day of a week (Monday),
+      hence 14-08-2012 01:30:30 will be shifted to 13-08-2012 01:00:00</li>
+    <li><em>granularity days</em>: will start at the first hour of a day,
+      hence 14-08-2012 00:01:30 will be shifted to 14-08-2012 00:00:00</li>
+    <li><em>granularity hours</em>: will start at the first minute of a hour,
+      hence 14-08-2012 01:30:30 will be shifted to 14-08-2012 01:00:00</li>
+    <li><em>granularity minutes</em>: will start at the first second of a minute,
+      hence 14-08-2012 01:30:30 will be shifted to 14-08-2012 01:30:00</li>
+</ul>
+
+<p>
+The specification of the temporal relation between the aggregation
+intervals and the raster map layers is always formulated from the
+aggregation interval viewpoint. Hence, the relation <em>contains</em>
+has to be specified to aggregate map layer that are temporally located
+in an aggregation interval.
+<p>
+Parallel processing is supported in case that more than one interval is
+available for aggregation computation. Internally several
+<em>r.series</em> modules will be started, depending on the number of
+specified parallel processes (<em>nprocs</em>) and the number of
+intervals to aggregate.
+<p>
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="aggregation-of-monthly-data-into-yearly-data">Aggregation of monthly data into yearly data</a></h3>
+
+In this example the user is going to aggregate monthly data into yearly
+data, running:
+
+<div class="code"><pre>
+t.rast.aggregate input=tempmean_monthly output=tempmean_yearly \
+                 basename=tempmean_year \
+                 granularity="1 years" method=average
+
+t.support input=tempmean_yearly \
+          title="Yearly precipitation" \
+          description="Aggregated precipitation dataset with yearly resolution"
+
+t.info tempmean_yearly
+ +-------------------- Space Time Raster Dataset -----------------------------+
+ |                                                                            |
+ +-------------------- Basic information -------------------------------------+
+ | Id: ........................ tempmean_yearly@climate_2000_2012
+ | Name: ...................... tempmean_yearly
+ | Mapset: .................... climate_2000_2012
+ | Creator: ................... lucadelu
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014-11-27 10:25:21.243319
+ | Modification time:.......... 2014-11-27 10:25:21.862136
+ | Semantic type:.............. mean
+ +-------------------- Absolute time -----------------------------------------+
+ | Start time:................. 2009-01-01 00:00:00
+ | End time:................... 2013-01-01 00:00:00
+ | Granularity:................ 1 year
+ | Temporal type of maps:...... interval
+ +-------------------- Spatial extent ----------------------------------------+
+ | North:...................... 320000.0
+ | South:...................... 10000.0
+ | East:.. .................... 935000.0
+ | West:....................... 120000.0
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +-------------------- Metadata information ----------------------------------+
+ | Raster register table:...... raster_map_register_514082e62e864522a13c8123d1949dea
+ | North-South resolution min:. 500.0
+ | North-South resolution max:. 500.0
+ | East-west resolution min:... 500.0
+ | East-west resolution max:... 500.0
+ | Minimum value min:.......... 7.370747
+ | Minimum value max:.......... 8.81603
+ | Maximum value min:.......... 17.111387
+ | Maximum value max:.......... 17.915511
+ | Aggregation type:........... average
+ | Number of registered maps:.. 4
+ |
+ | Title: Yearly precipitation
+ | Monthly precipitation
+ | Description: Aggregated precipitation dataset with yearly resolution
+ | Dataset with monthly precipitation
+ | Command history:
+ | # 2014-11-27 10:25:21
+ | t.rast.aggregate input="tempmean_monthly"
+ |     output="tempmean_yearly" basename="tempmean_year" granularity="1 years"
+ |     method="average"
+ |
+ | # 2014-11-27 10:26:21
+ | t.support input=tempmean_yearly \
+ |        title="Yearly precipitation" \
+ |        description="Aggregated precipitation dataset with yearly resolution"
+ +----------------------------------------------------------------------------+
+</pre></div>
+
+<h3><a name="different-aggregations-and-map-name-suffix-variants">Different aggregations and map name suffix variants</a></h3>
+
+Examples of resulting naming schemes for different aggregations when
+using the <b>suffix</b> option:
+
+<h4>Weekly aggregation</h4>
+
+<div class="code"><pre>
+t.rast.aggregate input=daily_temp output=weekly_avg_temp \
+  basename=weekly_avg_temp method=average granularity="1 weeks"
+
+t.rast.list weekly_avg_temp
+name|mapset|start_time|end_time
+weekly_avg_temp_2003_01|climate|2003-01-03 00:00:00|2003-01-10 00:00:00
+weekly_avg_temp_2003_02|climate|2003-01-10 00:00:00|2003-01-17 00:00:00
+weekly_avg_temp_2003_03|climate|2003-01-17 00:00:00|2003-01-24 00:00:00
+weekly_avg_temp_2003_04|climate|2003-01-24 00:00:00|2003-01-31 00:00:00
+weekly_avg_temp_2003_05|climate|2003-01-31 00:00:00|2003-02-07 00:00:00
+weekly_avg_temp_2003_06|climate|2003-02-07 00:00:00|2003-02-14 00:00:00
+weekly_avg_temp_2003_07|climate|2003-02-14 00:00:00|2003-02-21 00:00:00
+</pre></div>
+
+Variant with <b>suffix</b> set to granularity:
+<div class="code"><pre>
+t.rast.aggregate input=daily_temp output=weekly_avg_temp \
+  basename=weekly_avg_temp suffix=gran method=average \
+  granularity="1 weeks"
+
+t.rast.list weekly_avg_temp
+name|mapset|start_time|end_time
+weekly_avg_temp_2003_01_03|climate|2003-01-03 00:00:00|2003-01-10 00:00:00
+weekly_avg_temp_2003_01_10|climate|2003-01-10 00:00:00|2003-01-17 00:00:00
+weekly_avg_temp_2003_01_17|climate|2003-01-17 00:00:00|2003-01-24 00:00:00
+weekly_avg_temp_2003_01_24|climate|2003-01-24 00:00:00|2003-01-31 00:00:00
+weekly_avg_temp_2003_01_31|climate|2003-01-31 00:00:00|2003-02-07 00:00:00
+weekly_avg_temp_2003_02_07|climate|2003-02-07 00:00:00|2003-02-14 00:00:00
+weekly_avg_temp_2003_02_14|climate|2003-02-14 00:00:00|2003-02-21 00:00:00
+</pre></div>
+
+<h4>Monthly aggregation</h4>
+
+<div class="code"><pre>
+t.rast.aggregate input=daily_temp output=monthly_avg_temp \
+  basename=monthly_avg_temp suffix=gran method=average \
+  granularity="1 months"
+
+t.rast.list monthly_avg_temp
+name|mapset|start_time|end_time
+monthly_avg_temp_2003_01|climate|2003-01-01 00:00:00|2003-02-01 00:00:00
+monthly_avg_temp_2003_02|climate|2003-02-01 00:00:00|2003-03-01 00:00:00
+monthly_avg_temp_2003_03|climate|2003-03-01 00:00:00|2003-04-01 00:00:00
+monthly_avg_temp_2003_04|climate|2003-04-01 00:00:00|2003-05-01 00:00:00
+monthly_avg_temp_2003_05|climate|2003-05-01 00:00:00|2003-06-01 00:00:00
+monthly_avg_temp_2003_06|climate|2003-06-01 00:00:00|2003-07-01 00:00:00
+</pre></div>
+
+<h4>Yearly aggregation</h4>
+
+<div class="code"><pre>
+t.rast.aggregate input=daily_temp output=yearly_avg_temp \
+  basename=yearly_avg_temp suffix=gran method=average \
+  granularity="1 years"
+
+t.rast.list yearly_avg_temp
+name|mapset|start_time|end_time
+yearly_avg_temp_2003|climate|2003-01-01 00:00:00|2004-01-01 00:00:00
+yearly_avg_temp_2004|climate|2004-01-01 00:00:00|2005-01-01 00:00:00
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.rast.aggregate.ds.html">t.rast.aggregate.ds</a>,
+<a href="t.rast.extract.html">t.rast.extract</a>,
+<a href="t.info.html">t.info</a>,
+<a href="r.series.html">r.series</a>,
+<a href="g.region.html">g.region</a>,
+<a href="r.mask.html">r.mask</a>
+</em>
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing">Temporal data processing Wiki</a>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.aggregate">t.rast.aggregate source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.aggregate">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+.TH wxGUI.animation 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Animation tool
+.SH DESCRIPTION
+The \fBAnimation Tool\fR is a \fIwxGUI\fR component
+for animating series of GRASS raster or vector maps or space time datasets (created by t.* modules).
+.PP
+Animation Tool allows you to:
+.RS 4n
+.IP \(bu 4n
+display up to 4 synchronized animations
+.IP \(bu 4n
+each animation can consist of base map layer(s) and (multiple) series in arbitrary order
+(for example, raising water level with elevation)
+.IP \(bu 4n
+control the animation speed
+.IP \(bu 4n
+interactively change active frame using a slider
+.IP \(bu 4n
+visualize space time datasets with unequally spaced intervals
+.IP \(bu 4n
+animate 3d view (partially implemented, not supported on Windows)
+.IP \(bu 4n
+export animation as a series of images, animated GIF, AVI or SWF
+.IP \(bu 4n
+choose format of time labels in case of animating maps with absolute time
+.IP \(bu 4n
+choose background color
+.IP \(bu 4n
+set starting and ending region in order to change region during animation
+(alternatively you can set N\-S/E\-W values instead of the ending region;
+these are used for making the region smaller or larger for each step)
+.RE
+.PP
+3D view animation enables to animate raster (as an elevation map or a
+color map) or vector map (points, lines). Internally,
+module \fIm.nviz.image\fR is used.
+To display 3D view animation follow these steps:
+.RS 4n
+.IP \(bu 4n
+open GRASS GUI, load maps and start 3D view
+.IP \(bu 4n
+set view, light and other parameters as you like
+.IP \(bu 4n
+save workspace file
+.IP \(bu 4n
+add new animation in Animation Tool, choose 3D view mode
+.IP \(bu 4n
+choose data (series of maps or space time dataset) used for animation
+.IP \(bu 4n
+set workspace file
+.IP \(bu 4n
+choose parameter (parameter
+of \fIm.nviz.image\fR) to animate
+(e.g. color_map)
+.RE
+.br
+.br
+.br
+.SH NOTE
+The Animation Tool follows the computational region settings,
+so please be sure your computational region is set to the geographic extent of maps you are animating.
+You can change the computational region (using \fIg.region\fR)
+and then reload the maps to update the animation.
+.SH EXAMPLES
+.br
+.nf
+\fC
+g.gui.animation raster=rmap1,rmap2,rmap3
+g.gui.animation vector=vmap1,vmap2,vmap3
+g.gui.animation strds=precipitation_2000_2010
+\fR
+.fi
+The loading of a series of maps into the Animation Tool can be simplified
+with \fIg.list\fR (back ticks syntax works for Linux and Mac only):
+.br
+.nf
+\fC
+g.gui.animation raster=\(gag.list type=raster mapset=. separator=comma pattern=\(dqprecip*\(dq\(ga
+\fR
+.fi
+Using extended regular expressions, the list of a series of raster maps can be subset by
+e.g., numeric range (here: precipitation for the years 1997\-2012):
+.br
+.nf
+\fC
+g.gui.animation raster=\(gag.list \-e type=raster mapset=. separator=comma pattern=\(dqprecip_total.(199[7\-9]|200[0\-9]|201[0\-2]).sum\(dq\(ga
+\fR
+.fi
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+\fI
+g.gui.timeline,
+g.list,
+m.nviz.image
+\fR
+.PP
+See also related wiki page.
+.SH AUTHOR
+Anna Kratochvilova,
+Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Animation tool source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

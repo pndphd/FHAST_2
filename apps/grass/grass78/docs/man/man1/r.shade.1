@@ -1,0 +1,147 @@
+.TH r.shade 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.shade.py\fR\fR  \- Drapes a color raster over an shaded relief or aspect map.
+.SH KEYWORDS
+raster, elevation, relief, hillshade, visualization
+.SH SYNOPSIS
+\fBr.shade.py\fR
+.br
+\fBr.shade.py \-\-help\fR
+.br
+\fBr.shade.py\fR [\-\fBc\fR] \fBshade\fR=\fIname\fR \fBcolor\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBbrighten\fR=\fIinteger\fR]   [\fBbgcolor\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Use colors from color tables for NULL values
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBshade\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of shaded relief or aspect raster map
+.IP "\fBcolor\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster to drape over relief raster map
+.br
+Typically, this raster is elevation or other colorful raster
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of shaded raster map
+.IP "\fBbrighten\fR=\fIinteger\fR" 4m
+.br
+Percent to brighten
+.br
+Options: \fI\-99\-99\fR
+.br
+Default: \fI0\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Color to use instead of NULL values
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.SH DESCRIPTION
+\fIr.shade\fR will drape a color raster map over a shaded relief map.
+In place of shaded relief, any raster map can be used including aspect or slope.
+The color raster map is usually an elevation raster map with colorful color
+table (as opposed to gray scale color table). However, any raster map can be
+used including categorical raster maps.
+The result is a raster map created from elevation and the shade raster.
+.PP
+Comparing to creating shaded relief as semi\-transparent overlay on
+the color raster map, this module gives result with more saturated colors.
+.PP
+The input for this module can be created for example using
+\fIr.slope.aspect\fR or
+\fIr.relief\fR.
+.PP
+NULL values are propagated by default, so if any of the two input rasters
+contains NULL cell NULL will be also in the output. If \fB\-c\fR flag is
+used and cell in \fBcolor\fR raster is NULL, just \fBshade\fR
+color is used. If cell in \fBshade\fR raster is NULL, shading effect
+is not applied and original colors are used. If \fBbgcolor\fR option is
+used, NULL value in any input raster will be in the output replaced
+by the given color.
+.SH NOTES
+Refer to the \fIr.his\fR help page for more details;
+\fIr.shade\fR is a frontend to that module with addition of
+brightness support similar to one provided by
+\fId.shade\fR.
+However, note that the brightness is not implemenented in the same way as for
+\fId.shade\fR and the results might
+be different.
+\fIr.shade\fR is using method described in \fIr.his\fR
+manual page.
+.SH EXAMPLES
+In this example, the aspect map in the North Carolina sample
+dataset location is used to hillshade the elevation map:
+.br
+.nf
+\fC
+g.region raster=aspect \-p
+r.shade shade=aspect color=elevation output=elevation_aspect_shaded
+d.mon wx0
+d.rast elevation_aspect_shaded
+\fR
+.fi
+In this next example, a shaded relief raster map is created
+and used to create a colorized hillshade
+raster map for later use:
+.br
+.nf
+\fC
+g.region raster=elevation
+r.relief input=elevation output=elevation_shaded_relief
+r.shade shade=elevation_shaded_relief color=elevation \(rs
+    output=elevation_relief_shaded
+d.mon wx1
+d.rast elevation_relief_shaded
+\fR
+.fi
+Interesting visualizations can be created using different color tables for
+elevation raster map, for example using haxby color table.
+.PP
+Figure: A detail of raster created by applying shading effect of shaded relief
+(hillshade) to elevation raster map from North Carolina dataset elevation map
+.SH SEE ALSO
+\fI
+r.his,
+d.his,
+d.shade,
+g.pnmcomp,
+r.slope.aspect,
+r.relief
+\fR
+.SH AUTHORS
+Hamish Bowman
+.br
+Vaclav Petras, NCSU OSGeoREL
+.br
+Inspired by \fId.shade\fR and
+manual for \fIr.his\fR.
+.SH SOURCE CODE
+.PP
+Available at: r.shade source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

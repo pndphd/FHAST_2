@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>GRASS GIS Manual: wxGUI Temporal Plot Tool</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+<h2>wxGUI Temporal Plot Tool</h2>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<!-- meta page description: wxGUI Temporal Plot Tool -->
+<!-- meta page index: topic_gui|GUI -->
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <b>Temporal Plot Tool</b> is a <em><a href="wxGUI.html">wxGUI</a></em>
+component that queries and plots the values of a point, defined by a coordinate
+pair, in one or more temporal datasets (strds, stvds, str3ds).
+
+<p>
+Supported features:
+<ul>
+  <li>temporal datasets with interval/point and absolute/relative time,</li>
+  <li>pop-up annotations with values information,</li>
+  <li>query and plot multiple points via the command line,</li>
+  <li>zoom and pan,</li>
+  <li>change labels to x and y axes,</li>
+  <li>add title to the plot, and</li>
+  <li>export the time series values to a CSV file.</li>
+</ul>
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_labels.png">
+<img src="tplot.png" width="600" height="367" alt="Temporal Plot Tool" border="0" >
+</a><br>
+<i>Figure: Temporal Plot Tool</i>
+</div>
+
+To optionally add a title to the temporal plot and/or change the x and y
+axes labels, first type the desired text and then click <em>Draw</em> as
+showed below.
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_labels.png">
+<img src="g_gui_tplot_labels.png" width="600" height="482" alt="g.gui.tplot add title and axes labels" border="0">
+</a><br>
+<i>Figure: Add title and labels to a time series plot</i>
+</div>
+
+To export the time series data to a text file (date and data values), type a
+name for the file and click <em>Draw</em> again. Optionally, set the 
+check-box to print headers, as well.
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_export_csv.png">
+<img src="g_gui_tplot_export_csv.png" width="600" height="481" alt="g.gui.tplot export time series as csv file" border="0">
+</a><br>
+<i>Figure: Export time series values to a text file</i>
+</div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>g.gui.tplot</em> requires the Python plotting library 
+<a href="http://matplotlib.org/">Matplotlib</a>.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="temporal.html">Temporal data processing</a><br>
+  <a href="wxGUI.html">wxGUI</a><br>
+  <a href="wxGUI.components.html">wxGUI components</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Luca Delucchi,
+<a href="http://www.gis.cri.fmach.it">Fondazione Edmund Mach</a>, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/gui/wxpython/tplot">wxGUI Temporal Plot Tool source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/gui/wxpython/tplot">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topic_gui.html">GUI index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

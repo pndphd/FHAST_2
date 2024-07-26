@@ -1,0 +1,220 @@
+.TH t.rast.what 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.what.py\fR\fR  \- Sample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts
+.SH KEYWORDS
+temporal, sampling, raster, time
+.SH SYNOPSIS
+\fBt.rast.what.py\fR
+.br
+\fBt.rast.what.py \-\-help\fR
+.br
+\fBt.rast.what.py\fR [\-\fBniv\fR]  [\fBpoints\fR=\fIname\fR]   [\fBcoordinates\fR=\fIeast,north\fR]  \fBstrds\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBorder\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBlayout\fR=\fIstring\fR]   [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Output header row
+.IP "\fB\-i\fR" 4m
+.br
+Use stdin as input and ignore coordinates and point option
+.IP "\fB\-v\fR" 4m
+.br
+Show the category for vector points map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBpoints\fR=\fIname\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Comma separated list of coordinates
+.IP "\fBstrds\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for the output file or \(dq\-\(dq in case stdout should be used
+.br
+Default: \fI\-\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBorder\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Sort the maps by category
+.br
+Options: \fIid,  name,  creator,  mapset,  creation_time,  modification_time,  start_time,  end_time,  north,  south,  west,  east,  min,  max\fR
+.br
+Default: \fIstart_time\fR
+.IP "\fBlayout\fR=\fIstring\fR" 4m
+.br
+The layout of the output. One point per row (row), one point per column (col), all timsteps in one row (timerow)
+.br
+Options: \fIrow,  col,  timerow\fR
+.br
+Default: \fIrow\fR
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r.what processes to run in parallel
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIt.rast.what\fR is designed to sample space time raster datasets
+at specific point coordinates using r.what
+internally. The output of r.what is transformed
+to different output layouts.
+The output layouts can be specified using the \fIlayout\fR option.
+.PP
+Three layouts can be specified:
+.RS 4n
+.IP \(bu 4n
+\fIrow\fR \- Row order, one vector sample point value per row
+.IP \(bu 4n
+\fIcol\fR \- Column order, create a column for each vector sample
+point of a single time step/raster layer
+.IP \(bu 4n
+\fItimerow\fR \- Time order, create a column for each time step,
+this order is the original \fIr.what\fR output, except that the column
+names are the timestamps
+.RE
+Please have a look at the example to see the supported layouts.
+.PP
+This module is designed to run several instances of \fIr.what\fR to sample
+subsets of a space time raster dataset in parallel. Several intermediate
+text files will be created that are merged into a single file at the
+end of the processing.
+.PP
+Coordinates can be provided as vector map using the \fIpoints\fR option
+or as comma separated coordinate list with the \fIcoordinates \fRoption.
+.PP
+An output file can be specified using the \fIoutput\fR option.
+Stdout will be used if no output is specified or if the
+\fIoutput\fR option is set to \(dq\-\(dq.
+.SH EXAMPLES
+.SS Data preparation
+In the following examples we sample a space time raster dataset that contains
+4 raster map layers. First we create the STRDS that will be sampled with
+\fIt.rast.what\fR.
+.br
+.nf
+\fC
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10
+# Generate data
+r.mapcalc expression=\(dqa_1 = 1\(dq \-s
+r.mapcalc expression=\(dqa_2 = 2\(dq \-s
+r.mapcalc expression=\(dqa_3 = 3\(dq \-s
+r.mapcalc expression=\(dqa_4 = 4\(dq \-s
+t.create type=strds output=A title=\(dqA test\(dq descr=\(dqA test\(dq
+t.register \-i type=raster input=A maps=a_1,a_2,a_3,a_4 \(rs
+    start=\(cq1990\-01\-01\(cq increment=\(dq1 month\(dq
+\fR
+.fi
+.SS Example 1
+The first approach uses text coordinates as input and stdout as output,
+the layout is one coordinate(point per column:
+.br
+.nf
+\fC
+t.rast.what strds=A coordinates=\(dq115,36,79,45\(dq layout=col \-n
+start|end|115.0000000000;36.0000000000|79.0000000000;45.0000000000
+1990\-01\-01 00:00:00|1990\-02\-01 00:00:00|1|1
+1990\-02\-01 00:00:00|1990\-03\-01 00:00:00|2|2
+1990\-03\-01 00:00:00|1990\-04\-01 00:00:00|3|3
+1990\-04\-01 00:00:00|1990\-05\-01 00:00:00|4|4
+\fR
+.fi
+.SS Example 2
+A vector map layer can be used as input to sample the STRDS. All
+three available layouts are demonstrated using the vector map for sampling.
+.br
+.nf
+\fC
+# First create the vector map layer based on random points
+v.random output=points n=3 seed=1
+# Row layout using a text file as output
+t.rast.what strds=A points=points output=result.txt layout=row \-n
+cat result.txt
+115.0043586274|36.3593955783|1990\-01\-01 00:00:00|1990\-02\-01 00:00:00|1
+115.0043586274|36.3593955783|1990\-02\-01 00:00:00|1990\-03\-01 00:00:00|2
+115.0043586274|36.3593955783|1990\-03\-01 00:00:00|1990\-04\-01 00:00:00|3
+115.0043586274|36.3593955783|1990\-04\-01 00:00:00|1990\-05\-01 00:00:00|4
+79.6816763826|45.2391522853|1990\-01\-01 00:00:00|1990\-02\-01 00:00:00|1
+79.6816763826|45.2391522853|1990\-02\-01 00:00:00|1990\-03\-01 00:00:00|2
+79.6816763826|45.2391522853|1990\-03\-01 00:00:00|1990\-04\-01 00:00:00|3
+79.6816763826|45.2391522853|1990\-04\-01 00:00:00|1990\-05\-01 00:00:00|4
+97.4892579600|79.2347263950|1990\-01\-01 00:00:00|1990\-02\-01 00:00:00|1
+97.4892579600|79.2347263950|1990\-02\-01 00:00:00|1990\-03\-01 00:00:00|2
+97.4892579600|79.2347263950|1990\-03\-01 00:00:00|1990\-04\-01 00:00:00|3
+97.4892579600|79.2347263950|1990\-04\-01 00:00:00|1990\-05\-01 00:00:00|4
+# Column layout order using stdout as output
+t.rast.what strds=A points=points layout=col \-n
+start|end|115.0043586274;36.3593955783|79.6816763826;45.2391522853|97.4892579600;79.2347263950
+1990\-01\-01 00:00:00|1990\-02\-01 00:00:00|1|1|1
+1990\-02\-01 00:00:00|1990\-03\-01 00:00:00|2|2|2
+1990\-03\-01 00:00:00|1990\-04\-01 00:00:00|3|3|3
+1990\-04\-01 00:00:00|1990\-05\-01 00:00:00|4|4|4
+# Timerow layout, one time series per row
+# using the where statement to select a subset of the STRDS
+# and stdout as output
+t.rast.what strds=A points=points \(rs
+    where=\(dqstart_time >= \(cq1990\-03\-01\(cq\(dq layout=timerow \-n
+x|y|1990\-03\-01 00:00:00;1990\-04\-01 00:00:00|1990\-04\-01 00:00:00;1990\-05\-01 00:00:00
+115.004358627375|36.3593955782903|3|4
+79.681676382576|45.2391522852909|3|4
+97.4892579600048|79.2347263950131|3|4
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r.mask
+r.neighbors,
+r.what,
+t.info,
+t.rast.aggregate.ds,
+t.rast.extract,
+v.what.strds
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.what source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,126 @@
+.TH v.db.addtable 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.addtable.py\fR\fR  \- Creates and connects a new attribute table to a given layer of an existing vector map.
+.SH KEYWORDS
+vector, attribute table, database
+.SH SYNOPSIS
+\fBv.db.addtable.py\fR
+.br
+\fBv.db.addtable.py \-\-help\fR
+.br
+\fBv.db.addtable.py\fR \fBmap\fR=\fIname\fR  [\fBtable\fR=\fIstring\fR]   [\fBlayer\fR=\fIinteger\fR]   [\fBkey\fR=\fIname\fR]   [\fBcolumns\fR=\fIname type\fR[,\fIname type\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBtable\fR=\fIstring\fR" 4m
+.br
+Name of new attribute table (default: vector map name)
+.IP "\fBlayer\fR=\fIinteger\fR" 4m
+.br
+Layer number where to add new attribute table
+.br
+Default: \fI1\fR
+.IP "\fBkey\fR=\fIname\fR" 4m
+.br
+Name of key column
+.br
+Must refer to an integer column
+.br
+Default: \fIcat\fR
+.IP "\fBcolumns\fR=\fIname type[,\fIname type\fR,...]\fR" 4m
+.br
+Name and type of the new column(s) (\(cqname type [,name type, ...]\(cq)
+.br
+Types depend on database backend, but all support VARCHAR(), INT, DOUBLE PRECISION and DATE. Example: \(cqlabel varchar(250), value integer\(cq
+.SH DESCRIPTION
+\fIv.db.addtable\fR creates and adds a new attribute table to a given vector
+map. It links the table to the specified layer of the vector map. If the vector
+map is not yet linked to any table, new a database link is established based on
+the MAPSET database settings (see \fIdb.connect\fR).
+.SH NOTES
+\fIv.db.addtable\fR is a front\-end to \fIdb.execute\fR to allow easier
+usage.
+.PP
+\fIv.db.addtable\fR will only insert category values into the table for those features
+which actually have a category value in the relevant layer. The user can add
+category values automatically by using \fIv.category\fR or manually with
+\fIwxGUI vector digitizer\fR
+before running v.db.addtable. Or one can run v.db.addtable first
+and then use either a combinatino of \fIv.category\fR + \fIv.to.db\fR or
+\fIwxGUI vector digitizer\fR
+to add the relevant lines to the table.
+.PP
+The supported types of columns depend on the database backend. However, all
+backends should support VARCHAR, INT, DOUBLE PRECISION and DATE.
+.PP
+The existing database connection(s) can be verified with \fIv.db.connect\fR.
+.SH EXAMPLE
+Adding a new attribute table with a single column to default layer 1:
+.br
+.br
+.nf
+\fC
+g.copy vect=roadsmajor,myroads
+v.db.addtable myroads columns=\(dqslope double precision\(dq
+v.db.connect \-p myroads
+v.info \-c myroads
+\fR
+.fi
+.PP
+Adding a new attribute table with two columns to layer 2:
+.br
+.br
+.nf
+\fC
+g.copy vect=roadsmajor,myroads
+v.db.addtable myroads columns=\(dqslope double precision, roadname varchar(15)\(dq layer=2
+v.db.connect \-p myroads
+v.info \-c myroads
+v.info \-c myroads layer=2
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.droptable,
+db.execute,
+v.db.connect,
+v.db.dropcolumn,
+v.db.droptable,
+v.db.select,
+v.db.update
+.br
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.db.addtable source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,292 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.segment - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.segment</b></em>  - Creates points/segments from input vector lines and positions.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#node">node</a>, <a href="keywords.html#point">point</a>, <a href="keywords.html#segment">segment</a>, <a href="keywords.html#vertex">vertex</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.segment</b><br></div>
+<b>v.segment --help</b><br>
+<div id="synopsis"><b>v.segment</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em>  [<b>rules</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector lines map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>rules</b>=<em>name</em></dt>
+<dd>Name of file containing segment rules</dd>
+<dd>'-' for standard input</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#extraction-of-a-line-segment" class="toc">Extraction of a line segment</a></li>
+        <li class="toc"><a href="#parallel-line-segments" class="toc">Parallel line segments</a></li>
+        <li class="toc"><a href="#points-equidistant-along-the-tracks" class="toc">Points equidistant along the tracks</a></li>
+        <li class="toc"><a href="#points-equidistant-along-and-offset-the-tracks" class="toc">Points equidistant along and offset the tracks</a></li>
+        <li class="toc"><a href="#points-equidistant-in-percent-along-and-offset-the-tracks" class="toc">Points equidistant in percent along and offset the tracks</a></li>
+    </ul></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.segment</em> generates segments or points from input lines and from
+positions read from a text file or '<tt>stdin</tt>'. It includes the creation 
+of parallel lines or points in given destination from the line.
+
+<p>The format is:
+<div class="code"><pre>
+P &lt;point id&gt;   &lt;line cat&gt; &lt;offset&gt; [&lt;side offset&gt;]
+L &lt;segment id&gt; &lt;line cat&gt; &lt;start offset&gt; &lt;end offset&gt; [&lt;side offset&gt;]
+</pre></div>
+
+The offsets can be percent values of the line length. If the offsets are
+negative, they start from the end node of the line. -0 means the end of the
+line.
+
+<p>
+The user could send to <tt>stdin</tt> something like:
+<div class="code"><pre>
+P 1 356 24.56
+P 2 495 12.31
+P 3 500 -12.31
+P 4 510 -20%
+...
+</pre></div>
+(pipe or redirect from file into the command).<br>
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+A segment is only created for the first line found of the specified category.
+<p>Points are generated along the lines at the given distance(s) or percent(s)
+of the line length from the beginning or end, if offsets are negative, of the
+vector line.
+<p>The side offset is the orthogonal distance from the line. Positive side
+offsets are to the right side of the line going forward, negative offsets
+are to the left (<em>d.vect</em> with <em>display=shape,dir</em> shows
+the direction of vector lines). As the segment distance is measured along the
+original line, side-offset lines will be longer than the start-end segment distance
+for outside corners of curving lines, and shorter for inside corners.
+<p>All offsets are measured in map units (see "<em>g.proj -p</em>") or percents
+of the line length, if followed by a % character.
+<p>To place a point in the middle of a line, 50% offset can be used or the
+<em>v.to.db</em> module may be used to find the line's length. Then half of
+that distance can be used as the along-line offset.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+The examples are based on the North Carolina sample location.
+
+<h3><a name="extraction-of-a-line-segment">Extraction of a line segment</a></h3>
+
+Extract line segment from 400m to 5000m from beginning
+of line 1:
+
+<div class="code"><pre>
+# extract lines from railroad map:
+v.extract input=railroads output=myrr cats=1
+
+# join segments into polyline and reassign category numbers
+v.build.polylines myrr out=myrr_pol
+v.category input=myrr_pol output=myrailroads option=add
+
+# zoom to an area of interest
+g.region vector=myrailroads -p
+
+# show line, category, direction (to find the beginning)
+d.mon wx0
+d.vect map=myrailroads display=shape,cat,dir lsize=12
+
+# extract line segment from 400m to 5000m from beginning of line 1
+echo "L 1 1 400 5000" | v.segment input=myrailroads output=myrailroads_segl
+d.erase
+d.vect map=myrailroads
+d.vect map=myrailroads_segl col=green width=2
+
+# set node at 5000m from beginning of line 1
+echo "P 1 1 5000" | v.segment input=myrailroads output=myrailroads_segp
+d.vect map=myrailroads_segp icon=basic/circle color=red fcolor=red size=5
+</pre></div>
+<center>
+<img src="v_segment_subline.jpg"><br>
+Extract line segment from 400m to 5000m from beginning
+of line 1
+</center>
+
+<h3><a name="parallel-line-segments">Parallel line segments</a></h3>
+
+Creation of parallel, 1km long line segments along the first 8km of
+track, offset 500m to the left of the tracks:
+
+<div class="code"><pre>
+v.segment input=myrailroads output=myrailroads_segl_side &lt;&lt; EOF
+L 1 1 1000 2000 -500
+L 2 1 3000 4000 -500
+L 3 1 5000 6000 -500
+L 4 1 7000 8000 -500
+EOF
+d.erase
+d.vect map=myrailroads display=shape,dir
+d.vect -c map=myrailroads_segl_side width=2
+</pre></div>
+
+<h3><a name="points-equidistant-along-the-tracks">Points equidistant along the tracks</a></h3>
+
+Creation of a series of points, spaced every 2km along the tracks:
+
+<div class="code"><pre>
+v.segment input=myrailroads output=myrailroads_pt2km &lt;&lt; EOF
+P 1 1 1000
+P 2 1 3000
+P 3 1 5000
+P 4 1 7000
+EOF
+d.erase
+d.vect map=myrailroads display=shape,dir
+d.vect map=myrailroads_pt2km icon=basic/circle color=blue fcolor=blue size=5
+</pre></div>
+<center>
+<img src="v_segment_spaced_points.jpg"><br>
+A series of points, spaced every 2km along the tracks
+</center>
+
+<h3><a name="points-equidistant-along-and-offset-the-tracks">Points equidistant along and offset the tracks</a></h3>
+
+Creation of a series of points, spaced every 2km along the tracks,
+offset 500m to the right:
+
+<div class="code"><pre>
+v.segment input=myrailroads output=myrailroads_pt2kmO500m &lt;&lt; EOF
+P 1 1 1000 500
+P 2 1 3000 500
+P 3 1 5000 500
+P 4 1 7000 500
+EOF
+d.erase
+d.vect map=myrailroads display=shape,dir
+d.vect map=myrailroads_pt2kmO500m icon=basic/circle color=aqua fcolor=aqua size=5
+</pre></div>
+<center>
+<img src="v_segment_spaced_right_points.jpg"><br>
+A series of points, spaced every 2km along the tracks, offset 500m to the right
+</center>
+
+<h3><a name="points-equidistant-in-percent-along-and-offset-the-tracks">Points equidistant in percent along and offset the tracks</a></h3>
+
+Creation of a series of points, spaced every 10% of the line's length along the
+tracks from the end of the line up to the middle point, offset 500m to the right:
+
+<div class="code"><pre>
+v.segment input=myrailroads output=myrailroads_pt10pctO500m &lt;&lt; EOF
+P 1 1  -0% 500
+P 2 1 -10% 500
+P 3 1 -20% 500
+P 4 1 -30% 500
+P 5 1 -40% 500
+P 6 1 -50% 500
+EOF
+d.erase
+d.vect map=myrailroads display=shape,dir
+d.vect map=myrailroads_pt10pctO500m icon=basic/circle color=red fcolor=black size=5
+</pre></div>
+<center>
+<img src="v_segment_spaced_percent_points.jpg"><br>
+A series of points, spaced every 10% of the line's length along the
+tracks from the end of the line up to the middle point, offset 500m to the right
+</center>
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+There is a problem with side-offset parallel line generation for inside corners.
+<!-- in Vect_line_parallel(), v.parallel is also affected -->
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="lrs.html">LRS tutorial</a> (Linear Referencing System),<br>
+<a href="d.vect.html">d.vect</a>,
+<a href="v.build.polylines.html">v.build.polylines</a>,
+<a href="v.lrs.segment.html">v.lrs.segment</a>,
+<a href="v.parallel.html">v.parallel</a>,
+<a href="v.split.html">v.split</a>,
+<a href="v.to.db.html">v.to.db</a>,
+<a href="v.to.points.html">v.to.points</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.segment">v.segment source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.segment">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

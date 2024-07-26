@@ -1,0 +1,85 @@
+.TH r.surf.gauss 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.surf.gauss\fR\fR  \- Generates a raster map using gaussian random number generator.
+.br
+Mean and standard deviation of gaussian deviates can be expressed by the user.
+.SH KEYWORDS
+raster, surface, random
+.SH SYNOPSIS
+\fBr.surf.gauss\fR
+.br
+\fBr.surf.gauss \-\-help\fR
+.br
+\fBr.surf.gauss\fR \fBoutput\fR=\fIname\fR  [\fBmean\fR=\fIfloat\fR]   [\fBsigma\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmean\fR=\fIfloat\fR" 4m
+.br
+Distribution mean
+.br
+Default: \fI0.0\fR
+.IP "\fBsigma\fR=\fIfloat\fR" 4m
+.br
+Standard deviation
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fIr.surf.gauss\fR produces a raster map of Gaussian deviates whose
+mean and standard deviation can be expressed by the user. It uses a
+Gaussian random number generator. It is essentially the same
+as \fIr.surf.random\fR, but uses a
+Gaussian random number generator instead.
+.br
+\fIHistogram of map generated with r.surf.gauss (mean=0, sigma=10)\fR
+.SH EXAMPLE
+.br
+.nf
+\fC
+g.region \-p n=228500 s=215000 w=630000 e=645000 res=10
+r.surf.gauss out=gauss mean=0 sigma=10
+# check result
+r.univar gauss
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.surf.contour,
+r.surf.fractal,
+r.surf.idw,
+r.surf.random,
+v.surf.rst
+\fR
+.SH AUTHOR
+Jo Wood, ASSIST\(cqs home
+.SH SOURCE CODE
+.PP
+Available at: r.surf.gauss source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

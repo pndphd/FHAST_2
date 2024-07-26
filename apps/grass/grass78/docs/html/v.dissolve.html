@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.dissolve.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.dissolve.py</b></em>  - Dissolves boundaries between adjacent areas sharing a common category number or attribute.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_dissolve.html">dissolve</a>, <a href="keywords.html#area">area</a>, <a href="keywords.html#line">line</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.dissolve.py</b><br></div>
+<b>v.dissolve.py --help</b><br>
+<div id="synopsis"><b>v.dissolve.py</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>column</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name.</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name of attribute column used to dissolve common boundaries</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-use" class="toc">Basic use</a></li>
+        <li class="toc"><a href="#dissolving-based-on-column-attributes" class="toc">Dissolving based on column attributes</a></li>
+        <li class="toc"><a href="#dissolving-adjacent-shape-files-to-remove-tile-boundaries" class="toc">Dissolving adjacent SHAPE files to remove tile boundaries</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>v.dissolve</em> module is used to merge adjacent areas in a vector
+map which share the same category value. The resulting merged area(s) retains
+this category value. Alternatively an integer or string column can be defined
+which is used to find adjacent polygons with identical attribute for common
+boundary dissolving. In this case the categories are not retained, only the
+values of the new key column. See the <em>v.reclass</em> help page for details.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+GRASS defines a vector area as composite entity consisting of a set of
+closed boundaries and a centroid. The centroids must contain a
+category number
+(see <em>v.centroids</em>), this number is linked to area attributes and
+database links.
+<p>Multiple attributes may be linked to a single vector entity through
+numbered fields referred to as layers. Refer to <em>v.category</em> for
+more details.
+
+<p>Merging of areas can also be accomplished using
+<tt>v.extract -d</tt> which provides some additional options.
+In fact, <em>v.dissolve</em> is simply a
+front-end to that module. The use of the <em>column</em> parameter
+adds a call to <em>v.reclass</em> before.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="basic-use">Basic use</a></h3>
+<div class="code"><pre>
+v.dissolve input=undissolved output=dissolved
+</pre></div>
+
+<h3><a name="dissolving-based-on-column-attributes">Dissolving based on column attributes</a></h3>
+
+North Carolina data set:
+
+<div class="code"><pre>
+g.copy vect=soils_general,mysoils_general
+v.dissolve mysoils_general output=mysoils_general_families column=GSL_NAME
+</pre></div>
+
+<h3><a name="dissolving-adjacent-shape-files-to-remove-tile-boundaries">Dissolving adjacent SHAPE files to remove tile boundaries</a></h3>
+
+If tile boundaries of adjacent maps (e.g. CORINE Landcover SHAPE files)
+have to be removed, an extra step is required to remove duplicated
+boundaries:
+
+<div class="code"><pre>
+# patch tiles after import:
+v.patch -e `g.list type=vector pat="clc2000_*" separator=","` out=clc2000_patched
+
+# remove duplicated tile boundaries:
+v.clean clc2000_patched out=clc2000_clean tool=snap,break,rmdupl thresh=.01
+
+# dissolve based on column attributes:
+v.dissolve input=clc2000_clean output=clc2000_final col=CODE_00
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.category.html">v.category</a>,
+<a href="v.centroids.html">v.centroids</a>,
+<a href="v.extract.html">v.extract</a>,
+<a href="v.reclass.html">v.reclass</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+module: M. Hamish Bowman, Dept. Marine Science, Otago University, New Zealand<br>
+Markus Neteler for column support<br>
+help page: Trevor Wiens
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.dissolve">v.dissolve source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.dissolve">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

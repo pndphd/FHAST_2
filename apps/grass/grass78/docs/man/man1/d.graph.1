@@ -1,0 +1,247 @@
+.TH d.graph 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.graph\fR\fR  \- Program for generating and displaying simple graphics on the display monitor.
+.SH KEYWORDS
+display, cartography
+.SH SYNOPSIS
+\fBd.graph\fR
+.br
+\fBd.graph \-\-help\fR
+.br
+\fBd.graph\fR [\-\fBm\fR]  [\fBinput\fR=\fIname\fR]   [\fBcolor\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Coordinates are given in map units
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of file containing graphics commands, if not given reads from standard input
+.IP "\fBcolor\fR=\fIstring\fR" 4m
+.br
+Color to draw with, either a standard GRASS color or R:G:B triplet
+.br
+Default: \fIblack\fR
+.SH DESCRIPTION
+\fId.graph\fR
+draws graphics that are described either from standard input (default),
+or within a file (if an \fBinput\fR file name is identified on the
+command line). If graphics commands are entered from standard input,
+a \fICTRL\-d\fR is used to signal the end of input to \fId.graph\fR.
+Coordinates are given either as a percentage of frame height and width
+(default) or in geographic coordinates (with the \fB\-m\fR flag).
+.PP
+The program can be run interactively or non\-interactively.
+The user can run the program completely non\-interactively
+by specifying the name of a graphics file containing the
+\fId.graph\fR graphics commands. If run non\-interactively the
+\fId.graph\fR command is saved to the display\(cqs dedraw history.
+The user can also elect to run the program partially interactively,
+by specifying any/all of the parameters \fIexcept\fR
+the graphics file \fBinput=\fR\fIname\fR parameter on the command line.
+In this case, \fId.graph\fR will expect the user to input \fId.graph\fR
+graphics commands from standard input (i.e., the keyboard) and
+will (silently) prompt the user for these graphics commands.
+.PP
+Alternately, the user can simply type \fBd.graph\fR on the command line,
+and be prompted for the values of all parameters. In this case, the user is presented with the standard
+GRASS GUI interface.
+.PP
+The default coordinate system used is 0\-100 percent of the active frame
+in x and similarly 0\-100 in y,
+regardless of the graphics monitor display frame size and aspect.
+The (0,0) location is the lower left corner of the active graphics
+monitor display frame. All values may be floating point.
+If the \fB\-m\fR flag is given, geographic coordinates will be used instead.
+.SH COMMANDS
+.PP
+The graphics language is simple, and uses the following commands:
+.br
+.br
+[
+# |
+move |
+draw |
+polygon |
+polyline |
+color |
+text |
+size |
+symbol |
+rotation |
+icon |
+width
+]
+.IP "\fB#\fR \fIcomment\fR" 4m
+.br
+A line of comment which is ignored in the processing.
+.IP "\fBmove\fR \fIxpos ypos\fR" 4m
+.br
+The current location is updated to \fIxpos ypos\fR.
+Unless the \fB\-m\fR flag is used,
+values are stated as a percent of the active display frame\(cqs
+horizontal (\fIxpos\fR) and vertical (\fIypos\fR) size,
+and may be floating point values. Values are between 0\-100.
+\fBNote.\fR A space must separate \fIxpos\fR and \fIypos\fR.
+.IP "\fBdraw\fR \fIxpos ypos\fR" 4m
+.br
+A line is drawn in the current color from the current location to the new
+location \fIxpos ypos\fR, which then becomes the current location.
+Unless the \fB\-m\fR flag is used,
+values are stated as a percent of the active display frame\(cqs
+horizontal (\fIxpos\fR) and vertical (\fIypos\fR) size,
+and may be floating point values. Values are between 0\-100.
+\fBNote.\fR A space must separate \fIxpos\fR and \fIypos\fR.
+.IP "\fBpolygon\fR    \fI xpos ypos\fR    \fI xpos ypos\fR    ..." 4m
+.br
+The coordinates appearing beneath the word \fIpolygon\fR,
+one pair per line,
+circumscribe a polygon that is to be filled with the current color.
+.IP "\fBpolyline\fR    \fI xpos ypos\fR    \fI xpos ypos\fR    ..." 4m
+.br
+The coordinates appearing beneath the word \fIpolyline\fR,
+one pair per line,
+circumscribe a polygon that is not to be filled with color.
+.IP "\fBcolor\fR \fIcolor\fR" 4m
+.br
+Sets the current color to that stated; subsequent graphics will be drawn
+in the stated color, until the current color is set to a different color.
+Options are \fIred\fR,
+\fIorange\fR,
+\fIyellow\fR,
+\fIgreen\fR,
+\fIblue\fR,
+\fIindigo\fR,
+\fIviolet\fR,
+\fIbrown\fR,
+\fImagenta\fR,
+\fIgray\fR,
+\fIwhite\fR,
+\fIblack\fR,
+an R:G:B triplet (separated by colons),
+or the word \(dqnone\(dq (draws in the default background color).
+.IP "\fBtext\fR \fIline\-of\-text\fR" 4m
+.br
+The stated text is drawn at the current location using the current color,
+and the new current location is then positioned at the end of the text string.
+.IP "\fBsize\fR \fIxper yper\fR" 4m
+.br
+Subsequent text will be drawn such that the text is
+\fIxper\fR percent of the graphics monitor display frame wide and
+\fIyper\fR percent of the frame high. By default, the text size is set to
+5 percent of the active frame\(cqs width and 5 percent of the frame\(cqs height.
+If only one value is given, then that value will be used for both x and y
+scaling.
+.br
+\fBNote.\fR A space must separate \fIxper\fR and \fIyper\fR.
+.IP "\fBsymbol\fR \fItype size xper yper [line_color [fill_color]]\fR" 4m
+.br
+A symbol is drawn at the given size on the display monitor. The
+\fIxper\fR and \fIyper\fR options define the center of the icon and
+are given as a percentage of the display frame (0,0 is lower left).
+The symbol can be any of those stored in $GISBASE/etc/symbol/
+(e.g. \fIbasic/circle\fR) or stored in the user\(cqs mapset directory in the
+form $MAPSET/symbol/\fItype/name\fR.
+The colors may be either a standard color name, an R:G:B triplet,
+or \(dqnone\(dq. If using an R:G:B triplet, each color value can range from 0\-255.
+If not specified the default \fIline_color\fR is black and the default
+\fIfill_color\fR is grey.
+.IP "\fBrotation\fR \fIangle\fR" 4m
+.br
+Subsequent text and symbols will be drawn such that they are rotated
+\fIangle\fR degrees counter\-clockwise from east.
+.IP "\fBicon\fR \fItype size x y\fR" 4m
+.br
+Draws an icon of types \fIo\fR, \fIx\fR, or \fI+\fR
+with specified \fIsize\fR (in %) at location \fIx,y\fR.
+Note: type \fIo\fR designates a square.
+.IP "\fBwidth\fR \fIvalue\fR" 4m
+.br
+Subsequent lines (including non\-FreeType text) will be drawn with
+the given pixel thickness.
+.br
+The default value is 0.
+.SH EXAMPLES
+For an example use of \fId.graph\fR, examine the contents of the
+command file \fIgrass_logo.txt\fR
+located in the \fId.graph\fR source code directory. It will draw the
+CERL GRASS logo using the \fId.graph\fR graphing commands stored in the file.
+Note that the coordinates in the \fIgrass_logo.txt\fR file were
+taken directly off an image drawn by hand on graph paper.
+.PP
+A dynamic example can be found in the \fId.polar\fR shell script.
+.SS Draw a \(dqstar\(dq symbol at a given map coordinate
+.br
+.nf
+\fC
+echo \(dqsymbol basic/star 20 2264417 5413182 black red\(dq | d.graph \-m
+\fR
+.fi
+.SS Split the screen into quadrants:
+.br
+.nf
+\fC
+d.frame \-s full_screen
+d.graph << EOF
+  color 80:80:120
+  polygon
+   0 49.75
+   0 50.25
+   100 50.25
+   100 49.75
+  polygon
+   49.85 0
+   50.15 0
+   50.15 100
+   49.85 100
+EOF
+\fR
+.fi
+.SH NOTES
+\fId.graph\fR remembers the last screen location (\fIxpos ypos\fR) to which
+the user moved, even after the user erases the display frame.
+If the user runs \fId.graph\fR repeatedly, and wishes to start anew with
+the default (xpos ypos) screen location, the user should \fIclear\fR the
+display frame between runs of \fId.graph\fR.
+.SH LIMITATIONS
+There are no automated ways of generating graphic images. It is anticipated
+that GRASS user sites will write programs to convert output from a resident
+graphics editor into GRASS \fId.graph\fR format.
+(e.g. EPS \-> \fId.graph\fR, perhaps with the help of a
+pstoedit plugin)
+.SH SEE ALSO
+\fI
+d.font,
+d.labels,
+d.polar,
+d.text,
+d.where
+\fR
+.SH AUTHOR
+James Westervelt, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.graph source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

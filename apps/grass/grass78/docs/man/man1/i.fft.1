@@ -1,0 +1,107 @@
+.TH i.fft 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.fft\fR\fR  \- Fast Fourier Transform (FFT) for image processing.
+.SH KEYWORDS
+imagery, transformation, Fast Fourier Transform
+.SH SYNOPSIS
+\fBi.fft\fR
+.br
+\fBi.fft \-\-help\fR
+.br
+\fBi.fft\fR \fBinput\fR=\fIname\fR \fBreal\fR=\fIname\fR \fBimaginary\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBreal\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output real part arrays stored as raster map
+.IP "\fBimaginary\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output imaginary part arrays stored as raster map
+.SH DESCRIPTION
+\fIi.fft\fR is an image processing program based on the FFT algorithm
+given by Frigo et al. (1998), that processes a single input raster map layer
+(\fBinput\fR) and constructs the real and imaginary Fourier
+components in frequency space.
+.SH NOTES
+The real and imaginary components are stored into the
+\fBreal\fR and \fBimaginary\fR raster map
+layers.  In these raster map
+layers the low frequency components are in the center and
+the high frequency components are toward the edges.  The
+\fBinput\fR need not be square. A
+color table is assigned to the resultant map layer.
+.PP
+The current geographic region and mask settings are respected when
+reading the input file. The presence of nulls or a mask will make the
+resulting fast Fourier transform invalid.
+.SH EXAMPLE
+North Carolina example:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_70
+i.fft input=lsat7_2002_70 real=lsat7_2002_70.real imaginary=lsat7_2002_70.imag
+# set region to resulting FFT output map (due to new FFT coordinate space):
+g.region raster=lsat7_2002_70.real \-p
+d.mon x0
+d.rast lsat7_2002_70.real
+d.rast lsat7_2002_70.imag
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+M. Frigo and S. G. Johnson (1998): \(dqFFTW: An Adaptive Software Architecture
+for the FFT\(dq. See www.FFTW.org: FFTW is a C subroutine library
+for computing the Discrete Fourier Transform (DFT) in one or more
+dimensions, of both real and complex data, and of arbitrary input size.
+.IP \(bu 4n
+John A. Richards, 1986. Remote Sensing Digital Image Analysis, Springer\-Verlag.
+.IP \(bu 4n
+Personal communication, between program author and Ali R. Vali,
+Space Research Center, University of Texas, Austin, 1990.
+.RE
+.SH SEE ALSO
+\fI
+i.cca,
+g.gui.iclass,
+i.ifft,
+i.pca
+\fR
+.SH AUTHOR
+David Satnik, GIS Laboratory,
+Central Washington University
+.br
+Glynn Clements (FFTW support)
+.SH SOURCE CODE
+.PP
+Available at: i.fft source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

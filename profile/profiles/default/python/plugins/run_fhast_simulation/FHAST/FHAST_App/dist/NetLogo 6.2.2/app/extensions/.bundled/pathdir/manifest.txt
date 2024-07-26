@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+NetLogo-Extension-API-Version: 6.1
+Extension-Name: pathdir
+Class-Manager: org.nlogo.extensions.pathdir.PathDirExtension
+

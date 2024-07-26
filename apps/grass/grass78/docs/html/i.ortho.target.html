@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.ortho.target - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.ortho.target</b></em>  - Select or modify the imagery group target.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_orthorectify.html">orthorectify</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.ortho.target</b><br></div>
+<b>i.ortho.target --help</b><br>
+<div id="synopsis"><b>i.ortho.target</b> <b>group</b>=<em>name</em> <b>target_location</b>=<em>name</em> <b>mapset_location</b>=<em>name</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of imagery group for ortho-rectification</dd>
+
+<dt><b>target_location</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Location name</dd>
+<dd>Name of target location for ortho-rectification</dd>
+
+<dt><b>mapset_location</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of mapset (default: current search path)</dd>
+<dd>Name of target mapset for ortho-rectification</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<H2>DESCRIPTION</H2>
+
+<em>i.ortho.target</em> sets the image group target location and mapset
+<p>
+
+<H2>SEE ALSO</H2>
+
+<em>
+<a href="i.ortho.photo.html">i.ortho.photo</a><br>
+<a href="i.ortho.elev.html">i.ortho.elev</a><br>
+<a href="i.ortho.camera.html">i.ortho.camera</a><br>
+<a href="i.photo.2image.html">i.photo.2image</a><br>
+<a href="i.photo.2target.html">i.photo.2target</a><br>
+<a href="i.ortho.init.html">i.ortho.init</a><br>
+<a href="i.ortho.rectify.html">i.ortho.rectify</a>
+</em>
+
+
+<H2>AUTHOR</H2>
+Mike Baba,  DBA Systems, Inc.<br>
+GRASS development team, 2017<br>
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.ortho.photo/i.ortho.target">i.ortho.target source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.ortho.photo/i.ortho.target">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

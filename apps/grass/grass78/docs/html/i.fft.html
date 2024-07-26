@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.fft - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.fft</b></em>  - Fast Fourier Transform (FFT) for image processing.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_transformation.html">transformation</a>, <a href="keywords.html#Fast Fourier Transform">Fast Fourier Transform</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.fft</b><br></div>
+<b>i.fft --help</b><br>
+<div id="synopsis"><b>i.fft</b> <b>input</b>=<em>name</em> <b>real</b>=<em>name</em> <b>imaginary</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>real</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output real part arrays stored as raster map</dd>
+
+<dt><b>imaginary</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output imaginary part arrays stored as raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.fft</em> is an image processing program based on the FFT algorithm
+given by Frigo et al. (1998), that processes a single input raster map layer
+(<b>input</b>) and constructs the real and imaginary Fourier
+components in frequency space.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The real and imaginary components are stored into the
+<b>real</b> and <b>imaginary</b> raster map
+layers.  In these raster map
+layers the low frequency components are in the center and
+the high frequency components are toward the edges.  The
+<b>input</b> need not be square. A
+color table is assigned to the resultant map layer.
+
+
+<p>
+The current geographic region and mask settings are respected when
+reading the input file. The presence of nulls or a mask will make the
+resulting fast Fourier transform invalid.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+North Carolina example:
+
+<div class="code"><pre>
+g.region raster=lsat7_2002_70
+i.fft input=lsat7_2002_70 real=lsat7_2002_70.real imaginary=lsat7_2002_70.imag
+
+# set region to resulting FFT output map (due to new FFT coordinate space):
+g.region raster=lsat7_2002_70.real -p
+d.mon x0
+d.rast lsat7_2002_70.real
+d.rast lsat7_2002_70.imag
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li> M. Frigo and S. G. Johnson (1998): "FFTW: An Adaptive Software Architecture
+for the FFT". See <a href="http://www.fftw.org">www.FFTW.org</a>: FFTW is a C subroutine library
+for computing the Discrete Fourier Transform (DFT) in one or more
+dimensions, of both real and complex data, and of arbitrary input size.
+<li> John A. Richards, 1986. Remote Sensing Digital Image Analysis, Springer-Verlag.
+<li>Personal communication, between program author and Ali R. Vali,
+Space Research Center, <A HREF="http://www.utexas.edu">University of Texas</a>, Austin, 1990.
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.cca.html">i.cca</a>,
+<a href="g.gui.iclass.html">g.gui.iclass</a>,
+<a href="i.ifft.html">i.ifft</a>,
+<a href="i.pca.html">i.pca</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+David Satnik, GIS Laboratory, 
+Central Washington University
+<br>
+Glynn Clements (FFTW support)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.fft">i.fft source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.fft">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

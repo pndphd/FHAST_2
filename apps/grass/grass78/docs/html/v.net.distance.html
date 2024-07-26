@@ -1,0 +1,322 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.net.distance - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.net.distance</b></em>  - Computes shortest distance via the network between the given sets of features.<BR>
+Finds the shortest paths from each 'from' point to the nearest 'to' feature and various information about this relation are uploaded to the attribute table.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#shortest path">shortest path</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.net.distance</b><br></div>
+<b>v.net.distance --help</b><br>
+<div id="synopsis"><b>v.net.distance</b> [-<b>gl</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>arc_layer</b>=<em>string</em>]   [<b>arc_type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>node_layer</b>=<em>string</em>]   [<b>from_layer</b>=<em>string</em>]   [<b>from_cats</b>=<em>range</em>]   [<b>from_where</b>=<em>sql_query</em>]   [<b>to_layer</b>=<em>string</em>]   [<b>to_type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>to_cats</b>=<em>range</em>]   [<b>to_where</b>=<em>sql_query</em>]   [<b>arc_column</b>=<em>name</em>]   [<b>arc_backward_column</b>=<em>name</em>]   [<b>node_column</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Use geodesic calculation for longitude-latitude locations</dd>
+
+<dt><b>-l</b></dt>
+<dd>Write each output path as one line, not as original input segments.</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>arc_layer</b>=<em>string</em></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>arc_type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Arc type</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em>line,boundary</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>from_layer</b>=<em>string</em></dt>
+<dd>From layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>from_cats</b>=<em>range</em></dt>
+<dd>From category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>from_where</b>=<em>sql_query</em></dt>
+<dd>From WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>to_layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>To layer number or name</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>to_type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>To feature type</dd>
+<dd>Options: <em>point, line, boundary</em></dd>
+<dd>Default: <em>point</em></dd>
+
+<dt><b>to_cats</b>=<em>range</em></dt>
+<dd>To category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>to_where</b>=<em>sql_query</em></dt>
+<dd>To WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>arc_column</b>=<em>name</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>arc_backward_column</b>=<em>name</em></dt>
+<dd>Arc backward direction cost column (number)</dd>
+
+<dt><b>node_column</b>=<em>name</em></dt>
+<dd>Node cost column (number)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#shortest-path-and-distance-between-school-and-nearest-hospital" class="toc">Shortest path and distance between school and nearest hospital</a></li>
+        <li class="toc"><a href="#distance-between-point-source-of-pollution-and-sample-points-along-streams" class="toc">Distance between point source of pollution and sample points along streams</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.net.distance</em> finds the nearest element in set <em>to</em> 
+for every point in set <em>from</em>. 
+
+<h2><a name="notes">NOTES</a></h2>
+
+These two sets are given by the respective <b>layer</b>, <b>where</b>
+and <b>cats</b> parameters. The type of <em>to</em> features is 
+specified by <b>to_type</b> parameter. All <em>from</em> features 
+are <em>points</em>. A table is linked to <b>output</b> map 
+containing various information about the relation. More 
+specifically, the table has three columns: <em>cat</em>, <em>tcat</em>
+and <em>dist</em> storing category of each <em>from</em> 
+feature, category of the nearest <em>to</em> feature and the 
+distance between them respectively.
+<p>
+Furthemore, the <b>output</b> map contains the shortest path between 
+each <em>cat</em>, <em>tcat</em> pair. Each path consists of several 
+lines. If a line is on the shortest path from a point then the category 
+of this point is assigned to the line. Note that every line may contain 
+more than one category value since a single line may be on the shortest 
+path for more than one <em>from</em> feature. And so the shortest paths 
+can be easily obtained by querying lines with corresponding category 
+number. Alternatively, unique paths can be created with the <em>-l</em> 
+flag where each path will be a separate single line in the output.
+<p>
+The costs of arcs in forward and backward direction are specified by 
+<b>arc_column</b> and <b>arc_backward_column</b> columns respectively. 
+If <b>arc_backward_column</b> is not given, the same cost is used in 
+both directions.  
+<p>
+<em>v.net.distance</em> will not work if you are trying to find the 
+nearest neighbors within a group of nodes, i.e. where <em>to</em> 
+and <em>from</em> are the same set of nodes, as the closest node 
+will be the node itself and the result will be zero-length paths. In 
+order to find nearest neighbors within a group of nodes, you can 
+either loop through each node as <em>to</em> and all other nodes as 
+<em>from</em> or create a complete distance matrix with
+<a href="v.net.allpairs.html">v.net.allpairs</a> and select the
+lowest non-zero distance for each node.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="shortest-path-and-distance-between-school-and-nearest-hospital">Shortest path and distance between school and nearest hospital</a></h3>
+
+Find shortest path and distance from every school to the nearest hospital 
+and show all paths.
+
+<p>
+Streets are grey lines, schools are green circles, hospitals are red 
+crosses, shortest paths are blue lines:
+<p><img src="vnetdistance.png" alt="v.net.distance example" border="1">
+
+<p><div class="code"><pre>
+# connect schools to streets as layer 2
+v.net input=streets_wake points=schools_wake output=streets_net1 \
+      operation=connect thresh=400 arc_layer=1 node_layer=2
+
+# connect hospitals to streets as layer 3
+v.net input=streets_net1 points=hospitals output=streets_net2 \
+      operation=connect thresh=400 arc_layer=1 node_layer=3
+
+# inspect the result
+v.category in=streets_net2 op=report
+
+# shortest paths from schools (points in layer 2) to nearest hospitals (points in layer 3)
+v.net.distance in=streets_net2 out=schools_to_hospitals flayer=2 to_layer=3
+
+# visualization
+g.region vector=streets_wake
+d.mon wx0
+d.vect streets_wake color=220:220:220
+d.vect schools_wake color=green size=10
+d.vect map=hospitals icon=basic/cross3 size=15 color=black fcolor=red
+d.vect schools_to_hospitals
+</pre></div>
+
+
+<h3><a name="distance-between-point-source-of-pollution-and-sample-points-along-streams">Distance between point source of pollution and sample points along streams</a></h3>
+
+Example with streams of the NC sample data set.
+
+<p><div class="code"><pre>
+# add coordinates of pollution point source of pollution as vector
+pollution.txt:
+634731.563206905|216390.501834892
+
+v.in.ascii input=pollution.txt output=pollution
+
+# add table to vector
+v.db.addtable map=pollution
+
+# add coordinates of sample points as vector
+samples.txt:
+634813.332814905|216333.590706166
+634893.462007813|216273.763350851
+634918.660011082|216254.949609689
+
+v.in.ascii input=samples.txt output=samples
+
+# add table to vector
+v.db.addtable map=samples
+
+# connect samples and pollution to streams
+v.net -c input=streams points=samples output=streams_samples \
+         operation=connect node_layer=3 threshold=10 \
+v.net -c input=streams_samples points=pollution 
+         output=streams_samples_pollution operation=connect \
+         node_layer=4 threshold=10
+
+# check vector layers
+v.category input=streams_samples_pollution option=report               
+Layer/table: 1/streams_samples_pollution
+type       count        min        max
+point          0          0          0
+line        8562      40102     101351
+boundary       0          0          0
+centroid       0          0          0
+area           0          0          0
+face           0          0          0
+kernel         0          0          0
+all         8562      40102     101351
+Layer: 3
+type       count        min        max
+point          3          1          3
+line           0          0          0
+boundary       0          0          0
+centroid       0          0          0
+area           0          0          0
+face           0          0          0
+kernel         0          0          0
+all            3          1          3
+Layer: 4
+type       count        min        max
+point          1          1          1
+line           0          0          0
+boundary       0          0          0
+centroid       0          0          0
+area           0          0          0
+face           0          0          0
+kernel         0          0          0
+all            1          1          1
+
+# calculate distance between sample points and pollution point source
+v.net.distance input=streams_samples_pollution \
+      output=distance_samples_to_pollution from_layer=3 to_layer=4
+
+# check results
+v.report map=distance_samples_to_pollution@vnettest option=length               
+cat|tcat|dist|length
+1|1|100.0|100.0
+2|1|200.0|200.0
+3|1|231.446|231.446
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.net.path.html">v.net.path</a>,
+<a href="v.net.allpairs.html">v.net.allpairs</a>,
+<a href="v.distance.html">v.net.distance</a>,
+<a href="v.net.alloc.html">v.net.alloc</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Daniel Bundala, Google Summer of Code 2009, Student<br>
+Wolf Bergenheim, Mentor<br>
+Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.net.distance">v.net.distance source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.net.distance">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

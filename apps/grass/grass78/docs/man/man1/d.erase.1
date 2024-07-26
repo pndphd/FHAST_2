@@ -1,0 +1,63 @@
+.TH d.erase 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.erase\fR\fR  \- Erases the contents of the active graphics display frame with user defined color.
+.SH KEYWORDS
+display, graphics, monitors
+.SH SYNOPSIS
+\fBd.erase\fR
+.br
+\fBd.erase \-\-help\fR
+.br
+\fBd.erase\fR [\-\fBf\fR]  [\fBbgcolor\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Remove all frames and erase the screen
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIwhite\fR
+.SH DESCRIPTION
+\fId.erase\fR erases the contents of the active graphics frame, and
+replaces it with the color black (by default) or by whatever color is
+specified by the user.
+.SH SEE ALSO
+\fI
+d.mon,
+d.redraw,
+d.rast,
+d.vect
+\fR
+.SH AUTHOR
+James Westervelt, U.S. Army Construction Engineering Research
+Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.erase source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

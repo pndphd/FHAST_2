@@ -1,0 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.in.lidar - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.in.lidar</b></em>  - Creates a 3D raster map from LAS LiDAR points using univariate statistics.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#LIDAR">LIDAR</a>, <a href="keywords.html#statistics">statistics</a>, <a href="keywords.html#conversion">conversion</a>, <a href="keywords.html#aggregation">aggregation</a>, <a href="keywords.html#binning">binning</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.in.lidar</b><br></div>
+<b>r3.in.lidar --help</b><br>
+<div id="synopsis"><b>r3.in.lidar</b> [-<b>dvopsg</b>]  [<b>input</b>=<em>name</em>]   [<b>file</b>=<em>name</em>]   [<b>n</b>=<em>name</em>]   [<b>sum</b>=<em>name</em>]   [<b>mean</b>=<em>name</em>]   [<b>proportional_n</b>=<em>name</em>]   [<b>proportional_sum</b>=<em>name</em>]   [<b>return_filter</b>=<em>string</em>]   [<b>class_filter</b>=<em>integer</em>[,<i>integer</i>,...]]   [<b>base_raster</b>=<em>name</em>]   [<b>zscale</b>=<em>float</em>]   [<b>intensity_range</b>=<em>min,max</em>]   [<b>intensity_scale</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-d</b></dt>
+<dd>Use base raster actual resolution instead of computational region</dd>
+
+<dt><b>-v</b></dt>
+<dd>Use only valid points</dd>
+<dd>Points invalid according to APSRS LAS specification will be filtered out</dd>
+
+<dt><b>-o</b></dt>
+<dd>Override projection check (use current location's projection)</dd>
+<dd>Assume that the dataset has same projection as the current location</dd>
+
+<dt><b>-p</b></dt>
+<dd>Print LAS file info and exit</dd>
+
+<dt><b>-s</b></dt>
+<dd>Scan data file for extent then exit</dd>
+
+<dt><b>-g</b></dt>
+<dd>In scan mode, print using shell script style</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em></dt>
+<dd>LAS input file</dd>
+<dd>LiDAR input file in LAS format (*.las or *.laz)</dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>File containing names of LAS input files</dd>
+<dd>LiDAR input files in LAS format (*.las or *.laz)</dd>
+
+<dt><b>n</b>=<em>name</em></dt>
+<dd>Count of points per cell</dd>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>sum</b>=<em>name</em></dt>
+<dd>Sum of values of point intensities per cell</dd>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>mean</b>=<em>name</em></dt>
+<dd>Mean of point intensities per cell</dd>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>proportional_n</b>=<em>name</em></dt>
+<dd>3D raster map of proportional point count</dd>
+<dd>Point count per 3D cell divided by point count per vertical column</dd>
+
+<dt><b>proportional_sum</b>=<em>name</em></dt>
+<dd>3D raster map of proportional sum of values</dd>
+<dd>Sum of values per 3D cell divided by sum of values per vertical column</dd>
+
+<dt><b>return_filter</b>=<em>string</em></dt>
+<dd>Only import points of selected return type</dd>
+<dd>If not specified, all points are imported</dd>
+<dd>Options: <em>first, last, mid</em></dd>
+
+<dt><b>class_filter</b>=<em>integer[,<i>integer</i>,...]</em></dt>
+<dd>Only import points of selected class(es)</dd>
+<dd>Input is comma separated integers. If not specified, all points are imported.</dd>
+
+<dt><b>base_raster</b>=<em>name</em></dt>
+<dd>Subtract raster values from the z coordinates</dd>
+<dd>The scale for z is applied beforehand, the filter afterwards</dd>
+
+<dt><b>zscale</b>=<em>float</em></dt>
+<dd>Scale to apply to Z data</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>intensity_range</b>=<em>min,max</em></dt>
+<dd>Filter range for intensity values (min,max)</dd>
+
+<dt><b>intensity_scale</b>=<em>float</em></dt>
+<dd>Scale to apply to intensity values</dd>
+<dd>Default: <em>1.0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-import-of-the-data" class="toc">Basic import of the data</a></li>
+        <li class="toc"><a href="#point-density-vertical-structure-reduced-to-the-terrain" class="toc">Point density vertical structure reduced to the terrain</a></li>
+        <li class="toc"><a href="#complete-workflow-for-vertical-structure-analysis" class="toc">Complete workflow for vertical structure analysis</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em><a href="r.in.lidar.html">r.in.lidar</a></em> module
+is very similar to the <em>r3.in.lidar</em> module and many parts of
+its documentation apply also for <em>r3.in.lidar</em>.
+
+<p>
+<img src="r3_in_lidar.png">
+<p>
+<em>
+    Figure: Proportional count of points per 3D cell. When 50% of all
+    points in a vertical column fall into a given 3D cell, the value
+    is 0.5. Here, the green color was assigned to 0.5, red to 1 and
+    yellow to 0. The figure shows vertical slices and green color
+    indicates high vegetation while red color indicates bare ground.
+</em>
+<!--
+0% 255:255:100
+50% green
+100% red
+-->
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<ul>
+    <li>
+        This module is new and partially experimental. Please don't rely
+        on its interface and be critical towards its outputs.
+        Please report issues on the mailing list or in the bug tracker.
+    <li>
+        No reprojection is performed, you need to reproject ahead or
+        use GRASS Location which has the right coordinate system
+        which fits with the data.
+    <li>
+        Some temporary maps are created but not cleaned up. Use of
+        <b>--overwrite</b> might be necessary even when not desired.
+    <li>
+        Expects points to have intensity and causing random (undefined)
+        result for related outputs (<b>sum, mean, proportional_sum</b>)
+        when the intensity is not present but the outputs were requested.
+</ul>
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+
+<h3><a name="basic-import-of-the-data">Basic import of the data</a></h3>
+
+Set the region according to a 2D raster and adding 3D minimum
+(bottom), maximum (top) and vertical (top-bottom) resolution.
+
+<div class="code"><pre>
+g.region rast=secref b=80 t=160 tbres=5 -p3
+</pre></div>
+
+Now, <em>r3.in.lidar</em> will create the 3D raster of the size
+given by the computation region:
+
+<div class="code"><pre>
+r3.in.lidar input=points.las n=points_n sum=points_sum \
+    mean=points_mean proportional_n=points_n_prop \
+    proportional_sum=points_sum_prop
+</pre></div>
+
+
+<h3><a name="point-density-vertical-structure-reduced-to-the-terrain">Point density vertical structure reduced to the terrain</a></h3>
+
+Create ground raster:
+
+<div class="code"><pre>
+r.in.lidar input=points.las output=ground method=mean class_filter=2
+</pre></div>
+
+Set vertical extent of computational region to (relative) coordinates
+above ground:
+
+<div class="code"><pre>
+g.region rast=secref b=0 t=47 -p3
+</pre></div>
+
+Compute point density:
+
+<div class="code"><pre>
+r3.in.lidar input=points.las n=points_n sum=points_sum \
+    mean=points_mean proportional_n=points_n_prop \
+    proportional_sum=points_sum_prop \
+    base_raster=ground
+</pre></div>
+
+
+<h3><a name="complete-workflow-for-vertical-structure-analysis">Complete workflow for vertical structure analysis</a></h3>
+<!-- TODO: needs review and pictures -->
+Compute the point density of points in 2D while setting the output
+extent to be based on the data (<b>-e</b>) and the resolution set to
+a relatively high number (here 10 map units, i.e. meters for
+metric projections).
+
+<div class="code"><pre>
+r.in.lidar input=points.las output=points_n method=n -e resolution=10
+</pre></div>
+
+This step can be repeated with using different resolutions (and the
+<b>--overwrite</b> flag) to determine the resolution for the further
+analysis.
+
+<p>
+The <b>class_filter</b> option should be also provided if only part of
+the points is analyzed, for example <tt>class_filter=3,4,5</tt> would be
+used for low, medium, and high vegetation if the LAS file follows the
+usedstandard ASPRS class numbers.
+
+<p>
+The resolution should be suitable for computing digital elevation model
+which will be computed in the next steps.
+Once you decided on the resolution, you can use the 2D raster to set the
+computational region extent and resolution:
+
+<div class="code"><pre>
+g.region raster=points_n -p3
+</pre></div>
+
+<tt>class_filter=2</tt> is used to limit 
+
+<div class="code"><pre>
+r.in.lidar input=points.las output=ground_mean method=mean class_filter=2
+</pre></div>
+
+The following steps are not necessary if the point density is high
+enough to fill the raster continuously.
+
+<p>
+Convert the raster to vector point resulting in a decimated point cloud:
+
+<div class="code"><pre>
+v.to.rast input=ground_mean type=point output=ground_decimated use=z
+</pre></div>
+
+Interpolate the ground surface from the decimated ground points:
+
+<div class="code"><pre>
+v.surf.rst input=ground_decimated elevation=ground
+</pre></div>
+
+Now we need to determine upper vertical limit for the 3D raster
+(the top value from <tt>g.region -p3</tt>). This can be potentially
+done with lower resolution. The <b>-d</b> flag ensures that the ground
+raster will be used in its actual resolution regardless of the
+resolution of the output.
+
+<div class="code"><pre>
+r.in.lidar input=points.las method=max output=veg_max class_filter=3,4,5 base_raster=ground -d
+</pre></div>
+
+With that, we can finally set up the 3D extent and resolution:
+
+<div class="code"><pre>
+g.region rast=secref b=0 t=40 res=1 res3=1 -p3
+</pre></div>
+
+Note that the 2D and 3D resolutions are separate so that user can
+perform the 2D calculations on a finer resolution than the 3D
+calculations. The vertical resolution can be and often is set to a
+different value as well. Here we use the same value for all resolutions
+for simplicity.
+
+<p>
+Finally, we perform the 3D binning where we count number of points per
+cell (voxel):
+
+<div class="code"><pre>
+r3.in.lidar input=points.las n=n class_filter=3,4,5 base_raster=ground -d
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.in.xyz.html">r3.in.xyz</a>,
+<a href="r.in.lidar.html">r.in.lidar</a>,
+<a href="v.in.lidar.html">v.in.lidar</a>,
+<a href="r.to.rast3.html">r.to.rast3</a>,
+<a href="r3.to.rast.html">r3.to.rast</a>,
+<a href="r3.mapcalc.html">r3.mapcalc</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>
+V. Petras, A. Petrasova, J. Jeziorska, H. Mitasova (2016):
+<em>Processing UAV and lidar point clouds in GRASS GIS</em>.
+XXIII ISPRS Congress 2016
+[<a href="https://doi.org/10.5194/isprs-archives-XLI-B7-945-2016">ISPRS Archives</a>,
+<a href="https://www.researchgate.net/publication/304340172_Processing_UAV_and_lidar_point_clouds_in_GRASS_GIS">ResearchGate</a>]
+<li>
+<a href="https://www.asprs.org/committee-general/laser-las-file-format-exchange-activities.html">
+ASPRS LAS format</a>
+<li>
+<a href="http://www.liblas.org/">LAS library</a>
+<li>
+<a href="http://test.liblas.org/doxygen/liblas_8h.htm">LAS library C API</a> documentation
+</ul>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Vaclav Petras, <a href="https://geospatial.ncsu.edu/geoforall/">NCSU GeoForAll Lab</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.in.lidar">r3.in.lidar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.in.lidar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

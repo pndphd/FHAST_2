@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.surf.idw - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.surf.idw</b></em>  - Provides surface interpolation from vector point data by Inverse Distance Squared Weighting.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#IDW">IDW</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.surf.idw</b><br></div>
+<b>v.surf.idw --help</b><br>
+<div id="synopsis"><b>v.surf.idw</b> [-<b>n</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>column</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [<b>npoints</b>=<em>count</em>]   [<b>power</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Don't index points by raster cell</dd>
+<dd>Slower but uses less memory and includes points from outside region in the interpolation</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name of attribute column with values to interpolate</dd>
+<dd>If not given and input is 2D vector map then category values are used. If input is 3D vector map then z-coordinates are used.</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>npoints</b>=<em>count</em></dt>
+<dd>Number of interpolation points</dd>
+<dd>Default: <em>12</em></dd>
+
+<dt><b>power</b>=<em>float</em></dt>
+<dd>Power parameter</dd>
+<dd>Greater values assign greater influence to closer points</dd>
+<dd>Default: <em>2.0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<p><em>v.surf.idw</em> fills a raster matrix with interpolated values
+generated from a set of irregularly spaced vector data points using
+numerical approximation (weighted averaging) techniques. The
+interpolated value of a cell is determined by values of nearby data
+points and the distance of the cell from those input points.  In
+comparison with other methods, numerical approximation allows
+representation of more complex surfaces (particularly those with
+anomalous features), restricts the spatial influence of any errors,
+and generates the interpolated surface from the data points.
+
+<p>Values to interpolate are read from <b>column</b> option. If this
+option is not given than the program uses <i>categories</i> as values
+to interpolate or <i>z-coordinates</i> if the input vector map is 3D.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>The amount of memory used by this program is related to the number
+of vector points in the current region.  If the vector point map is 
+very dense (i.e., contains many data points), the program may
+not be able to get all the memory it needs from the
+system.  The time required to execute is related to the 
+resolution of the current region, after an initial delay 
+determined by the time taken to read the input vector points map.
+
+<p>
+Note that vector features without category in given <b>layer</b> are
+<i>skipped</i>.
+
+<p>If the user has a mask set, then interpolation is only done
+for those cells that fall within the mask. The module has two separate
+modes of operation for selecting the vector points that are used in the
+interpolation:<dl>
+<dt>Simple, non-indexed mode (activated by <b>-n</b> flag)</dt>
+<dd>When the <b>-n</b> flag is specified, all vector points in the
+input vector map are searched through in order to find the
+<b>npoints</b> closest points to the centre of each cell in the output
+raster map. This mode of operation can be slow in the case of a very
+large number of vector points.</dd>
+<dt>Default, indexed mode</dt>
+<dd>By default (i.e. if <b>-n</b> flag is <i>not</i> specified), prior to
+the interpolation, input vector points are indexed according to which
+output raster cell they fall into. This means that only cells nearby
+the one being interpolated need to be searched to find the
+<b>npoints</b> closest input points, and the module can run many times
+faster on dense input maps. It should be noted that:
+<ul>
+<li>Only vector points that lie within the current region are used in
+the interpolation. If there are points outside the current region,
+this may have an effect on the interpolated value of cells near the
+edges of the region, and this effect will be more pronounced the fewer
+points there are. If you wish to also include points outside the
+region in the interpolation, then either use the <b>-n</b> flag, or
+set the region to a larger extent (covering all input points) and use
+a mask to limit interpolation to a smaller area.</li>
+<li>If more than <b>npoints</b> points fall within a given cell then,
+rather than interpolating, these points are aggregated by taking the
+mean. This avoids the situation where some vector points can be
+discarded and not used in the interpolation, for very dense input
+maps. Again, use the <b>-n</b> flag if you wish to use only the
+<b>npoints</b> closest points to the cell centre under all
+circumstances.</li>
+</ul>
+</dd>
+</dl>
+
+<p>
+The <b>power</b> parameter defines an exponential distance weight.
+Greater values assign greater influence to values closer to the
+point to be interpolated. The interpolation function peaks sharply over
+the given data points for 0 &lt; <em>p</em> &lt; 1 and more smoothly for
+larger values. The default value for the power parameter is 2.  
+
+<p>
+By setting <b>npoints</b>=1, the module can be used to calculate
+raster Voronoi diagrams (Thiessen polygons).
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.surf.contour.html">r.surf.contour</a>,
+<a href="r.surf.idw.html">r.surf.idw</a>,
+<a href="r.surf.gauss.html">r.surf.gauss</a>,
+<a href="r.surf.fractal.html">r.surf.fractal</a>,
+<a href="r.surf.random.html">r.surf.random</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro,  
+U.S. Army Construction Engineering 
+Research Laboratory
+<br>
+Improved algorithm (indexes points according to cell and ignores
+points outside current region) by Paul Kelly
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.surf.idw">v.surf.idw source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.surf.idw">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

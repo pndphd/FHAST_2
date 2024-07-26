@@ -1,0 +1,112 @@
+.TH r.buildvrt 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.buildvrt\fR\fR  \- Build a VRT (Virtual Raster) from the list of input raster maps.
+.SH KEYWORDS
+raster, mosaic, virtual raster
+.SH SYNOPSIS
+\fBr.buildvrt\fR
+.br
+\fBr.buildvrt \-\-help\fR
+.br
+\fBr.buildvrt\fR  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBfile\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\fBtitle\fR=\fIphrase\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster files
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with one raster map name per line
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for resultant raster map
+.SH DESCRIPTION
+\fIr.buildvrt\fR builds a virtual raster (VRT) that is a mosaic of
+the list of input raster maps. The purpose of such a VRT is to provide
+fast access to small subsets of the VRT, also with multiple simultaneous
+read requests.
+.SH NOTES
+\fIr.buildvrt\fR creates a list of raster maps that can be
+located in different mapsets. The output is a read\-only link to
+the original raster maps which is only valid if the original raster
+maps remain in the originally indicated mapset. A VRT can also be built
+from raster maps registered with \fIr.external\fR.
+.PP
+Reading the whole VRT is slower than reading the equivalent single
+raster map. Only reading small parts of the VRT provides a performance
+benefit.
+.PP
+A GRASS virtual raster can be regarded as a simplified version of GDAL\(cqs
+virtual raster format.
+The GRASS equivalent is simpler because issues like nodata, projection,
+resolution, resampling, masking are already handled by native GRASS
+raster routines.
+.SH EXAMPLES
+.SS VRT from a DEM in the North Carolina sample dataset
+In this exercise a low resolution DEM is resampled to a high
+resolution DEM. This is subsequently cut into small tiles and
+from that a virtual tile mosaik is created:
+.br
+.nf
+\fC
+# set the computational region to elevation map
+g.region raster=elev_state_500m \-p
+# enforce higher resolution
+g.region res=50 \-p
+# resample the 500 meter DEM to 50 meter resolution
+r.resamp.interp input=elev_state_500m output=elev_state_50m method=bilinear
+# create tiles from resulting large 50 m elevation map
+r.tile input=elev_state_50m output=elev_state_50m_tile_ width=1000 height=1000 overlap=0
+# for convenience, dump list of tile names to a file
+g.list type=raster pattern=elev_state_50m_tile_* output=tilelist.csv
+# build a mosaik as VRT from tile list
+r.buildvrt file=tilelist.csv output=elev_state_50m_vrt
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.tile,
+r.patch,
+r.external
+\fR
+.PP
+The equivalent GDAL utility
+\fI
+gdalbuildvrt
+\fR
+.SH AUTHOR
+Markus Metz
+.br
+Sponsored by mundialis
+.SH SOURCE CODE
+.PP
+Available at: r.buildvrt source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

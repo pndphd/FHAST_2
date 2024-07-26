@@ -1,0 +1,157 @@
+.TH v.db.join 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.join.py\fR\fR  \- Joins a database table to a vector map table.
+.SH KEYWORDS
+vector, attribute table, database
+.SH SYNOPSIS
+\fBv.db.join.py\fR
+.br
+\fBv.db.join.py \-\-help\fR
+.br
+\fBv.db.join.py\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR \fBother_table\fR=\fIname\fR \fBother_column\fR=\fIname\fR  [\fBsubset_columns\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Vector map to which to join other table
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Layer where to join
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Identifier column (e.g.: cat) in the vector table to be used for join
+.IP "\fBother_table\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Other table name
+.IP "\fBother_column\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Identifier column (e.g.: id) in the other table used for join
+.IP "\fBsubset_columns\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Subset of columns from the other table
+.SH DESCRIPTION
+\fIv.db.join\fR joins the content of another table into the connected
+attribute table of a vector map.
+.SH NOTES
+\fIv.db.join\fR is a front\-end to \fIdb.execute\fR to allow easier usage.
+The vector attribute table must be stored in a SQL database (SQLite, PostgreSQL,
+MySQL, ODBC, ...). The DBF backend is not supported. Tables can be
+imported with \fIdb.in.ogr\fR.
+.PP
+The vector map\-database connection(s) can be verified with \fIv.db.connect\fR.
+.SH EXAMPLES
+Exercise to join North Carolina geological classes from a CSV table to
+the \(dqgeology\(dq map of the North Carolina sample dataset (requires download
+of legend CSV file nc_geology.csv
+from External data for NC sample dataset):
+.br
+.nf
+\fC
+# check original map attributes
+v.db.select geology column=GEO_NAME,SHAPE_area
+# import of CSV table
+db.in.ogr input=nc_geology.csv output=nc_geology
+# work on copy of geology map in current mapset
+g.copy vector=geology,mygeology
+# check column names of vector map attributes
+v.info \-c mygeology
+# check column names of legend table
+db.describe \-c nc_geology
+# join table using key columns (map: \(dqGEO_NAME\(dq; table: \(dqgeol_id\(dq)
+v.db.join map=mygeology column=GEO_NAME other_table=nc_geology other_column=geol_id
+# verify result (here abbreviated)
+v.db.select mygeology | head \-3
+cat|onemap_pro|PERIMETER|GEOL250_|GEOL250_ID|GEO_NAME|SHAPE_area|SHAPE_len|geol_id|longname|comment
+1|963738.75|4083.97998|2|1|Zml|963738.608571|4083.979839|Zml|Metagraywacke|Interlayered with metaconglomerate, ...
+2|22189124|26628.261719|3|2|Zmf|22189123.2296|26628.261112|Zmf|Metafelsite|Light\-colored porphyritic extrusive rock
+\&...
+\fR
+.fi
+.SS Soil map table join
+Joining the soil type explanations from table \fIsoils_legend\fR
+into the Spearfish soils map (download legend):
+.br
+.nf
+\fC
+g.copy vect=soils,mysoils
+# import legend table
+db.in.ogr soils_legend.csv out=soils_legend
+# get join column names
+v.info \-c mysoils
+db.describe \-c soils_legend
+# look at original table
+v.db.select mysoils
+cat|label
+1|Aab
+2|Ba
+3|Bb
+4|BcB
+5|BcC
+\&...
+# look at legend
+db.select table=soils_legend
+db.select table=soils_legend | head \-7
+id|shortname|longname
+0|no data|no data
+0|AaB|Alice fine sandy loam, 0 to 6
+0|Ba|Barnum silt loam
+0|Bb|Barnum silt loam, channeled
+0|BcB|Boneek silt loam, 2 to 6
+0|BcC|Boneek silt loam, 6 to 9
+\&...
+# join soils_legend into mysoils attribute table
+v.db.join mysoils col=label other_table=soils_legend ocol=shortname
+# verification of join
+v.db.select mysoils
+cat|label|id|shortname|longname
+1|Aab|||
+2|Ba|2|Ba|Barnum silt loam
+3|Bb|3|Bb|Barnum silt loam, channeled
+4|BcB|4|BcB|Boneek silt loam, 2 to 6
+5|BcC|5|BcC|Boneek silt loam, 6 to 9
+\&...
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.execute,
+db.in.ogr,
+db.select,
+v.db.update
+.br
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.db.join source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

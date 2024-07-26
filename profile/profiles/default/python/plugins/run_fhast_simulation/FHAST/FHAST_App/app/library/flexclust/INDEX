@@ -1,0 +1,55 @@
+Nclus                   Artificial Example with 4 Gaussians
+achieve                 Achievement Test Scores for New Haven Schools
+as.kcca                 Conversion Between S3 Partition Objects and
+                        KCCA
+auto                    Automobile Customer Survey Data
+barplot,kcca-method     Barplot/chart Methods in Package 'flexclust'
+bclust                  Bagged Clustering
+birth                   Birth and Death Rates
+bootFlexclust           Bootstrap Flexclust Algorithms
+bundestag               German Parliament Election Data
+bwplot,kcca-method      Box-Whisker Plot Methods in Package 'flexclust'
+cclust                  Convex Clustering
+clusterSim              Cluster Similarity Matrix
+dentitio                Dentition of Mammals
+dist2                   Compute Pairwise Distances Between Two Data
+                        sets
+distances               Distance and Centroid Computation
+flexclustControl-class
+                        Classes "flexclustControl" and "cclustControl"
+flxColors               Flexclust Color Palettes
+histogram,kccasimple,missing-method
+                        Methods for Function histogram in Package
+                        'flexclust'
+image,kcca-method       Methods for Function image in Package
+                        'flexclust'
+info,flexclust,character-method
+                        Get Information on Fitted Flexclust Objects
+kcca                    K-Centroids Cluster Analysis
+kcca2df                 Convert Cluster Result to Data Frame
+milk                    Milk of Mammals
+nutrient                Nutrients in Meat, Fish and Fowl
+pairs,kcca-method       Methods for Function pairs in Package
+                        'flexclust'
+parameters              Get Centroids from KCCA Object
+plot,kcca,missing-method
+                        Methods for Function plot in Package
+                        'flexclust'
+predict,kccasimple-method
+                        Predict Cluster Membership
+priceFeature            Artificial 2d Market Segment Data
+projAxes                Add Arrows for Projected Axes to a Plot
+propBarchart            Barcharts and Boxplots for Columns of a Data
+                        Matrix Split by Groups
+qtclust                 Stochastic QT Clustering
+randIndex               Compare Partitions
+randomTour              Plot a Random Tour
+relabel                 Relabel Cluster Results.
+shadow                  Cluster Shadows and Silhouettes
+shadowStars             Shadow Stars
+slsaplot                Segment Level Stability Across Solutions Plot.
+slswFlexclust           Segment Level Stability Within Solution.
+stepFlexclust           Run Flexclust Algorithms Repeatedly
+stripes                 Stripes Plot
+vacmot                  Vacation Motives of Australians
+volunteers              Motivation of Australian Volunteers

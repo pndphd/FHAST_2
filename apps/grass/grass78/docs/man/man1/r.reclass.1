@@ -1,0 +1,305 @@
+.TH r.reclass 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.reclass\fR\fR  \- Reclassify raster map based on category values.
+.br
+Creates a new raster map whose category values are based upon a reclassification of the categories in an existing raster map.
+.SH KEYWORDS
+raster, reclassification
+.SH SYNOPSIS
+\fBr.reclass\fR
+.br
+\fBr.reclass \-\-help\fR
+.br
+\fBr.reclass\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBrules\fR=\fIname\fR  [\fBtitle\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be reclassified
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBrules\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+File containing reclass rules
+.br
+\(cq\-\(cq for standard input
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for output raster map
+.SH DESCRIPTION
+\fIr.reclass\fR creates an \fIoutput\fR map layer
+based on an \fIinput\fR integer raster map layer.  The output
+map layer will be a reclassification of the input map layer
+based on reclass rules input to \fIr.reclass\fR, and can
+be treated in much the same way that raster maps are
+treated.  A \fITITLE\fR for the output map layer may be
+(optionally) specified by the user.
+.PP
+The reclass rules are read from standard input (i.e., from
+the keyboard, redirected from a file, or piped through
+another program).
+.PP
+Before using \fIr.reclass\fR the user must know the following:
+.IP
+.IP \fB1\fR
+The new categories desired;  and, which old categories fit into
+which new categories.
+.IP \fB2\fR
+The names of the new categories.
+.PP
+.SH NOTES
+In fact, the \fIr.reclass\fR program does \fInot\fR generate any new
+raster map layers (in the interests of disk space conservation).  Instead, a
+\fBreclass table\fR is stored which will be used to reclassify the
+original raster map layer each time the new (reclassed) map name
+is requested.  As far as the user (and programmer) is concerned, that
+raster map has been created.
+.PP
+\fIr.reclass\fR only works on an \fIinteger\fR input raster map; if the
+input map is instead floating point data, you must multiply the input data by some
+factor to achieve whole number input data, otherwise \fIr.reclass\fR will round
+the raster values down to the next integer.
+.PP
+Also note that although the user can generate a \fIr.reclass\fR map
+which is based on another \fIr.reclass\fR map,
+the new \fIr.reclass\fR map will be stored in GRASS as a reclass
+of the \fIoriginal\fR raster map on which the first reclassed map was
+based.  Therefore, while GRASS allows the user to provide \fIr.reclass\fR
+map layer information which is based on an already reclassified map
+(for the user\(cqs convenience), no \fIr.reclass\fR map layer
+(i.e., \fIreclass table\fR) will ever be \fIstored\fR
+as a \fIr.reclass\fR of a \fIr.reclass\fR.
+.PP
+To convert a reclass map to a regular raster map layer, set your
+geographic region settings to match the settings in the header for the
+reclass map (with \(dqg.region raster=reclass_map\(dq, or
+viewable by running \fIr.info\fR)
+and then run \fIr.resample\fR.
+.PP
+\fIr.mapcalc\fR can be used to convert
+a reclass map to a regular raster map layer as well:
+.br
+.nf
+\fC
+  r.mapcalc \(dqraster_map = reclass_map\(dq
+\fR
+.fi
+.PP
+where \fIraster_map\fR is the name to be given to the new raster map,
+and \fIreclass_map\fR is an existing reclass map.
+.PP
+Because \fIr.reclass\fR generates internally simply a table by
+referencing some original raster map layer rather than creating a full
+new reclassed raster map layer, a \fIr.reclass\fR map layer will
+no longer be accessible if the original raster map layer, upon which
+it was based, is later removed. Therefore, attempting to remove a
+raster map layer from which a \fIr.reclass\fR has been derived
+is only possible if the original map is removed first.
+Alternatively, a \fIr.reclass\fR map can be removed including
+its base map by using
+.PP
+\fIg.remove\fR\(cqs
+\fB\-b\fR flag.
+.PP
+A \fIr.reclass\fR map is not a true raster map layer.
+Rather, it is a table of reclassification values which reference the
+input raster map layer.  Therefore, users who wish to retain reclassified
+map layers must also save the original input raster map layers
+from which they were generated. Alternatively \fIr.recode\fR can be used.
+.PP
+Category values which are not explicitly reclassified to a new value
+by the user will be reclassified to NULL.
+.SS Reclass Rules
+Each line of input must have the following format:
+.br
+\fBinput_categories=\fR\fIoutput_category  \fR[\fIlabel\fR]
+.PP
+where each line of input specifies the category values in the
+input raster map layer to be reclassified to the new
+\fIoutput_category\fR category value.  Specification of
+a \fIlabel\fR to be associated with the new output map
+layer category is optional.  If specified, it is recorded
+as the category label for the new category value.  The
+equal sign = is required.  The \fIinput_category(ies)\fR
+may consist of single category values or a range of such
+values in the format \(dq\fIlow\fR thru \fIhigh\fR.\(dq The
+word \(dqthru\(dq must be present.
+.PP
+To include all (remaining) values the asterix \(dq*\(dq can be used. This
+rule has to be set as last rule. No further rules are accepted after
+setting this rule. The special rule \(dq* = *\(dq specifies
+that all categories not expicitly set by one of the above rules
+should be passed through unaltered instead of being set to NULL.
+.PP
+Categories to become no data are specified by setting the output
+category value to \(dqNULL\(dq.
+.PP
+A line containing only the word \fBend\fR terminates the
+input.
+.SH EXAMPLES
+.SS Reclass rules examples
+The following examples may help clarify the reclass rules.
+.PP
+The first example reclassifies categories 1, 2 and 3 in the input raster
+map layer \(dqroads\(dq to category 1 with category label \(dqgood quality\(dq in the output map
+layer, and reclassifies input raster map layer categories 4 and 5 to
+category 2 with the label \(dqpoor quality\(dq in the output map layer.
+.br
+.nf
+\fC
+    1 2 3   = 1    good quality
+    4 5     = 2    poor quality
+\fR
+.fi
+.PP
+The following example reclassifies categories 1, 3 and 5 in the input raster
+map layer to category 1 with category label \(dqpoor quality\(dq in the output
+map layer, and reclassifies input raster map layer categories 2, 4, and 6
+to category 2 with the label \(dqgood quality\(dq in the output map layer.
+All other values are reclassified to NULL.
+.br
+.nf
+\fC
+    1 3 5   = 1    poor quality
+    2 4 6   = 2    good quality
+    *       = NULL
+\fR
+.fi
+.PP
+The following example reclassifies input raster map layer categories
+1 thru 10 to output
+map layer category 1, input map layer categories 11 thru 20 to output map layer
+category 2, and input map layer categories 21 thru 30 to output map layer
+category 3, all without labels. The range from 30 to 40 is reclassified as
+NULL.
+.br
+.nf
+\fC
+     1 thru 10	= 1
+    11 thru 20	= 2
+    21 thru 30	= 3
+    30 thru 40  = NULL
+\fR
+.fi
+.PP
+The following example shows overlapping rules. Subsequent rules override
+previous rules. Therefore, the below example
+reclassifies input raster map layer categories 1 thru 19 and 51 thru 100
+to category 1 in the output map layer,
+input raster map layer categories 20 thru 24 and 26 thru 50 to
+the output map layer category 2, and input raster map layer category 25
+to the output category 3.
+.br
+.nf
+\fC
+     1 thru 100	= 1    poor quality
+    20 thru 50	= 2    medium quality
+    25	        = 3    good quality
+\fR
+.fi
+.PP
+The previous example could also have been entered as:
+.br
+.nf
+\fC
+     1 thru 19  51 thru 100	= 1    poor quality
+    20 thru 24  26 thru 50	= 2    medium quality
+    25				= 3    good quality
+\fR
+.fi
+or as:
+.br
+.nf
+\fC
+     1 thru 19	 = 1    poor quality
+    51 thru 100	 = 1
+    20 thru 24	 = 2
+    26 thru 50	 = 2    medium quality
+    25		 = 3    good quality
+\fR
+.fi
+.PP
+The final example was given to show how the labels are handled.  If a new
+category value appears in more than one rule (as is the case with new
+category values 1 and 2),
+the last label which was specified becomes the label for that category.
+In this case the labels are assigned exactly as in the two previous examples.
+.SS Usage example
+In this example, the 21 classes of the landuse map (North Carolina sample
+dataset) are simplified to 7 classes:
+.br
+.nf
+\fC
+r.category landuse96_28m
+0	not classified
+1	High Intensity Developed
+2	Low Intensity Developed
+3	Cultivated
+[...]
+20	Water Bodies
+21      Unconsolidated Sediment
+# use this command or save rules with editor in textfile \(dqlanduserecl.txt\(dq
+echo \(dq0 = NULL
+1 2     = 1 developed
+3       = 2 agriculture
+4 6     = 3 herbaceous
+7 8 9   = 4 shrubland
+10 thru 18 = 5 forest
+20      = 6 water
+21      = 7 sediment\(dq > landuserecl.txt
+r.reclass input=landuse96_28m output=landclass96_recl \(rs
+  rules=landuserecl.txt \(rs
+  title=\(dqSimplified landuse classes 1996\(dq
+# verify result
+r.category landuse96_recl
+1	developed
+2	agriculture
+3	herbaceous
+4	shrubland
+5	forest
+6	water
+7	sediment
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.recode,
+r.resample,
+r.rescale
+\fR
+.SH AUTHORS
+James Westervelt,
+.br
+Michael Shapiro
+.br
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.reclass source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

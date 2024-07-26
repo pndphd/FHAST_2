@@ -1,0 +1,111 @@
+.TH i.ortho.transform 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.ortho.transform\fR\fR  \- Computes a coordinate transformation based on the control points.
+.SH KEYWORDS
+imagery, orthorectify, transformation, GCP
+.SH SYNOPSIS
+\fBi.ortho.transform\fR
+.br
+\fBi.ortho.transform \-\-help\fR
+.br
+\fBi.ortho.transform\fR [\-\fBsrx\fR] \fBgroup\fR=\fIname\fR  [\fBformat\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcoords\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Display summary information
+.IP "\fB\-r\fR" 4m
+.br
+Reverse transform of coords file or coeff. dump
+.br
+Target east,north,height coordinates to local x,y,z
+.IP "\fB\-x\fR" 4m
+.br
+Display transform matrix coefficients
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBformat\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Output format
+.br
+Options: \fIidx, src, dst, fwd, rev, fxy, rxy, fd, rd\fR
+.br
+Default: \fIfd,rd\fR
+.br
+\fBidx\fR: point index
+.br
+\fBsrc\fR: source coordinates
+.br
+\fBdst\fR: destination coordinates
+.br
+\fBfwd\fR: forward coordinates (destination)
+.br
+\fBrev\fR: reverse coordinates (source)
+.br
+\fBfxy\fR: forward coordinates difference (destination)
+.br
+\fBrxy\fR: reverse coordinates difference (source)
+.br
+\fBfd\fR: forward error (destination)
+.br
+\fBrd\fR: reverse error (source)
+.IP "\fBcoords\fR=\fIname\fR" 4m
+.br
+File containing coordinates to transform (\(dq\-\(dq to read from stdin)
+.br
+Local x,y,z coordinates to target east,north,height
+.SH DESCRIPTION
+\fIi.ortho.transform\fR is an utility to compute transformation
+based upon GCPs and output error measurements.
+.PP
+If coordinates are given with the \fBinput\fR file option or fed from
+stdin, both the input and the output format is \(dqx y z\(dq with one
+coordinate pair per line. Reverse transform is performed with the
+\fB\-r\fR flag.
+.PP
+The \fBformat\fR option determines how control points are printed out.
+A summary on the control points can be printed with the \fB\-s\fR flag.
+The summary includes maximum deviation observed when transforming GCPs
+and overall RMS. The \fBformat\fR option is ignored when coordinates
+are given with the \fBinput\fR file option.
+.SH NOTES
+Ortho\-transformation is a 2\-step transformation. First, source
+coordinates are transformed to sensor coordinates, then sensor
+coordinates are transformed to target coordinates.
+.SH SEE ALSO
+\fIi.rectify\fR
+.SH TODO
+Update this document with x,y,z<\->E,N,H information
+.SH AUTHORS
+Brian J. Buckley
+.br
+Glynn Clements
+.br
+Hamish Bowman
+.SH SOURCE CODE
+.PP
+Available at: i.ortho.transform source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,223 @@
+.TH v.univar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.univar\fR\fR  \- Calculates univariate statistics of vector map features.
+.br
+Variance and standard deviation is calculated only for points if specified.
+.SH KEYWORDS
+vector, statistics, univariate statistics, attribute table, geometry
+.SH SYNOPSIS
+\fBv.univar\fR
+.br
+\fBv.univar \-\-help\fR
+.br
+\fBv.univar\fR [\-\fBgewd\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcolumn\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBpercentile\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Print the stats in shell script style
+.IP "\fB\-e\fR" 4m
+.br
+Calculate extended statistics
+.IP "\fB\-w\fR" 4m
+.br
+Weigh by line length or area size
+.IP "\fB\-d\fR" 4m
+.br
+Calculate geometric distances instead of attribute statistics
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint,line,area\fR
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBpercentile\fR=\fIinteger\fR" 4m
+.br
+Percentile to calculate (requires extended statistics flag)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI90\fR
+.SH DESCRIPTION
+\fIv.univar\fR calculates univariate statistics on (by default) an attribute
+of, or, through the \fB\-d\fR flag on distance between, vector map features.
+Attributes are read per feature and per category value. This means that if the
+map contains several features with the same category value, the attribute is
+read as many times as there are features. On the other hand, if a feature has
+more than one category value, each attribute value linked to each of the
+category values of the feature is read. For statistics on one attribute
+per category value, instead of one attribute per feature and per category,
+see v.db.univar.
+.PP
+Extended statistics (\fB\-e\fR) adds median, 1st and 3rd quartiles, and 90th
+percentile to the output.
+.SH NOTES
+When using the \fB\-d\fR flag, univariate statistics of distances
+between vector features are calculated. The distances from all features
+to all other features are used. Since the distance from feature A to
+feature B is the same like the distance from feature B to feature A,
+that distance is considered only once, i.e. all pairwise distances
+between features are used. Depending on the selected vector
+\fBtype\fR, distances are calculated as follows:
+.RS 4n
+.IP \(bu 4n
+\fBtype=point\fR: point distances are considered;
+.IP \(bu 4n
+\fBtype=line\fR: line to line distances are considered;
+.IP \(bu 4n
+\fBtype=area\fR: not supported, use \fBtype=centroid\fR instead (and see
+v.distance for calculating distances
+between areas)
+.RE
+.SH EXAMPLES
+The examples are based on the North Carolina sample dataset.
+.SS Example dataset preparation
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+v.random output=samples npoints=100
+v.db.addtable map=samples columns=\(dqheights double precision\(dq
+v.what.rast map=samples rast=elevation column=heights
+v.db.select map=samples
+\fR
+.fi
+.SS Calculate height attribute statistics
+.br
+.nf
+\fC
+v.univar \-e samples column=heights type=point
+number of features with non NULL attribute: 100
+number of missing attributes: 0
+number of NULL attributes: 0
+minimum: 57.2799
+maximum: 148.903
+range: 91.6235
+sum: 10825.6
+mean: 108.256
+mean of absolute values: 108.256
+population standard deviation: 20.2572
+population variance: 410.356
+population coefficient of variation: 0.187123
+sample standard deviation: 20.3593
+sample variance: 414.501
+kurtosis: \-0.856767
+skewness: 0.162093
+1st quartile: 90.531
+median (even number of cells): 106.518
+3rd quartile: 126.274
+90th percentile: 135.023
+\fR
+.fi
+.SS Compare to statistics of original raster map
+.br
+.nf
+\fC
+r.univar \-e elevation
+total null and non\-null cells: 2025000
+total null cells: 0
+Of the non\-null cells:
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+n: 2025000
+minimum: 55.5788
+maximum: 156.33
+range: 100.751
+mean: 110.375
+mean of absolute values: 110.375
+standard deviation: 20.3153
+variance: 412.712
+variation coefficient: 18.4057 %
+sum: 223510266.558102
+1st quartile: 94.79
+median (even number of cells): 108.88
+3rd quartile: 126.792
+90th percentile: 138.66
+\fR
+.fi
+.SS Calculate statistic of distance between sampling points
+.br
+.nf
+\fC
+v.univar \-d samples type=point
+number of primitives: 100
+number of non zero distances: 4851
+number of zero distances: 0
+minimum: 69.9038
+maximum: 18727.7
+range: 18657.8
+sum: 3.51907e+07
+mean: 7254.33
+mean of absolute values: 7254.33
+population standard deviation: 3468.53
+population variance: 1.20307e+07
+population coefficient of variation: 0.478132
+sample standard deviation: 3468.89
+sample variance: 1.20332e+07
+kurtosis: \-0.605406
+skewness: 0.238688
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.univar,
+r.univar,
+v.db.univar,
+v.distance,
+v.neighbors,
+v.qcount
+\fR
+.SH AUTHORS
+Radim Blazek, ITC\-irst
+.PP
+extended by:
+.br
+Hamish Bowman, University of Otago, New Zealand
+.br
+Martin Landa
+.SH SOURCE CODE
+.PP
+Available at: v.univar source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

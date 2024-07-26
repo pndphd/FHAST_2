@@ -1,0 +1,141 @@
+.TH r.null 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.null\fR\fR  \- Manages NULL\-values of given raster map.
+.SH KEYWORDS
+raster, null data
+.SH SYNOPSIS
+\fBr.null\fR
+.br
+\fBr.null \-\-help\fR
+.br
+\fBr.null\fR [\-\fBfincrz\fR] \fBmap\fR=\fIname\fR  [\fBsetnull\fR=\fIval[\-val]\fR[,\fIval[\-val]\fR,...]]   [\fBnull\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Only do the work if the map is floating\-point
+.IP "\fB\-i\fR" 4m
+.br
+Only do the work if the map is integer
+.IP "\fB\-n\fR" 4m
+.br
+Only do the work if the map doesn\(cqt have a NULL\-value bitmap file
+.IP "\fB\-c\fR" 4m
+.br
+Create NULL\-value bitmap file validating all data cells
+.IP "\fB\-r\fR" 4m
+.br
+Remove NULL\-value bitmap file
+.IP "\fB\-z\fR" 4m
+.br
+Re\-create NULL\-value bitmap file (to compress or uncompress)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map for which to edit null values
+.IP "\fBsetnull\fR=\fIval[\-val][,\fIval[\-val]\fR,...]\fR" 4m
+.br
+List of cell values to be set to NULL
+.IP "\fBnull\fR=\fIfloat\fR" 4m
+.br
+The value to replace the null value by
+.SH DESCRIPTION
+The function of \fIr.null\fR is to explicitly create the NULL\-value
+bitmap file. The intended usage is to update maps that do not have a
+NULL\-value bitmap file (i.e. to indicate for each pixel if zero is a valid
+value or is to be considered as NULL, i.e. no data value). The module does
+not work with reclassified or external maps.
+.PP
+The design is flexible. Ranges of values can be set to NULL and/or the NULL
+value can be eliminated and replace with a specified value.
+.PP
+The \fBsetnull\fR parameter is used to specify values in the ranges to
+be set to NULL.  A range is either a single value (e.g., 5.3), or a pair of
+values (e.g., 4.76\-34.56).  Existing NULL\-values are left NULL, unless the
+null argument is requested.
+.PP
+The \fBnull\fR parameter eliminates the NULL value and replaces it with
+value. This argument is applied only to existing NULL values, and not to the
+NULLs created by the setnull argument.
+.SH NOTES
+Note that the value is restricted to integer if the map is an integer map.
+.SS r.null and reclassified maps
+\fIr.null\fR does not support reclassified maps because, if \fIr.null\fR
+was run on the reclass raster it would alter the original and any other
+reclass rasters of the original.  Therefore \fIr.null\fR does not allow
+recoding reclassified maps (products of \fIr.reclass\fR).
+.br
+As a workaround, the way to recode such a map is: The user creates a raster
+map out of the reclassified map by copying it:
+.br
+.br
+.nf
+\fC
+r.mapcalc \(dqnewmap = reclass\(dq
+\fR
+.fi
+.SS NULL data compression
+By default no data files (i.e., NULL files) are not compressed unless a
+specific environment variable is set. The NULL file compression must be
+explicitly turned on with export GRASS_COMPRESS_NULLS=1.
+.br
+Warning: such raster maps can then only be opened with GRASS GIS 7.2.0 or
+later. NULL file compression can be managed with \fBr.null \-z\fR.
+.SS External maps
+From the r.external documentation: GDAL\-linked
+(\fIr.external\fR) maps do not have or use a NULL bitmap, hence \fIr.null\fR cannot
+manipulate them directly. Here NULL cells are those whose value matches
+the value reported by the GDALGetRasterNoDataValue() function. To apply the
+GDAL\-linked the user need to either create a MASK (e.g. with \fIr.mask\fR) and
+then \(dqapply\(dq it using e.g. \fIr.resample\fR, or use \fIr.mapcalc\fR to create a copy
+with the appropriate categories changed to NULL (if() condition).
+.SH EXAMPLES
+Set specific values of a classified map to NULL:
+.br
+.br
+.nf
+\fC
+r.null map=landcover.30m setnull=21,22
+\fR
+.fi
+Set NULL\-values of a map to a specific value:
+.br
+.br
+.nf
+\fC
+r.null map=fields null=99
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.compress,
+r.support,
+r.quant
+\fR
+.SH AUTHOR
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.null source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

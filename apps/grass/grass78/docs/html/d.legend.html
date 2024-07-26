@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.legend - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.legend</b></em>  - Displays a legend for a 2D or 3D raster map in the active frame of the graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>, <a href="keywords.html#legend">legend</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.legend</b><br></div>
+<b>d.legend --help</b><br>
+<div id="synopsis"><b>d.legend</b> [-<b>vctnsfdbl</b>]  [<b>raster</b>=<em>name</em>]   [<b>raster_3d</b>=<em>name</em>]   [<b>title</b>=<em>string</em>]   [<b>title_fontsize</b>=<em>float</em>]   [<b>lines</b>=<em>integer</em>]   [<b>thin</b>=<em>integer</em>]   [<b>units</b>=<em>string</em>]   [<b>labelnum</b>=<em>integer</em>]   [<b>label_values</b>=<em>float</em>[,<i>float</i>,...]]   [<b>label_step</b>=<em>float</em>]   [<b>digits</b>=<em>integer</em>]   [<b>at</b>=<em>bottom,top,left,right</em>]   [<b>use</b>=<em>float</em>[,<i>float</i>,...]]   [<b>range</b>=<em>min,max</em>]   [<b>color</b>=<em>name</em>]   [<b>font</b>=<em>string</em>]   [<b>fontsize</b>=<em>float</em>]   [<b>path</b>=<em>name</em>]   [<b>charset</b>=<em>string</em>]   [<b>border_color</b>=<em>name</em>]   [<b>bgcolor</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-v</b></dt>
+<dd>Do not show category labels</dd>
+
+<dt><b>-c</b></dt>
+<dd>Do not show category numbers</dd>
+
+<dt><b>-t</b></dt>
+<dd>Draw legend ticks for labels</dd>
+
+<dt><b>-n</b></dt>
+<dd>Skip categories with no label</dd>
+
+<dt><b>-s</b></dt>
+<dd>Draw smooth gradient</dd>
+
+<dt><b>-f</b></dt>
+<dd>Flip legend</dd>
+
+<dt><b>-d</b></dt>
+<dd>Add histogram to smoothed legend</dd>
+
+<dt><b>-b</b></dt>
+<dd>Show background</dd>
+
+<dt><b>-l</b></dt>
+<dd>Use logarithmic scale</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>raster</b>=<em>name</em></dt>
+<dd>Name of raster map</dd>
+
+<dt><b>raster_3d</b>=<em>name</em></dt>
+<dd>Name of 3D raster map</dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Legend title</dd>
+
+<dt><b>title_fontsize</b>=<em>float</em></dt>
+<dd>Title font size</dd>
+<dd>Default: Same as fontsize</dd>
+<dd>Options: <em>1-360</em></dd>
+
+<dt><b>lines</b>=<em>integer</em></dt>
+<dd>Number of text lines (useful for truncating long legends)</dd>
+<dd>Options: <em>0-1000</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>thin</b>=<em>integer</em></dt>
+<dd>Thinning factor (thin=10 gives cats 0,10,20...)</dd>
+<dd>Options: <em>1-1000</em></dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Units to display after labels (e.g. meters)</dd>
+
+<dt><b>labelnum</b>=<em>integer</em></dt>
+<dd>Number of text labels for smooth gradient legend</dd>
+<dd>Options: <em>2-100</em></dd>
+<dd>Default: <em>5</em></dd>
+
+<dt><b>label_values</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Specific values to draw ticks</dd>
+
+<dt><b>label_step</b>=<em>float</em></dt>
+<dd>Display label every step</dd>
+
+<dt><b>digits</b>=<em>integer</em></dt>
+<dd>Number of digits after decimal point</dd>
+<dd>Options: <em>0-6</em></dd>
+
+<dt><b>at</b>=<em>bottom,top,left,right</em></dt>
+<dd>Size and placement as percentage of screen coordinates (0,0 is lower left)</dd>
+<dd>bottom,top,left,right</dd>
+<dd>Options: <em>0-100</em></dd>
+
+<dt><b>use</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>List of discrete category numbers/values for legend</dd>
+
+<dt><b>range</b>=<em>min,max</em></dt>
+<dd>Use a subset of the map range for the legend (min,max)</dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Text color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>fontsize</b>=<em>float</em></dt>
+<dd>Font size</dd>
+<dd>Default: Auto-scaled</dd>
+<dd>Options: <em>1-360</em></dd>
+
+<dt><b>path</b>=<em>name</em></dt>
+<dd>Path to font file</dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Text encoding (only applicable to TrueType fonts)</dd>
+
+<dt><b>border_color</b>=<em>name</em></dt>
+<dd>Border color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>bgcolor</b>=<em>name</em></dt>
+<dd>Background color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>white</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.legend</em> displays a legend for a user-specified raster map or
+3D raster map layer in the active frame on the graphics monitor.  
+<p>
+The legend's default size is based on the dimensions of the
+active frame, specifically its height.  <em>d.legend</em> will only
+obscure those portions of the active frame that directly underlie the legend.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+When using the <b>at</b> to size &amp; place the legend, a user may
+create a horizontal legend by making the box wider than it is tall.
+<p>
+Raster maps based on floating point values will display smoothed, from greatest
+to smallest value, while categorical raster maps will display in order, from
+top to bottom. Horizontal legends will always be smoothed. If the box is defined
+with inverted y-values or an inverted <b>range</b>, the legend will automatically
+flip. If this is not the desired result, the <b>-f</b> flag may be used to flip
+it back.
+<p>
+If the user attempts to display a very long legend in a relatively short 
+display frame, the legend may appear in unreadably small text, or even revert
+to a smooth gradient legend. Use the <b>lines</b>, <b>thin</b>, <b>use</b>, <b>range</b>,
+and/or <b>-n</b> options to reduce the number of categories to be displayed,
+or the <b>-s</b> flag to force a smooth gradient legend. 
+<p>
+The <b>lines</b> option will display the first number of categories, as defined
+by <em>value</em>, contained in the raster map. When used with the <b>-n</b> flag,
+it takes on a new meaning: "up to category #". When used with both
+<b>thin</b> and the <b>-n</b> flag, its meaning becomes more obscure. When
+using <b>lines</b>, auto-scaled text similar to "4 of 16 categories" will be placed at 
+the bottom of the legend.
+<p>
+The <b>thin</b> option sets the thinning factor. For raster maps with a 0th
+category, <b>thin=</b><em>10</em> gives cats [0,10,20,...]. For raster maps 
+starting at category 1, <b>thin=</b><em>10</em> gives cats [1,11,21,...].
+<p>
+The <b>use</b> option lets the user create a legend made up of arbitrary category
+values. e.g.&nbsp;<b>use=</b><em>1000,100,10,0,-10,-100,-1000</em>
+<p>
+The <b>range</b> option lets the user define the minimum and maximum categories
+to be used in the legend. It may also be used to define the limits of a smooth
+gradient legend created from a raster containing floating point values. Note
+the color scale will remain faithful to the category values as defined with
+<em><a href="r.colors.html">r.colors</a></em>, and the <b>range</b> may be
+extended to the limits defined by the <em><a href="r.colors.html">r.colors</a></em>
+color map.
+<p>
+The flag <b>-n</b> is useful for categorial maps, as it suppresses the
+drawing of non-existing categories (otherwise the full range is shown).
+<p>
+Vertical legends produced with <em>d.legend</em> will place text labels to the
+right of the legend box, horizontal legends will place text below. This text
+will be auto-scaled to fit within the frame, reducing the size of the legend
+if necessary. Legends positioned with the <b>at</b> option
+will not auto-scale text, in order to provide more control to the user.
+Smaller text may be obtained in this case by reducing the height of the box
+or by using the <b>fontsize</b> option. The <b>-c</b> and <b>-v</b> flags may
+be used to suppress the display of category numbers and labels respectively,
+or used together to suppress all text of categorial raster maps.
+<p>
+The text produced from floating-point raster maps will automatically create
+output with a meaningful number of significant digits. For very small values,
+numbers will be expressed in scientific notation, e.g.&nbsp;"1.7e-9". Option
+<b>digits</b> can be used to determine how many digits after decimal point
+will be displayed.
+<p>
+When the <b>-d</b> flag is used to display a histogram distribution along
+side the smoothed gradient legend, note that the statistics are calculated
+on the <i>current computational region</i> settings set by <em>g.region</em>.
+The default <b>range</b> however covers the entire natural bounds of the input map.
+If the histogram appears empty, check your region settings.
+<p>
+If the raster map's <i>units</i> metadata has been set with the
+<em>r.support</em> module then it will be displayed along side the legend.
+<p>
+The option <b>title</b> will display the custom title at the top of the legend. 
+In case of vertical legend the title is aligned to the left edge of legend, in case
+of horizontal legend the title is aligned to the center. <b>title_fontsize</b> can
+be used to set the size of legend title. By default the legend title font size is
+the same as labels font size. 
+<p>
+There are different options to customize displayed labels. The <b>labelnum</b> set
+the number of labels which are displayed in regular intervals. The <b>label_values</b>
+will specify the values where the labels will be displayed. The <b>label_step</b> will
+display labels at values which are divisible by this value.
+<p>
+The flag <b>-t</b> will show ticks at labels.
+<p>
+The flag <b>-b</b> will show the background. Options <b>bgcolor</b> and <b>border_color</b> can be
+used to choose the color of border and background fill.
+<p>
+The flag <b>-l</b> will switch to logarithmic scale. In case this flag is used,
+the provided step in <b>label_step</b> is interpreted in the logarithmic space.
+<h2><a name="example">EXAMPLE</a></h2>
+
+Displaying the legend along with a histogram (North Carolina Sample dataset):
+
+<div class="code"><pre>
+g.region raster=elevation -p
+d.rast elevation
+d.legend -d elevation
+</pre></div>
+
+<center>
+<img src="d_legend.png" alt="Elevation map with legend" border=1>
+</center>
+
+Displaying the legend with custom labels and background:
+
+<div class="code"><pre>
+g.region raster=elevation -p
+d.rast elevation
+d.legend raster=elevation -t label_step=20 label_values=108 title=Legend -b bgcolor=255:255:204 border_color=gray
+</pre></div>
+
+<center>
+<img src="d_legend_custom_labels_and_background.png" alt="Elevation map with custom legend" border=1>
+</center>
+
+Displaying the legend with logarithmic scale:
+
+<div class="code"><pre>
+g.region raster=elevation -p
+r.watershed -a elevation=elevation threshold=1000 accumulation=flowacc
+d.rast flowacc
+d.legend raster=flowacc -t -l label_step=1
+</pre></div>
+
+<center>
+<img src="d_legend_logarithmic.png" alt="Flow accumulation map with logarithmic legend" border=1>
+</center>
+
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.barscale.html">d.barscale</a>,
+<a href="d.colortable.html">d.colortable</a>,
+<a href="d.font.html">d.font</a>,
+<a href="d.grid.html">d.grid</a>,
+<a href="d.rast.html">d.rast</a>,
+<a href="d.rast.leg.html">d.rast.leg</a>,
+<a href="d.text.html">d.text</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>,
+<a href="r.reclass.html">r.reclass</a>,
+<a href="r.stats.html">r.stats</a>,
+<a href="r3.stats.html">r3.stats</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+Bill Brown, U.S. Army Construction Engineering Research Laboratories
+<br>Late 2002: Rewrite of much of the code. Hamish Bowman,
+ Otago University, New Zealand
+<br>Additional improvements from various authors
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.legend">d.legend source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.legend">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

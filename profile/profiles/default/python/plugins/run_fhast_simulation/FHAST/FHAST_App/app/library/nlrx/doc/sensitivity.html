@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jan Salecker" />
+
+<meta name="date" content="2023-05-16" />
+
+<title>Sensitivity Analysis</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Sensitivity Analysis</h1>
+<h4 class="author">Jan Salecker</h4>
+<h4 class="date">2023-05-16</h4>
+
+
+
+<div id="sensitivity-analysis-with-nlrx" class="section level1">
+<h1>Sensitivity Analysis with nlrx</h1>
+<p>Different types of sensitivity analyses can be conducted using the
+nlrx package. To perform a local sensitivity analysis, we recommend
+using the <code>simdesign_distinct()</code> to specify local changes of
+parameters. Afterwards the proportion of output change can be easily
+calculated from the simulation results. The nlrx package also provides
+simdesign helper functions to conduct more sophisticated methods such as
+Morris Elementary Effects Screening (<code>simdesign_morris()</code>),
+Sobol variance decomposition (<code>simdesign_sobol()</code>,
+<code>simdesign_sobol2007()</code>,
+<code>simdesign_soboljansen()</code>) and Extended Fourier amplitude
+sensitivity test (<code>simdesign_eFAST</code>). Additionally, output of
+Latin Hypercube Sampling designs (<code>simdesign_lhs()</code>) can be
+used to calculate parameter effects based on Partial (rank) correlation
+coefficients or Standardised (rank) regression coefficients.</p>
+<p>In this vignette, we present an example of the Morris Elementary
+Effects screening. Other sensitivity analyses simdesigns work in a quite
+similar way. Details on the specific methods can be found in the
+corresponding simdesign help pages and the documentation of the <a href="https://cran.r-project.org/package=sensitivity">sensitivity
+package</a>. The second example shows how Latin Hypercube Sampling can
+be used to calculate Partial (rank) correlation coefficients and
+Standardised (rank) regression coefficients.</p>
+<div id="example-1-morris-elementary-effects-screening" class="section level2">
+<h2>Example 1: Morris elementary effects screening</h2>
+<p>Here we present a simple example for running a Morris Sensitivity
+Analysis with nlrx. We use the Wolf Sheep Predation model from the
+models library for this example.</p>
+<div id="step-1-create-a-nl-object" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>In this example, we want to calculate sensitivity for 3 outputs
+(number of sheep, number of wolves, number of grass patches). We vary
+all numeric model parameters to estimate their sensitivity on the three
+defined output metrics. Thus, we define parameter ranges and
+distribution functions for all our numeric model parameters. We set the
+runtime of the model to 500 ticks and measure our metrics on each tick
+(<code>tickmetrics = &quot;true&quot;</code>). However, for calculation of
+sensitivity indices, we only want to consider the last 200 ticks. Thus,
+we set evalticks to <code>seq(300,500)</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname =</span> <span class="st">&quot;wolf-sheep-morris&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath =</span> outpath,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition =</span> <span class="dv">1</span>,   </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics =</span> <span class="st">&quot;true&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup =</span> <span class="st">&quot;setup&quot;</span>,  </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo =</span> <span class="st">&quot;go&quot;</span>,        </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime =</span> <span class="dv">500</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">evalticks =</span> <span class="fu">seq</span>(<span class="dv">300</span>,<span class="dv">500</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>, <span class="st">&quot;count patches with [pcolor = green]&quot;</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&quot;initial-number-sheep&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;initial-number-wolves&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">100</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">50</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">100</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">20</span>, <span class="at">step=</span><span class="dv">5</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">20</span>, <span class="at">step=</span><span class="dv">5</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>We use the <code>simdesgin_morris()</code> function to attach a
+Morris Sensitivity Analysis design. The <code>morrislevels</code>
+parameter sets the number of different values for each parameter
+(sampling density). The <code>morrisr</code> paramater sets the number
+of repeated samplings (sampling size). The <code>morrisgridjump</code>
+parameter sets the number of levels that are increased/decreased for
+computing the elementary effects. Morris recommendation is to set this
+value to <code>levels / 2</code>. We can increase the
+<code>nseeds</code> parameter in order to perform multiple runs of the
+same parameter matrix with different random seeds. The variation between
+those repetitions is an indicator of the stochasticity effects within
+the model. More information on the Morris specific parameters can be
+found in the description of the morris function in the sensitivity
+package (<code>?morris</code>).</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_morris</span>(<span class="at">nl=</span>nl,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">morristype=</span><span class="st">&quot;oat&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">morrislevels=</span><span class="dv">4</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">morrisr=</span><span class="dv">1000</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">morrisgridjump=</span><span class="dv">2</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">nseeds=</span><span class="dv">5</span>)</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>To execute the simulations, we can use the function
+<code>run_nl_all()</code>. Sensitivity analyses typically have many runs
+that need to be simulated, thus we recommend to parallelize model runs
+by adjusting the future plan (more details on parallelization can be
+found in the “Advanced configuration” vignette).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(multisession)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_all</span>(nl)</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>First, we need to attach the results to the nl object.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;morris.rds&quot;</span>))</span></code></pre></div>
+<p>After results have been attached, we can use the
+<code>analyze_nl()</code> function to calculate morris sensetivity
+indices.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>morris <span class="ot">&lt;-</span> <span class="fu">analyze_nl</span>(nl)</span></code></pre></div>
+</div>
+</div>
+<div id="example-2-latin-hypercube-sampling" class="section level2">
+<h2>Example 2: Latin Hypercube Sampling</h2>
+<p>Here we perform a Latin Hypercube Sampling to calculate Partial
+(rank) correlation coefficients and Standardised (rank) regression
+coefficients.</p>
+<div id="step-1-create-a-nl-object-1" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment-1" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>In this example, we want to calculate sensitivity for 3 outputs
+(number of sheep, number of wolves, number of grass patches). We vary
+all numeric model parameters to estimate their sensitivity on the three
+defined output metrics. Thus, we define parameter ranges and
+distribution functions for all our numeric model parameters. We set the
+runtime of the model to 500 ticks and measure our metrics on each tick
+(<code>evalticks = &quot;true&quot;</code>).</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname =</span> <span class="st">&quot;wolf-sheep-morris&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath =</span> outpath,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition =</span> <span class="dv">1</span>,   </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics =</span> <span class="st">&quot;true&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup =</span> <span class="st">&quot;setup&quot;</span>,  </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo =</span> <span class="st">&quot;go&quot;</span>,        </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime =</span> <span class="dv">500</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>, <span class="st">&quot;count patches with [pcolor = green]&quot;</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&quot;initial-number-sheep&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;initial-number-wolves&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">100</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">50</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">100</span>, <span class="at">step=</span><span class="dv">10</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">20</span>, <span class="at">step=</span><span class="dv">5</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">20</span>, <span class="at">step=</span><span class="dv">5</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design-1" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>Here we want to run a Latin Hypercube Sampling, thus we use the
+<code>simdesign_lhs()</code> function.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_lhs</span>(nl, <span class="at">samples=</span><span class="dv">500</span>, <span class="at">nseeds=</span><span class="dv">1</span>, <span class="at">precision=</span><span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations-1" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>To execute the simulations, we can use the function
+<code>run_nl_all()</code>. Sensitivity analyses typically have many runs
+that need to be simulated, thus we recommend to parallelize model runs
+by adjusting the future plan (more details on parallelization can be
+found in the “Advanced configuration” vignette).</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(multisession)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_all</span>(nl, <span class="at">split=</span><span class="dv">10</span>)</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output-1" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>First, we need to attach the results to the nl object.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;lhs.rds&quot;</span>))</span></code></pre></div>
+<p>After results have been attached, we need to post-process our data to
+run the <code>pcc</code> and <code>src</code> function of the
+sensitivity package. We first take our parameter matrix
+(<code>siminput</code>) and select only columns with variable parameters
+and drop all other columns. We also need to rename the columns because
+<code>pcc</code> and <code>src</code> do not support special characters
+(-) in column names.</p>
+<p>Our simulation results are measured for each tick, thus we first need
+to aggregate our output. Here we just calculate the mean and standard
+deviation of outputs for each random-seed and siminputrow combination.
+Afterwards, we drop the random seed and siminputrow columns and rename
+the columns to remove special characters.</p>
+<p>Finally, we use both datasets to run the <code>pcc</code> and
+<code>src</code> functions. These functions can only compute
+coefficients for one output at a time. Thus, we nested the function call
+inside a <code>purrr::map()</code> function that iterates over the
+column names of our output tibble.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>input <span class="ot">&lt;-</span> <span class="fu">getsim</span>(nl, <span class="st">&quot;siminput&quot;</span>) <span class="sc">%&gt;%</span>    <span class="co"># Take input parameter matrix</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">names</span>(<span class="fu">getexp</span>(nl, <span class="st">&quot;variables&quot;</span>))) <span class="sc">%&gt;%</span>  <span class="co"># Select variable parameters only</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename_all</span>(<span class="sc">~</span><span class="fu">str_replace_all</span>(., <span class="fu">c</span>(<span class="st">&quot;-&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>))) <span class="co"># Remove - and space characters.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span>   <span class="co"># Take simulation output</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(<span class="st">`</span><span class="at">random-seed</span><span class="st">`</span>, siminputrow) <span class="sc">%&gt;%</span> <span class="co"># Group by random seed and siminputrow</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise_at</span>(<span class="fu">getexp</span>(nl, <span class="st">&quot;metrics&quot;</span>), <span class="fu">list</span>(<span class="at">mean=</span>mean, <span class="at">sd=</span>sd)) <span class="sc">%&gt;%</span> <span class="co"># Aggregate output</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">ungroup</span>() <span class="sc">%&gt;%</span>  <span class="co"># Ungroup</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">random-seed</span><span class="st">`</span>, <span class="sc">-</span>siminputrow) <span class="sc">%&gt;%</span>  <span class="co"># Only select metrics</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">rename_all</span>(<span class="sc">~</span><span class="fu">str_replace_all</span>(., <span class="fu">c</span>(<span class="st">&quot;-&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">[&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">]&quot;</span> <span class="ot">=</span> <span class="st">&quot;_&quot;</span>, <span class="st">&quot;=&quot;</span> <span class="ot">=</span> <span class="st">&quot;&quot;</span>))) <span class="co"># Remove - and space characters.</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform pcc and src for each output separately (map)</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>pcc.result <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">names</span>(output), <span class="cf">function</span>(x) sensitivity<span class="sc">::</span><span class="fu">pcc</span>(<span class="at">X=</span>input, <span class="at">y=</span>output[,x], <span class="at">nboot =</span> <span class="dv">100</span>, <span class="at">rank =</span> <span class="cn">FALSE</span>)) </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>src.result <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="fu">names</span>(output), <span class="cf">function</span>(x) sensitivity<span class="sc">::</span><span class="fu">src</span>(<span class="at">X=</span>input, <span class="at">y=</span>output[,x], <span class="at">nboot =</span> <span class="dv">100</span>, <span class="at">rank =</span> <span class="cn">FALSE</span>)) </span></code></pre></div>
+<p>The results are reported as a nested list, where each outer element
+represents one of the calculated model outputs. The inner list items
+represent the different outputs from the <code>pcc</code> and
+<code>src</code> functions.</p>
+<p>We can for example look at the <code>pcc</code> results of one
+specific output by using the basic <code>plot</code> function:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pcc.result[[<span class="dv">1</span>]])</span></code></pre></div>
+<p>We can also extract all the data to a tidy data format and create
+nice plots with the ggplot package:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pcc.result.tidy <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(<span class="fu">seq_along</span>(pcc.result), <span class="cf">function</span>(x) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  pcc.result[[x]]<span class="sc">$</span>PCC <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">&quot;parameter&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">metric =</span> <span class="fu">names</span>(output)[x])</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pcc.result.tidy) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>parameter, <span class="at">y=</span>original, <span class="at">color=</span>metric)) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">x=</span>parameter, <span class="at">ymin=</span><span class="st">`</span><span class="at">min. c.i.</span><span class="st">`</span>, <span class="at">ymax=</span><span class="st">`</span><span class="at">max. c.i.</span><span class="st">`</span>, <span class="at">color=</span>metric), <span class="at">width=</span><span class="fl">0.1</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>src.result.tidy <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(<span class="fu">seq_along</span>(src.result), <span class="cf">function</span>(x) {</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  src.result[[x]]<span class="sc">$</span>SRC <span class="sc">%&gt;%</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var=</span><span class="st">&quot;parameter&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">metric =</span> <span class="fu">names</span>(output)[x])</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(src.result.tidy) <span class="sc">+</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric) <span class="sc">+</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>parameter, <span class="at">y=</span>original, <span class="at">color=</span>metric)) <span class="sc">+</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">x=</span>parameter, <span class="at">ymin=</span><span class="st">`</span><span class="at">min. c.i.</span><span class="st">`</span>, <span class="at">ymax=</span><span class="st">`</span><span class="at">max. c.i.</span><span class="st">`</span>, <span class="at">color=</span>metric), <span class="at">width=</span><span class="fl">0.1</span>)</span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

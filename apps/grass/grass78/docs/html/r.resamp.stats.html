@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.resamp.stats - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.resamp.stats</b></em>  - Resamples raster map layers to a coarser grid using aggregation.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_resample.html">resample</a>, <a href="keywords.html#univariate statistics">univariate statistics</a>, <a href="keywords.html#aggregation">aggregation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.resamp.stats</b><br></div>
+<b>r.resamp.stats --help</b><br>
+<div id="synopsis"><b>r.resamp.stats</b> [-<b>nw</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>method</b>=<em>string</em>]   [<b>quantile</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Propagate NULLs</dd>
+
+<dt><b>-w</b></dt>
+<dd>Weight according to area (slower)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Aggregation method</dd>
+<dd>Options: <em>average, median, mode, minimum, maximum, range, quart1, quart3, perc90, sum, variance, stddev, quantile, count, diversity</em></dd>
+<dd>Default: <em>average</em></dd>
+
+<dt><b>quantile</b>=<em>float</em></dt>
+<dd>Quantile to calculate for method=quantile</dd>
+<dd>Options: <em>0.0-1.0</em></dd>
+<dd>Default: <em>0.5</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<p><em>r.resamp.stats</em> fills a grid cell (raster) matrix with
+aggregated values generated from a set of input layer data points.
+
+<p>Without the <em>-w</em> switch, the aggregate is computed over all of
+the input cells whose centers lie within the output cell.
+
+<p>With the <em>-w</em> switch, the aggregate uses the values from all
+input cells which intersect the output cell, weighted according to the
+proportion of the source cell which lies inside the output cell. This
+is slower, but produces a more accurate result.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>Resampling modules (<em>r.resample, r.resamp.stats, r.resamp.interp,
+r.resamp.rst</em>) resample the map to match the current region settings.
+
+<p>The notion of weighting doesn't make any sense for the min and max
+aggregates. However, the <em>-w</em> flag still has significance in
+that, when multiple destination cells overlap a source cell, the
+source cell is included in the calculation of all of the destination
+cells.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<p>Resample elevation raster map to a lower resolution (from 6m to 20m;
+North Carolina sample dataset):
+
+
+<div class="code"><pre>
+g.region raster=el_D782_6m -p
+g.region res=20 -ap
+# from 6m to 20m: weighted resampling -w
+r.resamp.stats -w input=el_D782_6m output=el_D782_20m
+</pre></div>
+
+<center>
+<img src="r_resamp_stats_6m_20m.png" alt="GRASS r.resamp.stats result (subset)" border=0>
+<br>
+<i>Resampling of 6m DEM (left) to 20m DEM (right) with weighted resampling (subset)</i>
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.resample.html">r.resample</a>,
+<a href="r.resamp.rst.html">r.resamp.rst</a>,
+<a href="r.resamp.filter.html">r.resamp.filter</a>,
+<a href="r.resamp.interp.html">r.resamp.interp</a>,
+<a href="r.neighbors.html">r.neighbors</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+<p>
+Examples how statistical functions are applied can be found in the <a href="r.neighbors.html">r.neighbors</a> module documentation.
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.resamp.stats">r.resamp.stats source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.resamp.stats">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

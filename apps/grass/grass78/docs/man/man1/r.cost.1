@@ -1,0 +1,408 @@
+.TH r.cost 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.cost\fR\fR  \- Creates a raster map showing the cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.
+.SH KEYWORDS
+raster, cost surface, cumulative costs, cost allocation
+.SH SYNOPSIS
+\fBr.cost\fR
+.br
+\fBr.cost \-\-help\fR
+.br
+\fBr.cost\fR [\-\fBknrib\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBsolver\fR=\fIname\fR]   [\fBnearest\fR=\fIname\fR]   [\fBoutdir\fR=\fIname\fR]   [\fBstart_points\fR=\fIname\fR]   [\fBstop_points\fR=\fIname\fR]   [\fBstart_raster\fR=\fIname\fR]   [\fBstart_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBstop_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBmax_cost\fR=\fIvalue\fR]   [\fBnull_cost\fR=\fIvalue\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-k\fR" 4m
+.br
+Use the \(cqKnight\(cqs move\(cq; slower, but more accurate
+.IP "\fB\-n\fR" 4m
+.br
+Keep null values in output raster map
+.IP "\fB\-r\fR" 4m
+.br
+Start with values in raster map
+.IP "\fB\-i\fR" 4m
+.br
+Print info about disk space and memory requirements and exit
+.IP "\fB\-b\fR" 4m
+.br
+Create bitmask encoded directions
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map containing grid cell cost information
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBsolver\fR=\fIname\fR" 4m
+.br
+Name of input raster map solving equal costs
+.br
+Helper variable to pick a direction if two directions have equal cumulative costs (smaller is better)
+.IP "\fBnearest\fR=\fIname\fR" 4m
+.br
+Name for output raster map with nearest start point
+.IP "\fBoutdir\fR=\fIname\fR" 4m
+.br
+Name for output raster map to contain movement directions
+.IP "\fBstart_points\fR=\fIname\fR" 4m
+.br
+Name of starting vector points map
+.br
+Or data source for direct OGR access
+.IP "\fBstop_points\fR=\fIname\fR" 4m
+.br
+Name of stopping vector points map
+.br
+Or data source for direct OGR access
+.IP "\fBstart_raster\fR=\fIname\fR" 4m
+.br
+Name of starting raster points map
+.IP "\fBstart_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of starting point(s) (E,N)
+.IP "\fBstop_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of stopping point(s) (E,N)
+.IP "\fBmax_cost\fR=\fIvalue\fR" 4m
+.br
+Maximum cumulative cost
+.br
+Default: \fI0\fR
+.IP "\fBnull_cost\fR=\fIvalue\fR" 4m
+.br
+Cost assigned to null cells. By default, null cells are excluded
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIr.cost\fR determines the cumulative cost of moving to each
+cell on a \fIcost surface\fR (the \fBinput\fR raster map) from
+other user\-specified cell(s) whose locations are specified by their
+geographic coordinate(s). Each cell in the original cost surface map
+will contain a category value which represents the cost of traversing
+that cell. \fIr.cost\fR will produce 1) an \fBoutput\fR raster map in
+which each cell contains the lowest total cost of traversing the
+space between each cell and the user\-specified points (diagonal
+costs are multiplied by a factor that depends on the dimensions of
+the cell) and 2) a second raster map layer showing the movement
+direction to the next cell on the path back to the start point (see
+Movement Direction). This module uses the current
+geographic region settings. The \fBoutput\fR map will be of the same
+data format as the \fBinput\fR map, integer or floating point.
+.SH OPTIONS
+The \fBinput\fR \fIname\fR is the name of a raster map whose category values
+represent the surface cost. The \fBoutput\fR \fIname\fR is the name of the
+resultant raster map of cumulative cost. The \fBoutdir\fR \fIname\fR is the
+name of the resultant raster map of movement directions (see Movement Direction).
+.PP
+\fIr.cost\fR can be run with three different methods of identifying the
+starting point(s). One or more points (geographic coordinate pairs) can be
+provided as specified \fBstart_coordinates\fR on the command line, from a vector
+points file, or from a raster map.
+All non\-NULL cells are considered to be starting points.
+.PP
+Each \fIx,y\fR \fBstart_coordinates\fR pair gives the geographic location of a
+point from which the transportation cost should be figured. As many points as
+desired can be entered by the user. These starting points can also be read
+from a vector points file through the \fBstart_points\fR option or from a
+raster map through the \fBstart_raster\fR option.
+.PP
+\fIr.cost\fR will stop cumulating costs when either \fBmax_cost\fR is reached,
+or one of the stop points given with \fBstop_coordinates\fR is reached.
+Alternatively, the stop points can be read from a vector points file with the
+\fBstop_points\fR option. During execution, once the cumulative cost to all
+stopping points has been determined, processing stops.
+.br
+Both sites read from a vector points file and those given on the command line
+will be processed.
+.PP
+The null cells in the \fBinput\fR map can be assigned a (positive floating
+point) cost with the \fBnull_cost\fR option.
+.br
+When input map null cells are given a cost with the \fBnull_cost\fR
+option, the corresponding cells in the output map are no longer null
+cells. By using the \fB\-n\fR flag, the null cells of the input map are
+retained as null cells in the output map.
+.PP
+As \fIr.cost\fR can run for a very long time, it can be useful to
+use the \fB\-\-v\fR verbose flag to track progress.
+.PP
+The Knight\(cqs move (\fB\-k\fR flag) may be used to improve the accuracy of
+the output. In the diagram below, the center location (O) represents a
+grid cell from which cumulative distances are calculated. Those
+neighbors marked with an X are always considered for cumulative cost
+updates. With the \fB\-k\fR option, the neighbors marked with a K are
+also considered.
+.br
+.nf
+\fC
+ . . . . . . . . . . . . . . .
+ .   .   . K .   . K .   .   .
+ . . . . . . . . . . . . . . .
+ .   . K . X . X . X . K .   .
+ . . . . . . . . . . . . . . .
+ .   .   . X . O . X .   .   .
+ . . . . . . . . . . . . . . .
+ .   . K . X . X . X . K .   .
+ . . . . . . . . . . . . . . .
+ .   .   . K .   . K .   .   .
+ . . . . . . . . . . . . . . .
+\fR
+.fi
+.PP
+Knight\(cqs move example:
+.br
+.TS
+expand;
+lw60.
+T{
+\fIFlat cost surface without (left pane) and with the knight\(cqs move (right pane).
+The default is to grow the cost outwards in 8 directions.
+Using the knight\(cqs move grows it outwards in 16 directions.\fR
+T}
+.sp 1
+.TE
+.PP
+If the \fBnearest\fR output parameter is specified, the module will calculate
+for each cell its nearest starting point based on the minimized accumulative cost
+while moving over the cost map.
+.PP
+The \fBsolver\fR option helps to select a particular direction in case
+of multiple directions with equal costs. Sometimes fields with equal
+cumulative costs exist and multiple paths with equal costs would lead
+from a start point to a stop point. By default, a path along the edge
+of such a field would be produced or multiple paths of equal costs with
+the \fB\-b\fR flag. An additional variable can be supplied with the
+\fBsolver\fR option to help the algorithm pick a particular direction.
+.PP
+Example for solving multiple directions:
+.br
+.TS
+expand;
+lw60.
+T{
+\fIA field of equal cumulative costs with multiple paths (black). By
+default a path along the edge will be selected (red). Path selection
+can be controlled with the solver option (blue).\fR
+T}
+.sp 1
+.TE
+.PP
+Multiple directions can be solved as in the above example with the
+following steps:
+.IP
+.IP \fB1\fR
+Create multiple directions with \fBr.cost\fR/\fBr.walk\fR
+using the \fB\-b\fR flag
+.IP \fB2\fR
+Extract paths using \fBr.path format=bitmask\fR
+.IP \fB3\fR
+Calculate the distance from NULL cells to paths using
+\fBr.grow.distance \-n input=<paths from r.path>\fR
+.IP \fB4\fR
+Invert the sign of the distances with \fBr.mapcalc\fR because
+for the solver smaller is better, and here we want to get the
+center of an area with multiple directions
+.IP \fB5\fR
+Use thise negative distances as solver for a second pass of
+\fBr.cost\fR
+.IP \fB6\fR
+Extract paths again with \fBr.path\fR to get a geometrically
+optimized solution
+.PP
+.SH NULL CELLS
+By default null cells in the input raster map are excluded from
+the algorithm, and thus retained in the output map.
+.PP
+If one wants \fBr.cost\fR to transparently cross any region of null cells,
+the \fBnull_cost\fR=0.0 option should be used. Then null cells just
+propagate the adjacent costs. These cells can be retained as null cells in the
+output map by using the \fB\-n\fR flag.
+.SH NOTES
+Paths from any point to the nearest starting point of \fIr.cost\fR
+can be extracted with \fIr.path\fR by
+using the direction output map of \fIr.cost\fR.
+.SS Algorithm notes
+The fundamental approach to calculating minimum travel cost is as
+follows:
+.PP
+The user generates a raster map indicating the cost of
+traversing each cell in the north\-south and east\-west directions.
+This map, along with a set of starting points are submitted to
+\fIr.cost\fR. The starting points are put into a heap of cells from which
+costs to the adjacent cells are to be calculated. The cell on the
+heap with the lowest cumulative cost is selected for computing costs to
+the neighboring cells. Costs are computed and those cells are put
+on the heap and the originating cell is finalized. This process
+of selecting the lowest cumulative cost cell, computing costs to the
+neighbors, putting the neighbors on the heap and removing the
+originating cell from the heap continues until the heap is empty.
+.PP
+The most time consuming aspect of this algorithm is the management of
+the heap of cells for which cumulative costs have been at least
+initially computed. \fIr.cost\fR uses a minimum heap for efficiently
+tracking the next cell with the lowest cumulative costs.
+.PP
+\fIr.cost\fR, like most all GRASS raster programs, is also made to
+be run on maps larger that can fit in available computer memory. As the
+algorithm works through the dynamic heap of cells it can move almost
+randomly around the entire area. \fIr.cost\fR divides the entire
+area into a number of pieces and swaps these pieces in and out of
+memory (to and from disk) as needed. This provides a virtual memory
+approach optimally designed for 2\-D raster maps. The amount of memory
+to be used by \fIr.cost\fR can be controlled with the \fBmemory\fR
+option, default is 300 MB. For systems with less memory this value will
+have to be set to a lower value.
+.SH EXAMPLES
+.PP
+Consider the following example:
+.br
+.nf
+\fC
+       Input:
+         COST SURFACE
+       . . . . . . . . . . . . . . .
+       . 2 . 2 . 1 . 1 . 5 . 5 . 5 .
+       . . . . . . . . . . . . . . .
+       . 2 . 2 . 8 . 8 . 5 . 2 . 1 .
+       . . . . . . . . . . . . . . .
+       . 7 . 1 . 1 . 8 . 2 . 2 . 2 .
+       . . . . . . . . . . . . . . .
+       . 8 . 7 . 8 . 8 . 8 . 8 . 5 .
+       . . . . . . . . . . _____ . .
+       . 8 . 8 . 1 . 1 . 5 | \fB3\fR | 9 .
+       . . . . . . . . . . |___| . .
+       . 8 . 1 . 1 . 2 . 5 . 3 . 9 .
+       . . . . . . . . . . . . . . .
+Output (using \-k):                Output (not using \-k):
+   CUMULATIVE COST SURFACE           CUMULATIVE COST SURFACE
+ . . . . . . . . . . . . . . .     . . . . \fB* * * * *\fR . . . . . .
+ . 21. 21. 20. 19. 17. 15. 14.     . 22. 21\fB* 21* 20*\fR 17. 15. 14.
+ . . . . . . . . . . . . . . .     . . . . \fB* * * * *\fR . . . . . .
+ . 20. 19. 22. 19. 15. 12. 11.     . 20. 19. 22\fB* 20*\fR 15. 12. 11.
+ . . . . . . . . . . . . . . .     . . . . . . \fB* * * * *\fR . . . .
+ . 22. 18. 17. 17. 12. 11.  9.     . 22. 18. 17\fB* 18* 13*\fR 11.  9.
+ . . . . . . . . . . . . . . .     . . . . . . \fB* * * * *\fR . . . .
+ . 21. 14. 13. 12.  8.  6.  6.     . 21. 14. 13. 12.  8.  6.  6.
+ . . . . . . . . . .  _____. .     . . . . . . . . . . . . . . .
+ . 16. 13.  8.  7.  4 | \fB0\fR | 6.     . 16. 13.  8. 7 .  4.  0.  6.
+ . . . . . . . . . .  |___|. .     . . . . . . . . . . . . . . .
+ . 14.  9.  8.  9.  6.  3.  8.     . 14.  9.  8. 9 .  6.  3.  8.
+ . . . . . . . . . . . . . . .     . . . . . . . . . . . . . . .
+\fR
+.fi
+.PP
+The user\-provided starting location in the above example is the boxed \fB3\fR
+in the above input map. The costs in the output map represent the total
+cost of moving from each box (\(dqcell\(dq) to one or more (here,
+only one) starting location(s). Cells surrounded by asterisks are
+those that are different between operations using and not using the
+Knight\(cqs move (\fB\-k\fR) option.
+.SS Output analysis
+The output map can be viewed, for example, as an elevation model in which
+the starting location(s) is/are the lowest point(s). Outputs from \fIr.cost\fR
+can be used as inputs to \fIr.path\fR ,
+in order to trace the least\-cost path given by this
+model between any given cell and the \fIr.cost\fR starting location(s). The
+two programs, when used together, generate least\-cost paths or corridors between any
+two map locations (cells).
+.SS Shortest distance surfaces
+The \fIr.cost\fR module allows for computing the shortest distance
+of each pixel from raster lines, such as determining the shortest distances
+of households to the nearby road. For this cost surfaces with cost value 1 are
+used. The calculation is done with \fIr.cost\fR as follows
+(example for Spearfish region):
+.br
+.nf
+\fC
+  g.region raster=roads \-p
+  r.mapcalc \(dqarea.one = 1\(dq
+  r.cost \-k input=area.one output=distance start_raster=roads
+  d.rast distance
+  d.rast.num distance
+  #transform to metric distance from cell distance using the raster resolution:
+  r.mapcalc \(dqdist_meters = distance * (ewres()+nsres())/2.\(dq
+  d.rast dist_meters
+\fR
+.fi
+.SH Movement Direction
+The movement direction surface is created to record the sequence of
+movements that created the cost accumulation surface. This movement
+direction surface can be used by \fIr.path\fR
+to recover a path from an end point back to the start point.
+The direction of each cell points towards the next cell.
+The directions are recorded as degrees CCW from East:
+.br
+.nf
+\fC
+       112.5      67.5         i.e. a cell with the value 135
+157.5  135   90   45   22.5    means the next cell is to the north\-west
+       180   x   360
+202.5  225  270  315  337.5
+       247.5     292.5
+\fR
+.fi
+.SS Cost allocation
+Example: calculation of the cost allocation map \(dqcostalloc\(dq and the cumulative
+cost map \(dqcostsurf\(dq for given starting points (map \(dqsources\(dq) and given
+cost raster map \(dqcosts\(dq:
+.br
+.nf
+\fC
+r.cost input=costs start_raster=sources output=costsurf nearest=costalloc
+\fR
+.fi
+.SS Find the minimum cost path
+Once \fIr.cost\fR computes the cumulative cost map and an associated
+movement direction map, \fIr.path\fR
+can be used to find the minimum cost path.
+.SH SEE ALSO
+\fI
+r.walk,
+r.path,
+r.in.ascii,
+r.mapcalc,
+r.out.ascii
+\fR
+.SH AUTHORS
+Antony Awaida, Intelligent Engineering Systems Laboratory, M.I.T.
+.br
+James Westervelt, U.S.Army Construction Engineering Research Laboratory
+.br
+Updated for Grass 5 by Pierre de Mouveaux (pmx@audiovu.com)
+.br
+Markus Metz
+.br
+Multiple path directions sponsored by mundialis
+.SH SOURCE CODE
+.PP
+Available at: r.cost source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

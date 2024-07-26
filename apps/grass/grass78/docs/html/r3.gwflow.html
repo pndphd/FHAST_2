@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.gwflow - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.gwflow</b></em>  - Numerical calculation program for transient, confined groundwater flow in three dimensions.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_groundwater_flow.html">groundwater flow</a>, <a href="keywords.html#voxel">voxel</a>, <a href="keywords.html#hydrology">hydrology</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.gwflow</b><br></div>
+<b>r3.gwflow --help</b><br>
+<div id="synopsis"><b>r3.gwflow</b> [-<b>mf</b>] <b>phead</b>=<em>name</em> <b>status</b>=<em>name</em> <b>hc_x</b>=<em>name</em> <b>hc_y</b>=<em>name</em> <b>hc_z</b>=<em>name</em>  [<b>sink</b>=<em>name</em>]  <b>yield</b>=<em>name</em>  [<b>recharge</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [<b>velocity_x</b>=<em>name</em>]   [<b>velocity_y</b>=<em>name</em>]   [<b>velocity_z</b>=<em>name</em>]   [<b>budget</b>=<em>name</em>]  <b>dtime</b>=<em>float</em>  [<b>maxit</b>=<em>integer</em>]   [<b>error</b>=<em>float</em>]   [<b>solver</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists)</dd>
+
+<dt><b>-f</b></dt>
+<dd>Use a full filled quadratic linear equation system, default is a sparse linear equation system.</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>phead</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map with initial piezometric heads in [m]</dd>
+
+<dt><b>status</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map providing the status for each cell, = 0 - inactive, 1 - active, 2 - dirichlet</dd>
+
+<dt><b>hc_x</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map with the x-part of the hydraulic conductivity tensor in [m/s]</dd>
+
+<dt><b>hc_y</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map with the y-part of the hydraulic conductivity tensor in [m/s]</dd>
+
+<dt><b>hc_z</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Input 3D raster map with the z-part of the hydraulic conductivity tensor in [m/s]</dd>
+
+<dt><b>sink</b>=<em>name</em></dt>
+<dd>Input 3D raster map with sources and sinks in [m^3/s]</dd>
+
+<dt><b>yield</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Specific yield [1/m] input 3D raster map</dd>
+
+<dt><b>recharge</b>=<em>name</em></dt>
+<dd>Recharge input 3D raster map in m^3/s</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output 3D raster map storing the piezometric head result of the numerical calculation</dd>
+
+<dt><b>velocity_x</b>=<em>name</em></dt>
+<dd>Output 3D raster map storing the groundwater filter velocity vector part in x direction [m/s]</dd>
+
+<dt><b>velocity_y</b>=<em>name</em></dt>
+<dd>Output 3D raster map storing the groundwater filter velocity vector part in y direction [m/s]</dd>
+
+<dt><b>velocity_z</b>=<em>name</em></dt>
+<dd>Output 3D raster map storing the groundwater filter velocity vector part in z direction [m/s]</dd>
+
+<dt><b>budget</b>=<em>name</em></dt>
+<dd>Output 3D raster map storing the groundwater budget for each cell [m^3/s]</dd>
+
+<dt><b>dtime</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>The calculation time in seconds</dd>
+<dd>Default: <em>86400</em></dd>
+
+<dt><b>maxit</b>=<em>integer</em></dt>
+<dd>Maximum number of iteration used to solve the linear equation system</dd>
+<dd>Default: <em>10000</em></dd>
+
+<dt><b>error</b>=<em>float</em></dt>
+<dd>Error break criteria for iterative solver</dd>
+<dd>Default: <em>0.000001</em></dd>
+
+<dt><b>solver</b>=<em>name</em></dt>
+<dd>The type of solver which should solve the symmetric linear equation system</dd>
+<dd>Options: <em>cg, pcg, cholesky</em></dd>
+<dd>Default: <em>cg</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example-1" class="toc">EXAMPLE 1</a></li>
+    <li class="toc"><a href="#example-2" class="toc">EXAMPLE 2</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This numerical module calculates implicit transient and steady state,
+confined groundwater flow in three dimensions based on volume maps
+and the current 3D region settings.
+All initial- and boundary-conditions must be provided as volume maps.
+The unit in the location must be meters.
+<p>This module is sensitive to mask settings. All cells which are outside
+the mask are ignored and handled as no flow boundaries.
+<p>The module calculates the piezometric head and optionally the water
+balance for each cell and the groundwater velocity field in 3 dimensions.
+The vector components can be visualized with ParaView if they are exported
+with <em>r3.out.vtk</em>.
+
+<p>The groundwater flow will always be calculated transient. 
+For steady state computation the user should set the timestep
+to a large number (billions of seconds) or set the
+specific yield raster map to zero.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The groundwater flow calculation is based on Darcy's law and a numerical
+implicit finite volume discretization. The discretization results in a
+symmetric and positive definite linear equation system in form of
+<i>Ax = b</i>, which must be solved. The groundwater flow partial
+differential equation is of the following form:
+
+<p>(dh/dt)*S = div (K grad h) + q
+<p>In detail for 3 dimensions:
+<p>(dh/dt)*S = Kxx * (d^2h/dx^2) + Kyy * (d^2h/dy^2) + Kzz * (d^2h/dz^2) + q
+
+<ul>
+<li>h -- the piezometric head im meters [m]</li>
+<li>dt -- the time step for transient calculation in seconds [s]</li>
+<li>S -- the specific yield  [1/m]</li>
+<li>b -- the bottom surface of the aquifer meters [m]</li>
+<li>Kxx -- the hydraulic conductivity tensor part in x direction in meter per second [m/s]</li>
+<li>Kyy -- the hydraulic conductivity tensor part in y direction in meter per seconds [m/s]</li>
+<li>Kzz -- the hydraulic conductivity tensor part in z direction in meter per seconds [m/s]</li>
+<li>q - inner source/sinc in [1/s]</li>
+</ul>
+
+<p>Two different boundary conditions are implemented, the Dirichlet and
+Neumann conditions. By default the calculation area is surrounded by
+homogeneous Neumann boundary conditions. The calculation and boundary
+status of single cells can be set with the status map, the following
+cell states are supported:
+
+<ul>
+<li>0 == inactive - the cell with status 0 will not be calculated,
+ active cells will have a no flow boundary to an inactive cell</li>
+<li>1 == active - this cell is used for groundwater calculation,
+ inner sources can be defined for those cells</li>
+<li>2 == Dirichlet - cells of this type will have a fixed piezometric
+ head value which do not change over time </li>
+</ul>
+
+<p>Note that all required raster maps are read into main memory. Additionally
+the linear equation system will be allocated, so the memory consumption of
+this module rapidely grow with the size of the input maps.
+
+<p>The resulting linear equation system <i>Ax = b</i> can be solved with
+several solvers. An iterative solvers with sparse and quadratic matrices
+support is implemented.
+The conjugate gradients method with (pcg) and without (cg) precondition.
+Additionally a direct Cholesky solver is available. This direct solver
+only work with normal quadratic matrices, so be careful using them with
+large maps (maps of size 10.000 cells will need more than one Gigabyte
+of RAM). The user should always prefer to use a sparse matrix solver.
+
+<h2><a name="example-1">EXAMPLE 1</a></h2>
+This small script creates a working groundwater flow area and
+data. It cannot be run in a lat/lon location.
+
+<div class="code"><pre>
+# set the region accordingly
+g.region res=25 res3=25 t=100 b=0 n=1000 s=0 w=0 e=1000 -p3
+
+#now create the input raster maps for a confined aquifer
+r3.mapcalc expression="phead = if(row() == 1 && depth() == 4, 50, 40)"
+r3.mapcalc expression="status = if(row() == 1 && depth() == 4, 2, 1)"
+r3.mapcalc expression="well = if(row() == 20 && col() == 20 && depth() == 2, -0.25, 0)"
+r3.mapcalc expression="hydcond = 0.00025"
+r3.mapcalc expression="syield = 0.0001"
+r.mapcalc  expression="recharge = 0.0"
+
+r3.gwflow solver=cg phead=phead statuyield=status hc_x=hydcond hc_y=hydcond  \
+   hc_z=hydcond sink=well yield=syield r=recharge output=gwresult dt=8640000 vx=vx vy=vy vz=vz budget=budget
+
+# The data can be visualized with ParaView when exported with r3.out.vtk
+r3.out.vtk -p in=gwresult,status,budget vector=vx,vy,vz out=/tmp/gwdata3d.vtk
+
+#now load the data into ParaView
+paraview --data=/tmp/gwdata3d.vtk
+</pre></div>
+
+<h2><a name="example-2">EXAMPLE 2</a></h2>
+This will create a nice 3D model with geological layer with different
+hydraulic conductivities. Make sure you are not in a lat/lon projection.
+
+<div class="code"><pre>
+# set the region accordingly
+g.region res=15 res3=15 t=500 b=0 n=1000 s=0 w=0 e=1000
+
+#now create the input raster maps for a confined aquifer
+r3.mapcalc expression="phead = if(col() == 1 && depth() == 33, 50, 40)"
+r3.mapcalc expression="status = if(col() == 1 && depth() == 33, 2, 1)"
+r3.mapcalc expression="well = if(row() == 20 && col() == 20 && depth() == 3, -0.25, 0)"
+r3.mapcalc expression="well = if(row() == 50 && col() == 50 && depth() == 3, -0.25, well)"
+r3.mapcalc expression="hydcond = 0.0025"
+r3.mapcalc expression="hydcond = if(depth() &lt; 30 && depth() > 23 && col() &lt; 60, 0.000025, hydcond)"
+r3.mapcalc expression="hydcond = if(depth() &lt; 20 && depth() > 13 && col() >  7, 0.000025, hydcond)"
+r3.mapcalc expression="hydcond = if(depth() &lt; 10 && depth() >  7 && col() &lt; 60, 0.000025, hydcond)"
+r3.mapcalc expression="syield = 0.0001"
+
+r3.gwflow solver=cg phead=phead statuyield=status hc_x=hydcond hc_y=hydcond  \
+   hc_z=hydcond sink=well yield=syield output=gwresult dt=8640000 vx=vx vy=vy vz=vz budget=budget
+
+# The data can be visualized with paraview when exported with r3.out.vtk
+r3.out.vtk -p in=gwresult,status,budget,hydcond,well vector=vx,vy,vz out=/tmp/gwdata3d.vtk
+
+#now load the data into paraview
+paraview --data=/tmp/gwdata3d.vtk
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.gwflow.html">r.gwflow</a>,
+<a href="r.solute.transport.html">r.solute.transport</a>,
+<a href="r3.out.vtk.html">r3.out.vtk</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+S&ouml;ren Gebbert
+<p>This work is based on the Diploma Thesis of S&ouml;ren Gebbert available
+<a href="https://grass.osgeo.org/gdp/hydrology/gebbert2007_diplom_stroemung_grass_gis.pdf">here</a>
+at Technical University Berlin, Germany.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.gwflow">r3.gwflow source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.gwflow">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

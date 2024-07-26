@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.support - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.support</b></em>  - Allows creation and/or modification of raster map layer support files.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_metadata.html">metadata</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.support</b><br></div>
+<b>r.support --help</b><br>
+<div id="synopsis"><b>r.support</b> [-<b>snd</b>] <b>map</b>=<em>name</em>  [<b>title</b>=<em>phrase</em>]   [<b>history</b>=<em>phrase</em>]   [<b>units</b>=<em>string</em>]   [<b>vdatum</b>=<em>string</em>]   [<b>source1</b>=<em>phrase</em>]   [<b>source2</b>=<em>phrase</em>]   [<b>description</b>=<em>phrase</em>]   [<b>raster</b>=<em>string</em>]   [<b>loadhistory</b>=<em>name</em>]   [<b>savehistory</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Update statistics (histogram, range)</dd>
+
+<dt><b>-n</b></dt>
+<dd>Create/reset the null file</dd>
+
+<dt><b>-d</b></dt>
+<dd>Delete the null file</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map</dd>
+
+<dt><b>title</b>=<em>phrase</em></dt>
+<dd>Title for resultant raster map</dd>
+
+<dt><b>history</b>=<em>phrase</em></dt>
+<dd>Text to append to the next line of the map's metadata file</dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Text to use for map data units</dd>
+
+<dt><b>vdatum</b>=<em>string</em></dt>
+<dd>Text to use for map vertical datum</dd>
+
+<dt><b>source1</b>=<em>phrase</em></dt>
+<dd>Text to use for data source, line 1</dd>
+
+<dt><b>source2</b>=<em>phrase</em></dt>
+<dd>Text to use for data source, line 2</dd>
+
+<dt><b>description</b>=<em>phrase</em></dt>
+<dd>Text to use for data description or keyword(s)</dd>
+
+<dt><b>raster</b>=<em>string</em></dt>
+<dd>Raster map from which to copy category table</dd>
+
+<dt><b>loadhistory</b>=<em>name</em></dt>
+<dd>Text file from which to load history</dd>
+
+<dt><b>savehistory</b>=<em>name</em></dt>
+<dd>Text file in which to save history</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#update-statistics" class="toc">Update statistics</a></li>
+        <li class="toc"><a href="#update-title" class="toc">Update Title</a></li>
+        <li class="toc"><a href="#append-to-history-metadata" class="toc">Append to History Metadata</a></li>
+        <li class="toc"><a href="#update-units-display" class="toc">Update Units Display</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<b>r.support</b> allows the user to create and/or edit raster map support 
+information. Editing of raster map color tables, category labels, header, 
+history, and title is supported. Category labels can also be copied from
+another raster map.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+These examples are based on the North Carolina dataset, more specfically the <em>landuse</em> raster map.
+
+Copy the landuse map to the current mapset
+<div class="code"><pre>g.copy raster=landuse,my_landuse
+</pre></div>
+
+<h3><a name="update-statistics">Update statistics</a></h3>
+<div class="code"><pre>r.support -s map=my_landuse 
+</pre></div>
+
+<h3><a name="update-title">Update Title</a></h3>
+<div class="code"><pre>r.support map=my_landuse title="Landuse copied"
+</pre></div>
+
+<h3><a name="append-to-history-metadata">Append to History Metadata</a></h3>
+<div class="code"><pre>r.support map=my_landuse history="Copied from PERMANENT mapset"
+</pre></div>
+
+<h3><a name="update-units-display">Update Units Display</a></h3>
+<div class="code"><pre>r.support map=my_landuse units=meter
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+If metadata options such as <b>title</b> or <b>history</b> are given the
+module will run  non-interactively. If only the map name is given
+<em>r.support</em> will run interactively within a terminal shell and the
+user with be prompted for input.
+<p>Freeform metadata information is stored in a "<tt>hist</tt>" file which may be
+appended to by using the <b>history</b> option. Currently this is limited to
+50 lines of text with a maximum line length of 78 characters. Any input
+larger than this will be wrapped to the next line.
+All other metadata strings available as standard options are limited to
+79 characters.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="r.category.html">r.category</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.info.html">r.info</a>,
+<a href="r.null.html">r.null</a>,
+<a href="r.region.html">r.region</a>,
+<a href="r.report.html">r.report</a>,
+<a href="r.timestamp.html">r.timestamp</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Micharl Shapiro, CERL: Original author<br>
+<a href="MAILTO:rez@touchofmadness.com">Brad Douglas</a>: GRASS 6 Port<br>
+M. Hamish Bowman: command line enhancements<br>
+Markus Neteler: category copy from other map
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.support">r.support source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.support">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

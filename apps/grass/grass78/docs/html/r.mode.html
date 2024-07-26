@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.mode - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.mode</b></em>  - Finds the mode of values in a cover map within areas assigned the same category value in a user-specified base map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#algebra">algebra</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.mode</b><br></div>
+<b>r.mode --help</b><br>
+<div id="synopsis"><b>r.mode</b> <b>base</b>=<em>string</em> <b>cover</b>=<em>string</em> <b>output</b>=<em>string</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>base</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Base map to be reclassified</dd>
+
+<dt><b>cover</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Coverage map</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Output map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.mode</em> calculates the most frequently occurring value (i. e., mode)
+of data contained in a <em>cover</em> raster map layer for areas assigned
+the same category value in the user-specified <em>base</em> raster map
+layer. These modes are stored in the new <em>output</em> map layer.
+
+<p>The <em>output</em> map is actually a <em>reclass</em> of the <em>base</em>
+map.
+
+<p>The <b>base</b> parameter defines an existing raster map layer in the user's
+current mapset search path. For each group of cells assigned the same
+category value in the <em>base</em> map, the mode of the values assigned
+these cells in the <em>cover</em> map will be computed.
+
+<p>The <b>cover</b> parameter defines an existing raster map layer containing
+the values to be used to compute the mode within each category of the
+<em>base</em> map.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The user should use the results of <em>r.mode</em> with care.
+Since this utility assigns a value to each
+cell which is based on global information (i.e., information at spatial 
+locations other than just the location of the cell itself), the resultant 
+map layer is only valid if the geographic region and mask settings are
+the same as they were at the time that the result map was created.
+
+<p>Results are affected by the current region settings and mask.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Mode of K-factor (erosion) for Spearfish fields:
+
+<div class="code"><pre>
+g.region raster=fields -p
+r.mode base=fields cover=soils.Kfactor output=K.by.farm.mode
+r.univar K.by.farm.mode
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="g.region.html">g.region</a></em>,
+<em><a href="r.category.html">r.category</a></em>,
+<em><a href="r.clump.html">r.clump</a></em>,
+<em><a href="r.describe.html">r.describe</a></em>,
+<em><a href="r.mapcalc.html">r.mapcalc</a></em>,
+<em><a href="r.mfilter.html">r.mfilter</a></em>,
+<em><a href="r.neighbors.html">r.neighbors</a></em>,
+<em><a href="r.reclass.html">r.reclass</a></em>,
+<em><a href="r.stats.html">r.stats</a></em>,
+<em><a href="r.statistics.html">r.statistics</a></em>,
+<em><a href="r.univar.html">r.univar</a></em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.mode">r.mode source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.mode">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

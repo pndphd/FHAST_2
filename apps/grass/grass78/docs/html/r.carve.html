@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.carve - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.carve</b></em>  - Generates stream channels.<BR>
+Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_hydrology.html">hydrology</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.carve</b><br></div>
+<b>r.carve --help</b><br>
+<div id="synopsis"><b>r.carve</b> [-<b>n</b>] <b>raster</b>=<em>name</em> <b>vector</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>points</b>=<em>name</em>]   [<b>width</b>=<em>float</em>]   [<b>depth</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>No flat areas allowed in flow direction</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>raster</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster elevation map</dd>
+
+<dt><b>vector</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map containing stream(s)</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>points</b>=<em>name</em></dt>
+<dd>Name for output vector map for adjusted stream points</dd>
+
+<dt><b>width</b>=<em>float</em></dt>
+<dd>Stream width (in meters)</dd>
+<dd>Default is raster cell width</dd>
+
+<dt><b>depth</b>=<em>float</em></dt>
+<dd>Additional stream depth (in meters)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.carve</em> accepts vector stream data as input, transforms them to
+raster, and subtracts a default-depth + additional-depth from a DEM. If
+the given width is more than 1 cell, it will carve the stream with the
+given width. With the <b>-n</b> flag it should eliminate all flat cells within
+the stream, so when and if the water gets into the stream it will
+flow. The <em>points</em> option generates x,y,z for points which define the stream
+with the z-value of the bottom of the carved-in stream. These points
+can then be combined with contours to interpolate a new DEM with
+better representation of valleys.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.carve</em> does not create a depressionless DEM because many
+depressions are in flat areas and not in the streams.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+North Carolina sample dataset:
+
+<div class="code"><pre>
+# set computational region
+g.region raster=elev_lid792_1m -p
+
+# digitize a ditch for the farm pond
+echo "L  3 1
+ 638692.93595422 220198.90026383
+ 638737.42270627 220149.74706926
+ 638984.43306379 220148.19158842
+ 1     1" | v.in.ascii -n input=- output=ditch format=standard
+
+# visualize original data
+d.mon wx0
+d.rast elev_lid792_1m
+d.vect ditch
+
+# carve
+r.carve raster=elev_lid792_1m vector=ditch output=carved_dem width=3 depth=0.5
+
+# visualize resulting carved DEM map
+d.rast carved_dem
+
+# visualize
+r.relief input=elev_lid792_1m output=elev_lid792_1m_shaded
+r.relief input=carved_dem output=carved_dem_shaded
+d.rast elev_lid792_1m_shaded
+d.erase
+d.rast carved_dem_shaded
+
+# flow accumulation
+r.watershed elevation=elev_lid792_1m accumulation=elev_lid792_1m_accum
+r.watershed elevation=carved_dem accumulation=carved_dem_accum
+d.rast elev_lid792_1m_accum
+d.erase
+d.rast carved_dem_accum
+
+# differences
+r.mapcalc "accum_diff = elev_lid792_1m_accum - carved_dem_accum"
+r.colors accum_diff color=differences
+d.erase
+d.rast accum_diff
+</pre></div>
+
+<center>
+<table border="1">
+<tr>
+ <td align=center>
+  <a href="r_carve_dem_orig.png">
+  <img src="r_carve_dem_orig.png" width="300" height="321" alt="r.carve example: original DEM" border="0">
+  </a><br>
+  <i>Fig: Original 1m LiDAR based DEM with vector streams map on top</i>
+  </td>
+ <td align=center>
+  <a href="r_carve_dem_orig_shaded.png">
+  <img src="r_carve_dem_orig_shaded.png" width="300" height="321" alt="r.carve example: original DEM shaded" border="0">
+  </a><br>
+  <i>Fig: Original 1m LiDAR based DEM shown as shaded terrain</i>
+ </td>
+</tr>
+<tr>
+ <td align=center>
+  <a href="r_carve_dem_carved.png">
+  <img src="r_carve_dem_carved.png" width="300" height="321" alt="r.carve example: carved DEM" border="0">
+  </a><br>
+  <i>Fig: Carved 1m LiDAR based DEM</i>
+ </td>
+ <td align=center>
+  <a href="r_carve_dem_carved_shaded.png">
+  <img src="r_carve_dem_carved_shaded.png" width="300" height="321" alt="r.carve example: carved DEM shaded" border="0">
+  </a><br>
+  <i>Fig: Carved 1m LiDAR based DEM shown as shaded terrain</i>
+ </td>
+</tr>
+<tr>
+ <td align=center>
+  <a href="r_carve_dem_orig_accum.png">
+  <img src="r_carve_dem_orig_accum.png" width="300" height="321" alt="r.carve example: original DEM flow accumulated" border="0">
+  </a><br>
+  <i>Fig: Flow accumulation in original 1m LiDAR based DEM</i>
+ </td>
+ <td align=center>
+  <a href="r_carve_dem_carved_accum.png">
+  <img src="r_carve_dem_carved_accum.png" width="300" height="321" alt="r.carve example: carved DEM flow accumulation" border="0">
+  </a><br>
+  <i>Fig: Flow accumulation in carved 1m LiDAR based DEM</i>
+ </td>
+</tr>
+</table>
+</center>
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+<!-- Is this still the case as of Jan 11, 2008? - EP -->
+The module does not operate yet in latitude-longitude locations.  It
+has not been thoroughly tested, so not all options may work properly -
+but this was the intention.
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<a href="http://www4.ncsu.edu/~hmitaso/gmslab/reports/cerl99/rep99.html">Terrain
+modeling and Soil Erosion Simulations for Fort Hood and Fort Polk test
+areas</a>, by Helena Mitasova, Lubos Mitas, William M. Brown, Douglas
+M.  Johnston, GMSL (Report for CERL 1999)
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.flow.html">r.flow</a>,
+<a href="r.fill.dir.html">r.fill.dir</a>,
+<a href="r.watershed.html">r.watershed</a>
+</em> 
+
+<h2><a name="author">AUTHOR</a></h2>
+Bill Brown (GMSL)<br>
+GRASS 6 update: Brad Douglas
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.carve">r.carve source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.carve">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

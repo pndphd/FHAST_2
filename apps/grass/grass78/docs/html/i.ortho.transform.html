@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.ortho.transform - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.ortho.transform</b></em>  - Computes a coordinate transformation based on the control points.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_orthorectify.html">orthorectify</a>, <a href="keywords.html#transformation">transformation</a>, <a href="keywords.html#GCP">GCP</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.ortho.transform</b><br></div>
+<b>i.ortho.transform --help</b><br>
+<div id="synopsis"><b>i.ortho.transform</b> [-<b>srx</b>] <b>group</b>=<em>name</em>  [<b>format</b>=<em>string</em>[,<i>string</i>,...]]   [<b>coords</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Display summary information</dd>
+
+<dt><b>-r</b></dt>
+<dd>Reverse transform of coords file or coeff. dump</dd>
+<dd>Target east,north,height coordinates to local x,y,z</dd>
+
+<dt><b>-x</b></dt>
+<dd>Display transform matrix coefficients</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>format</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Output format</dd>
+<dd>Options: <em>idx, src, dst, fwd, rev, fxy, rxy, fd, rd</em></dd>
+<dd>Default: <em>fd,rd</em></dd>
+<dd><b>idx</b>: point index</dd>
+<dd><b>src</b>: source coordinates</dd>
+<dd><b>dst</b>: destination coordinates</dd>
+<dd><b>fwd</b>: forward coordinates (destination)</dd>
+<dd><b>rev</b>: reverse coordinates (source)</dd>
+<dd><b>fxy</b>: forward coordinates difference (destination)</dd>
+<dd><b>rxy</b>: reverse coordinates difference (source)</dd>
+<dd><b>fd</b>: forward error (destination)</dd>
+<dd><b>rd</b>: reverse error (source)</dd>
+
+<dt><b>coords</b>=<em>name</em></dt>
+<dd>File containing coordinates to transform ("-" to read from stdin)</dd>
+<dd>Local x,y,z coordinates to target east,north,height</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.ortho.transform</em> is an utility to compute transformation
+based upon GCPs and output error measurements.
+
+<p>
+If coordinates are given with the <b>input</b> file option or fed from 
+<tt>stdin</tt>, both the input and the output format is "x y z" with one 
+coordinate pair per line. Reverse transform is performed with the 
+<b>-r</b> flag.
+
+<p>
+The <b>format</b> option determines how control points are printed out. 
+A summary on the control points can be printed with the <b>-s</b> flag. 
+The summary includes maximum deviation observed when transforming GCPs 
+and overall RMS. The <b>format</b> option is ignored when coordinates 
+are given with the <b>input</b> file option.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Ortho-transformation is a 2-step transformation. First, source 
+coordinates are transformed to sensor coordinates, then sensor 
+coordinates are transformed to target coordinates. 
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="i.rectify.html">i.rectify</a></em>
+
+<h2><a name="todo">TODO</a></h2>
+Update this document with x,y,z<->E,N,H information
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Brian J. Buckley<br>
+Glynn Clements<br>
+Hamish Bowman
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.ortho.photo/i.ortho.transform">i.ortho.transform source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.ortho.photo/i.ortho.transform">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1863 @@
+.TH parser_standard_options 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH Parser standard options
+.RS 4n
+.RE
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60.
+T{
+option
+T}	 	T{
+answer
+T}	 	T{
+description
+T}	 	T{
+descriptions
+T}	 	T{
+gisprompt
+T}	 	T{
+key
+T}	 	T{
+key_desc
+T}	 	T{
+label
+T}	 	T{
+multiple
+T}	 	T{
+options
+T}	 	T{
+required
+T}	 	T{
+type
+T}
+.sp 1
+T{
+G_OPT_DB_SQL
+T}	 	T{
+T}	 	T{
+Example: select * from towns where population > 10000
+T}	 	T{
+T}	 	T{
+T}	 	T{
+sql
+T}	 	T{
+sql_query
+T}	 	T{
+SQL SELECT statement
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_WHERE
+T}	 	T{
+T}	 	T{
+Example: income < 1000 and population >= 10000
+T}	 	T{
+T}	 	T{
+old,sql_query,sql_query
+T}	 	T{
+where
+T}	 	T{
+sql_query
+T}	 	T{
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_TABLE
+T}	 	T{
+T}	 	T{
+Name of attribute table
+T}	 	T{
+T}	 	T{
+old,dbtable,dbtable
+T}	 	T{
+table
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_DRIVER
+T}	 	T{
+T}	 	T{
+Name of database driver
+T}	 	T{
+T}	 	T{
+old,dbdriver,dbdriver
+T}	 	T{
+driver
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_DATABASE
+T}	 	T{
+T}	 	T{
+Name of database
+T}	 	T{
+T}	 	T{
+old,dbname,dbname
+T}	 	T{
+database
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_SCHEMA
+T}	 	T{
+T}	 	T{
+Do not use this option if schemas  are not supported by driver/database server
+T}	 	T{
+T}	 	T{
+T}	 	T{
+schema
+T}	 	T{
+name
+T}	 	T{
+Database schema
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_COLUMN
+T}	 	T{
+T}	 	T{
+Name of attribute column
+T}	 	T{
+T}	 	T{
+old,dbcolumn,dbcolumn
+T}	 	T{
+column
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_COLUMNS
+T}	 	T{
+T}	 	T{
+Name of attribute column(s
+T}	 	T{
+T}	 	T{
+old,dbcolumn,dbcolumn
+T}	 	T{
+columns
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_DB_KEYCOLUMN
+T}	 	T{
+GV_KEY_COLUMN
+T}	 	T{
+Must refer to an integer column
+T}	 	T{
+T}	 	T{
+T}	 	T{
+key
+T}	 	T{
+name
+T}	 	T{
+Name of key column
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_I_GROUP
+T}	 	T{
+T}	 	T{
+Name of input imagery group
+T}	 	T{
+T}	 	T{
+old,group,group
+T}	 	T{
+group
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_I_SUBGROUP
+T}	 	T{
+T}	 	T{
+Name of input imagery subgroup
+T}	 	T{
+T}	 	T{
+old,subgroup,subgroup
+T}	 	T{
+subgroup
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_MEMORYMB
+T}	 	T{
+300
+T}	 	T{
+Cache size for raster rows
+T}	 	T{
+T}	 	T{
+T}	 	T{
+memory
+T}	 	T{
+memory in MB
+T}	 	T{
+Maximum memory to be used (in MB
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_INTEGER
+T}
+.sp 1
+T{
+G_OPT_R_INPUT
+T}	 	T{
+T}	 	T{
+Name of input raster map
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_INPUTS
+T}	 	T{
+T}	 	T{
+Name of input raster map(s
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_OUTPUT
+T}	 	T{
+T}	 	T{
+Name for output raster map
+T}	 	T{
+T}	 	T{
+new,cell,raster
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_OUTPUTS
+T}	 	T{
+T}	 	T{
+Name for output raster map(s
+T}	 	T{
+T}	 	T{
+new,cell,raster
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_MAP
+T}	 	T{
+T}	 	T{
+Name of raster map
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_MAPS
+T}	 	T{
+T}	 	T{
+Name of raster map(s
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_BASE
+T}	 	T{
+T}	 	T{
+Name of base raster map
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+base
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_COVER
+T}	 	T{
+T}	 	T{
+Name of cover raster map
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+cover
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_ELEV
+T}	 	T{
+T}	 	T{
+Name of input elevation raster map
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+elevation
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_ELEVS
+T}	 	T{
+T}	 	T{
+Name of input elevation raster map(s
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+elevation
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_TYPE
+T}	 	T{
+T}	 	T{
+Storage type for resultant raster map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+T}	 	T{
+Type of raster map to be created
+T}	 	T{
+NO
+T}	 	T{
+CELL,FCELL,DCELL
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_INTERP_TYPE
+T}	 	T{
+T}	 	T{
+Sampling interpolation method
+T}	 	T{
+T}	 	T{
+T}	 	T{
+method
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+nearest,bilinear,bicubic
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_BASENAME_INPUT
+T}	 	T{
+T}	 	T{
+Name of input basename raster map(s
+T}	 	T{
+T}	 	T{
+old,cell,raster
+T}	 	T{
+input
+T}	 	T{
+basename
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R_BASENAME_OUTPUT
+T}	 	T{
+T}	 	T{
+Name for output basename raster map(s
+T}	 	T{
+T}	 	T{
+new,cell,raster
+T}	 	T{
+output
+T}	 	T{
+basename
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_INPUT
+T}	 	T{
+T}	 	T{
+Name of input 3D raster map
+T}	 	T{
+T}	 	T{
+old,grid3,raster_3d
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_INPUTS
+T}	 	T{
+T}	 	T{
+Name of input 3D raster map(s
+T}	 	T{
+T}	 	T{
+old,grid3,raster_3d
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_OUTPUT
+T}	 	T{
+T}	 	T{
+Name for output 3D raster map
+T}	 	T{
+T}	 	T{
+new,grid3,raster_3d
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_MAP
+T}	 	T{
+T}	 	T{
+Name of 3D raster map
+T}	 	T{
+T}	 	T{
+old,grid3,raster_3d
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_MAPS
+T}	 	T{
+T}	 	T{
+Name of 3D raster map(s
+T}	 	T{
+T}	 	T{
+old,grid3,raster_3d
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_TYPE
+T}	 	T{
+default
+T}	 	T{
+Data type used in the output raster3d map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+default,double,float
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_PRECISION
+T}	 	T{
+default
+T}	 	T{
+Number of digits used as mantissa in the internal map storage, 0 \-23 for float, 0 \- 52 for double, max or default
+T}	 	T{
+T}	 	T{
+T}	 	T{
+precision
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_COMPRESSION
+T}	 	T{
+default
+T}	 	T{
+The compression method used in the output raster3d map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+compression
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+default,zip,none
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_R3_TILE_DIMENSION
+T}	 	T{
+default
+T}	 	T{
+The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8
+T}	 	T{
+T}	 	T{
+T}	 	T{
+tiledimension
+T}	 	T{
+XxYxZ
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_INPUT
+T}	 	T{
+T}	 	T{
+Or data source for direct OGR access
+T}	 	T{
+T}	 	T{
+old,vector,vector
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+Name of input vector map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_INPUTS
+T}	 	T{
+T}	 	T{
+Or data source(s) for direct OGR access
+T}	 	T{
+T}	 	T{
+old,vector,vector
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+Name of input vector map(s
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_OUTPUT
+T}	 	T{
+T}	 	T{
+Name for output vector map
+T}	 	T{
+T}	 	T{
+new,vector,vector
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_MAP
+T}	 	T{
+T}	 	T{
+Or data source for direct OGR access
+T}	 	T{
+T}	 	T{
+old,vector,vector
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+Name of vector map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_MAPS
+T}	 	T{
+T}	 	T{
+Name of vector map(s
+T}	 	T{
+T}	 	T{
+old,vector,vector
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_TYPE
+T}	 	T{
+point,line,boundary,centroid,area
+T}	 	T{
+Input feature type
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+point,line,boundary,centroid,area
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V3_TYPE
+T}	 	T{
+point,line,boundary,centroid,area,face,kernel
+T}	 	T{
+Input feature type
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+point,line,boundary,centroid,area,face,kernel
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_FIELD
+T}	 	T{
+1
+T}	 	T{
+Vector features can have category values in different layers.  This number determines which layer to use.  When used with direct OGR access this is the layer name.
+T}	 	T{
+T}	 	T{
+old,layer,layer
+T}	 	T{
+layer
+T}	 	T{
+T}	 	T{
+Layer number or name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_FIELD_ALL
+T}	 	T{
+\-1
+T}	 	T{
+A single vector map can be connected to multiple database  tables. This number determines which table to use.  When used with direct OGR access this is the layer name.
+T}	 	T{
+T}	 	T{
+old,layer_all,layer
+T}	 	T{
+layer
+T}	 	T{
+T}	 	T{
+Layer number or name (\(cq\-1\(cq for all layers
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_CAT
+T}	 	T{
+T}	 	T{
+Category value
+T}	 	T{
+T}	 	T{
+old,cat,cats
+T}	 	T{
+cat
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_INTEGER
+T}
+.sp 1
+T{
+G_OPT_V_CATS
+T}	 	T{
+T}	 	T{
+Example: 1,3,7\-9,13
+T}	 	T{
+T}	 	T{
+old,cats,cats
+T}	 	T{
+cats
+T}	 	T{
+range
+T}	 	T{
+Category values
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_V_ID
+T}	 	T{
+T}	 	T{
+Feature id
+T}	 	T{
+T}	 	T{
+T}	 	T{
+id
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_INTEGER
+T}
+.sp 1
+T{
+G_OPT_V_IDS
+T}	 	T{
+T}	 	T{
+Example: 1,3,7\-9,13
+T}	 	T{
+T}	 	T{
+T}	 	T{
+ids
+T}	 	T{
+range
+T}	 	T{
+Feature ids
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_F_INPUT
+T}	 	T{
+T}	 	T{
+Name of input file
+T}	 	T{
+T}	 	T{
+old,file,file
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_F_BIN_INPUT
+T}	 	T{
+T}	 	T{
+Name of input file
+T}	 	T{
+T}	 	T{
+old,bin,file
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_F_OUTPUT
+T}	 	T{
+T}	 	T{
+Name for output file
+T}	 	T{
+T}	 	T{
+new,file,file
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_F_SEP
+T}	 	T{
+pipe
+T}	 	T{
+Special characters: pipe, comma, space, tab, newline
+T}	 	T{
+T}	 	T{
+old,separator,separator
+T}	 	T{
+separator
+T}	 	T{
+character
+T}	 	T{
+Field separator
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_C
+T}	 	T{
+DEFAULT_FG_COLOR
+T}	 	T{
+Either a standard color name or R:G:B triplet
+T}	 	T{
+T}	 	T{
+old,color,color
+T}	 	T{
+color
+T}	 	T{
+name
+T}	 	T{
+Color
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_CN
+T}	 	T{
+DEFAULT_FG_COLOR
+T}	 	T{
+Either a standard color name, R:G:B triplet, or \(rsnone\(rs
+T}	 	T{
+T}	 	T{
+old,color_none,color
+T}	 	T{
+color
+T}	 	T{
+name
+T}	 	T{
+Color
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_DIR
+T}	 	T{
+T}	 	T{
+Name of input directory
+T}	 	T{
+T}	 	T{
+old,dir,dir
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_UNITS
+T}	 	T{
+T}	 	T{
+Units
+T}	 	T{
+T}	 	T{
+T}	 	T{
+units
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+miles,feet,meters,kilometers,acres,hectares
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_DATATYPE
+T}	 	T{
+T}	 	T{
+Data type(s
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+datatype
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_MAPSET
+T}	 	T{
+T}	 	T{
+\(cq.\(cq for current mapset
+T}	 	T{
+T}	 	T{
+old,mapset,mapset
+T}	 	T{
+mapset
+T}	 	T{
+name
+T}	 	T{
+Name of mapset (default: current search path
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_LOCATION
+T}	 	T{
+T}	 	T{
+Location name (not location path
+T}	 	T{
+T}	 	T{
+old,location,location
+T}	 	T{
+location
+T}	 	T{
+name
+T}	 	T{
+Location name
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_DBASE
+T}	 	T{
+T}	 	T{
+Default: path to the current GRASS GIS database
+T}	 	T{
+T}	 	T{
+old,dbase,dbase
+T}	 	T{
+dbase
+T}	 	T{
+path
+T}	 	T{
+GRASS GIS database directory
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_COORDS
+T}	 	T{
+T}	 	T{
+Coordinates
+T}	 	T{
+T}	 	T{
+old,coords,coords
+T}	 	T{
+coordinates
+T}	 	T{
+east,north
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_DOUBLE
+T}
+.sp 1
+T{
+G_OPT_M_COLR
+T}	 	T{
+T}	 	T{
+Name of color table
+T}	 	T{
+G_color_rules_description_type(
+T}	 	T{
+old,colortable,colortable
+T}	 	T{
+color
+T}	 	T{
+style
+T}	 	T{
+T}	 	T{
+T}	 	T{
+G_color_rules_options(
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_NULL_VALUE
+T}	 	T{
+T}	 	T{
+String representing NULL value
+T}	 	T{
+T}	 	T{
+T}	 	T{
+null_value
+T}	 	T{
+string
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_M_REGION
+T}	 	T{
+T}	 	T{
+Name of saved region
+T}	 	T{
+T}	 	T{
+old,windows,region
+T}	 	T{
+region
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STDS_INPUT
+T}	 	T{
+T}	 	T{
+Name of the input space time dataset
+T}	 	T{
+T}	 	T{
+old,stds,stds
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STDS_INPUTS
+T}	 	T{
+T}	 	T{
+Name of the input space time datasets
+T}	 	T{
+T}	 	T{
+old,stds,stds
+T}	 	T{
+inputs
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STDS_OUTPUT
+T}	 	T{
+T}	 	T{
+Name of the output space time dataset
+T}	 	T{
+T}	 	T{
+new,stds,stds
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STRDS_INPUT
+T}	 	T{
+T}	 	T{
+Name of the input space time raster dataset
+T}	 	T{
+T}	 	T{
+old,strds,strds
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STRDS_INPUTS
+T}	 	T{
+T}	 	T{
+Name of the input space time raster datasets
+T}	 	T{
+T}	 	T{
+old,strds,strds
+T}	 	T{
+inputs
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STRDS_OUTPUT
+T}	 	T{
+T}	 	T{
+Name of the output space time raster dataset
+T}	 	T{
+T}	 	T{
+new,strds,strds
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STRDS_OUTPUTS
+T}	 	T{
+T}	 	T{
+Name of the output space time raster datasets
+T}	 	T{
+T}	 	T{
+new,strds,strds
+T}	 	T{
+outputs
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STVDS_INPUT
+T}	 	T{
+T}	 	T{
+Name of the input space time vector dataset
+T}	 	T{
+T}	 	T{
+old,stvds,stvds
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STVDS_INPUTS
+T}	 	T{
+T}	 	T{
+Name of the input space time vector datasets
+T}	 	T{
+T}	 	T{
+old,stvds,stvds
+T}	 	T{
+inputs
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STVDS_OUTPUT
+T}	 	T{
+T}	 	T{
+Name of the output space time vector dataset
+T}	 	T{
+T}	 	T{
+new,stvds,stvds
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STR3DS_INPUT
+T}	 	T{
+T}	 	T{
+Name of the input space time raster3d dataset
+T}	 	T{
+T}	 	T{
+old,str3ds,str3ds
+T}	 	T{
+input
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STR3DS_INPUTS
+T}	 	T{
+T}	 	T{
+Name of the input space time raster3d datasets
+T}	 	T{
+T}	 	T{
+old,str3ds,str3ds
+T}	 	T{
+inputs
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STR3DS_OUTPUT
+T}	 	T{
+T}	 	T{
+Name of the output space time raster3d dataset
+T}	 	T{
+T}	 	T{
+new,str3ds,str3ds
+T}	 	T{
+output
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_STDS_TYPE
+T}	 	T{
+strds
+T}	 	T{
+Type of the input space time dataset
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+strds,stvds,str3ds
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_MAP_INPUT
+T}	 	T{
+T}	 	T{
+Name of the input map
+T}	 	T{
+T}	 	T{
+old,map,map
+T}	 	T{
+map
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_MAP_INPUTS
+T}	 	T{
+T}	 	T{
+Name of the input maps
+T}	 	T{
+T}	 	T{
+old,map,map
+T}	 	T{
+maps
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_MAP_TYPE
+T}	 	T{
+raster
+T}	 	T{
+Type of the input map
+T}	 	T{
+T}	 	T{
+T}	 	T{
+type
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+raster,vector,raster_3d
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_T_TYPE
+T}	 	T{
+absolute
+T}	 	T{
+The temporal type of the space time dataset
+T}	 	T{
+T}	 	T{
+T}	 	T{
+temporaltype
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+T}	 	T{
+absolute,relative
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_T_WHERE
+T}	 	T{
+T}	 	T{
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+T}	 	T{
+T}	 	T{
+T}	 	T{
+where
+T}	 	T{
+sql_query
+T}	 	T{
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+T}	 	T{
+T}	 	T{
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+T{
+G_OPT_T_SAMPLE
+T}	 	T{
+start
+T}	 	T{
+The method to be used for sampling the input dataset
+T}	 	T{
+T}	 	T{
+T}	 	T{
+sampling
+T}	 	T{
+name
+T}	 	T{
+T}	 	T{
+YES
+T}	 	T{
+start,during,overlap,contain,equal,follows,precedes
+T}	 	T{
+NO
+T}	 	T{
+TYPE_STRING
+T}
+.sp 1
+.TE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

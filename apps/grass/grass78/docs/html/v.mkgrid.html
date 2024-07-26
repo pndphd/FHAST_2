@@ -1,0 +1,322 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.mkgrid - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.mkgrid</b></em>  - Creates a vector map of a user-defined grid.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#grid">grid</a>, <a href="keywords.html#point pattern">point pattern</a>, <a href="keywords.html#hexagon">hexagon</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.mkgrid</b><br></div>
+<b>v.mkgrid --help</b><br>
+<div id="synopsis"><b>v.mkgrid</b> [-<b>had</b>] <b>map</b>=<em>name</em>  [<b>grid</b>=<em>rows,columns</em>]   [<b>position</b>=<em>string</em>]   [<b>coordinates</b>=<em>east,north</em>]   [<b>box</b>=<em>width,height</em>]   [<b>angle</b>=<em>float</em>]   [<b>breaks</b>=<em>integer</em>]   [<b>type</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Create hexagons (default: rectangles)</dd>
+
+<dt><b>-a</b></dt>
+<dd>Allow asymmetric hexagons</dd>
+
+<dt><b>-d</b></dt>
+<dd>EXPERIMENTAL: Add diagonals to rectangular lines</dd>
+<dd>Applies only to lines for rectangles</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>grid</b>=<em>rows,columns</em></dt>
+<dd>Number of rows and columns in grid</dd>
+
+<dt><b>position</b>=<em>string</em></dt>
+<dd>Where to place the grid</dd>
+<dd>Options: <em>region, coor</em></dd>
+<dd>Default: <em>region</em></dd>
+<dd><b>region</b>: current region</dd>
+<dd><b>coor</b>: use 'coor' and 'box' options</dd>
+
+<dt><b>coordinates</b>=<em>east,north</em></dt>
+<dd>Lower left easting and northing coordinates of map</dd>
+
+<dt><b>box</b>=<em>width,height</em></dt>
+<dd>Width and height of boxes in grid</dd>
+
+<dt><b>angle</b>=<em>float</em></dt>
+<dd>Angle of rotation (in degrees counter-clockwise)</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>breaks</b>=<em>integer</em></dt>
+<dd>Number of vertex points per grid cell</dd>
+<dd>Options: <em>0-60</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Output feature type</dd>
+<dd>Options: <em>point, line, area</em></dd>
+<dd>Default: <em>area</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#creating-a-global-grid-in-a-latitude-longitude" class="toc">Creating a global grid in a latitude-longitude</a></li>
+        <li class="toc"><a href="#creating-a-grid-in-a-metric-projection" class="toc">Creating a grid in a metric projection</a></li>
+        <li class="toc"><a href="#creating-a-positioned-grid-in-a-latitude-longitude" class="toc">Creating a positioned grid in a latitude-longitude</a></li>
+        <li class="toc"><a href="#creating-a-simple-point-pattern" class="toc">Creating a simple point pattern</a></li>
+        <li class="toc"><a href="#creating-a-regular-point-pattern" class="toc">Creating a regular point pattern</a></li>
+        <li class="toc"><a href="#creating-hexagons-in-a-metric-projection" class="toc">Creating hexagons in a metric projection</a></li>
+        <li class="toc"><a href="#using-hexagons-for-point-density" class="toc">Using hexagons for point density</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.mkgrid</em> creates a vector map representation of a regular 
+coordinate grid. Point, line, and area vector grids can be created.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Grid points created with the <b>type=point</b> option will be placed at 
+the <i>center</i> of each grid cell, like centroids with the default 
+<b>type=area</b> option. 
+<p>
+Grid lines created with the <b>type=line</b> option will be identical to 
+the edges of each grid cell, like boundaries with the default 
+<b>type=area</b> option. 
+<p>
+The resultant grid can be rotated around the origin (center of the 
+grid) with the <b>angle</b> option.
+<p>
+Optionally hexagons can be created with the <b>-h</b> flag. Hexagons 
+are by default symmetric. Asymmetric hexagons can be allowed with the 
+<b>-a</b> flag.
+<p>
+This module is NOT to be used to generate a vector map of USGS 
+quadrangles, because USGS quads are not exact rectangles.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="creating-a-global-grid-in-a-latitude-longitude">Creating a global grid in a latitude-longitude</a></h3>
+
+To be run in a latitude-longitude location (WGS84)
+<div class="code"><pre>
+# set the region:
+g.region n=90 s=-90 w=-180 e=180 res=10 -p
+projection: 3 (Latitude-Longitude)
+zone:       0
+datum:      wgs84
+ellipsoid:  wgs84
+north:      90N
+south:      90S
+west:       180W
+east:       180E
+nsres:      10
+ewres:      10
+rows:       18
+cols:       36
+cells:      648
+
+# create 10 degree size grid:
+v.mkgrid map=grid_10deg
+
+# create 20 degree size grid:
+v.mkgrid map=grid_20deg box=20,20
+</pre></div>
+
+<h3><a name="creating-a-grid-in-a-metric-projection">Creating a grid in a metric projection</a></h3>
+
+Creating a 4x3 grid, cells 20km a side, with lower left corner at 2716500,6447000:
+
+<div class="code"><pre>
+v.mkgrid map=coro_grid grid=4,3 position=coor coordinates=2716500,6447000 box=20000,20000
+</pre></div>
+
+<h3><a name="creating-a-positioned-grid-in-a-latitude-longitude">Creating a positioned grid in a latitude-longitude</a></h3>
+
+Creating a 10x12 lat/lon grid, cells 2 arc-min a side, with lower left corner
+at 167deg 52min east, 47deg 6min south. For use with e.g. QGIS you can then
+pull this grid into a projected location with <em>v.proj</em> before
+exporting as a Shapefile with <em>v.out.ogr</em> (within GRASS GIS you could
+just use <em>d.grid -w</em> from the projected location for the same effect):
+
+<div class="code"><pre>
+v.mkgrid map=p2min_grid grid=10,12 position=coor coordinates=167:52E,47:06S box=0:02,0:02
+</pre></div>
+
+<h3><a name="creating-a-simple-point-pattern">Creating a simple point pattern</a></h3>
+
+North Carolina sample dataset example, creating a 1km spaced point grid
+based on the current region extent defined by the "elevation" map:
+
+<div class="code"><pre>
+g.region raster=elevation res=1000 -pa
+v.mkgrid type=point map=pointpattern
+</pre></div>
+<p>
+
+<h3><a name="creating-a-regular-point-pattern">Creating a regular point pattern</a></h3>
+
+North Carolina sample dataset example, creating a regular spaced point grid
+based on the current region extent defined by the "elevation" map, using
+a two-step approach:
+
+<div class="code"><pre>
+# create first set of points, covering extent of "elevation" raster map
+g.region raster=elevation res=1000 -pa
+v.mkgrid type=point map=pointpattern1
+
+# shift grid by half point distance (map units)
+g.region n=n+500 w=w+500 e=e+500 s=s+500 -p
+
+# create second set of points
+v.mkgrid type=point map=pointpattern2
+
+# merge into final point pattern
+v.patch input=pointpattern1,pointpattern2 output=pointpattern3
+</pre></div>
+
+<center>
+<img src="v_mkgrid_ppattern.png"><br>
+Different point patterns for sampling design
+</center>
+
+<h3><a name="creating-hexagons-in-a-metric-projection">Creating hexagons in a metric projection</a></h3>
+
+North Carolina sample dataset example, creating regular hexagons
+based on the current region extent defined by the "elevation" map and
+raster resolution for the hexagon size:
+
+<div class="code"><pre>
+g.region raster=elevation res=5000 -pa
+v.mkgrid map=hexagons -h
+
+d.grid 5000
+</pre></div>
+
+<center>
+<img src="v_mkgrid_hexagons.png"><br>
+Hexagon map
+</center>
+
+<h3><a name="using-hexagons-for-point-density">Using hexagons for point density</a></h3>
+
+To compute point density in a hexagonal grid for the vector map
+<em>points_of_interest</em> in the basic North Carolina sample dataset,
+the vector map itself is used to set extent of the computational region.
+The resolution is based on the desired size of hexagons.
+
+<div class="code"><pre>
+g.region vector=points_of_interest res=2000 -pa
+</pre></div>
+
+The hexagonal grid is created as a vector map based on the previously
+selected extent and size of the grid.
+
+<div class="code"><pre>
+v.mkgrid map=hexagons -h
+</pre></div>
+
+The following counts the number of points per hexagon using the
+<em><a href="v.vect.stats.html">v.vect.stats</a></em> module.
+
+<div class="code"><pre>
+v.vect.stats points=points_of_interest areas=hexagons count_column=count
+</pre></div>
+
+User should note that some of the points may be outside the grid
+since the hexagons cannot cover all the area around the edges
+(the computational region extent needs to be enlarged if all points
+should be considered).
+The last command sets the vector map color table to <tt>viridis</tt>
+based on the <tt>count</tt> column.
+
+<div class="code"><pre>
+v.colors map=hexagons use=attr column=count color=viridis
+</pre></div>
+
+<!--
+d.erase 77:77:77
+mogrify -trim .png
+-->
+
+<center>
+<img src="v_mkgrid.png"><br>
+Point density in a hexagonal grid
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.grid.html">d.grid</a>,
+<a href="v.in.region.html">v.in.region</a>,
+<a href="v.patch.html">v.patch</a>,
+<a href="v.vect.stats.html">v.vect.stats</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Higgins,
+U.S.Army Construction Engineering 
+Research Laboratory
+<p>Update for new vectors Radim Blazek 10/2004 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.mkgrid">v.mkgrid source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.mkgrid">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

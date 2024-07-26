@@ -1,0 +1,108 @@
+.TH r.circle 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.circle\fR\fR  \- Creates a raster map containing concentric rings around a given point.
+.SH KEYWORDS
+raster, buffer, geometry, circle
+.SH SYNOPSIS
+\fBr.circle\fR
+.br
+\fBr.circle \-\-help\fR
+.br
+\fBr.circle\fR [\-\fBb\fR] \fBoutput\fR=\fIname\fR \fBcoordinates\fR=\fIeast,north\fR  [\fBmin\fR=\fIfloat\fR]   [\fBmax\fR=\fIfloat\fR]   [\fBmultiplier\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-b\fR" 4m
+.br
+Generate binary raster map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBcoordinates\fR=\fIeast,north\fR \fB[required]\fR" 4m
+.br
+The coordinate of the center (east,north)
+.IP "\fBmin\fR=\fIfloat\fR" 4m
+.br
+Minimum radius for ring/circle map (in meters)
+.IP "\fBmax\fR=\fIfloat\fR" 4m
+.br
+Maximum radius for ring/circle map (in meters)
+.IP "\fBmultiplier\fR=\fIfloat\fR" 4m
+.br
+Data value multiplier
+.SH DESCRIPTION
+This module creates an output raster map centered on the \fIx,y\fR values specified
+with the \fIcoordinate\fR parameter, out to the edge of the current region.
+The output cell values increase linearly from the specified center. The \fImin\fR
+and \fImax\fR parameters control the inner and outer output raster map radii, respectively.
+.PP
+The \fImult\fR parameter can be used to multiply the output raster cells by a common factor.
+Note that this parameter does not affect the output raster position or size; only the z\-values
+are changed with this parameter.
+.PP
+Binary\-output raster maps (solid circles of one value) can be created
+with the \fB\-b\fR flag. Raster maps so created can be used to create
+binary filters for use in \fIi.ifft\fR (inverse Fourier transformations;
+apply filter with \fIr.mask\fR).
+.SH EXAMPLES
+Generate a raster circle at current map center with a radius of 300m and outwardly
+increasing raster values:
+.br
+.nf
+\fC
+EASTCENTER=\(gag.region \-c |  awk \(cq /center easting:/ { print $3 }\(cq\(ga
+NORTHCENTER=\(gag.region \-c | awk \(cq /center northing:/ { print $3 }\(cq\(ga
+r.circle output=circle coordinate=${EASTCENTER},${NORTHCENTER} max=300
+\fR
+.fi
+Generate a binary raster ring around current map center with an inner radius
+of 500m and an outer radius of 1000m:
+.br
+.nf
+\fC
+EASTCENTER=\(gag.region \-c |  awk \(cq /center easting:/ { print $3 }\(cq\(ga
+NORTHCENTER=\(gag.region \-c | awk \(cq /center northing:/ { print $3 }\(cq\(ga
+r.circle \-b output=circle coordinate=${EASTCENTER},${NORTHCENTER} min=500 max=1000
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+g.remove,
+g.rename,
+i.fft,
+i.ifft,
+r.mask
+\fR
+.SH AUTHOR
+Bill Brown, U.S. Army Construction Engineering Research Laboratory
+.br
+Additional flag/min/max parameter by Markus Neteler, University of Hannover
+.SH SOURCE CODE
+.PP
+Available at: r.circle source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

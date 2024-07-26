@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.findetc - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.findetc</b></em>  - Searches for GRASS support files.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_map_management.html">map management</a>, <a href="keywords.html#scripts">scripts</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.findetc</b><br></div>
+<b>g.findetc --help</b><br>
+<div id="synopsis"><b>g.findetc</b> <b>file</b>=<em>string</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>file</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an file or directory</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#output" class="toc">OUTPUT</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>g.findetc</em> is designed for Bourne shell scripts that need to search
+for support data, programs and subfoldrs in any number of directories as
+specified in GRASS_ADDON_ETC, plus the GRASS application etc/ directory. This
+is designed for addon scripts that are installed outside the GRASS application
+directory, such as a user's home or a system addon directory.
+<p>
+<h2><a name="output">OUTPUT</a></h2>
+
+<em>g.findetc</em> writes the full path to the file or directory to standard output
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.filename.html">g.filename</a>,
+<a href="g.findfile.html">g.findfile</a>,
+<a href="g.gisenv.html">g.gisenv</a>,
+<a href="g.mapsets.html">g.mapsets</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+William Kyngesburye
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.findetc">g.findetc source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.findetc">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

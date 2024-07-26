@@ -1,0 +1,124 @@
+.TH t.rast.import 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.import.py\fR\fR  \- Imports space time raster dataset.
+.SH KEYWORDS
+temporal, import, raster, time, create location
+.SH SYNOPSIS
+\fBt.rast.import.py\fR
+.br
+\fBt.rast.import.py \-\-help\fR
+.br
+\fBt.rast.import.py\fR [\-\fBrleoc\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBbasename\fR=\fIstring\fR]  \fBdirectory\fR=\fIname\fR  [\fBtitle\fR=\fIstring\fR]   [\fBdescription\fR=\fIstring\fR]   [\fBlocation\fR=\fIstring\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Set the current region from the last map that was imported
+.IP "\fB\-l\fR" 4m
+.br
+Link the raster files using r.external
+.IP "\fB\-e\fR" 4m
+.br
+Extend location extents based on new dataset
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has same projection as the current location
+.IP "\fB\-c\fR" 4m
+.br
+Create the location specified by the \(dqlocation\(dq parameter and exit. Do not import the space time raster datasets.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time raster dataset
+.IP "\fBbasename\fR=\fIstring\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBdirectory\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Path to the extraction directory
+.br
+Default: \fI/tmp\fR
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title of the new space time dataset
+.IP "\fBdescription\fR=\fIstring\fR" 4m
+.br
+Description of the new space time dataset
+.IP "\fBlocation\fR=\fIstring\fR" 4m
+.br
+Create a new location and import the data into it. Do not run this module in parallel or interrupt it when a new location should be created
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIt.rast.import\fR imports a space time raster dataset archive that
+was exported with t.rast.export.
+.SH NOTES
+Optionally a base map name can be provided to avoid that existing
+raster maps are overwritten by the map names that are used in the STRDS
+archive.
+.PP
+The \fBdirectory\fR is used as work directory in case of import but
+can also be used as a data directory when using GeoTIFF for the data
+exchange.
+.SH EXAMPLE
+The North Carolina space time dataset contains a data package called
+\fIlst_daily.tar.bzip2\fR with daily data from MODIS LST. Import it
+by running:
+.br
+.nf
+\fC
+t.rast.import input=lst_daily.tar.bzip2 output=lst_daily \(rs
+              basename=lst directory=/tmp
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.rast.export,
+t.create,
+t.info,
+r.in.gdal,
+r.unpack,
+t.vect.import
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.import source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

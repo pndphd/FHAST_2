@@ -1,0 +1,113 @@
+.TH t.support 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.support.py\fR\fR  \- Modifies the metadata of a space time dataset.
+.SH KEYWORDS
+temporal, metadata, time
+.SH SYNOPSIS
+\fBt.support.py\fR
+.br
+\fBt.support.py \-\-help\fR
+.br
+\fBt.support.py\fR [\-\fBmu\fR] \fBinput\fR=\fIname\fR  [\fBsemantictype\fR=\fIstring\fR]   [\fBtype\fR=\fIname\fR]   [\fBtitle\fR=\fIstring\fR]   [\fBdescription\fR=\fIstring\fR]   [\fBaggr_type\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Update the metadata information and spatial extent of registered maps from the GRASS spatial database
+.br
+Check for removed maps and delete them from the temporal database and all effected space time datasets
+.IP "\fB\-u\fR" 4m
+.br
+Update metadata information, temporal and spatial extent from registered maps based on database entries.
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time dataset
+.IP "\fBsemantictype\fR=\fIstring\fR" 4m
+.br
+Semantic type of the space time dataset
+.br
+Options: \fImin, max, sum, mean\fR
+.br
+Default: \fImean\fR
+.IP "\fBtype\fR=\fIname\fR" 4m
+.br
+Type of the input space time dataset
+.br
+Options: \fIstrds, stvds, str3ds\fR
+.br
+Default: \fIstrds\fR
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title of the space time dataset
+.IP "\fBdescription\fR=\fIstring\fR" 4m
+.br
+Description of the space time dataset
+.IP "\fBaggr_type\fR=\fIstring\fR" 4m
+.br
+Aggregation type of the space time raster or 3D raster dataset
+.SH DESCRIPTION
+This module is dedicated to modify and update the metadata of a space time dataset.
+.PP
+The title, description and the semantic type can be modified.
+.PP
+The flag \fI\-u\fR allows updating the STDS metadata from registered
+map layers. This is useful in case the map layers have been modified
+without using temporal commands.
+.PP
+The flag \fI\-m\fR will update the metadata from registered maps, but
+also checks if the registered map layers have been removed from the
+spatial database. It deletes missing map layers from the space time
+dataset register table and the temporal database.
+.SH Examples
+Modification of title and description of space time raster dataset \fIA\fR.
+.PP
+.br
+.nf
+\fC
+t.support type=strds input=tempmean_monthly title=\(dqMonthly temperature for North Carolina\(dq \(rs
+          description=\(dqDataset with monthly temperature for North Carolina\(dq
+\fR
+.fi
+.PP
+Update the metadata of space time raster dataset \fIA\fR and check
+for removed map layers.
+.PP
+.br
+.nf
+\fC
+t.support \-m type=strds input=tempmean_monthly
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.support source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

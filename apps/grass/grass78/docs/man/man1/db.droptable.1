@@ -1,0 +1,107 @@
+.TH db.droptable 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.droptable.py\fR\fR  \- Drops an attribute table.
+.SH KEYWORDS
+database, attribute table
+.SH SYNOPSIS
+\fBdb.droptable.py\fR
+.br
+\fBdb.droptable.py \-\-help\fR
+.br
+\fBdb.droptable.py\fR [\-\fBf\fR]  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]  \fBtable\fR=\fIname\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Force removal (required for actual deletion of files)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+If not given then default driver is used
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+If not given then default database is used
+.IP "\fBtable\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of table to drop
+.SH DESCRIPTION
+\fIdb.droptable\fR drops an attribute table.  If the \fB\-f\fR
+force flag is not given then nothing is removed, instead a preview of
+the action to be taken is printed.
+.SH NOTES
+\fIdb.droptable\fR is a front\-end
+to \fIdb.execute\fR to allow easier
+usage. To some extent it is verified if the table is connected to a
+vector map to avoid accidental table removal.
+.SH EXAMPLES
+.SS Removing an attribute table from default database
+.br
+.nf
+\fC
+# show default database
+db.connect \-p
+# show available tables
+db.tables \-p
+# this will show what would happen
+db.droptable table=sometable
+# actually drop the table
+db.droptable \-f table=sometable
+\fR
+.fi
+.SS Removing an attribute table from given database
+\fIdb.droptable\fR allows defining optionally \fBdriver\fR
+and \fBdatabase\fR options different from default connection settings
+(db.connect \-p).
+.br
+.nf
+\fC
+# drop the table from SQLite database
+db.droptable \-f table=sometable driver=sqlite database=/opt/sqlite.db
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.dropdb,
+db.dropcolumn,
+db.execute,
+db.login,
+db.connect,
+db.tables,
+db.describe,
+v.db.droptable,
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHORS
+Markus Neteler
+.br
+Driver and database options added by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: db.droptable source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

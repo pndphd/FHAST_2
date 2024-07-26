@@ -1,0 +1,93 @@
+.TH d.rhumbline 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rhumbline\fR\fR  \- Displays the rhumbline joining two longitude/latitude coordinates.
+.SH KEYWORDS
+display, distance, rhumbline
+.SH SYNOPSIS
+\fBd.rhumbline\fR
+.br
+\fBd.rhumbline \-\-help\fR
+.br
+\fBd.rhumbline\fR \fBcoordinates\fR=\fIlon1,lat1,lon2,lat2\fR  [\fBline_color\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBcoordinates\fR=\fIlon1,lat1,lon2,lat2\fR \fB[required]\fR" 4m
+.br
+Starting and ending coordinates
+.IP "\fBline_color\fR=\fIname\fR" 4m
+.br
+Line color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.SH DESCRIPTION
+A rhumbline (loxodrome) is a line following a constant angle of the
+compass (i.e., a line of constant direction). It crosses all meridians
+at the same angle, i.e. a path of constant bearing.
+\fId.rhumbline\fR displays the
+rhumbline joining any two user\-specified points in the
+active frame on the user\(cqs graphics monitor.  The named
+coordinate locations must fall within the boundaries of the
+user\(cqs current geographic region.
+.PP
+The user has to specify the starting and ending
+longitude/latitude coordinates of the rhumbline and
+(optionally) the color in which the rhumbline will be
+displayed; in this case, the program will run
+non\-interactively.
+.SH EXAMPLE
+A geodesic line if shown over the political map of the world
+(demolocation dataset):
+.br
+.nf
+\fC
+g.region vector=country_boundaries \-p
+d.mon wx0
+d.vect country_boundaries type=area
+d.rhumbline coordinates=55:58W,33:18S,26:43E,60:37N \(rs
+  line_color=yellow
+# show additionally 10 degree grid
+d.grid 10
+\fR
+.fi
+.PP
+.br
+\fIRhumbline (loxodrome)\fR
+.SH NOTES
+This program works only in GRASS locations with longitude/latitude
+coordinate system.
+.SH SEE ALSO
+\fI
+d.geodesic,
+d.grid,
+m.measure
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.rhumbline source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

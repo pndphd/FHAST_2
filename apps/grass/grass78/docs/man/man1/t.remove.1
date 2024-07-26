@@ -1,0 +1,107 @@
+.TH t.remove 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.remove.py\fR\fR  \- Removes space time datasets from temporal database.
+.SH KEYWORDS
+temporal, map management, remove, time
+.SH SYNOPSIS
+\fBt.remove.py\fR
+.br
+\fBt.remove.py \-\-help\fR
+.br
+\fBt.remove.py\fR [\-\fBrf\fR]  [\fBinputs\fR=\fIname\fR[,\fIname\fR,...]]   [\fBtype\fR=\fIstring\fR]   [\fBfile\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Remove all registered maps from the temporal and also from the spatial database
+.IP "\fB\-f\fR" 4m
+.br
+Force recursive removing
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of the input space time datasets
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of the space time dataset, default is strds
+.br
+Options: \fIstrds,  str3ds,  stvds\fR
+.br
+Default: \fIstrds\fR
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with dataset names, one per line
+.SH DESCRIPTION
+The module \fIt.remove\fR removes space time datasets (STRDS, STR3DS,
+STVDS) from the temporal database. In other words, by default it deletes
+the relevant database entries but not the maps.
+.PP
+Optionally, also the raster, 3D raster and vector maps of the space time
+datasets can be removed from the current mapset using the \fB\-r\fR (recursive)
+and \fB\-f\fR (force) flags. This recursive removal only works if both flags
+are checked together (use \fB\-rf\fR).
+.SH EXAMPLE
+In this example a space time raster dataset (STRDS) named
+\fBprecip_months_sum\fR will be created using a subset of the monthly
+precipitation raster maps from the North Carolina climate sample data set.
+.br
+In order to be able to show the case of recursive removal without deleting
+the original sample data, we generate new data by means of computing
+yearly precipitation sums. Eventually, all newly produced data (STRDS and
+raster maps) are removed:
+.br
+.nf
+\fC
+#Create new and empty STRDS
+t.create output=precip_months_sum semantictype=mean \(rs
+  title=\(dqMonthly sum of precipitation\(dq \(rs
+  description=\(dqMonthly sum of precipitation for the \(rs
+  North Carolina sample data location\(dq
+#Register maps from sample dataset (selecting a subset with g.list)
+t.register \-i type=raster input=precip_months_sum \(rs
+  maps=$(g.list type=raster pattern=\(dq201*_precip\(dq separator=comma) \(rs
+  start=\(dq2010\-01\-01\(dq increment=\(dq1 months\(dq
+#Create some new data by aggregating with 1 years granularity
+t.rast.aggregate input=precip_months_sum \(rs
+  output=precip_years_sum basename=precip_years_sum granularity=\(dq1 \(rs
+  years\(dq method=sum
+#Remove all newly produced data:
+# a) the aggregated STRDS with 1 years granularity along with its raster maps
+t.remove \-rf type=strds input=precip_years_sum
+# b) the STRDS with 1 months granularity, but not the original sample data
+t.remove type=strds input=precip_months_sum
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info,
+t.register
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.remove source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

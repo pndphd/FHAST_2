@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.surf.area - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.surf.area</b></em>  - Prints estimation of surface area for raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#statistics">statistics</a>, <a href="keywords.html#area estimation">area estimation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.surf.area</b><br></div>
+<b>r.surf.area --help</b><br>
+<div id="synopsis"><b>r.surf.area</b> <b>map</b>=<em>name</em>  [<b>vscale</b>=<em>float</em>]   [<b>units</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map</dd>
+
+<dt><b>vscale</b>=<em>float</em></dt>
+<dd>Vertical scale</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Output units</dd>
+<dd>Default: square map units</dd>
+<dd>Options: <em>miles, feet, meters, kilometers, acres, hectares</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.surf.area</em> calculates area of regular 3D triangulated points
+(centers of cells) in current region by adding areas of triangles.
+Therefore, area of a flat surface will be reported as (<tt>rows + cols
+-1) * (area of cell)</tt> less than area of flat region due to a half
+row and half column missing around the perimeter.
+
+<h2><a name="notes">NOTES</a></h2>
+
+This calculation is heavily dependent on data resolution (think of it
+as a fractal shoreline problem, the more resolution the more detail,
+the more area, etc). This module uses the <b>current region
+settings</b>, not the resolution of the raster map. This is especially
+important for surfaces with <tt>NULL</tt> values and highly irregular
+edges. The module does not [currently] attempt to correct for the
+error introduced by this <em>edge effect</em>.
+
+<p>This version actually calculates area twice for each triangle pair,
+keeping a running minimum and maximum area depending on the direction
+of the diagonal used.
+
+<p>Reported totals are:
+<ol>
+<li>"Plan" area of <tt>NULL</tt> values within the current GRASS
+region</li>
+<li>"Plan" area within calculation region (<tt>rows-1 * cols-1 *
+cellarea</tt>)</li>
+<li>Average of the minimum and maximum calculated 3d triangle area
+within this region</li>
+<li>"Plan" area within current computational region (<tt>rows * cols *
+cellarea</tt>)</li>
+<li>Scaling of calculated area to current region</li>
+</ol> 
+
+<p><em>r.surf.area</em> works best when the surface being evaluated
+extends to the edges of the current region and the cell resolution is
+small. Surfaces which are especially long and thin and have highly
+irregular boundaries will tend to have underestimated surface areas.
+Setting a high cell resolution (small area) will greatly reduce this
+impact, but will cause longer processing times.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<div class="code"><pre>
+g.region -p raster=elevation
+
+r.surf.area map=elevation units=hectares
+Null value area ignored in calculation: 0.000000
+Plan area used in calculation: 20221.510000
+Surface area calculation(low, high, avg):
+        20294.310421 20320.936368 20307.623395
+Current region plan area: 20250.000000
+Estimated region Surface Area: 20336.234719
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.surf.idw.html">r.surf.idw</a>,
+<a href="r.surf.fractal.html">r.surf.fractal</a>,
+<a href="r.surf.gauss.html">r.surf.gauss</a>,
+<a href="r.volume.html">r.volume</a>,
+<a href="r.slope.aspect.html">r.slope.aspect</a>,
+<a href="v.to.rast.html">v.to.rast</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Bill Brown, USACERL December 21, 1994
+<br>
+Modified for floating point rasters and <tt>NULL</tt> values by Eric
+G. Miller (October 17, 2000)
+<br>
+Updated for GRASS 7, and units option by Martin Landa, Czech Technical
+University in Prague, Czech Republic (October 2011)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.surf.area">r.surf.area source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.surf.area">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

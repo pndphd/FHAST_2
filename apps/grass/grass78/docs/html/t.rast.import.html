@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.import.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.import.py</b></em>  - Imports space time raster dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>, <a href="keywords.html#create location">create location</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.import.py</b><br></div>
+<b>t.rast.import.py --help</b><br>
+<div id="synopsis"><b>t.rast.import.py</b> [-<b>rleoc</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>basename</b>=<em>string</em>]  <b>directory</b>=<em>name</em>  [<b>title</b>=<em>string</em>]   [<b>description</b>=<em>string</em>]   [<b>location</b>=<em>string</em>]   [<b>memory</b>=<em>memory in MB</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Set the current region from the last map that was imported</dd>
+
+<dt><b>-l</b></dt>
+<dd>Link the raster files using r.external</dd>
+
+<dt><b>-e</b></dt>
+<dd>Extend location extents based on new dataset</dd>
+
+<dt><b>-o</b></dt>
+<dd>Override projection check (use current location's projection)</dd>
+<dd>Assume that the dataset has same projection as the current location</dd>
+
+<dt><b>-c</b></dt>
+<dd>Create the location specified by the "location" parameter and exit. Do not import the space time raster datasets.</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input file</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time raster dataset</dd>
+
+<dt><b>basename</b>=<em>string</em></dt>
+<dd>Basename of the new generated output maps</dd>
+<dd>A numerical suffix separated by an underscore will be attached to create a unique identifier</dd>
+
+<dt><b>directory</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Path to the extraction directory</dd>
+<dd>Default: <em>/tmp</em></dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Title of the new space time dataset</dd>
+
+<dt><b>description</b>=<em>string</em></dt>
+<dd>Description of the new space time dataset</dd>
+
+<dt><b>location</b>=<em>string</em></dt>
+<dd>Create a new location and import the data into it. Do not run this module in parallel or interrupt it when a new location should be created</dd>
+
+<dt><b>memory</b>=<em>memory in MB</em></dt>
+<dd>Maximum memory to be used (in MB)</dd>
+<dd>Cache size for raster rows</dd>
+<dd>Default: <em>300</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>t.rast.import</em> imports a space time raster dataset archive that
+was exported with <a href="t.rast.export.html">t.rast.export</a>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Optionally a base map name can be provided to avoid that existing
+raster maps are overwritten by the map names that are used in the STRDS
+archive.
+<p>
+The <b>directory</b> is used as work directory in case of import but
+can also be used as a data directory when using GeoTIFF for the data
+exchange.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The North Carolina space time dataset contains a data package called 
+<em>lst_daily.tar.bzip2</em> with daily data from MODIS LST. Import it
+by running:
+
+<div class="code"><pre>
+t.rast.import input=lst_daily.tar.bzip2 output=lst_daily \
+              basename=lst directory=/tmp
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.rast.export.html">t.rast.export</a>,
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>,
+<a href="r.in.gdal.html">r.in.gdal</a>,
+<a href="r.unpack.html">r.unpack</a>,
+<a href="t.vect.import.html">t.vect.import</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.import">t.rast.import source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.import">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+.TH d.rast.leg 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rast.leg.py\fR\fR  \- Displays a raster map and its legend on a graphics window
+.SH KEYWORDS
+display, cartography, legend
+.SH SYNOPSIS
+\fBd.rast.leg.py\fR
+.br
+\fBd.rast.leg.py \-\-help\fR
+.br
+\fBd.rast.leg.py\fR [\-\fBfns\fR] \fBmap\fR=\fIname\fR  [\fBlines\fR=\fIinteger\fR]   [\fBraster\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Flip legend
+.IP "\fB\-n\fR" 4m
+.br
+Omit entries with missing label
+.IP "\fB\-s\fR" 4m
+.br
+Draw smooth gradient
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to display
+.IP "\fBlines\fR=\fIinteger\fR" 4m
+.br
+Number of lines to appear in the legend
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Name of input raster map to generate legend from
+.SH DESCRIPTION
+\fId.rast.leg\fR shows a raster map along with its legend.
+It first clears the entire screen, then divides it
+into a main (left) and a minor (right) frames, and displays a raster
+map in the main frame and the map legend in the minor frame. The main
+frame remains active when the program finishes.
+.SH NOTES
+The legend may be flipped with the \fB\-f\fR flag.
+.PP
+If the \fBlines\fR parameter is not given then the legend frame will
+display as many lines as number of categories in the map, otherwise, it
+will display the first \fBlines\fR minus 1 categories with the
+rest being truncated.
+.PP
+The user may adjust the \fBlines\fR parameter or
+the size of graphics window to get an appropriate result.
+.PP
+The user may specify a second raster map with the \fBraster\fR parameter from
+which the legend is generated. This is useful to visualize (time) series of
+raster maps with a common static legend instead of the default dynamic legend.
+.PP
+To remove all frames when clearing the display, use
+d.erase \-f.
+.SH EXAMPLE
+In this example, the polar diagram of the \(cqaspect\(cq angle map in the
+North Carolina sample dataset location is generated:
+.br
+.nf
+\fC
+g.region raster=landclass96 \-p
+d.rast.leg landclass96
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.legend,
+d.erase,
+d.rast
+\fR
+.SH AUTHORS
+Jianping Xu, Scott Madry, Rutgers University
+.br
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: d.rast.leg source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

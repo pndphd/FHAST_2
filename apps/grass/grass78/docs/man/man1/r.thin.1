@@ -1,0 +1,156 @@
+.TH r.thin 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.thin\fR\fR  \- Thins non\-null cells that denote linear features in a raster map layer.
+.SH KEYWORDS
+raster, geometry
+.SH SYNOPSIS
+\fBr.thin\fR
+.br
+\fBr.thin \-\-help\fR
+.br
+\fBr.thin\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBiterations\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBiterations\fR=\fIinteger\fR" 4m
+.br
+Maximal number of iterations
+.br
+Default: \fI200\fR
+.SH DESCRIPTION
+\fIr.thin\fR scans the named \fIinput\fR raster map layer and
+thins non\-NULL cells that denote linear features into linear features
+having a single cell width. Raster lines often need to be thinned
+(skeletonizing raster features) to a single pixel width before they can
+be transformed to vector data.
+.PP
+\fIr.thin\fR will thin only the non\-NULL (no data) raster cells
+of the named \fIinput\fR raster map layer within the current
+geographic region settings.  The cell width of the thinned
+\fIoutput\fR raster map layer will be equal to the cell
+resolution of the currently set geographic region.  All of
+the thinned linear features will have the width of a single
+cell.
+.PP
+\fIr.thin\fR will create a new \fIoutput\fR raster
+data file containing the thinned linear features.
+\fIr.thin\fR assumes that linear features are encoded
+with positive values on a background of NULL\(cqs in the
+\fIinput\fR raster data file, hence it creates a NULL/1
+output map.
+.SH NOTES
+\fIr.thin\fR only creates raster map layers. In order to
+create a vector map, the user will need to run
+\fIr.to.vect\fR
+on the resultant raster map.
+.PP
+\fIr.thin\fR may create small spurs or \(dqdangling lines\(dq
+during the thinning process.  These spurs may be removed
+(after creating a vector map layer) by
+\fIv.clean\fR (\fIrmdangle\fR
+tool).
+.PP
+This code implements the thinning algorithm described in
+\(dqAnalysis of Thinning Algorithms Using Mathematical
+Morphology\(dq by Ben\-Kwei Jang and Ronlad T. Chin in
+\fITransactions on Pattern Analysis and Machine
+Intelligence\fR, vol. 12, No. 6, June 1990.  The
+definition Jang and Chin give of the thinning process is
+\(dqsuccessive removal of outer layers of pixels from an
+object while retaining any pixels whose removal would alter
+the connectivity or shorten the legs of the sceleton.\(dq
+.PP
+The sceleton is finally thinned when the thinning process
+converges; i.e., \(dqno further pixels can be removed without
+altering the connectivity or shortening the sceleton legs\(dq
+(p. 541).  The authors prove that the thinning process
+described always converges and produces one\-pixel thick
+sceletons.  The number of iterations depends on the
+original thickness of the object.  Each iteration peels off
+the outside pixels from the object.  Therefore, if the
+object is <= n pixels thick, the algorithm should
+converge in <= iterations.
+.SH EXAMPLE
+To vectorize the raster map \fIstreams_derived\fR in the North
+Carolina sample dataset that represents the stream network derived from
+the 10m resolution DEM by \fIr.watershed\fR, run:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# create flow accumulation map
+r.watershed elevation=elevation accumulation=accum_50K thresh=50000
+# extract streams from flow accumulation map
+r.mapcalc \(dqstreams_from_flow = if(abs(accum_50K) > 1000, 1, null())\(dq
+# skeletonize map
+r.thin streams_from_flow out=streams_thin
+d.mon wx0
+d.rast streams_from_flow
+d.erase
+d.rast streams_thin
+\fR
+.fi
+.PP
+.br
+Raster feature thinning (skeletonizing)
+.PP
+The resulting map cabe optionally vectorized:
+.br
+.nf
+\fC
+r.to.vect streams_thin output=streams_thin type=line
+# visualize
+d.rast accum_50K
+d.vect streams_thin color=red width=2
+\fR
+.fi
+.PP
+.br
+Vectorized stream network after thinning extracted from flow accumulation map
+.SH SEE ALSO
+\fI
+g.region,
+r.to.vect,
+v.clean,
+wxGUI vector digitizer,
+v.build
+\fR
+.SH AUTHOR
+Olga Waupotitsch, U.S.Army Construction Engineering Research Laboratory
+.PP
+The code for finding the bounding box as well as input/output code
+was written by Mike Baba (DBA Systems, 1990) and Jean Ezell (USACERL, 1988).
+.SH SOURCE CODE
+.PP
+Available at: r.thin source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.png - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.png</b></em>  - Export a GRASS raster map as a non-georeferenced PNG image.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#PNG">PNG</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.png</b><br></div>
+<b>r.out.png --help</b><br>
+<div id="synopsis"><b>r.out.png</b> [-<b>tw</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>compression</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Make NULL cells transparent</dd>
+
+<dt><b>-w</b></dt>
+<dd>Output world file</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for new PNG file (use '-' for stdout)</dd>
+
+<dt><b>compression</b>=<em>integer</em></dt>
+<dd>Compression level of PNG file</dd>
+<dd>(0 = none, 1 = fastest, 9 = best)</dd>
+<dd>Options: <em>0-9</em></dd>
+<dd>Default: <em>6</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.out.png</em> exports a GRASS GIS raster map in non-georeferenced
+Portable Network Graphics (PNG) image format, respecting the current
+region resolution and bounds.
+
+<p>
+Optionally the user can choose to export a World File (.wld) to provide basic
+georeferencing support. When used with the transparency flag this can
+create images useful for KML, TMS, or WMS overlays. (e.g. for use in
+Google Earth or as OpenLayers tiles) If output is redirected to stdout,
+the world file will be called <tt>png_map.wld</tt>.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The example is based on the North Carolina sample data location.
+<p>
+Export of the soil map to PNG format with world file:
+
+<div class="code"><pre>
+g.region raster=soils_Kfactor -p
+# export PNG file with additional world file
+r.out.png input=soils_Kfactor output=soils_Kfactor -w
+# verify
+gdalinfo soils_Kfactor.png
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.out.gdal.html">r.out.gdal</a>,
+<a href="r.out.ppm.html">r.out.ppm</a>,
+<a href="r.out.ascii.html">r.out.ascii</a>,
+<a href="r.import.html">r.import</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Alex Shevlakov<br>
+Hamish Bowman
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.png">r.out.png source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.png">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

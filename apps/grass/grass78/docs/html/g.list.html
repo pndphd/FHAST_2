@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.list - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.list</b></em>  - Lists available GRASS data base files of the user-specified data type optionally using the search pattern.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_map_management.html">map management</a>, <a href="keywords.html#list">list</a>, <a href="keywords.html#search">search</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.list</b><br></div>
+<b>g.list --help</b><br>
+<div id="synopsis"><b>g.list</b> [-<b>iretmpf</b>] <b>type</b>=<em>datatype</em>[,<i>datatype</i>,...]  [<b>pattern</b>=<em>string</em>]   [<b>exclude</b>=<em>string</em>]   [<b>mapset</b>=<em>name</em>[,<i>name</i>,...]]   [<b>separator</b>=<em>character</em>]   [<b>region</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Ignore case</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use basic regular expressions instead of wildcards</dd>
+
+<dt><b>-e</b></dt>
+<dd>Use extended regular expressions instead of wildcards</dd>
+
+<dt><b>-t</b></dt>
+<dd>Print data types</dd>
+
+<dt><b>-m</b></dt>
+<dd>Print fully-qualified map names (including mapsets)</dd>
+
+<dt><b>-p</b></dt>
+<dd>Pretty printing in human readable format</dd>
+
+<dt><b>-f</b></dt>
+<dd>Verbose listing (also list map titles)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>type</b>=<em>datatype[,<i>datatype</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Data type(s)</dd>
+<dd>Options: <em>raster, raster_3d, vector, label, region, group, all</em></dd>
+<dd><b>raster</b>: raster map(s)</dd>
+<dd><b>raster_3d</b>: 3D raster map(s)</dd>
+<dd><b>vector</b>: vector map(s)</dd>
+<dd><b>label</b>: paint label file(s)</dd>
+<dd><b>region</b>: region definition(s)</dd>
+<dd><b>group</b>: imagery group(s)</dd>
+<dd><b>all</b>: all types</dd>
+
+<dt><b>pattern</b>=<em>string</em></dt>
+<dd>Map name search pattern (default: all)</dd>
+
+<dt><b>exclude</b>=<em>string</em></dt>
+<dd>Map name exclusion pattern (default: none)</dd>
+
+<dt><b>mapset</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of mapset to list (default: current search path)</dd>
+<dd>'.' for current mapset; '*' for all mapsets in location</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>newline</em></dd>
+
+<dt><b>region</b>=<em>name</em></dt>
+<dd>Name of saved region for map search (default: not restricted)</dd>
+<dd>'.' for current region; '*' for default region</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file</dd>
+<dd>If not given or '-' then standard output</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#mapset-search-path" class="toc">Mapset search path</a></li>
+        <li class="toc"><a href="#wildcards" class="toc">Wildcards</a></li>
+        <li class="toc"><a href="#regular-expressions" class="toc">Regular expressions</a></li>
+        <li class="toc"><a href="#extended-regular-expressions" class="toc">Extended regular expressions</a></li>
+        <li class="toc"><a href="#maps-whose-region-overlaps-with-a-saved-region" class="toc">Maps whose region overlaps with a saved region</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>g.list</em> searches for data files matching a pattern given by
+wildcards or POSIX Extended Regular Expressions.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The output of <em>g.list</em> may be useful for other programs' parameter
+input (e.g. time series for <em><a href="r.series.html">r.series</a></em>)
+when used with <em>separator=comma</em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+List all raster maps as continuous, sorted list:
+<div class="code"><pre>
+g.list type=rast
+</pre></div>
+
+List all vector maps as continuous, sorted list with MAPSET info (i.e.
+fully-qualified map names):
+<div class="code"><pre>
+g.list type=vector -m
+</pre></div>
+
+List all raster and vector maps ordered by mapset:
+<div class="code"><pre>
+g.list type=raster -p
+</pre></div>
+
+List all raster and vector maps as continuous, sorted list:
+<div class="code"><pre>
+g.list type=rast,vect
+</pre></div>
+
+List all available GRASS data base files:
+<div class="code"><pre>
+g.list type=all
+</pre></div>
+
+<h3><a name="mapset-search-path">Mapset search path</a></h3>
+
+If <b>mapset</b> is not specified, then <em>g.list</em> searches for
+data files in the mapsets that are included in the search path
+(defined by <em><a href="g.mapsets.html">g.mapsets</a></em>).
+See <tt>g.mapsets -p</tt>.
+
+<div class="code"><pre>
+g.list rast -p
+
+raster map(s) available in mapset &lt;user1&gt;:
+dmt
+...
+raster map(s) available in mapset &lt;PERMANENT&gt;:
+aspect
+...
+</pre></div>
+
+Option <b>mapset</b>=. (one dot) lists only data files from
+the current mapset:
+
+<div class="code"><pre>
+g.list rast mapset=.
+...
+</pre></div>
+
+<!-- better quote * as "*"? -->
+Similarly, <b>mapset</b>=* (one asterisk) prints data files from all
+available mapsets also including those that are not listed in the
+current search path (see <tt>g.mapsets -l</tt>).
+
+<div class="code"><pre>
+g.list rast mapset=* -p
+
+raster map(s) available in mapset &lt;landsat&gt;:
+lsat5_1987_10
+...
+raster map(s) available in mapset &lt;user1&gt;:
+dmt
+...
+raster map(s) available in mapset &lt;PERMANENT&gt;:
+aspect
+...
+</pre></div>
+
+<h3><a name="wildcards">Wildcards</a></h3>
+
+List all vector maps starting with letter "r":
+<div class="code"><pre>
+g.list type=vector pattern="r*"
+</pre></div>
+
+List all vector maps starting with letter "r" or "a":
+<div class="code"><pre>
+g.list type=vector pattern="[ra]*"
+</pre></div>
+
+List all raster maps starting with "soil_" or "landuse_":
+<div class="code"><pre>
+g.list type=raster pattern="{soil,landuse}_*"
+</pre></div>
+
+List certain raster maps with one variable character/number:
+<div class="code"><pre>
+g.list type=raster pattern="N45E00?.meters"
+</pre></div>
+
+Use of <b>exclude</b> parameter:
+<div class="code"><pre>
+# without exclude:
+  g.list rast pat="r*" mapset=PERMANENT
+  railroads
+  roads
+  rstrct.areas
+  rushmore
+
+# exclude only complete word(s):
+  g.list rast pat="r*" exclude=roads mapset=PERMANENT
+  railroads
+  rstrct.areas
+  rushmore
+
+# exclude with wildcard:
+  g.list rast pat="r*" exclude="*roads*" mapset=PERMANENT
+  rstrct.areas
+  rushmore
+</pre></div>
+
+<h3><a name="regular-expressions">Regular expressions</a></h3>
+
+List all soil maps starting with &quot;soils&quot; in their name:
+<div class="code"><pre>
+g.list -r type=raster pattern='^soils'
+</pre></div>
+
+List &quot;tmp&quot; if &quot;tmp&quot; raster map exists:
+<div class="code"><pre>
+g.list -r type=raster pattern='^tmp$'
+</pre></div>
+
+List &quot;tmp0&quot; ...&quot;tmp9&quot; if corresponding vector map exists
+(each map name linewise):
+<div class="code"><pre>
+g.list -r type=vector pattern='^tmp[0-9]$'
+</pre></div>
+
+List &quot;tmp0&quot;...&quot;tmp9&quot; if corresponding vector map exists
+(each map name comma separated):
+<div class="code"><pre>
+g.list -r type=vector separator=comma pattern='^tmp[0-9]$'
+</pre></div>
+
+<h3><a name="extended-regular-expressions">Extended regular expressions</a></h3>
+
+List all precipitation maps for the years 1997-2012, comma separated:
+<div class="code"><pre>
+g.list -e type=raster separator=comma pattern="precip_total.(199[7-9]|200[0-9]|201[0-2]).sum"
+</pre></div>
+
+<h3><a name="maps-whose-region-overlaps-with-a-saved-region">Maps whose region overlaps with a saved region</a></h3>
+
+List all raster maps starting with &quot;tmp_&quot; whose region overlaps with
+the region of &quot;test&quot; raster map:
+<div class="code"><pre>
+g.region raster=test save=test_region
+g.list type=raster pattern='tmp_*' region=test_region
+</pre></div>
+
+List &quot;tmp0&quot;...&quot;tmp9&quot; vector maps whose region overlaps with
+the current region:
+<div class="code"><pre>
+g.list -r type=vector pattern='^tmp[0-9]$' region=.
+</pre></div>
+
+List all raster and vector maps whose region overlaps with the default region
+of the PERMANENT mapset in the current location (DEFAULT_WIND):
+<div class="code"><pre>
+g.list type=rast,vect region=*
+</pre></div>
+
+Note that, without <tt>region=*</tt>, <tt>g.list type=rast,vect</tt> simply
+lists all available raster and vector maps from the current search path
+regardless of their region.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.series.html">r.series</a>,
+<a href="t.list.html">t.list</a>,
+<a href="t.rast.list.html">t.rast.list</a>,
+<a href="t.vect.list.html">t.vect.list</a>
+</em>
+<p>
+<a href="http://en.wikipedia.org/wiki/Regular_expression">Regular expressions</a>
+(aka regex) - from Wikipedia, the free encyclopedia
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Huidae Cho<br>
+grass4u@gmail.com
+<br>
+based on general/manage/cmd/list.c by Michael Shapiro
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.list">g.list source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.list">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

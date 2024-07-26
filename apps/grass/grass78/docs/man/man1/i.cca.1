@@ -1,0 +1,112 @@
+.TH i.cca 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.cca\fR\fR  \- Canonical components analysis (CCA) program for image processing.
+.SH KEYWORDS
+imagery, statistics, CCA, canonical components analysis
+.SH SYNOPSIS
+\fBi.cca\fR
+.br
+\fBi.cca \-\-help\fR
+.br
+\fBi.cca\fR \fBgroup\fR=\fIname\fR \fBsubgroup\fR=\fIname\fR \fBsignature\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBsubgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery subgroup
+.IP "\fBsignature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+File containing spectral signatures
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output raster map prefix name
+.SH DESCRIPTION
+\fBi.cca\fR is an image processing program that takes any number of
+(raster) band files and a signature file, and outputs the same number of
+raster band files transformed to provide maximum separability of the
+categories indicated by the signatures.  This implementation of the
+canonical components transformation is based on the algorithm contained in
+the LAS image
+processing system. CCA is also known as \(dqCanonical components
+transformation\(dq.
+.PP
+Typically the user will use the
+\fIg.gui.iclass\fR
+program to collect a set of signatures and then pass those
+signatures along with the raster band files to
+\fIi.cca\fR.  The raster band file names are specified
+on the command line by giving the group and subgroup that
+were used to collect the signatures.
+.PP
+The output raster map names are built by appending a \(dq.1\(dq,
+\(dq.2\(dq, etc. to the output raster map name specified on the
+command line.
+.SS Parameters:
+.IP "\fBgroup=\fR\fIname\fR   " 4m
+.br
+Name of the imagery group
+to which the raster band files used belong.
+.IP "\fBsubgroup=\fR\fIname\fR   " 4m
+.br
+Name of the imagery
+subgroup to which the raster band files used
+belong.
+.IP "\fBsignature=\fR\fIname\fR   " 4m
+.br
+Name of an ASCII file containing spectral signatures.
+.IP "\fBoutput=\fR\fIname\fR   " 4m
+.br
+Output raster map prefix name.  The output raster map
+layer names are built by appending a \(dq.1\(dq, \(dq.2\(dq, etc. onto
+the \fIoutput\fR name specified by the user.
+.SH NOTES
+\fIi.cca\fR respects the current geographic region definition
+and the current mask setting while performing the transformation.
+.SH SEE ALSO
+\fI
+g.gui.iclass,
+i.pca,
+r.covar,
+r.mapcalc
+\fR
+.SH REFERENCES
+Schowengerdt, Robert A.  \fBTechniques for Image Processing and
+Classification in Remote Sensing\fR,  Academic Press, 1983.
+.SH AUTHORS
+David Satnik, GIS Laboratory,
+Central Washington University
+.br
+Ali R. Vali,
+University of Texas
+.SH SOURCE CODE
+.PP
+Available at: i.cca source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

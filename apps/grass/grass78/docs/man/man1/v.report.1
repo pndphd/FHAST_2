@@ -1,0 +1,109 @@
+.TH v.report 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.report.py\fR\fR  \- Reports geometry statistics for vector maps.
+.SH KEYWORDS
+vector, geometry, statistics
+.SH SYNOPSIS
+\fBv.report.py\fR
+.br
+\fBv.report.py \-\-help\fR
+.br
+\fBv.report.py\fR [\-\fBcd\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoption\fR=\fIstring\fR  [\fBunits\fR=\fIstring\fR]   [\fBsort\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Do not include column names in output
+.IP "\fB\-d\fR" 4m
+.br
+Report for geometries with no database records
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBoption\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Value to calculate
+.br
+Options: \fIarea, length, coor\fR
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Units
+.br
+Options: \fImiles, feet, meters, kilometers, acres, hectares, percent\fR
+.IP "\fBsort\fR=\fIstring\fR" 4m
+.br
+Sort the result
+.br
+Options: \fIasc, desc\fR
+.br
+\fBasc\fR: Sort in ascending order
+.br
+\fBdesc\fR: Sort in descending order
+.SH DESCRIPTION
+\fIv.report\fR generates a table showing the area present in
+each of the categories of a user\-selected data layer.
+.PP
+Area is given in hectares, square meters, and square kilometers.
+If the units option is used, area is given in acres, square feet,
+and square miles.
+.PP
+Feet and acre units are always reported in their common versions
+(i.e. the International Foot, exactly 5280 feet in a mile), even
+when the location\(cqs standard map unit is the US Survey foot.
+.PP
+\fIv.report\fR works on the full map data; therefore, the current
+region is ignored. If you wish to spatially limit the statistics,
+a map subset must be created with \fIv.in.region\fR and
+\fIv.overlay\fR, and then run \fIv.report\fR on the new map.
+.SH EXAMPLE
+North Carolina sample dataset:
+.br
+.nf
+\fC
+v.report zipcodes_wake option=area units=hectares
+\fR
+.fi
+In the output, there is an extra column added containing the results.
+.SH SEE ALSO
+\fI
+v.in.region,
+v.to.db,
+v.overlay
+\fR
+.SH AUTHOR
+Markus Neteler, GDF Hannover
+.SH SOURCE CODE
+.PP
+Available at: v.report source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

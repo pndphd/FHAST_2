@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.ortho.rectify - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.ortho.rectify</b></em>  - Orthorectifies an image by using the image to photo coordinate transformation matrix.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_orthorectify.html">orthorectify</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.ortho.rectify</b><br></div>
+<b>i.ortho.rectify --help</b><br>
+<div id="synopsis"><b>i.ortho.rectify</b> [-<b>ca</b>] <b>group</b>=<em>name</em>  [<b>input</b>=<em>name</em>[,<i>name</i>,...]]  <b>extension</b>=<em>string</em>  [<b>resolution</b>=<em>float</em>]   [<b>memory</b>=<em>memory in MB</em>]   [<b>method</b>=<em>string</em>]   [<b>angle</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Use current region settings in target location (def.=calculate smallest area)</dd>
+
+<dt><b>-a</b></dt>
+<dd>Rectify all raster maps in group</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of input raster map(s)</dd>
+
+<dt><b>extension</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Output raster map(s) suffix</dd>
+
+<dt><b>resolution</b>=<em>float</em></dt>
+<dd>Target resolution (ignored if -c flag used)</dd>
+
+<dt><b>memory</b>=<em>memory in MB</em></dt>
+<dd>Maximum memory to be used (in MB)</dd>
+<dd>Cache size for raster rows</dd>
+<dd>Default: <em>300</em></dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Interpolation method to use</dd>
+<dd>Options: <em>nearest, linear, cubic, lanczos, linear_f, cubic_f, lanczos_f</em></dd>
+<dd>Default: <em>nearest</em></dd>
+
+<dt><b>angle</b>=<em>name</em></dt>
+<dd>Raster map with camera angle relative to ground surface</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<H2>DESCRIPTION</H2>
+
+<em>i.photo.rectify</em> rectifies an image by using the image to photo
+coordinate transformation matrix created by <a href="i.photo.2image.html">i.photo.2image</a>
+and the rectification parameters created by <a href="i.photo.2target.html">i.photo.2target</a>.
+Rectification is the process by which the geometry of an image is made
+planimetric.  This is accomplished by mapping an image from one coordinate
+system to another. In <em>i.photo.rectify</em> the parameters computed by
+<a href="i.photo.2image.html">i.photo.2image</a> and
+<a href="i.photo.2target.html">i.photo.2target</a> are used in equations to
+convert x,y image coordinates to standard map coordinates for each pixel in
+the image.  The result is an image with a standard map coordinate system,
+compensated for relief distortions and photographic tilt. Upon completion of
+the program the rectified image is deposited in a previously targeted GRASS
+LOCATION.
+<p>
+Images can be resampled with various different interpolation methods: 
+nearest neighbor assignment, bilinear and bicubic interpolation. The 
+bilinear and bicubic interpolation methods are also available with a
+fallback option. These methods "fall back" to simpler interpolation 
+methods along NULL borders. That is, from bicubic to bilinear to nearest.
+<p>
+The process may take an hour or more depending on the size of the image,
+the speed of the computer, the number files, and the size and resolution
+of the selected window.
+<p>
+The rectified image will be located in the target LOCATION when the program
+is completed. The original unrectified files are not modified or removed.
+<p>
+The optional <em>angle</em> output holds the camera angle in degrees to
+the local surface, considering local slope and aspect. A value of 90 
+degrees indicates that the camera angle was orthogonal to the local 
+surface, a value of 0 degrees indicates that the camera angle was 
+parallel to the local surface and negative values indicate that the 
+surface was invisible to the camera. As a rule of thumb, values below 30
+degrees indicate problem areas where the orthorectified output will 
+appear blurred. Because terrain shadowing effects are not considered, 
+areas with high camera angles may also appear blurred if they are located
+(viewed from the camera position) behind mountain ridges or peaks.
+<p>
+<em>i.photo.rectify</em> can be run directly, specifying options in the 
+command line or the GUI, or it can be invoked as OPTION 8 through 
+<a href="i.ortho.photo.html">i.ortho.photo</a>. If invoked though 
+<a href="i.ortho.photo.html">i.ortho.photo</a>, an interactive terminal 
+is used to determine the options.
+
+<H4>Interactive mode</H4>
+<p> You are first asked if all images within the imagery group should 
+be rectified. If this option is not chosen, you are asked to specify for 
+each image within the imagery group whether it should be rectified or not.
+<p>
+More than one file may be rectified at a time. Each file
+should have a unique output file name. The next prompt asks you for an 
+extension to be appended to the rectified images.
+<p>
+The next prompt will ask you whether a camera angle map should be 
+produced and if yes, what should be its name.
+<p>
+After that you are asked if overwriting existing maps in the target 
+location and mapset should be allowed.
+<p>
+The next prompt asks you to select one of two windows:
+<p>
+<pre>
+      Please select one of the following options
+      1.   Use the current window in the target location
+      2.   Determine the smallest window which covers the image
+      &gt;
+</pre>
+<p>
+If you choose option 2, you can also specify a desired target resolution.
+<p>
+<em>i.photo.rectify</em> will only rectify that portion of the
+image that occurs within the chosen window.  Only that portion will be
+relocated in the target database. It is therefore important to check the
+current window in the target LOCATION if choice number one is selected.
+<p>
+Next you are asked to select an interpolation method.
+<pre>
+      Please select one of the following interpolation methods
+      1. nearest neighbor
+      2. bilinear
+      3. bicubic
+      4. bilinear with fallback
+      5. bicubic with fallback
+      &gt;
+</pre>
+<p>
+The last prompt will ask you about the amount of memory to be used by
+<em>i.photo.rectify</em>.
+
+<H2>SEE ALSO</H2>
+
+<em>
+<a href="i.ortho.photo.html">i.ortho.photo</a><br>
+<a href="i.ortho.camera.html">i.ortho.camera</a><br>
+<a href="i.photo.2image.html">i.photo.2image</a><br>
+<a href="i.photo.2target.html">i.photo.2target</a><br>
+<a href="i.ortho.init.html">i.ortho.init</a><br>
+<a href="i.rectify.html">i.rectify</a>
+</em>
+
+
+<H2>AUTHOR</H2>
+Mike Baba,  DBA Systems, Inc.<br>
+Updated rectification and elevation map to FP 1/2002 Markus Neteler<br>
+Bugfixes and enhancements 12/2010 Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.ortho.photo/i.ortho.rectify">i.ortho.rectify source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.ortho.photo/i.ortho.rectify">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+.TH v.net.centrality 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.centrality\fR\fR  \- Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.
+.SH KEYWORDS
+vector, network, centrality measures
+.SH SYNOPSIS
+\fBv.net.centrality\fR
+.br
+\fBv.net.centrality \-\-help\fR
+.br
+\fBv.net.centrality\fR [\-\fBga\fR] \fBinput\fR=\fIname\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBarc_column\fR=\fIname\fR]   [\fBarc_backward_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIstring\fR]   [\fBdegree\fR=\fIname\fR]   [\fBcloseness\fR=\fIname\fR]   [\fBbetweenness\fR=\fIname\fR]   [\fBeigenvector\fR=\fIname\fR]   [\fBiterations\fR=\fIinteger\fR]   [\fBerror\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-a\fR" 4m
+.br
+Add points on nodes
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIname\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIstring\fR" 4m
+.br
+Node cost column (number)
+.IP "\fBdegree\fR=\fIname\fR" 4m
+.br
+Name of degree centrality column
+.IP "\fBcloseness\fR=\fIname\fR" 4m
+.br
+Name of closeness centrality column
+.IP "\fBbetweenness\fR=\fIname\fR" 4m
+.br
+Name of betweenness centrality column
+.IP "\fBeigenvector\fR=\fIname\fR" 4m
+.br
+Name of eigenvector centrality column
+.IP "\fBiterations\fR=\fIinteger\fR" 4m
+.br
+Maximum number of iterations to compute eigenvector centrality
+.br
+Default: \fI1000\fR
+.IP "\fBerror\fR=\fIfloat\fR" 4m
+.br
+Cumulative error tolerance for eigenvector centrality
+.br
+Default: \fI0.1\fR
+.SH DESCRIPTION
+\fIv.net.centrality\fR computes degree, closeness, betweenness
+and eigenvector centrality measures.
+.SH NOTES
+The module computes various centrality measures for each node and
+stores them in the given columns of an attribute table, which is
+created and linked to the output map. For the description of these,
+please check the following
+wikipedia article.
+If the column name is not given for a measure then that measure is not
+computed. If \fB\-a\fR flag is set then points are added on nodes
+without points. Also, the points for which the output is computed
+can be specified by \fBcats\fR, \fBlayer\fR and \fBwhere\fR
+parameters. However, if any of these parameters is present then
+\fB\-a\fR flag is ignored and no new points are added.
+.br
+Betweenness measure is not normalised. In order to get the normalised
+values (between 0 and 1), each number needs to be divided by \fIN
+choose 2=N*(N\-1)/2\fR where N is the number of nodes in the
+connected component. Computation of eigenvector measure terminates
+if the given number of iterations is reached or the cumulative \fI
+squared\fR error between the successive iterations is less than \fB
+error\fR.
+.SH EXAMPLES
+Compute closeness and betweenness centrality measures for each node
+and produce a map containing not only points already present in the
+input map but a map with point on every node.
+.br
+.nf
+\fC
+v.net.centrality input=roads output=roads_cent closeness=closeness \(rs
+      betweenness=betweenness \-a
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net,
+v.generalize
+\fR
+.SH AUTHORS
+Daniel Bundala, Google Summer of Code 2009, Student
+.br
+Wolf Bergenheim, Mentor
+.SH SOURCE CODE
+.PP
+Available at: v.net.centrality source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

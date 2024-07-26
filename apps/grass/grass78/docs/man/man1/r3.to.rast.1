@@ -1,0 +1,137 @@
+.TH r3.to.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.to.rast\fR\fR  \- Converts 3D raster maps to 2D raster maps
+.SH KEYWORDS
+raster3d, conversion, raster, voxel
+.SH SYNOPSIS
+\fBr3.to.rast\fR
+.br
+\fBr3.to.rast \-\-help\fR
+.br
+\fBr3.to.rast\fR [\-\fBmr\fR] \fBinput\fR=\fIstring\fR \fBoutput\fR=\fIstring\fR  [\fBtype\fR=\fIstring\fR]   [\fBmultiply\fR=\fIfloat\fR]   [\fBadd\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with input map
+.IP "\fB\-r\fR" 4m
+.br
+Use the same resolution as the input 3D raster map for the 2D output maps, independent of the current region settings
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+3D raster map(s) to be converted to 2D raster slices
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename for resultant raster slice maps
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of raster map to be created
+.br
+Storage type for resultant raster map
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBmultiply\fR=\fIfloat\fR" 4m
+.br
+Value to multiply the raster values with
+.br
+Coefficient a in the equation y = ax + b
+.IP "\fBadd\fR=\fIfloat\fR" 4m
+.br
+Value to add to the raster values
+.br
+Coefficient b in the equation y = ax + b
+.SH DESCRIPTION
+Converts one 3D raster map into several 2D raster maps (depends on depths).
+If the 2D and 3D region settings are different, the 3D resolution will be
+adjusted to the 2D resolution (the depths are not touched).
+The user can force \fIr3.to.rast\fR to use the 2D resolution of the input
+3D raster map for the output maps, independently from the current region settings.
+.br
+.TS
+expand;
+lw60.
+T{
+\fIHow r3.to.rast works\fR
+T}
+.sp 1
+.TE
+.SS Map type conversions
+Type of resulting 2D raster maps is determined by the type of the
+input 3D raster, i.e. 3D raster of type DCELL (double) will result in
+DCELL 2D rasters. A specific type for 2D rasters can be requested using
+the \fBtype\fR option.
+.PP
+The \fBtype\fR option is especially advantageous when the 3D raster
+map stores categories (which need to be stored as floating point numbers)
+and the 2D raster map should be also categorical, i.e. use integers.
+The type is set to CELL in this case.
+.SS Modifying the values
+The values in the 3D raster map can be modified prior to storing in
+the 2D raster map. The values can be scaled using the option \fBmultiply\fR
+and a constant value can be added using the option \fBadd\fR.
+The new value is computed using the following equation:
+.br
+.nf
+\fC
+y = ax + b
+\fR
+.fi
+where \fIx\fR is the original value, \fIa\fR is the value of
+\fBmultiply\fR option, \fIb\fR is the value of \fBadd\fR option,
+and \fIy\fR is the new value. When \fBmultiply\fR is not provided,
+the value of \fIa\fR is 1. When \fBadd\fR is not provided, the value
+of \fIb\fR is 0.
+.SH NOTES
+Every slice of the 3D raster map is copied to one 2D raster map. The maps
+are named like \fBoutput\fR\fI_slicenumber\fR. Slices are counted from bottom
+to the top, so the bottom slice has number 1.
+.PP
+The number of slices is equal to the number of depths.
+.PP
+To round floating point values to integers when using type=CELL,
+the \fBadd\fR option should be set to 0.5.
+.SH SEE ALSO
+\fI
+r3.cross.rast,
+r3.out.vtk,
+r3.out.ascii,
+g.region
+\fR
+.SH AUTHOR
+Sören Gebbert
+Vaclav Petras, NCSU GeoForAll Lab
+.SH SOURCE CODE
+.PP
+Available at: r3.to.rast source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

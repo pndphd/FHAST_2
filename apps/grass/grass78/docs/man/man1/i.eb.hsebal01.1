@@ -1,0 +1,150 @@
+.TH i.eb.hsebal01 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.eb.hsebal01\fR\fR  \- Computes sensible heat flux iteration SEBAL 01.
+.SH KEYWORDS
+imagery, energy balance, soil moisture, evaporative fraction, SEBAL
+.SH SYNOPSIS
+\fBi.eb.hsebal01\fR
+.br
+\fBi.eb.hsebal01 \-\-help\fR
+.br
+\fBi.eb.hsebal01\fR [\-\fBac\fR] \fBnetradiation\fR=\fIname\fR \fBsoilheatflux\fR=\fIname\fR \fBaerodynresistance\fR=\fIname\fR \fBtemperaturemeansealevel\fR=\fIname\fR \fBvapourpressureactual\fR=\fIname\fR \fBfrictionvelocitystar\fR=\fIfloat\fR  [\fBrow_wet_pixel\fR=\fIfloat\fR]   [\fBcolumn_wet_pixel\fR=\fIfloat\fR]   [\fBrow_dry_pixel\fR=\fIfloat\fR]   [\fBcolumn_dry_pixel\fR=\fIfloat\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Automatic wet/dry pixel (careful!)
+.IP "\fB\-c\fR" 4m
+.br
+Dry/Wet pixels coordinates are in image projection, not row/col
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBnetradiation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of instantaneous net radiation raster map [W/m2]
+.IP "\fBsoilheatflux\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of instantaneous soil heat flux raster map [W/m2]
+.IP "\fBaerodynresistance\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of aerodynamic resistance to heat momentum raster map [s/m]
+.IP "\fBtemperaturemeansealevel\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of altitude corrected surface temperature raster map [K]
+.IP "\fBvapourpressureactual\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the actual vapour pressure (e_act) map [KPa]
+.IP "\fBfrictionvelocitystar\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Value of the height independent friction velocity (u*) [m/s]
+.br
+Default: \fI0.32407\fR
+.IP "\fBrow_wet_pixel\fR=\fIfloat\fR" 4m
+.br
+Row value of the wet pixel
+.IP "\fBcolumn_wet_pixel\fR=\fIfloat\fR" 4m
+.br
+Column value of the wet pixel
+.IP "\fBrow_dry_pixel\fR=\fIfloat\fR" 4m
+.br
+Row value of the dry pixel
+.IP "\fBcolumn_dry_pixel\fR=\fIfloat\fR" 4m
+.br
+Column value of the dry pixel
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output sensible heat flux raster map [W/m2]
+.SH DESCRIPTION
+\fIi.eb.hsebal01\fR will calculate the sensible heat flux map (h0), given
+both maps of Net Radiation and soil Heat flux (Rn, g0) at instantaneous time,
+the surface roughness (z0m), a map of the altitude corrected temperature
+(t0dem), a point data of the frictional velocity (u*), a value of actual vapour
+pressure (ea[KPa]) and the (x,y) pairs for wet and dry pixels.
+Full process will need those:
+.RS 4n
+.IP \(bu 4n
+\fIi.vi\fR, \fIi.albedo\fR, \fIr.latlong\fR, \fIi.emissivity\fR
+.IP \(bu 4n
+\fIi.evapo.potrad\fR (GRASS Addon)
+.IP \(bu 4n
+\fIi.eb.netrad\fR, \fIi.eb.soilheatflux\fR, \fIi.eb.hsebal01\fR
+.IP \(bu 4n
+\fIi.eb.evapfr\fR, \fIi.eb.eta\fR
+.RE
+(for time integration: \fIi.evapo.time_integration\fR)
+.PP
+\fIi.eb.hsebal01\fR performs the computation of \fIsensible heat flux\fR
+[W/m2] after Bastiaanssen, 1995 in [1], used in this form in 2001 by [2]. Implemented
+in this code in [3].
+.SH NOTES
+.RS 4n
+.IP \(bu 4n
+z0m can be alculated by \fIi.eb.z0m\fR or \fIi.eb.z0m0\fR (GRASS Addons).
+.IP \(bu 4n
+ea can be calculated with standard meteorological data.
+.br
+eoTmin=0.6108*EXP(17.27*Tmin/(Tmin+237.3))
+.br
+eoTmax=0.6108*EXP(17.27*Tmax/(Tmax+237.3))
+.br
+ea=(RH/100)/((eoTmin+eoTmax)/2)
+.IP \(bu 4n
+t0dem = surface temperature + (altitude * 0.627 / 100)
+.RE
+.SH SEE ALSO
+\fI
+i.eb.soilheatflux,
+i.eb.evapfr
+\fR
+.SH REFERENCES
+.PP
+[1] Bastiaanssen, W.G.M., 1995.
+Estimation of Land surface parameters by remote sensing under clear\-sky
+conditions. PhD thesis, Wageningen University, Wageningen, The Netherlands.
+(PDF)
+.PP
+[2] Chemin Y., Alexandridis T.A., 2001. Improving spatial resolution of ET
+seasonal for irrigated rice in Zhanghe, China. Asian Journal of
+Geoinformatics. 5(1):3\-11,2004.
+.PP
+[3] Alexandridis T.K., Cherif I., Chemin Y., Silleos N.G., Stavrinos E.,
+Zalidis G.C. Integrated methodology for estimating water use in Mediterranean
+agricultural areas. Remote Sensing. 2009, 1, 445\-465.
+(PDF)
+.PP
+[4] Chemin, Y., 2012.
+A Distributed Benchmarking Framework for Actual ET Models,
+in: Irmak, A. (Ed.), Evapotranspiration \- Remote Sensing and Modeling. InTech.
+(PDF)
+.SH AUTHORS
+Yann Chemin, International Rice Research Institute, Los Banos, The
+Philippines.
+.PP
+Contact: Yann Chemin
+.SH SOURCE CODE
+.PP
+Available at: i.eb.hsebal01 source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

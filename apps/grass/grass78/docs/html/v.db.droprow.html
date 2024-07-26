@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.db.droprow.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.db.droprow.py</b></em>  - Removes a vector feature from a vector map through attribute selection.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#database">database</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.db.droprow.py</b><br></div>
+<b>v.db.droprow.py --help</b><br>
+<div id="synopsis"><b>v.db.droprow.py</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>where</b>=<em>sql_query</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em>&nbsp;<b>[required]</b></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.db.droprow</em> removes vector object(s) (point, line, area, face etc.) 
+from a vector map through attribute selection in the table connected
+to the given vector map. It automatically checks the connection for the specified
+layer.
+
+<h2><a name="notes">NOTES</a></h2>
+
+v.db.droprow is a front-end to <em>v.extract</em> (reverse selection)
+to allow easier usage.
+
+The existing database connection(s) can be verified with <em>v.db.connect</em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Dropping all vector points without elevation attribute (North Carolina data set):<br>
+<div class="code"><pre>
+g.region raster=elevation -p
+v.random output=rand5k_elev n=5000 
+
+v.db.addtable map=rand5k_elev column="elevation double precision"
+v.what.rast vect=rand5k_elev rast=elevation column=elevation
+
+# verify absence of some elevation attributes ("number of NULL attributes"):
+v.univar rand5k_elev type=point column=elevation
+
+# Remove all vector points lacking elevation attribute
+v.db.droprow rand5k_elev output=rand5k_elev_filt where="elevation IS NULL"
+
+# verify:
+v.univar rand5k_elev_filt type=point column=elevation
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.droptable.html">db.droptable</a>,
+<a href="db.execute.html">db.execute</a>,
+<a href="v.db.addcolumn.html">v.db.addcolumn</a>,
+<a href="v.db.addtable.html">v.db.addtable</a>,
+<a href="v.db.connect.html">v.db.connect</a>,
+<a href="v.db.dropcolumn.html">v.db.dropcolumn</a>,
+<a href="v.db.droptable.html">v.db.droptable</a>,
+<a href="v.db.select.html">v.db.select</a>,
+<a href="v.db.update.html">v.db.update</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Neteler
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.db.droprow">v.db.droprow source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.db.droprow">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+.TH wxGUI.photo2image 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI GCP Manager for photo to image registration
+.SH DESCRIPTION
+This module is based on \fBg.gui.gcp\fR, the GCP manager of GRASS GIS.
+It is part of i.ortho.photo suite.
+.PP
+The aim of this module is to give absolute location values to the fiducial
+points present (in number of 4 or 8) in a \fIscanned\fR aerial photo.
+.PP
+This is necessary as (manual) scanning introduces distortions, rotations and also
+may not be limited to scan the boundary of the photo itself. It is thus necessary
+to give to each fiducial the exact coordinates in mm as given by the aerial
+photographic instrument design, which is unique per camera.
+.PP
+This module requires you to have made a group with your aerial photo \fB(i.group)\fR, a camera
+description file \fB(i.ortho.target)\fR and use them to launch the module. Additional requirements
+are the order of rectification (1 if no of Fiducials is 4, 2 if no of Fiducials is 8) and
+an extension file (if not given, defaults to \(rs$filename_ip2i_out)
+.PP
+An example for Location \fBimagery60\fR:
+.br
+.nf
+\fC
+g.gui.photo2image group=aerial@PERMANENT raster=gs13.1@PERMANENT camera=gscamera order=2 extension=try \-\-o
+\fR
+.fi
+.SS Screenshot of g.gui.photo2image
+.br
+\fIFigure: Screenshot of g.gui.photo2image\fR
+.SH For a detailed operation manual please read
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+See also video
+tutorials on GRASS Wiki.
+.SH SEE ALSO
+\fI
+i.ortho.photo,
+i.group,
+i.ortho.camera,
+i.ortho.target,
+i.rectify,
+m.transform,
+v.rectify
+\fR
+.SH AUTHORS
+Markus Metz
+.br
+.br
+\fIBased on the Georectifier (GRASS 6.4.0)\fR by Michael Barton
+.br
+Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: wxGUI GCP Manager for photo to image registration source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

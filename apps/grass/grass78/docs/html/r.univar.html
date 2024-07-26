@@ -1,0 +1,361 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.univar - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.univar</b></em>  - Calculates univariate statistics from the non-null cells of a raster map.<BR>
+Statistics include number of cells counted, minimum and maximum cell values, range, arithmetic mean, population variance, standard deviation, coefficient of variation, and sum.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#univariate statistics">univariate statistics</a>, <a href="keywords.html#zonal statistics">zonal statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.univar</b><br></div>
+<b>r.univar --help</b><br>
+<div id="synopsis"><b>r.univar</b> [-<b>getr</b>] <b>map</b>=<em>name</em>[,<i>name</i>,...]  [<b>zones</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [<b>percentile</b>=<em>float</em>[,<i>float</i>,...]]   [<b>separator</b>=<em>character</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print the stats in shell script style</dd>
+
+<dt><b>-e</b></dt>
+<dd>Calculate extended statistics</dd>
+
+<dt><b>-t</b></dt>
+<dd>Table output format instead of standard output format</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use the native resolution and extent of the raster map, instead of the current region</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map(s)</dd>
+
+<dt><b>zones</b>=<em>name</em></dt>
+<dd>Raster map used for zoning, must be of type CELL</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file (if omitted or "-" output to stdout)</dd>
+
+<dt><b>percentile</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Percentile to calculate (requires extended statistics flag)</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>90</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#univariate-statistics" class="toc">Univariate statistics</a></li>
+        <li class="toc"><a href="#zonal-statistics" class="toc">Zonal statistics</a></li>
+    </ul></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.univar</em> calculates the univariate statistics of one or several raster
+map(s). This includes the number of cells counted, minimum and maximum cell
+values, range, arithmetic mean, population variance, standard deviation,
+coefficient of variation, and sum. Statistics are calculated separately for every
+category/zone found in the <b>zones</b> input map if given.
+If the <b>-e</b> extended statistics flag is given the 1st quartile, median,
+3rd quartile, and given <b>percentile</b> are calculated.
+If the <b>-g</b> flag is given the results are presented in a format suitable
+for use in a shell script.
+If the <b>-t</b> flag is given the results are presented in tabular format
+with the given field separator. The table can immediately be converted to a
+vector attribute table which can then be linked to a vector, e.g. the vector
+that was rasterized to create the <b>zones</b> input raster.
+
+<p>
+When multiple input maps are given to <em>r.univar</em>, the overall statistics
+are calculated. This is useful for a time series of the same variable, as well as
+for the case of a segmented/tiled dataset. Allowing multiple raster maps to be
+specified saves the user from using a temporary raster map for the result of 
+<em>r.series</em> or <em>r.patch</em>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+As with most GRASS raster modules, <em>r.univar</em> operates on the raster
+array defined by the current region settings, not the original extent and
+resolution of the input map. See <em><a href="g.region.html">g.region</a></em>,
+but also 
+<a href="https://grasswiki.osgeo.org/wiki/Computational_region#Understanding_the_impact_of_region_settings">
+the wiki page on the computational region</a> to understand the impact of the 
+region settings on the calculations.
+
+<p>
+This module can use large amounts of system memory when the <b>-e</b>
+extended statistics flag is used with a very large region setting. If the
+region is too large the module should exit gracefully with a memory allocation
+error. Basic statistics can be calculated using any size input region.
+Extended statistics can be calculated using
+<em><a href="r.stats.quantile.html">r.stats.quantile</a></em>.
+
+<p>
+Without a <b>zones</b> input raster, the <em>r.quantile</em> module will
+be significantly more efficient for calculating percentiles with large maps.
+
+<p>
+For calculating univariate statistics from a raster map based on vector polygon
+map and uploads statistics to new attribute columns, see
+<em><a href="v.rast.stats.html">v.rast.stats</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="univariate-statistics">Univariate statistics</a></h3>
+
+In this example, the raster map <tt>elevation</tt> in the North 
+Carolina sample dataset is used to calculate univariate statistics: 
+
+<div class="code"><pre>
+g.region raster=elevation -p
+
+# standard output, along with extended statistics
+r.univar -e elevation percentile=98
+total null and non-null cells: 2025000
+total null cells: 0
+
+Of the non-null cells:
+----------------------
+n: 2025000
+minimum: 55.5788
+maximum: 156.33
+range: 100.751
+mean: 110.375
+mean of absolute values: 110.375
+standard deviation: 20.3153
+variance: 412.712
+variation coefficient: 18.4057 %
+sum: 223510266.558102
+1st quartile: 94.79
+median (even number of cells): 108.88
+3rd quartile: 126.792
+98th percentile: 147.727
+
+
+# script style output, along with extended statistics
+r.univar -ge elevation percentile=98
+n=2025000
+null_cells=0
+cells=2025000
+min=55.5787925720215
+max=156.329864501953
+range=100.751071929932
+mean=110.375440275606
+mean_of_abs=110.375440275606
+stddev=20.3153233205981
+variance=412.712361620436
+coeff_var=18.4056555243368
+sum=223510266.558102
+first_quartile=94.79
+median=108.88
+third_quartile=126.792
+percentile_98=147.727
+</pre></div>
+
+<h3><a name="zonal-statistics">Zonal statistics</a></h3>
+In this example, the raster polygon map <tt>basins</tt> in the North 
+Carolina sample dataset is used to calculate raster statistics for zones
+for <tt>elevation</tt> raster map: 
+
+<div class="code"><pre>
+g.region raster=basins -p
+</pre></div>
+
+This will set and print computational region in the format:
+
+<div class="code"><pre>
+projection: 99 (Lambert Conformal Conic)
+zone:       0
+datum:      nad83
+ellipsoid:  a=6378137 es=0.006694380022900787
+north:      228500
+south:      215000
+west:       630000
+east:       645000
+nsres:      10
+ewres:      10
+rows:       1350
+cols:       1500
+cells:      2025000
+</pre></div>
+
+Check basin's IDs using:
+
+<div class="code"><pre>
+r.category basins
+</pre></div>
+
+This will print them in the format:
+
+<div class="code"><pre>
+2	
+4	
+6	
+8	
+10	
+12	
+14	
+16	
+18	
+20	
+22	
+24	
+26	
+28	
+30	
+</pre></div>
+
+Visualization of them underlying elevation map can be created as:
+
+<div class="code"><pre>
+d.mon wx0
+d.rast map=elevation
+r.colors map=elevation color=grey 
+d.rast map=basins
+r.colors map=basins color=bgyr 
+d.legend raster=basins use=2,4,6,8,10,12,14,16,18,20,22,24,26,28,30
+d.barscale 
+</pre></div>
+
+<!--
+g.region -a n=227228 s=220895 w=631362 e=641170
+d.out.file runivar_basins.png 
+optipng -o5 runivar_basins.png width=200px
+-->
+
+
+<div align="center" style="margin: 10px">
+<a href="runivar_basins.png">
+<img src="runivar_basins.png" width="600" height="446" alt="r.univar basins and their IDs" border=0><br>
+</a>
+<i>Figure: Zones (basins, opacity: 60%) with underlying elevation map 
+for North Carolina sample dataset.</i>
+</div>
+
+<p>
+Then statistics for elevation can be calculated separately for every
+zone, i.e. basin found in the <b>zones</b> parameter:
+
+<div class="code"><pre>
+r.univar -t map=elevation zones=basins separator=comma \
+         output=basin_elev_zonal.csv
+</pre></div>
+
+This will print information in the format:
+
+<div class="code"><pre>
+zone,label,non_null_cells,null_cells,min,max,range,mean,mean_of_abs,
+stddev,variance,coeff_var,sum,sum_abs2,,116975,0,55.5787925720215,
+133.147018432617,77.5682258605957,92.1196971445722,92.1196971445722,
+15.1475301152556,229.447668592576,16.4433129773355,10775701.5734863,
+10775701.57348634,,75480,0,61.7890930175781,110.348838806152,
+48.5597457885742,83.7808205765268,83.7808205765268,11.6451777476995,
+135.610164775515,13.8995747088232,6323776.33711624,6323776.33711624
+6,,1137,0,66.9641571044922,83.2070922851562,16.2429351806641,
+73.1900814395257,73.1900814395257,4.15733292896409,17.2834170822492,
+5.68018623179036,83217.1225967407,83217.12259674078,,80506,
+0,67.4670791625977,147.161514282227, ...
+</pre></div>
+
+Comma Separated Values (CSV) file is best viewed through a spreadsheet 
+program such as Microsoft Excel, Libre/Open Office Calc or Google Docs:
+
+<div align="center" style="margin: 10px">
+<a href="runivar_basins_elev_zonal.png">
+<img src="runivar_basins_elev_zonal.png" width="600" height="121" alt="r.univar raster statistics" border=0><br>
+</a>
+<i>Figure: Raster statistics for zones (basins, North Carolina sample 
+dataset) viewed through Libre/Open Office Calc.</i>
+</div>
+
+<h2><a name="todo">TODO</a></h2>
+
+To be implemented <i>mode, skewness, kurtosis</i>.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r3.univar.html">r3.univar</a>,
+<a href="r.mode.html">r.mode</a>,
+<a href="r.quantile.html">r.quantile</a>,
+<a href="r.series.html">r.series</a>,
+<a href="r.stats.html">r.stats</a>,
+<a href="r.stats.quantile.html">r.stats.quantile</a>,
+<a href="r.stats.zonal.html">r.stats.zonal</a>,
+<a href="r.statistics.html">r.statistics</a>,
+<a href="v.rast.stats.html">v.rast.stats</a>,
+<a href="v.univar.html">v.univar</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Hamish Bowman, Otago University, New Zealand<br>
+Extended statistics by Martin Landa<br>
+Multiple input map support by Ivan Shmakov<br>
+Zonal loop by Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.univar">r.univar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.univar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

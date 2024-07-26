@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.vect.what.strds.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.vect.what.strds.py</b></em>  - Stores raster map values at spatial and temporal positions of vector points as vector attributes.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.vect.what.strds.py</b><br></div>
+<b>t.vect.what.strds.py --help</b><br>
+<div id="synopsis"><b>t.vect.what.strds.py</b> <b>input</b>=<em>name</em> <b>strds</b>=<em>name</em>  [<b>column</b>=<em>string</em>]  <b>method</b>=<em>string</em>  [<b>where</b>=<em>sql_query</em>]   [<b>t_where</b>=<em>sql_query</em>]   [<b>sampling</b>=<em>name</em>[,<i>name</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time vector dataset</dd>
+
+<dt><b>strds</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>column</b>=<em>string</em></dt>
+<dd>Name of the vector column to be created and to store sampled raster values</dd>
+<dd>The use of a column name forces t.vect.what.rast to sample only values from the first map found in an interval. Otherwise the raster map names are used as column names</dd>
+
+<dt><b>method</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Aggregate operation to be performed on the raster maps</dd>
+<dd>Options: <em>disabled, average, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis</em></dd>
+<dd>Default: <em>disabled</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>t_where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>sampling</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>The method to be used for sampling the input dataset</dd>
+<dd>Options: <em>start, during, overlap, contain, equal, follows, precedes</em></dd>
+<dd>Default: <em>start</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The module <em>t.vect.what.strds</em> samples a space time raster dataset 
+(STRDS) at the spatio-temporal locations of a space time vector dataset (STVDS).
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The example is based on the space time vector dataset "precip_stations@climate_2009_2012"
+created in the <a href="t.vect.observe.strds.html">t.vect.observe.strds</a> example.
+In the example below, the module fills the new column "new_temp" with values
+extracted from the "tempmean_monthly" space time raster dataset:
+
+<div class="code"><pre>
+t.vect.what.strds input=precip_stations@climate_2009_2012 \
+                  strds=tempmean_monthly@climate_2009_2012 \
+                  column=new_temp method=average
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.univar.html">r.univar</a>,
+<a href="v.univar.html">v.univar</a>,
+<a href="v.what.rast.html">v.what.rast</a>,
+<a href="v.what.rast3.html">v.what.rast3</a>,
+<a href="v.what.strds.html">v.what.strds</a>,
+<a href="v.what.vect.html">v.what.vect</a>,
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.vect.what.strds">t.vect.what.strds source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.vect.what.strds">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

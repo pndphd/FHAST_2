@@ -1,0 +1,200 @@
+.TH v.net.steiner 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.steiner\fR\fR  \- Creates Steiner tree for the network and given terminals.
+.br
+Note that \(cqMinimum Steiner Tree\(cq problem is NP\-hard and heuristic algorithm is used in this module so the result may be sub optimal.
+.SH KEYWORDS
+vector, network, steiner tree
+.SH SYNOPSIS
+\fBv.net.steiner\fR
+.br
+\fBv.net.steiner \-\-help\fR
+.br
+\fBv.net.steiner\fR [\-\fBg\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBarc_type\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]   [\fBacolumn\fR=\fIstring\fR]  \fBterminal_cats\fR=\fIrange\fR  [\fBnpoints\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBarc_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Arc type
+.br
+Input feature type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer (used for terminals)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBacolumn\fR=\fIstring\fR" 4m
+.br
+Arcs\(cq cost column (for both directions)
+.IP "\fBterminal_cats\fR=\fIrange\fR \fB[required]\fR" 4m
+.br
+Category values
+.br
+Categories of points on terminals (layer is specified by nlayer)
+.IP "\fBnpoints\fR=\fIinteger\fR" 4m
+.br
+Number of Steiner points (\-1 for all possible)
+.br
+Default: \fI\-1\fR
+.SH DESCRIPTION
+\fIv.net.steiner\fR calculates the optimal connection of nodes on a
+vector network.
+.PP
+A Steiner tree is used to calculate the minimum\-cost vector network
+connecting some number of end nodes in a network framework.
+For example it could be used to find the path following a road system
+which will minimize the amount of fibre optic cable needed to connect
+a series of satellite offices.
+.PP
+Costs may be either line lengths, or attributes saved in a database
+table. These attribute values are taken as costs of whole segments, not
+as costs to traverse a length unit (e.g. meter) of the segment.
+For example, if the speed limit is 100 km / h, the cost to traverse a
+10 km long road segment must be calculated as
+length / speed = 10 km / (100 km/h) = 0.1 h.
+Supported are cost assignments for both arcs and nodes.
+For areas, costs will be calculated along boundary lines.
+.PP
+Points representing nodes must be exactly on network nodes, and the
+input vector map needs to be prepared with \fIv.net operation=connect\fR.
+.SH NOTES
+Current implementation of obtaining Steiner tree is not memory efficient.
+An attempt to run module on a network with large number of intersections thus
+might result in failure to allocate memory or out of memory condition.
+.SH EXAMPLE
+Steiner tree for 6 digitized nodes (Spearfish):
+.PP
+Shortest path, along unimproved roads:
+.PP
+.PP
+Fastest path, along highways:
+.PP
+.br
+.nf
+\fC
+# Spearfish
+g.copy vect=roads,myroads
+# we have 6 locations to allocate
+echo \(dq1|601653.5|4922869.2|a
+2|608284|4923776.6|b
+3|601845|4914981.9|c
+4|596270|4917456.3|d
+5|593330.8|4924096.6|e
+6|598005.5|4921439.2|f\(dq | v.in.ascii in=\- cat=1 x=2 y=3 out=centers col=\(dqcat integer, \(rs
+                         east double precision, north double precision, label varchar(43)\(dq
+v.db.select centers
+v.category centers op=report
+# type       count        min        max
+# point          6          1          6
+# create lines map connecting points to network (on layer 2)
+v.net myroads points=centers out=myroads_net op=connect thresh=500
+# set up costs as traveling time
+# create unique categories for each road in layer 3
+v.category in=myroads_net out=myroads_net_time opt=add cat=1 layer=3 type=line
+# add new table for layer 3
+v.db.addtable myroads_net_time layer=3 col=\(dqcat integer,label varchar(43),length double precision,speed double precision,cost double precision\(dq
+# copy road type to layer 3
+v.to.db myroads_net_time layer=3 qlayer=1 opt=query qcolumn=label columns=label
+# upload road length in miles
+v.to.db myroads_net_time layer=3 type=line option=length col=length unit=miles
+# set speed limits in miles / hour
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqinterstate\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqprimary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq50.0\(dq where=\(dqlabel=\(cqsecondary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq25.0\(dq where=\(dqlabel=\(cqlight\-duty road, improved surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq where=\(dqlabel=\(cqunimproved road\(cq\(dq
+# define traveling costs as traveling time in minutes:
+v.db.update myroads_net_time layer=3 col=cost val=\(dqlength / speed * 60\(dq
+# shortest path
+v.net.steiner myroads_net_time arc_layer=3 node_layer=2 terminal_cats=1\-6 out=mysteiner_distance
+# fastest path
+v.net.steiner myroads_net_time arc_layer=3 node_layer=2 acol=cost terminal_cats=1\-6 out=mysteiner_time
+\fR
+.fi
+To display the result, run for example:
+.br
+.nf
+\fC
+# display the results
+g.region vector=myroads_net
+# shortest path
+d.mon x0
+d.vect myroads_net
+d.vect \-c centers icon=basic/triangle
+d.font Vera
+d.vect centers col=red disp=attr attrcol=label lsize=12
+d.vect mysteiner_distance col=blue width=2
+# fastest path
+d.mon x1
+d.vect myroads_net
+d.vect \-c centers icon=basic/triangle
+d.font Vera
+d.vect centers col=red disp=attr attrcol=label lsize=12
+d.vect mysteiner_time col=blue width=2
+\fR
+.fi
+.SH SEE ALSO
+\fId.path\fR,
+\fIv.net\fR,
+\fIv.net.alloc\fR,
+\fIv.net.iso\fR,
+\fIv.net.path\fR,
+\fIv.net.salesman\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Documentation: Markus Neteler, Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: v.net.steiner source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

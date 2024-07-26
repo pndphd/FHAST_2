@@ -1,0 +1,129 @@
+.TH d.histogram 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.histogram\fR\fR  \- Displays a histogram in the form of a pie or bar chart for a user\-specified raster map.
+.SH KEYWORDS
+display, histogram, statistics
+.SH SYNOPSIS
+\fBd.histogram\fR
+.br
+\fBd.histogram \-\-help\fR
+.br
+\fBd.histogram\fR [\-\fBnc\fR] \fBmap\fR=\fIname\fR  [\fBstyle\fR=\fIstring\fR]   [\fBcolor\fR=\fIname\fR]   [\fBbgcolor\fR=\fIname\fR]   [\fBnsteps\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Display information for null cells
+.IP "\fB\-c\fR" 4m
+.br
+Report for ranges defined in cats file (fp maps only)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map for which histogram will be displayed
+.IP "\fBstyle\fR=\fIstring\fR" 4m
+.br
+Indicate if a pie or bar chart is desired
+.br
+Options: \fIpie, bar\fR
+.br
+Default: \fIbar\fR
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Color for text and axes
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIwhite\fR
+.IP "\fBnsteps\fR=\fIinteger\fR" 4m
+.br
+Number of steps to divide the data range into (fp maps only)
+.br
+Default: \fI255\fR
+.SH DESCRIPTION
+\fId.histogram\fR displays the category\-value distribution for a
+user\-specified raster map layer, in the form of a bar chart or a pie chart.
+The display will be displayed in the active display frame on the graphics
+monitor, using the colors in the raster map layer\(cqs color table.  The
+program determines the raster map\(cqs category value distribution by counting
+cells.
+.SH NOTES
+\fId.histogram\fR respects the current geographic region settings
+and the current MASK (if one exists).
+.PP
+\fId.histogram\fR uses the colors in the map\(cqs color look\-up table
+(i.e., the map\(cqs \fIcolr\fR or \fIcolr2\fR file).
+.SH EXAMPLES
+Running the command below will generate the bar graph shown in the figure:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+d.mon wx0
+d.histogram map=elevation
+\fR
+.fi
+.br
+\fIFigure: Bar graph histogram for elevation map\fR
+.PP
+Running the command below will generate the pie graph shown in the figure:
+.br
+.nf
+\fC
+g.region raster=landuse96_28m \-p
+d.histogram map=landuse96_28m style=pie
+\fR
+.fi
+.br
+\fIFigure: Pie graph histogram for landuse map\fR
+.SH SEE ALSO
+\fI
+d.colortable,
+d.frame,
+d.graph,
+d.linegraph,
+d.mon,
+d.polar,
+g.region,
+r.stats
+\fR
+.SH AUTHOR
+Dave Johnson
+.br
+DBA Systems, Inc.
+.br
+10560 Arrowhead Drive
+.br
+Fairfax, Virginia 22030
+.SH SOURCE CODE
+.PP
+Available at: d.histogram source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

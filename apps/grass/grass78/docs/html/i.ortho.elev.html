@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.ortho.elev - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.ortho.elev</b></em>  - Select or modify the target elevation model.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_orthorectify.html">orthorectify</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.ortho.elev</b><br></div>
+<b>i.ortho.elev --help</b><br>
+<div id="synopsis"><b>i.ortho.elev</b> [-<b>p</b>] <b>group</b>=<em>name</em>  [<b>location</b>=<em>name</em>]   [<b>mapset</b>=<em>name</em>]   [<b>elevation</b>=<em>name</em>]   [<b>math_expression</b>=<em>string</em>]   [<b>units</b>=<em>string</em>]   [<b>null_value</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Print currently selected elevation map and exit</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of imagery group for ortho-rectification</dd>
+
+<dt><b>location</b>=<em>name</em></dt>
+<dd>Location name</dd>
+<dd>Name of the target location</dd>
+
+<dt><b>mapset</b>=<em>name</em></dt>
+<dd>Name of mapset (default: current search path)</dd>
+<dd>Name of the target mapset</dd>
+
+<dt><b>elevation</b>=<em>name</em></dt>
+<dd>Name of elevation map to use for ortho-rectification</dd>
+
+<dt><b>math_expression</b>=<em>string</em></dt>
+<dd>Math expression to convert to real elevation</dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Unit of the elevation map</dd>
+<dd>Options: <em>miles, feet, meters, kilometers, acres, hectares</em></dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>No data value</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.ortho.elev</em> is used to select or modify the target elevation model.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.ortho.photo.html">i.ortho.photo</a><br>
+<a href="i.ortho.camera.html">i.ortho.camera</a><br>
+<a href="i.photo.2image.html">i.photo.2image</a><br>
+<a href="i.photo.2target.html">i.photo.2target</a><br>
+<a href="i.ortho.init.html">i.ortho.init</a><br>
+<a href="i.rectify.html">i.rectify</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+Mike Baba,  DBA Systems, Inc.<br>
+Bugfixes and enhancements for GRASS GIS 7 by Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.ortho.photo/i.ortho.elev">i.ortho.elev source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.ortho.photo/i.ortho.elev">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

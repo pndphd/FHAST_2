@@ -1,0 +1,282 @@
+.TH t.rast.list 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.list.py\fR\fR  \- Lists registered maps of a space time raster dataset.
+.SH KEYWORDS
+temporal, map management, raster, list, time
+.SH SYNOPSIS
+\fBt.rast.list.py\fR
+.br
+\fBt.rast.list.py \-\-help\fR
+.br
+\fBt.rast.list.py\fR [\-\fBu\fR] \fBinput\fR=\fIname\fR  [\fBorder\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcolumns\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBwhere\fR=\fIsql_query\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBgranule\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-u\fR" 4m
+.br
+Suppress printing of column names
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBorder\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Sort the space time dataset by category
+.br
+Options: \fIid, name, creator, mapset, temporal_type, creation_time, start_time, end_time, north, south, west, east, nsres, ewres, cols, rows, number_of_cells, min, max\fR
+.br
+Default: \fIstart_time\fR
+.IP "\fBcolumns\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Columns to be printed to stdout
+.br
+Options: \fIid, name, creator, mapset, temporal_type, creation_time, start_time, end_time, north, south, west, east, nsres, ewres, cols, rows, number_of_cells, min, max\fR
+.br
+Default: \fIname,mapset,start_time,end_time\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Method used for data listing
+.br
+Options: \fIcols, comma, delta, deltagaps, gran\fR
+.br
+Default: \fIcols\fR
+.IP "\fBgranule\fR=\fIstring\fR" 4m
+.br
+The granule to be used for listing. The granule must be specified as string eg.: absolute time \(dq1 months\(dq or relative time \(dq1\(dq
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator character between the output columns
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file
+.SH DESCRIPTION
+List time stamped raster map layers that are registered in a space time
+raster dataset. \fIt.rast.list\fR provides several options to list map layers
+and their metadata. Listing of map layer can be ordered by metadata,
+metadata columns can be specified and SQL where conditions can be
+provided to select a map layer subset of the input space time raster
+dataset. Most of the raster map  specific metadat is available for
+column selection, sorting and SQL where statements.
+Using the \fBmethod\fR option allows the specification of different
+methods to list map layers. Method \fIcol\fR is the default option and
+sensitive to the \fBcolumn\fR,\fBorder\fR and \fBwhere\fR options.
+It will simply print user specified metadata columns of one map layer
+per line. The \fIcomma\fR method will list the map layer as comma
+separated list that can be used as input for spatial modules.
+.PP
+To print interval length in days and distance from the begin use method
+\fIdelta\fR. Method \fIdeltagap\fR will additionally print temporal
+gaps between map layer. The \fIgran\fR method allows the listing of
+map layer sampled by a user defined \fBgranule\fR. As default the
+granularity of the space time raster dataset is used for sampling.
+The output column separator can be specified with the \fBseparator\fR
+option.
+.SH EXAMPLES
+This example shows several options that are available for map layers listing.
+.SS Default query
+The following command is the default one, returning standard information
+like name, mapset, start_time, end_time of each map in the space time dataset
+.PP
+.br
+.nf
+\fC
+t.rast.list tempmean_monthly
+name|mapset|start_time|end_time
+2009_01_tempmean|climate_2000_2012|2009\-01\-01 00:00:00|2009\-02\-01 00:00:00
+2009_02_tempmean|climate_2000_2012|2009\-02\-01 00:00:00|2009\-03\-01 00:00:00
+\&....
+2012_11_tempmean|climate_2000_2012|2012\-11\-01 00:00:00|2012\-12\-01 00:00:00
+2012_12_tempmean|climate_2000_2012|2012\-12\-01 00:00:00|2013\-01\-01 00:00:00
+\fR
+.fi
+.SS Add more info
+The following command let the user to choose the columns to show
+.PP
+.br
+.nf
+\fC
+t.rast.list tempmean_monthly columns=name,start_time,min,max
+name|start_time|min|max
+2009_01_tempmean|2009\-01\-01 00:00:00|\-3.380823|7.426054
+2009_02_tempmean|2009\-02\-01 00:00:00|\-1.820261|8.006386
+\&...
+2009_01_tempmean|2009\-01\-01 00:00:00|\-3.380823|7.426054
+2009_02_tempmean|2009\-02\-01 00:00:00|\-1.820261|8.006386
+\fR
+.fi
+.SS Filtering the result by value
+In this example the result is filtered showing only the maps with max
+value major than 24
+.PP
+.br
+.nf
+\fC
+t.rast.list tempmean_monthly columns=name,start_time,min,max where=\(dqmax > 24\(dq
+name|start_time|min|max
+2009_06_tempmean|2009\-06\-01 00:00:00|15.962669|25.819681
+2009_07_tempmean|2009\-07\-01 00:00:00|15.32852|26.103664
+2009_08_tempmean|2009\-08\-01 00:00:00|16.37995|27.293282
+\&....
+2012_06_tempmean|2012\-06\-01 00:00:00|14.929379|24.000651
+2012_07_tempmean|2012\-07\-01 00:00:00|18.455802|28.794653
+2012_08_tempmean|2012\-08\-01 00:00:00|15.718526|26.151115
+\fR
+.fi
+.SS Filtering the result by time range
+In this example the result is filtered showing only the maps which
+fall into a specified time range (from .. to):
+.PP
+.br
+.nf
+\fC
+t.rast.list tempmean_monthly columns=name,start_time,min,max \(rs
+  where=\(dqstart_time > \(cq2009\-06\-01 00:00:00\(cq and start_time < \(cq2012\-08\-01 00:00:00\(cq\(dq
+name|start_time|min|max
+2009_06_tempmean|2009\-06\-01 00:00:00|15.962669|25.819681
+2009_07_tempmean|2009\-07\-01 00:00:00|15.32852|26.103664
+2009_08_tempmean|2009\-08\-01 00:00:00|16.37995|27.293282
+\&....
+2012_06_tempmean|2012\-06\-01 00:00:00|14.929379|24.000651
+2012_07_tempmean|2012\-07\-01 00:00:00|18.455802|28.794653
+2012_08_tempmean|2012\-08\-01 00:00:00|15.718526|26.151115
+\fR
+.fi
+.SS Filtering the result by selecting recurring timestamps
+In this example the result is filtered showing only the maps which
+fall into a specified recurring time range (here one month per year):
+.br
+.nf
+\fC
+t.rast.list Tseasonal_fieldata_garda where=\(dqstrftime(\(cq%m\(cq, start_time)=\(cq06\(cq\(dq
+\fR
+.fi
+.SS Using method option
+Method option is able to show raster in different way. By default \fIcols\fR
+value is used, the value \fIcomma\fR will print only the list of maps
+inside the space time dataset:
+.PP
+.br
+.nf
+\fC
+t.rast.list method=comma input=tempmean_monthly
+2009_01_tempmean@climate_2009_2012,2009_02_tempmean@climate_2009_2012,2009_03_tempmean@climate_2009_2012, \(rs
+2009_04_tempmean@climate_2009_2012,2009_05_tempmean@climate_2009_2012,2009_06_tempmean@climate_2009_2012, \(rs
+2009_07_tempmean@climate_2009_2012,2009_08_tempmean@climate_2009_2012,2009_09_tempmean@climate_2009_2012, \(rs
+2009_10_tempmean@climate_2009_2012,2009_11_tempmean@climate_2009_2012,2009_12_tempmean@climate_2009_2012, \(rs
+2010_01_tempmean@climate_2009_2012,2010_02_tempmean@climate_2009_2012,2010_03_tempmean@climate_2009_2012, \(rs
+2010_04_tempmean@climate_2009_2012,2010_05_tempmean@climate_2009_2012,2010_06_tempmean@climate_2009_2012, \(rs
+2010_07_tempmean@climate_2009_2012,2010_08_tempmean@climate_2009_2012,2010_09_tempmean@climate_2009_2012, \(rs
+2010_10_tempmean@climate_2009_2012,2010_11_tempmean@climate_2009_2012,2010_12_tempmean@climate_2009_2012, \(rs
+2011_01_tempmean@climate_2009_2012,2011_02_tempmean@climate_2009_2012,2011_03_tempmean@climate_2009_2012, \(rs
+2011_04_tempmean@climate_2009_2012,2011_05_tempmean@climate_2009_2012,2011_06_tempmean@climate_2009_2012, \(rs
+2011_07_tempmean@climate_2009_2012,2011_08_tempmean@climate_2009_2012,2011_09_tempmean@climate_2009_2012, \(rs
+2011_10_tempmean@climate_2009_2012,2011_11_tempmean@climate_2009_2012,2011_12_tempmean@climate_2009_2012, \(rs
+2012_01_tempmean@climate_2009_2012,2012_02_tempmean@climate_2009_2012,2012_03_tempmean@climate_2009_2012, \(rs
+2012_04_tempmean@climate_2009_2012,2012_05_tempmean@climate_2009_2012,2012_06_tempmean@climate_2009_2012, \(rs
+2012_07_tempmean@climate_2009_2012,2012_08_tempmean@climate_2009_2012,2012_09_tempmean@climate_2009_2012, \(rs
+2012_10_tempmean@climate_2009_2012,2012_11_tempmean@climate_2009_2012,2012_12_tempmean@climate_2009_2012
+\fR
+.fi
+The \fIdelta\fR value calculate the interval between maps and the
+distance from the first map:
+.PP
+.br
+.nf
+\fC
+t.rast.list method=delta input=tempmean_monthly
+id|name|mapset|start_time|end_time|interval_length|distance_from_begin
+2009_01_tempmean@climate_2000_2012|2009_01_tempmean|climate_2000_2012|2009\-01\-01 00:00:00|2009\-02\-01 00:00:00|31.0|0.0
+2009_02_tempmean@climate_2000_2012|2009_02_tempmean|climate_2000_2012|2009\-02\-01 00:00:00|2009\-03\-01 00:00:00|28.0|31.0
+2009_03_tempmean@climate_2000_2012|2009_03_tempmean|climate_2000_2012|2009\-03\-01 00:00:00|2009\-04\-01 00:00:00|31.0|59.0
+\&...
+2012_10_tempmean@climate_2000_2012|2012_10_tempmean|climate_2000_2012|2012\-10\-01 00:00:00|2012\-11\-01 00:00:00|31.0|1369.0
+2012_11_tempmean@climate_2000_2012|2012_11_tempmean|climate_2000_2012|2012\-11\-01 00:00:00|2012\-12\-01 00:00:00|30.0|1400.0
+2012_12_tempmean@climate_2000_2012|2012_12_tempmean|climate_2000_2012|2012\-12\-01 00:00:00|2013\-01\-01 00:00:00|31.0|1430.0
+\fR
+.fi
+The \fIgran\fR value it is used to return data sampled by a user
+defined granule. As default the granularity of the space time raster
+dataset is used for sampling.
+.PP
+.br
+.nf
+\fC
+t.rast.list  method=gran input=tempmean_monthly
+id|name|mapset|start_time|end_time|interval_length|distance_from_begin
+2009_01_tempmean@climate_2009_2012|2009_01_tempmean|climate_2009_2012|2009\-01\-01 00:00:00|2009\-02\-01 00:00:00|31.0|0.0
+2009_02_tempmean@climate_2009_2012|2009_02_tempmean|climate_2009_2012|2009\-02\-01 00:00:00|2009\-03\-01 00:00:00|28.0|31.0
+2009_03_tempmean@climate_2009_2012|2009_03_tempmean|climate_2009_2012|2009\-03\-01 00:00:00|2009\-04\-01 00:00:00|31.0|59.0
+2009_04_tempmean@climate_2009_2012|2009_04_tempmean|climate_2009_2012|2009\-04\-01 00:00:00|2009\-05\-01 00:00:00|30.0|90.0
+\&....
+2012_09_tempmean@climate_2009_2012|2012_09_tempmean|climate_2009_2012|2012\-09\-01 00:00:00|2012\-10\-01 00:00:00|30.0|1339.0
+2012_10_tempmean@climate_2009_2012|2012_10_tempmean|climate_2009_2012|2012\-10\-01 00:00:00|2012\-11\-01 00:00:00|31.0|1369.0
+2012_11_tempmean@climate_2009_2012|2012_11_tempmean|climate_2009_2012|2012\-11\-01 00:00:00|2012\-12\-01 00:00:00|30.0|1400.0
+2012_12_tempmean@climate_2009_2012|2012_12_tempmean|climate_2009_2012|2012\-12\-01 00:00:00|2013\-01\-01 00:00:00|31.0|1430.0
+\fR
+.fi
+.PP
+.br
+.nf
+\fC
+t.rast.list  method=gran input=tempmean_monthly gran=\(dq2 months\(dq
+id|name|mapset|start_time|end_time|interval_length|distance_from_begin
+2009_01_tempmean@climate_2009_2012|2009_01_tempmean|climate_2009_2012|2009\-01\-01 00:00:00|2009\-03\-01 00:00:00|59.0|0.0
+2009_03_tempmean@climate_2009_2012|2009_03_tempmean|climate_2009_2012|2009\-03\-01 00:00:00|2009\-05\-01 00:00:00|61.0|59.0
+2009_05_tempmean@climate_2009_2012|2009_05_tempmean|climate_2009_2012|2009\-05\-01 00:00:00|2009\-07\-01 00:00:00|61.0|120.0
+\&....
+2012_07_tempmean@climate_2009_2012|2012_07_tempmean|climate_2009_2012|2012\-07\-01 00:00:00|2012\-09\-01 00:00:00|62.0|1277.0
+2012_09_tempmean@climate_2009_2012|2012_09_tempmean|climate_2009_2012|2012\-09\-01 00:00:00|2012\-11\-01 00:00:00|61.0|1339.0
+2012_11_tempmean@climate_2009_2012|2012_11_tempmean|climate_2009_2012|2012\-11\-01 00:00:00|2013\-01\-01 00:00:00|61.0|1400.0
+\fR
+.fi
+For the \fIdeltagaps\fR value you can see the example for space time
+vector dataset t.vect.list
+.SH SEE ALSO
+\fI
+g.list,
+t.create,
+t.info,
+t.list,
+t.rast3d.list,
+t.vect.list
+\fR
+.PP
+Temporal data processing Wiki
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.list source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

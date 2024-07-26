@@ -1,0 +1,139 @@
+.TH d.path 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.path\fR\fR  \- Finds shortest path for selected starting and ending node.
+.SH KEYWORDS
+display, network, shortest path
+.SH SYNOPSIS
+\fBd.path\fR
+.br
+\fBd.path \-\-help\fR
+.br
+\fBd.path\fR [\-\fBgb\fR] \fBmap\fR=\fIname\fR  [\fBarc_type\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBcoordinates\fR=\fIx1,y1,x2,y2\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]   [\fBarc_column\fR=\fIstring\fR]   [\fBarc_backward_column\fR=\fIstring\fR]   [\fBnode_column\fR=\fIstring\fR]   [\fBcolor\fR=\fIstring\fR]   [\fBhighlight_color\fR=\fIstring\fR]   [\fBbgcolor\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-b\fR" 4m
+.br
+Render bold lines
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBarc_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Arc type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.IP "\fBcoordinates\fR=\fIx1,y1,x2,y2\fR \fB[required]\fR" 4m
+.br
+Starting and ending coordinates
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBarc_column\fR=\fIstring\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIstring\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIstring\fR" 4m
+.br
+Node cost column
+.IP "\fBcolor\fR=\fIstring\fR" 4m
+.br
+Original line color
+.br
+Default: \fIblack\fR
+.IP "\fBhighlight_color\fR=\fIstring\fR" 4m
+.br
+Highlight color
+.br
+Default: \fIred\fR
+.IP "\fBbgcolor\fR=\fIstring\fR" 4m
+.br
+Background color
+.br
+Default: \fIwhite\fR
+.SH DESCRIPTION
+\fId.path\fR enables shortest path vector networking.
+Costs may be either line lengths, or attributes saved in a database table.
+Supported are cost assignments for both arcs and nodes, and also different
+in both directions of a vector line. For areas cost will be calculated along
+boundary lines.
+.SH NOTE
+The user needs to display a vector map before using d.path. If no graphics monitor
+is open, a file map.png is generated in the current directory.
+.PP
+The \(cqfrom\(cq and \(cqto\(cq points are entered by mouse into the map displayed in the GRASS monitor,
+or if the \fBcoordinates\fR option is used they can be specified non\-interactively.
+The actions bound to the mouse buttons are described in the terminal
+window when running the command.
+.PP
+To calculate shortest path non\-interactively and save the path to a new vector
+map, use the \fIv.net.path\fR module.
+.SH EXAMPLES
+Interactive shortest path routing on road network (North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region vector=roadsmajor \-p
+d.vect roadsmajor
+d.path roadsmajor coordinates=668646.15,224447.16,668348.83,235894.02
+\fR
+.fi
+.PP
+Non\-interactive shortest path routing on road network (North Carolina sample dataset):
+.br
+.nf
+\fC
+d.path \-b roadsmajor coordinates=668646.15,224447.16,668348.83,235894.02
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net.path
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: d.path source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,514 @@
+.TH m.nviz.image 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBm.nviz.image\fR\fR  \- Creates a 3D rendering of GIS data.
+.br
+Renders surfaces (raster data), 2D/3D vector data, and volumes (3D raster data) in 3D.
+.SH KEYWORDS
+miscellaneous, visualization, graphics, raster, vector, raster3d
+.SH SYNOPSIS
+\fBm.nviz.image\fR
+.br
+\fBm.nviz.image \-\-help\fR
+.br
+\fBm.nviz.image\fR [\-\fBanb\fR]  [\fBelevation_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBelevation_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBcolor_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBcolor\fR=\fIname\fR[,\fIname\fR,...]]   [\fBmask_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBtransparency_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBtransparency_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBshininess_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBshininess_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBemission_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBemission_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBmode\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBresolution_fine\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBresolution_coarse\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBstyle\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBshading\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBwire_color\fR=\fIname\fR[,\fIname\fR,...]]   [\fBsurface_position\fR=\fIx,y,z\fR[,\fIx,y,z\fR,...]]   [\fBvline\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvline_layer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvline_width\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBvline_width_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvline_color\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvline_color_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvline_mode\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvline_height\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBvline_position\fR=\fIx,y,z\fR[,\fIx,y,z\fR,...]]   [\fBvpoint\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_layer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvpoint_size\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBvpoint_size_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_width\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBvpoint_width_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_color\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_color_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_marker\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvpoint_marker_column\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvpoint_mode\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvpoint_position\fR=\fIx,y,z\fR[,\fIx,y,z\fR,...]]   [\fBvolume\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvolume_mode\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvolume_shading\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvolume_position\fR=\fIx,y,z\fR[,\fIx,y,z\fR,...]]   [\fBvolume_resolution\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBisosurf_level\fR=\fIvolume:value\fR[,\fIvolume:value\fR,...]]   [\fBisosurf_color_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBisosurf_color_value\fR=\fIname\fR[,\fIname\fR,...]]   [\fBisosurf_transparency_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBisosurf_transparency_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBisosurf_shininess_map\fR=\fIname\fR[,\fIname\fR,...]]   [\fBisosurf_shininess_value\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBslice\fR=\fIvolume:axis\fR[,\fIvolume:axis\fR,...]]   [\fBslice_position\fR=\fIx1,x2,y1,y2,z1,z2\fR[,\fIx1,x2,y1,y2,z1,z2\fR,...]]   [\fBslice_transparency\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBbgcolor\fR=\fIname\fR]   [\fBposition\fR=\fIx,y\fR]   [\fBheight\fR=\fIvalue\fR]   [\fBperspective\fR=\fIvalue\fR]   [\fBtwist\fR=\fIvalue\fR]   [\fBzexag\fR=\fIvalue\fR]   [\fBfocus\fR=\fIx,y,z\fR]   [\fBlight_position\fR=\fIx,y,z\fR]   [\fBlight_color\fR=\fIname\fR]   [\fBlight_brightness\fR=\fIinteger\fR]   [\fBlight_ambient\fR=\fIinteger\fR]   [\fBfringe\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBfringe_color\fR=\fIname\fR]   [\fBfringe_elevation\fR=\fIinteger\fR]   [\fBcplane\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBcplane_position\fR=\fIx,y,z\fR[,\fIx,y,z\fR,...]]   [\fBcplane_rotation\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBcplane_tilt\fR=\fIvalue\fR[,\fIvalue\fR,...]]   [\fBcplane_shading\fR=\fIstring\fR]   [\fBarrow_position\fR=\fIx,y\fR]   [\fBarrow_size\fR=\fIvalue\fR]   [\fBarrow_color\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR \fBformat\fR=\fIstring\fR \fBsize\fR=\fIwidth,height\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Use draw mode for all loaded surfaces
+.IP "\fB\-n\fR" 4m
+.br
+Toggles normal direction of all isosurfaces (changes light effect)
+.IP "\fB\-b\fR" 4m
+.br
+Draw volume box
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for elevation
+.IP "\fBelevation_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Constant elevation value(s) to use instead of a raster DEM
+.IP "\fBcolor_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for color
+.IP "\fBcolor\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Color value(s)
+.br
+Either a standard color name or R:G:B triplet
+.IP "\fBmask_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for mask
+.IP "\fBtransparency_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for transparency
+.IP "\fBtransparency_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Transparency value(s)
+.br
+Options: \fI0\-255\fR
+.IP "\fBshininess_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for shininess
+.IP "\fBshininess_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Shininess value(s)
+.br
+Options: \fI0\-255\fR
+.IP "\fBemission_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) for emission
+.IP "\fBemission_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Emission value(s)
+.br
+Options: \fI0\-255\fR
+.IP "\fBmode\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Draw mode
+.br
+Options: \fIcoarse, fine, both\fR
+.br
+Default: \fIfine\fR
+.IP "\fBresolution_fine\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Fine resolution
+.br
+Default: \fI6\fR
+.IP "\fBresolution_coarse\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Coarse resolution
+.br
+Default: \fI9\fR
+.IP "\fBstyle\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Draw style
+.br
+Options: \fIwire, surface\fR
+.br
+Default: \fIsurface\fR
+.IP "\fBshading\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Shading
+.br
+Options: \fIflat, gouraud\fR
+.br
+Default: \fIgouraud\fR
+.IP "\fBwire_color\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Wire color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fI136:136:136\fR
+.IP "\fBsurface_position\fR=\fIx,y,z[,\fIx,y,z\fR,...]\fR" 4m
+.br
+Surface position
+.br
+Default: \fI0,0,0\fR
+.IP "\fBvline\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of vector map
+.br
+Name of line vector overlay map(s)
+.IP "\fBvline_layer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Layer number or name
+.br
+Layer number or name for thematic mapping
+.br
+Default: \fI1\fR
+.IP "\fBvline_width\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Vector line width
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI2\fR
+.IP "\fBvline_width_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of width definition column
+.br
+Name of attribute column
+.IP "\fBvline_color\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Vector line color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblue\fR
+.IP "\fBvline_color_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of color definition column
+.br
+Name of attribute column
+.IP "\fBvline_mode\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Vector line display mode
+.br
+Options: \fIsurface, flat\fR
+.br
+Default: \fIsurface\fR
+.br
+\fBsurface\fR: drape on raster surface
+.br
+\fBflat\fR: draw at constant elevation
+.IP "\fBvline_height\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Vector line height
+.br
+Options: \fI0\-1000\fR
+.br
+Default: \fI0\fR
+.IP "\fBvline_position\fR=\fIx,y,z[,\fIx,y,z\fR,...]\fR" 4m
+.br
+Vector lines position
+.br
+Default: \fI0,0,0\fR
+.IP "\fBvpoint\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of vector map
+.br
+Name of point vector overlay map(s)
+.IP "\fBvpoint_layer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Layer number or name
+.br
+Layer number or name for thematic mapping
+.br
+Default: \fI1\fR
+.IP "\fBvpoint_size\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Icon size (map units)
+.br
+Options: \fI0\-1000\fR
+.br
+Default: \fI100\fR
+.IP "\fBvpoint_size_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of size definition column
+.br
+Name of attribute column
+.IP "\fBvpoint_width\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Icon width
+.br
+Options: \fI1\-1000\fR
+.br
+Default: \fI2\fR
+.IP "\fBvpoint_width_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of width definition column
+.br
+Name of attribute column
+.IP "\fBvpoint_color\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Icon color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblue\fR
+.IP "\fBvpoint_color_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of color definition column
+.br
+Name of attribute column
+.IP "\fBvpoint_marker\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Icon marker
+.br
+Options: \fIx, box, sphere, cube, diamond, dec_tree, con_tree, aster, gyro, histogram\fR
+.br
+Default: \fIsphere\fR
+.IP "\fBvpoint_marker_column\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of marker definition column
+.br
+Name of attribute column
+.IP "\fBvpoint_mode\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+3D vector point display mode
+.br
+Options: \fIsurface, 3D\fR
+.br
+Default: \fI3D\fR
+.br
+\fBsurface\fR: drape on raster surface
+.br
+\fB3D\fR: place at 3D point\(cqs z\-elevation
+.IP "\fBvpoint_position\fR=\fIx,y,z[,\fIx,y,z\fR,...]\fR" 4m
+.br
+Vector points position
+.br
+Default: \fI0,0,0\fR
+.IP "\fBvolume\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of 3D raster map(s)
+.IP "\fBvolume_mode\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Volume draw mode
+.br
+Options: \fIisosurface, slice\fR
+.br
+Default: \fIisosurface\fR
+.IP "\fBvolume_shading\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Volume shading
+.br
+Options: \fIflat, gouraud\fR
+.br
+Default: \fIgouraud\fR
+.IP "\fBvolume_position\fR=\fIx,y,z[,\fIx,y,z\fR,...]\fR" 4m
+.br
+Volume position
+.br
+Default: \fI0,0,0\fR
+.IP "\fBvolume_resolution\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Volume resolution
+.br
+Default: \fI3\fR
+.IP "\fBisosurf_level\fR=\fIvolume:value[,\fIvolume:value\fR,...]\fR" 4m
+.br
+Isosurface level
+.IP "\fBisosurf_color_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of volume for isosurface color
+.IP "\fBisosurf_color_value\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Isosurface color
+.br
+Either a standard color name or R:G:B triplet
+.IP "\fBisosurf_transparency_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of 3D raster map(s) for isosurface transparency
+.IP "\fBisosurf_transparency_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Transparency value(s)for isosurfaces
+.br
+Options: \fI0\-255\fR
+.IP "\fBisosurf_shininess_map\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of 3D raster map(s) for shininess
+.IP "\fBisosurf_shininess_value\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Shininess value(s) for isosurfaces
+.br
+Options: \fI0\-255\fR
+.IP "\fBslice\fR=\fIvolume:axis[,\fIvolume:axis\fR,...]\fR" 4m
+.br
+Volume slice parallel to given axis (x, y, z)
+.IP "\fBslice_position\fR=\fIx1,x2,y1,y2,z1,z2[,\fIx1,x2,y1,y2,z1,z2\fR,...]\fR" 4m
+.br
+Volume slice position
+.br
+Default: \fI0,1,0,1,0,1\fR
+.IP "\fBslice_transparency\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Volume slice transparency
+.br
+Options: \fI0\-255\fR
+.br
+Default: \fI0\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIwhite\fR
+.IP "\fBposition\fR=\fIx,y\fR" 4m
+.br
+Viewpoint position (x,y model coordinates)
+.br
+Options: \fI0.0\-1.0\fR
+.br
+Default: \fI0.84,0.16\fR
+.IP "\fBheight\fR=\fIvalue\fR" 4m
+.br
+Viewpoint height (in map units)
+.IP "\fBperspective\fR=\fIvalue\fR" 4m
+.br
+Viewpoint field of view (in degrees)
+.br
+Options: \fI1\-180\fR
+.br
+Default: \fI40\fR
+.IP "\fBtwist\fR=\fIvalue\fR" 4m
+.br
+Viewpoint twist angle (in degrees)
+.br
+Options: \fI\-180\-180\fR
+.br
+Default: \fI0\fR
+.IP "\fBzexag\fR=\fIvalue\fR" 4m
+.br
+Vertical exaggeration
+.IP "\fBfocus\fR=\fIx,y,z\fR" 4m
+.br
+Focus to point on surface (from SW corner in map units)
+.IP "\fBlight_position\fR=\fIx,y,z\fR" 4m
+.br
+Light position (x,y,z model coordinates)
+.br
+Default: \fI0.68,\-0.68,0.80\fR
+.IP "\fBlight_color\fR=\fIname\fR" 4m
+.br
+Light color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIwhite\fR
+.IP "\fBlight_brightness\fR=\fIinteger\fR" 4m
+.br
+Light brightness
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI80\fR
+.IP "\fBlight_ambient\fR=\fIinteger\fR" 4m
+.br
+Light ambient
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI20\fR
+.IP "\fBfringe\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Fringe edges
+.br
+Options: \fInw, ne, sw, se\fR
+.br
+\fBnw\fR: North\-West edge
+.br
+\fBne\fR: North\-East edge
+.br
+\fBsw\fR: South\-West edge
+.br
+\fBse\fR: South\-East edge
+.IP "\fBfringe_color\fR=\fIname\fR" 4m
+.br
+Fringe color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIgrey\fR
+.IP "\fBfringe_elevation\fR=\fIinteger\fR" 4m
+.br
+Fringe elevation
+.br
+Default: \fI55\fR
+.IP "\fBcplane\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Cutting plane index (0\-5)
+.IP "\fBcplane_position\fR=\fIx,y,z[,\fIx,y,z\fR,...]\fR" 4m
+.br
+Cutting plane x,y,z coordinates
+.br
+Default: \fI0,0,0\fR
+.IP "\fBcplane_rotation\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Cutting plane rotation along the vertical axis
+.br
+Options: \fI0\-360\fR
+.br
+Default: \fI0\fR
+.IP "\fBcplane_tilt\fR=\fIvalue[,\fIvalue\fR,...]\fR" 4m
+.br
+Cutting plane tilt
+.br
+Options: \fI0\-360\fR
+.br
+Default: \fI0\fR
+.IP "\fBcplane_shading\fR=\fIstring\fR" 4m
+.br
+Cutting plane color (between two surfaces)
+.br
+Options: \fIclear, top, bottom, blend, shaded\fR
+.br
+Default: \fIclear\fR
+.IP "\fBarrow_position\fR=\fIx,y\fR" 4m
+.br
+Place north arrow at given position     (in screen coordinates from bottom left corner)
+.IP "\fBarrow_size\fR=\fIvalue\fR" 4m
+.br
+North arrow size (in map units)
+.IP "\fBarrow_color\fR=\fIname\fR" 4m
+.br
+North arrow color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output image file (without extension)
+.IP "\fBformat\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Graphics file format
+.br
+Options: \fIppm, tif\fR
+.br
+Default: \fIppm\fR
+.IP "\fBsize\fR=\fIwidth,height\fR \fB[required]\fR" 4m
+.br
+Size (width, height) of output image
+.br
+Default: \fI640,480\fR
+.SH DESCRIPTION
+\fIm.nviz.image\fR allows users to realistically render multiple
+\fIsurfaces\fR (raster data) in a 3D space, optionally using
+thematic coloring, draping 2D \fIvector\fR data over the surfaces,
+displaying 3D vector data in the space, and visualization
+of \fIvolume\fR data (3D raster data) from the command line.
+.SH EXAMPLE
+Render elevation map in a 3D space.
+.br
+.nf
+\fC
+g.region raster=elevation
+m.nviz.image elevation_map=elevation output=elev perspective=15
+\fR
+.fi
+.SH SEE ALSO
+\fI
+wxGUI 3D viewer
+\fR
+.SH AUTHOR
+Martin
+Landa, Google
+Summer of Code 2008 (mentor: Michael Barton)
+and Google
+Summer of Code 2010 (mentor: Helena Mitasova)
+.br
+Anna Kratochvilova, Google
+Summer of Code 2011 (mentor: Martin Landa)
+.SH SOURCE CODE
+.PP
+Available at: m.nviz.image source code (history)
+.PP
+Main index |
+Miscellaneous index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

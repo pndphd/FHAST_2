@@ -1,0 +1,129 @@
+.TH v.lrs.segment 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lrs.segment\fR\fR  \- Creates points/segments from input lines, linear reference system and positions read from stdin or a file.
+.SH KEYWORDS
+vector, linear reference system, network
+.SH SYNOPSIS
+\fBv.lrs.segment\fR
+.br
+\fBv.lrs.segment \-\-help\fR
+.br
+\fBv.lrs.segment\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBllayer\fR=\fIstring\fR]   [\fBrsdriver\fR=\fIstring\fR]   [\fBrsdatabase\fR=\fIstring\fR]  \fBrstable\fR=\fIstring\fR  [\fBfile\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing lines
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output vector map where segments will be written
+.IP "\fBllayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Line layer
+.br
+Default: \fI1\fR
+.IP "\fBrsdriver\fR=\fIstring\fR" 4m
+.br
+Driver name for reference system table
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBrsdatabase\fR=\fIstring\fR" 4m
+.br
+Database name for reference system table
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBrstable\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of the reference system table
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name of file containing segment rules. If not given, read from stdin.
+.SH DESCRIPTION
+\fIv.lrs.segment\fR creates points/segments from input lines,
+linear reference system and positions read from standard in
+or a file.
+.PP
+The format is as follows:
+.br
+.br
+.nf
+\fC
+P <point_id> <line_id> <milepost>+<offset> [<side offset>]
+L <segment_id> <line_id> <milepost>+<offset> <milepost>+<offset> [<side offset>]
+\fR
+.fi
+.SH NOTES
+For more information and examples see the help page for \fIv.lrs.segment\fR\(cqs
+sister module, \fIv.segment\fR.
+.SH EXAMPLE
+This example is written for the Spearfish dataset (it continues the example
+from \fIv.lrs.create\fR).
+.PP
+In this example, the \(cqroute_lrs\(cq shall be extended for a new
+position (point) along the LRS after bus stop 4:
+.br
+.nf
+\fC
+# new point on LRS
+echo \(dqP 7 22 4+180\(dq | v.lrs.segment route_lrs out=route_lrs_new rstable=route_lrs
+g.region vector=route_lrs n=n+100 s=s\-100 \-p
+d.erase
+# existing LRS
+d.vect route_lrs
+d.vect busstops disp=attr attr=cat size=10 bg=white lcol=blue yref=bottom
+d.vect busstops icon=basic/circle fcol=blue
+db.select table=route_lrs
+# show modified map
+d.vect route_lrs_new col=red
+\fR
+.fi
+.SH TODO
+Figure out how to merge result into existing LRS map and table.
+.SH SEE ALSO
+\fI
+LRS tutorial,
+.br
+Introducing the Linear Reference System in GRASS,
+.br
+v.lrs.create,
+v.lrs.where,
+v.lrs.label,
+v.segment
+\fR
+.SH AUTHOR
+Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.lrs.segment source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

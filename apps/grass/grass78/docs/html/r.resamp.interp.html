@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.resamp.interp - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.resamp.interp</b></em>  - Resamples raster map to a finer grid using interpolation.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_resample.html">resample</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#nearest neighbor">nearest neighbor</a>, <a href="keywords.html#bilinear">bilinear</a>, <a href="keywords.html#bicubic">bicubic</a>, <a href="keywords.html#lanczos">lanczos</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.resamp.interp</b><br></div>
+<b>r.resamp.interp --help</b><br>
+<div id="synopsis"><b>r.resamp.interp</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>method</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Sampling interpolation method</dd>
+<dd>Options: <em>nearest, bilinear, bicubic, lanczos</em></dd>
+<dd>Default: <em>bilinear</em></dd>
+<dd><b>nearest</b>: Nearest-neighbor interpolation</dd>
+<dd><b>bilinear</b>: Bilinear interpolation</dd>
+<dd><b>bicubic</b>: Bicubic interpolation</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.resamp.interp</em> resamples an input raster map by interpolating between
+the neighboring cells via a selectable resampling algorithm. All cells
+present in the neighborhood of the input raster cell must be non-null to
+generate a non-null cell in the output raster map. A choice of four
+interpolation methods is available; each uses the weighted values of a different
+number of adjacent cells in the input map to determine the value of each
+cell in the output map as follows:
+<ul>
+<li>nearest neighbour (1 cell)</li>
+<li>bilinear (4 cells)</li>
+<li>bicubic (16 cells)</li>
+<li>lanczos (25 cells)</li>
+</ul>
+
+<p>This module is intended for reinterpolation of continuous data
+to a different resolution rather than for interpolation from scattered data
+(use the <em>v.surf.*</em> modules for that purpose).
+
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>Resampling modules (<em>r.resample, r.resamp.stats, r.resamp.interp,
+r.resamp.rst</em>) resample the map to match the current region settings.
+
+ 
+<p>Note that for bilinear, bicubic and lanczos interpolation,
+cells of the output raster that cannot be bounded by the appropriate number
+of input cell centers are set to NULL (NULL propagation). This could occur
+due to the input cells being outside the current region, being NULL or MASKed.
+
+
+<p>For longitude-latitude locations, the interpolation algorithm is based on
+degree fractions, not on the absolute distances between cell centers.  Any
+attempt to implement the latter would violate the integrity of the
+interpolation method.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Resample elevation raster map to a higher resolution (from 500m to 250m;
+North Carolina sample dataset):
+
+<div class="code"><pre>
+g.region raster=elev_state_500m -p
+g.region res=250 -ap
+r.resamp.interp input=elev_state_500m output=elev_state_250m \
+                method=bilinear
+</pre></div>
+
+<center>
+<img src="r_resamp_interp_orig_500m.png" alt="Original 500m resolution elevation map"><br>
+Original 500m resolution elevation map
+<p>
+<img src="r_resamp_interp_new_250m.png" alt="Resampled 250m resolution elevation map"><br>
+Resampled (bilinear) 250m resolution elevation map
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.resample.html">r.resample</a>,
+<a href="r.resamp.filter.html">r.resamp.filter</a>,
+<a href="r.resamp.rst.html">r.resamp.rst</a>,
+<a href="r.resamp.stats.html">r.resamp.stats</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.resamp.interp">r.resamp.interp source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.resamp.interp">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

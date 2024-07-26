@@ -1,0 +1,139 @@
+.TH r.recode 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.recode\fR\fR  \- Recodes categorical raster maps.
+.SH KEYWORDS
+raster, recode categories, reclassification
+.SH SYNOPSIS
+\fBr.recode\fR
+.br
+\fBr.recode \-\-help\fR
+.br
+\fBr.recode\fR [\-\fBad\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBrules\fR=\fIname\fR  [\fBtitle\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Align the current region to the input raster map
+.IP "\fB\-d\fR" 4m
+.br
+Force output to \(cqdouble\(cq raster map type (DCELL)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be recoded
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBrules\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+File containing recode rules
+.br
+\(cq\-\(cq for standard input
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for output raster map
+.SH DESCRIPTION
+\fIr.recode\fR creates an output raster map by recoding input
+raster map based on recode \fBrules\fR. A \fBtitle\fR for the output
+raster map may be (optionally) specified by the user.
+.PP
+The recode rules can be read from standard input (i.e., from the
+keyboard, redirected from a file, or piped through another program) by
+entering \fBrules=\-\fR.
+.PP
+Rules are defined in one of these formats:
+.br
+.nf
+\fC
+old_low:old_high:new_low:new_high
+old_low:old_high:new_val  (i.e. new_high == new_low)
+*:old_val:new_val         (interval [inf, old_val])
+old_val:*:new_val         (interval [old_val, inf])
+\fR
+.fi
+.PP
+\fIr.recode\fR is loosely based
+on \fIr.reclass\fR and uses the GRASS
+Reclass Library to convert the rasters. It has routines for converting
+to every possible combination of raster (eg. CELL to DCELL, DCELL to
+FCELL, etc). Standard floating point raster precision is float
+(FCELL), with \fB\-d\fR double precision (DCELL) will be written.
+.PP
+There are four basic routines that it accepts:
+.IP
+.IP \fB1\fR
+old\-low to old\-high is reclassed to new\-low to new high , where the
+user provides all four values. The program figures on the fly what type of
+raster should be created.
+.IP \fB2\fR
+old\-low to old\-high is reclassed to a single new value. Anything outside
+the range is null.
+.IP \fB3\fR
+* to old\-high will reclass everything less than old\-high to a single
+new value.
+.IP \fB4\fR
+old\-low to * will reclass everything greater than old\-low to a single
+new value.
+.PP
+These four sets of arguments can be given on the command line, or
+piped via stdin or a file. More than one set of arguments is accepted.
+.SH EXAMPLES
+.SS Map type conversion
+To simply convert a raster between formats (eg. int to float) the user
+would use the first argument. For example
+.br
+.nf
+\fC
+10:1500:0.1:15.0
+\fR
+.fi
+would convert an input raster map with range between 10 and 1500 to a
+float raster raster with range between 0.1 and 15.0.
+.SS Value replacement
+\fIr.recode\fR can be used to replace existing cell values by
+others. The formatting is as described above. In following example the
+values 1, 2 and 3 are replaced by 1.1, 7.5 resp. 0.4:
+.br
+.nf
+\fC
+r.recode input=oldmap output=newmap rules=\- << EOF
+1:1:1.1:1.1
+2:2:7.5:7.5
+3:3:0.4:0.4
+EOF
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.reclass
+\fR
+.SH AUTHOR
+CERL
+.SH SOURCE CODE
+.PP
+Available at: r.recode source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,89 @@
+.TH i.target 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.target\fR\fR  \- Targets an imagery group to a GRASS location and mapset.
+.SH KEYWORDS
+imagery, map management
+.SH SYNOPSIS
+\fBi.target\fR
+.br
+\fBi.target \-\-help\fR
+.br
+\fBi.target\fR [\-\fBc\fR] \fBgroup\fR=\fIname\fR  [\fBlocation\fR=\fIstring\fR]   [\fBmapset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Set current location and mapset as target for imagery group
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBlocation\fR=\fIstring\fR" 4m
+.br
+Name of imagery target location
+.IP "\fBmapset\fR=\fIstring\fR" 4m
+.br
+Name of target mapset
+.SH DESCRIPTION
+\fIi.target\fR targets an imagery
+group to a GRASS data base location name and mapset.
+A location name and mapset are required for the
+\fIi.rectify\fR imagery module, into which
+to write the rectified map just prior to completion of the program;
+\fIi.target\fR enables the user to specify this location.
+\fIi.target\fR must be run before
+\fIg.gui.gcp\fR and
+\fIi.rectify\fR.
+.SH NOTES
+.PP
+The module\(cqs first option asks for the name of the
+imagery group that needs a target.
+The imagery group must be present in the user\(cqs current mapset.
+An imagery group may be targeted to any GRASS
+location.
+.PP
+If a group name is given without setting options, the currently targeted
+group will be displayed.
+.SH SEE ALSO
+The GRASS 4 \fI
+Image Processing manual\fR
+.PP
+\fI
+g.gui.gcp,
+i.group,
+i.rectify
+\fR
+.br
+\fI
+Manage Ground Control Points
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+.PP
+Parser support: Bob Covill
+.SH SOURCE CODE
+.PP
+Available at: i.target source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

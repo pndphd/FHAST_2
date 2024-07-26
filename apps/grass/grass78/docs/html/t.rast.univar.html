@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.univar.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.univar.py</b></em>  - Calculates univariate statistics from the non-null cells for each registered raster map of a space time raster dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.univar.py</b><br></div>
+<b>t.rast.univar.py --help</b><br>
+<div id="synopsis"><b>t.rast.univar.py</b> [-<b>eru</b>] <b>input</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>separator</b>=<em>character</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Calculate extended statistics</dd>
+
+<dt><b>-r</b></dt>
+<dd>Ignore the current region settings and use the raster map regions for univar statistical calculation</dd>
+
+<dt><b>-u</b></dt>
+<dd>Suppress printing of column names</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator character between the output columns</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>t.rast.univar</em> calculates univariate statistics from the
+non-null cells for each registered raster map of a space time raster
+dataset.
+<p>
+By default it returns the name of the map, the start and end date of
+dataset and the following values: mean, minimum and maximum vale,
+mean_of_abs, standard deviation, variance, coeff_var, number of null
+cells, total number of cell.
+<p>
+Using the <em>e</em> flag it can calculate also extended statistics:
+first quartile, median value, third quartile and percentile 90.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Obtain the univariate statistics for the raster space time dataset
+"tempmean_monthly" (precision reduced to 2 decimals in this example):
+
+<div class="code"><pre>
+t.rast.univar -e tempmean_monthly
+id|start|end|mean|min|max|mean_of_abs|stddev|variance|coeff_var|sum|null_cells|cells|first_quartile|median|third_quartile|percentile_90
+2009_01_tempmean@climate_2009_2012|2009-01-01 00:00:00|2009-02-01 00:00:00|3.90|-3.38|7.43|3.95|1.79|3.20|45.91|1977967.31|503233|1010600|2.80|3.92|5.21|6.23
+2009_02_tempmean@climate_2009_2012|2009-02-01 00:00:00|2009-03-01 00:00:00|5.91|-1.82|8.01|5.92|1.63|2.65|27.53|2999555.60|503233|1010600|5.44|6.26|7.07|7.48
+...
+2012_11_tempmean@climate_2009_2012|2012-11-01 00:00:00|2012-12-01 00:00:00|8.03|1.79|10.91|8.03|1.32|1.73|16.41|4072472.77|503233|1010600|7.49|8.13|8.96|9.48
+2012_12_tempmean@climate_2009_2012|2012-12-01 00:00:00|2013-01-01 00:00:00|8.71|1.76|11.98|8.71|1.72|2.95|19.74|4418403.77|503233|1010600|7.84|8.95|9.99|10.67
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.univar">t.rast.univar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.univar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+.TH v.what.rast3 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.what.rast3\fR\fR  \- Uploads 3D raster values at positions of vector points to the table.
+.SH KEYWORDS
+vector, sampling, raster, position, querying, attribute table, surface information
+.SH SYNOPSIS
+\fBv.what.rast3\fR
+.br
+\fBv.what.rast3 \-\-help\fR
+.br
+\fBv.what.rast3\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBraster_3d\fR=\fIname\fR \fBcolumn\fR=\fIname\fR  [\fBwhere\fR=\fIsql_query\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector points map for which to edit attributes
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBraster_3d\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing 3D raster map to be queried
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to be updated with the query result
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.SH DESCRIPTION
+\fIv.what.rast3\fR reads 3D raster value for each point in the vector and updates \fBcol\fR
+column in vector attribute table by this value. The column should be type double. This module is based on
+v.what.rast.
+.br
+If more points have the same category, attribute value is set to NULL.
+If 3D raster values is NULL, attribute value is set to NULL.
+.SH NOTES
+.SH EXAMPLES
+A) Reading values from 3D raster map at position of vector points, writing these values
+into a column of the attribute table connected to the vector map:
+.br
+.br
+.nf
+\fC
+v.what.rast3 map=pnts raster3d=plume column=concentration
+\fR
+.fi
+.PP
+B) In case of a vector map without attached attribute table, first add
+a new attribute table. This table is then populated with values
+queried from the raster map:
+.br
+.br
+.nf
+\fC
+# create new random 3d vector points map
+v.random \-z output=pnts npoints=100 zmin=0  zmax=50
+# add new table, link to map
+v.db.addtable map=pnts column=\(dqconcentration double precision\(dq
+# query raster map and upload values to vector table into specified column
+g.region raster3d=plume \-p
+v.what.rast3 map=pnts raster3d=plume column=concentration
+# verify new attribute table:
+v.db.select map=pnts
+# verify statistics of uploaded values:
+v.univar map=pnts column=concentration type=point
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.db.addtable,
+v.db.select,
+v.what.rast,
+v.what.vect,
+v.univar
+\fR
+.SH AUTHOR
+Soeren Gebbert, heavily based on v.what.rast by Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.what.rast3 source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

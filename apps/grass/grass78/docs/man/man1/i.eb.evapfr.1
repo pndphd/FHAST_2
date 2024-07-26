@@ -1,0 +1,102 @@
+.TH i.eb.evapfr 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.eb.evapfr\fR\fR  \- Computes evaporative fraction and root zone soil moisture.
+.SH KEYWORDS
+imagery, energy balance, soil moisture, evaporative fraction, SEBAL
+.SH SYNOPSIS
+\fBi.eb.evapfr\fR
+.br
+\fBi.eb.evapfr \-\-help\fR
+.br
+\fBi.eb.evapfr\fR [\-\fBm\fR] \fBnetradiation\fR=\fIname\fR \fBsoilheatflux\fR=\fIname\fR \fBsensibleheatflux\fR=\fIname\fR \fBevaporativefraction\fR=\fIname\fR  [\fBsoilmoisture\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Root zone soil moisture output (Makin, Molden and Bastiaanssen, 2001)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBnetradiation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of Net Radiation raster map [W/m2]
+.IP "\fBsoilheatflux\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of soil heat flux raster map [W/m2]
+.IP "\fBsensibleheatflux\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of sensible heat flux raster map [W/m2]
+.IP "\fBevaporativefraction\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output evaporative fraction raster map
+.IP "\fBsoilmoisture\fR=\fIname\fR" 4m
+.br
+Name for output root zone soil moisture raster map
+.SH DESCRIPTION
+\fIi.eb.evapfr\fR calculates the evaporative fraction after
+Bastiaanssen 1995. The main implementation follows Alexandridis et al.
+(2009). The module takes as input the net radiation (see \fIr.sun\fR,
+\fIi.eb.netrad\fR), soil heat flux (see \fIi.eb.soilheatflux\fR)
+and sensible heat flux (see \fIi.eb.hsebal01\fR). A flag adds a
+root zone empirical soil moisture output from the article of
+Bastiaanssen, et al. (2000).
+.SH SEE ALSO
+\fI
+i.eb.hsebal01,
+i.eb.netrad,
+i.eb.soilheatflux,
+r.sun
+\fR
+.SH REFERENCES
+.PP
+Bastiaanssen, W.G.M., 1995.
+Estimation of Land surface parameters by remote sensing under clear\-sky
+conditions. PhD thesis, Wageningen University, Wageningen, The Netherlands.
+(PDF)
+.PP
+Bastiaanssen, W.G.M., Molden, D.J., Makin, I.W., 2000.
+Remote sensing for irrigated agriculture: examples from research and
+possible applications. Agricultural water management 46.2: 137\-155.
+.PP
+Chemin Y., Alexandridis T.A., 2001. Improving spatial resolution of ET
+seasonal for irrigated rice in Zhanghe, China. Asian Journal of Geoinformatics.
+5(1):3\-11.
+.PP
+Alexandridis T.K., Cherif I., Chemin Y., Silleos N.G., Stavrinos E.,
+Zalidis G.C., 2009.
+Integrated methodology for estimating water use in Mediterranean
+agricultural areas. Remote Sensing. 1, 445\-465.
+(PDF)
+.PP
+Chemin, Y., 2012.
+A Distributed Benchmarking Framework for Actual ET Models,
+in: Irmak, A. (Ed.), Evapotranspiration \- Remote Sensing and Modeling. InTech.
+(PDF)
+.SH AUTHOR
+Yann Chemin, Asian Institute of Technology, Thailand
+.SH SOURCE CODE
+.PP
+Available at: i.eb.evapfr source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

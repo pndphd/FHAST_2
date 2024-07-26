@@ -1,0 +1,297 @@
+.TH r.univar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.univar\fR\fR  \- Calculates univariate statistics from the non\-null cells of a raster map.
+.br
+Statistics include number of cells counted, minimum and maximum cell values, range, arithmetic mean, population variance, standard deviation, coefficient of variation, and sum.
+.SH KEYWORDS
+raster, statistics, univariate statistics, zonal statistics
+.SH SYNOPSIS
+\fBr.univar\fR
+.br
+\fBr.univar \-\-help\fR
+.br
+\fBr.univar\fR [\-\fBgetr\fR] \fBmap\fR=\fIname\fR[,\fIname\fR,...]  [\fBzones\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\fBpercentile\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Print the stats in shell script style
+.IP "\fB\-e\fR" 4m
+.br
+Calculate extended statistics
+.IP "\fB\-t\fR" 4m
+.br
+Table output format instead of standard output format
+.IP "\fB\-r\fR" 4m
+.br
+Use the native resolution and extent of the raster map, instead of the current region
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of raster map(s)
+.IP "\fBzones\fR=\fIname\fR" 4m
+.br
+Raster map used for zoning, must be of type CELL
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.IP "\fBpercentile\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Percentile to calculate (requires extended statistics flag)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI90\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIr.univar\fR calculates the univariate statistics of one or several raster
+map(s). This includes the number of cells counted, minimum and maximum cell
+values, range, arithmetic mean, population variance, standard deviation,
+coefficient of variation, and sum. Statistics are calculated separately for every
+category/zone found in the \fBzones\fR input map if given.
+If the \fB\-e\fR extended statistics flag is given the 1st quartile, median,
+3rd quartile, and given \fBpercentile\fR are calculated.
+If the \fB\-g\fR flag is given the results are presented in a format suitable
+for use in a shell script.
+If the \fB\-t\fR flag is given the results are presented in tabular format
+with the given field separator. The table can immediately be converted to a
+vector attribute table which can then be linked to a vector, e.g. the vector
+that was rasterized to create the \fBzones\fR input raster.
+.PP
+When multiple input maps are given to \fIr.univar\fR, the overall statistics
+are calculated. This is useful for a time series of the same variable, as well as
+for the case of a segmented/tiled dataset. Allowing multiple raster maps to be
+specified saves the user from using a temporary raster map for the result of
+\fIr.series\fR or \fIr.patch\fR.
+.SH NOTES
+As with most GRASS raster modules, \fIr.univar\fR operates on the raster
+array defined by the current region settings, not the original extent and
+resolution of the input map. See \fIg.region\fR,
+but also
+the wiki page on the computational region to understand the impact of the
+region settings on the calculations.
+.PP
+This module can use large amounts of system memory when the \fB\-e\fR
+extended statistics flag is used with a very large region setting. If the
+region is too large the module should exit gracefully with a memory allocation
+error. Basic statistics can be calculated using any size input region.
+Extended statistics can be calculated using
+\fIr.stats.quantile\fR.
+.PP
+Without a \fBzones\fR input raster, the \fIr.quantile\fR module will
+be significantly more efficient for calculating percentiles with large maps.
+.PP
+For calculating univariate statistics from a raster map based on vector polygon
+map and uploads statistics to new attribute columns, see
+\fIv.rast.stats\fR.
+.SH EXAMPLES
+.SS Univariate statistics
+In this example, the raster map elevation in the North
+Carolina sample dataset is used to calculate univariate statistics:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# standard output, along with extended statistics
+r.univar \-e elevation percentile=98
+total null and non\-null cells: 2025000
+total null cells: 0
+Of the non\-null cells:
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+n: 2025000
+minimum: 55.5788
+maximum: 156.33
+range: 100.751
+mean: 110.375
+mean of absolute values: 110.375
+standard deviation: 20.3153
+variance: 412.712
+variation coefficient: 18.4057 %
+sum: 223510266.558102
+1st quartile: 94.79
+median (even number of cells): 108.88
+3rd quartile: 126.792
+98th percentile: 147.727
+# script style output, along with extended statistics
+r.univar \-ge elevation percentile=98
+n=2025000
+null_cells=0
+cells=2025000
+min=55.5787925720215
+max=156.329864501953
+range=100.751071929932
+mean=110.375440275606
+mean_of_abs=110.375440275606
+stddev=20.3153233205981
+variance=412.712361620436
+coeff_var=18.4056555243368
+sum=223510266.558102
+first_quartile=94.79
+median=108.88
+third_quartile=126.792
+percentile_98=147.727
+\fR
+.fi
+.SS Zonal statistics
+In this example, the raster polygon map basins in the North
+Carolina sample dataset is used to calculate raster statistics for zones
+for elevation raster map:
+.br
+.nf
+\fC
+g.region raster=basins \-p
+\fR
+.fi
+This will set and print computational region in the format:
+.br
+.nf
+\fC
+projection: 99 (Lambert Conformal Conic)
+zone:       0
+datum:      nad83
+ellipsoid:  a=6378137 es=0.006694380022900787
+north:      228500
+south:      215000
+west:       630000
+east:       645000
+nsres:      10
+ewres:      10
+rows:       1350
+cols:       1500
+cells:      2025000
+\fR
+.fi
+Check basin\(cqs IDs using:
+.br
+.nf
+\fC
+r.category basins
+\fR
+.fi
+This will print them in the format:
+.br
+.nf
+\fC
+2
+4
+6
+8
+10
+12
+14
+16
+18
+20
+22
+24
+26
+28
+30
+\fR
+.fi
+Visualization of them underlying elevation map can be created as:
+.br
+.nf
+\fC
+d.mon wx0
+d.rast map=elevation
+r.colors map=elevation color=grey
+d.rast map=basins
+r.colors map=basins color=bgyr
+d.legend raster=basins use=2,4,6,8,10,12,14,16,18,20,22,24,26,28,30
+d.barscale
+\fR
+.fi
+.br
+\fIFigure: Zones (basins, opacity: 60%) with underlying elevation map
+for North Carolina sample dataset.\fR
+.PP
+Then statistics for elevation can be calculated separately for every
+zone, i.e. basin found in the \fBzones\fR parameter:
+.br
+.nf
+\fC
+r.univar \-t map=elevation zones=basins separator=comma \(rs
+         output=basin_elev_zonal.csv
+\fR
+.fi
+This will print information in the format:
+.br
+.nf
+\fC
+zone,label,non_null_cells,null_cells,min,max,range,mean,mean_of_abs,
+stddev,variance,coeff_var,sum,sum_abs2,,116975,0,55.5787925720215,
+133.147018432617,77.5682258605957,92.1196971445722,92.1196971445722,
+15.1475301152556,229.447668592576,16.4433129773355,10775701.5734863,
+10775701.57348634,,75480,0,61.7890930175781,110.348838806152,
+48.5597457885742,83.7808205765268,83.7808205765268,11.6451777476995,
+135.610164775515,13.8995747088232,6323776.33711624,6323776.33711624
+6,,1137,0,66.9641571044922,83.2070922851562,16.2429351806641,
+73.1900814395257,73.1900814395257,4.15733292896409,17.2834170822492,
+5.68018623179036,83217.1225967407,83217.12259674078,,80506,
+0,67.4670791625977,147.161514282227, ...
+\fR
+.fi
+Comma Separated Values (CSV) file is best viewed through a spreadsheet
+program such as Microsoft Excel, Libre/Open Office Calc or Google Docs:
+.br
+\fIFigure: Raster statistics for zones (basins, North Carolina sample
+dataset) viewed through Libre/Open Office Calc.\fR
+.SH TODO
+To be implemented \fImode, skewness, kurtosis\fR.
+.SH SEE ALSO
+\fI
+g.region,
+r3.univar,
+r.mode,
+r.quantile,
+r.series,
+r.stats,
+r.stats.quantile,
+r.stats.zonal,
+r.statistics,
+v.rast.stats,
+v.univar
+\fR
+.SH AUTHORS
+Hamish Bowman, Otago University, New Zealand
+.br
+Extended statistics by Martin Landa
+.br
+Multiple input map support by Ivan Shmakov
+.br
+Zonal loop by Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: r.univar source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

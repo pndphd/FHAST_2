@@ -1,0 +1,3261 @@
+.TH full_index 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH GRASS GIS 7.8.5 Reference Manual
+.PP
+\fBGeographic Resources Analysis Support System\fR, commonly
+referred to as GRASS GIS, is a Geographic
+Information System (GIS) used for geospatial data management and
+analysis, image processing, graphics/maps production, spatial
+modeling, and visualization. GRASS is currently used in academic and
+commercial settings around the world, as well as by many governmental
+agencies and environmental consulting companies.
+.PP
+This reference manual details the use of modules distributed with
+Geographic Resources Analysis Support System (GRASS), an open source
+(GNU GPLed), image
+processing and geographic information system (GIS).
+Go back to help overview
+.SS Display commands (d.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+d.barscale
+T}	 	T{
+Displays a barscale on the graphics monitor.
+T}
+.sp 1
+T{
+d.colorlist
+T}	 	T{
+Outputs a list of all available display colors.
+T}
+.sp 1
+T{
+d.colortable
+T}	 	T{
+Displays the color table associated with a raster map layer.
+T}
+.sp 1
+T{
+d.correlate
+T}	 	T{
+Prints a graph of the correlation between raster maps (in pairs).
+T}
+.sp 1
+T{
+d.erase
+T}	 	T{
+Erases the contents of the active graphics display frame with user defined color.
+T}
+.sp 1
+T{
+d.font
+T}	 	T{
+Selects the font in which text will be displayed on the user\(cqs graphics monitor.
+T}
+.sp 1
+T{
+d.fontlist
+T}	 	T{
+Lists the available fonts.
+T}
+.sp 1
+T{
+d.frame
+T}	 	T{
+Manages display frames on the user\(cqs graphics monitor.
+T}
+.sp 1
+T{
+d.geodesic
+T}	 	T{
+Displays a geodesic line, tracing the shortest distance between two geographic points along a great circle, in a longitude/latitude data set.
+T}
+.sp 1
+T{
+d.graph
+T}	 	T{
+Program for generating and displaying simple graphics on the display monitor.
+T}
+.sp 1
+T{
+d.grid
+T}	 	T{
+Overlays a user\-specified grid in the active display frame on the graphics monitor.
+T}
+.sp 1
+T{
+d.his
+T}	 	T{
+Displays the result obtained by combining hue, intensity, and saturation (HIS) values from user\-specified input raster map layers.
+T}
+.sp 1
+T{
+d.histogram
+T}	 	T{
+Displays a histogram in the form of a pie or bar chart for a user\-specified raster map.
+T}
+.sp 1
+T{
+d.info
+T}	 	T{
+Displays information about the active display monitor.
+T}
+.sp 1
+T{
+d.labels
+T}	 	T{
+Displays text labels (created with v.label) to the active frame on the graphics monitor.
+T}
+.sp 1
+T{
+d.legend
+T}	 	T{
+Displays a legend for a 2D or 3D raster map in the active frame of the graphics monitor.
+T}
+.sp 1
+T{
+d.legend.vect
+T}	 	T{
+Displays a vector legend in the active graphics frame.
+T}
+.sp 1
+T{
+d.linegraph
+T}	 	T{
+Generates and displays simple line graphs in the active graphics monitor display frame.
+T}
+.sp 1
+T{
+d.mon
+T}	 	T{
+Controls graphics display monitors from the command line.
+T}
+.sp 1
+T{
+d.northarrow
+T}	 	T{
+Displays a north arrow on the graphics monitor.
+T}
+.sp 1
+T{
+d.out.file
+T}	 	T{
+Saves the contents of the active display monitor to a graphics file.
+T}
+.sp 1
+T{
+d.path
+T}	 	T{
+Finds shortest path for selected starting and ending node.
+T}
+.sp 1
+T{
+d.polar
+T}	 	T{
+Draws polar diagram of angle map such as aspect or flow directions
+T}
+.sp 1
+T{
+d.profile
+T}	 	T{
+Plots profile of a transect.
+T}
+.sp 1
+T{
+d.rast.arrow
+T}	 	T{
+Draws arrows representing cell aspect direction for a raster map containing aspect data.
+T}
+.sp 1
+T{
+d.rast.edit
+T}	 	T{
+Edits cell values in a raster map.
+T}
+.sp 1
+T{
+d.rast
+T}	 	T{
+Displays user\-specified raster map in the active graphics frame.
+T}
+.sp 1
+T{
+d.rast.leg
+T}	 	T{
+Displays a raster map and its legend on a graphics window
+T}
+.sp 1
+T{
+d.rast.num
+T}	 	T{
+Overlays cell category values on a raster map displayed in the active graphics frame.
+T}
+.sp 1
+T{
+d.redraw
+T}	 	T{
+Redraws the content of currently selected monitor.
+T}
+.sp 1
+T{
+d.rgb
+T}	 	T{
+Displays three user\-specified raster maps as red, green, and blue overlays in the active graphics frame.
+T}
+.sp 1
+T{
+d.rhumbline
+T}	 	T{
+Displays the rhumbline joining two longitude/latitude coordinates.
+T}
+.sp 1
+T{
+d.shade
+T}	 	T{
+Drapes a color raster over an shaded relief or aspect map.
+T}
+.sp 1
+T{
+d.text
+T}	 	T{
+Draws text in the active display frame on the graphics monitor using the current font.
+T}
+.sp 1
+T{
+d.title
+T}	 	T{
+Create a TITLE for a raster map in a form suitable for display with d.text.
+T}
+.sp 1
+T{
+d.to.rast
+T}	 	T{
+Saves the contents of the active display monitor to a raster map.
+T}
+.sp 1
+T{
+d.vect.chart
+T}	 	T{
+Displays charts of vector data in the active frame on the graphics monitor.
+T}
+.sp 1
+T{
+d.vect
+T}	 	T{
+Displays user\-specified vector map in the active graphics frame.
+T}
+.sp 1
+T{
+d.vect.thematic
+T}	 	T{
+Displays a thematic vector map in the active graphics frame.
+T}
+.sp 1
+T{
+d.what.rast
+T}	 	T{
+Allows the user to interactively query raster map layers at user\-selected locations.
+T}
+.sp 1
+T{
+d.what.vect
+T}	 	T{
+Allows the user to interactively query vector map layers at user\-selected locations.
+T}
+.sp 1
+T{
+d.where
+T}	 	T{
+Identifies the geographic coordinates associated with point locations given in display coordinates.
+T}
+.sp 1
+.TE
+.SS Database commands (db.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+db.columns
+T}	 	T{
+List all columns for a given table.
+T}
+.sp 1
+T{
+db.connect
+T}	 	T{
+Prints/sets general DB connection for current mapset.
+T}
+.sp 1
+T{
+db.copy
+T}	 	T{
+Copy a table.
+T}
+.sp 1
+T{
+db.createdb
+T}	 	T{
+Creates an empty database.
+T}
+.sp 1
+T{
+db.databases
+T}	 	T{
+Lists all databases for a given driver and location.
+T}
+.sp 1
+T{
+db.describe
+T}	 	T{
+Describes a table in detail.
+T}
+.sp 1
+T{
+db.drivers
+T}	 	T{
+Lists all database drivers.
+T}
+.sp 1
+T{
+db.dropcolumn
+T}	 	T{
+Drops a column from selected attribute table.
+T}
+.sp 1
+T{
+db.dropdb
+T}	 	T{
+Removes an existing database.
+T}
+.sp 1
+T{
+db.droptable
+T}	 	T{
+Drops an attribute table.
+T}
+.sp 1
+T{
+db.execute
+T}	 	T{
+Executes any SQL statement.
+T}
+.sp 1
+T{
+db.in.ogr
+T}	 	T{
+Imports attribute tables in various formats.
+T}
+.sp 1
+T{
+db.login
+T}	 	T{
+Sets user/password for DB driver/database.
+T}
+.sp 1
+T{
+db.out.ogr
+T}	 	T{
+Exports attribute tables into various formats.
+T}
+.sp 1
+T{
+db.select
+T}	 	T{
+Selects data from attribute table.
+T}
+.sp 1
+T{
+db.tables
+T}	 	T{
+Lists all tables for a given database.
+T}
+.sp 1
+T{
+db.test
+T}	 	T{
+Test database driver, database must exist and set by db.connect.
+T}
+.sp 1
+T{
+db.univar
+T}	 	T{
+Calculates univariate statistics on selected table column.
+T}
+.sp 1
+.TE
+.SS General commands (g.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+g.access
+T}	 	T{
+Controls access to the current mapset for other users on the system.
+T}
+.sp 1
+T{
+g.copy
+T}	 	T{
+Copies available data files in the current mapset search path to the user\(cqs current mapset.
+T}
+.sp 1
+T{
+g.dirseps
+T}	 	T{
+Internal GRASS utility for converting directory separator characters.
+T}
+.sp 1
+T{
+g.extension.all
+T}	 	T{
+Rebuilds or removes all locally installed GRASS Addons extensions.
+T}
+.sp 1
+T{
+g.extension
+T}	 	T{
+Maintains GRASS Addons extensions in local GRASS installation.
+T}
+.sp 1
+T{
+g.filename
+T}	 	T{
+Prints GRASS data base file names.
+T}
+.sp 1
+T{
+g.findetc
+T}	 	T{
+Searches for GRASS support files.
+T}
+.sp 1
+T{
+g.findfile
+T}	 	T{
+Searches for GRASS data base files and sets variables for the shell.
+T}
+.sp 1
+T{
+g.gisenv
+T}	 	T{
+Outputs and modifies the user\(cqs current GRASS variable settings.
+T}
+.sp 1
+T{
+g.gui.animation
+T}	 	T{
+Tool for animating a series of raster and vector maps or a space time raster or vector dataset.
+T}
+.sp 1
+T{
+g.gui.datacatalog
+T}	 	T{
+Tool for browsing, modifying and managing GRASS maps.
+T}
+.sp 1
+T{
+g.gui.dbmgr
+T}	 	T{
+Launches graphical attribute table manager.
+T}
+.sp 1
+T{
+g.gui.gcp
+T}	 	T{
+Georectifies a map and allows managing Ground Control Points.
+T}
+.sp 1
+T{
+g.gui.gmodeler
+T}	 	T{
+Graphical Modeler.
+T}
+.sp 1
+T{
+g.gui
+T}	 	T{
+Launches a GRASS graphical user interface (GUI) session.
+T}
+.sp 1
+T{
+g.gui.iclass
+T}	 	T{
+Tool for supervised classification of imagery data.
+T}
+.sp 1
+T{
+g.gui.image2target
+T}	 	T{
+Georectifies a map and allows managing Ground Control Points for 3D correction.
+T}
+.sp 1
+T{
+g.gui.mapswipe
+T}	 	T{
+Interactively compares two maps by swiping a visibility bar.
+T}
+.sp 1
+T{
+g.gui.photo2image
+T}	 	T{
+Corrects scanning distortions of a paper photo.
+T}
+.sp 1
+T{
+g.gui.psmap
+T}	 	T{
+Tool for creating hardcopy map outputs.
+T}
+.sp 1
+T{
+g.gui.rlisetup
+T}	 	T{
+Configuration tool for r.li modules.
+T}
+.sp 1
+T{
+g.gui.timeline
+T}	 	T{
+Allows comparing temporal datasets by displaying their temporal extents in a plot.
+T}
+.sp 1
+T{
+g.gui.tplot
+T}	 	T{
+Plots the values of temporal datasets.
+T}
+.sp 1
+T{
+g.gui.vdigit
+T}	 	T{
+Interactive editing and digitization of vector maps.
+T}
+.sp 1
+T{
+g.list
+T}	 	T{
+Lists available GRASS data base files of the user\-specified data type optionally using the search pattern.
+T}
+.sp 1
+T{
+g.manual
+T}	 	T{
+Displays the manual pages of GRASS modules.
+T}
+.sp 1
+T{
+g.mapset
+T}	 	T{
+Changes/reports current mapset.
+T}
+.sp 1
+T{
+g.mapsets
+T}	 	T{
+Modifies/prints the user\(cqs current mapset search path.
+T}
+.sp 1
+T{
+g.message
+T}	 	T{
+Prints a message, warning, progress info, or fatal error in the GRASS way.
+T}
+.sp 1
+T{
+g.mkfontcap
+T}	 	T{
+Generates the font configuration file by scanning various directories for fonts.
+T}
+.sp 1
+T{
+g.parser
+T}	 	T{
+Provides automated parser, GUI, and help support for GRASS scipts.
+T}
+.sp 1
+T{
+g.pnmcomp
+T}	 	T{
+Overlays multiple PPM image files.
+T}
+.sp 1
+T{
+g.ppmtopng
+T}	 	T{
+Converts between PPM/PGM and PNG image formats.
+T}
+.sp 1
+T{
+g.proj
+T}	 	T{
+Prints or modifies GRASS projection information files (in various co\-ordinate system descriptions).
+T}
+.sp 1
+T{
+g.region
+T}	 	T{
+Manages the boundary definitions for the geographic region.
+T}
+.sp 1
+T{
+g.remove
+T}	 	T{
+Removes data base element files from the user\(cqs current mapset using the search pattern.
+T}
+.sp 1
+T{
+g.rename
+T}	 	T{
+Renames data base element files in the user\(cqs current mapset.
+T}
+.sp 1
+T{
+g.search.modules
+T}	 	T{
+Search in GRASS modules using keywords
+T}
+.sp 1
+T{
+g.tempfile
+T}	 	T{
+Creates a temporary file and prints it\(cqs file name.
+T}
+.sp 1
+T{
+g.version
+T}	 	T{
+Displays GRASS GIS version info.
+T}
+.sp 1
+.TE
+.SS Imagery commands (i.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+i.albedo
+T}	 	T{
+Computes broad band albedo from surface reflectance.
+T}
+.sp 1
+T{
+i.aster.toar
+T}	 	T{
+Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.
+T}
+.sp 1
+T{
+i.atcorr
+T}	 	T{
+Performs atmospheric correction using the 6S algorithm.
+T}
+.sp 1
+T{
+i.biomass
+T}	 	T{
+Computes biomass growth, precursor of crop yield calculation.
+T}
+.sp 1
+T{
+i.cca
+T}	 	T{
+Canonical components analysis (CCA) program for image processing.
+T}
+.sp 1
+T{
+i.cluster
+T}	 	T{
+Generates spectral signatures for land cover types in an image using a clustering algorithm.
+T}
+.sp 1
+T{
+i.colors.enhance
+T}	 	T{
+Performs auto\-balancing of colors for RGB images.
+T}
+.sp 1
+T{
+i.eb.eta
+T}	 	T{
+Actual evapotranspiration for diurnal period (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.eb.evapfr
+T}	 	T{
+Computes evaporative fraction and root zone soil moisture.
+T}
+.sp 1
+T{
+i.eb.hsebal01
+T}	 	T{
+Computes sensible heat flux iteration SEBAL 01.
+T}
+.sp 1
+T{
+i.eb.netrad
+T}	 	T{
+Net radiation approximation (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.eb.soilheatflux
+T}	 	T{
+Soil heat flux approximation (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.emissivity
+T}	 	T{
+Computes emissivity from NDVI, generic method for sparse land.
+T}
+.sp 1
+T{
+i.evapo.mh
+T}	 	T{
+Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.
+T}
+.sp 1
+T{
+i.evapo.pm
+T}	 	T{
+Computes potential evapotranspiration calculation with hourly Penman\-Monteith.
+T}
+.sp 1
+T{
+i.evapo.pt
+T}	 	T{
+Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.
+T}
+.sp 1
+T{
+i.evapo.time
+T}	 	T{
+Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).
+T}
+.sp 1
+T{
+i.fft
+T}	 	T{
+Fast Fourier Transform (FFT) for image processing.
+T}
+.sp 1
+T{
+i.gensig
+T}	 	T{
+Generates statistics for i.maxlik from raster map.
+T}
+.sp 1
+T{
+i.gensigset
+T}	 	T{
+Generates statistics for i.smap from raster map.
+T}
+.sp 1
+T{
+i.group
+T}	 	T{
+Creates, edits, and lists groups of imagery data.
+T}
+.sp 1
+T{
+i.his.rgb
+T}	 	T{
+Transforms raster maps from HIS (Hue\-Intensity\-Saturation) color space to RGB (Red\-Green\-Blue) color space.
+T}
+.sp 1
+T{
+i.ifft
+T}	 	T{
+Inverse Fast Fourier Transform (IFFT) for image processing.
+T}
+.sp 1
+T{
+i.image.mosaic
+T}	 	T{
+Mosaics several images and extends colormap.
+T}
+.sp 1
+T{
+i.in.spotvgt
+T}	 	T{
+Imports SPOT VGT NDVI data into a raster map.
+T}
+.sp 1
+T{
+i.landsat.acca
+T}	 	T{
+Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).
+T}
+.sp 1
+T{
+i.landsat.toar
+T}	 	T{
+Calculates top\-of\-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI
+T}
+.sp 1
+T{
+i.maxlik
+T}	 	T{
+Classifies the cell spectral reflectances in imagery data.
+T}
+.sp 1
+T{
+i.modis.qc
+T}	 	T{
+Extracts quality control parameters from MODIS QC layers.
+T}
+.sp 1
+T{
+i.oif
+T}	 	T{
+Calculates Optimum\-Index\-Factor table for spectral bands
+T}
+.sp 1
+T{
+i.ortho.camera
+T}	 	T{
+Select and modify the imagery group camera reference file.
+T}
+.sp 1
+T{
+i.ortho.elev
+T}	 	T{
+Select or modify the target elevation model.
+T}
+.sp 1
+T{
+i.ortho.init
+T}	 	T{
+Interactively creates or modifies entries in a camera initial exposure station file for imagery group referenced by a sub\-block.
+T}
+.sp 1
+T{
+i.ortho.photo
+T}	 	T{
+Menu driver for the photo imagery programs.
+T}
+.sp 1
+T{
+i.ortho.rectify
+T}	 	T{
+Orthorectifies an image by using the image to photo coordinate transformation matrix.
+T}
+.sp 1
+T{
+i.ortho.target
+T}	 	T{
+Select or modify the imagery group target.
+T}
+.sp 1
+T{
+i.ortho.transform
+T}	 	T{
+Computes a coordinate transformation based on the control points.
+T}
+.sp 1
+T{
+i.pansharpen
+T}	 	T{
+Image fusion algorithms to sharpen multispectral with high\-res panchromatic channels
+T}
+.sp 1
+T{
+i.pca
+T}	 	T{
+Principal components analysis (PCA) for image processing.
+T}
+.sp 1
+T{
+i.rectify
+T}	 	T{
+Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points.
+T}
+.sp 1
+T{
+i.rgb.his
+T}	 	T{
+Transforms raster maps from RGB (Red\-Green\-Blue) color space to HIS (Hue\-Intensity\-Saturation) color space.
+T}
+.sp 1
+T{
+i.segment
+T}	 	T{
+Identifies segments (objects) from imagery data.
+T}
+.sp 1
+T{
+i.smap
+T}	 	T{
+Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.
+T}
+.sp 1
+T{
+i.spectral
+T}	 	T{
+Displays spectral response at user specified locations in group or images.
+T}
+.sp 1
+T{
+i.target
+T}	 	T{
+Targets an imagery group to a GRASS location and mapset.
+T}
+.sp 1
+T{
+i.tasscap
+T}	 	T{
+Performs Tasseled Cap (Kauth Thomas) transformation.
+T}
+.sp 1
+T{
+i.topo.corr
+T}	 	T{
+Computes topographic correction of reflectance.
+T}
+.sp 1
+T{
+i.vi
+T}	 	T{
+Calculates different types of vegetation indices.
+T}
+.sp 1
+T{
+i.zc
+T}	 	T{
+Zero\-crossing \(dqedge detection\(dq raster function for image processing.
+T}
+.sp 1
+.TE
+.SS Miscellaneous commands (m.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+m.cogo
+T}	 	T{
+A simple utility for converting bearing and distance measurements to coordinates and vice versa.
+T}
+.sp 1
+T{
+m.measure
+T}	 	T{
+Measures the lengths and areas of features.
+T}
+.sp 1
+T{
+m.nviz.image
+T}	 	T{
+Creates a 3D rendering of GIS data.
+T}
+.sp 1
+T{
+m.nviz.script
+T}	 	T{
+Creates fly\-through script to run in NVIZ.
+T}
+.sp 1
+T{
+m.proj
+T}	 	T{
+Converts coordinates from one projection to another (cs2cs frontend).
+T}
+.sp 1
+T{
+m.transform
+T}	 	T{
+Computes a coordinate transformation based on the control points.
+T}
+.sp 1
+.TE
+.SS PostScript commands (ps.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+ps.map
+T}	 	T{
+Produces hardcopy PostScript map output.
+T}
+.sp 1
+.TE
+.SS Raster commands (r.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+r.basins.fill
+T}	 	T{
+Generates watershed subbasins raster map.
+T}
+.sp 1
+T{
+r.blend
+T}	 	T{
+Blends color components of two raster maps by a given ratio.
+T}
+.sp 1
+T{
+r.buffer
+T}	 	T{
+Creates a raster map showing buffer zones surrounding cells that contain non\-NULL category values.
+T}
+.sp 1
+T{
+r.buffer.lowmem
+T}	 	T{
+Creates a raster map showing buffer zones surrounding cells that contain non\-NULL category values.
+T}
+.sp 1
+T{
+r.buildvrt
+T}	 	T{
+Build a VRT (Virtual Raster) from the list of input raster maps.
+T}
+.sp 1
+T{
+r.carve
+T}	 	T{
+Generates stream channels.
+T}
+.sp 1
+T{
+r.category
+T}	 	T{
+Manages category values and labels associated with user\-specified raster map layers.
+T}
+.sp 1
+T{
+r.circle
+T}	 	T{
+Creates a raster map containing concentric rings around a given point.
+T}
+.sp 1
+T{
+r.clump
+T}	 	T{
+Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.
+T}
+.sp 1
+T{
+r.coin
+T}	 	T{
+Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.
+T}
+.sp 1
+T{
+r.colors
+T}	 	T{
+Creates/modifies the color table associated with a raster map.
+T}
+.sp 1
+T{
+r.colors.out
+T}	 	T{
+Exports the color table associated with a raster map.
+T}
+.sp 1
+T{
+r.colors.stddev
+T}	 	T{
+Sets color rules based on stddev from a raster map\(cqs mean value.
+T}
+.sp 1
+T{
+r.composite
+T}	 	T{
+Combines red, green and blue raster maps into a single composite raster map.
+T}
+.sp 1
+T{
+r.compress
+T}	 	T{
+Compresses and decompresses raster maps.
+T}
+.sp 1
+T{
+r.contour
+T}	 	T{
+Produces a vector map of specified contours from a raster map.
+T}
+.sp 1
+T{
+r.cost
+T}	 	T{
+Creates a raster map showing the cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.
+T}
+.sp 1
+T{
+r.covar
+T}	 	T{
+Outputs a covariance/correlation matrix for user\-specified raster map layer(s).
+T}
+.sp 1
+T{
+r.cross
+T}	 	T{
+Creates a cross product of the category values from multiple raster map layers.
+T}
+.sp 1
+T{
+r.describe
+T}	 	T{
+Prints terse list of category values found in a raster map layer.
+T}
+.sp 1
+T{
+r.distance
+T}	 	T{
+Locates the closest points between objects in two raster maps.
+T}
+.sp 1
+T{
+r.drain
+T}	 	T{
+Traces a flow through an elevation model or cost surface on a raster map.
+T}
+.sp 1
+T{
+r.external
+T}	 	T{
+Links GDAL supported raster data as a pseudo GRASS raster map.
+T}
+.sp 1
+T{
+r.external.out
+T}	 	T{
+Redirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.
+T}
+.sp 1
+T{
+r.fill.dir
+T}	 	T{
+Filters and generates a depressionless elevation map and a flow direction map from a given elevation raster map.
+T}
+.sp 1
+T{
+r.fill.stats
+T}	 	T{
+Rapidly fills \(cqno data\(cq cells (NULLs) of a raster map with interpolated values (IDW).
+T}
+.sp 1
+T{
+r.fillnulls
+T}	 	T{
+Fills no\-data areas in raster maps using spline interpolation.
+T}
+.sp 1
+T{
+r.flow
+T}	 	T{
+Constructs flowlines.
+T}
+.sp 1
+T{
+r.geomorphon
+T}	 	T{
+Calculates geomorphons (terrain forms) and associated geometry using machine vision approach.
+T}
+.sp 1
+T{
+r.grow.distance
+T}	 	T{
+Generates a raster map containing distances to nearest raster features and/or the value of the nearest non\-null cell.
+T}
+.sp 1
+T{
+r.grow
+T}	 	T{
+Generates a raster map layer with contiguous areas grown by one cell.
+T}
+.sp 1
+T{
+r.gwflow
+T}	 	T{
+Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
+T}
+.sp 1
+T{
+r.his
+T}	 	T{
+Generates red, green and blue (RGB) raster map layers combining hue, intensity and saturation (HIS) values from user\-specified input raster map layers.
+T}
+.sp 1
+T{
+r.horizon
+T}	 	T{
+Computes horizon angle height from a digital elevation model.
+T}
+.sp 1
+T{
+r.import
+T}	 	T{
+Imports raster data into a GRASS raster map using GDAL library and reprojects on the fly.
+T}
+.sp 1
+T{
+r.in.ascii
+T}	 	T{
+Converts a GRASS ASCII raster file to binary raster map.
+T}
+.sp 1
+T{
+r.in.aster
+T}	 	T{
+Georeference, rectify, and import Terra\-ASTER imagery and relative DEMs using gdalwarp.
+T}
+.sp 1
+T{
+r.in.bin
+T}	 	T{
+Import a binary raster file into a GRASS raster map layer.
+T}
+.sp 1
+T{
+r.in.gdal
+T}	 	T{
+Imports raster data into a GRASS raster map using GDAL library.
+T}
+.sp 1
+T{
+r.in.gridatb
+T}	 	T{
+Imports GRIDATB.FOR map file (TOPMODEL) into a GRASS raster map.
+T}
+.sp 1
+T{
+r.in.lidar
+T}	 	T{
+Creates a raster map from LAS LiDAR points using univariate statistics.
+T}
+.sp 1
+T{
+r.in.mat
+T}	 	T{
+Imports a binary MAT\-File(v4) to a GRASS raster.
+T}
+.sp 1
+T{
+r.in.png
+T}	 	T{
+Imports non\-georeferenced PNG format image.
+T}
+.sp 1
+T{
+r.in.poly
+T}	 	T{
+Creates raster maps from ASCII polygon/line/point data files.
+T}
+.sp 1
+T{
+r.in.srtm
+T}	 	T{
+Imports SRTM HGT files into raster map.
+T}
+.sp 1
+T{
+r.in.wms
+T}	 	T{
+Downloads and imports data from OGC WMS and OGC WMTS web mapping servers.
+T}
+.sp 1
+T{
+r.in.xyz
+T}	 	T{
+Creates a raster map from an assemblage of many coordinates using univariate statistics.
+T}
+.sp 1
+T{
+r.info
+T}	 	T{
+Outputs basic information about a raster map.
+T}
+.sp 1
+T{
+r.kappa
+T}	 	T{
+Calculates error matrix and kappa parameter for accuracy assessment of classification result.
+T}
+.sp 1
+T{
+r.lake
+T}	 	T{
+Fills lake at given point to given level.
+T}
+.sp 1
+T{
+r.latlong
+T}	 	T{
+Creates a latitude/longitude raster map.
+T}
+.sp 1
+T{
+r.li.cwed
+T}	 	T{
+Calculates contrast weighted edge density index on a raster map
+T}
+.sp 1
+T{
+r.li.daemon
+T}	 	T{
+Support module for r.li landscape index calculations.
+T}
+.sp 1
+T{
+r.li.dominance
+T}	 	T{
+Calculates dominance\(cqs diversity index on a raster map
+T}
+.sp 1
+T{
+r.li.edgedensity
+T}	 	T{
+Calculates edge density index on a raster map, using a 4 neighbour algorithm
+T}
+.sp 1
+T{
+r.li
+T}	 	T{
+Toolset for multiscale analysis of landscape structure
+T}
+.sp 1
+T{
+r.li.mpa
+T}	 	T{
+Calculates mean pixel attribute index on a raster map
+T}
+.sp 1
+T{
+r.li.mps
+T}	 	T{
+Calculates mean patch size index on a raster map, using a 4 neighbour algorithm
+T}
+.sp 1
+T{
+r.li.padcv
+T}	 	T{
+Calculates coefficient of variation of patch area on a raster map
+T}
+.sp 1
+T{
+r.li.padrange
+T}	 	T{
+Calculates range of patch area size on a raster map
+T}
+.sp 1
+T{
+r.li.padsd
+T}	 	T{
+Calculates standard deviation of patch area a raster map
+T}
+.sp 1
+T{
+r.li.patchdensity
+T}	 	T{
+Calculates patch density index on a raster map, using a 4 neighbour algorithm
+T}
+.sp 1
+T{
+r.li.patchnum
+T}	 	T{
+Calculates patch number index on a raster map, using a 4 neighbour algorithm.
+T}
+.sp 1
+T{
+r.li.pielou
+T}	 	T{
+Calculates Pielou\(cqs diversity index on a raster map
+T}
+.sp 1
+T{
+r.li.renyi
+T}	 	T{
+Calculates Renyi\(cqs diversity index on a raster map
+T}
+.sp 1
+T{
+r.li.richness
+T}	 	T{
+Calculates richness index on a raster map
+T}
+.sp 1
+T{
+r.li.shannon
+T}	 	T{
+Calculates Shannon\(cqs diversity index on a raster map
+T}
+.sp 1
+T{
+r.li.shape
+T}	 	T{
+Calculates shape index on a raster map
+T}
+.sp 1
+T{
+r.li.simpson
+T}	 	T{
+Calculates Simpson\(cqs diversity index on a raster map
+T}
+.sp 1
+T{
+r.mapcalc
+T}	 	T{
+Raster map calculator.
+T}
+.sp 1
+T{
+r.mapcalc.simple
+T}	 	T{
+Calculates a new raster map from a simple r.mapcalc expression.
+T}
+.sp 1
+T{
+r.mask
+T}	 	T{
+Creates a MASK for limiting raster operation.
+T}
+.sp 1
+T{
+r.mfilter
+T}	 	T{
+Performs raster map matrix filter.
+T}
+.sp 1
+T{
+r.mode
+T}	 	T{
+Finds the mode of values in a cover map within areas assigned the same category value in a user\-specified base map.
+T}
+.sp 1
+T{
+r.neighbors
+T}	 	T{
+Makes each cell category value a function of the category values assigned to the cells around it, and stores new cell values in an output raster map layer.
+T}
+.sp 1
+T{
+r.null
+T}	 	T{
+Manages NULL\-values of given raster map.
+T}
+.sp 1
+T{
+r.out.ascii
+T}	 	T{
+Converts a raster map layer into a GRASS ASCII text file.
+T}
+.sp 1
+T{
+r.out.bin
+T}	 	T{
+Exports a GRASS raster to a binary array.
+T}
+.sp 1
+T{
+r.out.gdal
+T}	 	T{
+Exports GRASS raster maps into GDAL supported formats.
+T}
+.sp 1
+T{
+r.out.gridatb
+T}	 	T{
+Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL).
+T}
+.sp 1
+T{
+r.out.mat
+T}	 	T{
+Exports a GRASS raster to a binary MAT\-File.
+T}
+.sp 1
+T{
+r.out.mpeg
+T}	 	T{
+Converts raster map series to MPEG movie.
+T}
+.sp 1
+T{
+r.out.png
+T}	 	T{
+Export a GRASS raster map as a non\-georeferenced PNG image.
+T}
+.sp 1
+T{
+r.out.pov
+T}	 	T{
+Converts a raster map layer into a height\-field file for POV\-Ray.
+T}
+.sp 1
+T{
+r.out.ppm
+T}	 	T{
+Converts a GRASS raster map to a PPM image file.
+T}
+.sp 1
+T{
+r.out.ppm3
+T}	 	T{
+Converts 3 GRASS raster layers (R,G,B) to a PPM image file.
+T}
+.sp 1
+T{
+r.out.vrml
+T}	 	T{
+Exports a raster map to the Virtual Reality Modeling Language (VRML).
+T}
+.sp 1
+T{
+r.out.vtk
+T}	 	T{
+Converts raster maps into the VTK\-ASCII format.
+T}
+.sp 1
+T{
+r.out.xyz
+T}	 	T{
+Exports a raster map to a text file as x,y,z values based on cell centers.
+T}
+.sp 1
+T{
+r.pack
+T}	 	T{
+Exports a raster map as GRASS GIS specific archive file
+T}
+.sp 1
+T{
+r.param.scale
+T}	 	T{
+Extracts terrain parameters from a DEM.
+T}
+.sp 1
+T{
+r.patch
+T}	 	T{
+Creates a composite raster map layer by using known category values from one (or more) map layer(s) to fill in areas of \(dqno data\(dq in another map layer.
+T}
+.sp 1
+T{
+r.path
+T}	 	T{
+Traces paths from starting points following input directions.
+T}
+.sp 1
+T{
+r.plane
+T}	 	T{
+Creates raster plane map given dip (inclination), aspect (azimuth) and one point.
+T}
+.sp 1
+T{
+r.profile
+T}	 	T{
+Outputs the raster map layer values lying on user\-defined line(s).
+T}
+.sp 1
+T{
+r.proj
+T}	 	T{
+Re\-projects a raster map from given location to the current location.
+T}
+.sp 1
+T{
+r.quant
+T}	 	T{
+Produces the quantization file for a floating\-point map.
+T}
+.sp 1
+T{
+r.quantile
+T}	 	T{
+Compute quantiles using two passes.
+T}
+.sp 1
+T{
+r.random.cells
+T}	 	T{
+Generates random cell values with spatial dependence.
+T}
+.sp 1
+T{
+r.random
+T}	 	T{
+Creates a raster map layer and vector point map containing randomly located points.
+T}
+.sp 1
+T{
+r.random.surface
+T}	 	T{
+Generates random surface(s) with spatial dependence.
+T}
+.sp 1
+T{
+r.reclass.area
+T}	 	T{
+Reclasses a raster map greater or less than user specified area size (in hectares).
+T}
+.sp 1
+T{
+r.reclass
+T}	 	T{
+Reclassify raster map based on category values.
+T}
+.sp 1
+T{
+r.recode
+T}	 	T{
+Recodes categorical raster maps.
+T}
+.sp 1
+T{
+r.region
+T}	 	T{
+Sets the boundary definitions for a raster map.
+T}
+.sp 1
+T{
+r.regression.line
+T}	 	T{
+Calculates linear regression from two raster maps: y = a + b*x.
+T}
+.sp 1
+T{
+r.regression.multi
+T}	 	T{
+Calculates multiple linear regression from raster maps.
+T}
+.sp 1
+T{
+r.relief
+T}	 	T{
+Creates shaded relief map from an elevation map (DEM).
+T}
+.sp 1
+T{
+r.report
+T}	 	T{
+Reports statistics for raster maps.
+T}
+.sp 1
+T{
+r.resamp.bspline
+T}	 	T{
+Performs bilinear or bicubic spline interpolation with Tykhonov regularization.
+T}
+.sp 1
+T{
+r.resamp.filter
+T}	 	T{
+Resamples raster map layers using an analytic kernel.
+T}
+.sp 1
+T{
+r.resamp.interp
+T}	 	T{
+Resamples raster map to a finer grid using interpolation.
+T}
+.sp 1
+T{
+r.resamp.rst
+T}	 	T{
+Reinterpolates and optionally computes topographic analysis from input raster map to a new raster map (possibly with different resolution) using regularized spline with tension and smoothing.
+T}
+.sp 1
+T{
+r.resamp.stats
+T}	 	T{
+Resamples raster map layers to a coarser grid using aggregation.
+T}
+.sp 1
+T{
+r.resample
+T}	 	T{
+GRASS raster map layer data resampling capability.
+T}
+.sp 1
+T{
+r.rescale.eq
+T}	 	T{
+Rescales histogram equalized the range of category values in a raster map layer.
+T}
+.sp 1
+T{
+r.rescale
+T}	 	T{
+Rescales the range of category values in a raster map layer.
+T}
+.sp 1
+T{
+r.rgb
+T}	 	T{
+Splits a raster map into red, green and blue maps.
+T}
+.sp 1
+T{
+r.ros
+T}	 	T{
+Generates rate of spread raster maps.
+T}
+.sp 1
+T{
+r.series.accumulate
+T}	 	T{
+Makes each output cell value a accumulationfunction of the values assigned to the corresponding cells in the input raster map layers.
+T}
+.sp 1
+T{
+r.series
+T}	 	T{
+Makes each output cell value a function of the values assigned to the corresponding cells in the input raster map layers.
+T}
+.sp 1
+T{
+r.series.interp
+T}	 	T{
+Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.
+T}
+.sp 1
+T{
+r.shade
+T}	 	T{
+Drapes a color raster over an shaded relief or aspect map.
+T}
+.sp 1
+T{
+r.sim.sediment
+T}	 	T{
+Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
+T}
+.sp 1
+T{
+r.sim.water
+T}	 	T{
+Overland flow hydrologic simulation using path sampling method (SIMWE).
+T}
+.sp 1
+T{
+r.slope.aspect
+T}	 	T{
+Generates raster maps of slope, aspect, curvatures and partial derivatives from an elevation raster map.
+T}
+.sp 1
+T{
+r.solute.transport
+T}	 	T{
+Numerical calculation program for transient, confined and unconfined solute transport in two dimensions
+T}
+.sp 1
+T{
+r.spread
+T}	 	T{
+Simulates elliptically anisotropic spread.
+T}
+.sp 1
+T{
+r.spreadpath
+T}	 	T{
+Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.
+T}
+.sp 1
+T{
+r.statistics
+T}	 	T{
+Calculates category or object oriented statistics.
+T}
+.sp 1
+T{
+r.stats
+T}	 	T{
+Generates area statistics for raster map.
+T}
+.sp 1
+T{
+r.stats.quantile
+T}	 	T{
+Compute category quantiles using two passes.
+T}
+.sp 1
+T{
+r.stats.zonal
+T}	 	T{
+Calculates category or object oriented statistics (accumulator\-based statistics).
+T}
+.sp 1
+T{
+r.stream.extract
+T}	 	T{
+Performs stream network extraction.
+T}
+.sp 1
+T{
+r.sun
+T}	 	T{
+Solar irradiance and irradiation model.
+T}
+.sp 1
+T{
+r.sunhours
+T}	 	T{
+Calculates solar elevation, solar azimuth, and sun hours.
+T}
+.sp 1
+T{
+r.sunmask
+T}	 	T{
+Calculates cast shadow areas from sun position and elevation raster map.
+T}
+.sp 1
+T{
+r.support
+T}	 	T{
+Allows creation and/or modification of raster map layer support files.
+T}
+.sp 1
+T{
+r.support.stats
+T}	 	T{
+Update raster map statistics
+T}
+.sp 1
+T{
+r.surf.area
+T}	 	T{
+Prints estimation of surface area for raster map.
+T}
+.sp 1
+T{
+r.surf.contour
+T}	 	T{
+Generates surface raster map from rasterized contours.
+T}
+.sp 1
+T{
+r.surf.fractal
+T}	 	T{
+Creates a fractal surface of a given fractal dimension.
+T}
+.sp 1
+T{
+r.surf.gauss
+T}	 	T{
+Generates a raster map using gaussian random number generator.
+T}
+.sp 1
+T{
+r.surf.idw
+T}	 	T{
+Provides surface interpolation from raster point data by Inverse Distance Squared Weighting.
+T}
+.sp 1
+T{
+r.surf.random
+T}	 	T{
+Produces a raster surface map of uniform random deviates with defined range.
+T}
+.sp 1
+T{
+r.terraflow
+T}	 	T{
+Performs flow computation for massive grids.
+T}
+.sp 1
+T{
+r.texture
+T}	 	T{
+Generate images with textural features from a raster map.
+T}
+.sp 1
+T{
+r.thin
+T}	 	T{
+Thins non\-null cells that denote linear features in a raster map layer.
+T}
+.sp 1
+T{
+r.tile
+T}	 	T{
+Splits a raster map into tiles.
+T}
+.sp 1
+T{
+r.tileset
+T}	 	T{
+Produces tilings of the source projection for use in the destination region and projection.
+T}
+.sp 1
+T{
+r.timestamp
+T}	 	T{
+Modifies a timestamp for a raster map.
+T}
+.sp 1
+T{
+r.to.rast3
+T}	 	T{
+Converts 2D raster map slices to one 3D raster volume map.
+T}
+.sp 1
+T{
+r.to.rast3elev
+T}	 	T{
+Creates a 3D volume map based on 2D elevation and value raster maps.
+T}
+.sp 1
+T{
+r.to.vect
+T}	 	T{
+Converts a raster map into a vector map.
+T}
+.sp 1
+T{
+r.topidx
+T}	 	T{
+Creates a topographic index (wetness index) raster map from an elevation raster map.
+T}
+.sp 1
+T{
+r.topmodel
+T}	 	T{
+Simulates TOPMODEL which is a physically based hydrologic model.
+T}
+.sp 1
+T{
+r.transect
+T}	 	T{
+Outputs raster map layer values lying along user defined transect line(s).
+T}
+.sp 1
+T{
+r.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells of a raster map.
+T}
+.sp 1
+T{
+r.unpack
+T}	 	T{
+Imports a GRASS GIS specific raster archive file (packed with r.pack) as a raster map
+T}
+.sp 1
+T{
+r.uslek
+T}	 	T{
+Computes USLE Soil Erodibility Factor (K).
+T}
+.sp 1
+T{
+r.usler
+T}	 	T{
+Computes USLE R factor, Rainfall erosivity index.
+T}
+.sp 1
+T{
+r.viewshed
+T}	 	T{
+Computes the viewshed of a point on an elevation raster map.
+T}
+.sp 1
+T{
+r.volume
+T}	 	T{
+Calculates the volume of data \(dqclumps\(dq.
+T}
+.sp 1
+T{
+r.walk
+T}	 	T{
+Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.
+T}
+.sp 1
+T{
+r.water.outlet
+T}	 	T{
+Creates watershed basins from a drainage direction map.
+T}
+.sp 1
+T{
+r.watershed
+T}	 	T{
+Calculates hydrological parameters and RUSLE factors.
+T}
+.sp 1
+T{
+r.what.color
+T}	 	T{
+Queries colors for a raster map layer.
+T}
+.sp 1
+T{
+r.what
+T}	 	T{
+Queries raster maps on their category values and category labels.
+T}
+.sp 1
+.TE
+.SS 3d raster commands (r3.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+r3.colors
+T}	 	T{
+Creates/modifies the color table associated with a 3D raster map.
+T}
+.sp 1
+T{
+r3.colors.out
+T}	 	T{
+Exports the color table associated with a 3D raster map.
+T}
+.sp 1
+T{
+r3.cross.rast
+T}	 	T{
+Creates cross section 2D raster map from 3D raster map based on 2D elevation map
+T}
+.sp 1
+T{
+r3.flow
+T}	 	T{
+Computes 3D flow lines and 3D flow accumulation.
+T}
+.sp 1
+T{
+r3.gradient
+T}	 	T{
+Computes gradient of a 3D raster map and outputs gradient components as three 3D raster maps.
+T}
+.sp 1
+T{
+r3.gwflow
+T}	 	T{
+Numerical calculation program for transient, confined groundwater flow in three dimensions.
+T}
+.sp 1
+T{
+r3.in.ascii
+T}	 	T{
+Converts a 3D ASCII raster text file into a (binary) 3D raster map.
+T}
+.sp 1
+T{
+r3.in.bin
+T}	 	T{
+Imports a binary raster file into a GRASS 3D raster map.
+T}
+.sp 1
+T{
+r3.in.lidar
+T}	 	T{
+Creates a 3D raster map from LAS LiDAR points using univariate statistics.
+T}
+.sp 1
+T{
+r3.in.v5d
+T}	 	T{
+Import 3\-dimensional Vis5D files.
+T}
+.sp 1
+T{
+r3.in.xyz
+T}	 	T{
+Create a 3D raster map from an assemblage of many coordinates using univariate statistics
+T}
+.sp 1
+T{
+r3.info
+T}	 	T{
+Outputs basic information about a user\-specified 3D raster map layer.
+T}
+.sp 1
+T{
+r3.mapcalc
+T}	 	T{
+Raster map calculator.
+T}
+.sp 1
+T{
+r3.mask
+T}	 	T{
+Establishes the current working 3D raster mask.
+T}
+.sp 1
+T{
+r3.mkdspf
+T}	 	T{
+Creates a display file from an existing 3D raster map according to specified threshold levels.
+T}
+.sp 1
+T{
+r3.neighbors
+T}	 	T{
+Makes each voxel value a function of the values assigned to the voxels around it, and stores new voxel values in an output 3D raster map
+T}
+.sp 1
+T{
+r3.null
+T}	 	T{
+Explicitly create the 3D NULL\-value bitmap file.
+T}
+.sp 1
+T{
+r3.out.ascii
+T}	 	T{
+Converts a 3D raster map layer into a ASCII text file.
+T}
+.sp 1
+T{
+r3.out.bin
+T}	 	T{
+Exports a GRASS 3D raster map to a binary array.
+T}
+.sp 1
+T{
+r3.out.v5d
+T}	 	T{
+Exports GRASS 3D raster map to 3\-dimensional Vis5D file.
+T}
+.sp 1
+T{
+r3.out.vtk
+T}	 	T{
+Converts 3D raster maps into the VTK\-ASCII format.
+T}
+.sp 1
+T{
+r3.retile
+T}	 	T{
+Retiles an existing 3D raster map with user defined x, y and z tile size.
+T}
+.sp 1
+T{
+r3.stats
+T}	 	T{
+Generates volume statistics for 3D raster maps.
+T}
+.sp 1
+T{
+r3.support
+T}	 	T{
+Allows creation and/or modification of 3D raster map layer support files.
+T}
+.sp 1
+T{
+r3.timestamp
+T}	 	T{
+Modifies a timestamp for a 3D raster map.
+T}
+.sp 1
+T{
+r3.to.rast
+T}	 	T{
+Converts 3D raster maps to 2D raster maps
+T}
+.sp 1
+T{
+r3.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells of a 3D raster map.
+T}
+.sp 1
+.TE
+.SS Temporal commands (t.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+t.connect
+T}	 	T{
+Prints/sets general temporal GIS database connection for current mapset.
+T}
+.sp 1
+T{
+t.create
+T}	 	T{
+Creates a space time dataset.
+T}
+.sp 1
+T{
+t.info
+T}	 	T{
+Lists information about space time datasets and maps.
+T}
+.sp 1
+T{
+t.list
+T}	 	T{
+Lists space time datasets and maps registered in the temporal database.
+T}
+.sp 1
+T{
+t.merge
+T}	 	T{
+Merges several space time datasets into a single space time dataset.
+T}
+.sp 1
+T{
+t.rast.accdetect
+T}	 	T{
+Detects accumulation patterns in temporally accumulated space time raster datasets created by t.rast.accumulate.
+T}
+.sp 1
+T{
+t.rast.accumulate
+T}	 	T{
+Computes cyclic accumulations of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.aggregate.ds
+T}	 	T{
+Aggregates data of an existing space time raster dataset using the time intervals of a second space time dataset.
+T}
+.sp 1
+T{
+t.rast.aggregate
+T}	 	T{
+Aggregates temporally the maps of a space time raster dataset by a user defined granularity.
+T}
+.sp 1
+T{
+t.rast.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time raster datasets using temporal raster algebra.
+T}
+.sp 1
+T{
+t.rast.colors
+T}	 	T{
+Creates/modifies the color table associated with each raster map of the space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.contour
+T}	 	T{
+Produces a space time vector dataset of specified contours from a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.export
+T}	 	T{
+Exports space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.extract
+T}	 	T{
+Extracts a subset of a space time raster datasets.
+T}
+.sp 1
+T{
+t.rast.gapfill
+T}	 	T{
+Replaces gaps in a space time raster dataset with interpolated raster maps.
+T}
+.sp 1
+T{
+t.rast.import
+T}	 	T{
+Imports space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.list
+T}	 	T{
+Lists registered maps of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.mapcalc
+T}	 	T{
+Performs spatio\-temporal mapcalc expressions on temporally sampled maps of space time raster datasets.
+T}
+.sp 1
+T{
+t.rast.neighbors
+T}	 	T{
+Performs a neighborhood analysis for each map in a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.out.vtk
+T}	 	T{
+Exports space time raster dataset as VTK time series.
+T}
+.sp 1
+T{
+t.rast.series
+T}	 	T{
+Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.to.rast3
+T}	 	T{
+Converts a space time raster dataset into a 3D raster map.
+T}
+.sp 1
+T{
+t.rast.to.vect
+T}	 	T{
+Converts a space time raster dataset into a space time vector dataset
+T}
+.sp 1
+T{
+t.rast.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells for each registered raster map of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.what
+T}	 	T{
+Sample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts
+T}
+.sp 1
+T{
+t.rast3d.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time 3D raster datasets using temporal 3D raster algebra.
+T}
+.sp 1
+T{
+t.rast3d.extract
+T}	 	T{
+Extracts a subset of a space time 3D raster dataset.
+T}
+.sp 1
+T{
+t.rast3d.list
+T}	 	T{
+Lists registered maps of a space time raster3d dataset.
+T}
+.sp 1
+T{
+t.rast3d.mapcalc
+T}	 	T{
+Performs r3.mapcalc expressions on maps of sampled space time 3D raster datasets.
+T}
+.sp 1
+T{
+t.rast3d.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells for each registered 3D raster map of a space time 3D raster dataset.
+T}
+.sp 1
+T{
+t.register
+T}	 	T{
+Assigns timestamps and registers raster, vector and raster3d maps in a space time dataset.
+T}
+.sp 1
+T{
+t.remove
+T}	 	T{
+Removes space time datasets from temporal database.
+T}
+.sp 1
+T{
+t.rename
+T}	 	T{
+Renames a space time dataset
+T}
+.sp 1
+T{
+t.sample
+T}	 	T{
+Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout.
+T}
+.sp 1
+T{
+t.select
+T}	 	T{
+Select maps from space time datasets by topological relationships to other space time datasets using temporal algebra.
+T}
+.sp 1
+T{
+t.shift
+T}	 	T{
+Shifts temporally the maps of a space time dataset.
+T}
+.sp 1
+T{
+t.snap
+T}	 	T{
+Snaps temporally the maps of a space time dataset.
+T}
+.sp 1
+T{
+t.support
+T}	 	T{
+Modifies the metadata of a space time dataset.
+T}
+.sp 1
+T{
+t.topology
+T}	 	T{
+Lists temporal topology of a space time dataset.
+T}
+.sp 1
+T{
+t.unregister
+T}	 	T{
+Unregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset.
+T}
+.sp 1
+T{
+t.vect.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time vector datasets using temporal vector algebra.
+T}
+.sp 1
+T{
+t.vect.db.select
+T}	 	T{
+Prints attributes of vector maps registered in a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.export
+T}	 	T{
+Exports a space time vector dataset as GRASS GIS specific archive file.
+T}
+.sp 1
+T{
+t.vect.extract
+T}	 	T{
+Extracts a subset of a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.import
+T}	 	T{
+Imports a space time vector dataset from a GRASS GIS specific archive file.
+T}
+.sp 1
+T{
+t.vect.list
+T}	 	T{
+Lists registered maps of a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.observe.strds
+T}	 	T{
+Observes specific locations in a space time raster dataset over a period of time using vector points.
+T}
+.sp 1
+T{
+t.vect.univar
+T}	 	T{
+Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset
+T}
+.sp 1
+T{
+t.vect.what.strds
+T}	 	T{
+Stores raster map values at spatial and temporal positions of vector points as vector attributes.
+T}
+.sp 1
+.TE
+.SS Test commands (test.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+test.r3flow
+T}	 	T{
+Testing flow lines.
+T}
+.sp 1
+T{
+test.raster3d.lib
+T}	 	T{
+Performs unit and integration tests for the raster3d library
+T}
+.sp 1
+.TE
+.SS Vector commands (v.*)
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+v.buffer
+T}	 	T{
+Creates a buffer around vector features of given type.
+T}
+.sp 1
+T{
+v.build.all
+T}	 	T{
+Rebuilds topology on all vector maps in the current mapset.
+T}
+.sp 1
+T{
+v.build
+T}	 	T{
+Creates topology for vector map.
+T}
+.sp 1
+T{
+v.build.polylines
+T}	 	T{
+Builds polylines from lines or boundaries.
+T}
+.sp 1
+T{
+v.category
+T}	 	T{
+Attaches, deletes or reports vector categories to/from/of map geometry.
+T}
+.sp 1
+T{
+v.centroids
+T}	 	T{
+Adds missing centroids to closed boundaries.
+T}
+.sp 1
+T{
+v.class
+T}	 	T{
+Classifies attribute data, e.g. for thematic mapping
+T}
+.sp 1
+T{
+v.clean
+T}	 	T{
+Toolset for cleaning topology of vector map.
+T}
+.sp 1
+T{
+v.clip
+T}	 	T{
+Extracts features of input map which overlay features of clip map.
+T}
+.sp 1
+T{
+v.cluster
+T}	 	T{
+Performs cluster identification.
+T}
+.sp 1
+T{
+v.colors
+T}	 	T{
+Creates/modifies the color table associated with a vector map.
+T}
+.sp 1
+T{
+v.colors.out
+T}	 	T{
+Exports the color table associated with a vector map.
+T}
+.sp 1
+T{
+v.db.addcolumn
+T}	 	T{
+Adds one or more columns to the attribute table connected to a given vector map.
+T}
+.sp 1
+T{
+v.db.addtable
+T}	 	T{
+Creates and connects a new attribute table to a given layer of an existing vector map.
+T}
+.sp 1
+T{
+v.db.connect
+T}	 	T{
+Prints/sets DB connection for a vector map to attribute table.
+T}
+.sp 1
+T{
+v.db.dropcolumn
+T}	 	T{
+Drops a column from the attribute table connected to a given vector map.
+T}
+.sp 1
+T{
+v.db.droprow
+T}	 	T{
+Removes a vector feature from a vector map through attribute selection.
+T}
+.sp 1
+T{
+v.db.droptable
+T}	 	T{
+Removes existing attribute table of a vector map.
+T}
+.sp 1
+T{
+v.db.join
+T}	 	T{
+Joins a database table to a vector map table.
+T}
+.sp 1
+T{
+v.db.reconnect.all
+T}	 	T{
+Reconnects attribute tables for all vector maps from the current mapset to a new database.
+T}
+.sp 1
+T{
+v.db.renamecolumn
+T}	 	T{
+Renames a column in the attribute table connected to a given vector map.
+T}
+.sp 1
+T{
+v.db.select
+T}	 	T{
+Prints vector map attributes.
+T}
+.sp 1
+T{
+v.db.univar
+T}	 	T{
+Calculates univariate statistics on selected table column for a GRASS vector map.
+T}
+.sp 1
+T{
+v.db.update
+T}	 	T{
+Updates a column in the attribute table connected to a vector map.
+T}
+.sp 1
+T{
+v.decimate
+T}	 	T{
+Decimates a point cloud
+T}
+.sp 1
+T{
+v.delaunay
+T}	 	T{
+Creates a Delaunay triangulation from an input vector map containing points or centroids.
+T}
+.sp 1
+T{
+v.dissolve
+T}	 	T{
+Dissolves boundaries between adjacent areas sharing a common category number or attribute.
+T}
+.sp 1
+T{
+v.distance
+T}	 	T{
+Finds the nearest element in vector map \(cqto\(cq for elements in vector map \(cqfrom\(cq.
+T}
+.sp 1
+T{
+v.drape
+T}	 	T{
+Converts 2D vector features to 3D by sampling of elevation raster map.
+T}
+.sp 1
+T{
+v.edit
+T}	 	T{
+Edits a vector map, allows adding, deleting and modifying selected vector features.
+T}
+.sp 1
+T{
+v.external
+T}	 	T{
+Creates a new pseudo\-vector map as a link to an OGR\-supported layer or a PostGIS feature table.
+T}
+.sp 1
+T{
+v.external.out
+T}	 	T{
+Defines vector output format.
+T}
+.sp 1
+T{
+v.extract
+T}	 	T{
+Selects vector features from an existing vector map and creates a new vector map containing only the selected features.
+T}
+.sp 1
+T{
+v.extrude
+T}	 	T{
+Extrudes flat vector features to 3D vector features with defined height.
+T}
+.sp 1
+T{
+v.generalize
+T}	 	T{
+Performs vector based generalization.
+T}
+.sp 1
+T{
+v.hull
+T}	 	T{
+Produces a 2D/3D convex hull for a given vector map.
+T}
+.sp 1
+T{
+v.import
+T}	 	T{
+Imports vector data into a GRASS vector map using OGR library and reprojects on the fly.
+T}
+.sp 1
+T{
+v.in.ascii
+T}	 	T{
+Creates a vector map from an ASCII points file or ASCII vector file.
+T}
+.sp 1
+T{
+v.in.db
+T}	 	T{
+Creates new vector (points) map from database table containing coordinates.
+T}
+.sp 1
+T{
+v.in.dxf
+T}	 	T{
+Converts file in DXF format to GRASS vector map.
+T}
+.sp 1
+T{
+v.in.e00
+T}	 	T{
+Imports E00 file into a vector map.
+T}
+.sp 1
+T{
+v.in.geonames
+T}	 	T{
+Imports geonames.org country files into a vector points map.
+T}
+.sp 1
+T{
+v.in.lidar
+T}	 	T{
+Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.
+T}
+.sp 1
+T{
+v.in.lines
+T}	 	T{
+Imports ASCII x,y[,z] coordinates as a series of lines.
+T}
+.sp 1
+T{
+v.in.mapgen
+T}	 	T{
+Imports Mapgen or Matlab\-ASCII vector maps into GRASS.
+T}
+.sp 1
+T{
+v.in.ogr
+T}	 	T{
+Imports vector data into a GRASS vector map using OGR library.
+T}
+.sp 1
+T{
+v.in.region
+T}	 	T{
+Creates a vector polygon from the current region extent.
+T}
+.sp 1
+T{
+v.in.wfs
+T}	 	T{
+Imports GetFeature from a WFS server.
+T}
+.sp 1
+T{
+v.info
+T}	 	T{
+Outputs basic information about a vector map.
+T}
+.sp 1
+T{
+v.kcv
+T}	 	T{
+Randomly partition points into test/train sets.
+T}
+.sp 1
+T{
+v.kernel
+T}	 	T{
+Generates a raster density map from vector points map.
+T}
+.sp 1
+T{
+v.label
+T}	 	T{
+Creates paint labels for a vector map from attached attributes.
+T}
+.sp 1
+T{
+v.label.sa
+T}	 	T{
+Create optimally placed labels for vector map(s)
+T}
+.sp 1
+T{
+v.lidar.correction
+T}	 	T{
+Corrects the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.
+T}
+.sp 1
+T{
+v.lidar.edgedetection
+T}	 	T{
+Detects the object\(cqs edges from a LIDAR data set.
+T}
+.sp 1
+T{
+v.lidar.growing
+T}	 	T{
+Building contour determination and Region Growing algorithm for determining the building inside
+T}
+.sp 1
+T{
+v.lrs.create
+T}	 	T{
+Creates a linear reference system.
+T}
+.sp 1
+T{
+v.lrs.label
+T}	 	T{
+Creates stationing from input lines, and linear reference system.
+T}
+.sp 1
+T{
+v.lrs.segment
+T}	 	T{
+Creates points/segments from input lines, linear reference system and positions read from stdin or a file.
+T}
+.sp 1
+T{
+v.lrs.where
+T}	 	T{
+Finds line id and real km+offset for given points in vector map using linear reference system.
+T}
+.sp 1
+T{
+v.mkgrid
+T}	 	T{
+Creates a vector map of a user\-defined grid.
+T}
+.sp 1
+T{
+v.neighbors
+T}	 	T{
+Neighborhood analysis tool for vector point maps.
+T}
+.sp 1
+T{
+v.net.alloc
+T}	 	T{
+Allocates subnets for nearest centers.
+T}
+.sp 1
+T{
+v.net.allpairs
+T}	 	T{
+Computes the shortest path between all pairs of nodes in the network.
+T}
+.sp 1
+T{
+v.net.bridge
+T}	 	T{
+Computes bridges and articulation points in the network.
+T}
+.sp 1
+T{
+v.net.centrality
+T}	 	T{
+Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.
+T}
+.sp 1
+T{
+v.net.components
+T}	 	T{
+Computes strongly and weakly connected components in the network.
+T}
+.sp 1
+T{
+v.net.connectivity
+T}	 	T{
+Computes vertex connectivity between two sets of nodes in the network.
+T}
+.sp 1
+T{
+v.net.distance
+T}	 	T{
+Computes shortest distance via the network between the given sets of features.
+T}
+.sp 1
+T{
+v.net.flow
+T}	 	T{
+Computes the maximum flow between two sets of nodes in the network.
+T}
+.sp 1
+T{
+v.net
+T}	 	T{
+Performs network maintenance.
+T}
+.sp 1
+T{
+v.net.iso
+T}	 	T{
+Splits subnets for nearest centers by cost isolines.
+T}
+.sp 1
+T{
+v.net.path
+T}	 	T{
+Finds shortest path on vector network.
+T}
+.sp 1
+T{
+v.net.salesman
+T}	 	T{
+Creates a cycle connecting given nodes (Traveling salesman problem).
+T}
+.sp 1
+T{
+v.net.spanningtree
+T}	 	T{
+Computes minimum spanning tree for the network.
+T}
+.sp 1
+T{
+v.net.steiner
+T}	 	T{
+Creates Steiner tree for the network and given terminals.
+T}
+.sp 1
+T{
+v.net.timetable
+T}	 	T{
+Finds shortest path using timetables.
+T}
+.sp 1
+T{
+v.net.visibility
+T}	 	T{
+Performs visibility graph construction.
+T}
+.sp 1
+T{
+v.normal
+T}	 	T{
+Tests for normality for vector points.
+T}
+.sp 1
+T{
+v.out.ascii
+T}	 	T{
+Exports a vector map to a GRASS ASCII vector representation.
+T}
+.sp 1
+T{
+v.out.dxf
+T}	 	T{
+Exports vector map to DXF file format.
+T}
+.sp 1
+T{
+v.out.lidar
+T}	 	T{
+Exports vector points as LAS point cloud
+T}
+.sp 1
+T{
+v.out.ogr
+T}	 	T{
+Exports a vector map layer to any of the supported OGR vector formats.
+T}
+.sp 1
+T{
+v.out.postgis
+T}	 	T{
+Exports a vector map layer to PostGIS feature table.
+T}
+.sp 1
+T{
+v.out.pov
+T}	 	T{
+Converts GRASS x,y,z points to POV\-Ray x,z,y format.
+T}
+.sp 1
+T{
+v.out.svg
+T}	 	T{
+Exports a vector map to SVG file.
+T}
+.sp 1
+T{
+v.out.vtk
+T}	 	T{
+Converts a vector map to VTK ASCII output.
+T}
+.sp 1
+T{
+v.outlier
+T}	 	T{
+Removes outliers from vector point data.
+T}
+.sp 1
+T{
+v.overlay
+T}	 	T{
+Overlays two vector maps offering clip, intersection, difference, symmetrical difference, union operators.
+T}
+.sp 1
+T{
+v.pack
+T}	 	T{
+Exports a vector map as GRASS GIS specific archive file
+T}
+.sp 1
+T{
+v.parallel
+T}	 	T{
+Creates parallel line to input vector lines.
+T}
+.sp 1
+T{
+v.patch
+T}	 	T{
+Creates a new vector map by combining other vector maps.
+T}
+.sp 1
+T{
+v.perturb
+T}	 	T{
+Random location perturbations of vector points.
+T}
+.sp 1
+T{
+v.profile
+T}	 	T{
+Vector map profiling tool
+T}
+.sp 1
+T{
+v.proj
+T}	 	T{
+Re\-projects a vector map from one location to the current location.
+T}
+.sp 1
+T{
+v.qcount
+T}	 	T{
+Indices for quadrat counts of vector point lists.
+T}
+.sp 1
+T{
+v.random
+T}	 	T{
+Generates random 2D/3D vector points.
+T}
+.sp 1
+T{
+v.rast.stats
+T}	 	T{
+Calculates univariate statistics from a raster map based on a vector map and uploads statistics to new attribute columns.
+T}
+.sp 1
+T{
+v.reclass
+T}	 	T{
+Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.
+T}
+.sp 1
+T{
+v.rectify
+T}	 	T{
+Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.
+T}
+.sp 1
+T{
+v.report
+T}	 	T{
+Reports geometry statistics for vector maps.
+T}
+.sp 1
+T{
+v.sample
+T}	 	T{
+Samples a raster map at vector point locations.
+T}
+.sp 1
+T{
+v.segment
+T}	 	T{
+Creates points/segments from input vector lines and positions.
+T}
+.sp 1
+T{
+v.select
+T}	 	T{
+Selects features from vector map (A) by features from other vector map (B).
+T}
+.sp 1
+T{
+v.split
+T}	 	T{
+Splits vector lines to shorter segments.
+T}
+.sp 1
+T{
+v.support
+T}	 	T{
+Updates vector map metadata.
+T}
+.sp 1
+T{
+v.surf.bspline
+T}	 	T{
+Performs bicubic or bilinear spline interpolation with Tykhonov regularization.
+T}
+.sp 1
+T{
+v.surf.idw
+T}	 	T{
+Provides surface interpolation from vector point data by Inverse Distance Squared Weighting.
+T}
+.sp 1
+T{
+v.surf.rst
+T}	 	T{
+Performs surface interpolation from vector points map by splines.
+T}
+.sp 1
+T{
+v.timestamp
+T}	 	T{
+Modifies a timestamp for a vector map.
+T}
+.sp 1
+T{
+v.to.3d
+T}	 	T{
+Performs transformation of 2D vector features to 3D.
+T}
+.sp 1
+T{
+v.to.db
+T}	 	T{
+Populates attribute values from vector features.
+T}
+.sp 1
+T{
+v.to.lines
+T}	 	T{
+Converts vector polygons or points to lines.
+T}
+.sp 1
+T{
+v.to.points
+T}	 	T{
+Creates points along input lines in new vector map with 2 layers.
+T}
+.sp 1
+T{
+v.to.rast
+T}	 	T{
+Converts (rasterize) a vector map into a raster map.
+T}
+.sp 1
+T{
+v.to.rast3
+T}	 	T{
+Converts a vector map (only points) into a 3D raster map.
+T}
+.sp 1
+T{
+v.transform
+T}	 	T{
+Performs an affine transformation (shift, scale and rotate) on vector map.
+T}
+.sp 1
+T{
+v.type
+T}	 	T{
+Changes type of vector features.
+T}
+.sp 1
+T{
+v.univar
+T}	 	T{
+Calculates univariate statistics of vector map features.
+T}
+.sp 1
+T{
+v.unpack
+T}	 	T{
+Imports a GRASS GIS specific vector archive file (packed with v.pack) as a vector map
+T}
+.sp 1
+T{
+v.vect.stats
+T}	 	T{
+Count points in areas, calculate statistics from point attributes.
+T}
+.sp 1
+T{
+v.vol.rst
+T}	 	T{
+Interpolates point data to a 3D raster map using regularized spline with tension (RST) algorithm.
+T}
+.sp 1
+T{
+v.voronoi
+T}	 	T{
+Creates a Voronoi diagram constrained to the extents of the current region from an input vector map containing points or centroids.
+T}
+.sp 1
+T{
+v.what
+T}	 	T{
+Queries a vector map at given locations.
+T}
+.sp 1
+T{
+v.what.rast
+T}	 	T{
+Uploads raster values at positions of vector points to the table.
+T}
+.sp 1
+T{
+v.what.rast3
+T}	 	T{
+Uploads 3D raster values at positions of vector points to the table.
+T}
+.sp 1
+T{
+v.what.strds
+T}	 	T{
+Uploads space time raster dataset values at positions of vector points to the table.
+T}
+.sp 1
+T{
+v.what.vect
+T}	 	T{
+Uploads vector values at positions of vector points to the table.
+T}
+.sp 1
+.TE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

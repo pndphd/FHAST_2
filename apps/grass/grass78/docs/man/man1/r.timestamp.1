@@ -1,0 +1,186 @@
+.TH r.timestamp 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.timestamp\fR\fR  \- Modifies a timestamp for a raster map.
+.br
+Print/add/remove a timestamp for a raster map.
+.SH KEYWORDS
+raster, metadata, timestamp, time
+.SH SYNOPSIS
+\fBr.timestamp\fR
+.br
+\fBr.timestamp \-\-help\fR
+.br
+\fBr.timestamp\fR \fBmap\fR=\fIname\fR  [\fBdate\fR=\fItimestamp\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map
+.IP "\fBdate\fR=\fItimestamp\fR" 4m
+.br
+Datetime, datetime1/datetime2, or \(cqnone\(cq to remove
+.br
+Format: \(cq15 jan 1994\(cq (absolute) or \(cq2 years\(cq (relative)
+.SH DESCRIPTION
+This command has 2 modes of operation. If no \fBdate\fR argument is
+supplied, then the current timestamp for the raster map is printed. If
+a date argument is specified, then the timestamp for the raster map is
+set to the specified date(s). See examples below.
+.SH NOTES
+Strings containing spaces should be quoted. For specifying a range of
+time, the two timestamps should be separated by a forward slash. To
+remove the timestamp from a raster map, use \fBdate=none\fR.
+.SH TIMESTAMP FORMAT
+The timestamp values must use the format as described in the \fIGRASS
+Datetime Library\fR. The source tree for this library should have a
+description of the format. For convenience, the formats are reproduced
+here:
+.PP
+There are two types of datetime values:
+.RS 4n
+.IP \(bu 4n
+\fIabsolute\fR and
+.IP \(bu 4n
+\fIrelative\fR.
+.RE
+Absolute values specify exact dates and/or times. Relative values
+specify a span of time.
+.SS Absolute
+The general format for absolute values is:
+.br
+.nf
+\fC
+  day month year [bc] hour:minute:seconds timezone
+	     day is 1\-31
+	     month is jan,feb,...,dec
+	     year is 4 digit year
+	     [bc] if present, indicates dates is BC
+	     hour is 0\-23 (24 hour clock)
+	     minute is 0\-59
+	     second is 0\-59.9999 (fractions of second allowed)
+	     timezone is +hhmm or \-hhmm (eg, \-0600)
+\fR
+.fi
+Some parts can be missing, for example
+.br
+.nf
+\fC
+	     1994 [bc]
+	     Jan 1994 [bc]
+	     15 jan 1000 [bc]
+	     15 jan 1994 [bc] 10 [+0000]
+	     15 jan 1994 [bc] 10:00 [+0100]
+	     15 jan 1994 [bc] 10:00:23.34 [\-0500]
+\fR
+.fi
+.SS Relative
+There are two types of relative datetime values, year\-month and
+day\-second. The formats are:
+.br
+.nf
+\fC
+	     [\-] # years # months
+	     [\-] # days # hours # minutes # seconds
+\fR
+.fi
+The words years, months, days, hours, minutes, seconds are literal
+words, and the # are the numeric values. Examples:
+.br
+.nf
+\fC
+	     2 years
+	     5 months
+	     2 years 5 months
+	     100 days
+	     15 hours 25 minutes 35.34 seconds
+	     100 days 25 minutes
+	     1000 hours 35.34 seconds
+\fR
+.fi
+The following are \fIillegal\fR because it mixes year\-month and
+day\-second (because the number of days in a month or in a year vary):
+.br
+.nf
+\fC
+	     3 months 15 days
+	     3 years 10 days
+\fR
+.fi
+.SH EXAMPLES
+Prints the timestamp for the \(dqsoils\(dq raster map. If there is no
+timestamp for \(dqsoils\(dq, nothing is printed. If there is a timestamp,
+one or two time strings are printed, depending on if the timestamp for
+the map consists of a single date or two dates (ie start and end
+dates).
+.br
+.nf
+\fC
+r.timestamp map=soils
+\fR
+.fi
+Sets the timestamp for \(dqsoils\(dq to the single date \(dq15 sep 1987\(dq.
+.br
+.nf
+\fC
+r.timestamp map=soils date=\(cq15 sep 1987\(cq
+\fR
+.fi
+Sets the timestamp for \(dqsoils\(dq to have the start date \(dq15 sep 1987\(dq
+and the end date \(dq20 feb 1988\(dq.
+.br
+.nf
+\fC
+r.timestamp map=soils date=\(cq15 sep 1987/20 feb 1988\(cq
+\fR
+.fi
+Sets the timestamp for \(dqsoils\(dq to have the start date \(dq18 feb 2005
+10:30:00\(dq and the end date \(dq20 jul 2007 20:30:00\(dq.
+.br
+.nf
+\fC
+r.timestamp map=soils date=\(cq18 feb 2005 10:30:00/20 jul 2007 20:30:00\(cq
+\fR
+.fi
+Removes the timestamp for the \(dqsoils\(dq raster map.
+.br
+.nf
+\fC
+r.timestamp map=soils date=none
+\fR
+.fi
+.SH KNOWN ISSUES
+Spaces in the timestamp value are required.
+.SH SEE ALSO
+\fI
+r.info,
+r3.timestamp,
+v.timestamp
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.timestamp source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,61 @@
+.TH d.profile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.profile\fR\fR  \- Plots profile of a transect.
+.SH KEYWORDS
+display, profile, raster, plot
+.SH SYNOPSIS
+\fBd.profile\fR
+.br
+\fBd.profile \-\-help\fR
+.br
+\fBd.profile\fR [\-\fBr\fR] \fBmap\fR=\fIname\fR \fBcoordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Use map\(cqs range recorded range
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map to be profiled
+.IP "\fBcoordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR \fB[required]\fR" 4m
+.br
+Profile coordinate pairs
+.SH DESCRIPTION
+This command displays the profile for a specified transect.
+.SH SEE ALSO
+\fI
+d.where,
+r.profile,
+r.transect,
+wxGUI profile tool
+\fR
+.SH AUTHOR
+Glynn Clements
+This program has been completely re\-written for 7.0. It bears no
+relation to the interactive d.profile module in previous versions.
+.SH SOURCE CODE
+.PP
+Available at: d.profile source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

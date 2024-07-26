@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.tasscap.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.tasscap.py</b></em>  - Performs Tasseled Cap (Kauth Thomas) transformation.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_transformation.html">transformation</a>, <a href="keywords.html#Landsat">Landsat</a>, <a href="keywords.html#MODIS">MODIS</a>, <a href="keywords.html#Worldview">Worldview</a>, <a href="keywords.html#Sentinel">Sentinel</a>, <a href="keywords.html#Tasseled Cap transformation">Tasseled Cap transformation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.tasscap.py</b><br></div>
+<b>i.tasscap.py --help</b><br>
+<div id="synopsis"><b>i.tasscap.py</b> <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>basename</em> <b>sensor</b>=<em>string</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>For Landsat4-7: bands 1, 2, 3, 4, 5, 7; for Landsat8: bands 2, 3, 4, 5, 6, 7; for MODIS: bands 1, 2, 3, 4, 5, 6, 7; for Sentinel-2: bands 1 to 12, 8A; for Worldview-2: bands 1, 2, 3, 4, 5, 6, 7, 8</dd>
+
+<dt><b>output</b>=<em>basename</em>&nbsp;<b>[required]</b></dt>
+<dd>basename for output raster map(s)</dd>
+<dd>Name for output basename raster map(s)</dd>
+
+<dt><b>sensor</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Satellite sensor</dd>
+<dd>Options: <em>landsat4_tm, landsat5_tm, landsat7_etm, landsat8_oli, modis, sentinel2, worldview2</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.tasscap</em> calculates Tasseled Cap (Kauth Thomas, TC) transformation
+for Landsat TM data (TM4, TM5, ETM7), MODIS and Sentinel-2 data.
+
+The tasseled cap transformation is effectively a compression method to
+reduce multiple spectral data into a few bands. The method was originally
+developed for understanding important phenomena of crop development in
+spectral space (Kauth and Thomas, 1976).
+<p>
+Tasseled cap coefficients for Landsat 7 ETM+ are at-satellite reflectance
+values (C. Huang et al., 2001), the conversion can be achieved with
+<em>i.landsat.toar</em>.
+<p>
+The following tasseled cap components are generated:
+
+<ul>
+<li> tasscap.1: corresponds to brightness,
+<li> tasscap.2: corresponds to greenness,
+<li> tasscap.3: corresponds to wetness,
+<li> tasscap.4: corresponds to atmospheric haze (only selected sensors: Landsat 5,7,8).
+</ul>
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Calculation of TC maps from North Carolina Landsat 7 ETM scene:
+
+<div class="code"><pre>
+# See manual page of i.landsat.toar for pre-processing
+
+g.region raster=lsat7_2002_toar.1 -p
+
+i.tasscap sensor=landsat7_etm \
+  input=lsat7_2002_toar.1,lsat7_2002_toar.2,lsat7_2002_toar.3,lsat7_2002_toar.4,lsat7_2002_toar.5,lsat7_2002_toar.7 \
+  output=lsat7_2002_tasscap
+</pre></div>
+
+Results:
+
+<p>
+<center>
+  <table border=1>
+  <tr>
+    <td align=center>
+      &nbsp;<img src="i_tasscap_brightness.jpg" alt="'Brightness' Tasseled Cap component 1">
+      <br>
+      <font size="-1">
+      <i>'Brightness' Tasseled Cap component 1</i>
+      </font>
+    </td>
+    <td align=center>
+      &nbsp;<img src="i_tasscap_greenness.jpg" alt="'Greenness' Tasseled Cap component 2">
+      <br>
+      <font size="-1">
+      <i>'Greenness' Tasseled Cap component 2</i>
+      </font>
+    </td>
+  </tr>
+  <tr>
+    <td align=center>
+      &nbsp;<img src="i_tasscap_wetness.jpg" alt="'Wetness' Tasseled Cap component 3">
+      <br>
+      <font size="-1">
+      <i>'Wetness' Tasseled Cap component 3</i>
+      </font>
+    </td>
+    <td align=center>
+      &nbsp;<img src="i_tasscap_haze.jpg" alt="'Atmospheric haze' Tasseled Cap component 4">
+      <br>
+      <font size="-1">
+      <i>'Atmospheric haze' Tasseled Cap component 4</i>
+      </font>
+    </td>
+  </tr>
+  </table>
+</center>
+<br>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>LANDSAT-4/LANDSAT-5: TC-factor changed to CRIST et al. 1986,
+                      Proc. IGARSS 1986, p.1467</li>
+<li>Crist, E. P., 1985, A TM tasseled cap equivalent transformation for reflectance
+    factor data, Remote Sensing of Environment, 17: 301-306.</li>
+<li>LANDSAT-7: TASSCAP factors cited from:
+  DERIVATION OF A TASSELED CAP TRANSFORMATION BASED ON LANDSAT 7 AT-SATELLITE REFLECTANCE.
+  Chengquan Huang, Bruce Wylie, Limin Yang, Collin Homer and Gregory Zylstra Raytheon ITSS, 
+  USGS EROS Data Center Sioux Falls, SD 57198, USA (http://landcover.usgs.gov/pdf/tasseled.pdf).
+  This is published as well in INT. J. OF RS, 2002, VOL 23, NO. 8, 1741-1748.</li>
+<li> MODIS Tasseled Cap coefficients - Ref: Lobser &amp; Cohen (2007). MODIS tasseled cap:
+ land cover characteristics expressed through transformed MODIS data.
+ International Journal of Remote Sensing, Volume 28(22), Table 3</li>
+<li> Sentinel-2 Tasseled Cap coefficients - Ref: Nedkov, R. (2017). Orthogonal transformation
+  of segmented images from the satellite Sentinel-2.
+  Comptes rendus de l'Acad&eacute;mie bulgare des sciences, 70:687-692.</li>
+<li>Yarbrough, L., Navulur, R., 2014, Presentation of the Kauth-Thomas transform
+  for WorldView-2 reflectance data. Remote Sensing Letters. 5. DOI: 10.1080/2150704X.2014.885148.</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.albedo.html">i.albedo</a>,
+<a href="i.atcorr.html">i.atcorr</a>,
+<a href="i.landsat.toar.html">i.landsat.toar</a>,
+<a href="i.vi.html">i.vi</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Dr. Agustin Lobo, original script, 1997
+<p>
+Markus Neteler, ITC-irst, 2001
+<p>
+Converted to Python by Glynn Clements
+<p>
+Code improvements by Leonardo Perathoner
+<p>
+Sentinel-2 support by Veronica Andreo
+<p>
+Worldview-2 support by Markus Neteler
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/i.tasscap">i.tasscap source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/i.tasscap">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

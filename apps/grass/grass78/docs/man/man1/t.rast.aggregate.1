@@ -1,0 +1,302 @@
+.TH t.rast.aggregate 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.aggregate.py\fR\fR  \- Aggregates temporally the maps of a space time raster dataset by a user defined granularity.
+.SH KEYWORDS
+temporal, aggregation, raster, time
+.SH SYNOPSIS
+\fBt.rast.aggregate.py\fR
+.br
+\fBt.rast.aggregate.py \-\-help\fR
+.br
+\fBt.rast.aggregate.py\fR [\-\fBn\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBbasename\fR=\fIstring\fR  [\fBsuffix\fR=\fIstring\fR]  \fBgranularity\fR=\fIstring\fR \fBmethod\fR=\fIstring\fR  [\fBoffset\fR=\fIinteger\fR]   [\fBnprocs\fR=\fIinteger\fR]   [\fBfile_limit\fR=\fIinteger\fR]   [\fBsampling\fR=\fIname\fR[,\fIname\fR,...]]   [\fBwhere\fR=\fIsql_query\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register Null maps
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time raster dataset
+.IP "\fBbasename\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+Either a numerical suffix or the start time (s\-flag) separated by an underscore will be attached to create a unique identifier
+.IP "\fBsuffix\fR=\fIstring\fR" 4m
+.br
+Suffix to add at basename: set \(cqgran\(cq for granularity, \(cqtime\(cq for the full time format, \(cqnum\(cq for numerical suffix with a specific number of digits (default %05)
+.br
+Default: \fIgran\fR
+.IP "\fBgranularity\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Aggregation granularity, format absolute time \(dqx years, x months, x weeks, x days, x hours, x minutes, x seconds\(dq or an integer value for relative time
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Aggregate operation to be performed on the raster maps
+.br
+Options: \fIaverage, count, median, mode, minimum, min_raster, maximum, max_raster, stddev, range, sum, variance, diversity, slope, offset, detcoeff, quart1, quart3, perc90, quantile, skewness, kurtosis\fR
+.br
+Default: \fIaverage\fR
+.IP "\fBoffset\fR=\fIinteger\fR" 4m
+.br
+Offset that is used to create the output map ids, output map id is generated as: basename_ (count + offset)
+.br
+Default: \fI0\fR
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r.series processes to run in parallel
+.br
+Default: \fI1\fR
+.IP "\fBfile_limit\fR=\fIinteger\fR" 4m
+.br
+The maximum number of open files allowed for each r.series process
+.br
+Default: \fI1000\fR
+.IP "\fBsampling\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+The method to be used for sampling the input dataset
+.br
+Options: \fIequal, overlaps, overlapped, starts, started, finishes, finished, during, contains\fR
+.br
+Default: \fIcontains\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.SH DESCRIPTION
+\fIt.rast.aggregate\fR temporally aggregates space time raster
+datasets by a specific temporal granularity. This module support
+\fIabsolute\fR and \fIrelative time\fR. The temporal granularity
+of absolute time can be \fIseconds, minutes, hours, days, weeks,
+months\fR or \fIyears\fR. Mixing of granularities eg. \(dq1 year, 3
+months 5 days\(dq is not supported. In case of relative time the temporal
+unit of the input space time raster dataset is used. The granularity
+must be specified with an integer value.
+.PP
+This module is sensitive to the current region and mask settings,
+hence spatial extent and spatial resolution. In case the registered
+raster maps of the input space time raster dataset have different
+spatial resolutions, the default nearest neighbor resampling method
+is used for runtime spatial aggregation.
+.SH NOTES
+The raster module \fIr.series\fR is used internally. Hence all
+aggregate methods of \fIr.series\fR are supported. See the
+r.series manual page for details.
+.PP
+This module will shift the start date for each aggregation process
+depending on the provided temporal granularity. The following shifts
+will performed:
+.RS 4n
+.IP \(bu 4n
+\fIgranularity years\fR: will start at the first of January,
+hence 14\-08\-2012 00:01:30 will be shifted to 01\-01\-2012 00:00:00
+.IP \(bu 4n
+\fIgranularity months\fR: will start at the first day of a month,
+hence 14\-08\-2012 will be shifted to 01\-08\-2012 00:00:00
+.IP \(bu 4n
+\fIgranularity weeks\fR: will start at the first day of a week (Monday),
+hence 14\-08\-2012 01:30:30 will be shifted to 13\-08\-2012 01:00:00
+.IP \(bu 4n
+\fIgranularity days\fR: will start at the first hour of a day,
+hence 14\-08\-2012 00:01:30 will be shifted to 14\-08\-2012 00:00:00
+.IP \(bu 4n
+\fIgranularity hours\fR: will start at the first minute of a hour,
+hence 14\-08\-2012 01:30:30 will be shifted to 14\-08\-2012 01:00:00
+.IP \(bu 4n
+\fIgranularity minutes\fR: will start at the first second of a minute,
+hence 14\-08\-2012 01:30:30 will be shifted to 14\-08\-2012 01:30:00
+.RE
+.PP
+The specification of the temporal relation between the aggregation
+intervals and the raster map layers is always formulated from the
+aggregation interval viewpoint. Hence, the relation \fIcontains\fR
+has to be specified to aggregate map layer that are temporally located
+in an aggregation interval.
+.PP
+Parallel processing is supported in case that more than one interval is
+available for aggregation computation. Internally several
+\fIr.series\fR modules will be started, depending on the number of
+specified parallel processes (\fInprocs\fR) and the number of
+intervals to aggregate.
+.PP
+.SH EXAMPLES
+.SS Aggregation of monthly data into yearly data
+In this example the user is going to aggregate monthly data into yearly
+data, running:
+.br
+.nf
+\fC
+t.rast.aggregate input=tempmean_monthly output=tempmean_yearly \(rs
+                 basename=tempmean_year \(rs
+                 granularity=\(dq1 years\(dq method=average
+t.support input=tempmean_yearly \(rs
+          title=\(dqYearly precipitation\(dq \(rs
+          description=\(dqAggregated precipitation dataset with yearly resolution\(dq
+t.info tempmean_yearly
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Space Time Raster Dataset \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Basic information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Id: ........................ tempmean_yearly@climate_2000_2012
+ | Name: ...................... tempmean_yearly
+ | Mapset: .................... climate_2000_2012
+ | Creator: ................... lucadelu
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014\-11\-27 10:25:21.243319
+ | Modification time:.......... 2014\-11\-27 10:25:21.862136
+ | Semantic type:.............. mean
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Absolute time \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Start time:................. 2009\-01\-01 00:00:00
+ | End time:................... 2013\-01\-01 00:00:00
+ | Granularity:................ 1 year
+ | Temporal type of maps:...... interval
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Spatial extent \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | North:...................... 320000.0
+ | South:...................... 10000.0
+ | East:.. .................... 935000.0
+ | West:....................... 120000.0
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Metadata information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Raster register table:...... raster_map_register_514082e62e864522a13c8123d1949dea
+ | North\-South resolution min:. 500.0
+ | North\-South resolution max:. 500.0
+ | East\-west resolution min:... 500.0
+ | East\-west resolution max:... 500.0
+ | Minimum value min:.......... 7.370747
+ | Minimum value max:.......... 8.81603
+ | Maximum value min:.......... 17.111387
+ | Maximum value max:.......... 17.915511
+ | Aggregation type:........... average
+ | Number of registered maps:.. 4
+ |
+ | Title: Yearly precipitation
+ | Monthly precipitation
+ | Description: Aggregated precipitation dataset with yearly resolution
+ | Dataset with monthly precipitation
+ | Command history:
+ | # 2014\-11\-27 10:25:21
+ | t.rast.aggregate input=\(dqtempmean_monthly\(dq
+ |     output=\(dqtempmean_yearly\(dq basename=\(dqtempmean_year\(dq granularity=\(dq1 years\(dq
+ |     method=\(dqaverage\(dq
+ |
+ | # 2014\-11\-27 10:26:21
+ | t.support input=tempmean_yearly \(rs
+ |        title=\(dqYearly precipitation\(dq \(rs
+ |        description=\(dqAggregated precipitation dataset with yearly resolution\(dq
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+.SS Different aggregations and map name suffix variants
+Examples of resulting naming schemes for different aggregations when
+using the \fBsuffix\fR option:
+.SS Weekly aggregation
+.br
+.nf
+\fC
+t.rast.aggregate input=daily_temp output=weekly_avg_temp \(rs
+  basename=weekly_avg_temp method=average granularity=\(dq1 weeks\(dq
+t.rast.list weekly_avg_temp
+name|mapset|start_time|end_time
+weekly_avg_temp_2003_01|climate|2003\-01\-03 00:00:00|2003\-01\-10 00:00:00
+weekly_avg_temp_2003_02|climate|2003\-01\-10 00:00:00|2003\-01\-17 00:00:00
+weekly_avg_temp_2003_03|climate|2003\-01\-17 00:00:00|2003\-01\-24 00:00:00
+weekly_avg_temp_2003_04|climate|2003\-01\-24 00:00:00|2003\-01\-31 00:00:00
+weekly_avg_temp_2003_05|climate|2003\-01\-31 00:00:00|2003\-02\-07 00:00:00
+weekly_avg_temp_2003_06|climate|2003\-02\-07 00:00:00|2003\-02\-14 00:00:00
+weekly_avg_temp_2003_07|climate|2003\-02\-14 00:00:00|2003\-02\-21 00:00:00
+\fR
+.fi
+Variant with \fBsuffix\fR set to granularity:
+.br
+.nf
+\fC
+t.rast.aggregate input=daily_temp output=weekly_avg_temp \(rs
+  basename=weekly_avg_temp suffix=gran method=average \(rs
+  granularity=\(dq1 weeks\(dq
+t.rast.list weekly_avg_temp
+name|mapset|start_time|end_time
+weekly_avg_temp_2003_01_03|climate|2003\-01\-03 00:00:00|2003\-01\-10 00:00:00
+weekly_avg_temp_2003_01_10|climate|2003\-01\-10 00:00:00|2003\-01\-17 00:00:00
+weekly_avg_temp_2003_01_17|climate|2003\-01\-17 00:00:00|2003\-01\-24 00:00:00
+weekly_avg_temp_2003_01_24|climate|2003\-01\-24 00:00:00|2003\-01\-31 00:00:00
+weekly_avg_temp_2003_01_31|climate|2003\-01\-31 00:00:00|2003\-02\-07 00:00:00
+weekly_avg_temp_2003_02_07|climate|2003\-02\-07 00:00:00|2003\-02\-14 00:00:00
+weekly_avg_temp_2003_02_14|climate|2003\-02\-14 00:00:00|2003\-02\-21 00:00:00
+\fR
+.fi
+.SS Monthly aggregation
+.br
+.nf
+\fC
+t.rast.aggregate input=daily_temp output=monthly_avg_temp \(rs
+  basename=monthly_avg_temp suffix=gran method=average \(rs
+  granularity=\(dq1 months\(dq
+t.rast.list monthly_avg_temp
+name|mapset|start_time|end_time
+monthly_avg_temp_2003_01|climate|2003\-01\-01 00:00:00|2003\-02\-01 00:00:00
+monthly_avg_temp_2003_02|climate|2003\-02\-01 00:00:00|2003\-03\-01 00:00:00
+monthly_avg_temp_2003_03|climate|2003\-03\-01 00:00:00|2003\-04\-01 00:00:00
+monthly_avg_temp_2003_04|climate|2003\-04\-01 00:00:00|2003\-05\-01 00:00:00
+monthly_avg_temp_2003_05|climate|2003\-05\-01 00:00:00|2003\-06\-01 00:00:00
+monthly_avg_temp_2003_06|climate|2003\-06\-01 00:00:00|2003\-07\-01 00:00:00
+\fR
+.fi
+.SS Yearly aggregation
+.br
+.nf
+\fC
+t.rast.aggregate input=daily_temp output=yearly_avg_temp \(rs
+  basename=yearly_avg_temp suffix=gran method=average \(rs
+  granularity=\(dq1 years\(dq
+t.rast.list yearly_avg_temp
+name|mapset|start_time|end_time
+yearly_avg_temp_2003|climate|2003\-01\-01 00:00:00|2004\-01\-01 00:00:00
+yearly_avg_temp_2004|climate|2004\-01\-01 00:00:00|2005\-01\-01 00:00:00
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.rast.aggregate.ds,
+t.rast.extract,
+t.info,
+r.series,
+g.region,
+r.mask
+\fR
+.PP
+Temporal data processing Wiki
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.aggregate source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

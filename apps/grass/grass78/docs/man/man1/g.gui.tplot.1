@@ -1,0 +1,142 @@
+.TH g.gui.tplot 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gui.tplot\fR\fR  \- Plots the values of temporal datasets.
+.SH KEYWORDS
+general, GUI, temporal, plot
+.SH SYNOPSIS
+\fBg.gui.tplot\fR
+.br
+\fBg.gui.tplot \-\-help\fR
+.br
+\fBg.gui.tplot\fR [\-\fBh\fR]  [\fBstvds\fR=\fIname\fR[,\fIname\fR,...]]   [\fBstrds\fR=\fIname\fR[,\fIname\fR,...]]   [\fBcoordinates\fR=\fIeast,north\fR]   [\fBcats\fR=\fIstring\fR]   [\fBattr\fR=\fIstring\fR]   [\fBoutput\fR=\fIname\fR]   [\fBcsv\fR=\fIname\fR]   [\fBtitle\fR=\fIstring\fR]   [\fBxlabel\fR=\fIstring\fR]   [\fBylabel\fR=\fIstring\fR]   [\fBsize\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Set the header of CSV file, to be used with csv option
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBstvds\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of the input space time vector datasets
+.IP "\fBstrds\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of the input space time raster datasets
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Coordinates
+.IP "\fBcats\fR=\fIstring\fR" 4m
+.br
+Categories of vectores features
+.br
+To use only with stvds
+.IP "\fBattr\fR=\fIstring\fR" 4m
+.br
+Name of attribute
+.br
+Name of attribute which represent data for plotting
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output graphical file
+.br
+Full path for output file containing the plot, ddd extension to specify format (.png, .pdf, .svg)
+.IP "\fBcsv\fR=\fIname\fR" 4m
+.br
+Name for output CSV file
+.br
+Full path for the CSV file containing the plotted data
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for plot
+.br
+The title for the output plot
+.IP "\fBxlabel\fR=\fIstring\fR" 4m
+.br
+Label for x axis
+.br
+The x axis label for the output plot
+.IP "\fBylabel\fR=\fIstring\fR" 4m
+.br
+Label for y axis
+.br
+The y axis label for the output plot
+.IP "\fBsize\fR=\fIstring\fR" 4m
+.br
+The size for output image
+.br
+It works only with output parameter
+.SH DESCRIPTION
+The \fBTemporal Plot Tool\fR is a \fIwxGUI\fR
+component that queries and plots the values of a point, defined by a coordinate
+pair, in one or more temporal datasets (strds, stvds, str3ds).
+.PP
+Supported features:
+.RS 4n
+.IP \(bu 4n
+temporal datasets with interval/point and absolute/relative time,
+.IP \(bu 4n
+pop\-up annotations with values information,
+.IP \(bu 4n
+query and plot multiple points via the command line,
+.IP \(bu 4n
+zoom and pan,
+.IP \(bu 4n
+change labels to x and y axes,
+.IP \(bu 4n
+add title to the plot, and
+.IP \(bu 4n
+export the time series values to a CSV file.
+.RE
+.br
+\fIFigure: Temporal Plot Tool\fR
+To optionally add a title to the temporal plot and/or change the x and y
+axes labels, first type the desired text and then click \fIDraw\fR as
+showed below.
+.br
+\fIFigure: Add title and labels to a time series plot\fR
+To export the time series data to a text file (date and data values), type a
+name for the file and click \fIDraw\fR again. Optionally, set the
+check\-box to print headers, as well.
+.br
+\fIFigure: Export time series values to a text file\fR
+.SH NOTES
+\fIg.gui.tplot\fR requires the Python plotting library
+Matplotlib.
+.SH SEE ALSO
+\fI
+Temporal data processing
+.br
+wxGUI
+.br
+wxGUI components
+\fR
+.SH AUTHOR
+Luca Delucchi,
+Fondazione Edmund Mach, Italy
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Temporal Plot Tool source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

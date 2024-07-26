@@ -1,0 +1,85 @@
+.TH t.rast3d.algebra 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast3d.algebra.py\fR\fR  \- Apply temporal and spatial operations on space time 3D raster datasets using temporal 3D raster algebra.
+.SH KEYWORDS
+temporal, algebra, raster3d, voxel, time
+.SH SYNOPSIS
+\fBt.rast3d.algebra.py\fR
+.br
+\fBt.rast3d.algebra.py \-\-help\fR
+.br
+\fBt.rast3d.algebra.py\fR [\-\fBsng\fR] \fBexpression\fR=\fIstring\fR \fBbasename\fR=\fIstring\fR  [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Check the spatial topology of temporally related maps and process only spatially related maps
+.IP "\fB\-n\fR" 4m
+.br
+Register Null maps
+.IP "\fB\-g\fR" 4m
+.br
+Use granularity sampling instead of the temporal topology approach
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBexpression\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Algebraic expression for temporal and spatial analysis of space time 3D raster datasets
+.IP "\fBbasename\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r3.mapcalc processes to run in parallel
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIt.rast3d.algebra\fR performs temporal and spatial map algebra
+operations on space time 3D raster datasets (STR3DS) by using the
+temporal 3D raster algebra.
+.SS NOTES
+The module expects an \fBexpression\fR as input parameter in the following form:
+.PP
+\(dqresult = expression\(dq
+.PP
+The statement structure is exact the same as of \fIt.rast.algebra\fR,
+see t.rast.algebra but allows four\-dimensional
+indexing.
+.SH SEE ALSO
+\fI
+t.rast.algebra
+t.rast3d.mapcalc
+r.mapcalc
+t.vect.algebra
+t.select
+\fR
+.SH REFERENCES
+PLY(Python\-Lex\-Yacc)
+.SH AUTHORS
+Thomas Leppelt, Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast3d.algebra source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

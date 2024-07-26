@@ -1,0 +1,118 @@
+.TH d.colortable 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.colortable\fR\fR  \- Displays the color table associated with a raster map layer.
+.SH KEYWORDS
+display, raster, color table
+.SH SYNOPSIS
+\fBd.colortable\fR
+.br
+\fBd.colortable \-\-help\fR
+.br
+\fBd.colortable\fR [\-\fBn\fR] \fBmap\fR=\fIname\fR  [\fBcolor\fR=\fIname\fR]   [\fBlines\fR=\fIinteger\fR]   [\fBcolumns\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Do not draw a collar showing the NULL color in FP maps
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map whose color table is to be displayed
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Color of lines separating the colors of the color table
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIwhite\fR
+.IP "\fBlines\fR=\fIinteger\fR" 4m
+.br
+Number of lines to appear in the color table
+.br
+Options: \fI1\-1000\fR
+.IP "\fBcolumns\fR=\fIinteger\fR" 4m
+.br
+Number of columns to appear in the color table
+.br
+Options: \fI1\-1000\fR
+.SH DESCRIPTION
+\fId.colortable\fR is used to display the color table associated
+with a raster map in the active frame on the graphics
+monitor. The \fBmap\fR name should be an available raster map in the
+user\(cqs current mapset search path and location.
+.PP
+If the \fIvalues\fR of both \fBlines\fR and \fBcolumns\fR are
+not specified by the user, \fId.colortable\fR divides the active
+frame equally among the number of categories present in the named
+raster map. If one option is specified, the other is automatically set
+to accommodate all categories.  If both are specified, as many
+categories as possible are displayed.
+.PP
+If the user specifies the name of a map on the command line but does not
+specify the values of other parameters, parameter default values will be used.
+Alternately, if the user types simply \fId.colortable\fR on the command line
+without any program arguments, the program will prompt the user for parameter
+settings using the standard GRASS parser interface.
+.SH EXAMPLE
+The user running the command:
+.br
+.nf
+\fC
+d.colortable map=soils color=red lines=1 columns=3
+\fR
+.fi
+would see the active graphics frame divided into three columns
+extending the full frame height. The lines dividing the color table
+associated with the \fIsoils\fR map would be displayed in red. The
+user would see, at most, only three of the colors from
+the \fIsoils\fR color table displayed in the active frame (because
+the user requested that this frame be divided into three sections).
+.SH NOTES
+If the user wishes to display the entire color table associated with
+a map, the user should either stipulate a number of lines (rows) and
+columns (cols) sufficient to accommodate the number of categories
+in the map\(cqs color table, or fail to assign values to one or both of
+\fBlines\fR and/or \fBcolumns\fR.
+If the user runs \fId.colortable\fR using the default number of
+lines and columns (the full graphics frame), all categories from the
+map\(cqs color table will be displayed. However, if the user requests
+that the color table associated with a map which has 10 data categories
+be displayed in a graphics frame with only 3 lines (rows) and 2 columns
+(a total of six cells),
+only six of the ten map categories will be displayed.
+.PP
+The user should run \fId.erase\fR
+between runs of \fId.colortable\fR to avoid confusion.
+.SH SEE ALSO
+\fI
+d.erase,
+d.legend,
+d.rast
+\fR
+.SH AUTHOR
+James Westervelt, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.colortable source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

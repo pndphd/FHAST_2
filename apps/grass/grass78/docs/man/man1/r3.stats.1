@@ -1,0 +1,141 @@
+.TH r3.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.stats\fR\fR  \- Generates volume statistics for 3D raster maps.
+.SH KEYWORDS
+raster3d, statistics, voxel, volume
+.SH SYNOPSIS
+\fBr3.stats\fR
+.br
+\fBr3.stats \-\-help\fR
+.br
+\fBr3.stats\fR [\-\fBec\fR] \fBinput\fR=\fIname\fR  [\fBnsteps\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Calculate statistics based on equal value groups
+.IP "\fB\-c\fR" 4m
+.br
+Only print cell counts
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input 3D raster map
+.IP "\fBnsteps\fR=\fIinteger\fR" 4m
+.br
+Number of subranges to collect stats from
+.br
+Default: \fI20\fR
+.SH DESCRIPTION
+\fIr3.stats\fR calculates volume statistics for 3D raster maps.
+Volumes are created on base of value subranges or groups of equal values.
+The default number of subranges is 20 and can vary from 1 to infinite.
+Larger number of subranges will result in larger memory consumption.
+The volumes are calculated in qubic meters. Null values are marked with \(dq*\(dq.
+If the flag \fI\-e\fR is set, the number of subranges will be ignored.
+.SH NOTES
+As with most GRASS 3D raster map modules, \fIr3.stats\fR operates on the cell
+array defined by the current 3D region settings, not the original extent and
+resolution of the input map. See \fIg.region\fR.
+.PP
+The region setting will not effect the memory consumption of this module.
+The number of subranges in case of value range calculation or the number of
+equal value groups effect the memory consumption and the calculation time.
+The user can expect a huge time consumption to calculate the equal value
+groups (flag \fI\-e\fR) if large region settings occur for maps which
+have many equal value groups (> 100000).
+.SH EXAMPLES
+.SS Lausanne FOSS4G 2006 3D demo dataset example
+The 3D raster map \fIgeology\fR has three values. Each value represents
+a specific geological layer, clay = 1, sand = 2 and bedrock = 3. To calculate
+the volume of each geological layer, we can use the flag \fI\-e\fR to group
+equal values into single volumes.
+\fIr3.stats geology \-e\fR will produce the following output:
+.PP
+.br
+.nf
+\fC
+  num   |        value       |     volume    |   perc  |    count
+      1             1.000000   300822000.000   50.13700        50137
+      2             2.000000   101400000.000   16.90000        16900
+      3             3.000000   197778000.000   32.96300        32963
+      4                    *           0.000   0.00000            0
+Number of groups with equal values: 3
+Sum of non Null cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Count = 100000
+Sum of all cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Count = 100000
+\fR
+.fi
+.SS Generic example
+.br
+.nf
+\fC
+#create a small 3D region
+g.region n=1000 s=0 e=2000 w=0 t=300 b=0 res3=100
+#create a raster3D map with row() and null values
+r3.mapcalc \(dqvolmap = if(row() == 5, null(), row())\(dq
+#run r3.stats with a subrange of 10
+r3.stats input=volmap nsteps=10
+#the result should look like this
+ num   | minimum <= value   | value < maximum    |     volume    |   perc  | cell count
+      1          1.000000000          1.900000000    60000000.000   10.00000           60
+      2          1.900000000          2.800000000    60000000.000   10.00000           60
+      3          2.800000000          3.700000000    60000000.000   10.00000           60
+      4          3.700000000          4.600000000    60000000.000   10.00000           60
+      5          4.600000000          5.500000000           0.000   0.00000            0
+      6          5.500000000          6.400000000    60000000.000   10.00000           60
+      7          6.400000000          7.300000000    60000000.000   10.00000           60
+      8          7.300000000          8.200000000    60000000.000   10.00000           60
+      9          8.200000000          9.100000000    60000000.000   10.00000           60
+     10          9.100000000         10.000000001    60000000.000   10.00000           60
+     11                    *                    *    60000000.000   10.00000           60
+Sum of non Null cells:
+        Volume = 540000000.000
+        Percentage =  90.000
+        Cell count = 540
+Sum of all cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Cell count = 600
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r3.univar,
+r.stats,
+r.statistics,
+v.univar
+\fR
+.SH AUTHOR
+Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.stats source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

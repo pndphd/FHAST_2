@@ -1,0 +1,350 @@
+.TH t.rast.accumulate 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.accumulate.py\fR\fR  \- Computes cyclic accumulations of a space time raster dataset.
+.SH KEYWORDS
+temporal, accumulation, raster, time
+.SH SYNOPSIS
+\fBt.rast.accumulate.py\fR
+.br
+\fBt.rast.accumulate.py \-\-help\fR
+.br
+\fBt.rast.accumulate.py\fR [\-\fBnr\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBlower\fR=\fIname\fR]   [\fBupper\fR=\fIname\fR]  \fBstart\fR=\fIstring\fR  [\fBstop\fR=\fIstring\fR]  \fBcycle\fR=\fIstring\fR  [\fBoffset\fR=\fIstring\fR]   [\fBgranularity\fR=\fIstring\fR]  \fBbasename\fR=\fIstring\fR  [\fBsuffix\fR=\fIstring\fR]  \fBlimits\fR=\fIlower,upper\fR  [\fBscale\fR=\fIfloat\fR]   [\fBshift\fR=\fIfloat\fR]   [\fBmethod\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register empty maps in the output space time raster dataset, otherwise they will be deleted
+.IP "\fB\-r\fR" 4m
+.br
+Reverse time direction in cyclic accumulation
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time raster dataset
+.IP "\fBlower\fR=\fIname\fR" 4m
+.br
+Input space time raster dataset that defines the lower threshold, values lower than this threshold are excluded from accumulation
+.IP "\fBupper\fR=\fIname\fR" 4m
+.br
+Input space time raster dataset that defines the upper threshold, values higher than this threshold are excluded from accumulation
+.IP "\fBstart\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+The temporal starting point to begin the accumulation, eg \(cq2001\-01\-01\(cq
+.IP "\fBstop\fR=\fIstring\fR" 4m
+.br
+The temporal date to stop the accumulation, eg \(cq2009\-01\-01\(cq
+.IP "\fBcycle\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+The temporal cycle to restart the accumulation, eg \(cq12 months\(cq
+.IP "\fBoffset\fR=\fIstring\fR" 4m
+.br
+The temporal offset to the beginning of the next cycle, eg \(cq6 months\(cq
+.IP "\fBgranularity\fR=\fIstring\fR" 4m
+.br
+The granularity for accumulation \(cq1 day\(cq
+.br
+Default: \fI1 day\fR
+.IP "\fBbasename\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBsuffix\fR=\fIstring\fR" 4m
+.br
+Suffix to add to the basename. Set \(cqgran\(cq for granularity, \(cqtime\(cq for the full time format, \(cqnum\(cq for numerical suffix with a specific number of digits (default %05)
+.br
+Default: \fIgran\fR
+.IP "\fBlimits\fR=\fIlower,upper\fR \fB[required]\fR" 4m
+.br
+Use these limits in case lower and/or upper input space time raster datasets are not defined or contain NULL values
+.IP "\fBscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for input space time raster dataset
+.IP "\fBshift\fR=\fIfloat\fR" 4m
+.br
+Shift factor for input space time raster dataset
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+This method will be applied to compute the accumulative values from the input maps in a single granule
+.br
+Growing Degree Days or Winkler indices; Mean: sum(input maps)/(number of input maps); Biologically Effective Degree Days; Huglin Heliothermal index
+.br
+Options: \fImean, gdd, bedd, huglin\fR
+.br
+Default: \fImean\fR
+.SH DESCRIPTION
+\fIt.rast.accumulate\fR is designed to perform temporal accumulations
+of space time raster datasets.
+This module expects a space time raster dataset as input that will be
+sampled by a given \fBgranularity\fR. All maps that have the start
+time during the actual granule will be accumulated with the predecessor
+granule accumulation result using the raster module
+r.series.accumulate. The default
+granularity is 1 day, but any temporal granularity can be set.
+.PP
+The \fBstart\fR time and the \fBend\fR time of the accumulation
+process must be set, eg. \fBstart=\(dq2000\-03\-01\(dq end=\(dq2011\-01\-01\(dq\fR. In
+addition, a \fBcycle\fR, eg. \fBcycle=\(dq8 months\(dq\fR, can be specified,
+that defines after which interval of time the accumulation process
+restarts. The \fBoffset\fR option specifies the time that should be
+skipped between two cycles, eg. \fBoffset=\(dq4 months\(dq\fR.
+.PP
+The \fBlower\fR and \fBupper\fR \fBlimits\fR of the accumulation
+process can be set, either by using space time raster datasets or by
+using fixed values for all raster cells and time steps. The raster
+maps that specify the lower and upper limits of the actual granule
+will be detected using the following temporal relations: equals,
+during, overlaps, overlapped and contains. First, all maps with time
+stamps equal to the current granule will be detected, the first lower
+map and the first upper map found will be used as limit definitions.
+If no equal maps are found, then maps with a temporal during relation
+are detected, then maps that temporally overlap the actual granules,
+until maps that have a temporal contain relation are detected. If no
+maps are found or lower/upper STRDS are not defined, then the
+\fBlimits\fR option is used, eg. \fBlimits=10,30\fR.
+.PP
+The \fBupper\fR \fBlimit\fR is only used in the Biologically
+Effective Degree Days calculation.
+.PP
+The options \fBshift\fR, \fBscale\fR and \fBmethod\fR are passed to
+r.series.accumulate.
+Please refer to the manual page of
+r.series.accumulate for detailed
+option description.
+.PP
+The \fBoutput\fR is a new space time raster dataset with the provided
+start time, end time and granularity containing the accumulated raster
+maps. The \fBbase\fR name of the generated maps must always be set.
+The \fBoutput\fR space time raster dataset can then be analyzed using
+t.rast.accdetect to detect specific
+accumulation patterns.
+.SH EXAMPLE
+This is an example how to accumulate the daily mean temperature of
+Europe from 1990 to 2000 using the growing\-degree\-day method to detect
+grass hopper reproduction cycles that are critical to agriculture.
+.br
+.nf
+\fC
+# Get the temperature data
+wget http://www\-pool.math.tu\-berlin.de/~soeren/grass/temperature_mean_1990_2000_daily_celsius.tar.gz
+# Create a temporary location directory
+mkdir \-p /tmp/grassdata/LL
+# Start GRASS and create a new location with PERMANENT mapset
+grass78 \-c EPSG:4326 /tmp/grassdata/LL/PERMANENT
+# Import the temperature data
+t.rast.import input=temperature_mean_1990_2000_daily_celsius.tar.gz \(rs
+      output=temperature_mean_1990_2000_daily_celsius directory=/tmp
+# We need to set the region correctly
+g.region \-p raster=\(gat.rast.list input=temperature_mean_1990_2000_daily_celsius column=name | tail \-1\(ga
+# We can zoom to the raster map
+g.region \-p zoom=\(gat.rast.list input=temperature_mean_1990_2000_daily_celsius column=name | tail \-1\(ga
+#############################################################################
+#### ACCUMULATION USING GDD METHOD ##########################################
+#############################################################################
+# The computation of grashopper pest control cycles is based on:
+#
+#   Using Growing Degree Days For Insect Management
+#   Nancy E. Adams
+#   Extension Educator, Agricultural Resources
+#
+# available here: http://extension.unh.edu/agric/gddays/docs/growch.pdf
+# Now we compute the Biologically Effective Degree Days
+# from 1990 \- 2000 for each year (12 month cycle) with
+# a granularity of one day. Base temperature is 10°C, upper limit is 30°C.
+# Hence the accumulation starts at 10°C and does not accumulate values above 30°C.
+t.rast.accumulate input=\(dqtemperature_mean_1990_2000_daily_celsius\(dq \(rs
+      output=\(dqtemperature_mean_1990_2000_daily_celsius_accumulated_10_30\(dq \(rs
+      limits=\(dq10,30\(dq start=\(dq1990\-01\-01\(dq stop=\(dq2000\-01\-01\(dq cycle=\(dq12 months\(dq \(rs
+      basename=\(dqtemp_acc_daily_10_30\(dq method=\(dqbedd\(dq
+#############################################################################
+#### ACCUMULATION PATTERN DETECTION #########################################
+#############################################################################
+# Now we detect the three grasshopper pest control cycles
+# First cycle at 325°C \- 427°C GDD
+t.rast.accdetect input=temperature_mean_1990_2000_daily_celsius_accumulated_10_30@PERMANENT \(rs
+      occ=leafhopper_occurrence_c1_1990_2000 start=\(dq1990\-01\-01\(dq stop=\(dq2000\-01\-01\(dq \(rs
+      cycle=\(dq12 months\(dq range=325,427 basename=lh_c1 indicator=leafhopper_indicator_c1_1990_2000
+# Second cycle at 685°C \- 813°C GDD
+t.rast.accdetect input=temperature_mean_1990_2000_daily_celsius_accumulated_10_30@PERMANENT \(rs
+      occ=leafhopper_occurrence_c2_1990_2000 start=\(dq1990\-01\-01\(dq stop=\(dq2000\-01\-01\(dq \(rs
+      cycle=\(dq12 months\(dq range=685,813 basename=lh_c2 indicator=leafhopper_indicator_c2_1990_2000
+# Third cycle at 1047°C \- 1179°C GDD
+t.rast.accdetect input=temperature_mean_1990_2000_daily_celsius_accumulated_10_30@PERMANENT \(rs
+      occ=leafhopper_occurrence_c3_1990_2000 start=\(dq1990\-01\-01\(dq stop=\(dq2000\-01\-01\(dq \(rs
+      cycle=\(dq12 months\(dq range=1047,1179 basename=lh_c3 indicator=leafhopper_indicator_c3_1990_2000
+#############################################################################
+#### YEARLY SPATIAL OCCURRENCE COMPUTATION OF ALL CYCLES ####################
+#############################################################################
+# Extract the areas that have full cycles
+t.rast.aggregate input=leafhopper_indicator_c1_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_cycle_1_1990_2000_yearly method=maximum basename=li_c1
+t.rast.mapcalc input=leafhopper_cycle_1_1990_2000_yearly basename=lh_clean_c1 \(rs
+               output=leafhopper_cycle_1_1990_2000_yearly_clean \(rs
+               expression=\(dqif(leafhopper_cycle_1_1990_2000_yearly == 3, 1, null())\(dq
+t.rast.aggregate input=leafhopper_indicator_c2_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_cycle_2_1990_2000_yearly method=maximum basename=li_c2
+t.rast.mapcalc input=leafhopper_cycle_2_1990_2000_yearly basename=lh_clean_c2 \(rs
+               output=leafhopper_cycle_2_1990_2000_yearly_clean \(rs
+               expression=\(dqif(leafhopper_cycle_2_1990_2000_yearly == 3, 2, null())\(dq
+t.rast.aggregate input=leafhopper_indicator_c3_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_cycle_3_1990_2000_yearly method=maximum basename=li_c3
+t.rast.mapcalc input=leafhopper_cycle_3_1990_2000_yearly basename=lh_clean_c3 \(rs
+               output=leafhopper_cycle_3_1990_2000_yearly_clean \(rs
+               expression=\(dqif(leafhopper_cycle_3_1990_2000_yearly == 3, 3, null())\(dq
+t.rast.mapcalc input=leafhopper_cycle_1_1990_2000_yearly_clean,leafhopper_cycle_2_1990_2000_yearly_clean,leafhopper_cycle_3_1990_2000_yearly_clean \(rs
+               basename=lh_cleann_all_cycles \(rs
+               output=leafhopper_all_cycles_1990_2000_yearly_clean \(rs
+               expression=\(dqif(isnull(leafhopper_cycle_3_1990_2000_yearly_clean), \(rs
+	         if(isnull(leafhopper_cycle_2_1990_2000_yearly_clean), \(rs
+		 if(isnull(leafhopper_cycle_1_1990_2000_yearly_clean), \(rs
+		 null() ,1),2),3)\(dq
+cat > color.table << EOF
+3 yellow
+2 blue
+1 red
+EOF
+t.rast.colors input=leafhopper_cycle_1_1990_2000_yearly_clean rules=color.table
+t.rast.colors input=leafhopper_cycle_2_1990_2000_yearly_clean rules=color.table
+t.rast.colors input=leafhopper_cycle_3_1990_2000_yearly_clean rules=color.table
+t.rast.colors input=leafhopper_all_cycles_1990_2000_yearly_clean rules=color.table
+#############################################################################
+################ DURATION COMPUTATION #######################################
+#############################################################################
+# Extract the duration in days of the first cycle
+t.rast.aggregate input=leafhopper_occurrence_c1_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_min_day_c1_1990_2000 method=minimum basename=occ_min_day_c1
+t.rast.aggregate input=leafhopper_occurrence_c1_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_max_day_c1_1990_2000 method=maximum basename=occ_max_day_c1
+t.rast.mapcalc input=leafhopper_min_day_c1_1990_2000,leafhopper_max_day_c1_1990_2000 \(rs
+               basename=occ_duration_c1 \(rs
+               output=leafhopper_duration_c1_1990_2000 \(rs
+               expression=\(dqleafhopper_max_day_c1_1990_2000 \- leafhopper_min_day_c1_1990_2000\(dq
+# Extract the duration in days of the second cycle
+t.rast.aggregate input=leafhopper_occurrence_c2_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_min_day_c2_1990_2000 method=minimum basename=occ_min_day_c2
+t.rast.aggregate input=leafhopper_occurrence_c2_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_max_day_c2_1990_2000 method=maximum basename=occ_max_day_c2
+t.rast.mapcalc input=leafhopper_min_day_c2_1990_2000,leafhopper_max_day_c2_1990_2000 \(rs
+               basename=occ_duration_c2 \(rs
+               output=leafhopper_duration_c2_1990_2000 \(rs
+               expression=\(dqleafhopper_max_day_c2_1990_2000 \- leafhopper_min_day_c2_1990_2000\(dq
+# Extract the duration in days of the third cycle
+t.rast.aggregate input=leafhopper_occurrence_c3_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_min_day_c3_1990_2000 method=minimum basename=occ_min_day_c3
+t.rast.aggregate input=leafhopper_occurrence_c3_1990_2000 gran=\(dq1 year\(dq \(rs
+      output=leafhopper_max_day_c3_1990_2000 method=maximum basename=occ_max_day_c3
+t.rast.mapcalc input=leafhopper_min_day_c3_1990_2000,leafhopper_max_day_c3_1990_2000 \(rs
+               basename=occ_duration_c3 \(rs
+               output=leafhopper_duration_c3_1990_2000 \(rs
+               expression=\(dqleafhopper_max_day_c3_1990_2000 \- leafhopper_min_day_c3_1990_2000\(dq
+t.rast.colors input=leafhopper_duration_c1_1990_2000 color=rainbow
+t.rast.colors input=leafhopper_duration_c2_1990_2000 color=rainbow
+t.rast.colors input=leafhopper_duration_c3_1990_2000 color=rainbow
+#############################################################################
+################ MONTHLY CYCLES OCCURRENCE ##################################
+#############################################################################
+# Extract the monthly indicator that shows the start and end of a cycle
+# First cycle
+t.rast.aggregate input=leafhopper_indicator_c1_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_min_month_c1_1990_2000 method=minimum basename=occ_indi_min_month_c1
+t.rast.aggregate input=leafhopper_indicator_c1_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_max_month_c1_1990_2000 method=maximum basename=occ_indi_max_month_c1
+t.rast.mapcalc input=leafhopper_indi_min_month_c1_1990_2000,leafhopper_indi_max_month_c1_1990_2000 \(rs
+               basename=indicator_monthly_c1 \(rs
+               output=leafhopper_monthly_indicator_c1_1990_2000 \(rs
+               expression=\(dqif(leafhopper_indi_min_month_c1_1990_2000 == 1, 1, if(leafhopper_indi_max_month_c1_1990_2000 == 3, 3, 2))\(dq
+# Second cycle
+t.rast.aggregate input=leafhopper_indicator_c2_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_min_month_c2_1990_2000 method=minimum basename=occ_indi_min_month_c2
+t.rast.aggregate input=leafhopper_indicator_c2_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_max_month_c2_1990_2000 method=maximum basename=occ_indi_max_month_c2
+t.rast.mapcalc input=leafhopper_indi_min_month_c2_1990_2000,leafhopper_indi_max_month_c2_1990_2000 \(rs
+               basename=indicator_monthly_c2 \(rs
+               output=leafhopper_monthly_indicator_c2_1990_2000 \(rs
+               expression=\(dqif(leafhopper_indi_min_month_c2_1990_2000 == 1, 1, if(leafhopper_indi_max_month_c2_1990_2000 == 3, 3, 2))\(dq
+# Third cycle
+t.rast.aggregate input=leafhopper_indicator_c3_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_min_month_c3_1990_2000 method=minimum basename=occ_indi_min_month_c3
+t.rast.aggregate input=leafhopper_indicator_c3_1990_2000 gran=\(dq1 month\(dq \(rs
+      output=leafhopper_indi_max_month_c3_1990_2000 method=maximum basename=occ_indi_max_month_c3
+t.rast.mapcalc input=leafhopper_indi_min_month_c3_1990_2000,leafhopper_indi_max_month_c3_1990_2000 \(rs
+               basename=indicator_monthly_c3 \(rs
+               output=leafhopper_monthly_indicator_c3_1990_2000 \(rs
+               expression=\(dqif(leafhopper_indi_min_month_c3_1990_2000 == 1, 1, if(leafhopper_indi_max_month_c3_1990_2000 == 3, 3, 2))\(dq
+cat > color.table << EOF
+3 red
+2 yellow
+1 green
+EOF
+t.rast.colors input=leafhopper_monthly_indicator_c1_1990_2000 rules=color.table
+t.rast.colors input=leafhopper_monthly_indicator_c2_1990_2000 rules=color.table
+t.rast.colors input=leafhopper_monthly_indicator_c3_1990_2000 rules=color.table
+#############################################################################
+################ VISUALIZATION ##############################################
+#############################################################################
+# Now we use g.gui.animation to visualize the yearly occurrence, the duration and the monthly occurrence
+# Yearly occurrence of all reproduction cycles
+g.gui.animation strds=leafhopper_all_cycles_1990_2000_yearly_clean
+# Yearly duration of reproduction cycle 1
+g.gui.animation strds=leafhopper_duration_c1_1990_2000
+# Yearly duration of reproduction cycle 2
+g.gui.animation strds=leafhopper_duration_c2_1990_2000
+# Yearly duration of reproduction cycle 3
+g.gui.animation strds=leafhopper_duration_c3_1990_2000
+# Monthly occurrence of reproduction cycle 1
+g.gui.animation strds=leafhopper_monthly_indicator_c1_1990_2000
+# Monthly occurrence of reproduction cycle 2
+g.gui.animation strds=leafhopper_monthly_indicator_c2_1990_2000
+# Monthly occurrence of reproduction cycle 3
+g.gui.animation strds=leafhopper_monthly_indicator_c3_1990_2000
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.rast.accdetect,
+t.rast.aggregate,
+t.rast.mapcalc,
+t.info,
+g.region,
+r.series.accumulate
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Jones, G.V., Duff, A.A., Hall, A., Myers, J.W., 2010.
+Spatial Analysis of Climate in Winegrape Growing Regions in the
+Western United States. Am. J. Enol. Vitic. 61, 313\-326.
+.RE
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.accumulate source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

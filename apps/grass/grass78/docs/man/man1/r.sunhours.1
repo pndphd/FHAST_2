@@ -1,0 +1,169 @@
+.TH r.sunhours 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.sunhours\fR\fR  \- Calculates solar elevation, solar azimuth, and sun hours.
+.br
+Solar elevation: the angle between the direction of the geometric center of the sun\(cqs apparent disk and the (idealized) horizon. Solar azimuth: the angle from due north in clockwise direction.
+.SH KEYWORDS
+raster, solar, sun energy, sun position
+.SH SYNOPSIS
+\fBr.sunhours\fR
+.br
+\fBr.sunhours \-\-help\fR
+.br
+\fBr.sunhours\fR [\-\fBts\fR]  [\fBelevation\fR=\fIname\fR]   [\fBazimuth\fR=\fIname\fR]   [\fBsunhour\fR=\fIname\fR]  \fByear\fR=\fIinteger\fR  [\fBmonth\fR=\fIinteger\fR]  \fBday\fR=\fIinteger\fR  [\fBhour\fR=\fIinteger\fR]   [\fBminute\fR=\fIinteger\fR]   [\fBsecond\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Time is local sidereal time, not Greenwich standard time
+.IP "\fB\-s\fR" 4m
+.br
+Do not use SOLPOS algorithm of NREL
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR" 4m
+.br
+Output raster map with solar elevation angle
+.br
+Name for output raster map
+.IP "\fBazimuth\fR=\fIname\fR" 4m
+.br
+Output raster map with solar azimuth angle
+.br
+Name for output raster map
+.IP "\fBsunhour\fR=\fIname\fR" 4m
+.br
+Output raster map with sunshine hours
+.br
+Sunshine hours require SOLPOS use and Greenwich standard time
+.IP "\fByear\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Year
+.br
+Options: \fI1950\-2050\fR
+.IP "\fBmonth\fR=\fIinteger\fR" 4m
+.br
+Month
+.br
+If not given, day is interpreted as day of the year
+.br
+Options: \fI1\-12\fR
+.IP "\fBday\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Day
+.br
+Options: \fI1\-366\fR
+.IP "\fBhour\fR=\fIinteger\fR" 4m
+.br
+Hour
+.br
+Options: \fI0\-24\fR
+.br
+Default: \fI12\fR
+.IP "\fBminute\fR=\fIinteger\fR" 4m
+.br
+Minutes
+.br
+Options: \fI0\-60\fR
+.br
+Default: \fI0\fR
+.IP "\fBsecond\fR=\fIinteger\fR" 4m
+.br
+Seconds
+.br
+Options: \fI0\-60\fR
+.br
+Default: \fI0\fR
+.SH DESCRIPTION
+\fIr.sunhours\fR calculates sun elevation and sun azimuth angles for
+the given time of day and each grid cell in the current region.
+Additionally, the photoperiod (sunshine hours on flat terrain) can be
+calculated.
+.PP
+Sun elevation, height, height angle, or solar altitude angle is the
+angle in degrees between the horizon and a line that points from the
+site towards the centre of the sun.
+.PP
+The sun azimuth angle is here defined as the azimuth angle in degrees
+of the sun from due north in a clockwise direction.
+.PP
+The time used here is defined such that 12:00 (high noon) is the time
+when the sun has reached its highest point in the sky at the current site,
+unless the \fI\-t\fR flag is used in which case time is interpreted as
+Greenwich standard time.
+.PP
+If a \fIsunhour\fR output map is specified, the module calculates
+sunshine hours for the given day. This option requires both Greenwhich
+standard time and the use of the SOLPOS algorithm by NREL.
+.SH NOTES
+To consider also cast shadow effects of the terrain, \fIr.sun\fR has
+to be used.
+.SH EXAMPLES
+.SS Calculating a sun elevation angle map
+Calculate the sun elevation angle map for 2010\-10\-11 at 14:00h solar time:
+.br
+.nf
+\fC
+# set computational region to North Carolina state extent
+g.region n=318500 s=\-16000 w=124000 e=963000 res=500 \-p
+r.sunhours elevation=sun_elev year=2010 month=10 day=11 hour=14 minute=00
+# visualize
+d.mon wx0
+d.rast sun_elev
+d.vect nc_state type=boundary
+d.legend sun_elev \-s
+\fR
+.fi
+.PP
+.br
+\fISun angle map (in degree) of North Carolina for the 2010\-10\-11 at 14:00h solar time\fR
+.SS Calculate map of photoperiod (insolation time)
+Calculate photoperiod of day\-of\-year 001 (1st January) of 2012 for
+the current computational region, ignoring cast shadow effects of the
+terrain:
+.br
+.nf
+\fC
+g.region \-p
+r.sunhours sunhour=photoperiod_doy_001 year=2012 day=1
+\fR
+.fi
+.SH Acknowledgements
+Acknowledgements: National Renewable Energy Laboratory for their
+SOLPOS 2.0 sun position
+algorithm.
+.SH SEE ALSO
+\fI
+g.region,
+r.sun,
+r.sunmask
+\fR
+.SH AUTHOR
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: r.sunhours source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

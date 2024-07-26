@@ -1,0 +1,488 @@
+.TH d.vect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.vect\fR\fR  \- Displays user\-specified vector map in the active graphics frame.
+.SH KEYWORDS
+display, graphics, vector, level1
+.SH SYNOPSIS
+\fBd.vect\fR
+.br
+\fBd.vect \-\-help\fR
+.br
+\fBd.vect\fR [\-\fBcirs\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBdisplay\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBcolor\fR=\fIname\fR]   [\fBfill_color\fR=\fIname\fR]   [\fBrgb_column\fR=\fIname\fR]   [\fBzcolor\fR=\fIstyle\fR]   [\fBwidth\fR=\fIinteger\fR]   [\fBwidth_column\fR=\fIname\fR]   [\fBwidth_scale\fR=\fIfloat\fR]   [\fBicon\fR=\fIstring\fR]   [\fBsize\fR=\fIfloat\fR]   [\fBsize_column\fR=\fIname\fR]   [\fBrotation_column\fR=\fIname\fR]   [\fBicon_area\fR=\fIstring\fR]   [\fBicon_line\fR=\fIstring\fR]   [\fBlegend_label\fR=\fIstring\fR]   [\fBlabel_layer\fR=\fIstring\fR]   [\fBattribute_column\fR=\fIname\fR]   [\fBlabel_color\fR=\fIname\fR]   [\fBlabel_bgcolor\fR=\fIname\fR]   [\fBlabel_bcolor\fR=\fIname\fR]   [\fBlabel_size\fR=\fIinteger\fR]   [\fBfont\fR=\fIstring\fR]   [\fBencoding\fR=\fIstring\fR]   [\fBxref\fR=\fIstring\fR]   [\fByref\fR=\fIstring\fR]   [\fBminreg\fR=\fIfloat\fR]   [\fBmaxreg\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Random colors according to category number (or layer number if \(cqlayer=\-1\(cq is given)
+.IP "\fB\-i\fR" 4m
+.br
+Use values from \(cqcats\(cq option as feature id
+.IP "\fB\-r\fR" 4m
+.br
+Use square root of the value of size_column
+.br
+This makes circle areas proportionate to the size_column values instead of circle radius
+.IP "\fB\-s\fR" 4m
+.br
+Do not show this layer in vector legend
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBdisplay\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Display
+.br
+Options: \fIshape, cat, topo, vert, dir, zcoor\fR
+.br
+Default: \fIshape\fR
+.br
+\fBshape\fR: Display geometry of features
+.br
+\fBcat\fR: Display category numbers of features
+.br
+\fBtopo\fR: Display topology information (nodes, edges)
+.br
+\fBvert\fR: Display vertices of features
+.br
+\fBdir\fR: Display direction of linear features
+.br
+\fBzcoor\fR: Display z\-coordinate of features (only for 3D vector maps)
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face\fR
+.br
+Default: \fIpoint,line,area,face\fR
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Feature color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBfill_color\fR=\fIname\fR" 4m
+.br
+Area fill color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fI200:200:200\fR
+.IP "\fBrgb_column\fR=\fIname\fR" 4m
+.br
+Colorize features according to color definition column
+.br
+Color definition in R:G:B form
+.IP "\fBzcolor\fR=\fIstyle\fR" 4m
+.br
+Colorize point or area features according to z\-coordinate
+.br
+Options: \fIaspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave\fR
+.br
+\fB aspect\fR: aspect oriented grey colors [range: map values]
+.br
+\fB aspectcolr\fR: aspect oriented rainbow colors [range: 0 to 360]
+.br
+\fB bcyr\fR: blue through cyan through yellow to red [range: map values]
+.br
+\fB bgyr\fR: blue through green through yellow to red [range: map values]
+.br
+\fB blues\fR: white to blue [range: map values]
+.br
+\fB byg\fR: blue through yellow to green [range: map values]
+.br
+\fB byr\fR: blue through yellow to red [range: map values]
+.br
+\fB celsius\fR: blue to red for degree Celsius temperature [range: \-80 to 80]
+.br
+\fB corine\fR: EU Corine land cover colors [range: 111 to 995]
+.br
+\fB curvature\fR: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]
+.br
+\fB differences\fR: differences oriented colors [range: map values]
+.br
+\fB elevation\fR: maps relative ranges of raster values to elevation color ramp [range: map values]
+.br
+\fB etopo2\fR: colors for ETOPO2 worldwide bathymetry/topography [range: \-11000 to 8850]
+.br
+\fB evi\fR: enhanced vegetative index colors [range: \-1 to 1]
+.br
+\fB fahrenheit\fR: blue to red for Fahrenheit temperature [range: \-112 to 176]
+.br
+\fB forest_cover\fR: percentage of forest cover [range: 0 to 100]
+.br
+\fB gdd\fR: accumulated growing degree days [range: 0 to 6000]
+.br
+\fB grass\fR: GRASS GIS green (perceptually uniform) [range: map values]
+.br
+\fB greens\fR: white to green [range: map values]
+.br
+\fB grey\fR: grey scale [range: map values]
+.br
+\fB grey.eq\fR: histogram\-equalized grey scale [range: map values]
+.br
+\fB grey.log\fR: histogram logarithmic transformed grey scale [range: map values]
+.br
+\fB grey1.0\fR: grey scale for raster values between 0.0\-1.0 [range: 0 to 1]
+.br
+\fB grey255\fR: grey scale for raster values between 0\-255 [range: 0 to 255]
+.br
+\fB gyr\fR: green through yellow to red [range: map values]
+.br
+\fB haxby\fR: relative colors for bathymetry or topography [range: map values]
+.br
+\fB inferno\fR: perceptually uniform sequential color table inferno [range: map values]
+.br
+\fB kelvin\fR: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]
+.br
+\fB magma\fR: perceptually uniform sequential color table magma [range: map values]
+.br
+\fB ndvi\fR: Normalized Difference Vegetation Index colors [range: \-1 to 1]
+.br
+\fB ndwi\fR: Normalized Difference Water Index colors [range: \-200 to 200]
+.br
+\fB nlcd\fR: US National Land Cover Dataset colors [range: 0 to 95]
+.br
+\fB oranges\fR: white to orange [range: map values]
+.br
+\fB plasma\fR: perceptually uniform sequential color table plasma [range: map values]
+.br
+\fB population\fR: color table covering human population classification breaks [range: 0 to 2e+009]
+.br
+\fB population_dens\fR: color table covering human population density classification breaks [range: 0 to 1e+009]
+.br
+\fB precipitation\fR: precipitation color table (0..2000mm) [range: 0 to 7000]
+.br
+\fB precipitation_daily\fR: precipitation color table (0..1000mm) [range: 0 to 10000]
+.br
+\fB precipitation_monthly\fR: precipitation color table (0..1000mm) [range: 0 to 1000]
+.br
+\fB rainbow\fR: rainbow color table [range: map values]
+.br
+\fB ramp\fR: color ramp [range: map values]
+.br
+\fB random\fR: random color table [range: map values]
+.br
+\fB reds\fR: white to red [range: map values]
+.br
+\fB roygbiv\fR:  [range: map values]
+.br
+\fB rstcurv\fR: terrain curvature (from r.resamp.rst) [range: map values]
+.br
+\fB ryb\fR: red through yellow to blue [range: map values]
+.br
+\fB ryg\fR: red through yellow to green [range: map values]
+.br
+\fB sepia\fR: yellowish\-brown through to white [range: map values]
+.br
+\fB slope\fR: r.slope.aspect\-type slope colors for raster values 0\-90 [range: 0 to 90]
+.br
+\fB soilmoisture\fR: soilmoisture color table (0.0\-1.0) [range: 0 to 1]
+.br
+\fB srtm\fR: color palette for Shuttle Radar Topography Mission elevation [range: \-11000 to 8850]
+.br
+\fB srtm_plus\fR: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: \-11000 to 8850]
+.br
+\fB terrain\fR: global elevation color table covering \-11000 to +8850m [range: \-11000 to 8850]
+.br
+\fB viridis\fR: perceptually uniform sequential color table viridis [range: map values]
+.br
+\fB water\fR: water depth [range: map values]
+.br
+\fB wave\fR: color wave [range: map values]
+.IP "\fBwidth\fR=\fIinteger\fR" 4m
+.br
+Line width
+.br
+Default: \fI0\fR
+.IP "\fBwidth_column\fR=\fIname\fR" 4m
+.br
+Name of numeric column containing line width
+.br
+These values will be scaled by width_scale
+.IP "\fBwidth_scale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for width_column
+.br
+Default: \fI1\fR
+.IP "\fBicon\fR=\fIstring\fR" 4m
+.br
+Point and centroid symbol
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIbasic/x\fR
+.IP "\fBsize\fR=\fIfloat\fR" 4m
+.br
+Symbol size
+.br
+When used with the size_column option this becomes the scale factor
+.br
+Default: \fI5\fR
+.IP "\fBsize_column\fR=\fIname\fR" 4m
+.br
+Name of numeric column containing symbol size
+.IP "\fBrotation_column\fR=\fIname\fR" 4m
+.br
+Name of numeric column containing symbol rotation angle
+.br
+Measured in degrees CCW from east
+.IP "\fBicon_area\fR=\fIstring\fR" 4m
+.br
+Area/boundary symbol for legend
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIlegend/area\fR
+.IP "\fBicon_line\fR=\fIstring\fR" 4m
+.br
+Line symbol for legend
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIlegend/line\fR
+.IP "\fBlegend_label\fR=\fIstring\fR" 4m
+.br
+Label to display after symbol in vector legend
+.IP "\fBlabel_layer\fR=\fIstring\fR" 4m
+.br
+Layer number for labels (default: the given layer number)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBattribute_column\fR=\fIname\fR" 4m
+.br
+Name of column to be displayed as a label
+.IP "\fBlabel_color\fR=\fIname\fR" 4m
+.br
+Label color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIred\fR
+.IP "\fBlabel_bgcolor\fR=\fIname\fR" 4m
+.br
+Label background color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fInone\fR
+.IP "\fBlabel_bcolor\fR=\fIname\fR" 4m
+.br
+Label border color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fInone\fR
+.IP "\fBlabel_size\fR=\fIinteger\fR" 4m
+.br
+Label size (pixels)
+.br
+Default: \fI8\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBencoding\fR=\fIstring\fR" 4m
+.br
+Text encoding
+.IP "\fBxref\fR=\fIstring\fR" 4m
+.br
+Label horizontal justification
+.br
+Options: \fIleft, center, right\fR
+.br
+Default: \fIleft\fR
+.IP "\fByref\fR=\fIstring\fR" 4m
+.br
+Label vertical justification
+.br
+Options: \fItop, center, bottom\fR
+.br
+Default: \fIcenter\fR
+.IP "\fBminreg\fR=\fIfloat\fR" 4m
+.br
+Minimum region size (average from height and width) when map is displayed
+.IP "\fBmaxreg\fR=\fIfloat\fR" 4m
+.br
+Maximum region size (average from height and width) when map is displayed
+.SH DESCRIPTION
+\fId.vect\fR displays vector maps in the active frame on the
+graphics monitor.
+.SH NOTES
+\fId.vect\fR can simply be used typing d.vect
+map=vector_map. There are a large variety of optional parameters
+which allow the user to specify vector type, colors, data fields, SQL
+queries, label size and justification, etc.
+.PP
+By default \fId.vect\fR areas are filled with \fBfill_color\fR and
+outlined with \fBcolor\fR. Area outlines can be suppressed with
+.br
+.nf
+\fC
+d.vect map=vector_map color=none
+\fR
+.fi
+and areas can be made transparent with
+.br
+.nf
+\fC
+d.vect map=vector_map fill_color=none
+\fR
+.fi
+.PP
+In order to display attributes in the map, \fBattribute_column\fR must
+be specified.
+.PP
+Feature colors may be specified
+by \fIv.colors\fR in a form of color
+table or in an attribute table column containing RRR:GGG:BBB
+values.
+.PP
+A table for a vector map might look like this:
+.br
+.nf
+\fC
+db.select sql=\(dqselect * from testisola\(dq
+cat|label|GRASSRGB
+0|no data|255:255:255
+90|FRASSILONGO|23:245:67
+104|LEVICO|23:145:67
+139|PERGINE VALSUGANA|223:45:237
+168|SANT\(cqORSOLA|223:45:67
+190|TENNA|123:45:67
+\fR
+.fi
+.PP
+To add the GRASSRGB color column, use \fIv.db.addcolumn\fR:
+.br
+.nf
+\fC
+v.db.addcolumn map=testisola columns=\(dqGRASSRGB varchar(11)\(dq
+\fR
+.fi
+.PP
+To add/change a color, use \fIv.db.update\fR:
+.br
+.nf
+\fC
+v.db.update map=testisola column=GRASSRGB value=\(dq123:45:237\(dq where=\(dqcat=139\(dq
+\fR
+.fi
+.PP
+A much simpler method of color coding is by using the \fB\-c\fR flag
+which displays vector elements of like category number with a random
+color.
+.PP
+This module can use FreeType/TrueType fonts if they have already been selected with
+\fId.font\fR.
+.PP
+Parameter \fBwidth\fR is set by default to \(cq0\(cq. XDRIVER specifies the
+precise behaviour for non\-zero line width, but drivers have some
+freedom as to how zero\-width lines are handled, so they can use the
+hardware\(cqs \(dqthin line\(dq drawing primitive, if it has one. A
+width of zero can potentially result in significantly faster operation. On
+drivers where there is no such thing as a \(dqthin\(dq line, the driver will
+use a sensible default (which might not be the same as \(cq1\(cq).
+.SH EXAMPLES
+Spearfish examples:
+.br
+.nf
+\fC
+# display roads with category numbers:
+d.vect map=roads display=shape,cat label_color=green
+# display randomly colorized soils map with attributes
+d.vect \-c map=soils attribute_column=label
+# display randomly colorized selected vectors from soils map
+d.vect \-c map=soils where=\(dqlabel=\(cqVBF\(cq\(dq display=shape attribute_column=label
+\fR
+.fi
+.PP
+3D points, 3D lines and 3D polygons colorized according to z height
+(for 3D lines and polygons a z height is computed by a midpoint of
+line/area bounding box):
+.br
+.nf
+\fC
+g.region raster=elevation.10m
+r.random input=elevation.10m n=5000 vector=random3d \-d
+d.mon start=x0
+# display as black points
+d.vect map=random3d
+# display 3D points colorized according to z height
+d.vect map=random3d zcolor=gyr
+# 3D contour lines
+r.contour input=elevation.10m output=contour20m step=20
+d.vect map=contour20m zcolor=gyr
+# generate 3D triangles
+v.delaunay input=random3d output=random3d_del
+# display 3D polygons colorized according to z height
+d.vect map=random3d_del type=area zcolor=gyr
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.colors,
+d.erase,
+d.rast,
+v.colors,
+v.db.addcolumn,
+v.db.update
+\fR
+.PP
+\fI
+GRASS SQL interface
+\fR
+.SH AUTHORS
+CERL
+.br
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Support for color tables by Martin Landa, Czech Technical University in Prague (8/2011)
+.br
+and many other GRASS developers
+.SH SOURCE CODE
+.PP
+Available at: d.vect source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

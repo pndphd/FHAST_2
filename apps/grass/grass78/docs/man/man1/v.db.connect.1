@@ -1,0 +1,297 @@
+.TH v.db.connect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.connect\fR\fR  \- Prints/sets DB connection for a vector map to attribute table.
+.SH KEYWORDS
+vector, attribute table, database, layer
+.SH SYNOPSIS
+\fBv.db.connect\fR
+.br
+\fBv.db.connect \-\-help\fR
+.br
+\fBv.db.connect\fR [\-\fBpgcod\fR] \fBmap\fR=\fIname\fR  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]   [\fBtable\fR=\fIname\fR]   [\fBkey\fR=\fIname\fR]   [\fBlayer\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print all map connection parameters and exit
+.IP "\fB\-g\fR" 4m
+.br
+Print all map connection parameters in shell script style and exit
+.br
+Format: layer[/layer name] table key database driver
+.IP "\fB\-c\fR" 4m
+.br
+Print types/names of table columns for specified layer and exit
+.IP "\fB\-o\fR" 4m
+.br
+Overwrite connection parameter for certain layer
+.IP "\fB\-d\fR" 4m
+.br
+Delete connection for certain layer (not the table)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBtable\fR=\fIname\fR" 4m
+.br
+Name of attribute table
+.IP "\fBkey\fR=\fIname\fR" 4m
+.br
+Name of key column
+.br
+Must refer to an integer column
+.br
+Default: \fIcat\fR
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Format: layer number[/layer name]
+.br
+Default: \fI1\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator for shell script style output
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIv.db.connect\fR prints or sets database connection for a vector
+map. The user can add or remove link to attribute table on the certain
+layer.
+.SH NOTE
+Connection information (driver, database, table, key) is stored for
+each map, in the file
+.br
+.nf
+\fC
+<database>/<location>/<mapset>/vector/<map>/dbln
+\fR
+.fi
+.PP
+If parameters for database connection are already set with
+db.connect, they are taken as default values and
+do not need to be specified each time.
+.PP
+When printing database connection (\fIp\fR or \fIg\fR flag) the parameter
+\fIlayer\fR is ignored, i.e. \fBall\fR connections are printed to the
+output.
+.PP
+\fBAttention:\fR Removing a vector map will also delete all tables
+linked to it! If you use v.db.connect to
+link further tables to your map, it is advisable to make a copy from
+those tables first and connect the copied tables to the vector map
+(see also v.overlay).
+.SH EXAMPLE
+Note: The default database backend setting is SQLite.
+.SS Print database connection
+Print all database connection parameters for vector map.
+.br
+.nf
+\fC
+v.db.connect \-p map=roads
+\fR
+.fi
+.PP
+Print column types and names of table linked to vector map.
+.br
+.nf
+\fC
+v.db.connect \-c map=roads
+\fR
+.fi
+.SS Connect vector map to database (DBF driver)
+Connect vector map to DBF table without or with variables.
+.br
+.PP
+Using default DB connection:
+.br
+.nf
+\fC
+v.db.connect map=vectormap table=table
+\fR
+.fi
+.PP
+Using hardcoded path to DBF directory (not recommended):
+.br
+.br
+.nf
+\fC
+v.db.connect map=vectormap table=table \(rs
+             database=/home/user/grassdata/spearfish60/PERMANENT/dbf
+\fR
+.fi
+.PP
+Using variable as DBF directory definition, single quotes must be used:
+.br
+.br
+.nf
+\fC
+v.db.connect map=vectormap table=table \(rs
+             database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq
+\fR
+.fi
+.PP
+Connect vector map layer 2 and key ID to database with variables
+(note: if needed, single quotes must be used for the \fIdatabase\fR
+parameter):
+.br
+.nf
+\fC
+v.db.connect map=vectormap table=table layer=2 key=ID
+\fR
+.fi
+.SS Connect vector map to database (SQLite driver)
+Very similar to DBF driver example above.
+.br
+.nf
+\fC
+db.connect driver=sqlite database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+db.tables \-p
+v.db.connect map=vectormap table=table driver=sqlite \(rs
+             database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+v.db.connect \-p map=vectormap
+\fR
+.fi
+.SS Connect vector map to database (MySQL driver)
+.br
+.nf
+\fC
+# note: connection which requires password
+db.connect driver=mysql database=\(dqhost=dbserver.foo.org,dbname=my_database\(dq
+db.login user=joshua [password=xxx]
+# ... or enter password interactively.
+db.tables \-p
+# connect external table to layer 2:
+v.db.connect map=my_map table=my_mysql_table key=baz layer=2
+v.db.connect \-p my_map
+\fR
+.fi
+.SS Connect vector map to database (PostgreSQL driver)
+.br
+.nf
+\fC
+# note: connection without password being asked
+v.db.connect map=vectormap table=table layer=1 key=oid driver=pg \(rs
+             database=\(dqhost=myserver.itc.it,dbname=mydb,user=name\(dq \(rs
+             table=mytable key=id
+\fR
+.fi
+.SS Store geometry in GRASS but attributes in PostgreSQL
+This example illustrates a mixed data storage with possibility to
+update attributes in an external PostgreSQL database:
+.br
+.nf
+\fC
+# Check current settings for attribute storage:
+db.connect \-p
+# Import table from PostgreSQL to new map
+# (NOTE: output map name needs to be different from table name in
+#        case that GRASS is connected to PostgreSQL):
+v.in.db driver=pg database=\(dqhost=localhost,dbname=meteo\(dq \(rs
+        table=mytable x=lon y=lat key=cat out=mytable
+v.db.connect map=mytable \-p
+# Cancel table connection between map and attribute table:
+v.db.connect map=mytable \-d
+v.db.connect map=mytable \-p
+# Drop table which was replicated due to import:
+db.tables \-p
+echo \(dqDROP TABLE mytable\(dq | db.execute
+db.tables \-p
+# reconnect map to table in PostgreSQL:
+v.db.connect map=mytable driver=pg database=\(dqhost=localhost,dbname=meteo\(dq \(rs
+        table=mytable key=cat
+# Now the geometry is stored in GRASS while the attributes are stored
+# in PostgreSQL.
+\fR
+.fi
+An alternative is to create a \(dqview\(dq of only ID, x, y [,z] columns and
+to use v.in.db on this view, then connect the original
+table to the geometry. This will be faster if the original table
+is very large.
+.SS Store geometry in GRASS but attributes in PostGIS
+This example illustrated a mixed data storage with possibility
+top update attributes in external PostGIS database:
+.br
+.nf
+\fC
+# Check current settings for attribute storage:
+db.connect \-p
+# Import table from PostGIS to new map
+# (NOTE: output map name needs to be different from table name in
+#        case that GRASS is connected to PostGIS):
+v.in.db driver=pg database=\(dqhost=localhost,dbname=meteo\(dq \(rs
+        table=mytable x=\(dqx(geom)\(dq y=\(dqy(geom)\(dq key=cat out=mytable
+v.db.connect map=mytable \-p
+# Cancel table connection between map and attribute table:
+v.db.connect map=mytable \-d
+v.db.connect map=mytable \-p
+# Drop table which was replicated due to import:
+db.tables \-p
+echo \(dqDROP TABLE mytable\(dq | db.execute
+db.tables \-p
+# reconnect map to table in PostGIS:
+v.db.connect map=mytable driver=pg database=\(dqhost=localhost,dbname=meteo\(dq \(rs
+        table=mytable key=cat
+# Now the geometry is stored in GRASS while the attributes are stored
+# in PostGIS.
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.copy,
+db.tables,
+v.db.addtable,
+v.db.droptable,
+v.db.addcolumn,
+v.db.dropcolumn,
+v.external,
+v.in.db,
+v.overlay
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.db.connect source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.support - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.support</b></em>  - Updates vector map metadata.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_metadata.html">metadata</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.support</b><br></div>
+<b>v.support --help</b><br>
+<div id="synopsis"><b>v.support</b> [-<b>rh</b>] <b>map</b>=<em>name</em>  [<b>organization</b>=<em>phrase</em>]   [<b>date</b>=<em>datestring</em>]   [<b>person</b>=<em>phrase</em>]   [<b>map_name</b>=<em>phrase</em>]   [<b>map_date</b>=<em>datestring</em>]   [<b>scale</b>=<em>integer</em>]   [<b>zone</b>=<em>integer</em>]   [<b>threshold</b>=<em>float</em>]   [<b>comment</b>=<em>phrase</em>]   [<b>cmdhist</b>=<em>command</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Replace comment instead of appending it</dd>
+
+<dt><b>-h</b></dt>
+<dd>Replace command line instead of appending it</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>organization</b>=<em>phrase</em></dt>
+<dd>Organization where vector map was created</dd>
+
+<dt><b>date</b>=<em>datestring</em></dt>
+<dd>Date of vector map digitization (e.g., "15 Mar 2007")</dd>
+
+<dt><b>person</b>=<em>phrase</em></dt>
+<dd>Person who created vector map</dd>
+
+<dt><b>map_name</b>=<em>phrase</em></dt>
+<dd>Vector map title</dd>
+
+<dt><b>map_date</b>=<em>datestring</em></dt>
+<dd>Date when the source map was originally produced</dd>
+
+<dt><b>scale</b>=<em>integer</em></dt>
+<dd>Vector map scale number (e.g., 24000)</dd>
+
+<dt><b>zone</b>=<em>integer</em></dt>
+<dd>Vector map projection zone</dd>
+
+<dt><b>threshold</b>=<em>float</em></dt>
+<dd>Vector map digitizing threshold number (e.g., 0.5)</dd>
+
+<dt><b>comment</b>=<em>phrase</em></dt>
+<dd>Text to append to the comment line of the map's metadata file</dd>
+
+<dt><b>cmdhist</b>=<em>command</em></dt>
+<dd>Command line to store into vector map history file (used for vector scripts)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.support</em> is used to set/update vector map metadata.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<div class="code"><pre>
+# update scale to 1:24000
+v.support myvectmap scale=24000
+
+# update organization
+v.support myvectmap organization="OSGeo labs"
+v.info myvectmap
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+	<a href="v.build.html">v.build</a>,
+        <a href="v.info.html">v.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Neteler, Trento
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.support">v.support source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.support">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

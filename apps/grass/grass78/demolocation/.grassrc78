@@ -1,0 +1,4 @@
+GISDBASE: C:/msys64/c/OSGeo4W64/apps/grass/grass78
+LOCATION_NAME: demolocation
+MAPSET: PERMANENT
+GUI: text

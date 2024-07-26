@@ -1,0 +1,385 @@
+.TH i.segment 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.segment\fR\fR  \- Identifies segments (objects) from imagery data.
+.SH KEYWORDS
+imagery, segmentation, classification, object recognition
+.SH SYNOPSIS
+\fBi.segment\fR
+.br
+\fBi.segment \-\-help\fR
+.br
+\fBi.segment\fR [\-\fBdwap\fR] \fBgroup\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\fBband_suffix\fR=\fIname\fR]  \fBthreshold\fR=\fIfloat\fR  [\fBradius\fR=\fIfloat\fR]   [\fBhr\fR=\fIfloat\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBsimilarity\fR=\fIstring\fR]   [\fBminsize\fR=\fIinteger\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\fBiterations\fR=\fIinteger\fR]   [\fBseeds\fR=\fIname\fR]   [\fBbounds\fR=\fIname\fR]   [\fBgoodness\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Use 8 neighbors (3x3 neighborhood) instead of the default 4 neighbors for each pixel
+.IP "\fB\-w\fR" 4m
+.br
+Weighted input, do not perform the default scaling of input raster maps
+.IP "\fB\-a\fR" 4m
+.br
+Use adaptive bandwidth for mean shift
+.br
+Range (spectral) bandwidth is adapted for each moving window
+.IP "\fB\-p\fR" 4m
+.br
+Use progressive bandwidth for mean shift
+.br
+Spatial bandwidth is increased, range (spectral) bandwidth is decreased in each iteration
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group or raster maps
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBband_suffix\fR=\fIname\fR" 4m
+.br
+Suffix for output bands with modified band values
+.br
+Name for output raster map
+.IP "\fBthreshold\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Difference threshold between 0 and 1
+.br
+Threshold = 0 merges only identical segments; threshold = 1 merges all
+.IP "\fBradius\fR=\fIfloat\fR" 4m
+.br
+Spatial radius in number of cells
+.br
+Must be >= 1, only cells within spatial bandwidth are considered for mean shift
+.br
+Default: \fI1.5\fR
+.IP "\fBhr\fR=\fIfloat\fR" 4m
+.br
+Range (spectral) bandwidth [0, 1]
+.br
+Only cells within range (spectral) bandwidth are considered for mean shift. Range bandwidth is used as conductance parameter for adaptive bandwidth
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Segmentation method
+.br
+Options: \fIregion_growing, mean_shift\fR
+.br
+Default: \fIregion_growing\fR
+.IP "\fBsimilarity\fR=\fIstring\fR" 4m
+.br
+Similarity calculation method
+.br
+Options: \fIeuclidean, manhattan\fR
+.br
+Default: \fIeuclidean\fR
+.IP "\fBminsize\fR=\fIinteger\fR" 4m
+.br
+Minimum number of cells in a segment
+.br
+The final step will merge small segments with their best neighbor
+.br
+Options: \fI1\-100000\fR
+.br
+Default: \fI1\fR
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.IP "\fBiterations\fR=\fIinteger\fR" 4m
+.br
+Maximum number of iterations
+.IP "\fBseeds\fR=\fIname\fR" 4m
+.br
+Name for input raster map with starting seeds
+.IP "\fBbounds\fR=\fIname\fR" 4m
+.br
+Name of input bounding/constraining raster map
+.br
+Must be integer values, each area will be segmented independent of the others
+.IP "\fBgoodness\fR=\fIname\fR" 4m
+.br
+Name for output goodness of fit estimate map
+.SH DESCRIPTION
+Image segmentation or object recognition is the process of grouping
+similar pixels into unique segments, also referred to as objects.
+Boundary and region based algorithms are described in the literature,
+currently a region growing and merging algorithm is implemented. Each
+object found during the segmentation process is given a unique ID and
+is a collection of contiguous pixels meeting some criteria. Note the
+contrast with image classification where all pixels similar to each
+other are assigned to the same class and do not need to be contiguous.
+The image segmentation results can be useful on their own, or used as a
+preprocessing step for image classification. The segmentation
+preprocessing step can reduce noise and speed up the classification.
+.SH NOTES
+.SS Region Growing and Merging
+This segmentation algorithm sequentially examines all current segments
+in the raster map. The similarity between the current segment and each
+of its neighbors is calculated according to the given distance
+formula. Segments will be merged if they meet a number of criteria,
+including:
+.IP
+.IP \fB1\fR
+The pair is mutually most similar to each other (the similarity
+distance will be smaller than to any other neighbor), and
+.IP \fB2\fR
+The similarity must be lower than the input threshold. The
+process is repeated until no merges are made during a complete pass.
+.PP
+.SS Similarity and Threshold
+The similarity between segments and unmerged objects is used to
+determine which objects are merged. Smaller distance values indicate a
+closer match, with a similarity score of zero for identical pixels.
+.PP
+During normal processing, merges are only allowed when the
+similarity between two segments is lower than the given
+threshold value. During the final pass, however, if a minimum
+segment size of 2 or larger is given with the \fBminsize\fR
+parameter, segments with a smaller pixel count will be merged with
+their most similar neighbor even if the similarity is greater than
+the threshold.
+.PP
+The \fBthreshold\fR must be larger than 0.0 and smaller than 1.0. A threshold
+of 0 would allow only identical valued pixels to be merged, while a
+threshold of 1 would allow everything to be merged. The threshold is scaled to
+the data range of the entire input data, not the current computational region.
+This allows the application of the same threshold to different computational
+regions when working on the same dataset, ensuring that this threshold has the
+same meaning in all subregions.
+.PP
+Initial empirical
+tests indicate threshold values of 0.01 to 0.05 are reasonable values
+to start. It is recommended to start with a low value, e.g. 0.01, and
+then perform hierarchical segmentation by using the output of the last
+run as \fBseeds\fR for the next run.
+.SS Calculation Formulas
+Both Euclidean and Manhattan distances use the normal definition,
+considering each raster in the image group as a dimension.
+In future, the distance calculation will also take into account the
+shape characteristics of the segments. The normal distances are then
+multiplied by the input radiometric weight. Next an additional
+contribution is added: (1\-radioweight) * {smoothness * smoothness
+weight + compactness * (1\-smoothness weight)},
+where compactness = Perimeter Length / sqrt( Area )
+and smoothness = Perimeter Length / Bounding Box. The
+perimeter length is estimated as the number of pixel sides the segment
+has.
+.SS Seeds
+The seeds map can be used to provide either seed pixels (random or
+selected points from which to start the segmentation process) or
+seed segments. If the seeds are the results of a previous segmentation
+with lower threshold, hierarchical segmentation can be performed. The
+different approaches are automatically detected by the program: any
+pixels that have identical seed values and are contiguous will be
+assigned a unique segment ID.
+.SS Maximum number of segments
+The current limit with CELL storage used for segment IDs is 2
+billion starting segment IDs. Segment IDs are assigned whenever a yet
+unprocessed pixel is merged with another segment. Integer overflow can
+happen for computational regions with more than 2 billion cells and
+very low threshold values, resulting in many segments. If integer
+overflow occurs durin region growing, starting segments can be used
+(created by initial classification or other methods).
+.SS Goodness of Fit
+The \fBgoodness\fR of fit for each pixel is calculated as 1 \- distance
+of the pixel to the object it belongs to. The distance is calculated
+with the selected \fBsimilarity\fR method. A value of 1 means
+identical values, perfect fit, and a value of 0 means maximum possible
+distance, worst possible fit.
+.SS Mean shift
+Mean shift image segmentation consists of 2 steps: anisotrophic
+filtering and 2. clustering. For anisotrophic filtering new cell values
+are calculated from all pixels not farther than \fBhs\fR pixels away
+from the current pixel and with a spectral difference not larger than
+\fBhr\fR. That means that pixels that are too different from the current
+pixel are not considered in the calculation of new pixel values.
+\fBhs\fR and \fBhr\fR are the spatial and spectral (range) bandwidths
+for anisotrophic filtering. Cell values are iteratively recalculated
+(shifted to the segment\(cqs mean) until the maximum number of iterations
+is reached or until the largest shift is smaller than \fBthreshold\fR.
+.PP
+If input bands have been reprojected, they should not be reprojected
+with bilinear resampling because that method causes smooth transitions
+between objects. More appropriate methods are bicubic or lanczos
+resampling.
+.SS Boundary Constraints
+Boundary constraints limit the adjacency of pixels and segments.
+Each unique value present in the \fBbounds\fR raster are
+considered as a MASK. Thus no segments in the final segmentated map
+will cross a boundary, even if their spectral data is very similar.
+.SS Minimum Segment Size
+To reduce the salt and pepper effect, a \fBminsize\fR greater
+than 1 will add one additional pass to the processing. During the
+final pass, the threshold is ignored for any segments smaller then
+the set size, thus forcing very small segments to merge with their
+most similar neighbor. A minimum segment size larger than 1 is
+recommended when using adaptive bandwidth selected with the \fB\-a\fR
+flag.
+.SH EXAMPLES
+.SS Segmentation of RGB orthophoto
+This example uses the ortho photograph included in the NC Sample
+Dataset. Set up an imagery group:
+.br
+.nf
+\fC
+i.group group=ortho_group input=ortho_2001_t792_1m@PERMANENT
+\fR
+.fi
+.PP
+Set the region to a smaller test region (resolution taken from
+input ortho photograph).
+.br
+.nf
+\fC
+g.region \-p raster=ortho_2001_t792_1m n=220446 s=220075 e=639151 w=638592
+\fR
+.fi
+Try out a low threshold and check the results.
+.br
+.nf
+\fC
+i.segment group=ortho_group output=ortho_segs_l1 threshold=0.02
+\fR
+.fi
+.PP
+From a visual inspection, it seems this results in too many segments.
+Increasing the threshold, using the previous results as seeds,
+and setting a minimum size of 2:
+.br
+.nf
+\fC
+i.segment group=ortho_group output=ortho_segs_l2 threshold=0.05 seeds=ortho_segs_l1 min=2
+i.segment group=ortho_group output=ortho_segs_l3 threshold=0.1 seeds=ortho_segs_l2
+i.segment group=ortho_group output=ortho_segs_l4 threshold=0.2 seeds=ortho_segs_l3
+i.segment group=ortho_group output=ortho_segs_l5 threshold=0.3 seeds=ortho_segs_l4
+\fR
+.fi
+.PP
+The output ortho_segs_l4 with \fBthreshold\fR=0.2 still has
+too many segments, but the output with \fBthreshold\fR=0.3 has too few
+segments. A threshold value of 0.25 seems to be a good choice. There
+is also some noise in the image, lets next force all segments smaller
+than 10 pixels to be merged into their most similar neighbor (even if
+they are less similar than required by our threshold):
+.PP
+Set the region to match the entire map(s) in the group.
+.br
+.nf
+\fC
+g.region \-p raster=ortho_2001_t792_1m@PERMANENT
+\fR
+.fi
+.PP
+Run \fIi.segment\fR on the full map:
+.br
+.nf
+\fC
+i.segment group=ortho_group output=ortho_segs_final threshold=0.25 min=10
+\fR
+.fi
+.PP
+Processing the entire ortho image with nearly 10 million pixels took
+about 450 times more then for the final run.
+.SS Segmentation of panchromatic channel
+This example uses the panchromatic channel of the Landsat7 scene included
+in the North Carolina sample dataset:
+.br
+.nf
+\fC
+# create group with single channel
+i.group group=singleband input=lsat7_2002_80
+# set computational region to Landsat7 PAN band
+g.region raster=lsat7_2002_80 \-p
+# perform segmentation with minsize=5
+i.segment group=singleband threshold=0.05 minsize=5 \(rs
+  output=lsat7_2002_80_segmented_min5 goodness=lsat7_2002_80_goodness_min5
+# perform segmentation with minsize=100
+i.segment group=singleband threshold=0.05 minsize=100
+  output=lsat7_2002_80_segmented_min100 goodness=lsat7_2002_80_goodness_min100
+\fR
+.fi
+.PP
+.br
+Original panchromatic channel of the Landsat7 scene
+.PP
+.br
+Segmented panchromatic channel, minsize=5
+.PP
+.br
+Segmented panchromatic channel, minsize=100
+.SH TODO
+.SS Functionality
+.RS 4n
+.IP \(bu 4n
+Further testing of the shape characteristics (smoothness,
+compactness), if it looks good it should be added.
+(\fBin progress\fR)
+.IP \(bu 4n
+Malahanobis distance for the similarity calculation.
+.RE
+.SS Use of Segmentation Results
+.RS 4n
+.IP \(bu 4n
+Improve the optional output from this module, or better yet, add a
+module for \fIi.segment.metrics\fR.
+.IP \(bu 4n
+Providing updates to \fIi.maxlik\fR
+to ensure the segmentation output can be used as input for the
+existing classification functionality.
+.IP \(bu 4n
+Integration/workflow for \fIr.fuzzy\fR (Addon).
+.RE
+.SS Speed
+.RS 4n
+.IP \(bu 4n
+See create_isegs.c
+.RE
+.SH REFERENCES
+This project was first developed during GSoC 2012. Project documentation,
+Image Segmentation references, and other information is at the
+project wiki.
+.PP
+Information about
+classification in GRASS
+is at available on the wiki.
+.SH SEE ALSO
+\fI
+g.gui.iclass,
+i.group,
+i.maxlik,
+i.smap,
+r.kappa
+\fR
+.SH AUTHORS
+Eric Momsen \- North Dakota State University
+.br
+Markus Metz (GSoC Mentor)
+.SH SOURCE CODE
+.PP
+Available at: i.segment source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

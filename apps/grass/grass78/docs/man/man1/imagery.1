@@ -1,0 +1,327 @@
+.TH imagery 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH GRASS GIS 7.8.5 Reference Manual
+.PP
+\fBGeographic Resources Analysis Support System\fR, commonly
+referred to as GRASS GIS, is a Geographic
+Information System (GIS) used for geospatial data management and
+analysis, image processing, graphics/maps production, spatial
+modeling, and visualization. GRASS is currently used in academic and
+commercial settings around the world, as well as by many governmental
+agencies and environmental consulting companies.
+.PP
+This reference manual details the use of modules distributed with
+Geographic Resources Analysis Support System (GRASS), an open source
+(GNU GPLed), image
+processing and geographic information system (GIS).
+Go to imagery introduction | topics
+.PP
+Go back to help overview
+.SS Imagery commands:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+i.albedo
+T}	 	T{
+Computes broad band albedo from surface reflectance.
+T}
+.sp 1
+T{
+i.aster.toar
+T}	 	T{
+Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.
+T}
+.sp 1
+T{
+i.atcorr
+T}	 	T{
+Performs atmospheric correction using the 6S algorithm.
+T}
+.sp 1
+T{
+i.biomass
+T}	 	T{
+Computes biomass growth, precursor of crop yield calculation.
+T}
+.sp 1
+T{
+i.cca
+T}	 	T{
+Canonical components analysis (CCA) program for image processing.
+T}
+.sp 1
+T{
+i.cluster
+T}	 	T{
+Generates spectral signatures for land cover types in an image using a clustering algorithm.
+T}
+.sp 1
+T{
+i.colors.enhance
+T}	 	T{
+Performs auto\-balancing of colors for RGB images.
+T}
+.sp 1
+T{
+i.eb.eta
+T}	 	T{
+Actual evapotranspiration for diurnal period (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.eb.evapfr
+T}	 	T{
+Computes evaporative fraction and root zone soil moisture.
+T}
+.sp 1
+T{
+i.eb.hsebal01
+T}	 	T{
+Computes sensible heat flux iteration SEBAL 01.
+T}
+.sp 1
+T{
+i.eb.netrad
+T}	 	T{
+Net radiation approximation (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.eb.soilheatflux
+T}	 	T{
+Soil heat flux approximation (Bastiaanssen, 1995).
+T}
+.sp 1
+T{
+i.emissivity
+T}	 	T{
+Computes emissivity from NDVI, generic method for sparse land.
+T}
+.sp 1
+T{
+i.evapo.mh
+T}	 	T{
+Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.
+T}
+.sp 1
+T{
+i.evapo.pm
+T}	 	T{
+Computes potential evapotranspiration calculation with hourly Penman\-Monteith.
+T}
+.sp 1
+T{
+i.evapo.pt
+T}	 	T{
+Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.
+T}
+.sp 1
+T{
+i.evapo.time
+T}	 	T{
+Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).
+T}
+.sp 1
+T{
+i.fft
+T}	 	T{
+Fast Fourier Transform (FFT) for image processing.
+T}
+.sp 1
+T{
+i.gensig
+T}	 	T{
+Generates statistics for i.maxlik from raster map.
+T}
+.sp 1
+T{
+i.gensigset
+T}	 	T{
+Generates statistics for i.smap from raster map.
+T}
+.sp 1
+T{
+i.group
+T}	 	T{
+Creates, edits, and lists groups of imagery data.
+T}
+.sp 1
+T{
+i.his.rgb
+T}	 	T{
+Transforms raster maps from HIS (Hue\-Intensity\-Saturation) color space to RGB (Red\-Green\-Blue) color space.
+T}
+.sp 1
+T{
+i.ifft
+T}	 	T{
+Inverse Fast Fourier Transform (IFFT) for image processing.
+T}
+.sp 1
+T{
+i.image.mosaic
+T}	 	T{
+Mosaics several images and extends colormap.
+T}
+.sp 1
+T{
+i.in.spotvgt
+T}	 	T{
+Imports SPOT VGT NDVI data into a raster map.
+T}
+.sp 1
+T{
+i.landsat.acca
+T}	 	T{
+Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).
+T}
+.sp 1
+T{
+i.landsat.toar
+T}	 	T{
+Calculates top\-of\-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI
+T}
+.sp 1
+T{
+i.maxlik
+T}	 	T{
+Classifies the cell spectral reflectances in imagery data.
+T}
+.sp 1
+T{
+i.modis.qc
+T}	 	T{
+Extracts quality control parameters from MODIS QC layers.
+T}
+.sp 1
+T{
+i.oif
+T}	 	T{
+Calculates Optimum\-Index\-Factor table for spectral bands
+T}
+.sp 1
+T{
+i.ortho.camera
+T}	 	T{
+Select and modify the imagery group camera reference file.
+T}
+.sp 1
+T{
+i.ortho.elev
+T}	 	T{
+Select or modify the target elevation model.
+T}
+.sp 1
+T{
+i.ortho.init
+T}	 	T{
+Interactively creates or modifies entries in a camera initial exposure station file for imagery group referenced by a sub\-block.
+T}
+.sp 1
+T{
+i.ortho.photo
+T}	 	T{
+Menu driver for the photo imagery programs.
+T}
+.sp 1
+T{
+i.ortho.rectify
+T}	 	T{
+Orthorectifies an image by using the image to photo coordinate transformation matrix.
+T}
+.sp 1
+T{
+i.ortho.target
+T}	 	T{
+Select or modify the imagery group target.
+T}
+.sp 1
+T{
+i.ortho.transform
+T}	 	T{
+Computes a coordinate transformation based on the control points.
+T}
+.sp 1
+T{
+i.pansharpen
+T}	 	T{
+Image fusion algorithms to sharpen multispectral with high\-res panchromatic channels
+T}
+.sp 1
+T{
+i.pca
+T}	 	T{
+Principal components analysis (PCA) for image processing.
+T}
+.sp 1
+T{
+i.rectify
+T}	 	T{
+Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points.
+T}
+.sp 1
+T{
+i.rgb.his
+T}	 	T{
+Transforms raster maps from RGB (Red\-Green\-Blue) color space to HIS (Hue\-Intensity\-Saturation) color space.
+T}
+.sp 1
+T{
+i.segment
+T}	 	T{
+Identifies segments (objects) from imagery data.
+T}
+.sp 1
+T{
+i.smap
+T}	 	T{
+Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.
+T}
+.sp 1
+T{
+i.spectral
+T}	 	T{
+Displays spectral response at user specified locations in group or images.
+T}
+.sp 1
+T{
+i.target
+T}	 	T{
+Targets an imagery group to a GRASS location and mapset.
+T}
+.sp 1
+T{
+i.tasscap
+T}	 	T{
+Performs Tasseled Cap (Kauth Thomas) transformation.
+T}
+.sp 1
+T{
+i.topo.corr
+T}	 	T{
+Computes topographic correction of reflectance.
+T}
+.sp 1
+T{
+i.vi
+T}	 	T{
+Calculates different types of vegetation indices.
+T}
+.sp 1
+T{
+i.zc
+T}	 	T{
+Zero\-crossing \(dqedge detection\(dq raster function for image processing.
+T}
+.sp 1
+.TE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

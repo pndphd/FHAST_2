@@ -1,0 +1,193 @@
+.TH r.in.mat 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.mat\fR\fR  \- Imports a binary MAT\-File(v4) to a GRASS raster.
+.SH KEYWORDS
+raster, import
+.SH SYNOPSIS
+\fBr.in.mat\fR
+.br
+\fBr.in.mat \-\-help\fR
+.br
+\fBr.in.mat\fR \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input MAT\-File(v4)
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map (override)
+.SH DESCRIPTION
+\fIr.in.mat\fR will import a GRASS raster map from a Version 4 MAT\-File
+which was created with Matlab or Octave.
+Attributes such as map title and bounds will also be imported if they exist.
+.br
+.br
+Specifically, the following array variables will be read:
+.br
+.RS 4n
+.IP \(bu 4n
+\fB map_data\fR
+.IP \(bu 4n
+\fB map_name\fR
+.IP \(bu 4n
+\fB map_title\fR
+.IP \(bu 4n
+\fB map_northern_edge\fR
+.IP \(bu 4n
+\fB map_southern_edge\fR
+.IP \(bu 4n
+\fB map_eastern_edge\fR
+.IP \(bu 4n
+\fB map_western_edge\fR
+.RE
+Any other variables in the MAT\-file will be simply skipped over.
+.br
+.br
+The \(cq\fBmap_name\fR\(cq variable is optional, if it exists, and is valid, the
+new map will be thus named. If it doesn\(cqt exist or a name is specified with
+the \fBoutput=\fR option, the raster map\(cqs name will be set to
+\(dqMatFile\(dq or the name specified respectively.
+(maximum 64 characters; normal GRASS naming rules apply)
+.br
+.br
+The \(cq\fBmap_title\fR\(cq variable is optional, the map\(cqs title is set if it
+exists.
+.br
+.br
+The \(cq\fBmap_northern_edge\fR\(cq and like variables are mandatory unless the
+user is importing to a \(dqXY\(dq non\-georeferenced location
+(e.g. imagery data). Latitude and longitude values should be in decimal form.
+.SH NOTES
+\fIr.in.mat\fR imports a Version 4 MAT\-File. These files can be
+successfully created with more modern versions of Matlab and Octave
+(see \(dqEXAMPLES\(dq below).
+.br
+.br
+Everything should be Endian safe, so the file to be imported can be simply
+copied between different system architectures without binary translation
+(caveat: see \(dqTODO\(dq below).
+.br
+.br
+As there is no IEEE value for NaN in integer arrays, GRASS\(cqs null
+value may be used to represent it within these maps. Usually Matlab will save
+any integer based matrix with NaN values as a double\-precision
+floating point array, so this usually isn\(cqt an issue. To save space, once the
+map is loaded into GRASS you can convert it back to an integer map with the
+following command:
+.br
+.nf
+\fC
+r.mapcalc \(dqint_map = int(MATFile_map)\(dq
+\fR
+.fi
+NaN values in either floating point or double\-precision floating point
+matrices should translate into null values as expected.
+.br
+.br
+\fIr.in.mat\fR must load the entire map array into memory before writing,
+therefore it might have problems with \fIhuge\fR arrays.
+(a 3000x4000 DCELL map uses about 100mb RAM)
+.br
+.br
+GRASS defines its map bounds at the outer\-edge of the bounding cells, not at
+the coordinates of their centroids. Thus, the following Matlab commands may
+be used to determine and check the map\(cqs resolution information will be correct:
+.br
+.nf
+\fC
+    [rows cols] = size(map_data)
+    x_range = map_eastern_edge \- map_western_edge
+    y_range = map_northern_edge \- map_southern_edge
+    ns_res = y_range/rows
+    ew_res = x_range/cols
+\fR
+.fi
+.br
+Remember Matlab arrays are referenced as (row,column),
+i.e. (y,x).
+.br
+.br
+In addition, \fIr.in.mat\fR and \fIr.out.mat\fR make for a nice
+binary container format for transferring georeferenced maps around,
+even if you don\(cqt use Matlab or Octave.
+.SH EXAMPLES
+In Matlab, save with:
+.br
+.nf
+\fC
+save filename.mat map_* \-v4
+\fR
+.fi
+In Octave, save with:
+.br
+.nf
+\fC
+save \-mat4\-binary filename.mat map_*
+\fR
+.fi
+.br
+.SH TODO
+Robust support for mixed\-Endian importation.
+\fI(This is a work in progress, please help by reporting any failures to the
+GRASS bug tracking system\fR;
+.br
+Add support for importing map history, category information, color map, etc.
+if they exist.
+.br
+Option to import a version 5 MAT\-File, with map and support information
+stored in a single structured array.
+.SH KNOWN ISSUES
+If you encounter any problems, please contact the GRASS Development Team.
+.SH SEE ALSO
+\fI
+r.out.mat,
+r.in.ascii,
+r.in.bin,
+r.mapcalc,
+r.null.
+\fR
+.PP
+\fI
+The Octave project
+\fR
+.SH AUTHOR
+Hamish Bowman
+.br
+\fI
+Department of Marine Science
+.br
+University of Otago
+.br
+New Zealand\fR
+.br
+.br
+.SH SOURCE CODE
+.PP
+Available at: r.in.mat source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

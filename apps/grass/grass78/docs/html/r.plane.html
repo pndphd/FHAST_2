@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.plane.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.plane.py</b></em>  - Creates raster plane map given dip (inclination), aspect (azimuth) and one point.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_elevation.html">elevation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.plane.py</b><br></div>
+<b>r.plane.py --help</b><br>
+<div id="synopsis"><b>r.plane.py</b> <b>output</b>=<em>name</em> <b>dip</b>=<em>float</em> <b>azimuth</b>=<em>float</em> <b>easting</b>=<em>float</em> <b>northing</b>=<em>float</em> <b>elevation</b>=<em>float</em>  [<b>type</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>dip</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Dip of plane in degrees</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>azimuth</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Azimuth of the plane in degrees</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>easting</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Easting coordinate of a point on the plane</dd>
+
+<dt><b>northing</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Northing coordinate of a point on the plane</dd>
+
+<dt><b>elevation</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Elevation coordinate of a point on the plane</dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Type of raster map to be created</dd>
+<dd>Storage type for resultant raster map</dd>
+<dd>Options: <em>CELL, FCELL, DCELL</em></dd>
+<dd>Default: <em>FCELL</em></dd>
+<dd><b>CELL</b>: Integer</dd>
+<dd><b>FCELL</b>: Single precision floating point</dd>
+<dd><b>DCELL</b>: Double precision floating point</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.plane</em> creates a tilted plane raster map given user-specified
+parameters for inclination, azimuth, and the geographic location of a
+point on the plane.<br>
+The angle orientations of the <em>azimuth</em> parameter increase counter-clockwise,
+i.e., 0 degree = N, 45 degree = NW, 90 degree = W etc.
+<p>
+Increasing values of the <em>dip</em> parameter progressively lower (or dip) the northern
+half of the plane, and incline the southern half, assuming the <em>azimuth</em> parameter 
+is held constant at 0 degrees.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<tt>g.region -c</tt> provides the easting and northing coordinates for
+the center of the current region.
+<p>
+<em>CELL</em> (integer) maps take less disk space than <em>FCELL</em>s (floating point),
+which in turn take up less space than <em>DCELL</em>s (double precision floating point).
+<!-- is that true because of grass's compression? otherwise both int and float are both 4 bytes per cell -->
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+A tilted plane in the North Carolina sample dataset region:
+
+<div class="code"><pre>
+# set computational region
+g.region raster=elev_lid792_1m -p
+
+# get center coordinates as an example
+g.region -c
+# get terrain height at point
+r.what map=elev_lid792_1m coordinates=638650.0,220375.0
+# shows elevation: 116.7734
+
+# generate tilted plane
+r.plane myplane30 dip=30 az=75 east=638650.0 north=220375.0 \
+        elev=116.7734 type=FCELL
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="r_plane_3d.png">
+<img src="r_plane_3d.png" width="600" height="360" alt="r.plane example" border="0">
+</a><br>
+<i>Figure: Tilted plane shown in NVIZ along with elevation map</i>
+</div>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Stefan J&auml;ger (1994), University of Heidelberg during a stay at USGS<br>
+Updated to GRASS 5.7 by Michael Barton, Arizona State University<br>
+Full rewrite for GRASS 7 by Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.plane">r.plane source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.plane">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

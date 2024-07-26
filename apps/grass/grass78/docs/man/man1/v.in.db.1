@@ -1,0 +1,222 @@
+.TH v.in.db 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.db\fR\fR  \- Creates new vector (points) map from database table containing coordinates.
+.SH KEYWORDS
+vector, import, database, points
+.SH SYNOPSIS
+\fBv.in.db\fR
+.br
+\fBv.in.db \-\-help\fR
+.br
+\fBv.in.db\fR [\-\fBt\fR] \fBtable\fR=\fIname\fR  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]  \fBx\fR=\fIname\fR \fBy\fR=\fIname\fR  [\fBz\fR=\fIname\fR]   [\fBkey\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Use imported table as attribute table for new map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtable\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input table name
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBx\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of column containing x coordinate
+.IP "\fBy\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of column containing y coordinate
+.IP "\fBz\fR=\fIname\fR" 4m
+.br
+Name of column containing z coordinate
+.IP "\fBkey\fR=\fIname\fR" 4m
+.br
+Name of column containing category number
+.br
+Must refer to an integer column
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.SH DESCRIPTION
+\fIv.in.db\fR creates a new vector point map from database table or file
+containing coordinates.
+.SH NOTES
+If GRASS comes with OGR support
+than \fIv.in.db\fR allows importing data from different input
+files, eg. CSV or MS Excel (assuming that GDAL/OGR library is compiled
+with this support).
+.PP
+\fIv.in.db\fR creates key column \(dqcat\(dq automatically
+when \fBkey\fR option is not given. Note that this operation is
+possible to perform only when \fB\-t\fR flag is not given. Currently,
+automated creation of key column is supported only when default DB
+driver for output vector map is SQLite
+driver otherwise \fBkey\fR option must be specified by the
+user. Default DB driver is defined
+by \fIdb.connect\fR.
+.SH EXAMPLES
+.SS Creating a map from PostgreSQL table
+.br
+.nf
+\fC
+v.in.db driver=pg database=\(dqhost=myserver.itc.it,dbname=mydb\(dq \(rs
+        table=pat_stazioni x=east y=north z=quota key=id output=pat_stazioni
+\fR
+.fi
+.PP
+If an ID column is not present in the PostgreSQL table, a new
+column should be added. See PostgreSQL DB
+driver page for details.
+.SS Creating a map from PostGIS
+To extract coordinate values from PostGIS, functions have to be used:
+.br
+.nf
+\fC
+v.in.db driver=pg database=\(dqhost=myserver.itc.it,dbname=mydb\(dq \(rs
+        table=station x=\(dqx(geom)\(dq y=\(dqy(geom)\(dq z=\(dqz(geom)\(dq key=id out=meteostations
+\fR
+.fi
+.PP
+If an ID column is not present in the PostgreSQL table, a new
+column should be added. See PostgreSQL DB
+driver page for details.
+.PP
+Alternatively a vector point map can be imported from PostGIS
+database using \fIv.in.ogr\fR.
+.SS Creating a map from Open Document spreadsheet (ODS) file
+A new vector point map is created from given sheet in ODS file. The
+\fBdatabase\fR option points to the ODS file. Option \fBtable\fR is the
+name of selected spreadsheet list, the \fBkey\fR option is the identifier
+column:
+.br
+.nf
+\fC
+# preview table structure with OGR tool (table name is \(dqLayer name\(dq here):
+ogrinfo \-al \-so meteodata.ods
+# import sheet from ODS into map
+v.in.db key=ID table=mysheet x=long y=lat z=height output=meteodata \(rs
+         driver=ogr database=meteodata.ods
+\fR
+.fi
+.SS Creating a map from MS Excel file
+A new vector point map is created from given sheet in MS Excel file. The
+\fBdatabase\fR option points to the file in MS Excel
+format. Option \fBtable\fR is name of the selected spreadsheet \(dqList1\(dq:
+.br
+.nf
+\fC
+v.in.db table=List1 x=long y=lat z=height output=meteodata \(rs
+         driver=ogr database=meteodata.xls
+\fR
+.fi
+Note that in this example the \fBkey\fR option is omitted. In this case
+\fIv.in.db\fR tries to add key column automatically. This
+requires SQLite to be a default DB
+driver.
+.SS Creating a map from DBF table
+A new 3D point vector map is created from DBF table. Column \(cqidcol\(cq
+contains unique row IDs. The \fBdatabase\fR option is the
+directory where the DBF file is stored.
+.br
+.nf
+\fC
+v.in.db driver=dbf database=/home/user/tables/ table=pointsfile x=x y=y z=z \(rs
+        key=idcol out=dtmpoints
+\fR
+.fi
+To check result:
+.br
+.nf
+\fC
+v.info dtmpoints
+v.info \-c dtmpoints
+\fR
+.fi
+.PP
+If DB driver for output vector map is different from SQLite driver
+and an ID column is missing in the DBF file, it has to be added
+beforehand, e.g. with OpenOffice.  Alternatively, import the table
+with \fIdb.in.ogr\fR into GRASS and
+then with \fIv.in.db\fR from the imported table
+(\fIdb.in.ogr\fR optionally adds an
+unique ID column).
+.SS Creating a point map from DBF table for selected records only
+.PP
+The user can import only selected vector points from a table using
+the \fBwhere\fR parameter (see above for general DBF handling):
+.br
+.nf
+\fC
+v.in.db driver=dbf  database=/home/user/tables/ table=pointsfile x=x y=y z=z \(rs
+        key=idcol out=dtmpoints where=\(dqx NOT NULL and z > 100\(dq
+\fR
+.fi
+.SS Creating a map from SQLite table
+A new vector point map is created from table in SQLite database
+file. Column \(cqidcol\(cq contains unique row IDs. The
+\fBdatabase\fR option is the the SQLite database file.
+.br
+.nf
+\fC
+v.in.db driver=sqlite database=/home/user/tables/mysqlite.db table=pointsfile x=x y=y z=z \(rs
+        key=idcol out=dtmpoints
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.execute,
+db.in.ogr,
+v.info,
+v.in.geonames,
+v.in.ogr,
+v.to.db
+\fR
+.PP
+SQL support in GRASS GIS
+.SH AUTHORS
+Radim Blazek
+.br
+Various updates for GRASS 7 by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.in.db source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

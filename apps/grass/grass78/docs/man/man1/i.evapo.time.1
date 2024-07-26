@@ -1,0 +1,128 @@
+.TH i.evapo.time 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.evapo.time\fR\fR  \- Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).
+.SH KEYWORDS
+imagery, evapotranspiration
+.SH SYNOPSIS
+\fBi.evapo.time\fR
+.br
+\fBi.evapo.time \-\-help\fR
+.br
+\fBi.evapo.time\fR \fBeta\fR=\fIname\fR[,\fIname\fR,...] \fBeta_doy\fR=\fIname\fR[,\fIname\fR,...] \fBeto\fR=\fIname\fR[,\fIname\fR,...] \fBeto_doy_min\fR=\fIfloat\fR \fBstart_period\fR=\fIfloat\fR \fBend_period\fR=\fIfloat\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBeta\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Names of satellite ETa raster maps [mm/d or cm/d]
+.IP "\fBeta_doy\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Names of satellite ETa Day of Year (DOY) raster maps [0\-400] [\-]
+.IP "\fBeto\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Names of meteorological station ETo raster maps [0\-400] [mm/d or cm/d]
+.IP "\fBeto_doy_min\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Value of DOY for ETo first day
+.IP "\fBstart_period\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Value of DOY for the first day of the period studied
+.IP "\fBend_period\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Value of DOY for the last day of the period studied
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIi.evapo.time\fR (i.evapo.time_integration) integrates ETa in time following a
+reference ET (typically) from a set of meteorological stations dataset.
+Inputs:
+.RS 4n
+.IP \(bu 4n
+ETa images
+.IP \(bu 4n
+ETa images DOY (Day of Year)
+.IP \(bu 4n
+ETo images
+.IP \(bu 4n
+ETo DOYmin as a single value
+.RE
+Method:
+.IP
+.IP \fB1\fR
+each ETa pixel is divided by the same day ETo and become ETrF
+.IP \fB2\fR
+each ETrF pixel is multiplied by the ETo sum for the representative days
+.IP \fB3\fR
+Sum all n temporal [ETrF*ETo_sum] pixels to make a summed(ET) in [DOYmin;DOYmax]
+.PP
+representative days calculation:
+let assume i belongs to range [DOYmin;DOYmax]
+.br
+.nf
+\fC
+DOYbeforeETa[i] = ( DOYofETa[i] \- DOYofETa[i\-1] ) / 2
+DOYafterETa[i] = ( DOYofETa[i+1] \- DOYofETa[i] ) / 2
+\fR
+.fi
+.SH NOTES
+ETo images preparation:
+If you only have one meteorological station data set, the easiest way is:
+.br
+.nf
+\fC
+n=0
+for ETo_val in Eto[1] Eto[2] ...
+do
+	r.mapcalc \(dqeto$n = $ETo_val\(dq
+	\(gaexpr n = n + 1\(ga
+done
+\fR
+.fi
+with Eto[1], Eto[2], etc being a simple copy and paste from your data file
+of all ETo values separated by an empty space from each other.
+.PP
+If you have several meteorological stations data, then you need to grid
+them by generating Thiessen polygons or using different interpolation methods
+for each day.
+.PP
+For multi\-year calculations, just continue incrementing DOY values above
+366, it will continue working, up to maximum input of 400 satellite images.
+.SH SEE ALSO
+\fI
+i.eb.eta,
+i.evapo.mh,
+i.evapo.pt,
+i.evapo.pm,
+r.sun
+\fR
+.SH AUTHOR
+Yann Chemin, International Rice Research Institute, The Philippines
+.SH SOURCE CODE
+.PP
+Available at: i.evapo.time source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

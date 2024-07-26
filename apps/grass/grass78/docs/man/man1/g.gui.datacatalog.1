@@ -1,0 +1,85 @@
+.TH g.gui.datacatalog 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gui.datacatalog\fR\fR  \- Tool for browsing, modifying and managing GRASS maps.
+.SH KEYWORDS
+general, GUI, map management
+.SH SYNOPSIS
+\fBg.gui.datacatalog\fR
+.br
+\fBg.gui.datacatalog \-\-help\fR
+.br
+\fBg.gui.datacatalog\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SH DESCRIPTION
+The \fBData Catalog\fR is a \fIwxGUI\fR component
+for browsing, modifying and managing GRASS maps.
+.PP
+Data Catalog allows you to:
+.RS 4n
+.IP \(bu 4n
+browse GRASS locations and mapsets in the current GIS directory
+.IP \(bu 4n
+browse GRASS 2D/3D raster and vector maps
+.IP \(bu 4n
+rename, copy, move and delete GRASS maps including reprojection between different locations
+.IP \(bu 4n
+drag and drop maps for copying and moving
+.IP \(bu 4n
+searching and fitering maps using regular expressions
+.IP \(bu 4n
+display map in current location
+.IP \(bu 4n
+show metadata of maps
+.RE
+.br
+Figure: Data Catalog integrated in wxGUI.
+.SH NOTES
+Some operations (copying, renaming, deleting) are by default enabled only within the current mapset.
+To allow changing data outside of your current mapset, you need to press \fIUnlock\fR button in Data Catalog toolbar.
+.SS WARNING
+When renaming, copying or deleting maps outside of Data Catalog, you need to reload
+the current mapset or entire database, because it is currently not synchronised.
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+\fI
+g.copy,
+g.rename,
+g.remove,
+g.list
+\fR
+.SH AUTHOR
+Anna Petrasova, NCSU GeoForAll Laboratory
+.br
+Tereza Fiedlerova, OSGeoREL, Czech Technical University in Prague,
+Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Data Catalog source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

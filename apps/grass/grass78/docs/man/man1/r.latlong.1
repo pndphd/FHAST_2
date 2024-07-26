@@ -1,0 +1,74 @@
+.TH r.latlong 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.latlong\fR\fR  \- Creates a latitude/longitude raster map.
+.SH KEYWORDS
+raster, latitude, longitude, projection
+.SH SYNOPSIS
+\fBr.latlong\fR
+.br
+\fBr.latlong \-\-help\fR
+.br
+\fBr.latlong\fR [\-\fBl\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-l\fR" 4m
+.br
+Longitude output
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output latitude or longitude raster map
+.SH DESCRIPTION
+\fIr.latlong\fR creates a latitude (degree decimal) map, or longitude
+if the \-l flag is used, from any map in any projection using PROJ library.
+This is an input to \fIr.sun\fR and \fIi.evapo.potrad\fR.
+.SH NOTES
+The PROJ website.
+.SH TODO
+Datum transform is not implemented, the same datum is taken as output.
+.SH EXAMPLE
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.latlong input=elevation output=latitude
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.sun,
+r.sunhours
+\fR
+.SH AUTHORS
+Yann Chemin, International Rice Research Institute, The Philippines
+.SH SOURCE CODE
+.PP
+Available at: r.latlong source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

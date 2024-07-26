@@ -1,0 +1,104 @@
+.TH v.net.spanningtree 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.spanningtree\fR\fR  \- Computes minimum spanning tree for the network.
+.SH KEYWORDS
+vector, network, spanning tree
+.SH SYNOPSIS
+\fBv.net.spanningtree\fR
+.br
+\fBv.net.spanningtree \-\-help\fR
+.br
+\fBv.net.spanningtree\fR [\-\fBg\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]   [\fBarc_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBnode_column\fR=\fIname\fR" 4m
+.br
+Node cost column (number)
+.SH DESCRIPTION
+\fIv.net.spanningtree\fR finds the minimum spanning tree in a
+network.
+.SH NOTES
+A spanning tree is a minimum cost subnetwork connecting all nodes in an
+undirected network (same forward and backward costs). If a network is
+disconnected then the module computes the minimum spanning tree for
+each (weakly) connected component. So, strictly speaking,
+\fIv.net.spanningtree\fR does not compute spanning tree but a
+spanning forest. As the name suggests, a spanning tree is a tree. That
+is, it contains no cycles and if a component has N nodes then the tree
+has N\-1 edges connecting all nodes. \fBAccol\fR is used to specify the
+costs of the edges. The \fBoutput\fR consists of the edges in the
+spanning tree.
+.SH EXAMPLES
+Find cheapest set of pipelines connecting all nodes.
+.br
+.nf
+\fC
+v.net.spanningtree input=projected_pipelines output=spanningtree accol=cost
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net,
+v.net.steiner
+\fR
+.SH AUTHORS
+Daniel Bundala, Google Summer of Code 2009, Student
+.br
+Wolf Bergenheim, Mentor
+.SH SOURCE CODE
+.PP
+Available at: v.net.spanningtree source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

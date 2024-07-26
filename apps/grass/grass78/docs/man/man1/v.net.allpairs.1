@@ -1,0 +1,142 @@
+.TH v.net.allpairs 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.allpairs\fR\fR  \- Computes the shortest path between all pairs of nodes in the network.
+.SH KEYWORDS
+vector, network, shortest path
+.SH SYNOPSIS
+\fBv.net.allpairs\fR
+.br
+\fBv.net.allpairs \-\-help\fR
+.br
+\fBv.net.allpairs\fR [\-\fBg\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]   [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBarc_column\fR=\fIname\fR]   [\fBarc_backward_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIname\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIstring\fR" 4m
+.br
+Node cost column (number)
+.SH DESCRIPTION
+\fIv.net.allpairs\fR computes the shortest path between each selected
+node and all other selected nodes. The output is a vector with the
+selected nodes and the shortest paths.
+.SH NOTES
+An attribute table is created and linked to layer \fIarc_layer\fR. The
+table contains four columns: \fIcat\fR, \fIfrom_cat\fR,
+\fIto_cat\fR, \fIcost\fR.
+Each \fIcat\fR entry denotes the category of the shortest path from
+the node with category \fIfrom_cat\fR to the node with category
+\fIto_cat\fR. If points are specified by \fBcats, layer\fR or
+\fBwhere\fR parameters then the table is filled only for the selected
+points.
+.br
+If \fBarc_backward_column\fR is not given then then the same costs are used for
+forward and backward arcs.
+.SH EXAMPLE
+Find shortest path along roads from selected archsites (Spearfish sample
+dataset):
+.br
+.nf
+\fC
+# prepare network: connect archsites to roads with threshold 200
+v.net input=roads@PERMANENT points=archsites@PERMANENT \(rs
+output=roads_net operation=connect thresh=200
+# verify result
+v.category input=roads_net option=report
+# only lines should have a category in layer 1
+# only points should have a category in layer 2
+# shortest path between all points with categories 1 \- 5 in layer 2
+v.net.allpairs input=roads_net cats=1\-5 out=roads_net_all
+v.db.select roads_net_all
+\fR
+.fi
+Result in matrix form:
+.br
+.nf
+\fC
+from\(rsto	1		3		4		5
+1	0		18820.386	17206.651	17373.274
+3	18820.386	0		1739.079	9040.575
+4	17206.651	1739.079	0		7426.84
+5	17373.274	9040.575	7426.84		0
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net.path,
+v.net.distance
+\fR
+.SH AUTHORS
+Daniel Bundala, Google Summer of Code 2009, Student
+.br
+Wolf Bergenheim, Mentor
+.br
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: v.net.allpairs source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

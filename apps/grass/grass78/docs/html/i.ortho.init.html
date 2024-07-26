@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.ortho.init - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.ortho.init</b></em>  - Interactively creates or modifies entries in a camera initial exposure station file for imagery group referenced by a sub-block.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_orthorectify.html">orthorectify</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.ortho.init</b><br></div>
+<b>i.ortho.init --help</b><br>
+<div id="synopsis"><b>i.ortho.init</b> [-<b>rp</b>] <b>group</b>=<em>name</em>  [<b>xc</b>=<em>float</em>]   [<b>yc</b>=<em>float</em>]   [<b>zc</b>=<em>float</em>]   [<b>xc_sd</b>=<em>float</em>]   [<b>yc_sd</b>=<em>float</em>]   [<b>zc_sd</b>=<em>float</em>]   [<b>omega</b>=<em>float</em>]   [<b>phi</b>=<em>float</em>]   [<b>kappa</b>=<em>float</em>]   [<b>omega_sd</b>=<em>float</em>]   [<b>phi_sd</b>=<em>float</em>]   [<b>kappa_sd</b>=<em>float</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Use initial values at run time</dd>
+
+<dt><b>-p</b></dt>
+<dd>Print initial values</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of imagery group for ortho-rectification</dd>
+
+<dt><b>xc</b>=<em>float</em></dt>
+<dd>Initial Camera Exposure X-coordinate</dd>
+
+<dt><b>yc</b>=<em>float</em></dt>
+<dd>Initial Camera Exposure Y-coordinate</dd>
+
+<dt><b>zc</b>=<em>float</em></dt>
+<dd>Initial Camera Exposure Z-coordinate</dd>
+
+<dt><b>xc_sd</b>=<em>float</em></dt>
+<dd>Apriori X-coordinate standard deviation</dd>
+
+<dt><b>yc_sd</b>=<em>float</em></dt>
+<dd>Apriori Y-coordinate standard deviation</dd>
+
+<dt><b>zc_sd</b>=<em>float</em></dt>
+<dd>Apriori Z-coordinate standard deviation</dd>
+
+<dt><b>omega</b>=<em>float</em></dt>
+<dd>Initial Camera Omega (roll) degrees</dd>
+
+<dt><b>phi</b>=<em>float</em></dt>
+<dd>Initial Camera Phi (pitch) degrees</dd>
+
+<dt><b>kappa</b>=<em>float</em></dt>
+<dd>Initial Camera Kappa (yaw) degrees</dd>
+
+<dt><b>omega_sd</b>=<em>float</em></dt>
+<dd>Apriori Omega (roll) standard deviation</dd>
+
+<dt><b>phi_sd</b>=<em>float</em></dt>
+<dd>Apriori Phi (pitch) standard deviation</dd>
+
+<dt><b>kappa_sd</b>=<em>float</em></dt>
+<dd>Apriori Kappa (yaw) standard deviation</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Aerial photographs may be either vertical or oblique. Vertical photographs
+can be truly vertical (nadir), or slightly tilted (less than 3 degree
+from the vertical). Usually aerial photos are tilted to some degree. We
+refer to the term <i>vertical photograph</i> up to a tilt of 3 degree.
+<br>
+Oblique aerial photographs are purposely taken with an
+angle between 3 and 90 degree from the nadir direction.
+<p>
+<b>The use of <em>i.ortho.init</em> (menu 6) is only required when rectifying a
+tilted or oblique aerial photo.</b>
+<p>
+<em>i.ortho.init</em> creates or modifies entries in a camera initial exposure
+station file for imagery group referenced by a sub-block.  These entries
+include: the (XC,YC,ZC) standard (e.g. UTM) approximate coordinates of the camera exposure
+station; initial roll, pitch, and yaw angles (in degrees) of the cameras
+attitude; and the <em>a priori</em> standard deviations for these
+parameters. During the imagery program, <em>i.photo.rectify</em>, the initial camera
+exposure station file is used for computation of the ortho-rectification
+parameters.  If no initial camera exposure station file exist, the default
+values are computed from the control points file created in <em><A
+HREF="i.photo.2target.html">i.photo.2target</a></em>.
+
+
+<p>
+
+The following menu is displayed:
+<pre>
+        Please provide the following information
+
+	INITIAL XC: Meters                __________
+	INITIAL YC: Meters                __________
+	INITIAL ZC: Meters                __________
+	INITIAL omega (roll) degrees:     __________
+	INITIAL phi  (pitch) degrees:     __________
+	INITIAL kappa  (yaw) degrees:     __________
+
+	Standard Deviation XC: Meters     __________
+	Standard Deviation YC: Meters     __________
+	Standard Deviation ZC: Meters     __________
+	Std. Dev. omega (roll) degrees:   __________
+	Std. Dev. phi  (pitch) degrees:   __________
+	Std. Dev. kappa  (yaw) degrees:   __________
+
+        Use these values at run time? (1=yes, 0=no)
+
+     AFTER COMPLETING ALL ANSWERS, HIT &lt;ESC&gt; TO CONTINUE
+                  (OR &lt;Ctrl-C&gt; TO CANCEL)
+</pre>
+
+<p>
+The INITIAL values for (XC,YC,ZC) are expressed in standard (e.g. UTM) coordinates, and
+represent an approximation for the location of the camera at the time of 
+exposure.
+
+<ul>
+<li> X: East aircraft position;
+<li> Y: North aircraft position;
+<li> Z: Flight altitude above sea level
+</ul>
+
+<p>
+
+The INITIAL values for (omega,phi,kappa) are expressed in degrees, and
+represent an approximation for the cameras attitude  at the time of 
+exposure. 
+
+<ul>
+<li> Omega (roll): Raising or lowering of the wings (turning around the
+  aircraft's axis);
+<li> Phi (pitch): Raising or lowering of the aircraft's front (turning
+  around the wings' axis);
+<li> Kappa (yaw): Rotation needed to align the aerial photo to true north:
+  needs to be denoted as +90 degree for clockwise turn and -90 degree for
+  a counterclockwise turn.
+</ul>
+<p>
+
+The standard deviations for (XC,YC,ZC) are expressed in meters, and
+are used as <em>a priori</em> values for the standard deviations used in 
+computation of the ortho rectification parameters.
+<p>
+
+The standard deviations for (omega,phi,kappa) are expressed in degrees, and
+are used as <em>a priori</em> values for the standard deviations used in 
+computation of the ortho rectification parameters.
+
+<p>
+If <i>Use these values at run time? (1=yes, 0=no)</i> is set to 0, the
+values in this menu are not used.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.ortho.photo.html">i.ortho.photo</a>,
+<a href="i.photo.2image.html">i.photo.2image</a>,
+<a href="i.photo.2target.html">i.photo.2target</a>,
+<a href="i.ortho.elev.html">i.ortho.elev</a>,
+<a href="i.ortho.camera.html">i.ortho.camera</a>,
+<a href="i.ortho.transform.html">i.ortho.transform</a>,
+<a href="i.photo.rectify.html">i.photo.rectify</a>
+</em>
+
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Mike Baba,  DBA Systems, Inc.
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.ortho.photo/i.ortho.init">i.ortho.init source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.ortho.photo/i.ortho.init">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

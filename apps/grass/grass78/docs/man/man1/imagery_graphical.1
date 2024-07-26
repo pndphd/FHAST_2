@@ -1,0 +1,160 @@
+.TH imagery_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+Go to imagery introduction | topics
+.PP
+.SS Imagery modules:
+.RS 4n
+.IP \(bu 4n
+\fCi.albedo\fR \fCComputes broad band albedo from surface reflectance.\fR
+.IP \(bu 4n
+\fCi.aster.toar\fR \fCCalculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.\fR
+.IP \(bu 4n
+\fCi.atcorr\fR \fCPerforms atmospheric correction using the 6S algorithm.
+.br
+\fR
+.IP \(bu 4n
+\fCi.biomass\fR \fCComputes biomass growth, precursor of crop yield calculation.\fR
+.IP \(bu 4n
+\fCi.cca\fR \fCCanonical components analysis (CCA) program for image processing.\fR
+.IP \(bu 4n
+\fCi.cluster\fR \fCGenerates spectral signatures for land cover types in an image using a clustering algorithm.
+.br
+\fR
+.IP \(bu 4n
+\fCi.colors.enhance\fR \fCPerforms auto\-balancing of colors for RGB images.\fR
+.IP \(bu 4n
+\fCi.eb.eta\fR \fCActual evapotranspiration for diurnal period (Bastiaanssen, 1995).\fR
+.IP \(bu 4n
+\fCi.eb.evapfr\fR \fCComputes evaporative fraction and root zone soil moisture.\fR
+.IP \(bu 4n
+\fCi.eb.hsebal01\fR \fCComputes sensible heat flux iteration SEBAL 01.\fR
+.IP \(bu 4n
+\fCi.eb.netrad\fR \fCNet radiation approximation (Bastiaanssen, 1995).\fR
+.IP \(bu 4n
+\fCi.eb.soilheatflux\fR \fCSoil heat flux approximation (Bastiaanssen, 1995).\fR
+.IP \(bu 4n
+\fCi.emissivity\fR \fCComputes emissivity from NDVI, generic method for sparse land.\fR
+.IP \(bu 4n
+\fCi.evapo.mh\fR \fCComputes evapotranspiration calculation modified or original Hargreaves formulation, 2001.\fR
+.IP \(bu 4n
+\fCi.evapo.pm\fR \fCComputes potential evapotranspiration calculation with hourly Penman\-Monteith.\fR
+.IP \(bu 4n
+\fCi.evapo.pt\fR \fCComputes evapotranspiration calculation Priestley and Taylor formulation, 1972.\fR
+.IP \(bu 4n
+\fCi.evapo.time\fR \fCComputes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).\fR
+.IP \(bu 4n
+\fCi.fft\fR \fCFast Fourier Transform (FFT) for image processing.\fR
+.IP \(bu 4n
+\fCi.gensig\fR \fCGenerates statistics for i.maxlik from raster map.\fR
+.IP \(bu 4n
+\fCi.gensigset\fR \fCGenerates statistics for i.smap from raster map.\fR
+.IP \(bu 4n
+\fCi.group\fR \fCCreates, edits, and lists groups of imagery data.\fR
+.IP \(bu 4n
+\fCi.his.rgb\fR \fCTransforms raster maps from HIS (Hue\-Intensity\-Saturation) color space to RGB (Red\-Green\-Blue) color space.\fR
+.IP \(bu 4n
+\fCi.ifft\fR \fCInverse Fast Fourier Transform (IFFT) for image processing.\fR
+.IP \(bu 4n
+\fCi.image.mosaic\fR \fCMosaics several images and extends colormap.\fR
+.IP \(bu 4n
+\fCi.in.spotvgt\fR \fCImports SPOT VGT NDVI data into a raster map.\fR
+.IP \(bu 4n
+\fCi.landsat.acca\fR \fCPerforms Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).\fR
+.IP \(bu 4n
+\fCi.landsat.toar\fR \fCCalculates top\-of\-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI\fR
+.IP \(bu 4n
+\fCi.maxlik\fR \fCClassifies the cell spectral reflectances in imagery data.
+.br
+\fR
+.IP \(bu 4n
+\fCi.modis.qc\fR \fCExtracts quality control parameters from MODIS QC layers.\fR
+.IP \(bu 4n
+\fCi.oif\fR \fCCalculates Optimum\-Index\-Factor table for spectral bands\fR
+.IP \(bu 4n
+\fCi.ortho.camera\fR \fCSelect and modify the imagery group camera reference file.\fR
+.IP \(bu 4n
+\fCi.ortho.elev\fR \fCSelect or modify the target elevation model.\fR
+.IP \(bu 4n
+\fCi.ortho.init\fR \fCInteractively creates or modifies entries in a camera initial exposure station file for imagery group referenced by a sub\-block.\fR
+.IP \(bu 4n
+\fCi.ortho.photo\fR \fCMenu driver for the photo imagery programs.\fR
+.IP \(bu 4n
+\fCi.ortho.rectify\fR \fCOrthorectifies an image by using the image to photo coordinate transformation matrix.\fR
+.IP \(bu 4n
+\fCi.ortho.target\fR \fCSelect or modify the imagery group target.\fR
+.IP \(bu 4n
+\fCi.ortho.transform\fR \fCComputes a coordinate transformation based on the control points.\fR
+.IP \(bu 4n
+\fCi.pansharpen\fR \fCImage fusion algorithms to sharpen multispectral with high\-res panchromatic channels\fR
+.IP \(bu 4n
+\fCi.pca\fR \fCPrincipal components analysis (PCA) for image processing.\fR
+.IP \(bu 4n
+\fCi.rectify\fR \fCRectifies an image by computing a coordinate transformation for each pixel in the image based on the control points.\fR
+.IP \(bu 4n
+\fCi.rgb.his\fR \fCTransforms raster maps from RGB (Red\-Green\-Blue) color space to HIS (Hue\-Intensity\-Saturation) color space.\fR
+.IP \(bu 4n
+\fCi.segment\fR \fCIdentifies segments (objects) from imagery data.\fR
+.IP \(bu 4n
+\fCi.smap\fR \fCPerforms contextual image classification using sequential maximum a posteriori (SMAP) estimation.\fR
+.IP \(bu 4n
+\fCi.spectral\fR \fCDisplays spectral response at user specified locations in group or images.\fR
+.IP \(bu 4n
+\fCi.target\fR \fCTargets an imagery group to a GRASS location and mapset.\fR
+.IP \(bu 4n
+\fCi.tasscap\fR \fCPerforms Tasseled Cap (Kauth Thomas) transformation.\fR
+.IP \(bu 4n
+\fCi.topo.corr\fR \fCComputes topographic correction of reflectance.\fR
+.IP \(bu 4n
+\fCi.vi\fR \fCCalculates different types of vegetation indices.
+.br
+\fR
+.IP \(bu 4n
+\fCi.zc\fR \fCZero\-crossing \(dqedge detection\(dq raster function for image processing.\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

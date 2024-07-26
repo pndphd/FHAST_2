@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.in.xyz.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.in.xyz.py</b></em>  - Create a 3D raster map from an assemblage of many coordinates using univariate statistics
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#voxel">voxel</a>, <a href="keywords.html#LIDAR">LIDAR</a>, <a href="keywords.html#statistics">statistics</a>, <a href="keywords.html#conversion">conversion</a>, <a href="keywords.html#aggregation">aggregation</a>, <a href="keywords.html#binning">binning</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.in.xyz.py</b><br></div>
+<b>r3.in.xyz.py --help</b><br>
+<div id="synopsis"><b>r3.in.xyz.py</b> [-<b>sgi</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>method</b>=<em>string</em>]   [<b>type</b>=<em>string</em>]   [<b>separator</b>=<em>character</em>]   [<b>x</b>=<em>integer</em>]   [<b>y</b>=<em>integer</em>]   [<b>z</b>=<em>integer</em>]   [<b>value_column</b>=<em>integer</em>]   [<b>vrange</b>=<em>min,max</em>]   [<b>vscale</b>=<em>float</em>]   [<b>percent</b>=<em>integer</em>]   [<b>pth</b>=<em>integer</em>]   [<b>trim</b>=<em>float</em>]   [<b>workers</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Scan data file for extent then exit</dd>
+
+<dt><b>-g</b></dt>
+<dd>In scan mode, print using shell script style</dd>
+
+<dt><b>-i</b></dt>
+<dd>Ignore broken lines</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>ASCII file containing input data</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Statistic to use for raster values</dd>
+<dd>Options: <em>n, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean</em></dd>
+<dd>Default: <em>mean</em></dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Storage type for resultant raster map</dd>
+<dd>Options: <em>float, double</em></dd>
+<dd>Default: <em>float</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>x</b>=<em>integer</em></dt>
+<dd>Column number of x coordinates in input file (first column is 1)</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>y</b>=<em>integer</em></dt>
+<dd>Column number of y coordinates in input file</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>z</b>=<em>integer</em></dt>
+<dd>Column number of z coordinates in input file</dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>value_column</b>=<em>integer</em></dt>
+<dd>Column number of data values in input file</dd>
+<dd>If not given or set to 0, the data points' z-values are used</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>vrange</b>=<em>min,max</em></dt>
+<dd>Filter range for value column data (min,max)</dd>
+
+<dt><b>vscale</b>=<em>float</em></dt>
+<dd>Scaling factor to apply to value column data</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>percent</b>=<em>integer</em></dt>
+<dd>Percent of map to keep in memory</dd>
+<dd>Options: <em>1-100</em></dd>
+<dd>Default: <em>100</em></dd>
+
+<dt><b>pth</b>=<em>integer</em></dt>
+<dd>pth percentile of the values</dd>
+<dd>Options: <em>1-100</em></dd>
+
+<dt><b>trim</b>=<em>float</em></dt>
+<dd>Discard &lt;trim&gt; percent of the smallest and &lt;trim&gt; percent of the largest observations</dd>
+<dd>Options: <em>0-50</em></dd>
+
+<dt><b>workers</b>=<em>integer</em></dt>
+<dd>Number of parallel processes to launch</dd>
+<dd>Options: <em>1-256</em></dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.in.xyz</em> imports sparse XYZ data from an ASCII file into
+a 3D raster map (voxels). It does this by running the <em>r.in.xyz</em>
+module multiple times for different z-ranges and then assembling the
+slices with <em>r.to.rast3</em>.
+<p>
+See the <a href="r.in.xyz.html">r.in.xyz</a> help page for general
+parameter usage and tips.
+<p>
+The map is created using the rows, columns, and depths set by
+current region settings. Be sure to check and adjust these with
+the <em>g.region</em> module before performing the import.
+<p>
+You may either use the z-value as the data value for the voxel
+(e.g. with the 'n' statistic), or alternately scan another
+column for the data values to bin into the voxels. This alternate
+data column can be both filtered by range and have a scaling
+factor applied to it.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+The 2D and 3D horizontal region resolutions must match. See the
+EXAMPLES section below.
+<p>
+Unlike <em>r.in.xyz</em>, reading from stdin and z-scaling are not
+possible. Filtering by z-range is accomplished by setting the 3D region.
+<p>
+To enable parallel processing support, set the <b>workers=</b> option
+to match the number of CPUs or CPU-cores available on your system.
+Alternatively, the <tt>WORKERS</tt> environment variable can be set
+to the number of concurrent processes desired.
+<p>
+Points falling exactly on a vertical bound will belong to the depth
+band below them, except for points exactly on the top bound, which will
+belong to the top-most slice.
+<p>
+The script is expected to be nearly as efficient as if it was fully
+written in C.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Using the Serpent Mound dataset. (see the
+ <a href="https://grasswiki.osgeo.org/wiki/LIDAR">GRASS LiDAR wiki page</a>)
+
+<div class="code"><pre>
+  #scan dataset for extent:
+  r3.in.xyz -s in=Serpent_Mound_Model_LAS_Data.txt out=dummy \
+     x=1 y=2 z=3 separator=space
+
+  # set the 2D and 3D regions:
+  g.region n=4323641.57 s=4320942.61 w=289020.90 e=290106.02 res=1 -a
+  g.region b=166 t=216 res3=1 tbres=5 -3 -p
+
+  r3.in.xyz in=Serpent_Mound_Model_LAS_Data.txt out=serpent3D \
+     method=mean x=1 y=2 z=3 separator=space type=float
+</pre></div>
+
+The same, but aggregate and store backscatter strength from column 5
+into voxels in instead of the z-value:
+<div class="code"><pre>
+  r3.in.xyz in=Serpent_Mound_Model_LAS_Data.txt out=serpent3D.bakscat \
+     method=mean x=1 y=2 z=3 val=5 separator=space type=float
+</pre></div>
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+<em>r.to.rast3</em> always creates a <tt>double</tt> output map
+regardless of input.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.in.xyz.html">r.in.xyz</a>,
+<a href="r.to.rast3.html">r.to.rast3</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Hamish Bowman<br>
+<i>Dunedin, New Zealand</i>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r3.in.xyz">r3.in.xyz source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r3.in.xyz">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

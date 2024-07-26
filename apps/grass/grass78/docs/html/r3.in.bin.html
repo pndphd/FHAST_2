@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.in.bin - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.in.bin</b></em>  - Imports a binary raster file into a GRASS 3D raster map.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.in.bin</b><br></div>
+<b>r3.in.bin --help</b><br>
+<div id="synopsis"><b>r3.in.bin</b> [-<b>rdis</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>bytes</b>=<em>integer</em>  [<b>order</b>=<em>string</em>]  <b>north</b>=<em>float</em> <b>south</b>=<em>float</em> <b>east</b>=<em>float</em> <b>west</b>=<em>float</em> <b>bottom</b>=<em>float</em> <b>top</b>=<em>float</em> <b>rows</b>=<em>integer</em> <b>cols</b>=<em>integer</em> <b>depths</b>=<em>integer</em>  [<b>null</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Switch the row order in output from north->south to south->north</dd>
+
+<dt><b>-d</b></dt>
+<dd>Switch the depth order in output from bottom->top to top->bottom</dd>
+
+<dt><b>-i</b></dt>
+<dd>Binary data is of type integer</dd>
+
+<dt><b>-s</b></dt>
+<dd>Signed data (two's complement)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of binary 3D raster file to be imported</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>bytes</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of bytes per cell in binary file</dd>
+<dd>Options: <em>1, 2, 4, 8</em></dd>
+
+<dt><b>order</b>=<em>string</em></dt>
+<dd>Byte order in binary file</dd>
+<dd>Options: <em>big, little, native, swap</em></dd>
+<dd>Default: <em>native</em></dd>
+
+<dt><b>north</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Northern limit of geographic region (outer edge)</dd>
+
+<dt><b>south</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Southern limit of geographic region (outer edge)</dd>
+
+<dt><b>east</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Eastern limit of geographic region (outer edge)</dd>
+
+<dt><b>west</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Western limit of geographic region (outer edge)</dd>
+
+<dt><b>bottom</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Bottom limit of geographic region (outer edge)</dd>
+
+<dt><b>top</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Top limit of geographic region (outer edge)</dd>
+
+<dt><b>rows</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of rows</dd>
+
+<dt><b>cols</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of columns</dd>
+
+<dt><b>depths</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of depths</dd>
+
+<dt><b>null</b>=<em>float</em></dt>
+<dd>Set Value to NULL</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">Example</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.in.bin</em> allows a user to create a GRASS 3D raster map 
+from a variety of binary 3D raster data formats.
+
+<p>The top, bottom, north, south, east, and west field values entered 
+are the coordinates of the edges of the geographic region. 
+The depths, rows and cols field values entered describe the dimensions 
+of the matrix of data to follow. 
+If the bytes field is entered incorrectly an error will be generated
+suggesting a closer bytes value. 
+
+<h2><a name="notes">NOTES</a></h2>
+
+The write order of the rows (north->south to south->north) and 
+the write order of the depths (bottom->top to top->bottom) can be switched.
+<p>
+Have a look at <a href="r3.out.ascii.html">r3.out.ascii</a> to manual page that 
+describes the internal layout of the 3D raster maps and the supported
+row and depth switch options.
+<p>
+Import of little and big endian byte order as well as signed and
+unsigned integer data types is supported. 
+
+<h2><a name="example">Example</a></h2>
+
+First we create a specific region and a 3D raster map that we will export with
+<a href="r3.out.bin.html">r3.out.bin</a> and import again.
+
+<div class="code"><pre>
+g.region w=0 e=180 s=0 n=90 b=0 t=100 res3=10
+r3.mapcalc expr="test_out_bin_float = float(if(row() == 2, null(), row()))"
+
+r3.out.bin input=test_out_bin_float byte=4 null=-9999 \
+    output=test_out_bin_float_native_b4.bin order=native
+
+r3.in.bin output=test_in_bin_float byte=4 null=-9999 \
+    input=test_out_bin_float_native_b4.bin order=native \
+    bottom=0 top=100 west=0 east=180 south=0 north=90 \
+    cols=18 rows=9 depths=10
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.out.bin.html">r3.out.bin</a>,
+<a href="r3.in.ascii.html">r3.in.ascii</a>, 
+<a href="r3.out.ascii.html">r3.out.ascii</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Soren Gebbert, based on r.in.bin from Jacques Bouchard and Bob Covill
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.in.bin">r3.in.bin source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.in.bin">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+.TH v.to.3d 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.to.3d\fR\fR  \- Performs transformation of 2D vector features to 3D.
+.SH KEYWORDS
+vector, geometry, 3D
+.SH SYNOPSIS
+\fBv.to.3d\fR
+.br
+\fBv.to.3d \-\-help\fR
+.br
+\fBv.to.3d\fR [\-\fBrt\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBcolumn\fR=\fIname\fR]   [\fBheight\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Reverse transformation; 3D vector features to 2D
+.IP "\fB\-t\fR" 4m
+.br
+Do not copy attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid\fR
+.br
+Default: \fIpoint,line,boundary,centroid\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of attribute column used for height
+.br
+Can be used for reverse transformation, to store height of points
+.IP "\fBheight\fR=\fIfloat\fR" 4m
+.br
+Fixed height for 3D vector features
+.SH DESCRIPTION
+The \fIv.to.3d\fR module is used to transform 2D vector features
+to 3D. Height (z\-coordinate) of 3D vector features can be specified
+by \fBheight\fR parameter as fixed value or by \fBcolumn\fR
+parameter.
+.PP
+Flag \fB\-r\fR enables to perform reverse transformation, i.e.,
+transform 3D vector to 2D by omitting z\-coordinate. Height of input 3D
+features can be optionally stored in \fBcolumn\fR.
+.SH  NOTES
+When transforming 2D vector features to 3D based on attribute, all
+NULL values are silently converted to height 0.0.
+.PP
+Reverse transformation is possible for points and lines.
+In case of lines, the reverse transformation should be used
+only when all vertices of a line have the same z\-coordinate
+(for example contours).
+.SH EXAMPLES
+.SS Transform 2D vector features to 3D
+.br
+.nf
+\fC
+# convert z\-values from string to double
+v.db.addcolumn map=geodetic_pts columns=\(dqZ_VALUE_D double precision\(dq
+v.db.update map=geodetic_pts column=Z_VALUE_D qcolumn=Z_VALUE
+v.db.select map=geodetic_pts columns=cat,Z_VALUE,Z_VALUE_D
+# convert 2D vector point map to 3D based on attribute
+v.to.3d input=geodetic_pts out=geodetic_pts_3d column=Z_VALUE_D
+\fR
+.fi
+.SS Transform 3D vector features to 2D
+.br
+.nf
+\fC
+v.to.3d \-rt input=elev_lid792_bepts output=elev_lid_2d
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.transform,
+v.extrude,
+v.drape
+\fR
+.SH AUTHOR
+Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.to.3d source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

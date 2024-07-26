@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.remove - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.remove</b></em>  - Removes data base element files from the user's current mapset using the search pattern.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_map_management.html">map management</a>, <a href="keywords.html#remove">remove</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.remove</b><br></div>
+<b>g.remove --help</b><br>
+<div id="synopsis"><b>g.remove</b> [-<b>irefb</b>] <b>type</b>=<em>datatype</em>[,<i>datatype</i>,...]  [<b>name</b>=<em>string</em>[,<i>string</i>,...]]   [<b>ignore</b>=<em>string</em>[,<i>string</i>,...]]   [<b>pattern</b>=<em>string</em>]   [<b>exclude</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Ignore case</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use basic regular expressions instead of wildcards</dd>
+
+<dt><b>-e</b></dt>
+<dd>Use extended regular expressions instead of wildcards</dd>
+
+<dt><b>-f</b></dt>
+<dd>Force removal (required for actual deletion of files)</dd>
+
+<dt><b>-b</b></dt>
+<dd>Remove base raster maps</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>type</b>=<em>datatype[,<i>datatype</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Data type(s)</dd>
+<dd>Options: <em>raster, raster_3d, vector, label, region, group, all</em></dd>
+<dd><b>raster</b>: raster map(s)</dd>
+<dd><b>raster_3d</b>: 3D raster map(s)</dd>
+<dd><b>vector</b>: vector map(s)</dd>
+<dd><b>label</b>: paint label file(s)</dd>
+<dd><b>region</b>: region definition(s)</dd>
+<dd><b>group</b>: imagery group(s)</dd>
+<dd><b>all</b>: all types</dd>
+
+<dt><b>name</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Name of file(s) to remove</dd>
+
+<dt><b>ignore</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Name of file(s) to ignore (default: none)</dd>
+
+<dt><b>pattern</b>=<em>string</em></dt>
+<dd>File name search pattern</dd>
+
+<dt><b>exclude</b>=<em>string</em></dt>
+<dd>File name exclusion pattern (default: none)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>g.remove</em> removes data files matching a pattern given by wildcards or
+POSIX Extended Regular Expressions. If the <b>-f</b> force flag is not given
+then nothing is removed, instead the list of selected file names is printed to
+<tt>stdout</tt> as a preview of the files to be deleted.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Delete <tt>map1</tt> and <tt>map2</tt> raster maps in the current mapset:
+<div class="code"><pre>
+g.remove -f type=raster name=tmp1,tmp2
+</pre></div>
+
+Delete all raster and vector maps starting with "<tt>tmp_</tt>" in the current
+mapset:
+<div class="code"><pre>
+# show matching raster and vector maps but do not delete yet (as verification)
+g.remove type=raster,vector pattern="tmp_*"
+
+# actually delete the matching raster and vector maps
+g.remove -f type=raster,vector pattern="tmp_*"
+</pre></div>
+
+Delete all vector maps starting with "<tt>stream_</tt>" in the current mapset,
+but exclude those ending with "<tt>_final</tt>":
+<div class="code"><pre>
+g.remove -f type=vector pattern="stream_*" exclude="*_final"
+</pre></div>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Huidae Cho<br>
+grass4u@gmail.com
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.remove">g.remove source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.remove">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

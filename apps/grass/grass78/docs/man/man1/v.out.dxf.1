@@ -1,0 +1,77 @@
+.TH v.out.dxf 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.dxf\fR\fR  \- Exports vector map to DXF file format.
+.SH KEYWORDS
+vector, export, output, DXF
+.SH SYNOPSIS
+\fBv.out.dxf\fR
+.br
+\fBv.out.dxf \-\-help\fR
+.br
+\fBv.out.dxf\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for DXF output file
+.SH DESCRIPTION
+The GRASS program \fIv.out.dxf\fR conversion program
+generates an ASCII DXF (AutoCAD) file from a GRASS vector.
+The output file is placed in the user\(cqs current
+working directory unless the user specifies a full pathname
+for the \fIoutput\fR.
+.SH NOTES
+DXF files output by AutoCAD have the suffix .dxf
+.SH REFERENCES
+AutoCad DXF (from Wikipedia, the free encyclopedia)
+.SH SEE ALSO
+\fIv.in.dxf\fR,
+\fIIntroduction to GRASS vector map processing\fR
+.SH AUTHOR
+Charles Ehlschlaeger, U.S. Army Construction Engineering
+Research Laboratory,
+.br
+wrote original \fIv.out.dxf\fR program in 4/89.
+.PP
+Update to GRASS 5.7 Radim Blazek, 10/2004
+.SH SOURCE CODE
+.PP
+Available at: v.out.dxf source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

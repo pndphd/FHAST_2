@@ -1,0 +1,197 @@
+.TH r3.flow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.flow\fR\fR  \- Computes 3D flow lines and 3D flow accumulation.
+.SH KEYWORDS
+raster3d, hydrology, voxel
+.SH SYNOPSIS
+\fBr3.flow\fR
+.br
+\fBr3.flow \-\-help\fR
+.br
+\fBr3.flow\fR [\-\fBa\fR]  [\fBinput\fR=\fIname\fR]   [\fBvector_field\fR=\fIname\fR[,\fIname\fR,...]]   [\fBseed_points\fR=\fIname\fR]   [\fBflowline\fR=\fIname\fR]   [\fBflowaccumulation\fR=\fIname\fR]   [\fBsampled\fR=\fIname\fR]   [\fBunit\fR=\fIstring\fR]   [\fBstep\fR=\fIfloat\fR]   [\fBlimit\fR=\fIinteger\fR]   [\fBmax_error\fR=\fIfloat\fR]   [\fBskip\fR=\fIinteger\fR[,\fIinteger\fR,...]]   [\fBdirection\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Create and fill attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of input 3D raster map
+.IP "\fBvector_field\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Names of three 3D raster maps describing x, y, z components of vector field
+.IP "\fBseed_points\fR=\fIname\fR" 4m
+.br
+Name of vector map with points from which flow lines are generated
+.br
+If no map is provided, flow lines are generated from each cell of the input 3D raster
+.IP "\fBflowline\fR=\fIname\fR" 4m
+.br
+Name for vector map of flow lines
+.IP "\fBflowaccumulation\fR=\fIname\fR" 4m
+.br
+Name for output flowaccumulation 3D raster
+.IP "\fBsampled\fR=\fIname\fR" 4m
+.br
+Name for 3D raster sampled by flowlines
+.br
+Values of this 3D raster will be stored as attributes of flowlines segments
+.IP "\fBunit\fR=\fIstring\fR" 4m
+.br
+Unit of integration step
+.br
+Default unit is cell
+.br
+Options: \fItime, length, cell\fR
+.br
+Default: \fIcell\fR
+.br
+\fBtime\fR: elapsed time
+.br
+\fBlength\fR: length in map units
+.br
+\fBcell\fR: length in cells (voxels)
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Integration step in selected unit
+.br
+Default step is 0.25 cell
+.br
+Default: \fI0.25\fR
+.IP "\fBlimit\fR=\fIinteger\fR" 4m
+.br
+Maximum number of steps
+.br
+Default: \fI2000\fR
+.IP "\fBmax_error\fR=\fIfloat\fR" 4m
+.br
+Maximum error of integration
+.br
+Influences step, increase maximum error to allow bigger steps
+.br
+Default: \fI1e\-5\fR
+.IP "\fBskip\fR=\fIinteger[,\fIinteger\fR,...]\fR" 4m
+.br
+Number of cells between flow lines in x, y and z direction
+.IP "\fBdirection\fR=\fIstring\fR" 4m
+.br
+Compute flowlines upstream, downstream or in both direction.
+.br
+Options: \fIup, down, both\fR
+.br
+Default: \fIdown\fR
+.SH DESCRIPTION
+Module \fIr3.flow\fR computes 3D flow lines and 3D flow accumulation.
+It accepts either three 3D raster maps representing the vector field or one 3D raster map.
+In case of one map, it computes on\-the\-fly gradient field.
+.SS Flow lines
+Flow lines are computed either from points (seeds) provided in \fBseed_points\fR vector map,
+or if there are no seeds, it creates seeds in a regular grid in the center of voxels (3D raster cells).
+Parameter \fBskip\fR then controls the step between the regularly distributed seeds.
+If skip is not provided, r3.flow decides optimal skip for each dimension based on current 3D region
+as one tenth of the number of columns, rows, and depths.
+Flow lines can be computed in upstream direction (in the direction of gradient or vector field),
+in downstream direction or in both directions.
+.SS Flow accumulation
+Flow accumulation is computed as the number of flow lines traversing each voxel.
+Since the flow lines are computed for each voxel, the flow accumulation computation
+can be more demanding.
+Parameter skip does not influence the flow accumulation computation, parameter direction does.
+.SS Flow line integration
+Flow line integration can be influenced by several parameters.
+Option \fBstep\fR controls the integration step and influences the precision and computational time.
+The unit of step can be defined either in terms of the size of the voxel (3D raster cell),
+length in map units, or as elapsed time.
+Option \fBlimit\fR specifies the maximum number of steps of each flow line.
+.SS Attributes
+Without using flag \fBa\fR, no attribute table is created and each flow line
+is represented by one vector line with one category. With \fBa\fR flag, an attribute table is created
+and each category (record) represents one segment of a flowline, so that attributes
+specific for segments can be written. In case of \fBvector_field\fR input, only velocity is written,
+in case of \fBinput\fR option, also values of the input 3D raster are written.
+Option \fBsampled\fR allows sampling (query) given 3D raster by flow lines (computed from different 3D raster) and
+write the values of the given 3D raster as attributes of the flow line segments.
+Note that using \fBa\fR flag results in longer computation time, so consider increasing
+\fBstep\fR and \fBmax_error\fR parameter.
+.SH NOTES
+r3.flow uses Runge\-Kutta with adaptive step size
+(Cash\-Karp method).
+.SH EXAMPLES
+First we create input data using
+example 1 from
+r3.gwflow manual page:
+.br
+.nf
+\fC
+# set the region accordingly
+g.region res=25 res3=25 t=100 b=0 n=1000 s=0 w=0 e=1000 \-p3
+# now create the input raster maps for a confined aquifer
+r3.mapcalc expression=\(dqphead = if(row() == 1 && depth() == 4, 50, 40)\(dq
+r3.mapcalc expression=\(dqstatus = if(row() == 1 && depth() == 4, 2, 1)\(dq
+r3.mapcalc expression=\(dqwell = if(row() == 20 && col() == 20 && depth() == 2, \-0.25, 0)\(dq
+r3.mapcalc expression=\(dqhydcond = 0.00025\(dq
+r3.mapcalc expression=\(dqsyield = 0.0001\(dq
+r.mapcalc  expression=\(dqrecharge = 0.0\(dq
+r3.gwflow solver=cg phead=phead status=status hc_x=hydcond hc_y=hydcond  \(rs
+   hc_z=hydcond q=well s=syield r=recharge output=gwresult dt=8640000 vx=vx vy=vy vz=vz budget=budget
+\fR
+.fi
+Then we compute flow lines in both directions and downstream flowaccumulation.
+.br
+.nf
+\fC
+r3.flow vector_field=vx,vy,vz flowline=gw_flowlines skip=5,5,2 direction=both
+r3.flow vector_field=vx,vy,vz flowaccumulation=gw_flowacc
+\fR
+.fi
+We can visualize the result in 3D view:
+.PP
+.PP
+We can store velocity values (and values of the input 3D raster map if we use option \fBinput\fR) for each segment of flow line
+in an attribute table.
+.br
+.nf
+\fC
+r3.flow \-a vector_field=vx,vy,vz flowline=gw_flowlines skip=5,5,2 direction=both
+v.colors map=flowlines_color@user1 use=attr column=velocity color=bcyr
+\fR
+.fi
+Again, we visualize the result in 3D view and we check \(cquse color for thematic rendering\(cq on 3D view vector page.
+.PP
+.SH SEE ALSO
+\fI
+r.flow,
+r3.gradient,
+r3.gwflow
+\fR
+.SH AUTHORS
+Anna Petrasova, NCSU OSGeoREL, developed during GSoC 2014.
+.SH SOURCE CODE
+.PP
+Available at: r3.flow source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

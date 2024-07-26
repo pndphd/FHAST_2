@@ -1,0 +1,1 @@
+ /k .\FHAST_App\dist\R-Portable\App\R-Portable\bin\Rscript.exe --vanilla "./FHAST_app\dist\script\R\run.R"

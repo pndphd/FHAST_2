@@ -1,0 +1,206 @@
+.TH htmldriver 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH HTML DISPLAY DRIVER
+\fIHTML display driver\fR to create HTML image maps.
+.SH DESCRIPTION
+The HTML driver allows the generation of HTML image maps for area
+vector data. HTML image maps are used in conjunction with images to
+provide unique URL targets for different portions of an image. The
+HTML driver can create both client\-side image maps embedded into HTML
+files, or server\-side image maps used by web server software.
+.PP
+Polygons can at most have 100 vertices (this limit imposed by HTML
+image map formats, see \fBGRASS_RENDER_HTMLMAXPOINTS\fR below.) The driver
+will attempt to trim polygons that have more that 100 vertices by
+removing vertices with the least amount of angle to the next
+vertice. Also, any polygon that is entirely bounded by another polygon
+will be discarded.
+.PP
+Text written to the driver before polygons are used as the HREF tag
+for all subsequent polygons written. All polygons that exist in a
+vector map will have the same HREF tag.
+.PP
+The only GRASS display commands that should be used with this driver
+are:
+.RS 4n
+.IP \(bu 4n
+\fId.text\fR \- pass href
+information for resulting image maps.
+.IP \(bu 4n
+\fId.vect\fR \- draw polygons from a
+vector map.
+.RE
+.SH USAGE
+.SS Environment variables
+The HTML driver can be enabled by
+setting \fBGRASS_RENDER_IMMEDIATE\fR variable, eg.
+.br
+.nf
+\fC
+export GRASS_RENDER_IMMEDIATE=html
+\fR
+.fi
+Several environment variables affect the operation of the HTML driver:
+.RS 4n
+.IP \(bu 4n
+\fBGRASS_RENDER_WIDTH=xxx\fR
+.br
+the width of the image map (default is 640).
+.IP \(bu 4n
+\fBGRASS_RENDER_HEIGHT=yyy\fR
+.br
+the height of the image map (default is 480).
+.IP \(bu 4n
+\fBGRASS_RENDER_HTMLTYPE=type\fR
+.br
+type of image mape to create
+(default is CLIENT):
+.br
+\fBCLIENT\fR    Netscape/IE client\-side
+image map (NAME=\(dqmap\(dq).
+.br
+\fBAPACHE\fR    Apache/NCSA server\-side image
+map.
+.br
+\fBRAW\fR
+        Raw url and polygon
+vertices (\fIurl  x1  y1  x2  y2 
+\&.....\fR), suitable for conversion to CERN server format, or
+any other format with user supplied conversion program.
+.IP \(bu 4n
+\fBGRASS_RENDER_FILE=filename\fR
+.br
+specifies the resulting file to store the html image map, default
+is htmlmap. Files without absolute path names are written
+in the current directory where the driver was started.
+.br
+\fIAny existing file of the same name is overwritten without
+warning.\fR
+.IP \(bu 4n
+\fBGRASS_RENDER_HTMLMINDIST=n\fR
+.br
+specifies the minimum distance in pixels that a point must change
+from the previous point to keep in the list of vertices for a
+polygon.  The default is 2, which means that a point\(cqs x
+and y difference from the previous point must change by a number
+of pixels greater than this value.  This parameter helps to
+eliminate closely spaced points.
+.IP \(bu 4n
+\fBGRASS_RENDER_HTMLMINBBOX=n\fR
+.br
+specifies the minimum bounding box dimensions to record a polygon
+as a clickable area.  The default is 2, which means that a
+polygon with a bounding box of less than this value is not
+included. This parameter helps to eliminate polygons than are a
+point or line.
+.IP \(bu 4n
+\fBGRASS_RENDER_HTMLMAXPOINTS=n\fR
+.br
+specifies the maximum number of vertices included in a polygon\(cqs
+clickable area.  The default is 99. Some browsers can only
+accommodate polygons of 100 vertices or less. The HTMLMAP driver
+automatically ensures that a polygon is closed by making the last
+point the same as the first point.
+.RE
+.SS Example
+Start up the driver
+.br
+.nf
+\fC
+g.region vector=zipcodes_wake
+d.mon start=html
+\fR
+.fi
+Display text strings (HREF\(cqs) and polygons
+.br
+.nf
+\fC
+echo \(dqhttps://en.wikipedia.org/wiki/Raleigh,_North_Carolina\(dq | d.text
+d.vect map=zipcodes_wake where=\(dqZIPNAME = \(cqRALEIGH\(cq\(dq
+echo \(dqhttps://en.wikipedia.org/wiki/Cary,_North_Carolina\(dq | d.text
+d.vect map=zipcodes_wake where=\(dqZIPNAME = \(cqCARY\(cq\(dq fill_color=180:200:210
+\fR
+.fi
+Stop the driver once all polygon have been displayed. This will create
+a file named \(cqhtmlmap\(cq in your current directory:
+.br
+.nf
+\fC
+d.mon stop=html
+\fR
+.fi
+You will also want to create an image for your image map. Use the PNG
+driver and other utilities to create .gif or .jpg files.
+\fIThe following example is somewhat out of date and refers to options
+available in GRASS 5.\fR
+.br
+.nf
+\fC
+# using previous GRASS_RENDER_WIDTH & GRASS_RENDER_HEIGHT
+d.mon start=png
+d.rast map=terrain
+d.vect map=area51  fillcolor=white  linecolor=blue
+d.vect map=roswell fillcolor=yellow linecolor=blue
+d.vect map=states  color=green
+d.vect map=roads   color=black
+d.mon stop=png
+# make the region the same as the newly created cell for ppm export
+g.region save=saved.reg
+g.region raster=D_cell
+r.out.ppm \-q input=D_cell output=alien.ppm
+# use the netpbm utilities to create a gif (quantize if needed)
+ppmquant 128 <alien.ppm |  ppmtogif >alien.gif
+# assemble some html with the image and the image map
+echo \(cq<html><body><img src=\(dqalien.gif\(dq usemap=\(dq#map\(dq>\(cq >alien.html
+cat htmlmap                                           >>alien.html
+echo \(cq</body></html>\(cq                                 >>alien.html
+# don\(cqt forget to reset your region
+g.region region=saved.reg
+# take a look and test it out
+netscape file:\(gapwd\(ga/alien.html &
+\fR
+.fi
+.SH NOTES
+HTML was adapted from the CELL driver in GRASS 4.3.
+Point\-in\-polygon test code was lifted from Randolph Franklin\(cqs web
+page, see
+.RS 4n
+.IP \(bu 4n
+http://www.ecse.rpi.edu/Homepages/wrf/
+.IP \(bu 4n
+http://www.ecse.rpi.edu/Homepages/wrf/research/geom/pnpoly.html
+.RE
+.PP
+If you create an HTML file with two or more images and image maps, you
+will need to edit the map names. The HTML driver creates its map
+with the name
+map. A small sed script can easily change the map name:
+.br
+.nf
+\fC
+sed \-e \(cqs/NAME=\(dqmap\(dq/NAME=\(dqfoomap\(dq/\(cq < htmlmap > foomap.html
+\fR
+.fi
+.SH SEE ALSO
+\fI
+Cairo driver,
+PNG driver,
+HTML driver,
+variables
+.br
+.br
+d.rast,
+d.vect,
+d.mon,
+d.erase,
+d.redraw
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,132 @@
+.TH g.mapset 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.mapset\fR\fR  \- Changes/reports current mapset.
+.br
+Optionally create new mapset or list available mapsets in given location.
+.SH KEYWORDS
+general, settings
+.SH SYNOPSIS
+\fBg.mapset\fR
+.br
+\fBg.mapset \-\-help\fR
+.br
+\fBg.mapset\fR [\-\fBclp\fR] \fBmapset\fR=\fIname\fR  [\fBlocation\fR=\fIname\fR]   [\fBdbase\fR=\fIpath\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Create mapset if it doesn\(cqt exist
+.IP "\fB\-l\fR" 4m
+.br
+List available mapsets and exit
+.IP "\fB\-p\fR" 4m
+.br
+Print current mapset and exit
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmapset\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of mapset (default: current search path)
+.br
+Name of mapset where to switch
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Location name
+.br
+Location name (not location path)
+.IP "\fBdbase\fR=\fIpath\fR" 4m
+.br
+GRASS GIS database directory
+.br
+Default: path to the current GRASS GIS database
+.SH DESCRIPTION
+\fIg.mapset\fR changes the current working MAPSET, LOCATION, or GISDBASE.
+This is a fairly radical maneuver to run mid\-session, take care when running
+the GUI at the same time.
+.PP
+With \fIg.mapset\fR, the shell history (i.e. .bash_history file
+of the initial location will be used to record the command history.
+.SH NOTES
+By default, the shell continues to use the history for the old mapset.
+To change this behaviour the history can be switched to record in the new
+mapset\(cqs history file as follows:
+.br
+.nf
+\fC
+# bash example
+history \-w
+history \-r /\(dq$GISDBASE/$LOCATION/$MAPSET\(dq/.bash_history
+HISTFILE=/\(dq$GISDBASE/$LOCATION/$MAPSET\(dq/.bash_history
+\fR
+.fi
+.SH EXAMPLES
+.SS Print the name of the current mapset
+To print the name of the current mapset, use the \fB\-p\fR command as
+shown below:
+.br
+.nf
+\fC
+g.mapset \-p
+\fR
+.fi
+.SS List available mapsets
+To list available mapsets, use the \fB\-l\fR command as shown below:
+.br
+.nf
+\fC
+g.mapset \-l
+\fR
+.fi
+This should list all the mapsets, such as: \(dqlandsat new PERMANENT user1.\(dq
+.SS Change the current mapset
+To change the current mapset to \(dquser1\(dq use the following command:
+.br
+.nf
+\fC
+g.mapset mapset=user1 location=nc_spm_08_grass7
+\fR
+.fi
+You should receive the following message: \(dqMapset switched. Your shell
+continues to use the history for the old mapset.\(dq
+.SS Create a new mapset
+To create a new mapset, use the \fB\-c\fR tag as shown below:
+.br
+.nf
+\fC
+g.mapset \-c mapset=new location=nc_spm_08_grass7
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.gisenv,
+g.mapsets
+\fR
+.SH AUTHOR
+Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: g.mapset source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,131 @@
+.TH r.series.interp 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.series.interp\fR\fR  \- Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.
+.SH KEYWORDS
+raster, series, interpolation
+.SH SYNOPSIS
+\fBr.series.interp\fR
+.br
+\fBr.series.interp \-\-help\fR
+.br
+\fBr.series.interp\fR  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBdatapos\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBinfile\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBsamplingpos\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBoutfile\fR=\fIname\fR]   [\fBmethod\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBdatapos\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Data point position for each input map
+.IP "\fBinfile\fR=\fIname\fR" 4m
+.br
+Input file with one input raster map name and data point position per line, field separator between name and sample point is |
+.IP "\fBoutput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBsamplingpos\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Sampling point position for each output map
+.IP "\fBoutfile\fR=\fIname\fR" 4m
+.br
+Input file with one output raster map name and sample point position per line, field separator between name and sample point is |
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Interpolation method, currently only linear interpolation is supported
+.br
+Options: \fIlinear\fR
+.br
+Default: \fIlinear\fR
+.SH DESCRIPTION
+\fIr.series.interp\fR
+interpolates new raster maps located temporal or spatial in between existing raster maps.
+The interpolation is performed at specific sampling positions. The sampling position for each output map must be specified,
+as well as the data position of the input maps.
+The following interpolation methods are supported.
+.RS 4n
+.IP \(bu 4n
+linear: Linear interpolation. At least two input maps and data positions are required.
+.RE
+.SH EXAMPLES
+Interpolate linear three new maps at 3 sampling positions in the interval (0.0;1.0)
+.br
+First prepare the input maps:
+.br
+.br
+.nf
+\fC
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10 res3=10 \-p3
+r.mapcalc expr=\(dqprec_1 = 100\(dq
+r.mapcalc expr=\(dqprec_5 = 500\(dq
+\fR
+.fi
+.PP
+Interpolate
+.br
+.nf
+\fC
+r.series.interp \-\-v input=prec_1,prec_5 datapos=0.0,1.0 \(rs
+                  output=prec_2,prec_3,prec_4 samplingpos=0.25,0.5,0.75 \(rs
+                  method=linear
+\fR
+.fi
+.PP
+Interpolate using the file option.
+First prepare the input file:
+.br
+.br
+.nf
+\fC
+echo \(dqprec_2|0.25
+prec_3|0.5
+prec_4|0.75\(dq >> outfile.txt
+\fR
+.fi
+.PP
+Interpolate:
+.br
+.nf
+\fC
+r.series.interp \-\-v input=prec_1,prec_5 datapos=0.0,1.0 file=outfile.txt method=linear
+\fR
+.fi
+The resulting maps will have the values 200, 300 and 400.
+.SH SEE ALSO
+\fI
+g.region,
+r.series,
+r.series.accumulate
+\fR
+.PP
+Hints for large raster data processing
+.SH AUTHOR
+Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r.series.interp source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

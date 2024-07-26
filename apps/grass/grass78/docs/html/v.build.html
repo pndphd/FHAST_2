@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.build - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.build</b></em>  - Creates topology for vector map.<BR>
+Optionally also checks for topological errors.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_topology.html">topology</a>, <a href="keywords.html#geometry">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.build</b><br></div>
+<b>v.build --help</b><br>
+<div id="synopsis"><b>v.build</b> [-<b>e</b>] <b>map</b>=<em>name</em>  [<b>error</b>=<em>name</em>]  <b>option</b>=<em>string</em>[,<i>string</i>,...]  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Extensive checks for topological errors</dd>
+<dd>Perform in-depth checks for topological errors when building topology</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+
+<dt><b>error</b>=<em>name</em></dt>
+<dd>Name for output vector map where erroneous vector features are written to</dd>
+
+<dt><b>option</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Build topology or dump topology or indices to standard output</dd>
+<dd>Options: <em>build, dump, sdump, cdump, fdump</em></dd>
+<dd>Default: <em>build</em></dd>
+<dd><b>build</b>: build topology</dd>
+<dd><b>dump</b>: write topology to stdout</dd>
+<dd><b>sdump</b>: write spatial index to stdout</dd>
+<dd><b>cdump</b>: write category index to stdout</dd>
+<dd><b>fdump</b>: write feature index to stdout (OGR simple-feature-based formats only)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#build-topology" class="toc">Build topology</a></li>
+        <li class="toc"><a href="#dump-topology-or-indices" class="toc">Dump topology or indices</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.build</em> builds support files for GRASS vector maps. These
+support files supply topology and category information including
+spatial index that are needed by other GRASS modules.
+
+<p>
+GRASS is generating these support files automatically, only in rare
+cases the user has to (re)build them.
+
+<p>
+Refer to
+<a href="vectorintro.html">vector data processing in GRASS GIS</a> for
+more information on GRASS vector data model.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>v.build</em> creates support files only for vector maps located in
+the user's current mapset. It's not possible to rebuild support files
+(<b>option=build</b>) for vector maps from other mapsets.
+
+<p>
+In case of errors, the user can optionally generate an <b>error</b>
+vector map containing the erroneous vectors for later inspection.
+
+<p>
+If <b>error</b> vector map is specified, <em>v.build</em> checks:
+
+<ul>
+  <li>isolated bondaries (which are not forming any areas),</li>
+  <li>centroids outside of area,</li>
+  <li>duplicated centroids.</li>
+</ul>
+
+<p>
+Extensive checks for topological errors (flag <b>-e</b>) also
+includes:
+
+<ul>
+  <li>lines or boundaries of zero length,</li>
+  <li>intersecting boundaries, ie. overlapping areas,</li>
+  <li>areas without centroids that are not isles.</li>
+</ul>
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="build-topology">Build topology</a></h3>
+
+Note that <b>option=build</b> recreates also spatial and category
+indices, not only topology. For linked OGR layers
+(see <em><a href="v.external.html">v.external</a></em>) also feature
+index is created.
+
+<div class="code"><pre>
+v.build map=urbanarea option=build
+</pre></div>
+
+Note that the vector map <i>urbanarea</i> must be located in the
+current mapset.
+
+<h3><a name="dump-topology-or-indices">Dump topology or indices</a></h3>
+
+Dump options print topology, spatial, category or feature index to
+standard output. Such information can be printed also for vector maps
+from other mapsets. A description of the vector topology is available in
+the <a href="https://grass.osgeo.org/programming7/vlibTopology.html">GRASS GIS 7 Programmer's Manual</a>,
+section "Vector library topology management".
+
+<div class="code"><pre>
+v.build map=urbanarea option=dump
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.build.all.html">v.build.all</a>,
+<a href="v.build.polylines.html">v.build.polylines</a>,
+<a href="v.edit.html">v.edit</a>,
+<a href="v.split.html">v.split</a>
+</em>
+
+<p>See also <em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em>.
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Dave Gerdes, U.S.Army Construction Engineering Research
+Laboratory,<br>
+Michael Higgins, U.S.Army Construction Engineering Research Laboratory,<br>
+Radim Blazek, ITC-irst, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.build">v.build source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.build">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

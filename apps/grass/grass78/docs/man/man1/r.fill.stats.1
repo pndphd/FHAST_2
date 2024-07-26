@@ -1,0 +1,473 @@
+.TH r.fill.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.fill.stats\fR\fR  \- Rapidly fills \(cqno data\(cq cells (NULLs) of a raster map with interpolated values (IDW).
+.SH KEYWORDS
+raster, surface, interpolation, IDW, no\-data filling
+.SH SYNOPSIS
+\fBr.fill.stats\fR
+.br
+\fBr.fill.stats \-\-help\fR
+.br
+\fBr.fill.stats\fR [\-\fBmkwus\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBuncertainty\fR=\fIname\fR]  \fBdistance\fR=\fIvalue\fR \fBmode\fR=\fIname\fR  [\fBminimum\fR=\fIvalue\fR]   [\fBmaximum\fR=\fIvalue\fR]  \fBpower\fR=\fIvalue\fR \fBcells\fR=\fIvalue\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Interpret distance as map units, not number of cells
+.IP "\fB\-k\fR" 4m
+.br
+Keep (preserve) original cell values
+.br
+By default original values are smoothed
+.IP "\fB\-w\fR" 4m
+.br
+Just print the spatial weights matrix
+.IP "\fB\-u\fR" 4m
+.br
+Just print estimated memory usage
+.IP "\fB\-s\fR" 4m
+.br
+Single precision floating point output
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map with data gaps to fill
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of result output map
+.IP "\fBuncertainty\fR=\fIname\fR" 4m
+.br
+Name of uncertainty output map
+.IP "\fBdistance\fR=\fIvalue\fR \fB[required]\fR" 4m
+.br
+Distance threshold (default: in cells) for interpolation
+.br
+Default: \fI3\fR
+.IP "\fBmode\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Statistic for interpolated cell values
+.br
+Options: \fIwmean, mean, median, mode\fR
+.br
+Default: \fIwmean\fR
+.IP "\fBminimum\fR=\fIvalue\fR" 4m
+.br
+Minimum input data value to include in interpolation
+.IP "\fBmaximum\fR=\fIvalue\fR" 4m
+.br
+Maximum input data value to include in interpolation
+.IP "\fBpower\fR=\fIvalue\fR \fB[required]\fR" 4m
+.br
+Power coefficient for IDW interpolation
+.br
+Default: \fI2.0\fR
+.IP "\fBcells\fR=\fIvalue\fR \fB[required]\fR" 4m
+.br
+Minimum number of data cells within search radius
+.br
+Default: \fI8\fR
+.SH DESCRIPTION
+\fI\fBr.fill.stats\fR\fR is a module for fast gap filling and
+interpolation (with smoothing) of dense raster data.
+.PP
+The \fIr.fill.stats\fR module is capable of quickly filling \fBsmall
+data gaps\fR in large and high\-resolution raster maps. It\(cqs primary purpose
+is to improve high\-resolution, rasterized sensor data (such as Lidar
+data). As a rule of thumb, there
+should be at least as many data cells as there are \(dqno data\(dq (NULL) cells in
+the input raster map. Several interpolation modes are available. By
+default, all values of the input raster map will be replaced with
+locally interpolated values in the output raster map. This is the
+equivalent of running a low\-pass smoothing filter on the interpolated
+data and is often desirable, owing to noisy nature of high\-resolution
+sensor data. With dense data and small gaps, this should result in only slight
+deviations from the original data and produce smooth output. Alternatively,
+setting the \fB\-k\fR flag will disable the low\-pass filter and preserve
+the original cell values.
+.PP
+Available gap filling modes:
+.RS 4n
+.IP \(bu 4n
+spatially weighted mean (default)
+.IP \(bu 4n
+simple mean
+.IP \(bu 4n
+simple median
+.IP \(bu 4n
+simple mode
+.RE
+.PP
+The spatially weighted mean is equivalent to an Inverse Distance
+Weighting (IDW;
+see also \fIr.surf.idw\fR)
+interpolation. The simple mean is equivalent to a simple low\-pass filter.
+Median and mode replacements can also be achieved using
+\fIr.neighbors\fR.
+.PP
+Note that \fIr.fill.stats\fR is highly optimized for fast processing
+of large raster datasets with a small interpolation distance threshold
+(i.e. closing small gaps). As a trade\-off for speed and a small memory
+foot print, some spatial accuracy is lost due to the rounding of the
+distance threshold to the closest approximation in input raster cells
+and the use of a matrix of precomputed weights at cell resolution (see
+further down for details). Note also that processing time will increase
+exponentially with higher distance settings. Cells outside the distance
+threshold will not be interpolated, preserving the edges of the original data
+extent.
+.PP
+This module is not well suited for interpolating sparse input data and
+closing large gaps. For such purposes more appropriate
+methods are available, such as
+\fIv.surf.idw\fR or
+\fIv.surf.rst\fR.
+.PP
+Applications where the properties of \fIr.fill.stats\fR are
+advantageous include the processing of high resolution, close range
+scanning and remote sensing datasets. Such datasets commonly feature
+densely spaced measurements that have some gaps after rasterization,
+due to blind spots, instrument failures, and misalignments between the
+GIS\(cq raster cell grids and the original measurement locations. In these
+cases, \fIr.fill.stats\fR should typically be run using the \(dqweighted
+mean\(dq (default) method and with a small distance setting (the default
+is to use a search radius of just three cells).
+.PP
+The images below show a gradiometer dataset with gaps and its
+interpolated equivalent, produced using the spatially weighted mean
+operator (mode=\(dqwmean\(dq).
+.PP
+.PP
+In addition, \fIr.fill.stats\fR can be useful for raster map
+generalization. Often, this involves removing small clumps of
+categorized cells and then filling the resulting data gaps without
+\(dqinventing\(dq any new values. In such cases, the \(dqmode\(dq or \(dqmedian\(dq
+interpolators should be used.
+.SS Usage
+The most critical user\-provided settings are the interpolation/gap
+filling method (\fBmode\fR) and the maximum distance, up to which
+\fIr.fill.stats\fR will scan for cells with values (\fBdistance\fR).
+The distance can be expressed as a number of cells (default) or in the
+current GRASS location\(cqs units (if the \fB\-m\fR flag is given). The latter
+are typically meters, but can be any other units of a \fIplanar\fR
+coordinate system.
+.PP
+Note that proper handling of geodetic coordinates (lat/lon) and
+distances is currently not implemented. For lat/lon data, the distance
+should therefore be specified in cells and usage of
+\fIr.fill.stats\fR should be restricted to small areas to avoid large
+inaccuracies that may arise from the different extents of cells along
+the latitudinal and longitudinal axes.
+.PP
+Distances specified in map units (\fB\-m\fR flag) will be approximated
+as accurately as the current region\(cqs cell resolution settings allow.
+The program will warn if the distance cannot be expressed as whole
+cells at the current region\(cqs resolution. In such case, the number of
+cells in the search window will be rounded up. Due to the rounding
+effect introduced by using cells as spatial units, the actual maximum
+distance considered by the interpolation may be up to half a cell
+diagonal larger than the one specified by the user.
+.PP
+The interpolator type \(dqwmean\(dq uses a precomputed matrix of spatial
+weights to speed up computation. This matrix can be examined (printed
+to the screen) before running the interpolation, by setting the
+\fB\-w\fR flag. In mode \(dqwmean\(dq, the \fBpower\fR option has the usual
+meaning in IDW: higher values mean that cell values in the neighborhood
+lose their influence on the cell to be interpolated more rapidly with
+increasing distance from the latter. Another way of explaining this
+effect is to state that larger \(dqpower\(dq settings result in more
+localized interpolation, smaller ones in more globalized interpolation.
+The default setting is power=2.0.
+.PP
+The interpolators \(dqmean\(dq, \(dqmedian\(dq and \(dqmode\(dq are calculated from all
+cell values within the search radius. No spatial weighting is applied
+for these methods. The \(dqmode\(dq of the input data may not always be
+unique. In such case, the mode will be the smallest value with the
+highest frequency.
+.PP
+Often, input data will contain spurious extreme measurements (spikes,
+outliers, noise) caused by the limits of device sensitivity, hardware
+defects, environmental influences, etc. If the normal, valid range of
+input data is known beforehand, then the \fBminimum\fR and
+\fBmaximum\fR options can be used to exclude those input cells that
+have values below or above that range, respectively. This will prevent
+the influence of spikes and outliers from spreading through the
+interpolation.
+.PP
+Unless the \fB\-k\fR (keep) flag is given, data cells of the input
+map will be replaced with interpolated values instead of preserving
+them in the output. In modes \(dqwmean\(dq and \(dqmean\(dq, this results in a
+smoothing effect that includes the original data (see below)!
+.PP
+Besides the result of the interpolation/gap filling, a second output
+map can be specified via the \fBuncertainty\fR option. The cell values
+in this map represent a simple measure of how much uncertainty was
+involved in interpolating each cell value of the primary output map,
+with \(dq0\(dq being the lowest and \(dq1\(dq being the theoretic highest
+uncertainty. Uncertainty is measured by summing up all cells in the
+neighborhood (defined by the search radius \fBdistance\fR) that
+contain a value in the \fBinput\fR map, multiplied by their weights,
+and dividing the result by the sum of all weights in the neighborhood.
+For mode=wmean, this means that interpolated output cells that
+were computed from many nearby input cells have very low uncertainty
+and vice versa. For all other modes, all weights in the neighborhood
+are constant \(dq1\(dq and the uncertainty measure is a simple measure of how
+many input data cells were present in the search window.
+.SS Smoothing
+The \fIr.fill.stats\fR module uses the interpolated values to adjust
+the original values and create a smooth surface, which is akin to running
+a low\-pass filter on the data. Since most high\-resolution sensor data
+is noisy, this is normally a desired effect and results in output that
+is more suitable for deriving secondary products, such as slope, aspect
+and curvature maps. Larger settings for the search radius (\fBdistance\fR)
+will result in a stronger smoothing. In practice, some experimentation
+with different settings for \fBdistance\fR and \fBpower\fR might be required
+to achieve good results. In some cases (e.g. when dealing with low\-noise or
+classified data), it might be desirable to turn off data smoothing by
+setting the \fB\-k\fR (keep) flag. This will ensure that the original
+cell data is copied through to the result map without alteration.
+.PP
+\fI
+Effect of smoothing the original data: The top row shows a gap\-filled surface computed from a rasterized Lidar point
+cloud (using mode=wmean and power=2), and the derived slope, aspect,
+and profile curvature maps. The smoothing effect is clearly visible.
+The bottom row shows the effect of setting the \fB\-k\fR flag: Preserving the original
+cell values in the interpolated output produces and unsmoothed, noisy surface, and likewise
+noisy derivative maps.
+\fR
+The effect can be seen in the illustration above:
+Slope, aspect, and profile curvature are computed using the
+\fIr.slope.aspect\fR module, which
+uses a window (kernel) for computations that considers only the
+immediate neighborhood of each cell. When performed on noisy data,
+such local operations result in equally noisy derivatives if the
+original data is preserved (by setting the \fB\-k\fR flag) and no smoothing
+is performed.
+.PP
+(Note that the effects of noisy data can also be avoided by using modules
+that are not restricted to minimal kernel sizes. For example, aspect and other morphometric parameters can be computed
+using the \fIr.param.scale\fR module
+which operates with variable\-size cell neighborhoods.)
+.SS Spatial weighting scheme
+The key to getting good gap filling results is to understand the
+spatial weighting scheme used in mode \(dqwmean\(dq. The weights are
+precomputed and assigned per cell within the search window centered on
+the location at which to interpolate/gap fill all cells within the
+user\-specified distance.
+.PP
+The illustration below shows the precomputed weights matrix for a
+search distance of four cells from the center cell:
+.br
+.nf
+\fC
+000.00 000.01 000.04 000.07 000.09 000.07 000.04 000.01 000.00
+000.01 000.06 000.13 000.19 000.22 000.19 000.13 000.06 000.01
+000.04 000.13 000.25 000.37 000.42 000.37 000.25 000.13 000.04
+000.07 000.19 000.37 000.56 000.68 000.56 000.37 000.19 000.07
+000.09 000.22 000.42 000.68 001.00 000.68 000.42 000.22 000.09
+000.07 000.19 000.37 000.56 000.68 000.56 000.37 000.19 000.07
+000.04 000.13 000.25 000.37 000.42 000.37 000.25 000.13 000.04
+000.01 000.06 000.13 000.19 000.22 000.19 000.13 000.06 000.01
+000.00 000.01 000.04 000.07 000.09 000.07 000.04 000.01 000.00
+\fR
+.fi
+Note that the weights in such a small window drop rapidly for the
+default setting of power=2.
+.PP
+If the distance is given in map units (flag \-m), then the
+search window can be modeled more accurately as a circle. The
+illustration below shows the precomputed weights for a distance in map
+units that is approximately equivalent to four cells from the center
+cell:
+.br
+.nf
+\fC
+\&...... ...... ...... 000.00 000.00 000.00 ...... ...... ......
+\&...... 000.00 000.02 000.06 000.09 000.06 000.02 000.00 ......
+\&...... 000.02 000.11 000.22 000.28 000.22 000.11 000.02 ......
+000.00 000.07 000.22 000.44 000.58 000.44 000.22 000.07 000.00
+000.00 000.09 000.28 000.58 001.00 000.58 000.28 000.09 000.00
+000.00 000.07 000.22 000.44 000.58 000.44 000.22 000.07 000.00
+\&...... 000.02 000.11 000.22 000.28 000.22 000.11 000.02 ......
+\&...... 000.00 000.02 000.06 000.09 000.06 000.02 000.00 ......
+\&...... ...... ...... 000.00 000.00 000.00 ...... ...... ......
+\fR
+.fi
+.PP
+When using a small search radius, \fBcells\fR must also be set to a
+small value. Otherwise, there may not be enough cells with data within
+the search radius to support interpolation.
+.SH NOTES
+The straight\-line metric used for converting distances in map units to
+cell numbers is only adequate for planar coordinate systems. Using this
+module with lat/lon input data will likely give inaccurate results,
+especially when interpolating over large geographical areas.
+.PP
+If the distance is set to a relatively large value, processing time
+will quickly approach and eventually exceed that of point\-based
+interpolation modules such as
+\fIv.surf.rst\fR.
+.PP
+This module can handle cells with different X and Y resolutions.
+However, note that the weight matrix will be skewed in such cases, with
+higher weights occurring close to the center and along the axis with
+the higher resolution. This is because weights on the lower resolution
+axis are less accurately calculated. The skewing effect will be
+stronger if the difference between the X and Y axis resolution is
+greater and a larger \(dqpower\(dq setting is chosen. This property of the
+weights matrix directly reflects the higher information density along
+the higher resolution axis.
+.PP
+Note on printing the weights matrix (using the \fB\-w\fR flag): the
+matrix cannot be printed if it is too large.
+.PP
+The memory estimate provided by the \fB\-u\fR flag is a lower limit on
+the amount of RAM that will be needed.
+.PP
+If the \fB\-s\fR flag is set, floating point type output will be
+saved as a \(dqsingle precision\(dq raster map, saving ~50% disk space
+compared to the default \(dqdouble precision\(dq output.
+.SH EXAMPLES
+.SS Gap\-filling of a dataset using spatially weighted mean (IDW)
+Gap\-fill a dataset using spatially weighted mean (IDW) and a maximum
+search radius of 3.0 map units; also produce uncertainty estimation
+map:
+.br
+.nf
+\fC
+r.fill.stats input=measurements output=result dist=3.0 \-m mode=wmean uncertainty=uncert_map
+\fR
+.fi
+Run a fast low\-pass filter (replacement all cells with mean value of
+neighboring cells) on the input map:
+.br
+.nf
+\fC
+r.fill.stats input=measurements output=result dist=10 mode=mean
+\fR
+.fi
+Fill data gaps in a categorized raster map; preserve existing data:
+.br
+.nf
+\fC
+r.fill.stats input=categories output=result dist=100 \-m mode=mode \-k
+\fR
+.fi
+.SS Lidar point cloud example
+Inspect the point density and determine the extent of the point cloud
+using the \fIr.in.lidar\fR module:
+.br
+.nf
+\fC
+r.in.lidar \-e input=points.las output=density method=n resolution=5 class_filter=2
+\fR
+.fi
+Based on the result, set computational region extent and desired
+resolution:
+.br
+.nf
+\fC
+g.region \-pa raster=density res=1
+\fR
+.fi
+Import the point cloud as raster using binning:
+.br
+.nf
+\fC
+r.in.lidar input=points.las output=ground_raw method=mean class_filter=2
+\fR
+.fi
+Check that there are more non\-NULL cells than NULL (\(dqno data\(dq) cells:
+.br
+.nf
+\fC
+r.univar map=ground_raw
+\fR
+.fi
+.br
+.nf
+\fC
+total null and non\-null cells: 2340900
+total null cells: 639184
+\&...
+\fR
+.fi
+Fill in the NULL cells using the default 3\-cell search radius:
+.br
+.nf
+\fC
+r.fill.stats input=ground output=ground_filled uncertainty=uncertainty distance=3 mode=wmean power=2.0 cells=8
+\fR
+.fi
+.PP
+\fI
+Binning of Lidar and resulting ground surface with filled gaps.
+Note the remaining NULL cells (white) in the resulting ground surface.
+These are areas with a lack of cells with values in close proximity.
+\fR
+.SS Outlier removal and gap\-filling of SRTM elevation data
+In this example, the SRTM elevation map in the
+North Carolina sample dataset location is filtered for outlier
+elevation values; missing pixels are then re\-interpolated to obtain
+a complete elevation map:
+.br
+.nf
+\fC
+g.region raster=elev_srtm_30m \-p
+d.mon wx0
+d.histogram elev_srtm_30m
+# remove SRTM outliers, i.e. SRTM below 50m (esp. lakes), leading to no data areas
+r.mapcalc \(dqelev_srtm_30m_filt = if(elev_srtm_30m < 50.0, null(), elev_srtm_30m)\(dq
+d.histogram elev_srtm_30m_filt
+d.rast elev_srtm_30m_filt
+# using the IDW method to fill these holes in DEM without low\-pass filter
+# increase distance to gap\-fill larger holes
+r.fill.stats \-k input=elev_srtm_30m_filt output=elev_srtm_30m_idw distance=100
+d.histogram elev_srtm_30m_idw
+d.rast elev_srtm_30m_idw
+r.mapcalc \(dqdiff_orig_idw = elev_srtm_30m \- elev_srtm_30m_idw\(dq
+r.colors diff_orig_idw color=differences
+r.univar \-e diff_orig_idw
+d.erase
+d.rast diff_orig_idw
+d.legend diff_orig_idw
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.fillnulls,
+r.neighbors,
+r.surf.idw,
+v.surf.idw,
+v.surf.rst
+\fR
+.PP
+Inverse Distance Weighting in Wikipedia
+.SH AUTHOR
+Benjamin Ducke
+.SH SOURCE CODE
+.PP
+Available at: r.fill.stats source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,233 @@
+.TH grass_database 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH GRASS GIS Database
+A GRASS GIS Database is simply a set of directories and files
+with certain structure which GRASS GIS works efficiently with.
+Location is a directory with data related to
+one geographic location or a project.
+All data within one Location has the same cartographic projection.
+A Location contains Mapsets and each Mapset contains data related to
+a specific task, user or a smaller project.
+Within each Location, a mandatory PERMANENT Mapset exists
+which can contain commonly used data within a Location such as base maps.
+PERMANENT Mapset also contains metadata related to Location
+such as projection.
+When GRASS GIS is started it connects to a Database, Location and Mapset
+specified by the user.
+.PP
+.br
+\fIFig. 1: GRASS GIS Database structure as visible to the user\fR
+.SS GRASS GIS Database
+All data for GRASS GIS must be in GRASS GIS Database which is a directory
+(visible on the disk) containing subdirectories which are GRASS Locations.
+User can have one or more of Databases on the disk. Typically users have
+one directory called \fCgrassdata\fR in their home directory.
+In multi\-user environment users often have a \fCgrassdata\fR directory
+mounted as a network directory (network file system).
+For teams, a centralized GRASS DATABASE would be defined
+in a shared network file system (e.g. NFS).
+.PP
+GRASS GIS Databases can be safely copied or moved as any other directories.
+Don\(cqt be confused with (relational) databases which are used in GRASS GIS
+to hold attribute data and might be part of the GRASS GIS Database.
+From user point of view, GRASS GIS Database with all its data in it
+is similar to, e.g. PostGIS, database, as it stores all information
+inside in a specific format and is accessible by specific tools.
+GRASS GIS Databases is in GRASS GIS often called GISDBASE or DATABASE.
+.SS GRASS Locations
+Location is a directory which contains GRASS Mapsets which are its subdirectories.
+All data in one Location have the same projection (coordinate system, datum).
+Each Location must contain Mapset called PERMANENT.
+Typically, a Location contains all data related to one project
+or a geographic area (geographic location or region).
+Alternatively, Location can simply contain all data in a given projection.
+.PP
+GRASS Locations can be safely copied or moved as any other directories.
+Compressed Location is usually what GRASS users exchange between each other
+when they want to share a lot of data.
+For example, GRASS GIS sample data are provided as Locations.
+.PP
+Don\(cqt be confused with location as a place (file or directory) in a file system.
+The word location in GRASS Location refers to a location or area on Earth
+(or whatever is applicable).
+Users and programmers familiar with relational databases such as PostgreSQL
+can view Location as an individual database inside the system or a storage area
+which would be equivalent to GRASS GIS Database. Mapsets in a Locations
+are like namespaces or schemas inside a database.
+.SS GRASS Mapsets
+Mapsets contains the actual data, mostly geospatial data,
+referred to as maps in GRASS GIS.
+Mapsets are a tool for organizing maps in a transparent way
+as well as a tool for isolating different tasks to prevent data loss.
+.PP
+GRASS GIS is always connected to one particular Mapset.
+GRASS GIS modules can create, modify, change, or delete a data only in
+the current Mapset.
+By default, only the data from the current Mapset and PERMANENT Mapset
+are visible. Using
+\fIg.mapsets\fR
+module or in GUI other Mapsets can be made visible and seamlessly accessible.
+All data are available for reading when Mapset is specified explicitly,
+for example to access map \fCstreets\fR in Mapset
+\fCnew_highway\fR user can use \fCstreets@new_highway\fR.
+For maps which are in the current or PERMAENT Mapsets or Mapsets
+sets as visible (accessible), there is no need to use
+\fC@mapset\fR syntax.
+.PP
+Mapsets are used to store maps related to one project, smaller project,
+specific task, issue or subregions.
+In multi\-user environment, when a team works together on one project,
+Mapsets support simultaneous access of several users to the maps
+stored within the same Location.
+Besides access to his or her own
+Mapset, each user can also read maps in PERMANENT Mapsent
+and in other users\(cq Mapsets when set.
+However, each user can modify or remove only the maps
+in his or her own Mapset.
+.PP
+Besides the geospatial data, Mapset holds additional data such as
+color tables (managed e.g. by \fIr.colors\fR)
+and the current computational region\(cqs extent and resolution
+stored in a file called \fCWIND\fR
+and managed by \fIg.region\fR.
+.PP
+Mapsets can be copied and moved as directories, however only when it is clear
+that the projections of both Locations
+(as reported by \fIg.proj\fR)
+match each other. Since this is sometimes hard to to establish,
+it is recommended to use \fIr.proj\fR
+or \fIv.proj\fR to reproject the data.
+The files and directories should not be moved or modified directly,
+but only using GRASS GIS tools.
+.SS The role of the PERMANENT Mapset
+When creating a new Location, GRASS GIS automatically creates a special
+Mapset called PERMANENT where the core data for the Location are stored.
+.PP
+Since the maps in PERMANENT Mapset are visible from all the other Mapsets,
+it can be used to store the base maps (base cartography), data common
+to all projects or needed for different analyses done is separate Mapsets.
+.PP
+In multi\-user environment, data in the PERMANENT Mapset can only be added,
+modified or removed by the owner of the PERMANENT Mapset; however, they can be
+accessed, analyzed, and copied into their own Mapset by the other
+users. The PERMANENT Mapset is useful for providing general spatial
+data (e.g. an elevation model), accessible but write\-protected to all
+users who are working in the same Location as the database owner.
+To manipulate or add data to PERMANENT, the owner can start
+GRASS GIS and choose the relevant Location and the PERMANENT Mapset.
+.PP
+The PERMANENT Mapset also contains the \fCDEFAULT_WIND\fR file which holds
+the default computational region\(cqs extent and resolution values
+for the Location (which all Mapsets will inherit when they are created).
+Users have the option of switching back to the default region at any time.
+.SS Importing, exporting and linking data
+GRASS GIS works only with data which are imported into a GRASS Database,
+so all data needs to be imported, e.g. by
+\fIr.in.gdal\fR or
+highly convenient \fIr.import\fR,
+before the actual analysis.
+Data in GRASS Datable can be exported using for example
+\fIr.in.gdal\fR in case of raster maps.
+.PP
+For cases when import is not desirable, an option to link external data exists.
+Projection of the linked data must match the Location\(cqs projection
+otherwise the external data cannot be linked. (Linking data in different
+projection is not allowed as it would require on\-the\-fly reprojection
+which could cause inconsistencies in the data.
+.PP
+For example, module \fIr.external\fR links
+external raster data, so that the data are accessible in GRASS Database
+as standard raster maps. Similarly for newly created maps,
+\fIr.external.out\fR
+setups a format and directory where the actual data will be stored,
+however in GRASS Database the data will be created as standard maps.
+.SS Starting GRASS GIS using GUI
+After launching GRASS GIS, the startup window will open (Fig. 2).
+.PP
+.br
+\fIFig. 2: GRASS GIS startup window\fR
+The startup windows provides these functions:
+.IP
+.IP \fB1\fR
+Selecting the GRASS GIS Database directory.
+.IP \fB2\fR
+Selecting the Location (e.g. a project or area).
+See the \fILocation Wizard\fR (4) for creating new Locations.
+.IP \fB3\fR
+Selecting the Mapset (a subproject or task).
+Creating a new Mapset requires only name.
+.IP \fB4\fR
+The \fILocation Wizard\fR for creating new Locations
+based for example, on existing georeferenced file or EPSG code.
+.IP \fB5\fR
+Download a sample Location from the Internet.
+.IP \fB6\fR
+Start GRASS GIS once you have selected an existing Location and Mapset
+or defined a new one. The graphical user interface
+wxGUI will open and provide you with a
+menu system, map visualization tool, digitizer, and more.
+.PP
+.SS Starting GRASS GIS using command line
+GRASS GIS can be started with given Database, Location and Mapset
+from the command line. For example, the following will start
+in a given Mapset with only command line interface:
+.br
+.nf
+\fC
+grass78 \-\-text ~/grassdata/mylocation/mymapset
+\fR
+.fi
+And the following will create the given Location with projection given
+by the EPSG code and it will start the default interface
+(GUI or command line):
+.br
+.nf
+\fC
+grass78 \-c EPSG:5514:3 ~/grassdata/mylocation
+\fR
+.fi
+See \fIgrass\fR command manual for more details.
+.SS Creating a New Location with the Location Wizard
+The wxGUI graphical user interface provides a
+graphical \fILocation Wizard\fR which lets you easily create a
+new Location for your own data. You will be guided through a series of
+dialogues to browse and select predefined projections or to
+define custom projections.
+.PP
+The most convenient way of using \fILocation Wizard\fR is creating new
+Location based on a georeferenced file, such as Shapefile or GeoTIFF,
+or by selecting the corresponding EPSG projection code.
+In case of using georeferenced file, you are asked whether the data itself
+should be imported into the new Location.
+The default region is then set to match imported map.
+.PP
+After defining a new Location, wxGUI starts automatically.
+If data were already imported, you can add them into the Layer Manager now
+and display them.
+More data can be imported into the Location, e.g. using import options in
+the \fIFile\fR menu in \fILayer Manager\fR or
+\fIr.import\fR.
+.SH See also
+\fI
+GRASS GIS 7 Reference Manual
+.br
+GRASS GIS 7 startup program manual page
+.br
+Importing data on GRASS Wiki
+.br
+r.import,
+v.import,
+r.external,
+v.external,
+r.proj,
+v.proj,
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

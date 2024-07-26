@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.extension.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.extension.py</b></em>  - Maintains GRASS Addons extensions in local GRASS installation.<BR>
+Downloads and installs extensions from GRASS Addons repository or other source into the local GRASS installation or removes installed extensions.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_installation.html">installation</a>, <a href="keywords.html#extensions">extensions</a>, <a href="keywords.html#addons">addons</a>, <a href="keywords.html#download">download</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.extension.py</b><br></div>
+<b>g.extension.py --help</b><br>
+<div id="synopsis"><b>g.extension.py</b> [-<b>lcgasdiftj</b>] <b>extension</b>=<em>name</em> <b>operation</b>=<em>string</em>  [<b>url</b>=<em>url</em>]   [<b>prefix</b>=<em>path</em>]   [<b>proxy</b>=<em>proxy</em>[,<i>proxy</i>,...]]   [<b>branch</b>=<em>branch</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>List available extensions in the official GRASS GIS Addons repository</dd>
+
+<dt><b>-c</b></dt>
+<dd>List available extensions in the official GRASS GIS Addons repository including module description</dd>
+
+<dt><b>-g</b></dt>
+<dd>List available extensions in the official GRASS GIS Addons repository (shell script style)</dd>
+
+<dt><b>-a</b></dt>
+<dd>List locally installed extensions</dd>
+
+<dt><b>-s</b></dt>
+<dd>Install system-wide (may need system administrator rights)</dd>
+
+<dt><b>-d</b></dt>
+<dd>Download source code and exit</dd>
+
+<dt><b>-i</b></dt>
+<dd>Do not install new extension, just compile it</dd>
+
+<dt><b>-f</b></dt>
+<dd>Force removal when uninstalling extension (operation=remove)</dd>
+
+<dt><b>-t</b></dt>
+<dd>Operate on toolboxes instead of single modules (experimental)</dd>
+
+<dt><b>-j</b></dt>
+<dd>Generates JSON file containing the download URLs of the official Addons</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>extension</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of extension to install or remove</dd>
+<dd>Name of toolbox (set of extensions) when -t flag is given</dd>
+
+<dt><b>operation</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Operation to be performed</dd>
+<dd>Options: <em>add, remove</em></dd>
+<dd>Default: <em>add</em></dd>
+
+<dt><b>url</b>=<em>url</em></dt>
+<dd>URL or directory to get the extension from (supported only on Linux and Mac)</dd>
+<dd>The official repository is used by default. User can specify a ZIP file, directory or a repository on common hosting services. If not identified, Subversion repository is assumed. See manual for all options.</dd>
+
+<dt><b>prefix</b>=<em>path</em></dt>
+<dd>Prefix where to install extension (ignored when flag -s is given)</dd>
+<dd>Default: <em>$GRASS_ADDON_BASE</em></dd>
+
+<dt><b>proxy</b>=<em>proxy[,<i>proxy</i>,...]</em></dt>
+<dd>Set the proxy with: "http=&lt;value&gt;,ftp=&lt;value&gt;"</dd>
+
+<dt><b>branch</b>=<em>branch</em></dt>
+<dd>Specific branch to fetch addon from (only used when fetching from git)</dd>
+<dd>Default: <em>main</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#managing-installed-extensions" class="toc">Managing installed extensions</a></li>
+        <li class="toc"><a href="#where-the-extensions-are-installed" class="toc">Where the extensions are installed</a></li>
+        <li class="toc"><a href="#source-code-sources-and-repositories" class="toc">Source code sources and repositories</a></li>
+        <li class="toc"><a href="#compilation-and-installation" class="toc">Compilation and installation</a></li>
+    </ul></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#download-and-install-of-an-extension" class="toc">Download and install of an extension</a></li>
+        <li class="toc"><a href="#download-and-install-of-an-extension-when-behind-a-proxy" class="toc">Download and install of an extension when behind a proxy</a></li>
+        <li class="toc"><a href="#managing-the-extensions" class="toc">Managing the extensions</a></li>
+        <li class="toc"><a href="#installing-from-various-online-repositories:-github,-gitlab,-bitbucket" class="toc">Installing from various online repositories: GitHub, GitLab, Bitbucket</a></li>
+        <li class="toc"><a href="#install-a-specific-version-from-addons" class="toc">Install a specific version from Addons</a></li>
+        <li class="toc"><a href="#installing-when-writing-a-module-locally" class="toc">Installing when writing a module locally</a></li>
+    </ul></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#troubleshooting" class="toc">TROUBLESHOOTING</a>
+    <ul class="toc">
+        <li class="toc"><a href="#error:-please-install-grass-development-package" class="toc">ERROR: Please install GRASS development package</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<!-- TODO: the use of Addon and extension is not coherent -->
+
+<em>g.extension</em> downloads and installs, removes or updates
+extensions (addons) from the official
+<a href="https://grass.osgeo.org/grass7/manuals/addons/">GRASS GIS Addons repository</a>
+or from user-specified source code repositories into the local GRASS GIS
+installation.
+<p>
+Two types of extensions are supported:
+<ul>
+<li>Python scripts: they are installed without the need of compilation or (usually)
+    the need of special dependencies.</li>
+<li>Source code (mostly written in C programming language; may also be written
+    in C++, Fortran or other languages): while on MS-Windows systems the requested
+    GRASS GIS extension is downloaded pre-compiled from the GRASS GIS site, on Unix
+    based systems the installation is preceded by the automated download of the
+    extension's source code along with subsequent compilation and installation.
+    This requires a compiler environment to be present on the user's computer.</li>
+</ul>
+
+<h3><a name="managing-installed-extensions">Managing installed extensions</a></h3>
+
+<p>Re-running <em>g.extension</em> on an installed GRASS GIS Addon
+extension re-installs the requested extension which may include
+updates.
+<p>
+To bulk-update all locally installed GRASS GIS extensions, 
+<em><a href="g.extension.all.html">g.extension.all</a></em> module
+is available.
+
+
+<h3><a name="where-the-extensions-are-installed">Where the extensions are installed</a></h3>
+
+GRASS GIS extensions are installed by <em>g.extension</em> into a dedicated
+directory.
+The default is a directory for application data and settings inside
+the user's home directory. 
+On GNU/Linux it is <tt>$HOME/.grass7/addons</tt>,
+on MS-Windows it is <tt>$APPDATA\GRASS7\addons</tt>.
+The name of the directory is stored in the <tt>GRASS_ADDON_BASE</tt>
+environmental variable.
+
+<p>
+The flag <b>-s</b> changes this install target directory to the GRASS GIS
+installation directory
+(determined by <tt>GISBASE</tt> environmental variable, e.g. <tt>/usr/</tt>)
+rather than the default directory defined as per  <tt>GRASS_ADDON_BASE</tt> 
+(see also documentation for <a href="variables.html">variables</a>).
+<em>g.extension</em> checks if the user has permission to write to
+<tt>GISBASE</tt> or <tt>GRASS_ADDON_BASE</tt>.
+
+<p>
+The place where the extensions are installed can be customized by
+the option <b>prefix</b>. Ensuring that these extensions will be accessible
+in GRASS GIS is in this case in the responsibility of the user.
+
+
+<h3><a name="source-code-sources-and-repositories">Source code sources and repositories</a></h3>
+
+<h4>GRASS GIS Addons repository on GitHub</h4>
+By default, <em>g.extension</em> installs extensions from the official
+GRASS GIS Addons GitHub repository. However, different sources can be specified
+using the <b>url</b> option.
+
+<p>
+Individual extensions can also be installed by providing a URL to the
+source code on GitHub or OSGeo Trac. The latter, however, works only for certain
+directories where the download of ZIP files was enabled by project administrators
+of the trac server.
+
+<h4>Local source code directory</h4>
+Optionally, new extension can be also installed from a source code placed
+in a local directory on disk. This is advantageous when developing
+a new module.
+To keep the directory clean, the directory content is copied
+to a temporary directory and the compilation happens there.
+
+<h4>Local source code ZIP file</h4>
+In addition, new extension can be also installed from a ZIP file
+or an archive file from the TAR family (e.g., <tt>.tar.gz</tt> or <tt>.bz2</tt>).
+The file can be on disk (specified with a path), or on web (specified by
+an URL).
+
+<h4>Online repositories: GitHub, GitLab and Bitbucket</h4>
+For well known general hosting services, namely GitHub, GitLab and Bitbucket,
+<em>g.extension</em> supports the download of a repository as a ZIP file.
+Here the user only needs to provide a base URL to the repository web page
+(with or without the <tt>https://</tt> part).
+For GitLab and Bitbucket, the latest source code in the default branch is 
+downloaded, for GitHub, the latest source code in the master branch is downloaded.
+Of course, a user can still specify the full URL of a ZIP file
+and install a specific branch or release in this way (ZIP file mechanism
+will be applied).
+
+<p>
+For the official repository, <em>g.extension</em> supports listing available
+extensions (addons) and few other metadata-related operations which
+depend on a specific infrastructure.
+For other sources and repositories, this is not supported because it is
+assumed that other sources contain only one extension, typically a module
+or group of modules.
+
+<h4>Needed directory layout</h4>
+When none of the above sources is identified, <em>g.extension</em> assumes
+<!-- TODO: update this description -->
+that the source is in a GitHub repository and uses the <em>svn</em> command
+line tool to obtain the source code. The expected structure of the repository
+should be the same as the one of the official repository.
+
+<p>
+Non-official sources are supported on all operating systems except for
+MS-Windows.
+
+
+<h3><a name="compilation-and-installation">Compilation and installation</a></h3>
+
+On MS-Windows systems, where compilation tools are typically not readily
+locally installed, <em>g.extension</em> downloads a precompiled executable
+from the GRASS GIS project server. On all other operating systems
+where it is not difficult to install compilation tools,
+<em>g.extension</em> downloads the source code of the requested
+extension (addon) and compiles it locally.
+This applies for both C and Python modules
+as well as any other extensions. The reason is that more things such
+as manual page are compiled, not only the source code (which is really
+necessary to compile just in case of C).
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="download-and-install-of-an-extension">Download and install of an extension</a></h3>
+
+Download and install <em>r.stream.distance</em> into current GRASS installation
+
+<div class="code"><pre>
+g.extension extension=r.stream.distance
+</pre></div>
+
+This installs the extension from the official repository.
+For convenience, a shorter syntax can be used:
+
+<div class="code"><pre>
+g.extension r.stream.distance
+</pre></div>
+
+<h3><a name="download-and-install-of-an-extension-when-behind-a-proxy">Download and install of an extension when behind a proxy</a></h3>
+
+Example for an open http proxy:
+<div class="code"><pre>
+# syntax: http://proxyurl:proxyport
+g.extension extension=r.stream.distance proxy="http=http://proxy.example.com:8080"
+</pre></div>
+
+<p>
+Example for a proxy with proxy authentication:
+<div class="code"><pre>
+# syntax: http://username:password@proxyurl:proxyport
+g.extension extension=r.stream.distance proxy="http=http://username:password@proxy.example.com:8080"
+</pre></div>
+
+<h3><a name="managing-the-extensions">Managing the extensions</a></h3>
+
+List all available extensions in the official GRASS GIS Addons repository:
+
+<div class="code"><pre>
+g.extension -l
+</pre></div>
+
+List all locally installed extensions:
+
+<div class="code"><pre>
+g.extension -a
+</pre></div>
+
+Removal of a locally installed extension:
+
+<div class="code"><pre>
+g.extension extension=r.stream.distance operation=remove
+</pre></div>
+
+<h3><a name="installing-from-various-online-repositories:-github,-gitlab,-bitbucket">Installing from various online repositories: GitHub, GitLab, Bitbucket</a></h3>
+
+Simple URL to GitHub, GitLab, Bitbucket repositories:
+
+<div class="code"><pre>
+g.extension r.example.plus url="https://github.com/wenzeslaus/r.example.plus"
+</pre></div>
+
+Simple URL to GitHub, GitLab, Bitbucket repositories from a specific (e.g. development) branch:
+
+<div class="code"><pre>
+g.extension r.example.plus url="https://github.com/wenzeslaus/r.example.plus" branch=master
+</pre></div>
+
+Simple URL to OSGeo Trac (downloads a ZIP file, requires download to be enabled in Trac):
+
+<div class="code"><pre>
+g.extension r.example url=trac.osgeo.org/.../r.example
+</pre></div>
+
+In general, when a ZIP file or other archive is provided, the full URL can be used:
+
+<div class="code"><pre>
+g.extension r.example url=http://example.com/.../r.example?format=zip
+</pre></div>
+
+Note that because of MS-Windows operating system architecture,
+only official repository is supported on this platform.
+
+<h3><a name="install-a-specific-version-from-addons">Install a specific version from Addons</a></h3>
+
+To install a specific version from GRASS GIS Addons, specify the full
+URL pointing to Trac code browser and include Subversion revision
+number. For example, this installs the version number 57854 of
+r.local.relief module:
+
+<div class="code"><pre>
+g.extension r.local.relief url="https://trac.osgeo.org/grass/browser/grass-addons/grass7/raster/r.local.relief?rev=57854&amp;format=zip"
+</pre></div>
+
+<h3><a name="installing-when-writing-a-module-locally">Installing when writing a module locally</a></h3>
+
+Having source code of a GRASS module in a directory on disk
+one can install it using:
+
+<div class="code"><pre>
+g.extension r.example url=/local/directory/r.example/
+</pre></div>
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+Toolboxes in the official repository cannot be downloaded.
+<p>
+On MS-Windows, only the official repository is working
+because there is no way of compiling the modules
+<!-- what does it mean?? -->
+(a Python replacement for Python scripts should be implemented).
+
+<h2><a name="troubleshooting">TROUBLESHOOTING</a></h2>
+
+Since extensions have to be compiled on Unix based systems (Linux, Mac OSX etc.)
+unless a Python extension is installed, a full compiler environment must be
+present on the user's computer.
+
+<h3><a name="error:-please-install-grass-development-package">ERROR: Please install GRASS development package</a></h3>
+
+While GRASS GIS is available on the user's computer, the respective development
+package is lacking. If GRASS was installed from a (Linux) repository, also the
+grass-dev* package (commonly named "grass-dev" or "grass-devel", sometimes along
+with the version number) must be installed.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.extension.all.html">g.extension.all</a>
+</em>
+
+<p>
+<a href="https://grass.osgeo.org/grass7/manuals/addons/">GRASS GIS 7 Addons Manual pages</a>
+<br>
+<a href="https://grasswiki.osgeo.org/wiki/GRASS_AddOns">GRASS Addons</a> wiki page.
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Markus Neteler (original shell script)<br>
+Martin Landa, Czech Technical University in Prague, Czech Republic (Python rewrite)<br>
+Vaclav Petras, <a href="http://gis.ncsu.edu/osgeorel/">NCSU OSGeoREL</a> (support for general sources, partial refactoring)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/g.extension">g.extension source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/g.extension">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

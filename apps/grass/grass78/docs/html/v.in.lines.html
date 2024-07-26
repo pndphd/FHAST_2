@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.in.lines.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.in.lines.py</b></em>  - Imports ASCII x,y[,z] coordinates as a series of lines.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#line">line</a>, <a href="keywords.html#point">point</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.in.lines.py</b><br></div>
+<b>v.in.lines.py --help</b><br>
+<div id="synopsis"><b>v.in.lines.py</b> [-<b>z</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>separator</b>=<em>character</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-z</b></dt>
+<dd>Create a 3D line from 3 column data</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input file (or "-" to read from stdin)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Imports a stream of ASCII x,y[,z] coordinates as a line or series of lines.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Input ASCII coordinates are simply a series of "x&nbsp;y" data points.
+Lines are separated by a row containing "<tt>NaN&nbsp;NaN</tt>".
+<!-- TODO:? Line categories start at 1 and increase sequentially. -->
+<p>The user can import 3D lines by providing 3 columns of data in the input
+stream and using the <b>-z</b> flag.
+<p>This script is a simple wrapper around the <em>v.in.mapgen</em> module.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<div class="code"><pre>
+v.in.lines in=- out=two_lines separator=, &lt;&lt;EOF
+167.846717,-46.516653
+167.846663,-46.516645
+167.846656,-46.516644
+167.846649,-46.516644
+167.846642,-46.516643
+NaN,NaN
+167.846520,-46.516457
+167.846528,-46.516461
+167.846537,-46.516464
+167.846535,-46.516486
+167.846544,-46.516489
+167.846552,-46.516493
+EOF
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.graph.html">d.graph</a>,
+<a href="v.centroids.html">v.centroids</a>,
+<a href="v.in.ascii.html">v.in.ascii</a>,
+<a href="v.in.mapgen.html">v.in.mapgen</a>,
+<a href="v.in.region.html">v.in.region</a>,
+<a href="v.out.ascii.html">v.out.ascii</a>,
+<a href="r.in.poly.html">r.in.poly</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Hamish Bowman<br>
+Dunedin, New Zealand
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.in.lines">v.in.lines source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.in.lines">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.lidar.correction - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.lidar.correction</b></em>  - Corrects the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_LIDAR.html">LIDAR</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.lidar.correction</b><br></div>
+<b>v.lidar.correction --help</b><br>
+<div id="synopsis"><b>v.lidar.correction</b> [-<b>e</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>terrain</b>=<em>name</em>  [<b>ew_step</b>=<em>float</em>]   [<b>ns_step</b>=<em>float</em>]   [<b>lambda_c</b>=<em>float</em>]   [<b>tch</b>=<em>float</em>]   [<b>tcl</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Estimate point density and distance and quit</dd>
+<dd>Estimate point density and distance in map units for the input vector points within the current region extents and quit</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Input observation vector map name (v.lidar.growing output)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output classified vector map name</dd>
+
+<dt><b>terrain</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output only 'terrain' points vector map</dd>
+
+<dt><b>ew_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the east-west direction</dd>
+<dd>Default: 25 * east-west resolution</dd>
+
+<dt><b>ns_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the north-south direction</dd>
+<dd>Default: 25 * north-south resolution</dd>
+
+<dt><b>lambda_c</b>=<em>float</em></dt>
+<dd>Regularization weight in reclassification evaluation</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>tch</b>=<em>float</em></dt>
+<dd>High threshold for object to terrain reclassification</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>tcl</b>=<em>float</em></dt>
+<dd>Low threshold for terrain to object reclassification</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-correction-procedure" class="toc">Basic correction procedure</a></li>
+        <li class="toc"><a href="#second-correction-procedure" class="toc">Second correction procedure</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.lidar.correction</em> is the last of three steps to filter LiDAR
+data. The filter aims to recognize and extract attached and 
+detached object (such as buildings, bridges, power lines,  trees, etc.) 
+in order to create a Digital Terrain Model. 
+<br>
+<br>
+The module, which could be iterated several times, makes a comparison 
+between the LiDAR observations and a bilinear spline interpolation with 
+a Tychonov regularization parameter performed on the TERRAIN SINGLE PULSE 
+points only. The gradient is minimized by the regularization parameter. 
+Analysis of the residuals between the observations and the interpolated 
+values results in four cases (the next classification is referred to that 
+of the v.lidar.growing output vector):
+<br>
+<br>
+<b>a)</b> Points classified as TERRAIN differing more than a threshold
+    value are interpreted and reclassified as OBJECT, for both single and 
+    double pulse points.
+<br>
+<br>
+<b>b)</b> Points classified as OBJECT and closed enough to the
+    interpolated surface are interpreted and reclassified as TERRAIN, for
+    both single and double pulse points.
+
+<p>
+The length (in mapping units) of each spline step is defined by 
+<b>ew_step</b> for the east-west direction and <b>ns_step</b> for the 
+north-south direction.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The input should be the output of <em>v.lidar.growing</em> module or the 
+output of this <em>v.lidar.correction</em> itself. That means, this module 
+could be applied more times (although, two are usually enough) for a better 
+filter solution. The outputs are a vector map with a final point classification 
+as as TERRAIN SINGLE PULSE, TERRAIN DOUBLE PULSE, OBJECT SINGLE PULSE or 
+OBJECT DOUBLE PULSE; and an vector map with only the points classified as 
+TERRAIN SINGLE PULSE or TERRAIN DOUBLE PULSE.
+
+The final result of the whole procedure (<em>v.lidar.edgedetection</em>,
+<em>v.lidar.growing</em>, <em>v.lidar.correction</em>) will be a point
+classification in four categories:
+<br>
+<br>
+TERRAIN SINGLE PULSE (cat = 1, layer = 2)
+<br>
+TERRAIN DOUBLE PULSE (cat = 2, layer = 2)
+<br>
+OBJECT SINGLE PULSE (cat = 3, layer = 2)
+<br>
+OBJECT DOUBLE PULSE (cat = 4, layer = 2)
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="basic-correction-procedure">Basic correction procedure</a></h3>
+<div class="code"><pre>
+v.lidar.correction input=growing output=correction out_terrain=only_terrain
+</pre></div>
+
+<h3><a name="second-correction-procedure">Second correction procedure</a></h3>
+<div class="code"><pre>
+v.lidar.correction input=correction output=correction_bis terrain=only_terrain_bis
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.lidar.edgedetection.html">v.lidar.edgedetection</a>,
+<a href="v.lidar.growing.html">v.lidar.growing</a>,
+<a href="v.surf.bspline.html">v.surf.bspline</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>,
+<a href="v.in.lidar.html">v.in.lidar</a>,
+<a href="v.in.ascii.html">v.in.ascii</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Original version of program in GRASS 5.4:
+<br>
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni and Mirko Reguzzoni
+<br><br>
+Update for GRASS 6.X:
+<br>
+Roberto Antolin and Gonzalo Moreno
+
+<h2><a name="references">REFERENCES</a></h2>
+
+Antolin, R. et al., 2006. Digital terrain models determination by LiDAR 
+technology: Po basin experimentation. Bolletino di Geodesia e Scienze 
+Affini, anno LXV, n. 2, pp. 69-89.
+<br>
+<br>
+Brovelli M. A., Cannata M., Longoni U.M., 2004. LIDAR Data Filtering and 
+DTM Interpolation Within GRASS, Transactions in GIS, April 2004,  vol. 8, 
+iss. 2, pp. 155-174(20), Blackwell Publishing Ltd.
+<br>
+<br>
+Brovelli M. A., Cannata M., 2004. Digital Terrain model reconstruction in 
+urban areas from airborne laser scanning data: the method and an  example 
+for Pavia (Northern Italy). Computers and Geosciences 30 (2004) pp.325-331
+<br>
+<br>
+Brovelli M. A. and Longoni U.M., 2003. Software per il filtraggio di dati 
+LIDAR, Rivista dell'Agenzia del Territorio, n. 3-2003, pp. 11-22 (ISSN 1593-2192).
+<br>
+<br>
+Brovelli M. A., Cannata M. and Longoni U.M., 2002. DTM LIDAR in area urbana, 
+Bollettino SIFET N.2, pp. 7-26.
+<br>
+<br>
+Performances of the filter can be seen in the
+<a href="http://www.itc.nl/isprswgIII-3/filtertest/MainDoc.htm">ISPRS WG III/3 Comparison of Filters</a> 
+report by Sithole, G. and Vosselman, G., 2003. 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.lidar.correction">v.lidar.correction source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.lidar.correction">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

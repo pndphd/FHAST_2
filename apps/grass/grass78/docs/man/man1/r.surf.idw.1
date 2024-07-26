@@ -1,0 +1,148 @@
+.TH r.surf.idw 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.surf.idw\fR\fR  \- Provides surface interpolation from raster point data by Inverse Distance Squared Weighting.
+.SH KEYWORDS
+raster, surface, interpolation, IDW
+.SH SYNOPSIS
+\fBr.surf.idw\fR
+.br
+\fBr.surf.idw \-\-help\fR
+.br
+\fBr.surf.idw\fR [\-\fBe\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBnpoints\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Output is the interpolation error
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBnpoints\fR=\fIinteger\fR" 4m
+.br
+Number of interpolation points
+.br
+Default: \fI12\fR
+.SH DESCRIPTION
+\fIr.surf.idw\fR fills a grid cell (raster) matrix with
+interpolated values generated from input raster
+data points. It uses a numerical approximation technique
+based on distance squared weighting of the values of
+nearest data points. The number of nearest data points used
+to determined the interpolated value of a cell can be
+specified by the user (default: 12 nearest data points).
+.PP
+If there is a current working mask, it applies to the output
+raster map. Only those cells falling within the mask will be
+assigned interpolated values. The search procedure for the
+selection of nearest neighboring points will consider all
+input data, without regard to the mask.
+The \fB\-e\fR flag is the error analysis option that interpolates values
+only for those cells of the input raster map which have non\-zero values and
+outputs the difference (see NOTES below).
+.PP
+The \fBnpoints\fR parameter defines the number of nearest data points used
+to determine the interpolated value of an output raster cell.
+.SH NOTES
+\fIr.surf.idw\fR is a surface generation utility which
+uses inverse distance squared weighting (as described in
+\fIApplied Geostatistics\fR by E. H. Isaaks and R. M.
+Srivastava, Oxford University Press, 1989) to assign
+interpolated values. The implementation includes a
+customized data structure somewhat akin to a sparse matrix
+which enhances the efficiency with which nearest data
+points are selected.  For latitude/longitude projections,
+distances are calculated from point to point along a
+geodesic.
+.PP
+Unlike \fIr.surf.idw2\fR (addon),
+which processes all input data points in each interpolation cycle, \fIr.surf.idw\fR
+attempts to minimize the number of input data for which distances must be
+calculated. Execution speed is therefore a function of the search effort,
+and does not increase appreciably with the number of input data points.
+.PP
+\fIr.surf.idw\fR will generally outperform
+\fIr.surf.idw2\fR except when the input data
+layer contains few non\-zero data, i.e. when the cost of the search exceeds
+the cost of the additional distance calculations performed by
+\fIr.surf.idw2\fR. The relative performance
+of these utilities will depend on the comparative speed of boolean, integer
+and floating point operations on a particular platform.
+.PP
+Worst case search performance by \fIr.surf.idw\fR occurs
+when the interpolated cell is located outside of the region
+in which input data are distributed. It therefore behooves
+the user to employ a mask when geographic region boundaries
+include large areas outside the general extent of the input
+data.
+.PP
+The degree of smoothing produced by the interpolation will
+increase relative to the number of nearest data points
+considered.  The utility may be used with regularly or
+irregularly spaced input data.  However, the output result
+for the former may include unacceptable nonconformities in
+the surface pattern.
+.PP
+The \fB\-e\fR flag option provides a standard
+surface\-generation error analysis facility. It produces an output raster map
+of the difference of interpolated values minus input values for those cells
+whose input data are non\-zero. For each interpolation cycle, the known value
+of the cell under consideration is ignored, and the remaining input values
+are used to interpolate a result. The output raster map may be compared to
+the input raster map to analyze the distribution of interpolation error.
+This procedure may be helpful in choosing the number of nearest neighbors
+considered for surface generation.
+.SH KNOWN ISSUES
+Module \fIr.surf.idw\fR works only for integer (CELL) raster maps.
+.SH SEE ALSO
+\fI
+r.surf.contour,
+r.surf.gauss,
+r.surf.fractal,
+r.surf.random,
+v.surf.idw,
+v.surf.rst
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHOR
+Greg Koerper
+.br
+Global Climate Research Project
+.br
+U.S. EPA Environmental Research Laboratory
+.br
+200 S.W. 35th Street, JSB
+.br
+Corvallis, OR 97333
+.SH SOURCE CODE
+.PP
+Available at: r.surf.idw source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,163 @@
+.TH r.carve 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.carve\fR\fR  \- Generates stream channels.
+.br
+Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.
+.SH KEYWORDS
+raster, hydrology
+.SH SYNOPSIS
+\fBr.carve\fR
+.br
+\fBr.carve \-\-help\fR
+.br
+\fBr.carve\fR [\-\fBn\fR] \fBraster\fR=\fIname\fR \fBvector\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBpoints\fR=\fIname\fR]   [\fBwidth\fR=\fIfloat\fR]   [\fBdepth\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+No flat areas allowed in flow direction
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBraster\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster elevation map
+.IP "\fBvector\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map containing stream(s)
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBpoints\fR=\fIname\fR" 4m
+.br
+Name for output vector map for adjusted stream points
+.IP "\fBwidth\fR=\fIfloat\fR" 4m
+.br
+Stream width (in meters)
+.br
+Default is raster cell width
+.IP "\fBdepth\fR=\fIfloat\fR" 4m
+.br
+Additional stream depth (in meters)
+.SH DESCRIPTION
+\fIr.carve\fR accepts vector stream data as input, transforms them to
+raster, and subtracts a default\-depth + additional\-depth from a DEM. If
+the given width is more than 1 cell, it will carve the stream with the
+given width. With the \fB\-n\fR flag it should eliminate all flat cells within
+the stream, so when and if the water gets into the stream it will
+flow. The \fIpoints\fR option generates x,y,z for points which define the stream
+with the z\-value of the bottom of the carved\-in stream. These points
+can then be combined with contours to interpolate a new DEM with
+better representation of valleys.
+.SH NOTES
+\fIr.carve\fR does not create a depressionless DEM because many
+depressions are in flat areas and not in the streams.
+.SH EXAMPLE
+North Carolina sample dataset:
+.br
+.nf
+\fC
+# set computational region
+g.region raster=elev_lid792_1m \-p
+# digitize a ditch for the farm pond
+echo \(dqL  3 1
+ 638692.93595422 220198.90026383
+ 638737.42270627 220149.74706926
+ 638984.43306379 220148.19158842
+ 1     1\(dq | v.in.ascii \-n input=\- output=ditch format=standard
+# visualize original data
+d.mon wx0
+d.rast elev_lid792_1m
+d.vect ditch
+# carve
+r.carve raster=elev_lid792_1m vector=ditch output=carved_dem width=3 depth=0.5
+# visualize resulting carved DEM map
+d.rast carved_dem
+# visualize
+r.relief input=elev_lid792_1m output=elev_lid792_1m_shaded
+r.relief input=carved_dem output=carved_dem_shaded
+d.rast elev_lid792_1m_shaded
+d.erase
+d.rast carved_dem_shaded
+# flow accumulation
+r.watershed elevation=elev_lid792_1m accumulation=elev_lid792_1m_accum
+r.watershed elevation=carved_dem accumulation=carved_dem_accum
+d.rast elev_lid792_1m_accum
+d.erase
+d.rast carved_dem_accum
+# differences
+r.mapcalc \(dqaccum_diff = elev_lid792_1m_accum \- carved_dem_accum\(dq
+r.colors accum_diff color=differences
+d.erase
+d.rast accum_diff
+\fR
+.fi
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+\fIFig: Original 1m LiDAR based DEM with vector streams map on top\fR
+T}	 	T{
+\fIFig: Original 1m LiDAR based DEM shown as shaded terrain\fR
+T}
+.sp 1
+T{
+\fIFig: Carved 1m LiDAR based DEM\fR
+T}	 	T{
+\fIFig: Carved 1m LiDAR based DEM shown as shaded terrain\fR
+T}
+.sp 1
+T{
+\fIFig: Flow accumulation in original 1m LiDAR based DEM\fR
+T}	 	T{
+\fIFig: Flow accumulation in carved 1m LiDAR based DEM\fR
+T}
+.sp 1
+.TE
+.SH KNOWN ISSUES
+The module does not operate yet in latitude\-longitude locations.  It
+has not been thoroughly tested, so not all options may work properly \-
+but this was the intention.
+.SH REFERENCES
+Terrain
+modeling and Soil Erosion Simulations for Fort Hood and Fort Polk test
+areas, by Helena Mitasova, Lubos Mitas, William M. Brown, Douglas
+M.  Johnston, GMSL (Report for CERL 1999)
+.SH SEE ALSO
+\fI
+r.flow,
+r.fill.dir,
+r.watershed
+\fR
+.SH AUTHOR
+Bill Brown (GMSL)
+.br
+GRASS 6 update: Brad Douglas
+.SH SOURCE CODE
+.PP
+Available at: r.carve source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

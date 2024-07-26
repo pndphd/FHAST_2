@@ -1,0 +1,97 @@
+.TH r3.support 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.support\fR\fR  \- Allows creation and/or modification of 3D raster map layer support files.
+.SH KEYWORDS
+raster3d, metadata, voxel
+.SH SYNOPSIS
+\fBr3.support\fR
+.br
+\fBr3.support \-\-help\fR
+.br
+\fBr3.support\fR [\-\fBs\fR] \fBmap\fR=\fIname\fR  [\fBtitle\fR=\fIphrase\fR]   [\fBhistory\fR=\fIphrase\fR]   [\fBunit\fR=\fIstring\fR]   [\fBvunit\fR=\fIstring\fR]   [\fBsource1\fR=\fIphrase\fR]   [\fBsource2\fR=\fIphrase\fR]   [\fBdescription\fR=\fIphrase\fR]   [\fBraster\fR=\fIstring\fR]   [\fBloadhistory\fR=\fIname\fR]   [\fBsavehistory\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Update range
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of 3D raster map
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Text to use for map title
+.IP "\fBhistory\fR=\fIphrase\fR" 4m
+.br
+Text to append to the next line of the map\(cqs metadata file
+.IP "\fBunit\fR=\fIstring\fR" 4m
+.br
+The map data unit
+.IP "\fBvunit\fR=\fIstring\fR" 4m
+.br
+The vertical unit of the map
+.IP "\fBsource1\fR=\fIphrase\fR" 4m
+.br
+Text to use for data source, line 1
+.IP "\fBsource2\fR=\fIphrase\fR" 4m
+.br
+Text to use for data source, line 2
+.IP "\fBdescription\fR=\fIphrase\fR" 4m
+.br
+Text to use for data description or keyword(s)
+.IP "\fBraster\fR=\fIstring\fR" 4m
+.br
+Raster map from which to copy category table
+.IP "\fBloadhistory\fR=\fIname\fR" 4m
+.br
+Text file from which to load history
+.IP "\fBsavehistory\fR=\fIname\fR" 4m
+.br
+Text file in which to save history
+.SH DESCRIPTION
+\fBr3.support\fR allows the user to create and/or edit raster3d map support
+information. Editing of raster3d map units, history, description and title is supported.
+.SH NOTES
+Freeform metadata information is stored in a \(dqhist\(dq file which may be
+appended to by using the \fBhistory\fR option. Currently this is limited to
+text with a maximum line length of 78 characters. Any input
+larger than this will be wrapped to the next line.
+All other metadata strings available as standard options are limited to
+79 characters.
+.SH SEE ALSO
+\fI
+r.info,
+r.timestamp
+\fR
+.SH AUTHORS
+Soeren Gebbert, vTI/AK, soerengebbert gmooglemail.com
+.br
+Based on r.support written by Micharl Shapiro, CERL and others
+.SH SOURCE CODE
+.PP
+Available at: r3.support source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

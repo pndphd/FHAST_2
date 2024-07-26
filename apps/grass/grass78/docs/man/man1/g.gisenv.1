@@ -1,0 +1,246 @@
+.TH g.gisenv 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gisenv\fR\fR  \- Outputs and modifies the user\(cqs current GRASS variable settings.
+.br
+Prints all defined GRASS variables if no option is given.
+.SH KEYWORDS
+general, settings, variables, scripts
+.SH SYNOPSIS
+\fBg.gisenv\fR
+.br
+\fBg.gisenv \-\-help\fR
+.br
+\fBg.gisenv\fR [\-\fBsn\fR]  [\fBget\fR=\fIvariable\fR[,\fIvariable\fR,...]]   [\fBset\fR=\fI\(dqvariable=value\(dq\fR]   [\fBunset\fR=\fIvariable\fR[,\fIvariable\fR,...]]   [\fBstore\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Use shell syntax (for \(dqeval\(dq)
+.IP "\fB\-n\fR" 4m
+.br
+Do not use shell syntax
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBget\fR=\fIvariable[,\fIvariable\fR,...]\fR" 4m
+.br
+GRASS variable to get
+.IP "\fBset\fR=\fI\(dqvariable=value\(dq\fR" 4m
+.br
+GRASS variable to set
+.IP "\fBunset\fR=\fIvariable[,\fIvariable\fR,...]\fR" 4m
+.br
+GRASS variable to unset
+.IP "\fBstore\fR=\fIstring\fR" 4m
+.br
+Where GRASS variable is stored
+.br
+Options: \fIgisrc, mapset\fR
+.br
+Default: \fIgisrc\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Separator for multiple GRASS variables
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fInewline\fR
+.SH DESCRIPTION
+When a user runs GRASS, certain variables are set specifying the GRASS
+data base, location, mapset, peripheral device drivers, etc., being
+used in the current GRASS session. These variable name settings are
+recognized as long as the user is running a GRASS session.
+.SH OPTIONS
+No prompts are given to the user when running \fIg.gisenv\fR.
+.PP
+If run without arguments, \fIg.gisenv\fR lists all of the user\(cqs
+current GRASS variable settings. Results are sent to standard output,
+and may look like this:
+.br
+.nf
+\fC
+GISDBASE=/opt/grassdata/
+LOCATION_NAME=nc_spm_08_grass7
+MAPSET=/user1
+GUI=gui
+\fR
+.fi
+.PP
+If the user specifies a \fBget=\fR\fIvariable_name\fR on the
+command line
+.br
+.nf
+\fC
+g.gisenv MAPSET
+\fR
+.fi
+only the value for that particular GRASS variable is output to
+standard output. Possible variable names depend on the user\(cqs system,
+see variables list for details. Note that
+the variable names are case\-insensitive.
+.PP
+While other variables may be associated with each GRASS session (e.g.,
+GRASS_GUI, GIS_LOCK, and other variables), those stated below
+are essential.
+.IP "\fIGISDBASE\fR " 4m
+.br
+The \fIGISDBASE\fR is a directory in which all users\(cq GRASS
+data are stored. Within the \fIGISDBASE\fR, data are segregated
+into subdirectories (called \(dqlocations\(dq) based on the map
+coordinate system used and the geographic extent of the data.  Each
+\(dqlocation\(dq directory itself contains subdirectories called
+\(dqmapsets\(dq; each \(dqmapset\(dq stores \(dqdata base
+elements\(dq \- the directories (e.g.,
+the cell, cellhd, vector, etc., directories)
+in which GRASS data files are actually stored.
+.IP "\fILOCATION_NAME\fR  " 4m
+.br
+The user must choose to work with the data under a single GRASS
+location within any given GRASS session; this location is then called
+the \fIcurrent GRASS location\fR, and is specified by the variable
+\fILOCATION_NAME\fR. The \fILOCATION_NAME\fR is the GRASS data
+base location whose data will be affected by any GRASS commands issued
+during the user\(cqs current GRASS session, and is a subdirectory of the
+current \fIGISDBASE\fR. Each \(dqlocation\(dq directory can
+contain multiple \(dqmapset\(dq directories (including the special
+mapset \fIPERMANENT\fR).  Maps stored under the same
+GRASS \fILOCATION_NAME\fR (and/or within the same \fIMAPSET\fR)
+must use the same coordinate system and typically fall within the
+boundaries of the same geographic region (aka, \(dqlocation\(dq).
+.IP "\fIMAPSET\fR  " 4m
+.br
+Each \(dqmapset\(dq contains a set of maps relevant to the
+\fILOCATION_NAME\fR directory in which it appears.
+Each \fILOCATION_NAME\fR can contain multiple mapsets. (Mapsets
+which fall under the same \fILOCATION_NAME\fR all contain data
+geographically relevant to the \fILOCATION_NAME\fR, and all store
+data in the same map coordinate system.  Frequently, maps are placed
+into different mapsets to distinguish file ownership \- e.g., each user
+might have one or more own mapset(s), storing any maps that the user has
+created and/or are relevant to the own work.) During each GRASS session, the
+user must choose one mapset to be the \fIcurrent mapset\fR; the current
+mapset setting is given by \fIMAPSET\fR, and is a subdirectory
+of \fILOCATION_NAME\fR.  During a single GRASS session, the user
+can use available data in any of the mapsets stored under the
+current \fILOCATION_NAME\fR directory that are in the user\(cqs
+mapset search path and accessible by the user.  However, within a
+single GRASS session, the user only has \fIwrite\fR access to data
+stored under the \fIcurrent mapset\fR (specified by the
+variable \fIMAPSET\fR).
+.PP
+Each \(dqmapset\(dq stores GRASS data base elements (i.e., the
+directories in which GRASS data files are stored).  Any maps created
+or modified by the user in the current GRASS session will be stored
+here. The \fIMAPSET\fR directory \fIPERMANENT\fR is generally
+reserved for the set of maps that form the base set for all users
+working under each \fILOCATION_NAME\fR.
+.PP
+Once within a GRASS session, GRASS users have access only to the data
+under a single GRASS data base directory (the \fIcurrent GRASS data
+base\fR, specified by the variable \fIGISDBASE\fR), and to a
+single GRASS location directory (the \fIcurrent location\fR,
+specified by the variable \fILOCATION_NAME\fR).  Within a single
+session, the user may only \fImodify\fR the data in the
+\fIcurrent mapset\fR (specified by the variable
+\fIMAPSET\fR), but may \fIuse\fR data available under other
+mapsets under the same \fILOCATION_NAME\fR.
+.PP
+All of these names must be legal names on the user\(cqs current system.
+.PP
+The full path to the current mapset is determined
+from \fIGISDBASE\fR, \fILOCATION_NAME\fR, \fIMAPSET\fR
+variables, in the example
+above: /opt/grassdata/spearfish/PERMANENT. The full path can
+be printed using \fIg.gisenv\fR by providing multiple variables:
+.br
+.nf
+\fC
+g.gisenv get=GISDBASE,LOCATION_NAME,MAPSET sep=\(cq/\(cq
+/opt/grassdata/nc_spm_08_grass7/user1
+\fR
+.fi
+.SH NOTES
+The output from
+\fIg.gisenv\fR
+when invoked without arguments is directly usable by Bash.  The
+following command will cast each variable into the UNIX environment:
+.br
+.nf
+\fC
+eval \(gag.gisenv\(ga
+\fR
+.fi
+This works only for \fIBash\fR, \fIsh\fR, \fIksh\fR, etc. The format of the output is not
+compatible with some other UNIX shells.
+.PP
+By default the GRASS variables are stored in \fIgisrc\fR file
+(defined by environmental
+variable \fIGISRC\fR). If \fBstore=mapset\fR is given than the
+variables are stored in $GISDBASE/$LOCATION_NAME/$MAPSET/VAR.
+.SS GRASS Debugging
+To print debugging messages, the variable \fIDEBUG\fR must be set to level
+equal or greater than 0:
+.br
+.nf
+\fC
+g.gisenv set=\(dqDEBUG=3\(dq
+\fR
+.fi
+Levels: (recommended levels)
+.RS 4n
+.IP \(bu 4n
+0 \- silence
+.IP \(bu 4n
+1 \- message is printed once or few times per module
+.IP \(bu 4n
+3 \- each row (raster) or line (vector)
+.IP \(bu 4n
+5 \- each cell (raster) or point (vector)
+.RE
+To disable debugging messages:
+.br
+.nf
+\fC
+g.gisenv unset=\(dqDEBUG\(dq
+\fR
+.fi
+The variable DEBUG controls debugging messages from GRASS libraries
+and modules.
+.PP
+Similarly \fIWX_DEBUG\fR controls debugging messages
+from wxGUI.
+.SH SEE ALSO
+\fI
+g.access,
+g.filename,
+g.findfile,
+g.mapsets
+\fR
+.PP
+See also variables list
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: g.gisenv source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

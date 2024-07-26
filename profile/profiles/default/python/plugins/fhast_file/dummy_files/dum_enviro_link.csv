@@ -1,0 +1,17 @@
+type, link
+flow distribution,type
+flow mean,-9999
+flow SD,-9999
+flow autocorrelation,-9999
+flow change,-9999
+flow min,-9999
+temperature SD,-9999
+temperature correlation,-9999
+temperature slope,-9999
+temperature intercept,-9999
+turbidity SD,-9999
+turbidity correlation,-9999
+turbidity slope,-9999
+turbidity intercept,-9999
+start date,1/1/1900
+end date,1/1/1901

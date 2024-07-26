@@ -1,0 +1,80 @@
+.TH displaydrivers 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH Display drivers
+The current command line rendering mechanism is direct rendering into
+a file. The driver is selected by setting
+the GRASS_RENDER_IMMEDIATE variable or by
+running \fId.mon\fR module.
+.PP
+\fBList of available display drivers:\fR
+.RS 4n
+.IP \(bu 4n
+Cairo driver
+.IP \(bu 4n
+PNG driver
+.IP \(bu 4n
+PS driver (Postscript)
+.IP \(bu 4n
+HTMLMAP driver
+.RE
+.SH NOTES
+.SS GRASS_RENDER_COMMAND
+If environmental variable GRASS_RENDER_COMMAND is defined,
+rendering is redirected by display library to the given external command
+defined by this variable. Currently only Python scrips are supported.
+.PP
+Lets start with simple example of Python script called \fIrender.py\fR:
+.br
+.nf
+\fC
+#!/usr/bin/env python3
+import os
+import sys
+import grass.script as grass
+from grass.script import task as gtask
+os.environ[\(cqGRASS_RENDER_IMMEDIATE\(cq] = \(cqdefault\(cq
+os.environ[\(cqGRASS_RENDER_FILE\(cq] = \(cqoutput.png\(cq
+cmd, dcmd = gtask.cmdstring_to_tuple(sys.argv[1])
+grass.run_command(\(cqd.text\(cq, text=\(dqTest of GRASS_RENDER_COMMAND redirection\(dq)
+os.environ[\(cqGRASS_RENDER_FILE_READ\(cq] = \(cqTRUE\(cq
+grass.run_command(cmd, **dcmd)
+\fR
+.fi
+After defining GRASS_RENDER_COMMAND variable (example for Bash):
+.br
+.nf
+\fC
+export GRASS_RENDER_COMMAND=render.py
+\fR
+.fi
+Display GRASS modules like \fId.rast\fR
+or \fId.vect\fR will be executed
+by \fIrender.py\fR program.
+For example the command
+.br
+.nf
+\fC
+d.vect roadsmajor
+\fR
+.fi
+produces output PNG file \fIoutput.png\fR which will contain rendered
+features from vector map \fIroadsmajor\fR and sample text \fI\(dqTest of
+GRASS_RENDER_COMMAND redirection\(dq\fR.
+.SH SEE ALSO
+\fI
+d.mon,
+variables
+\fR
+.SH SOURCE CODE
+.PP
+Available at: Display drivers source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

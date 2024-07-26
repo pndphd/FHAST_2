@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.evapo.mh - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.evapo.mh</b></em>  - Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_evapotranspiration.html">evapotranspiration</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.evapo.mh</b><br></div>
+<b>i.evapo.mh --help</b><br>
+<div id="synopsis"><b>i.evapo.mh</b> [-<b>zhs</b>] <b>netradiation_diurnal</b>=<em>name</em> <b>average_temperature</b>=<em>name</em> <b>minimum_temperature</b>=<em>name</em> <b>maximum_temperature</b>=<em>name</em>  [<b>precipitation</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-z</b></dt>
+<dd>Set negative ETa to zero</dd>
+
+<dt><b>-h</b></dt>
+<dd>Use original Hargreaves (1985)</dd>
+
+<dt><b>-s</b></dt>
+<dd>Use Hargreaves-Samani (1985)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>netradiation_diurnal</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input diurnal net radiation raster map [W/m2/d]</dd>
+
+<dt><b>average_temperature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input average air temperature raster map [C]</dd>
+
+<dt><b>minimum_temperature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input minimum air temperature raster map [C]</dd>
+
+<dt><b>maximum_temperature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input maximum air temperature raster map [C]</dd>
+
+<dt><b>precipitation</b>=<em>name</em></dt>
+<dd>Name of precipitation raster map [mm/month]</dd>
+<dd>Disabled for original Hargreaves (1985)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map [mm/d]</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.evapo.mh</em> calculates the reference evapotranspiration (ET) after
+Hargreaves et al. (1985), Hargreaves and Samani (1985) and the Modified Hargreaves version found in Droogers and Allen (2002). 
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.evapo.pt.html">i.evapo.pt</a>,
+<a href="i.evapo.pm.html">i.evapo.pm</a>,
+<a href="i.evapo.time.html">i.evapo.time</a>,
+<a href="r.sun.html">r.sun</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li> Hargreaves GL, Hargreaves GH, Riley JP, 1985. Agricultural benefits for
+Senegal River Basin. Journal of Irrigation and Drainange Engineering,
+ASCE, 111(2):113-124.</li>
+<li> Droogers P, Allen RG, 2002. Towards a simplified global reference
+evapotranspiration equation. Irrigation Science.</li>
+<li> Droogers, P., Allen RG. 2002. Estimating reference evapotranspiration
+under inaccurate data conditions. Irrigation and Drainage Systems 16: 33-45.</li>
+<li> Hargreaves GH, Samani ZA, 1985. Reference crop evapotranspiration from
+ ambient air temperature. American Society of Agricultural Engineers
+ (Microfiche collection)(USA). no. fiche no. 85-2517.</li>
+</ul>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Yann Chemin, GRASS Development team, 2007-2016<br>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.evapo.mh">i.evapo.mh source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.evapo.mh">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

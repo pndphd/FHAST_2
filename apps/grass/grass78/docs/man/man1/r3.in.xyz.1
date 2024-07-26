@@ -1,0 +1,206 @@
+.TH r3.in.xyz 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.in.xyz.py\fR\fR  \- Create a 3D raster map from an assemblage of many coordinates using univariate statistics
+.SH KEYWORDS
+raster3d, import, voxel, LIDAR, statistics, conversion, aggregation, binning
+.SH SYNOPSIS
+\fBr3.in.xyz.py\fR
+.br
+\fBr3.in.xyz.py \-\-help\fR
+.br
+\fBr3.in.xyz.py\fR [\-\fBsgi\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBmethod\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBx\fR=\fIinteger\fR]   [\fBy\fR=\fIinteger\fR]   [\fBz\fR=\fIinteger\fR]   [\fBvalue_column\fR=\fIinteger\fR]   [\fBvrange\fR=\fImin,max\fR]   [\fBvscale\fR=\fIfloat\fR]   [\fBpercent\fR=\fIinteger\fR]   [\fBpth\fR=\fIinteger\fR]   [\fBtrim\fR=\fIfloat\fR]   [\fBworkers\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Scan data file for extent then exit
+.IP "\fB\-g\fR" 4m
+.br
+In scan mode, print using shell script style
+.IP "\fB\-i\fR" 4m
+.br
+Ignore broken lines
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+ASCII file containing input data
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Statistic to use for raster values
+.br
+Options: \fIn, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean\fR
+.br
+Default: \fImean\fR
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Storage type for resultant raster map
+.br
+Options: \fIfloat, double\fR
+.br
+Default: \fIfloat\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBx\fR=\fIinteger\fR" 4m
+.br
+Column number of x coordinates in input file (first column is 1)
+.br
+Default: \fI1\fR
+.IP "\fBy\fR=\fIinteger\fR" 4m
+.br
+Column number of y coordinates in input file
+.br
+Default: \fI2\fR
+.IP "\fBz\fR=\fIinteger\fR" 4m
+.br
+Column number of z coordinates in input file
+.br
+Default: \fI3\fR
+.IP "\fBvalue_column\fR=\fIinteger\fR" 4m
+.br
+Column number of data values in input file
+.br
+If not given or set to 0, the data points\(cq z\-values are used
+.br
+Default: \fI0\fR
+.IP "\fBvrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for value column data (min,max)
+.IP "\fBvscale\fR=\fIfloat\fR" 4m
+.br
+Scaling factor to apply to value column data
+.br
+Default: \fI1.0\fR
+.IP "\fBpercent\fR=\fIinteger\fR" 4m
+.br
+Percent of map to keep in memory
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI100\fR
+.IP "\fBpth\fR=\fIinteger\fR" 4m
+.br
+pth percentile of the values
+.br
+Options: \fI1\-100\fR
+.IP "\fBtrim\fR=\fIfloat\fR" 4m
+.br
+Discard <trim> percent of the smallest and <trim> percent of the largest observations
+.br
+Options: \fI0\-50\fR
+.IP "\fBworkers\fR=\fIinteger\fR" 4m
+.br
+Number of parallel processes to launch
+.br
+Options: \fI1\-256\fR
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIr3.in.xyz\fR imports sparse XYZ data from an ASCII file into
+a 3D raster map (voxels). It does this by running the \fIr.in.xyz\fR
+module multiple times for different z\-ranges and then assembling the
+slices with \fIr.to.rast3\fR.
+.PP
+See the r.in.xyz help page for general
+parameter usage and tips.
+.PP
+The map is created using the rows, columns, and depths set by
+current region settings. Be sure to check and adjust these with
+the \fIg.region\fR module before performing the import.
+.PP
+You may either use the z\-value as the data value for the voxel
+(e.g. with the \(cqn\(cq statistic), or alternately scan another
+column for the data values to bin into the voxels. This alternate
+data column can be both filtered by range and have a scaling
+factor applied to it.
+.SH NOTES
+The 2D and 3D horizontal region resolutions must match. See the
+EXAMPLES section below.
+.PP
+Unlike \fIr.in.xyz\fR, reading from stdin and z\-scaling are not
+possible. Filtering by z\-range is accomplished by setting the 3D region.
+.PP
+To enable parallel processing support, set the \fBworkers=\fR option
+to match the number of CPUs or CPU\-cores available on your system.
+Alternatively, the WORKERS environment variable can be set
+to the number of concurrent processes desired.
+.PP
+Points falling exactly on a vertical bound will belong to the depth
+band below them, except for points exactly on the top bound, which will
+belong to the top\-most slice.
+.PP
+The script is expected to be nearly as efficient as if it was fully
+written in C.
+.SH EXAMPLE
+Using the Serpent Mound dataset. (see the
+GRASS LiDAR wiki page)
+.br
+.nf
+\fC
+  #scan dataset for extent:
+  r3.in.xyz \-s in=Serpent_Mound_Model_LAS_Data.txt out=dummy \(rs
+     x=1 y=2 z=3 separator=space
+  # set the 2D and 3D regions:
+  g.region n=4323641.57 s=4320942.61 w=289020.90 e=290106.02 res=1 \-a
+  g.region b=166 t=216 res3=1 tbres=5 \-3 \-p
+  r3.in.xyz in=Serpent_Mound_Model_LAS_Data.txt out=serpent3D \(rs
+     method=mean x=1 y=2 z=3 separator=space type=float
+\fR
+.fi
+The same, but aggregate and store backscatter strength from column 5
+into voxels in instead of the z\-value:
+.br
+.nf
+\fC
+  r3.in.xyz in=Serpent_Mound_Model_LAS_Data.txt out=serpent3D.bakscat \(rs
+     method=mean x=1 y=2 z=3 val=5 separator=space type=float
+\fR
+.fi
+.SH KNOWN ISSUES
+\fIr.to.rast3\fR always creates a double output map
+regardless of input.
+.SH SEE ALSO
+\fI
+g.region,
+r.in.xyz,
+r.to.rast3
+\fR
+.SH AUTHOR
+Hamish Bowman
+.br
+\fIDunedin, New Zealand\fR
+.SH SOURCE CODE
+.PP
+Available at: r3.in.xyz source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,64 @@
+.TH grass-sqlite 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH SQLite DATABASE DRIVER
+The SQLite driver is the default DBMI backend.
+.SH Creating a SQLite database
+GRASS is automatically creating the SQLite database if it is not yet
+existing when the first table is created in the SQLite database. It
+is sufficient to define the connection (see next step).
+.SH Connecting GRASS to SQLite
+The database name \(cqsqlite.db\(cq is at user\(cqs choice.
+Also the file storage location can be freely chosen. If the database
+does not exist, it will be automatically created when database content
+is created:
+.br
+.nf
+\fC
+# example for storing DB in mapset directory (keep single quotes):
+db.connect driver=sqlite database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+db.connect \-p
+\fR
+.fi
+.SH Supported SQL commands
+All SQL commands supported by SQLite (for limitations, see
+SQLite help page:
+SQL As Understood By SQLite and
+Unsupported SQL).
+.SH Operators available in conditions
+All SQL operators supported by SQLite.
+.SH Browsing table data in DB
+A convenient SQLite front\-end is sqlitebrowser.
+To open a DB file stored within the current mapset,
+the following way is suggested (corresponds to above database connection):
+.br
+.nf
+\fC
+# fetch GRASS variables as shell environment variables:
+eval \(gag.gisenv\(ga
+# use double quotes:
+sqlitebrowser \(dq$GISDBASE/$LOCATION_NAME/$MAPSET\(dq/sqlite/sqlite.db
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.execute,
+db.select
+.br
+.br
+SQL support in GRASS GIS
+.br
+.br
+SQLite web site,
+SQLite manual,
+sqlite \- Management Tools
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

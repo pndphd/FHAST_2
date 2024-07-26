@@ -1,0 +1,154 @@
+.TH v.rast.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.rast.stats.py\fR\fR  \- Calculates univariate statistics from a raster map based on a vector map and uploads statistics to new attribute columns.
+.SH KEYWORDS
+vector, statistics, raster, univariate statistics, zonal statistics, sampling, querying
+.SH SYNOPSIS
+\fBv.rast.stats.py\fR
+.br
+\fBv.rast.stats.py \-\-help\fR
+.br
+\fBv.rast.stats.py\fR [\-\fBcd\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBwhere\fR=\fIsql_query\fR]  \fBraster\fR=\fIname\fR[,\fIname\fR,...] \fBcolumn_prefix\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBmethod\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBpercentile\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Continue if upload column(s) already exist
+.IP "\fB\-d\fR" 4m
+.br
+Create densified lines (default: thin lines)
+.br
+All cells touched by the line will be set, not only those on the render path
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBraster\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map to calculate statistics from
+.IP "\fBcolumn_prefix\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Column prefix for new attribute columns
+.IP "\fBmethod\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+The methods to use
+.br
+Options: \fInumber, null_cells, minimum, maximum, range, average, stddev, variance, coeff_var, sum, first_quartile, median, third_quartile, percentile\fR
+.br
+Default: \fInumber,null_cells,minimum,maximum,range,average,stddev,variance,coeff_var,sum,first_quartile,median,third_quartile,percentile\fR
+.IP "\fBpercentile\fR=\fIinteger\fR" 4m
+.br
+Percentile to calculate
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI90\fR
+.SH DESCRIPTION
+\fIv.rast.stats\fR calculates basic univariate statistics from
+a raster map only for the parts covered by the specified vector map.
+The vector map will be rasterized according to the raster map resolution.
+Then univariate statistics are calculated per vector category (cat) from
+the raster map and the results uploaded to the vector map attribute table.
+A new column is generated in the attribute table for each statistic requested
+in \fBmethod\fR (if not already present).
+.PP
+The univariate statistics include the number of raster cells counted,
+the number of raster NULL cells counted, minimum
+and maximum cell values, range, average,
+standard deviation, variance, coefficient of variation, sum, first quartile,
+median, third quartile, and percentile.
+.SH NOTES
+\fIv.rast.stats\fR is only meaningful for lines or polygons.
+.PP
+The module may take a long time to run if the raster region contains a large
+number of cells. In this case the \fB\-\-verbose\fR flag may be used to track
+progress.
+.PP
+The script stops if a (prefixed) upload column is already present in the
+vector map attribute table, unless otherwise instructed with the \fB\-c\fR
+continue flag. The column prefix will be separated from the statistic name
+with an underscore. For example with a prefix of \(dqelev\(dq the sum
+column will be named elev_sum.
+.PP
+If a DBF database is being used, note that column names are restricted by the
+DBF specification to 10 characters. Therefore it is advised to be economical
+in the use of the column prefix when using DBF as any additional characters
+will be chopped off.
+.PP
+If a MASK is present, it will be restored after the script finished.
+The script changes temporarily to the resolution of the given raster map.
+.PP
+Large amounts of system memory can be used when extended statistics
+(\fIfirst_quartile,median,third_quartile,percentile \fR) are being requested
+with a very large region setting. If the region is too large the module
+should display memory allocation errors. Basic statistics can be calculated
+using any size input region.
+.SH EXAMPLES
+Example to upload DEM statistics to ZIP codes vector map
+(North Carolina sample dataset):
+.br
+.nf
+\fC
+g.copy vect=zipcodes_wake,myzipcodes_wake
+# set computational region to DEM:
+g.region raster=elevation \-p
+# calculate selected DEM statistics, upload to vector map table:
+v.rast.stats myzipcodes_wake raster=elevation \(rs
+  column_prefix=elev method=minimum,maximum,average,range,stddev,percentile \(rs
+  percentile=95
+# verify results:
+v.info \-c myzipcodes_wake
+v.db.select myzipcodes_wake
+v.univar myzipcodes_wake column=elev_range type=centroid
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.univar,
+v.univar,
+v.vect.stats,
+v.what.rast,
+v.what.rast3,
+v.what.vect
+\fR
+.SH AUTHOR
+Markus Neteler, CEA (for the EDEN EU/FP6 Project)
+.SH SOURCE CODE
+.PP
+Available at: v.rast.stats source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

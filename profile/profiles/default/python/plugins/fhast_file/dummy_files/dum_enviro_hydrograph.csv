@@ -1,0 +1,4 @@
+type,hydrograph
+file,file.csv
+start date,1/1/1900
+end date,1/1/1901

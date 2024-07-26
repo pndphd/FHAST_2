@@ -1,0 +1,162 @@
+.TH r.in.poly 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.poly\fR\fR  \- Creates raster maps from ASCII polygon/line/point data files.
+.SH KEYWORDS
+raster, import
+.SH SYNOPSIS
+\fBr.in.poly\fR
+.br
+\fBr.in.poly \-\-help\fR
+.br
+\fBr.in.poly\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBtitle\fR=\fIphrase\fR]   [\fBtype\fR=\fIstring\fR]   [\fBnull\fR=\fIinteger\fR]   [\fBrows\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file; or \(dq\-\(dq to read from stdin
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for resultant raster map
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of raster map to be created
+.br
+Storage type for resultant raster map
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+Default: \fICELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBnull\fR=\fIinteger\fR" 4m
+.br
+Integer representing NULL value data cell
+.IP "\fBrows\fR=\fIinteger\fR" 4m
+.br
+Number of rows to hold in memory
+.br
+Default: \fI4096\fR
+.SH DESCRIPTION
+\fIr.in.poly\fR allows the creation of GRASS binary
+raster maps from ASCII files in the current directory
+containing polygon, linear, and point features.
+.PP
+The \fBinput\fR file is an ASCII text file containing the
+polygon, linear, and point feature definitions.
+The format of this file is described in the
+\fIINPUT FORMAT\fR section below.
+.PP
+The number of raster \fBrows\fR to hold in memory is per default 4096.
+This parameter allows users with less memory (or more) on their
+system to control how much memory \fIr.in.poly\fR uses.
+Usually the default value is fine.
+.SH NOTES
+.PP
+The data will be imported using the current region settings to set the
+new raster map\(cqs bounds and resolution. Any features falling outside
+the current region will be cropped. The region settings are contolled
+with the \fIg.region\fR module.
+.PP
+The format is a simplified version of the standard GRASS vector ASCII
+format used by \fIv.in.ascii\fR.
+.PP
+Polygons are filled, i.e. they define an area.
+.SS Input Format
+The input format for the \fBinput\fR file consists of
+sections describing either polygonal areas, linear features, or
+point features. The basic format is:
+.br
+.nf
+\fC
+A                      <for polygonal areas>
+    easting northing
+    .
+    .
+    .
+=   cat# label
+L                      <for linear features>
+    easting northing
+    .
+    .
+    .
+=   cat# label
+P                      <for single cell point features>
+    easting northing
+=   cat# label
+\fR
+.fi
+The A signals the beginning of a filled polygon.
+It must appear in the first column.
+The L signals the beginning of a linear feature.
+It also must appear in the first column.
+The P signals the beginning of a single cell point feature.
+Again, it must appear in the first column.
+The coordinates of the vertices of the polygon, or the coordinates defining
+the linear or point feature follow and must have a space in the first
+column and at least one space between the \fIeasting\fR and the
+\fInorthing.\fR To give meaning to the features, the
+\(dq=\(dq indicates that the feature currently being
+processed has category value \fIcat#\fR (which must be
+an integer) and a \fIlabel\fR (which may be more than
+one word, or which may be omitted).
+.SH EXAMPLE
+An area described by four points:
+.br
+.nf
+\fC
+A
+  591316.80   4926455.50
+  591410.25   4926482.40
+  591434.60   4926393.60
+  591341.20   4926368.70
+= 42 stadium
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.colors,
+d.rast.edit,
+g.region,
+r.in.xyz,
+r.patch,
+v.in.ascii,
+wxGUI vector digitizer
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.in.poly source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

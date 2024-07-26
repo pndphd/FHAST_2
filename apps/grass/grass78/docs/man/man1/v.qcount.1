@@ -1,0 +1,157 @@
+.TH v.qcount 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.qcount\fR\fR  \- Indices for quadrat counts of vector point lists.
+.SH KEYWORDS
+vector, statistics, point pattern
+.SH SYNOPSIS
+\fBv.qcount\fR
+.br
+\fBv.qcount \-\-help\fR
+.br
+\fBv.qcount\fR [\-\fBg\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBoutput\fR=\fIname\fR]  \fBnquadrats\fR=\fIinteger\fR \fBradius\fR=\fIfloat\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Print results in shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output quadrat centers map (number of points is written as category)
+.IP "\fBnquadrats\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of quadrats
+.IP "\fBradius\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Quadrat radius
+.SH DESCRIPTION
+\fIv.qcount\fR computes six different quadrat count statistics that provide
+a measure of how much an user defined point pattern departs from a complete
+spatial random point pattern.
+.PP
+Points are distributed following a complete spatial randomness (CSR) pattern
+if events are equally likely to occur anywhere within an area. There are two
+types departure from a CSR: regularity and clustering. Figure 1 gives an example
+of a complete random, regular and a clustered pattern.
+.br
+\fIFigure 1: Realization of two\-dimensional Poisson processes of 50 points on
+the unit square exhibiting (a) complete spatial randomness, (b) regularity, and
+(c) clustering.\fR
+.PP
+Various indices and statistics measure departure from CSR. The
+\fIv.qcount\fR function implements six different \fIquadrat count\fR
+indices that are described in Cressie (1991; p. 590\-591)[1] and in Ripley (1981;
+p. 102\-106)[2] and summarized in Table 1.
+.br
+\fITable 1: Indices for Quadrat Count Data. Adapted from
+Cressie [1], this table shows the statistics computed for the
+quadrats in Figure 2.\fR
+.PP
+These indices are computed as follows: \fIv.qcount\fR chooses
+\fBnquadrads\fR circular quadrats of radius \fBradius\fR such that they are
+completely within the bounds of the current region and no two quadrats overlap.
+The number of points falling within each quadrat are counted and indices are
+calculated to estimate the departure of point locations from complete spatial
+randomness. This is illustrated in Figure 2.
+.br
+\fIFigure 2: Randomly placed quadrats (n = 100) with 584 sample points.\fR
+.PP
+The number of points is written as category to the \fBoutput\fR map (and not
+to an attribute table).
+.SH NOTES
+This program may not work properly with lat\-long data. It uses
+\fIhypot()\fR in two files: \fIcount.c\fR and
+\fIfindquads.c\fR.
+.SH SEE ALSO
+\fI
+v.random,
+v.distance,
+v.neighbors,
+v.perturb
+\fR
+.SH REFERENCES
+\fBGeneral references include:\fR
+.PP
+[1] Noel A. C. Cressie. \fIStatistics for Spatial Data\fR.
+Wiley Series in Probability and Mathematical Statistics. John Wiley
+& Sons, New York, NY, 1st edition, 1991.
+.PP
+[2] Brian D. Ripley. \fISpatial Statistics\fR.
+John Wiley \(rs& Sons, New York, NY, 1981.
+.PP
+\fBReferences to the indices include:\fR
+.PP
+[3] R. A. Fisher, H. G. Thornton, and W. A. Mackenzie.
+The accuracy of the plating method of estimating the density of
+bacterial populations.
+\fIAnnals of Applied Biology\fR, 9:325\-359, 1922.
+.PP
+[4] F. N. David and P. G. Moore. Notes on contagious distributions in
+plant populations. \fIAnnals of Botany\fR, 18:47\-53, 1954.
+.PP
+[5] J. B. Douglas.  Clustering and aggregation.
+\fISankhya B\fR, 37:398\-417, 1975.
+.PP
+[6] M. Lloyd. Mean crowding.
+\fIJournal of Animal Ecology\fR, 36:1\-30, 1967.
+.PP
+[7] M. Morista. Measuring the dispersion and analysis of distribution
+patterns. \fIMemoires of the Faculty of Science, Kyushu University, Series E.
+Biology\fR, 2:215\-235, 1959.
+.PP
+\fBA more detailed background is given in the tutorial:\fR
+.PP
+[8] James Darrell McCauley 1993. Complete Spatial Randomness and Quadrat Methods \-
+GRASS Tutorial on v.qcount
+.SH KNOWN ISSUES
+Timestamp not working for header part of counts output. (2000\-10\-28)
+.SH AUTHORS
+James Darrell McCauley
+.br
+when he was at:
+Agricultural Engineering
+Purdue University
+.PP
+Modified for GRASS 5.0 by Eric G. Miller (2000\-10\-28)
+.br
+Modified for GRASS 5.7 by R. Blazek (2004\-10\-14)
+.SH SOURCE CODE
+.PP
+Available at: v.qcount source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

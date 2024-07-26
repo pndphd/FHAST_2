@@ -1,0 +1,130 @@
+.TH r.external.out 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.external.out\fR\fR  \- Redirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.
+.SH KEYWORDS
+raster, export, output, external
+.SH SYNOPSIS
+\fBr.external.out\fR
+.br
+\fBr.external.out \-\-help\fR
+.br
+\fBr.external.out\fR [\-\fBfrp\fR] \fBdirectory\fR=\fIpath\fR  [\fBextension\fR=\fIstring\fR]  \fBformat\fR=\fIstring\fR  [\fBoptions\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+List supported formats and exit
+.IP "\fB\-r\fR" 4m
+.br
+Cease using GDAL and revert to native output
+.IP "\fB\-p\fR" 4m
+.br
+Print current status
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdirectory\fR=\fIpath\fR \fB[required]\fR" 4m
+.br
+Name of output directory
+.IP "\fBextension\fR=\fIstring\fR" 4m
+.br
+Extension for output files
+.IP "\fBformat\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Format of output files
+.br
+Options: \fIVRT, GTiff, COG, NITF, HFA, ELAS, AAIGrid, DTED, PNG, JPEG, MEM, GIF, XPM, BMP, PCIDSK, PCRaster, ILWIS, SGI, SRTMHGT, Leveller, Terragen, GMT, netCDF, HDF4Image, ISIS3, ISIS2, PDS4, VICAR, ERS, JP2OpenJPEG, FIT, GRIB, RMF, WMS, RST, INGR, GSAG, GSBG, GS7BG, R, KMLSUPEROVERLAY, WEBP, PDF, Rasterlite, MBTiles, CALS, WMTS, MRF, PNM, PAux, MFF, MFF2, BT, LAN, IDA, LCP, GTX, NTv2, CTable2, KRO, ROI_PAC, RRASTER, BYN, ARG, USGSDEM, NWT_GRD, ADRG, BLX, PostGISRaster, SAGA, XYZ, HF2, ZMap, SIGDEM, DB2ODBC, GPKG, NGW, ENVI, EHdr, ISCE\fR
+.IP "\fBoptions\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Creation options
+.SH DESCRIPTION
+\fIr.external.out\fR instructs GRASS GIS to write subsequently generated
+raster maps as data files (e.g. GeoTIFF) using GDAL instead of storing them
+in GRASS raster format in the current mapset.
+.PP
+Any new raster map is immediately written out through GDAL as a file.
+.SH NOTES
+A relative directory path (parameter \fIdirectory\fR) is interpreted
+relative to the current mapset directory, not the current directory where
+the command was launched. An unspecified or empty directory (which will
+occur if the user passes a simple filename for \fIoutput\fR) results
+in the output file being placed in the \(dqgdal/\(dq subdirectory of the
+current mapset directory.
+.SH EXAMPLES
+.SS Storing results from raster data analysis directly as GeoTIFF
+The module \fIr.external.out\fR is used to write out processing results
+directly in GeoTIFF format (any GDAL supported format can be used here):
+.br
+.nf
+\fC
+# define output directory for files resulting from GRASS calculation(s)
+# and target format:
+mkdir $HOME/gisoutput/
+# hint: the create options are not mandatory
+r.external.out directory=$HOME/gisoutput/ format=\(dqGTiff\(dq option=\(dqBIGTIFF=YES,COMPRESS=DEFLATE\(dq
+# prepare sample analysis
+g.region raster=elevation \-p
+# perform GRASS calculation (here: filter by height, write > 120m, NULL otherwise)
+# this will store the output map directly as GeoTIFF, so we use .tif extension:
+r.mapcalc \(dqelev_filt.tif = if(elevation > 120.0, elevation, null() )\(dq
+# ...the \(dqelev_filt.tif\(dq is immediately written.
+# cease GDAL output connection and turn back to write out GRASS raster files:
+r.external.out \-r
+# verify resulting file
+gdalinfo $HOME/gisoutput/elev_filt.tif
+\fR
+.fi
+.SS Complete workflow using only external geodata while processing in GRASS GIS
+The module \fIr.external.out\fR can be used along with
+\fIr.external\fR to process external geodata in GRASS
+while writing out the results directly in GeoTIFF:
+.br
+.nf
+\fC
+# register GeoTIFF file to be used in current mapset:
+r.external input=terra_lst1km20030314.LST_Day.tif output=modis_celsius
+# define output directory for files resulting from GRASS calculation:
+r.external.out directory=$HOME/gisoutput/ format=\(dqGTiff\(dq
+# perform GRASS calculation (here: extract pixels > 20 deg C)
+# this stores the output map directly as GeoTIFF:
+r.mapcalc \(dqwarm.tif = if(modis_celsius > 20.0, modis_celsius, null() )\(dq
+# cease GDAL output connection and turn back to write GRASS raster files:
+r.external.out \-r
+# now use the resulting file elsewhere
+gdalinfo $HOME/gisoutput/warm.tif
+\fR
+.fi
+.SH REFERENCES
+GDAL Pages: http://www.gdal.org/
+.br
+.SH SEE ALSO
+\fI
+r.in.gdal,
+r.out.gdal,
+r.external
+\fR
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.external.out source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

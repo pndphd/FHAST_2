@@ -1,0 +1,440 @@
+.TH i.landsat.toar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.landsat.toar\fR\fR  \- Calculates top\-of\-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI
+.SH KEYWORDS
+imagery, radiometric conversion, radiance, reflectance, brightness temperature, atmospheric correction, satellite, Landsat
+.SH SYNOPSIS
+\fBi.landsat.toar\fR
+.br
+\fBi.landsat.toar \-\-help\fR
+.br
+\fBi.landsat.toar\fR [\-\fBrnp\fR] \fBinput\fR=\fIbasename\fR \fBoutput\fR=\fIbasename\fR  [\fBmetfile\fR=\fIname\fR]   [\fBsensor\fR=\fIstring\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBdate\fR=\fIyyyy\-mm\-dd\fR]   [\fBsun_elevation\fR=\fIfloat\fR]   [\fBproduct_date\fR=\fIyyyy\-mm\-dd\fR]   [\fBgain\fR=\fIstring\fR]   [\fBpercent\fR=\fIfloat\fR]   [\fBpixel\fR=\fIinteger\fR]   [\fBrayleigh\fR=\fIfloat\fR]   [\fBlsatmet\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBscale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Output at\-sensor radiance instead of reflectance for all bands
+.IP "\fB\-n\fR" 4m
+.br
+Input raster maps use as extension the number of the band instead the code
+.IP "\fB\-p\fR" 4m
+.br
+Print output metadata info
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+Base name of input raster bands
+.br
+Example: \(cqB.\(cq for B.1, B.2, ...
+.IP "\fBoutput\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+Prefix for output raster maps
+.br
+Example: \(cqB.toar.\(cq generates B.toar.1, B.toar.2, ...
+.IP "\fBmetfile\fR=\fIname\fR" 4m
+.br
+Name of Landsat metadata file (.met or MTL.txt)
+.IP "\fBsensor\fR=\fIstring\fR" 4m
+.br
+Spacecraft sensor
+.br
+Required only if \(cqmetfile\(cq not given (recommended for sanity)
+.br
+Options: \fImss1, mss2, mss3, mss4, mss5, tm4, tm5, tm7, oli8\fR
+.br
+\fBmss1\fR: Landsat\-1 MSS
+.br
+\fBmss2\fR: Landsat\-2 MSS
+.br
+\fBmss3\fR: Landsat\-3 MSS
+.br
+\fBmss4\fR: Landsat\-4 MSS
+.br
+\fBmss5\fR: Landsat\-5 MSS
+.br
+\fBtm4\fR: Landsat\-4 TM
+.br
+\fBtm5\fR: Landsat\-5 TM
+.br
+\fBtm7\fR: Landsat\-7 ETM+
+.br
+\fBoli8\fR: Landsat_8 OLI/TIRS
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Atmospheric correction method
+.br
+Options: \fIuncorrected, dos1, dos2, dos2b, dos3, dos4\fR
+.br
+Default: \fIuncorrected\fR
+.IP "\fBdate\fR=\fIyyyy\-mm\-dd\fR" 4m
+.br
+Image acquisition date (yyyy\-mm\-dd)
+.br
+Required only if \(cqmetfile\(cq not given
+.IP "\fBsun_elevation\fR=\fIfloat\fR" 4m
+.br
+Sun elevation in degrees
+.br
+Required only if \(cqmetfile\(cq not given
+.IP "\fBproduct_date\fR=\fIyyyy\-mm\-dd\fR" 4m
+.br
+Image creation date (yyyy\-mm\-dd)
+.br
+Required only if \(cqmetfile\(cq not given
+.IP "\fBgain\fR=\fIstring\fR" 4m
+.br
+Gain (H/L) of all Landsat ETM+ bands (1\-5,61,62,7,8)
+.br
+Required only if \(cqmetfile\(cq not given
+.IP "\fBpercent\fR=\fIfloat\fR" 4m
+.br
+Percent of solar radiance in path radiance
+.br
+Required only if \(cqmethod\(cq is any DOS
+.br
+Default: \fI0.01\fR
+.IP "\fBpixel\fR=\fIinteger\fR" 4m
+.br
+Minimum pixels to consider digital number as dark object
+.br
+Required only if \(cqmethod\(cq is any DOS
+.br
+Default: \fI1000\fR
+.IP "\fBrayleigh\fR=\fIfloat\fR" 4m
+.br
+Rayleigh atmosphere (diffuse sky irradiance)
+.br
+Required only if \(cqmethod\(cq is DOS3
+.br
+Default: \fI0.0\fR
+.IP "\fBlsatmet\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+return value stored for a given metadata
+.br
+Required only if \(cqmetfile\(cq and \-p given
+.br
+Options: \fInumber, creation, date, sun_elev, sensor, bands, sunaz, time\fR
+.br
+\fBnumber\fR: Landsat Number
+.br
+\fBcreation\fR: Creation timestamp
+.br
+\fBdate\fR: Date
+.br
+\fBsun_elev\fR: Sun Elevation
+.br
+\fBsensor\fR: Sensor
+.br
+\fBbands\fR: Bands count
+.br
+\fBsunaz\fR: Sun Azimuth Angle
+.br
+\fBtime\fR: Time
+.IP "\fBscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for output
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fIi.landsat.toar\fR is used to transform the calibrated digital
+number of Landsat imagery products to top\-of\-atmosphere radiance or
+top\-of\-atmosphere reflectance and temperature (band 6 of the sensors
+TM and ETM+). Optionally, it can be used to calculate the at\-surface
+radiance or reflectance with atmospheric correction (DOS method).
+.PP
+Usually, to do so the production date, the acquisition date, and the
+solar elevation are needed. Moreover, for Landsat\-7 ETM+ it is also
+needed the gain (high or low) of the nine respective bands.
+.PP
+Optionally (recommended), the data can be read from metadata file
+(.met or MTL.txt) for all Landsat MSS, TM, ETM+ and OLI/TIRS. However,
+if the solar elevation is given the value of the metadata file is
+overwritten. This is necessary when the data in the .met file is
+incorrect or not accurate. Also, if acquisition or production dates are
+not found in the metadata file then the command line values are used.
+.PP
+\fBAttention\fR: Any null value or smaller than QCALmin in the input
+raster is set to null in the output raster and it is not included in
+the equations.
+.SH Uncorrected at\-sensor values (method=uncorrected, default)
+The standard geometric and radiometric corrections result in a
+calibrated digital number (QCAL = DN) images. To further standardize
+the impact of illumination geometry, the QCAL images are first
+converted first to at\-sensor radiance and then to at\-sensor
+reflectance. The thermal band is first converted from QCAL to
+at\-sensor radiance, and then to effective at\-sensor temperature in
+Kelvin degrees.
+.PP
+Radiometric calibration converts QCAL to \fBat\-sensor radiance\fR, a
+radiometric quantity measured in W/(m² * sr * µm) using the
+equations:
+.RS 4n
+.IP \(bu 4n
+gain = (Lmax \- Lmin) / (QCALmax \- QCALmin)
+.IP \(bu 4n
+bias = Lmin \- gain * QCALmin
+.IP \(bu 4n
+radiance = gain * QCAL + bias
+.RE
+where, \fILmax\fR and \fILmin\fR are the calibration constants,
+and \fIQCALmax\fR and \fIQCALmin\fR are the highest and the
+lowest points of the range of rescaled radiance in QCAL.
+.PP
+Then, to calculate \fBat\-sensor reflectance\fR the equations are:
+.RS 4n
+.IP \(bu 4n
+sun_radiance = [Esun * sin(e)] / (PI * d^2)
+.IP \(bu 4n
+reflectance = radiance / sun_radiance
+.RE
+where, \fId\fR is the earth\-sun distance in astronomical
+units, \fIe\fR is the solar elevation angle, and \fIEsun\fR is
+the mean solar exoatmospheric irradiance in W/(m² * µm).
+.SH Simplified at\-surface values (method=dos[1\-4])
+Atmospheric correction and reflectance calibration remove the path
+radiance, i.e. the stray light from the atmosphere, and the spectral
+effect of solar illumination. To output these simple \fBat\-surface
+radiance\fR and \fBat\-surface reflectance\fR, the equations are (not
+for thermal bands):
+.RS 4n
+.IP \(bu 4n
+sun_radiance = TAUv * [Esun * sin(e) * TAUz + Esky] / (PI * d^2)
+.IP \(bu 4n
+radiance_path = radiance_dark \- percent * sun_radiance
+.IP \(bu 4n
+radiance = (at\-sensor_radiance \- radiance_path)
+.IP \(bu 4n
+reflectance = radiance / sun_radiance
+.RE
+where, \fIpercent\fR is a value between 0.0 and 1.0 (usually
+0.01), \fIEsky\fR is the diffuse sky irradiance, \fITAUz\fR is
+the atmospheric transmittance along the path from the sun to the
+ground surface, and \fITAUv\fR is the atmospheric transmittance
+along the path from the ground surface to the
+sensor. \fIradiance_dark\fR is the at\-sensor radiance calculated
+from the darkest object, i.e. DN with a least \(cqdark_parameter\(cq
+(usually 1000) pixels for the entire image.
+The values are,
+.RS 4n
+.IP \(bu 4n
+DOS1: TAUv = 1.0, TAUz = 1.0 and Esky = 0.0
+.IP \(bu 4n
+DOS2: TAUv = 1.0, Esky = 0.0, and TAUz = sin(e) for all bands
+with maximum wave length less than 1. (i.e. bands 4\-6 MSS, 1\-4 TM,
+and 1\-4 ETM+) other bands TAUz = 1.0
+.IP \(bu 4n
+DOS3: TAUv = exp[\-t/cos(sat_zenith)],
+TAUz = exp[\-t/sin(e)], Esky = rayleigh
+.IP \(bu 4n
+DOS4: TAUv = exp[\-t/cos(sat_zenith)],
+TAUz = exp[\-t/sin(e)], Esky = PI * radiance_dark
+.RE
+\fBAttention\fR: Output radiance remain untouched (i.e. no set to 0.0
+when it is negative) then they are possible negative values. However,
+output reflectance is set to 0.0 when is obtained a negative value.
+.SH NOTES
+The output raster cell values can be rescaled with the \fBscale\fR
+parameter (e.g., with 100 in case of using reflectance output
+in \fIi.gensigset\fR).
+.SS On Landsat\-8 metadata file
+NASA reports a structure of the L1G Metadata file
+(LDCM\-DFCB\-004.pdf)
+for Landsat Data Continuity Mission (i.e. Landsat\-8).
+.PP
+NASA retains in MIN_MAX_RADIANCE group the necessary information
+to transform Digital Numbers (DN) in radiance values. Then,
+\fIi.landsat.toar\fR replaces the possible standard values with the
+metadata values. The results match with the values reported by the
+metada file in RADIOMETRIC_RESCALING group.
+.PP
+Also, NASA reports the same values of reflectance for all bands
+in max\-min values and in gain\-bias values. This is strange that all
+bands have the same range of reflectance. Also, they wrote in the
+web page as to calculate reflectance directly from DN, first with
+RADIOMETRIC_RESCALING values and second divided by sin(sun_elevation).
+.PP
+This is a simple rescaling
+.RS 4n
+.IP \(bu 4n
+reflectance = radiance / sun_radiance = (DN * RADIANCE_MULT + RADIANCE_ADD) / sun_radiance
+.IP \(bu 4n
+now reflectance = DN * REFLECTANCE_MULT + REFLECTANCE_ADD
+.IP \(bu 4n
+then REFLECTANCE_MULT = RADIANCE_MULT / sun_radiance
+.IP \(bu 4n
+and REFLECTANCE_ADD = RADIANCE_ADD / sun_radiance
+.RE
+.PP
+The problem arises when we need ESUN values (not provided) to
+compute sun_radiance and DOS. We assume that REFLECTANCE_MAXIMUM
+corresponds to the RADIANCE_MAXIMUM, then
+.RS 4n
+.IP \(bu 4n
+REFLECTANCE_MAXIMUM / sin(e) = RADIANCE_MAXIMUM / sun_radiance
+.IP \(bu 4n
+Esun = (PI * d^2) * RADIANCE_MAXIMUM / REFLECTANCE_MAXIMUM
+.RE
+where \fId\fR is the earth\-sun distance provided by metadata file
+or computed inside the program.
+.PP
+The \fIi.landsat.toar\fR reverts back the NASA rescaling to continue
+using Lmax, Lmin, and Esun values to compute the constant to convert
+DN to radiance and radiance to reflectance with the \(dqtraditional\(dq
+equations and simple atmospheric corrections.
+\fBAttention\fR: When MAXIMUM values are not provided,
+\fIi.landsat.toar\fR tries to calculate Lmax, Lmin, and Esun from
+RADIOMETRIC_RESCALING (in tests the results were the same).
+.SS Calibration constants
+In verbose mode (flag \fB\-\-verbose\fR), the program write basic
+satellite data and the parameters used in the transformations.
+.PP
+Production date is not an exact value but it is necessary to apply
+correct calibration constants, which were changed in the dates:
+.RS 4n
+.IP \(bu 4n
+Landsat\-1 MSS: never
+.IP \(bu 4n
+Landsat\-2 MSS: July 16, 1975
+.IP \(bu 4n
+Landsat\-3 MSS: June 1, 1978
+.IP \(bu 4n
+Landsat\-4 MSS: August 26, 1982 and April 1, 1983
+.IP \(bu 4n
+Landsat\-4 TM:  August 1, 1983 and January 15, 1984
+.IP \(bu 4n
+Landsat\-5 MSS: April 6, 1984 and November 9, 1984
+.IP \(bu 4n
+Landsat\-5 TM:  May 4, 2003 and April, 2 2007
+.IP \(bu 4n
+Landsat\-7 ETM+: July 1, 2000
+.IP \(bu 4n
+Landsat\-8 OLI/TIRS: launched in 2013
+.RE
+.SH EXAMPLES
+.SS Metadata file examples
+Transform digital numbers of Landsat\-7 ETM+ in band rasters 203_30.1,
+203_30.2 [...] to uncorrected at\-sensor reflectance in output files
+203_30.1_toar, 203_30.2_toar [...] and at\-sensor temperature in output
+files 293_39.61_toar and 293_39.62_toar:
+.br
+.nf
+\fC
+i.landsat.toar input=203_30. output=_toar \(rs
+  metfile=p203r030_7x20010620.met
+\fR
+.fi
+or
+.br
+.nf
+\fC
+i.landsat.toar input=L5121060_06020060714. \(rs
+  output=L5121060_06020060714_toar \(rs
+  metfile=L5121060_06020060714_MTL.txt
+\fR
+.fi
+or
+.br
+.nf
+\fC
+i.landsat.toar input=LC80160352013134LGN03_B output=toar \(rs
+  metfile=LC80160352013134LGN03_MTL.txt sensor=oli8 date=2013\-05\-14
+\fR
+.fi
+.SS DOS1 example
+DN to reflectance using DOS1:
+.br
+.nf
+\fC
+# rename channels or make a copy to match i.landsat.toar\(cqs input scheme:
+g.copy raster=lsat7_2002_10,lsat7_2002.1
+g.copy raster=lsat7_2002_20,lsat7_2002.2
+g.copy raster=lsat7_2002_30,lsat7_2002.3
+g.copy raster=lsat7_2002_40,lsat7_2002.4
+g.copy raster=lsat7_2002_50,lsat7_2002.5
+g.copy raster=lsat7_2002_61,lsat7_2002.61
+g.copy raster=lsat7_2002_62,lsat7_2002.62
+g.copy raster=lsat7_2002_70,lsat7_2002.7
+g.copy raster=lsat7_2002_80,lsat7_2002.8
+\fR
+.fi
+Calculation of reflectance values from DN using DOS1 (metadata obtained
+from p016r035_7x20020524.met.gz):
+.br
+.nf
+\fC
+i.landsat.toar input=lsat7_2002. output=lsat7_2002_toar. sensor=tm7 \(rs
+  method=dos1 date=2002\-05\-24 sun_elevation=64.7730999 \(rs
+  product_date=2004\-02\-12 gain=HHHLHLHHL
+\fR
+.fi
+The resulting Landsat channels are named lsat7_2002_toar.1 .. lsat7_2002_toar.8.
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Chander G., B.L. Markham and D.L. Helder, 2009: Remote Sensing of
+Environment, vol. 113
+.IP \(bu 4n
+Chander G.H. and B. Markham, 2003: IEEE Transactions On Geoscience And
+Remote Sensing, vol. 41, no. 11.
+.IP \(bu 4n
+Chavez P.S., jr. 1996: Image\-based atmospheric corrections \-
+Revisited and Improved. Photogrammetric Engineering and Remote
+Sensing 62(9): 1025\-1036.
+.IP \(bu 4n
+Huang et al: At\-Satellite Reflectance, 2002: A First Order Normalization
+Of Landsat 7 ETM+ Images.
+.IP \(bu 4n
+R. Irish: Landsat
+7. Science Data Users Handbook. February 17, 2007; 15 May 2011.
+.IP \(bu 4n
+Markham B.L. and J.L. Barker, 1986: Landsat MSS and TM Post\-Calibration
+Dynamic Ranges, Exoatmospheric Reflectances and At\-Satellite
+Temperatures. EOSAT Landsat Technical Notes, No. 1.
+.IP \(bu 4n
+Moran M.S., R.D. Jackson, P.N. Slater and P.M. Teillet, 1992: Remote
+Sensing of Environment, vol. 41.
+.IP \(bu 4n
+Song et al, 2001: Classification and Change Detection Using Landsat TM
+Data, When and How to Correct Atmospheric Effects? Remote Sensing
+of Environment, vol. 75.
+.RE
+.SH SEE ALSO
+\fI
+i.atcorr,
+i.colors.enhance,
+r.mapcalc,
+r.in.gdal
+\fR
+.PP
+Landsat Data Dictionary by USGS
+.SH AUTHOR
+E. Jorge Tizado  (ej.tizado unileon es), Dept. Biodiversity and Environmental Management,
+University of León, Spain
+.SH SOURCE CODE
+.PP
+Available at: i.landsat.toar source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

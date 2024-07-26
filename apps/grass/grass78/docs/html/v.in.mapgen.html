@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.in.mapgen.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.in.mapgen.py</b></em>  - Imports Mapgen or Matlab-ASCII vector maps into GRASS.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_import.html">import</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.in.mapgen.py</b><br></div>
+<b>v.in.mapgen.py --help</b><br>
+<div id="synopsis"><b>v.in.mapgen.py</b> [-<b>fz</b>] <b>input</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-f</b></dt>
+<dd>Input map is in Matlab format</dd>
+
+<dt><b>-z</b></dt>
+<dd>Create a 3D vector points map from 3 column Matlab data</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input file in Mapgen/Matlab format</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output vector map (omit for display to stdout)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.in.mapgen</em> allows the user to import Mapgen or Matlab vector maps 
+into GRASS.
+
+<h2><a name="notes">NOTES</a></h2>
+
+This module only imports data into vector lines.
+<p>The user can get coastline data in Mapgen or Matlab format from NOAA's Coastline 
+Extractor at <a href="http://www.ngdc.noaa.gov/mgg/shorelines/shorelines.html">http://www.ngdc.noaa.gov/mgg/shorelines/shorelines.html</a>.
+<p>Matlab vector line maps are simply a series of "x y" data points. Lines
+are separated by a row containing <tt>NaN NaN</tt>.
+
+Output from Matlab with this command:
+<br>
+<div class="code"><pre>
+    save filename.txt arrayname -ASCII
+</pre></div>
+<p>The user can import 3D lines from Matlab by exporting a 3 column array and
+using the <b>-z</b> flag.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em><a href="v.in.ascii.html">v.in.ascii</a></em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+Based on <em>v.in.mapgen.sh</em> for GRASS 5.0 by Andreas Lange
+<br>Rewritten for GRASS 6 by Hamish Bowman
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.in.mapgen">v.in.mapgen source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.in.mapgen">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+.TH r.out.bin 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.bin\fR\fR  \- Exports a GRASS raster to a binary array.
+.SH KEYWORDS
+raster, export, output
+.SH SYNOPSIS
+\fBr.out.bin\fR
+.br
+\fBr.out.bin \-\-help\fR
+.br
+\fBr.out.bin\fR [\-\fBifhbs\fR] \fBinput\fR=\fIstring\fR  [\fBoutput\fR=\fIstring\fR]   [\fBnull\fR=\fIfloat\fR]   [\fBbytes\fR=\fIinteger\fR]   [\fBorder\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Generate integer output
+.IP "\fB\-f\fR" 4m
+.br
+Generate floating\-point output
+.IP "\fB\-h\fR" 4m
+.br
+Export array with GMT compatible header
+.IP "\fB\-b\fR" 4m
+.br
+Generate BIL world and header files
+.IP "\fB\-s\fR" 4m
+.br
+Byte swap output
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIstring\fR" 4m
+.br
+Name for output binary map (use output=\- for stdout)
+.IP "\fBnull\fR=\fIfloat\fR" 4m
+.br
+Value to write out for null
+.br
+Default: \fI0\fR
+.IP "\fBbytes\fR=\fIinteger\fR" 4m
+.br
+Number of bytes per cell
+.br
+Options: \fI1, 2, 4, 8\fR
+.IP "\fBorder\fR=\fIstring\fR" 4m
+.br
+Output byte order
+.br
+Options: \fIbig, little, native, swap\fR
+.br
+Default: \fInative\fR
+.SH DESCRIPTION
+The \fIr.out.bin\fR program exports a GRASS raster map to a binary array
+file. Optionally, output can be sent to standard output (stdout) for direct
+input (pipe) into other applications. Data is exported according to the
+original GRASS raster type (e.g. float). If the \(dq\-i\(dq flag is specified, an
+integer array is output. The region parameters are printed to stderr.
+.SH NOTES
+With the \-h flag, data can be directly used by
+GMT as Grid Format 1 (float) or
+2 (short). For example:
+.br
+.nf
+\fC
+r.out.bin \-h input=grass.raster output=new.grd
+grdinfo new.grd=1 (if float)
+\fR
+.fi
+.PP
+Exported data can be piped directly into the GMT program xyz2grd.
+.br
+.nf
+\fC
+r.out.bin input=grass.raster output=\- | xyz2grd \-R....  \-ZTLf \-
+\fR
+.fi
+The example uses the GMT program xyz2grd with the \-ZTLf flag indicating that
+a float array was output.
+.SH SEE ALSO
+\fI
+r.in.bin,
+r.in.ascii,
+r.in.gdal,
+r.out.ascii
+\fR
+.SH AUTHOR
+This program is derived from \fIr.out.ascii\fR
+with a few modifications.
+.br
+Author: Bob Covill
+.SH SOURCE CODE
+.PP
+Available at: r.out.bin source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

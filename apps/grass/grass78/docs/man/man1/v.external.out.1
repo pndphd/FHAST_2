@@ -1,0 +1,285 @@
+.TH v.external.out 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.external.out\fR\fR  \- Defines vector output format.
+.SH KEYWORDS
+vector, export, output, external, OGR, PostGIS
+.SH SYNOPSIS
+\fBv.external.out\fR
+.br
+\fBv.external.out \-\-help\fR
+.br
+\fBv.external.out\fR [\-\fBfrpg\fR]  [\fBoutput\fR=\fIstring\fR]   [\fBformat\fR=\fIstring\fR]   [\fBoptions\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBloadsettings\fR=\fIname\fR]   [\fBsavesettings\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+List supported formats and exit
+.IP "\fB\-r\fR" 4m
+.br
+Cease using OGR/PostGIS, revert to native output and exit
+.IP "\fB\-p\fR" 4m
+.br
+Print current status
+.IP "\fB\-g\fR" 4m
+.br
+Print current status in shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIstring\fR" 4m
+.br
+Name of output directory or OGR or PostGIS data source
+.br
+Examples:
+.br
+        ESRI Shapefile: directory containing a shapefile
+.br
+        MapInfo File: directory containing a mapinfo file
+.br
+        PostGIS database: connection string, eg. \(cqPG:dbname=db user=grass\(cq
+.IP "\fBformat\fR=\fIstring\fR" 4m
+.br
+Format for output vector data
+.br
+Options: \fIAmigoCloud, BNA, CSV, Carto, Cloudant, CouchDB, DB2ODBC, DGN, DXF, ESRI_Shapefile, Elasticsearch, FlatGeobuf, GML, GPKG, GPSBabel, GPSTrackMaker, GPX, GeoJSON, GeoJSONSeq, GeoRSS, Geoconcept, Interlis_1, Interlis_2, JML, KML, LIBKML, MBTiles, MSSQLSpatial, MVT, MapInfo_File, MapML, Memory, MySQL, NGW, ODBC, ODS, OGR_GMT, PCIDSK, PDF, PDS4, PGDUMP, PostgreSQL, S57, SQLite, Selafin, TIGER, VDV, VICAR, WAsP, XLSX, netCDF\fR
+.br
+Default: \fIESRI_Shapefile\fR
+.IP "\fBoptions\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Creation options
+.br
+Examples:
+.br
+        \(cqSHPT=POINTZ\(cq: create 3D point Shapefile data
+.br
+        \(cqGEOM_TYPE=geography\(cq: use geography PostGIS data
+.br
+        \(cqSCHEMA=grass\(cq: create new PostGIS tables in \(cqgrass\(cq schema
+.IP "\fBloadsettings\fR=\fIname\fR" 4m
+.br
+Name of input file to read settings from
+.IP "\fBsavesettings\fR=\fIname\fR" 4m
+.br
+Name for output file where to save current settings
+.SH DESCRIPTION
+\fIv.external.out\fR instructs GRASS to write vector maps in
+external data format (e.g. ESRI Shapefile, Mapinfo, and others)
+using OGR library. PostGIS data can
+be also written by
+built\-in GRASS\-PostGIS
+data provider.
+.SH NOTES
+Number of available output formats (v.external.out \-f)
+depends on OGR installation. \(cqPostgreSQL\(cq format is presented also
+when GRASS comes with PostgreSQL support (check for \(cq\-\-with\-postgres\(cq
+in g.version \-b output).
+.PP
+To store geometry and attribute data in PostGIS database (\(cqPostgreSQL\(cq
+format) GRASS uses built\-in \fIGRASS\-PostGIS data
+provider\fR. PostGIS data can be written also by OGR library
+when GRASS_VECTOR_OGR environmental variable is defined or
+GRASS is not compiled with PostgreSQL support.
+.PP
+Creation \fBoptions\fR refer to the output format specified
+by \fBformat\fR option. See the list of valid creation options
+at OGR formats
+specification page, example
+for ESRI
+Shapefile
+or PostgreSQL/PostGIS
+format (section \(dqLayer Creation Options\(dq). Options are
+comma\-separated pairs (key=value), the options are
+case\-insensitive,
+eg. options=\(dqSCHEMA=myschema,FID=cat\(dq.
+.SS PostgreSQL/PostGIS Creation Options
+Note that built\-in \fIGRASS\-PostGIS data provider\fR
+(\fBformat=PostgreSQL\fR) supports different creation \fBoptions\fR
+compared to PostgreSQL/PostGIS driver from OGR library:
+.RS 4n
+.IP \(bu 4n
+SCHEMA=<name> \- name of schema where to create
+feature tables. If schema doesn\(cqt exists, it\(cqs automatically created
+when writing PostGIS data.
+.IP \(bu 4n
+FID=<column> \- name of column which will be used as
+primary key (feature id), default: fid
+.IP \(bu 4n
+GEOMETRY_NAME=<column> name of column which will
+be used for storing geometry data in feature table, default: geom
+.IP \(bu 4n
+SPATIAL_INDEX=YES|NO \- enable/disable spatial index on geometry column, default: YES
+.IP \(bu 4n
+PRIMARY_KEY=YES|NO \- enable/disable primary key on FID column, default: YES
+.IP \(bu 4n
+SRID=<value> \- spatial reference identifier,
+default: not defined
+.IP \(bu 4n
+TOPOLOGY=YES|NO \- enable/disable
+native PostGIS
+topology, default: NO
+.RE
+Options relevant only to topological output (TOPOLOGY=YES):
+.RS 4n
+.IP \(bu 4n
+TOPOSCHEMA_NAME=<schema name> \- name of PostGIS
+Topology schema (relevant only for TOPOLOGY=YES),
+default: topo_<input>
+.IP \(bu 4n
+TOPOGEOM_NAME=<column> \- name of column which
+will be used for storing topogeometry data in feature table,
+default: topo
+.IP \(bu 4n
+TOPO_TOLERANCE=<value> \- tolerance for PostGIS
+Topology schema,
+see CreateTopology
+function for defails, default: 0
+.IP \(bu 4n
+TOPO_GEO_ONLY=YES|NO \- store in PostGIS Topology schema
+only data relevant to Topo\-Geo data model, default: NO
+.IP \(bu 4n
+SIMPLE_FEATURE=YES|NO \- build simple features geometry
+in GEOMETRY_NAME column from topogeometry data, default:
+NO
+.RE
+Note that topological output requires \fBPostGIS version 2 or later\fR.
+.SH EXAMPLES
+.SS ESRI Shapefile
+\fIv.external.out\fR can be used along with
+\fIv.external\fR to process external
+geodata in GRASS while writing out the results directly eg. in ESRI
+Shapefile format:
+.br
+.nf
+\fC
+# register Shapefile in GRASS mapset:
+v.external input=/path/to/shapefiles layer=cities
+# define output directory for GRASS calculation results:
+v.external.out output=$HOME/gisoutput
+# do something (here: spatial query), write output directly as Shapefile
+v.select ainput=cities atype=point binput=forests btype=area operator=within output=fcities
+\fR
+.fi
+Current settings can be printed using \fB\-p\fR or \fB\-g\fR flag.
+.br
+.nf
+\fC
+v.external.out \-p
+output: /path/to/home/gisoutput
+format: ESRI Shapefile
+\fR
+.fi
+.SS PostGIS (simple features)
+PostGIS data can be accessed directly using \fIGRASS\-PostGIS data
+provider\fR (GRASS must be compiled with PostgreSQL support).
+.br
+.nf
+\fC
+# register PostGIS table in GRASS mapset:
+v.external output=PG:dbname=gisdb layer=cities
+# define output PostGIS database for GRASS calculation results stored as simple features:
+v.external.out output=PG:dbname=gisdb format=PostgreSQL
+# do some processing...
+\fR
+.fi
+\fINote:\fR If the environment variable GRASS_VECTOR_OGR
+is defined, or GRASS is compiled without PostgreSQL support then GRASS
+will use PostgreSQL driver from OGR library for reading and writing
+PostGIS data.
+.SS PostGIS Topology
+.br
+.nf
+\fC
+# define output PostGIS database for GRASS calculation results stored as topological elements:
+v.external.out output=PG:dbname=gisdb format=PostgreSQL options=topology=YES
+# do some processing...
+\fR
+.fi
+\fINote:\fR PostGIS topological access is supported only in
+built\-in \fIGRASS\-PostGIS data provider\fR.
+.SS GRASS native format
+To restore original settings, ie. use the GRASS native format, type:
+.br
+.nf
+\fC
+v.external.out \-r
+\fR
+.fi
+.SS Restore settings
+Current settings can be stored to file by specifying \fBoutput\fR option.
+.br
+.nf
+\fC
+# define output PostGIS database for GRASS calculation with
+# results stored as topological elements:
+v.external.out output=PG:dbname=gisdb format=PostgreSQL \(rs
+  options=topology=YES savesettings=gisdb_topo.txt
+# ... and do some processing in PostGIS Topology
+\fR
+.fi
+Back to native format:
+.br
+.nf
+\fC
+v.external.out \-r
+# do some processing in native format
+\fR
+.fi
+Restore previous settings from \(dqgisdb_topo.txt\(dq file by
+specifying \fBloadsettings\fR option.
+.br
+.nf
+\fC
+v.external.out loadsettings=gisdb_topo.txt
+# ... and do some processing in PostGIS Topology
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+GRASS\-OGR data provider
+.IP \(bu 4n
+OGR vector library C API documentation
+.IP \(bu 4n
+GRASS\-PostGIS data provider
+.IP \(bu 4n
+libpq \- C Library
+.RE
+.SH SEE ALSO
+\fI
+v.external,
+v.in.ogr,
+v.out.ogr,
+v.out.postgis
+\fR
+.PP
+See
+also GRASS user wiki page for more examples.
+.SH AUTHOR
+Martin Landa, Czech Technical University in Prague, Czech Republic
+(development supported by Fondazione Edmund Mach and Comune di Trento, Italy)
+.SH SOURCE CODE
+.PP
+Available at: v.external.out source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

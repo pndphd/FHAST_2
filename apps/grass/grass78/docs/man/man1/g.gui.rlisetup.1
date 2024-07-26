@@ -1,0 +1,358 @@
+.TH g.gui.rlisetup 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gui.rlisetup\fR\fR  \- Configuration tool for r.li modules.
+.SH KEYWORDS
+general, GUI, raster, landscape structure analysis
+.SH SYNOPSIS
+\fBg.gui.rlisetup\fR
+.br
+\fBg.gui.rlisetup \-\-help\fR
+.br
+\fBg.gui.rlisetup\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SH DESCRIPTION
+The \fBg.gui.rlisetup\fR is a \fIwxGUI\fR
+component which allows the user to create a configuration file
+for the analytical \fIr.li\fR modules. For a general introduction, see
+the r.li overview.
+.br
+The configurations are raster map independent, it means that you can use
+a file created on a raster map for analyze any other you have.
+.br
+The program is completely interactive and uses a GUI to help you
+in your choices.
+.SS Analysis methods
+Definition of creation of sampling area:
+.RS 4n
+.IP \(bu 4n
+Whole map layer: use entire area selected above,
+.IP \(bu 4n
+Regions: select one to many subareas via mouse,
+.IP \(bu 4n
+Sample units: automated selection of sampling area (for details see below)
+.RS 4n
+.IP \(bu 4n
+Random nonoverlapping,
+.IP \(bu 4n
+Systematic contiguous,
+.IP \(bu 4n
+Systematic noncontiguous,
+.IP \(bu 4n
+Stratified random,
+.IP \(bu 4n
+Centered over sites (vector points).
+.RE
+.IP \(bu 4n
+Moving window: rectangular or circular with size
+.RE
+.PP
+Definition of region for analysis:
+.RS 4n
+.IP \(bu 4n
+Whole map layer: entire map (current region),
+.IP \(bu 4n
+Keyboard setting: based on keyboard selection for region definition,
+.IP \(bu 4n
+Draw the sampling frame: based on interactive region selection via mouse.
+.RE
+.SS Usage details
+The startup window shows your configuration files, you can:
+.PP
+\fBTODO: description below needs further updates\fR
+.PP
+.IP
+.IP \fB1\fR
+\fI\fBView/Edit\fR\fR (Load a file) from the shown list: the
+configuration is shown in a small text editor window.
+Configuration files are saved in the folder
+C:\(rsUsers\(rsuserxy\(rsAppData\(rsRoaming\(rsGRASS7\(rsr.li\(rs (MS\-Windows) or
+$HOME/.r.li/ (GNU/Linux) (the file name can be
+defined by the user). The output or an analysis can either be a new raster
+map (in case of using a \(dqmoving window\(dq analysis) or be an ASCII text file
+(when not performing a \(dqmoving window\(dq analysis) containing the result.
+Such text file will be saved in the folder
+C:\(rsUsers\(rsuserxy\(rsAppData\(rsRoaming\(rsGRASS7\(rsr.li\(rsoutput\(rs
+(MS\-Windows) or $HOME/.grass7/r.li/output/ (GNU/Linux).
+.br
+All dimensions are percentages of raster rows or columns.
+.IP \fB2\fR
+\fI\fBCreate\fR\fR a new configuration file: used for creating
+a new configuration file in an interactive way, in three steps:
+.IP
+.IP \fB2.1\fR
+Choose file name and maps to use for setting:
+.RS 4n
+.IP \(bu 4n
+\fIName for new configuration file\fR(required): the name
+of new configuration file
+.IP \(bu 4n
+\fIRaster map name to use to select areas\fR (required):
+the name of raster map used for selecting sampling areas
+.IP \(bu 4n
+\fIVector map to overlay\fR (optional): name of a
+vector map used for selecting sampling areas
+.RE
+.IP \fB2.2\fR
+Set the sampling frame. The sample frame is a rectangular area
+which contains all the areas to analyze. It can be defined in three
+ways:
+.RS 4n
+.IP \(bu 4n
+\fIWhole map layer\fR: the sample frame is the whole map
+.IP \(bu 4n
+\fIKeyboard setting\fR: the user enters the coordinates in
+cells of upper left corner of sampling frame and its length in
+rows and columns.
+.IP \(bu 4n
+\fIDraw the sample frame\fR: the user draws the sample frame
+on map using mouse.
+.RE
+.IP \fB2.3\fR
+Set the sample areas. The sample areas are simply the areas to
+analyze. They can be defined in five ways (see the picture below):
+.RS 4n
+.IP \(bu 4n
+\fIWhole map layer\fR: the sample area is the whole sample
+frame
+.IP \(bu 4n
+\fIRegions\fR: the user enters the number of areas and then
+draws them using mouse.
+.IP \(bu 4n
+\fISample units\fR: they are areas of rectangular or circular
+shape. The user can define them using keyboard or mouse.
+.RS 4n
+.IP \(bu 4n
+keyboard: the user define the shape of sample unists and
+their disposition:
+.RS 4n
+.IP \(bu 4n
+\fIRandom non overlapping\fR: the user specifies
+the number of sample units and they are placed in a
+random way at runtime. It is guaranteed that the
+areas do not intersect themselves.
+.IP \(bu 4n
+\fISystematic contiguous\fR: the defined sample
+is placed covering the sample frame, side by side
+across rows.
+.IP \(bu 4n
+\fISystematic non contiguous\fR: the same as above,
+but here ever rectangle is spaced from another by
+a specified number of cells.
+.IP \(bu 4n
+\fIStratified random\fR: the sample frame is
+divided in \fIn\fR strats of rows and \fIm\fR strats of columns
+(\fIn\fR and \fIm\fR are given by user), then the specified
+number of sample areas are placed in a random way,
+one for every \fIm*n\fR areas defined by strats.
+.IP \(bu 4n
+\fICentered over sites\fR: the sample areas
+are placed into sample frame centering them on points
+in site file.
+.RE
+.IP \(bu 4n
+mouse: the user chooses the shape and then draws the
+specified number of sample areas on map.
+.RE
+.IP \(bu 4n
+\fIMoving Window:\fR the user defines a rectangular or
+circular area, it is moved over all the raster increasing only
+of a cell for every move(in columns if possible, if not in rows).
+It produces a new raster containing the result of all analysis.
+.IP \(bu 4n
+\fISelect areas from the overlaid vector map\fR:
+the sample areas are defined by the vector map selected above.
+For every cat in vector map, the procedure prompts the
+user if they want to include it as sample area.
+The resulting configuration file can be used only with the
+specified raster map, and the procedure can be used only if
+whole map layer is selected as sampling frame.
+.RE
+.PP
+.IP \fB3\fR
+\fI\fBRemove a file\fR\fR the selected file is deleted from the
+available configuration files.
+.IP \fB4\fR
+\fI\fBHelp\fR\fR: open this help text.
+.IP \fB5\fR
+\fI\fBClose\fR\fR module window.
+.PP
+.SH NOTES
+Configuration files are raster map independent because areas are saved using
+relative coordinates.
+.PP
+Screenshots of the wizard window frames:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+ 
+\fIg.gui.rlisetup: First frame of wizard for selecting
+existing configuration files or creating a new one\fR
+T}	 	T{
+ 
+\fIg.gui.rlisetup: Frame for selecting maps\fR
+T}
+.sp 1
+T{
+ 
+\fIg.gui.rlisetup: Frame for inserting sampling areas\fR
+T}	 	T{
+ 
+\fIg.gui.rlisetup: Frame for defining rectangular moving window\fR
+T}
+.sp 1
+T{
+ 
+\fIg.gui.rlisetup: Frame for defining circular moving window\fR
+T}	 	T{
+ 
+\fIg.gui.rlisetup: Frame for choosing the sampling frame with keyboard\fR
+T}
+.sp 1
+T{
+ 
+\fIg.gui.rlisetup: Frame for drawing the sampling frame\fR
+T}	 	T{
+ 
+\fIg.gui.rlisetup: Summary frame before saving\fR
+T}
+.sp 1
+.TE
+.SH EXAMPLES
+.SS Moving window analysis on full region
+\fITODO: update examples to new g.gui.rlisetup dialog:\fR
+.PP
+Example for a 7x7 moving window analysis on full region, the output
+is a raster map:
+.PP
+Click on \(dqNew\(dq, then:
+.RS 4n
+.IP \(bu 4n
+Configuration file name: \(dqmovwindow7\(dq
+.IP \(bu 4n
+Raster map name to use to select areas: \(dqforests\(dq
+.RE
+1. Setup sampling frame:
+.RS 4n
+.IP \(bu 4n
+Define a sampling frame (region for analysis): \(dqWhole map layer\(dq, then \(dqOK\(dq
+.RE
+2. Setup sampling frame
+.RS 4n
+.IP \(bu 4n
+Define sampling areas: \(dqMoving window\(dq, then \(dqOK\(dq
+.IP \(bu 4n
+Then click on \(dqUse keyboard to define moving window dimension\(dq
+.RE
+Select type of shape:
+.RS 4n
+.IP \(bu 4n
+[x] Rectangular
+.IP \(bu 4n
+Width size (in cells)?: \(dq7\(dq
+.IP \(bu 4n
+Height size (in cells)?: \(dq7\(dq
+.IP \(bu 4n
+Then \(dqSave settings\(dq
+.RE
+3. Save settings: click on button
+.br
+(4.) Close
+.PP
+Now an anaysis can be performed using one of the analytical modules, e.g.
+.br
+.nf
+\fC
+g.region raster=forests \-p
+r.li.patchdensity input=forests conf=movwindow7 output=forests_p_dens7
+r.univar forests_p_dens7
+\fR
+.fi
+The result is the new raster map \(dqforests_p_dens7\(dq which shows (in this example)
+the patch density of the forest areas.
+.br
+See the respective modules for further examples.
+.SS Whole region analysis
+Example for a whole region analysis, the output is a text file:
+Click on \(dqNew\(dq, then:
+.RS 4n
+.IP \(bu 4n
+Configuration file name: \(dqwhole_region\(dq
+.IP \(bu 4n
+Raster map name to use to select areas: \(dqlsat7_2000_40\(dq
+.RE
+1. Setup sampling frame:
+.RS 4n
+.IP \(bu 4n
+Define a sampling frame (region for analysis): \(dqWhole map layer\(dq, then \(dqOK\(dq
+.RE
+2. Setup sampling frame
+.RS 4n
+.IP \(bu 4n
+Define sampling areas: \(dqWhole map layer\(dq, then \(dqOK\(dq
+.RE
+3. Save settings: click on button
+.br
+(4.) Close
+.PP
+Now an anaysis can be performed using one of the analytical modules, e.g.
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_40 \-p
+r.li.shannon input=lsat7_2000_40 conf=whole_region output=lsat7_2000_40_shannon
+\fR
+.fi
+The result is the new text file \(dqforests_p_dens7\(dq (stored in folder $HOME/.r.li/output/.
+.br
+See the respective modules for further examples.
+.SH SEE ALSO
+\fI
+r.li \- package overview
+.br
+r.li.daemon
+\fR
+.PP
+\fI
+Old r.le suite manual (1992)
+\fR
+.PP
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.SH REFERENCES
+McGarigal, K., and B. J. Marks. 1995. FRAGSTATS: spatial pattern
+analysis program for quantifying landscape structure. USDA For. Serv.
+Gen. Tech. Rep. PNW\-351. (PDF)
+.SH AUTHOR
+Luca Delucchi
+.br
+Rewritten from \fIr.li.setup\fR by Claudio Porta and Lucio Davide Spano
+.SH SOURCE CODE
+.PP
+Available at: wxGUI RLi Setup source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

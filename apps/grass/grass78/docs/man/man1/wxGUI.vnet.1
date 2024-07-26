@@ -1,0 +1,115 @@
+.TH wxGUI.vnet 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Vector Network Analysis Tool
+.SH KEYWORDS
+vector, network, vector
+.SH DESCRIPTION
+\fBVector Network Analysis Tool\fR is graphical front\-end
+for v.net* modules. It allows perform network analysis
+directly in \fIwxGUI\fR without need to
+use command line. The tool can be launched from Layer Manager
+menu \fIVector → Network analysis → Vector network analysis
+tool\fR or from Map Display toolbar \fIAnalyse map → Vector
+network analysis tool\fR .
+.PP
+.br
+Subsets for nearest centers (\fIv.net.alloc\fR)
+.PP
+\fIVector Network Analysis Tool\fR currently allows you to:
+.RS 4n
+.IP \(bu 4n
+perform these network analyses:
+.RS 4n
+.IP \(bu 4n
+Shortest path
+(\fIv.net.path\fR)
+.IP \(bu 4n
+Salesman
+(\fIv.net.salesman\fR)
+.IP \(bu 4n
+Flow (\fIv.net.flow\fR)
+.IP \(bu 4n
+Allocate subnets for nearest centers
+(\fIv.net.alloc\fR)
+.IP \(bu 4n
+Steiner tree for the network and given terminals
+(\fIv.net.distance\fR)
+.IP \(bu 4n
+Splits net by cost isolines
+(\fIv.net.iso\fR)
+.RE
+.IP \(bu 4n
+show and set all data needed for the analysis (points, attribute
+tables, compute costs)
+.IP \(bu 4n
+show analysis results (maps and it\(cqs attribute tables)
+.IP \(bu 4n
+snapping to nodes
+.IP \(bu 4n
+browse previous analysis results
+.RE
+.SH NOTES
+The tool is split into tabs. Every tab represents some functionality:
+.IP "\fBParameters\fR tab" 4m
+.br
+It is used for setting vector map and
+it\(cqs layer on which analysis will be done. Also it is possible to
+set columns with cost values from attribute table connected
+to particular layer.
+.IP "\fBPoints\fR tab" 4m
+.br
+It manages points, which are used for analysis.
+.IP "\fBOutput\fR tab" 4m
+.br
+There is a output console, which shows information about running
+analysis.
+.IP "\fBInput tables\fR tab" 4m
+.br
+When existing vector map and it\(cqs existing layers are set
+in \fIParameters\fR tab, this tab is dynamically added. It shows
+attribute tables of node and arc layers, which were chosen for
+analysis. It is also possible to compute cost values in this
+tab. This can be done by right mouse button click on column
+label. Then from pop\-up menu choose \fIAdd column\fR, where new
+column for cost values can be created. After that by right mouse
+button click on the added column label can be chosen item \fIField
+calculator\fR. This tool computes cost values.
+.IP "\fBResult tables\fR tab" 4m
+.br
+The result of vector network analysis is always a vector map. Some
+vector network analysis results can also include attribute
+tables. If such a table is connected to the result map, this tab is
+shown and with it you can browse the data.
+.SH KNOWN ISSUES
+When some change is done in layer tree of Map Display, temporary
+vector map representing result of analysis is not rendered
+(use \fIShow result\fR button in toolbar to render it again).
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+See list of vector network modules.
+.PP
+See also the
+user wiki
+page including video tutorial.
+.SH AUTHOR
+Stepan
+Turek, Google
+Summer of Code 2012 (mentor: Martin Landa)
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Vector Network Analysis Tool source code (history)
+.PP
+Main index |
+Wxgui index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

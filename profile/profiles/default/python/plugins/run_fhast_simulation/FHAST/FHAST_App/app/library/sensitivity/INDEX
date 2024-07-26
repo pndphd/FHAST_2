@@ -1,0 +1,119 @@
+PLI                     Perturbed-Law based sensitivity Indices (PLI)
+                        for failure probability
+PLIquantile             Perturbed-Law based sensitivity Indices (PLI)
+                        for quantile
+PLIquantile_multivar    Perturbed-Law based sensitivity Indices (PLI)
+                        for quantile and simultaneous perturbations of
+                        2 inputs
+PLIsuperquantile        Perturbed-Law based sensitivity Indices (PLI)
+                        for superquantile
+PLIsuperquantile_multivar
+                        Perturbed-Law based sensitivity Indices (PLI)
+                        for superquantile and simultaneous
+                        perturbations of 2 inputs
+PoincareChaosSqCoef     Squared coefficients computation in generalized
+                        chaos
+PoincareConstant        Poincare constants for Derivative-based Global
+                        Sensitivity Measures (DGSM)
+PoincareOptimal         Optimal Poincare constants for Derivative-based
+                        Global Sensitivity Measures (DGSM)
+addelman_const          Addelman and Kempthorne construction
+correlRatio             Correlation Ratio
+decoupling              Decoupling Simulations and Estimations
+delsa                   Distributed Evaluation of Local Sensitivity
+                        Analysis
+discrepancyCriteria_cplus
+                        Discrepancy measure
+fast99                  Extended Fourier Amplitude Sensitivity Test
+lmg                     LMG R-squared decomposition for linear and
+                        logistic regression models
+maximin_cplus           Maximin criterion
+morris                  Morris's Elementary Effects Screening Method
+morrisMultOut           Morris's Elementary Effects Screening Method
+                        for Multidimensional Outputs
+parameterSets           Generate parameter sets
+pcc                     Partial Correlation Coefficients
+plot.support            Support index functions: Measuring the effect
+                        of input variables over their support
+pme_knn                 Data-given proportional marginal effects
+                        estimation via nearest-neighbors procedure
+pmvd                    Proportional Marginal Variance Decomposition
+                        indices for linear and logistic models
+qosa                    Quantile-oriented sensitivity analysis
+sb                      Sequential Bifurcations
+sensiFdiv               Sensitivity Indices based on Csiszar
+                        f-divergence
+sensiHSIC               Sensitivity Indices based on the
+                        Hilbert-Schmidt Independence Criterion (HSIC)
+sensitivity-package     Sensitivity Analysis
+shapleyBlockEstimation
+                        Computation of the Shapley effects in the
+                        Gaussian linear framework with an unknown
+                        block-diagonal covariance matrix
+shapleyLinearGaussian   Computation of the Shapley effects in the
+                        linear Gaussian framework
+shapleyPermEx           Estimation of Shapley effects by examining all
+                        permutations of inputs (Agorithm of Song et al,
+                        2016), in cases of independent or dependent
+                        inputs
+shapleyPermRand         Estimation of Shapley effects by random
+                        permutations of inputs (Agorithm of Song et al,
+                        2016), in cases of independent or dependent
+                        inputs
+shapleySubsetMc         Estimation of Shapley effects from data using
+                        nearest neighbors method
+shapleysobol_knn        Data given Shapley effects estimation via
+                        nearest-neighbors procedure
+sobol                   Monte Carlo Estimation of Sobol' Indices
+sobol2002               Monte Carlo Estimation of Sobol' Indices
+                        (scheme by Saltelli 2002)
+sobol2007               Monte Carlo Estimation of Sobol' Indices
+                        (improved formulas of Mauntz: Sobol et al.
+                        (2007) and Saltelli et al. (2010))
+sobolEff                Monte Carlo Estimation of Sobol' Indices
+                        (formulas of Janon-Monod)
+sobolGP                 Kriging-based sensitivity analysis
+sobolMultOut            Monte Carlo Estimation of Aggregated Sobol'
+                        Indices for multiple and functional outputs
+sobolSalt               Monte Carlo Estimation of Sobol' Indices based
+                        on Saltelli schemes
+sobolSmthSpl            Estimation of Sobol' First Order Indices with
+                        B-spline Smoothing
+sobolTIIlo              Liu and Owen Estimation of Total Interaction
+                        Indices
+sobolTIIpf              Pick-freeze Estimation of Total Interaction
+                        Indices
+soboljansen             Monte Carlo Estimation of Sobol' Indices
+                        (improved formulas of Jansen (1999) and
+                        Saltelli et al. (2010))
+sobolmara               Monte Carlo Estimation of Sobol' Indices via
+                        matrix permutations
+sobolmartinez           Monte Carlo Estimation of Sobol' Indices
+                        (formulas of Martinez (2011))
+sobolowen               Monte Carlo Estimation of Sobol' Indices
+                        (improved formulas of Owen (2013)
+sobolrank               First-order sensitivity indices estimation via
+                        ranking
+sobolrec                Recursive estimation of Sobol' indices
+sobolrep                Sobol' indices estimation based on replicated
+                        orthogonal arrays
+sobolroalhs             Sobol' Indices Estimation Using Replicated
+                        OA-based LHS
+sobolroauc              Sobol' Indices estimation under inequality
+                        constraints
+sobolshap_knn           Flexible sensitivity analysis via ranking /
+                        nearest neighbours
+soboltouati             Monte Carlo Estimation of Sobol' Indices
+                        (formulas of Martinez (2011) and Touati (2016))
+squaredIntEstim         Squared integral estimate
+src                     Standardized Regression Coefficients
+support                 Support index functions: Measuring the effect
+                        of input variables over their support
+template.replace        Replace Values in a Template Text
+testHSIC                Tests of Independence based on the
+                        Hilbert-Schmidt Independence Criterion (HSIC)
+testmodels              Test Models for Sensitivity Analysis
+truncateddistrib        Truncated distributions
+weightTSA               Weight-function to transform an output variable
+                        in order to perform Target Sensitivity Analysis
+                        (TSA)

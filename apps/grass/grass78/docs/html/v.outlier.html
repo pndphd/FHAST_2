@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.outlier - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.outlier</b></em>  - Removes outliers from vector point data.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#extract">extract</a>, <a href="keywords.html#select">select</a>, <a href="keywords.html#filter">filter</a>, <a href="keywords.html#LIDAR">LIDAR</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.outlier</b><br></div>
+<b>v.outlier --help</b><br>
+<div id="synopsis"><b>v.outlier</b> [-<b>e</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>outlier</b>=<em>name</em>  [<b>qgis</b>=<em>name</em>]   [<b>ew_step</b>=<em>float</em>]   [<b>ns_step</b>=<em>float</em>]   [<b>lambda</b>=<em>float</em>]   [<b>threshold</b>=<em>float</em>]   [<b>filter</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Estimate point density and distance</dd>
+<dd>Estimate point density and distance for the input vector points within the current region extends and quit</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>outlier</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output outlier vector map</dd>
+
+<dt><b>qgis</b>=<em>name</em></dt>
+<dd>Name for vector map for visualization in QGIS</dd>
+
+<dt><b>ew_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the east-west direction</dd>
+<dd>Default: 10 * east-west resolution</dd>
+
+<dt><b>ns_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the north-south direction</dd>
+<dd>Default: 10 * north-south resolution</dd>
+
+<dt><b>lambda</b>=<em>float</em></dt>
+<dd>Tykhonov regularization weight</dd>
+<dd>Default: <em>0.1</em></dd>
+
+<dt><b>threshold</b>=<em>float</em></dt>
+<dd>Threshold for the outliers</dd>
+<dd>Default: <em>50</em></dd>
+
+<dt><b>filter</b>=<em>string</em></dt>
+<dd>Filtering option</dd>
+<dd>Options: <em>both, positive, negative</em></dd>
+<dd>Default: <em>both</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-outlier-removal" class="toc">Basic outlier removal</a></li>
+        <li class="toc"><a href="#basic-outlier-removal" class="toc">Basic outlier removal</a></li>
+        <li class="toc"><a href="#north-carolina-location-example" class="toc">North carolina location example</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.outlier</em> removes outliers in a 3D point cloud. By default, the outlier
+identification is done by a bicubic spline interpolation of the
+observation with a high regularization parameter and a low resolution
+in south-north and east-west directions. Those points that differ in
+an absolute value more than the given threshold from a fixed value,
+reckoned from its surroundings by the interpolation, are considered as
+an outlier, and hence are removed.
+
+<p>
+The <em>filter</em> option specifies if all outliers will be removed
+(default), or only positive or only negative outliers. Filtering out
+only positive outliers can be useful to filter out vegetation returns
+(e.g. from forest canopies) from LIDAR point clouds, in order to
+extract Digital Terrain Models. Filtering out only negative outliers
+can be useful to estimate vegetation height.
+
+<p>
+There is a flag to create a vector that can be visualizated by
+qgis. That means that topology is build and the z coordinate is
+considered as a category.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="basic-outlier-removal">Basic outlier removal</a></h3>
+
+<div class="code"><pre>
+v.outlier input=vector_map output=vector_output outlier=vector_outlier thres_O=25
+</pre></div>
+
+In this case, a basic outlier removal is done with a threshold of 25 m.
+
+<h3><a name="basic-outlier-removal">Basic outlier removal</a></h3>
+
+<div class="code"><pre>
+v.outlier input=vector_map output=vector_output outlier=vector_outlier qgis=vector_qgis
+</pre></div>
+
+Now, the outlier removal uses the default threshold and there is also
+an output vector available for visualizaton in QGIS
+ (<a href="http://www.qgis.org">http://www.qgis.org</a>).
+
+<h3><a name="north-carolina-location-example">North carolina location example</a></h3>
+
+<div class="code"><pre>
+v.outlier input=elev_lid792_bepts output=elev_lid792_bepts_nooutliers \
+  outlier=elev_lid792_bepts_outliers ew_step=5 ns_step=5 thres_o=0.1
+</pre></div>
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+This module is designed to work with LIDAR data, so not topology is
+built but in the QGIS output.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="v.surf.bspline.html">v.surf.bspline</a></em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Original version of the program in GRASS 5.4:
+<br>
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni and Mirko Reguzzoni
+<br><br>
+Updates for GRASS 6:
+<br>
+Roberto Antolin
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.outlier">v.outlier source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.outlier">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

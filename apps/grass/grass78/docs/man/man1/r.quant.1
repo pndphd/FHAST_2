@@ -1,0 +1,85 @@
+.TH r.quant 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.quant\fR\fR  \- Produces the quantization file for a floating\-point map.
+.SH KEYWORDS
+raster, statistics, quantization
+.SH SYNOPSIS
+\fBr.quant\fR
+.br
+\fBr.quant \-\-help\fR
+.br
+\fBr.quant\fR [\-\fBtr\fR] \fBinput\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBrules\fR=\fIname\fR]   [\fBbasemap\fR=\fIstring\fR]   [\fBfprange\fR=\fIdmin,dmax\fR]   [\fBrange\fR=\fImin,max\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Truncate floating point data
+.IP "\fB\-r\fR" 4m
+.br
+Round floating point data
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Raster map(s) to be quantized
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Path to rules file (\(dq\-\(dq to read from stdin)
+.IP "\fBbasemap\fR=\fIstring\fR" 4m
+.br
+Base map to take quant rules from
+.IP "\fBfprange\fR=\fIdmin,dmax\fR" 4m
+.br
+Floating point range: dmin,dmax
+.IP "\fBrange\fR=\fImin,max\fR" 4m
+.br
+Integer range: min,max
+.SH DESCRIPTION
+\fIr.quant\fR produces the quantization file for a floating\-point map.
+.PP
+The \fImap\fR parameter defines the map for which the rules are to be
+created. If more than one map is specified, then this implies that the
+floating\-point range is the miniumum and maximum of all the maps together,
+unless either basemap=map or fprange=min,max is specified.
+.SS  Quant rules
+The quant rules have to be entered interactively.
+.PP
+If rules is specified, the input has the form:
+.PP
+value1:value2:cat1:[cat2]
+.PP
+where value1 and value2 are floating point values and cat1 cand cat2 are
+integers. If cat2 is missing, it is taken to be equal to cat1. All values
+can be \(dq*\(dq which means infinity.
+.SH NOTE
+It is an error for both basemap and fprange to be specified.
+.SH SEE ALSO
+\fIr.support\fR,
+\fIr.null\fR
+.SH AUTHOR
+Michael Shapiro, Olga Waupotitsch,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.quant source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

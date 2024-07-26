@@ -1,0 +1,34 @@
+Package: flexclust
+Version: 1.4-1
+Date: 2022-04-08
+Authors@R: c(person(given="Friedrich", family="Leisch",
+                    email="Friedrich.Leisch@R-project.org",
+		    role=c("aut", "cre"),
+		    comment = c(ORCID = "0000-0001-7278-1983")),
+	     person(given="Evgenia", family="Dimitriadou", role="ctb"),
+	     person("Bettina", "Gruen", role = "ctb",
+                    comment = c(ORCID = "0000-0001-7265-4773")))
+Title: Flexible Cluster Algorithms
+Depends: R (>= 2.14.0), graphics, grid, lattice, modeltools
+Imports: methods, parallel, stats, stats4, class
+Suggests: ellipse, clue, cluster, seriation, skmeans
+Description: The main function kcca implements a general framework for
+  k-centroids cluster analysis supporting arbitrary distance measures
+  and centroid computation. Further cluster methods include hard
+  competitive learning, neural gas, and QT clustering. There are
+  numerous visualization methods for cluster results (neighborhood
+  graphs, convex cluster hulls, barcharts of centroids, ...), and
+  bootstrap methods for the analysis of cluster stability.
+License: GPL-2
+LazyLoad: yes
+NeedsCompilation: yes
+Packaged: 2022-04-08 10:29:28 UTC; gruen
+Author: Friedrich Leisch [aut, cre] (<https://orcid.org/0000-0001-7278-1983>),
+  Evgenia Dimitriadou [ctb],
+  Bettina Gruen [ctb] (<https://orcid.org/0000-0001-7265-4773>)
+Maintainer: Friedrich Leisch <Friedrich.Leisch@R-project.org>
+Repository: CRAN
+Date/Publication: 2022-04-08 11:30:46 UTC
+Built: R 4.2.2; x86_64-w64-mingw32; 2023-02-21 02:49:21 UTC; windows
+ExperimentalWindowsRuntime: ucrt
+Archs: x64

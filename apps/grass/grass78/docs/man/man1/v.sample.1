@@ -1,0 +1,151 @@
+.TH v.sample 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.sample\fR\fR  \- Samples a raster map at vector point locations.
+.SH KEYWORDS
+vector, sampling, raster
+.SH SYNOPSIS
+\fBv.sample\fR
+.br
+\fBv.sample \-\-help\fR
+.br
+\fBv.sample\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBraster\fR=\fIname\fR  [\fBmethod\fR=\fIstring\fR]   [\fBzscale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector point map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to use for comparison
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map to store differences
+.IP "\fBraster\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be sampled
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Sampling interpolation method
+.br
+Options: \fInearest, bilinear, bicubic\fR
+.br
+Default: \fInearest\fR
+.br
+\fBnearest\fR: Nearest\-neighbor interpolation
+.br
+\fBbilinear\fR: Bilinear interpolation
+.br
+\fBbicubic\fR: Bicubic interpolation
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scaling factor for values read from raster map
+.br
+Sampled values will be multiplied by this factor
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fIv.sample\fR samples a GRASS raster map at the point
+locations in the input file by either cubic convolution
+interpolation, bilinear interpolation, or nearest neighbor
+sampling (default).
+.PP
+This program may be especially useful when sampling for
+cross validation of interpolations whose output is a raster
+map.
+.SH NOTES
+The output points will have the easting and northing of the input points.
+The input category value is used. The input attribute, raster value
+and difference is written to output.
+.PP
+When NULL values are encountered for a cell, zero value is used
+instead.  In these cases, more acurrate results may be obtained
+by using the default nearest neighbor comparisons.
+.PP
+This program may not work properly with lat\-long data when
+the \fB\-bc\fR flags are used.
+.PP
+When interpolation is done (i.e., the \fB\-bc\fR flags are
+used), values are assumed to be located at the centroid of
+grid cells.  Therefore, current resolution settings are
+important.
+.SH EXAMPLE
+Comparison of \(dqelev_ned_30m\(dq and \(dqelev_srtm_30m\(dq North Carolina
+sample dataset elevation models at random positions:
+.br
+.nf
+\fC
+# set computational region:
+ g.region raster=elev_srtm_30m \-p
+# generate random points:
+ v.random output=random n=100
+# add table with one column:
+ v.db.addtable random col=\(dqelev_srtm30 double precision\(dq
+# transfer elevations at random points into table:
+ v.what.rast map=random rast=elev_srtm_30m col=elev_srtm30
+# verify:
+ v.db.select random
+# perform sampling on other elevation map:
+ v.sample in=random col=elev_srtm30 rast=elev_ned_30m out=elev_samples
+#verify:
+ v.db.select elev_samples
+#univariate statistics of differences between elevation maps:
+ v.univar elev_samples column=diff type=point
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+v.random,
+v.what.rast
+\fR
+\fIImage Sampling Methods\fR \- GRASS Tutorial on \fIs.sample\fR
+(available as
+s.sample\-tutorial.ps.gz)
+.SH AUTHOR
+James Darrell McCauley
+.br
+when he was at:
+Agricultural Engineering
+Purdue University
+.PP
+Updated for GRASS 5.0 by Eric G. Miller
+.br
+Updated for GRASS 5.7 by Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.sample source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

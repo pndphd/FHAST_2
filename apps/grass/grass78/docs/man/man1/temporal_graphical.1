@@ -1,0 +1,152 @@
+.TH temporal_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+Go to temporal introduction | topics
+.PP
+.SS Temporal modules:
+.RS 4n
+.IP \(bu 4n
+\fCt.connect\fR \fCPrints/sets general temporal GIS database connection for current mapset.\fR
+.IP \(bu 4n
+\fCt.create\fR \fCCreates a space time dataset.\fR
+.IP \(bu 4n
+\fCt.info\fR \fCLists information about space time datasets and maps.\fR
+.IP \(bu 4n
+\fCt.list\fR \fCLists space time datasets and maps registered in the temporal database.\fR
+.IP \(bu 4n
+\fCt.merge\fR \fCMerges several space time datasets into a single space time dataset.\fR
+.IP \(bu 4n
+\fCt.rast.accdetect\fR \fCDetects accumulation patterns in temporally accumulated space time raster datasets created by t.rast.accumulate.\fR
+.IP \(bu 4n
+\fCt.rast.accumulate\fR \fCComputes cyclic accumulations of a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.aggregate.ds\fR \fCAggregates data of an existing space time raster dataset using the time intervals of a second space time dataset.\fR
+.IP \(bu 4n
+\fCt.rast.aggregate\fR \fCAggregates temporally the maps of a space time raster dataset by a user defined granularity.\fR
+.IP \(bu 4n
+\fCt.rast.algebra\fR \fCApply temporal and spatial operations on space time raster datasets using temporal raster algebra.\fR
+.IP \(bu 4n
+\fCt.rast.colors\fR \fCCreates/modifies the color table associated with each raster map of the space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.contour\fR \fCProduces a space time vector dataset of specified contours from a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.export\fR \fCExports space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.extract\fR \fCExtracts a subset of a space time raster datasets.\fR
+.IP \(bu 4n
+\fCt.rast.gapfill\fR \fCReplaces gaps in a space time raster dataset with interpolated raster maps.\fR
+.IP \(bu 4n
+\fCt.rast.import\fR \fCImports space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.list\fR \fCLists registered maps of a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.mapcalc\fR \fCPerforms spatio\-temporal mapcalc expressions on temporally sampled maps of space time raster datasets.\fR
+.IP \(bu 4n
+\fCt.rast.neighbors\fR \fCPerforms a neighborhood analysis for each map in a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.out.vtk\fR \fCExports space time raster dataset as VTK time series.\fR
+.IP \(bu 4n
+\fCt.rast.series\fR \fCPerforms different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.to.rast3\fR \fCConverts a space time raster dataset into a 3D raster map.\fR
+.IP \(bu 4n
+\fCt.rast.to.vect\fR \fCConverts a space time raster dataset into a space time vector dataset\fR
+.IP \(bu 4n
+\fCt.rast.univar\fR \fCCalculates univariate statistics from the non\-null cells for each registered raster map of a space time raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast.what\fR \fCSample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts\fR
+.IP \(bu 4n
+\fCt.rast3d.algebra\fR \fCApply temporal and spatial operations on space time 3D raster datasets using temporal 3D raster algebra.\fR
+.IP \(bu 4n
+\fCt.rast3d.extract\fR \fCExtracts a subset of a space time 3D raster dataset.\fR
+.IP \(bu 4n
+\fCt.rast3d.list\fR \fCLists registered maps of a space time raster3d dataset.\fR
+.IP \(bu 4n
+\fCt.rast3d.mapcalc\fR \fCPerforms r3.mapcalc expressions on maps of sampled space time 3D raster datasets.\fR
+.IP \(bu 4n
+\fCt.rast3d.univar\fR \fCCalculates univariate statistics from the non\-null cells for each registered 3D raster map of a space time 3D raster dataset.\fR
+.IP \(bu 4n
+\fCt.register\fR \fCAssigns timestamps and registers raster, vector and raster3d maps in a space time dataset.\fR
+.IP \(bu 4n
+\fCt.remove\fR \fCRemoves space time datasets from temporal database.\fR
+.IP \(bu 4n
+\fCt.rename\fR \fCRenames a space time dataset\fR
+.IP \(bu 4n
+\fCt.sample\fR \fCSamples the input space time dataset(s) with a sample space time dataset and print the result to stdout.\fR
+.IP \(bu 4n
+\fCt.select\fR \fCSelect maps from space time datasets by topological relationships to other space time datasets using temporal algebra.\fR
+.IP \(bu 4n
+\fCt.shift\fR \fCShifts temporally the maps of a space time dataset.\fR
+.IP \(bu 4n
+\fCt.snap\fR \fCSnaps temporally the maps of a space time dataset.\fR
+.IP \(bu 4n
+\fCt.support\fR \fCModifies the metadata of a space time dataset.\fR
+.IP \(bu 4n
+\fCt.topology\fR \fCLists temporal topology of a space time dataset.\fR
+.IP \(bu 4n
+\fCt.unregister\fR \fCUnregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset.\fR
+.IP \(bu 4n
+\fCt.vect.algebra\fR \fCApply temporal and spatial operations on space time vector datasets using temporal vector algebra.\fR
+.IP \(bu 4n
+\fCt.vect.db.select\fR \fCPrints attributes of vector maps registered in a space time vector dataset.\fR
+.IP \(bu 4n
+\fCt.vect.export\fR \fCExports a space time vector dataset as GRASS GIS specific archive file.\fR
+.IP \(bu 4n
+\fCt.vect.extract\fR \fCExtracts a subset of a space time vector dataset.\fR
+.IP \(bu 4n
+\fCt.vect.import\fR \fCImports a space time vector dataset from a GRASS GIS specific archive file.\fR
+.IP \(bu 4n
+\fCt.vect.list\fR \fCLists registered maps of a space time vector dataset.\fR
+.IP \(bu 4n
+\fCt.vect.observe.strds\fR \fCObserves specific locations in a space time raster dataset over a period of time using vector points.\fR
+.IP \(bu 4n
+\fCt.vect.univar\fR \fCCalculates univariate statistics of attributes for each registered vector map of a space time vector dataset\fR
+.IP \(bu 4n
+\fCt.vect.what.strds\fR \fCStores raster map values at spatial and temporal positions of vector points as vector attributes.\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

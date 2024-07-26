@@ -1,0 +1,226 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.grow.distance - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.grow.distance</b></em>  - Generates a raster map containing distances to nearest raster features and/or the value of the nearest non-null cell.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_distance.html">distance</a>, <a href="keywords.html#proximity">proximity</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.grow.distance</b><br></div>
+<b>r.grow.distance --help</b><br>
+<div id="synopsis"><b>r.grow.distance</b> [-<b>mn</b>] <b>input</b>=<em>name</em>  [<b>distance</b>=<em>name</em>]   [<b>value</b>=<em>name</em>]   [<b>metric</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Output distances in meters instead of map units</dd>
+
+<dt><b>-n</b></dt>
+<dd>Calculate distance to nearest NULL cell</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>distance</b>=<em>name</em></dt>
+<dd>Name for distance output raster map</dd>
+
+<dt><b>value</b>=<em>name</em></dt>
+<dd>Name for value output raster map</dd>
+
+<dt><b>metric</b>=<em>string</em></dt>
+<dd>Metric</dd>
+<dd>Options: <em>euclidean, squared, maximum, manhattan, geodesic</em></dd>
+<dd>Default: <em>euclidean</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#distance-from-the-streams-network" class="toc">Distance from the streams network</a></li>
+        <li class="toc"><a href="#distance-from-sea-in-meters-in-latitude-longitude-location" class="toc">Distance from sea in meters in latitude-longitude location</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.grow.distance</em> generates raster maps representing the
+distance to the nearest non-null cell in the input map and/or the
+value of the nearest non-null cell.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The flag <b>-n</b> calculates the respective pixel distances to the
+nearest NULL cell.
+<p>
+The user has the option of specifying five different metrics which
+control the geometry in which grown cells are created, (controlled by
+the <b>metric</b> parameter): <i>Euclidean</i>, <i>Squared</i>,
+<i>Manhattan</i>, <i>Maximum</i>, and <i>Geodesic</i>.
+
+<p>
+The <i>Euclidean distance</i> or <i>Euclidean metric</i> is the "ordinary" distance 
+between two points that one would measure with a ruler, which can be 
+proven by repeated application of the Pythagorean theorem. 
+The formula is given by: 
+
+<div class="code"><pre>
+d(dx,dy) = sqrt(dx^2 + dy^2)
+</pre></div>
+
+Cells grown using this metric would form isolines of distance that are
+circular from a given point, with the distance given by the <b>radius</b>.
+
+<p>
+The <i>Squared</i> metric is the <i>Euclidean</i> distance squared,
+i.e. it simply omits the square-root calculation. This may be faster,
+and is sufficient if only relative values are required.
+
+<p>
+The <i>Manhattan metric</i>, or <i>Taxicab geometry</i>, is a form of geometry in 
+which the usual metric of Euclidean geometry is replaced by a new 
+metric in which the distance between two points is the sum of the (absolute) 
+differences of their coordinates. The name alludes to the grid layout of 
+most streets on the island of Manhattan, which causes the shortest path a 
+car could take between two points in the city to have length equal to the
+points' distance in taxicab geometry.
+The formula is given by:
+
+<div class="code"><pre>
+d(dx,dy) = abs(dx) + abs(dy)
+</pre></div>
+
+where cells grown using this metric would form isolines of distance that are
+rhombus-shaped from a given point. 
+
+<p>
+The <i>Maximum metric</i> is given by the formula
+
+<div class="code"><pre>
+d(dx,dy) = max(abs(dx),abs(dy))
+</pre></div>
+
+where the isolines of distance from a point are squares.
+
+<p>
+The <i>Geodesic metric</i> is calculated as geodesic distance, to 
+be used only in latitude-longitude locations. It is recommended 
+to use it along with the <em>-m</em> flag in order to output 
+distances in meters instead of map units.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="distance-from-the-streams-network">Distance from the streams network</a></h3>
+
+North Carolina sample dataset:
+<div class="code"><pre>
+g.region raster=streams_derived -p
+r.grow.distance input=streams_derived distance=dist_from_streams
+r.colors map=dist_from_streams color=rainbow
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<img src="r_grow_distance.png" border=0><br>
+<i>Euclidean distance from the streams network in meters (map subset)</i>
+</div>
+
+<div align="center" style="margin: 10px">
+<img src="r_grow_distance_zoom.png" border=0><br>
+<i>Euclidean distance from the streams network in meters (detail, numbers shown
+   with d.rast.num)</i>
+</div>
+
+<h3><a name="distance-from-sea-in-meters-in-latitude-longitude-location">Distance from sea in meters in latitude-longitude location</a></h3>
+
+<div class="code"><pre>
+g.region raster=sea -p
+r.grow.distance -m input=sea distance=dist_from_sea_geodetic metric=geodesic
+r.colors map=dist_from_sea_geodetic color=rainbow
+</pre></div>
+
+<p>
+<center>
+<img src="r_grow_distance_sea.png" border=1><br>
+<i>Geodesic distances to sea in meters</i>
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.grow.html">r.grow</a>,
+<a href="r.distance.html">r.distance</a>,
+<a href="r.buffer.html">r.buffer</a>,
+<a href="r.cost.html">r.cost</a>,
+<a href="r.patch.html">r.patch</a>
+</em>
+
+<p>
+<em>
+<a href="http://en.wikipedia.org/wiki/Euclidean_metric">Wikipedia Entry:
+    Euclidean Metric</a><br>
+<a href="http://en.wikipedia.org/wiki/Manhattan_metric">Wikipedia Entry:
+    Manhattan Metric</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.grow.distance">r.grow.distance source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.grow.distance">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

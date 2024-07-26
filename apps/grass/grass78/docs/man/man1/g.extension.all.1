@@ -1,0 +1,82 @@
+.TH g.extension.all 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.extension.all.py\fR\fR  \- Rebuilds or removes all locally installed GRASS Addons extensions.
+.br
+By default only extensions built against different GIS Library are rebuilt.
+.SH KEYWORDS
+general, installation, extensions
+.SH SYNOPSIS
+\fBg.extension.all.py\fR
+.br
+\fBg.extension.all.py \-\-help\fR
+.br
+\fBg.extension.all.py\fR [\-\fBf\fR]  [\fBoperation\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Force operation (required for removal)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoperation\fR=\fIstring\fR" 4m
+.br
+Operation to be performed
+.br
+Options: \fIrebuild, remove\fR
+.br
+Default: \fIrebuild\fR
+.SH DESCRIPTION
+\fIg.extension.rebuild.all\fR reinstalls and updates all locally
+installed GRASS Addons extensions in local GRASS installation. The
+extensions can be installed
+by \fIg.extension\fR. List of
+locally installed extensions can be printed by g.extension
+\-a.
+.SH EXAMPLES
+Rebuild locally installed extensions which were built against
+different GIS Library (see g.version \-r)
+.br
+.nf
+\fC
+g.extension.rebuild.all
+\fR
+.fi
+Force to rebuild all locally installed extensions
+.br
+.nf
+\fC
+g.extension.rebuild.all \-f
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.extension
+\fR
+.PP
+See also GRASS Addons wiki page.
+.SH AUTHOR
+Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: g.extension.all source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.vect.chart - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.vect.chart</b></em>  - Displays charts of vector data in the active frame on the graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>, <a href="keywords.html#chart maps">chart maps</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.vect.chart</b><br></div>
+<b>d.vect.chart --help</b><br>
+<div id="synopsis"><b>d.vect.chart</b> [-<b>cl3</b>] <b>map</b>=<em>name</em>  [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>layer</b>=<em>string</em>]   [<b>chart_type</b>=<em>string</em>]  <b>columns</b>=<em>name</em>[,<i>name</i>,...]  [<b>size_column</b>=<em>name</em>]   [<b>size</b>=<em>integer</em>]   [<b>scale</b>=<em>float</em>]   [<b>outline_color</b>=<em>name</em>]   [<b>colors</b>=<em>name</em>[,<i>name</i>,...]]   [<b>max_ref</b>=<em>float</em>[,<i>float</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Center the bar chart around a data point</dd>
+
+<dt><b>-l</b></dt>
+<dd>Create legend information and send to stdout</dd>
+
+<dt><b>-3</b></dt>
+<dd>Create 3D charts</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area</em></dd>
+<dd>Default: <em>point,line,boundary,centroid</em></dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>chart_type</b>=<em>string</em></dt>
+<dd>Chart type</dd>
+<dd>Options: <em>pie, bar</em></dd>
+<dd>Default: <em>pie</em></dd>
+
+<dt><b>columns</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Attribute columns containing data</dd>
+
+<dt><b>size_column</b>=<em>name</em></dt>
+<dd>Column used for pie chart size</dd>
+
+<dt><b>size</b>=<em>integer</em></dt>
+<dd>Size of chart (diameter for pie, total width for bar)</dd>
+<dd>Default: <em>40</em></dd>
+
+<dt><b>scale</b>=<em>float</em></dt>
+<dd>Scale for size (to get size in pixels)</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>outline_color</b>=<em>name</em></dt>
+<dd>Outline color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>colors</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Colors used to fill charts</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>max_ref</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Maximum value used for bar plot reference</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example-1" class="toc">Example 1</a></li>
+        <li class="toc"><a href="#example-2" class="toc">Example 2</a></li>
+        <li class="toc"><a href="#example-3" class="toc">Example 3</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.vect.chart</em> displays charts for GRASS vector data in the active
+frame on the graphics monitor.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The charts are positioned as follows:
+<ul>
+<li> vector points: on point position,
+<li> vector lines: on line centers,
+<li> vector areas: on area centroids.
+</ul>
+
+Bar charts are placed with their lower edge starting from the y-coordinate
+of the feature being symbolized, and centered with respect to the x-coordinate.
+The <b>-c</b> flag can be used to center the bar chart in both x and y
+directions.
+<p>
+The 'sizecol' parameter is proportionate to the radius.
+<p>
+The optional <b>max_ref</b> parameter accepts a list of values that
+represent the maximum value for each column listed in the values for the
+parameter <b>columns</b>. These values are used to create a framed bar
+plot if <b>chart_type</b> is <em>bar</em> (See Example 2).
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="example-1">Example 1</a></h3>
+
+Pie-charts of monthly winter precipitation (North Carolina sample dataset):
+
+<!-- might be good to add this to example:
+v.voronoi input=precip_30ynormals output=precip_stations_voronoi
+d.vect precip_stations_voronoi type=boundary
+-->
+
+<div class="code"><pre>
+g.region vector=nc_state -p
+d.vect nc_state
+d.vect.chart precip_30ynormals chart_type=pie columns=nov,dec,jan,feb -l
+
+# show pie chart as 3D
+d.erase
+d.vect nc_state
+d.vect.chart precip_30ynormals chart_type=pie columns=nov,dec,jan,feb -l -3
+</pre></div>
+
+<center>
+<img src="d_vect_chart_pie_2d.png" alt="d.vect.chart 2D pie chart"><br>
+2D pie-chart of monthly winter precipitation in North Carolina
+</center>
+<p>
+<center>
+<img src="d_vect_chart_pie_3d.png" alt="d.vect.chart 3D pie chart"><br>
+3D pie-chart of monthly winter precipitation in North Carolina
+</center>
+
+<h3><a name="example-2">Example 2</a></h3>
+
+Bar-chart of different census map values:
+
+<div class="code"><pre>
+d.vect.chart map=vectmap columns=cens51,cens61,cens71,cens81 chart_type=bar
+</pre></div>
+
+<h3><a name="example-3">Example 3</a></h3>
+
+Creation of framed bar charts of an erodibiliy index from the Spearfish
+sample dataset:
+
+<div class="code"><pre>
+g.region raster=erode.index -p
+r.to.vect -s input=erode.index output=erode_index type=area 
+v.extract input=erode_index output=erode_index_ctrds type=centroid 
+d.rast aspect
+d.vect.chart map=erode_index_ctrds chart_type=bar columns=cat \
+             size=10 max_ref=12 scale=0.05 colors=yellow 
+d.vect erode_index_ctrds icon=basic/circle fcol=black col=black size=5
+</pre></div>
+
+<center>
+<img src="d.vect.chart_example.jpg" alt="d.vect.chart example"><br>
+Bar charts of an erodibiliy index (spatial subset)
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.erase.html">d.erase</a>,
+<a href="d.vect.html">d.vect</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>,
+<a href="d.what.vect.html">d.what.vect</a>,
+<a href="d.rast.html">d.rast</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.vect.chart">d.vect.chart source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.vect.chart">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

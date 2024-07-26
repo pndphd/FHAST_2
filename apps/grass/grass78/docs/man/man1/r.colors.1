@@ -1,0 +1,507 @@
+.TH r.colors 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.colors\fR\fR  \- Creates/modifies the color table associated with a raster map.
+.SH KEYWORDS
+raster, color table
+.SH SYNOPSIS
+\fBr.colors\fR
+.br
+\fBr.colors \-\-help\fR
+.br
+\fBr.colors\fR [\-\fBrwldngae\fR]  [\fBmap\fR=\fIname\fR[,\fIname\fR,...]]   [\fBfile\fR=\fIname\fR]   [\fBcolor\fR=\fIstyle\fR]   [\fBraster\fR=\fIname\fR]   [\fBraster_3d\fR=\fIname\fR]   [\fBrules\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Remove existing color table
+.IP "\fB\-w\fR" 4m
+.br
+Only write new color table if it does not already exist
+.IP "\fB\-l\fR" 4m
+.br
+List available rules then exit
+.IP "\fB\-d\fR" 4m
+.br
+List available rules with description then exit
+.br
+If a color rule is given, only this rule is listed
+.IP "\fB\-n\fR" 4m
+.br
+Invert colors
+.IP "\fB\-g\fR" 4m
+.br
+Logarithmic scaling
+.IP "\fB\-a\fR" 4m
+.br
+Logarithmic\-absolute scaling
+.IP "\fB\-e\fR" 4m
+.br
+Histogram equalization
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s)
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with one map name per line
+.br
+Input map names can be defined in an input file in case a large amount of maps must be specified. This option is mutual exclusive to the map option.
+.IP "\fBcolor\fR=\fIstyle\fR" 4m
+.br
+Name of color table
+.br
+Options: \fIaspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave\fR
+.br
+\fB aspect\fR: aspect oriented grey colors [range: map values]
+.br
+\fB aspectcolr\fR: aspect oriented rainbow colors [range: 0 to 360]
+.br
+\fB bcyr\fR: blue through cyan through yellow to red [range: map values]
+.br
+\fB bgyr\fR: blue through green through yellow to red [range: map values]
+.br
+\fB blues\fR: white to blue [range: map values]
+.br
+\fB byg\fR: blue through yellow to green [range: map values]
+.br
+\fB byr\fR: blue through yellow to red [range: map values]
+.br
+\fB celsius\fR: blue to red for degree Celsius temperature [range: \-80 to 80]
+.br
+\fB corine\fR: EU Corine land cover colors [range: 111 to 995]
+.br
+\fB curvature\fR: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]
+.br
+\fB differences\fR: differences oriented colors [range: map values]
+.br
+\fB elevation\fR: maps relative ranges of raster values to elevation color ramp [range: map values]
+.br
+\fB etopo2\fR: colors for ETOPO2 worldwide bathymetry/topography [range: \-11000 to 8850]
+.br
+\fB evi\fR: enhanced vegetative index colors [range: \-1 to 1]
+.br
+\fB fahrenheit\fR: blue to red for Fahrenheit temperature [range: \-112 to 176]
+.br
+\fB forest_cover\fR: percentage of forest cover [range: 0 to 100]
+.br
+\fB gdd\fR: accumulated growing degree days [range: 0 to 6000]
+.br
+\fB grass\fR: GRASS GIS green (perceptually uniform) [range: map values]
+.br
+\fB greens\fR: white to green [range: map values]
+.br
+\fB grey\fR: grey scale [range: map values]
+.br
+\fB grey.eq\fR: histogram\-equalized grey scale [range: map values]
+.br
+\fB grey.log\fR: histogram logarithmic transformed grey scale [range: map values]
+.br
+\fB grey1.0\fR: grey scale for raster values between 0.0\-1.0 [range: 0 to 1]
+.br
+\fB grey255\fR: grey scale for raster values between 0\-255 [range: 0 to 255]
+.br
+\fB gyr\fR: green through yellow to red [range: map values]
+.br
+\fB haxby\fR: relative colors for bathymetry or topography [range: map values]
+.br
+\fB inferno\fR: perceptually uniform sequential color table inferno [range: map values]
+.br
+\fB kelvin\fR: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]
+.br
+\fB magma\fR: perceptually uniform sequential color table magma [range: map values]
+.br
+\fB ndvi\fR: Normalized Difference Vegetation Index colors [range: \-1 to 1]
+.br
+\fB ndwi\fR: Normalized Difference Water Index colors [range: \-200 to 200]
+.br
+\fB nlcd\fR: US National Land Cover Dataset colors [range: 0 to 95]
+.br
+\fB oranges\fR: white to orange [range: map values]
+.br
+\fB plasma\fR: perceptually uniform sequential color table plasma [range: map values]
+.br
+\fB population\fR: color table covering human population classification breaks [range: 0 to 2e+009]
+.br
+\fB population_dens\fR: color table covering human population density classification breaks [range: 0 to 1e+009]
+.br
+\fB precipitation\fR: precipitation color table (0..2000mm) [range: 0 to 7000]
+.br
+\fB precipitation_daily\fR: precipitation color table (0..1000mm) [range: 0 to 10000]
+.br
+\fB precipitation_monthly\fR: precipitation color table (0..1000mm) [range: 0 to 1000]
+.br
+\fB rainbow\fR: rainbow color table [range: map values]
+.br
+\fB ramp\fR: color ramp [range: map values]
+.br
+\fB random\fR: random color table [range: map values]
+.br
+\fB reds\fR: white to red [range: map values]
+.br
+\fB roygbiv\fR:  [range: map values]
+.br
+\fB rstcurv\fR: terrain curvature (from r.resamp.rst) [range: map values]
+.br
+\fB ryb\fR: red through yellow to blue [range: map values]
+.br
+\fB ryg\fR: red through yellow to green [range: map values]
+.br
+\fB sepia\fR: yellowish\-brown through to white [range: map values]
+.br
+\fB slope\fR: r.slope.aspect\-type slope colors for raster values 0\-90 [range: 0 to 90]
+.br
+\fB soilmoisture\fR: soilmoisture color table (0.0\-1.0) [range: 0 to 1]
+.br
+\fB srtm\fR: color palette for Shuttle Radar Topography Mission elevation [range: \-11000 to 8850]
+.br
+\fB srtm_plus\fR: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: \-11000 to 8850]
+.br
+\fB terrain\fR: global elevation color table covering \-11000 to +8850m [range: \-11000 to 8850]
+.br
+\fB viridis\fR: perceptually uniform sequential color table viridis [range: map values]
+.br
+\fB water\fR: water depth [range: map values]
+.br
+\fB wave\fR: color wave [range: map values]
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Raster map from which to copy color table
+.IP "\fBraster_3d\fR=\fIname\fR" 4m
+.br
+3D raster map from which to copy color table
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Path to rules file
+.br
+\(dq\-\(dq to read rules from stdin
+.SH DESCRIPTION
+\fIr.colors\fR allows the user to create and/or modify the color
+table for a raster map or several raster maps at once.
+The raster maps (specified on the command line
+by \fBmap\fR or as \fBfile\fR using an input file with one map name per line)
+must exist in the user\(cqs current mapset search path.
+.PP
+The \fBraster\fR option allows user to specify a raster map \fIname\fR
+from which to copy the color map.
+.PP
+The \fBraster_3d\fR option allows user to specify a 3D raster
+map \fIname\fR from which to copy the color map.
+.PP
+The \fB\-e\fR flag equalizes the original raster\(cqs color table. It can
+preclude the need for \fIgrey.eq\fR rule, when used as
+\fB\-e color=\fR\fIgrey\fR. Note however, that this will not yield
+a color table identical to \fIcolor=grey.eq\fR,
+because \fIgrey.eq\fR scales the fraction by 256 to get a grey
+level, while \fB\-e\fR uses it to interpolate the original color
+table. If the original color table is a 0\-255 grey scale, \fB\-e\fR
+is effectively scaling the fraction by 255. Different algorithms are
+used. \fB\-e\fR is designed to work with any color table, both the
+floating point and the integer raster maps.
+.PP
+The \fB\-g\fR flag divides the raster\(cqs grey value range into 100
+logarithmically equal steps (where \(dqstep\(dq is a rule with the
+same grey level for the start and end points). It can preclude the
+need for \fIgrey.log\fR rule, when used as \fB\-g
+color=\fR\fIgrey\fR. Note however, that this will not yield a
+color table identical to \fIcolor=grey.log\fR. Different algorithms
+are used. Unlike \fBcolor=\fR\fIgrey.log\fR, \fB\-g\fR is designed
+to work with both floating point and integer rasters, without
+performance issues with large datasets, of any original color
+table. Logarithmic scaling doesn\(cqt work on negative values. In the
+case when the value range includes zero, there\(cqs no realistic
+solution.
+.PP
+The \fB\-e\fR and \fB\-g\fR flags are not mutually exclusive.
+.PP
+If the user specifies the \fB\-w\fR flag, the current color table file for
+the input map will not be overwritten. This means that the color table is
+created only if the \fImap\fR does not already have a color table. If this
+option is not specified, the color table will be created if one does not
+exist, or modified if it does.
+.PP
+.PP
+Color table types \fIaspect, grey, grey.eq\fR (histogram\-equalized
+grey scale), \fIbyg\fR (blue\-yellow\-green), \fIbyr\fR
+(blue\-yellow\-red), \fIgyr\fR (green\-yellow\-red), \fIrainbow, ramp,
+ryg\fR (red\-yellow\-green), \fIrandom\fR, and \fIwave\fR are
+pre\-defined color tables that \fIr.colors\fR knows how to create
+without any further input.
+.PP
+In case several input raster maps are provided the range (min, max) of all maps
+will be used for color table creation. Hence the created color table will span from
+the smallest minimum to the largest maximum value of all input raster maps and
+will be applied to all input raster maps.
+.PP
+In general, tables which associate colors with percentages (aspect, bcyr, byg,
+byr, elevation, grey, gyr, rainbow, ramp, ryb, ryg and wave) can be applied to
+any data, while those which use absolute values (aspectcolr, curvature, etopo2,
+evi, ndvi, population, slope, srtm, and terrain) only make sense for data with
+certain ranges.
+One can get a rough idea of the applicability of a colour table by reading the
+corresponding rules file ($GISBASE/etc/colors/<name>).
+For example the \fIslope\fR rule is defined as:
+.br
+.nf
+\fC
+0  255:255:255
+2  255:255:0
+5  0:255:0
+10 0:255 255
+15 0:0:255
+30 255:0:255
+50 255:0:0
+90 0:0:0
+\fR
+.fi
+.PP
+This is designed for the slope map generated
+by \fIr.slope.aspect\fR, where the
+value is a slope angle between 0 and 90 degrees.
+.PP
+Similarly, the \fIaspectcolr\fR rule:
+.br
+.nf
+\fC
+0 white
+1 yellow
+90 green
+180 cyan
+270 red
+360 yellow
+\fR
+.fi
+.PP
+is designed for the aspect maps produced
+by \fIr.slope.aspect\fR, where the
+value is a heading between 0 and 360 degrees.
+.PP
+The \fBrules\fR color table type will cause \fIr.colors\fR to read
+color table specifications from standard input (stdin) and will build
+the color table accordingly.
+.PP
+Using color table type \fBrules\fR, there are two ways to
+build a color table:  by category values and by
+\(dqpercent\(dq values.
+.PP
+To build a color table by category values\(cq indices, the user should
+determine the range of category values in the raster map with which
+the color table will be used. Specific category values will then be
+associated with specific colors. Note that a color does not have to be
+assigned for every valid category value because \fIr.colors\fR will
+interpolate a color ramp to fill in where color specification rules
+have been left out. The format of such a specification is as follows:
+.br
+.nf
+\fC
+category_value color_name
+category_value color_name
+\&.. ..
+\&.. ..
+category_value color_name
+end
+\fR
+.fi
+.PP
+Each category value must be valid for the raster map, category values
+must be in ascending order and only use standard GRASS color names
+(aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta,
+orange, purple, red, violet, white, yellow).
+.PP
+Colors can also be specified by color numbers each in the range
+0\-255. The format of a category value color table specification using
+color numbers instead of color names is as follows:
+.br
+.nf
+\fC
+category_value red_number:green_number:blue_number
+category_value red_number:green_number:blue_number
+\&.. .. .. ..
+\&.. .. .. ..
+category_value red_number:green_number:blue_number
+end
+\fR
+.fi
+.PP
+Specifying a color table by \(dqpercent\(dq values allows one to
+treat a color table as if it were numbered from 0 to 100. The format
+of a \(dqpercent\(dq value color table specification is the same
+as for a category value color specification, except that the category
+values are replaced by \(dqpercent\(dq values, each from 0\-100, in
+ascending order. The format is as follows:
+.br
+.nf
+\fC
+percent_value% color_name
+percent_value% color_name
+\&.. ..
+\&.. ..
+percent_value% color_name
+end
+\fR
+.fi
+.PP
+Using \(dqpercent\(dq value color table specification rules,
+colors can also be specified by color numbers each in the range
+0\-255. The format of a percent value color table specification using
+color numbers instead of color names is as follows:
+.br
+.nf
+\fC
+percent_value% red_number:green_number:blue_number
+percent_value% red_number:green_number:blue_number
+\&.. .. .. ..
+\&.. .. .. ..
+percent_value% red_number:green_number:blue_number
+end
+\fR
+.fi
+.PP
+Note that you can also mix these two methods of color
+table specification; for example:
+.br
+.nf
+\fC
+0 black
+10% yellow
+78 blue
+100% 0:255:230
+end
+\fR
+.fi
+.PP
+To set the NULL (no data) color, use the \(dqnv\(dq (null values) parameter:
+.br
+.nf
+\fC
+0 black
+10% yellow
+nv white
+end
+\fR
+.fi
+.PP
+To set the color to used for undefined values (beyond the range of the
+color rules) use the \(dqdefault\(dq parameter:
+.br
+.nf
+\fC
+0 red
+1 blue
+default grey
+end
+\fR
+.fi
+.SH NOTES
+All color tables are stored in $GISBASE/etc/colors/. Further
+user\-defined color tables can also be stored in this directory for
+access from the \fIcolor\fR parameter or in a user defined directory.
+See also \fIr.colors.out\fR for printing color tables easily to the
+terminal.
+.PP
+The color table assigned to a raster map is stored in
+$GISDBASE/location/mapset/colr/.
+.SH EXAMPLES
+The below example shows how you can specify colors for a three
+category map, assigning red to category 1, green to category 2, and
+blue to category 3. Start by using a text editor to create the
+following rules specification file (save it with the
+name \fIrules.file\fR):
+.br
+.nf
+\fC
+1 red
+2 green
+3 blue
+end
+\fR
+.fi
+.PP
+The color table can then by assigned to map \fIthreecats\fR by the
+following GRASS commands (two ways are available):
+.br
+.nf
+\fC
+# read input from stdin
+cat rules.file | r.colors map=threecats rules=\-
+# read directly from file
+r.colors map=threecats rules=rules.file
+\fR
+.fi
+.PP
+To create a natural looking lookup table (LUT) for true map layer
+\fIelevation\fR, use the following rules specification file. It will
+assign light green shades to the lower elevations (first 20% of the
+LUT), and then darker greens (next 15%, and next 20%) and light browns
+(next 20%) for middle elevations, and darker browns (next 15%) for
+higher elevations, and finally yellow for the highest peaks (last 10%
+of LUT).
+.br
+.nf
+\fC
+0% 0:230:0
+20% 0:160:0
+35% 50:130:0
+55% 120:100:30
+75% 120:130:40
+90% 170:160:50
+100% 255:255:100
+\fR
+.fi
+.PP
+To invert the current rules:
+.br
+.nf
+\fC
+r.colors map=current_raster \-n rast=current_raster
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.colortable,
+d.histogram,
+d.legend,
+r.colors.out
+r.colors.stddev,
+r.support,
+r.univar,
+v.colors,
+v.colors.out,
+r3.colors,
+r3.colors.out
+\fR
+.PP
+See also wiki
+page Color
+tables (from GRASS User Wiki)
+.PP
+ColorBrewer is an online tool designed to
+help people select good color schemes for maps and other graphics.
+.SH AUTHORS
+Michael Shapiro and David Johnson
+.br
+Support for 3D rasters by Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r.colors source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

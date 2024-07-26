@@ -1,0 +1,376 @@
+.TH v.out.postgis 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.postgis\fR\fR  \- Exports a vector map layer to PostGIS feature table.
+.SH KEYWORDS
+vector, export, output, PostGIS, simple features, topology, 3D
+.SH SYNOPSIS
+\fBv.out.postgis\fR
+.br
+\fBv.out.postgis \-\-help\fR
+.br
+\fBv.out.postgis\fR [\-\fBtl2\fR] \fBinput\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIstring\fR  [\fBoutput_layer\fR=\fIname\fR]   [\fBoutput_link\fR=\fIname\fR]   [\fBoptions\fR=\fIkey=value\fR[,\fIkey=value\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Do not export attribute table
+.IP "\fB\-l\fR" 4m
+.br
+Export PostGIS topology instead of simple features
+.IP "\fB\-2\fR" 4m
+.br
+Force 2D output even if input is 3D
+.br
+Useful if input is 3D but all z coordinates are identical
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel, auto\fR
+.br
+Default: \fIauto\fR
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Default: \fI1\fR
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name for output PostGIS datasource
+.br
+Starts with \(cqPG\(cq prefix, eg. \(cqPG:dbname=grass\(cq
+.IP "\fBoutput_layer\fR=\fIname\fR" 4m
+.br
+Name for output PostGIS layer
+.br
+If not specified, input name is used
+.IP "\fBoutput_link\fR=\fIname\fR" 4m
+.br
+Name for output vector map defined as a link to the PostGIS feature table
+.br
+If not specified, the vector link is not created. The link can be also manually created by \(cqv.external\(cq module.
+.IP "\fBoptions\fR=\fIkey=value[,\fIkey=value\fR,...]\fR" 4m
+.br
+Creation options
+.br
+Examples:
+.br
+        \(cqFID=cat\(cq: define feature id column \(cqcat\(cq
+.br
+        \(cqGEOMETRY_NAME=wkb_geometry\(cq: define geometry column \(cqwkb_geometry\(cq
+.br
+        \(cqSPATIAL_INDEX=NO\(cq: do not create spatial index on geometry column
+.SH DESCRIPTION
+\fIv.out.postgis\fR exports an existing GRASS vector map layer to
+PostGIS feature table. Features without category are skipped.
+.PP
+By default GRASS GIS topological features are converted into simple
+features
+(see OGC Simple
+Feature Access specification for details). Flag \fB\-l\fR allows
+to export vector features as topological elements stored
+in PostGIS
+Topology schema. Note that topological export requires PostGIS
+version 2 or later.
+.PP
+Additional creation options can be defined by \fBoptions\fR parameter:
+.RS 4n
+.IP \(bu 4n
+FID=<column> \- name of column which will be used as
+primary key (feature id), default: fid
+.IP \(bu 4n
+GEOMETRY_NAME=<column> name of column which will
+be used for storing geometry data in feature table, default: geom
+.IP \(bu 4n
+SPATIAL_INDEX=YES|NO \- enable/disable creating spatial
+index on geometry column, default: YES
+.IP \(bu 4n
+PRIMARY_KEY=YES|NO \- enable/disable adding primary key
+on FID column, default: YES
+.IP \(bu 4n
+SRID=<value> \- spatial reference identifier,
+default: not defined
+.RE
+PostGIS Topology related options (relevant only for \fB\-l\fR flag):
+.RS 4n
+.IP \(bu 4n
+TOPOSCHEMA_NAME=<schema name> \- name of PostGIS
+Topology schema, default: topo_<input>
+.IP \(bu 4n
+TOPOGEOM_NAME=<column> \- name of column which
+will be used for storing topogeometry data in feature table,
+default: topo
+.IP \(bu 4n
+TOPO_TOLERANCE=<value> \- tolerance for PostGIS
+Topology schema,
+see CreateTopology
+function for defails, default: 0
+.IP \(bu 4n
+TOPO_GEO_ONLY=YES|NO \- store in PostGIS Topology schema
+only data relevant to Topo\-Geo data model,
+default: NO
+.RE
+.PP
+Creation \fBoptions\fR are comma\-separated pairs
+(key=value), the options are case\-insensitive. Note
+that \fBoptions\fR defined
+by \fIv.external.out\fR are
+ignored by \fIv.out.postgis\fR.
+.PP
+\fIv.out.postgis\fR optionally also creates a new vector map in the
+current mapset if \fBoutput_link\fR is defined.
+.SH NOTES
+By default \fIv.out.postgis\fR exports vector data as \fIsimple
+features\fR, ie. boundaries and centroids (forming topological
+areas) become polygons, isles become holes. Geometry of simple feature
+elements is stored in PostGIS feature table in the column named
+\(dqgeom\(dq. Name of the geometry column can be changed
+by \fBoptions=\fRGEOMETRY_NAME=<column>. Note that for
+exporting vector features as simple features can be alternatively
+used PostgreSQL driver
+from OGR library
+through \fIv.out.ogr\fR module.
+.PP
+Also note that it\(cqs allowed to store in the feature table only
+features of the same type, ie. mixing of points and lines is not
+currently possible. The feature type is determined for output feature
+table from the first vector feature accessing data sequentially
+(\fBtype=auto\fR). Vector features of other types are during export
+skipped. User can choose preferable feature type by \fBtype\fR
+parameter. Only single type is currently allowed (see TODO section for
+details).
+.PP
+\fIv.out.postgis\fR currently supports only three basic output
+simple feature types: Points, Linestrings and Polygons. Also 3D
+features of the same type are supported, eg. 3D points are exported
+as PointZ simple feature. Faces are exported as 3D
+polygons. 3D features are written to the output automatically if input
+vector map is 3D. If \fB\-2\fR flag is given then the output is always
+2D (z\-coordinate is silently ignored for 3D input vector maps).
+.PP
+Multigeometries are not currently supported. Features with the same
+category are exported as multiple singe features.
+.PP
+\fIv.out.postgis\fR also allows exporting vector features as
+\fItopological elements\fR
+in PostGIS
+Topology schema. PostGIS Topology extension uses three tables to
+store basic topological elements which forms topological objects like
+areas or isles in GRASS terminology. \fINodes\fR (0\-dimensional
+topological elements) are stored in \(dqnode\(dq
+table, \fIedges\fR (1\-dimensional elements) in \(dqedge\(dq
+table and \fIfaces\fR (2\-dimensional elements) in \(dqface\(dq
+table.
+.RS 4n
+.IP \(bu 4n
+GRASS nodes are stored in \fInode\fR table
+.IP \(bu 4n
+GRASS points are stored in \fInode\fR table as regular nodes
+.IP \(bu 4n
+GRASS centroids are stored in \fInode\fR table as regular nodes
+(\(dqcontaining_face\(dq refers to related area)
+.IP \(bu 4n
+GRASS lines are stored in \fIedge\fR table
+.IP \(bu 4n
+GRASS boundaries are stored in \fIedge\fR table
+.IP \(bu 4n
+GRASS areas are stored in \fIface\fR table
+.RE
+Tables \fInode\fR, \fIedge\fR and \fIface\fR are stored in given
+topological schema. By default \fIv.out.postgis\fR defines its name
+as topo_<input>. Alternatively, the name for topology
+schema can be defined
+by \fBoptions=\fRTOPOSCHEMA_NAME=<name>.
+.SH EXAMPLES
+.SS Export Simple Features
+Export vector map \(dqurbanarea\(dq as feature table \(dqurbanarea\(dq
+located in database \(dqgrass\(dq, schema \(dqpublic\(dq. Note that this
+database schema is automatically used when not defined by the user.
+.br
+.nf
+\fC
+v.out.postgis input=urbanarea output=\(dqPG:dbname=grass\(dq
+\fR
+.fi
+GRASS areas are converted into polygons, isles into holes. We can
+check the number or created polygons by simple SQL query below.
+.br
+.nf
+\fC
+db.select driver=pg database=grass \(rs
+ sql=\(dqSELECT ST_GeometryType(geom) as geom_type, count(*) from urbanarea group by geom_type\(dq
+geom_type|count
+ST_Polygon|657
+\fR
+.fi
+\fINote:\fR same procedure can be done
+by \fIv.out.ogr\fR module, eg.
+.br
+.nf
+\fC
+v.out.ogr input=urbanarea output=\(dqPG:dbname=grass\(dq format=PostgreSQL
+\fR
+.fi
+In this case GRASS vector data are exported to PostGIS database using
+OGR library, namely using PostgreSQL driver. Contrary to
+the \fIv.out.ogr\fR
+module, \fIv.out.postgis\fR is using directly PostGIS data provider
+which is part of GRASS vector engine. Beside
+that, \fIv.out.postgis\fR is optimized for PostGIS export including
+topological access to the data.
+.SS Export data into specific database schema
+Database schema for storing exported data can be defined
+by \fBoutput_layer\fR as
+<schema_name>.<table_name>. If the specified
+schema doesn\(cqt exist in the database, then it\(cqs automatically created.
+.PP
+Export vector map \(dqbridges\(dq as feature table in database
+schema \(dqgrassout\(dq.
+.br
+.nf
+\fC
+v.out.postgis input=bridges output=\(dqPG:dbname=grass\(dq output_layer=grassout.bridges
+\fR
+.fi
+.SS Export data with creation options
+Example below demonstrates how to define name for geometry column and
+disable building spatial index. Spatial reference system is defined
+by srid identifier which corresponds in this case with EPSG
+3358 (North Carolina dataset).
+.br
+.nf
+\fC
+v.out.postgis input=roadsmajor output=\(dqPG:dbname=grass\(dq options=\(dqGEOMETRY_NAME=wkb_geometry,SPATIAL_INDEX=NO,SRID=3358\(dq
+\fR
+.fi
+.SS Link exported data
+Exported data can be linked as vector map created in the current
+mapset by specifying \fBoutput_link\fR parameter. In the example below
+vector map \(dqbusstopsall\(dq from PERMANENT mapset is exported
+into \(dqgrass\(dq PostGIS database. \fIv.out.postgis\fR after
+successful export also creates in the current mapset GRASS vector map
+as a link to the PostGIS feature table.
+.br
+.nf
+\fC
+v.out.postgis input=busstopsall@PERMANENT output=\(dqPG:dbname=grass\(dq output_link=busstopsall_pg
+\fR
+.fi
+Created link can be checked
+by \fIv.info\fR:
+.br
+.nf
+\fC
+ v.info busstopsall_pg
+\&...
+ |\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+ | Map format:      PostGIS (PostgreSQL)                                      |
+ | DB table:        public.busstopsall                                        |
+ | DB name:         grass                                                     |
+ | Geometry column: geom                                                      |
+ | Feature type:    point                                                     |
+ | Topology:        pseudo (simple features)                                  |
+ |\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+\&...
+\fR
+.fi
+.SS Export data without attributes
+\fIv.out.postgis\fR allows ignoring attributes when exporting
+vector features by specifying \fB\-t\fR flag.
+Command below exports vector features without attributes. The feature
+will contain only two columns, the fid and geometry column.
+.br
+.nf
+\fC
+v.out.postgis \-t input=railroads output=\(dqPG:dbname=grass\(dq
+\fR
+.fi
+.SS Export topological data
+By default \fIv.out.postgis\fR exports data as simple
+features. Flag \fB\-l\fR allows exporting data as topological elements
+instead of simple features. Export topological elements is stored in
+PostGIS
+Topology schema.
+.br
+.nf
+\fC
+v.out.postgis \-l input=busroutesall output=\(dqPG:dbname=grass\(dq
+\fR
+.fi
+For more info about PostGIS Topology implementation in GRASS see
+the wiki
+page.
+.SH TODO
+.RS 4n
+.IP \(bu 4n
+Multi\-feature export
+.IP \(bu 4n
+Allow mixed features (points, lines)
+.IP \(bu 4n
+Support other simple feature types like GeometryCollection and others
+.IP \(bu 4n
+Implement missing options
+from \fIv.out.ogr\fR: \fB\-a\fR, \fB\-s\fR, \fB\-c\fR, \fB\-p\fR, \fB\-n\fR
+.IP \(bu 4n
+Add options: \fBcats\fR, \fBwhere\fR
+.RE
+.SH REQUIREMENTS
+.RS 4n
+.IP \(bu 4n
+PostGIS 2.x or later for topological export (flag \fB\-l\fR)
+.RE
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+OGC Simple Feature Access specification
+.IP \(bu 4n
+PostGIS Topology documentation
+.IP \(bu 4n
+GRASS\-PostGIS data provider
+.RE
+.SH SEE ALSO
+\fI
+v.out.ogr,
+v.external,
+v.external.out,
+v.in.ogr
+\fR
+.PP
+See also PostGIS
+and PostGIS
+Topology wiki page from GRASS User Wiki.
+.SH AUTHOR
+Martin Landa, Czech Technical University in Prague, Czech Republic
+(development supported by Fondazione Edmund Mach and Comune di Trento, Italy)
+.SH SOURCE CODE
+.PP
+Available at: v.out.postgis source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

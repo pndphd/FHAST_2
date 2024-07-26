@@ -1,0 +1,123 @@
+.TH r3.cross.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.cross.rast\fR\fR  \- Creates cross section 2D raster map from 3D raster map based on 2D elevation map
+.SH KEYWORDS
+raster3d, profile, raster, voxel
+.SH SYNOPSIS
+\fBr3.cross.rast\fR
+.br
+\fBr3.cross.rast \-\-help\fR
+.br
+\fBr3.cross.rast\fR [\-\fBm\fR] \fBinput\fR=\fIstring\fR \fBelevation\fR=\fIstring\fR \fBoutput\fR=\fIstring\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with input map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map for cross section
+.IP "\fBelevation\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+2D elevation map used to create the cross section map
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Resulting cross section 2D raster map
+.SH DESCRIPTION
+This module creates a cross section 2D map from one 3D raster volume
+map based on a 2D elevation map. It checks if the value of the
+elevation map is located in the z\-coordinate space of the 3D map. If
+so, the 3D voxel value for this position is transferred to the related
+cross section output map cell, otherwise the NULL value is set.
+.br
+.TS
+expand;
+lw60.
+T{
+\fIHow r3.cross.rast works\fR
+T}
+.sp 1
+.TE
+.PP
+If the 2D and 3D region settings are different,
+the 2D resolution will be adjust to the 3D resolution.
+.SH NOTES
+To create a cut plane elevation map use \fIr.mapcalc\fR. Some examples:
+.RS 4n
+.IP \(bu 4n
+To create a cut plane elevation map in x direction type
+.br
+\fIr.mapcalc \(dqcutplane = col()*x\(dq\fR,
+.br
+x be the value for
+the elevation. If the range of col() is 1 ... 10, the elevation map
+has the range 1 ... 10 if x == 1 and if x == 10 the range 10
+\&... 100
+.IP \(bu 4n
+To create a cut plane elevation map in y direction type
+.br
+\fIr.mapcalc \(dqcutplane = row()*x\(dq\fR,
+.br
+x be the value for
+the elevation. If the range of col() is 1 ... 10, the elevation map
+has the range 1 ... 10 if x == 1 and if x == 10 the range 10
+\&... 100
+.IP \(bu 4n
+The user can also make a cut in y and x direction with \fIr.mapcalc\fR by
+using
+.br
+\fIr.mapcalc \(dqcutplane = (row()+col())*x\(dq\fR
+.RE
+.SH EXAMPLE
+.SS Simple Spearfish example
+.br
+.nf
+\fC
+g.region \-d
+g.region res=150 res3=150 t=1000 b=0 tbres=100
+# synthetic data, could be geological structures:
+r3.mapcalc \(dqmap3d = sin(row())+sin(col())+sin(depth()*depth())\(dq
+#create a cutplane map
+r.mapcalc \(dqcutplane = col()*10\(dq
+#create the cross section map
+r3.cross.rast input=map3d elevation=cutplane output=crosssection
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r.mapcalc,
+r3.mapcalc,
+r3.to.rast
+\fR
+.SH AUTHOR
+Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.cross.rast source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

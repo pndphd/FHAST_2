@@ -1,0 +1,28 @@
+Package: abc
+Type: Package
+Title: Tools for Approximate Bayesian Computation (ABC)
+Version: 2.2.1
+Date: 2022-05-17
+Authors@R: c( 
+    person("Csillery", "Katalin", role = "aut", email="kati.csillery@gmail.com"),
+    person("Lemaire", "Louisiane", role = "aut"),
+    person("Francois", "Olivier", role = "aut"),
+    person("Blum", "Michael",
+    email = "michael.blum.temp@gmail.com", role = c("aut", "cre")))
+Depends: R (>= 2.10), abc.data, nnet, quantreg, MASS, locfit
+Description: Implements several ABC algorithms for
+        performing parameter estimation, model selection, and goodness-of-fit.
+        Cross-validation tools are also available for measuring the
+        accuracy of ABC estimates, and to calculate the
+        misclassification probabilities of different models.
+Repository: CRAN
+License: GPL (>= 3)
+NeedsCompilation: no
+Packaged: 2022-05-18 18:46:30 UTC; mblum
+Author: Csillery Katalin [aut],
+  Lemaire Louisiane [aut],
+  Francois Olivier [aut],
+  Blum Michael [aut, cre]
+Maintainer: Blum Michael <michael.blum.temp@gmail.com>
+Date/Publication: 2022-05-19 07:20:02 UTC
+Built: R 4.2.2; ; 2023-02-21 04:01:48 UTC; windows

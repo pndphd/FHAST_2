@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.vect.extract.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.vect.extract.py</b></em>  - Extracts a subset of a space time vector dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_extract.html">extract</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.vect.extract.py</b><br></div>
+<b>t.vect.extract.py --help</b><br>
+<div id="synopsis"><b>t.vect.extract.py</b> [-<b>n</b>] <b>input</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]   [<b>expression</b>=<em>sql_query</em>]  <b>output</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>basename</b>=<em>string</em>]   [<b>suffix</b>=<em>string</em>]   [<b>nprocs</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Register empty maps</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time vector dataset</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>expression</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time vector dataset</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area</em></dd>
+<dd>Default: <em>point,line,boundary,centroid,area</em></dd>
+
+<dt><b>basename</b>=<em>string</em></dt>
+<dd>Basename of the new generated output maps</dd>
+<dd>A numerical suffix separated by an underscore will be attached to create a unique identifier</dd>
+
+<dt><b>suffix</b>=<em>string</em></dt>
+<dd>Suffix to add at basename: set 'gran' for granularity, 'time' for the full time format, 'num' for numerical suffix with a specific number of digits (default %05)</dd>
+<dd>Default: <em>gran</em></dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>The number of v.extract processes to run in parallel. Use only if database backend is used which supports concurrent writing</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The purpose of <b>t.vect.extract</b> is to extract a subset of a space 
+time vector dataset and to store that subset in a different space time 
+vector dataset.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In the following example a new space time vector dataset will be create
+with all the data later than 2000:
+
+<div class="code"><pre>
+t.vect.extract input=shoreline where="start_time > 2000" \
+               output=shoreline_later_2000 basename=new_shoreline
+
+t.info shoreline_later_2000@shoreline type=stvds
+ +-------------------- Space Time Vector Dataset -----------------------------+
+ |                                                                            |
+ +-------------------- Basic information -------------------------------------+
+ | Id: ........................ shoreline_later_2000@shoreline
+ | Name: ...................... shoreline_later_2000
+ | Mapset: .................... shoreline
+ | Creator: ................... lucadelu
+ | Temporal type: ............. relative
+ | Creation time: ............. 2014-11-29 08:43:50.043219
+ | Modification time:.......... 2014-11-29 08:43:50.085407
+ | Semantic type:.............. mean
+ +-------------------- Relative time -----------------------------------------+
+ | Start time:................. 2003
+ | End time:................... 2009
+ | Relative time unit:......... years
+ | Granularity:................ 1
+ | Temporal type of maps:...... point
+ +-------------------- Spatial extent ----------------------------------------+
+ | North:...................... 1039175.31479
+ | South:...................... 34705.216018
+ | East:.. .................... 3052322.44671
+ | West:....................... 2130004.16779
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +-------------------- Metadata information ----------------------------------+
+ | Vector register table:...... vector_map_register_8395740fc8de42149fef74a3d25bbb05
+ | Number of points ........... 0
+ | Number of lines ............ 407
+ | Number of boundaries ....... 0
+ | Number of centroids ........ 0
+ | Number of faces ............ 0
+ | Number of kernels .......... 0
+ | Number of primitives ....... 407
+ | Number of nodes ............ 767
+ | Number of areas ............ 0
+ | Number of islands .......... 0
+ | Number of holes ............ 0
+ | Number of volumes .......... 0
+ | Number of registered maps:.. 3
+ |
+ | Title:
+ | North Carolina shoreline
+ | Description:
+ | North Caroline shoreline from 2000 to 2009
+ | Command history:
+ | # 2014-11-29 08:43:50 
+ | t.vect.extract input="shoreline"
+ |     where="start_time > 2000" output="shoreline_later_2000"
+ |     basename="new_shoreline"
+ | # 2014-11-29 08:44:14 
+ | t.support type="stvds"
+ |     input="shoreline_later_2000@shoreline"
+ |     descr="North Caroline shoreline from 2000 to 2009"
+ +----------------------------------------------------------------------------+
+
+t.vect.list shoreline_later_2000
+name|layer|mapset|start_time|end_time
+shoreline_2003|None|shoreline|2003|None
+shoreline_2004|None|shoreline|2004|None
+shoreline_2009|None|shoreline|2009|None
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.vect.extract">t.vect.extract source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.vect.extract">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

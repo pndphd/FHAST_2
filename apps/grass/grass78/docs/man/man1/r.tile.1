@@ -1,0 +1,88 @@
+.TH r.tile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.tile\fR\fR  \- Splits a raster map into tiles.
+.SH KEYWORDS
+raster, tiling
+.SH SYNOPSIS
+\fBr.tile\fR
+.br
+\fBr.tile \-\-help\fR
+.br
+\fBr.tile\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIstring\fR \fBwidth\fR=\fIinteger\fR \fBheight\fR=\fIinteger\fR  [\fBoverlap\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Output base name
+.IP "\fBwidth\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Width of tiles (columns)
+.IP "\fBheight\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Height of tiles (rows)
+.IP "\fBoverlap\fR=\fIinteger\fR" 4m
+.br
+Overlap of tiles
+.SH DESCRIPTION
+\fIr.tile\fR retiles an existing raster map with user defined
+x and y tile size.
+.SH NOTES
+\fIr.tile\fR generates a separate raster for each tile.
+This is equivalent to running \fIg.region\fR along with
+\fIr.resample\fR in a double loop.
+.PP
+The module can be used to split a large raster map into smaller
+tiles, e.g. for further parallelized analysis on a cluster computing
+system.
+.PP
+The overlap is defined in rows/columns.
+.SH EXAMPLE
+Retiling example for the North Carolina DEM:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# rows:       1350
+# cols:       1500
+# generating 2 x 2 = 4 tiles (width=1500/2, height=rows/2)
+r.tile input=elevation output=elev_tile width=750 height=675
+\fR
+.fi
+creates 4 tiles with the prefix \fIelev_tile\fR (named:
+elev_tile\-000\-000, elev_tile\-000\-001, elev_tile\-001\-000, ...).
+.SH SEE ALSO
+\fI
+g.region,
+r3.retile
+\fR
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.tile source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

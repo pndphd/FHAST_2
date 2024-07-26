@@ -1,0 +1,111 @@
+.TH v.centroids 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.centroids.py\fR\fR  \- Adds missing centroids to closed boundaries.
+.SH KEYWORDS
+vector, centroid, area
+.SH SYNOPSIS
+\fBv.centroids.py\fR
+.br
+\fBv.centroids.py \-\-help\fR
+.br
+\fBv.centroids.py\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBoption\fR=\fIstring\fR]   [\fBlayer\fR=\fIstring\fR]   [\fBcat\fR=\fIinteger\fR]   [\fBstep\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBoption\fR=\fIstring\fR" 4m
+.br
+Action to be taken
+.br
+Options: \fIadd\fR
+.br
+Default: \fIadd\fR
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcat\fR=\fIinteger\fR" 4m
+.br
+Category number starting value
+.br
+Default: \fI1\fR
+.IP "\fBstep\fR=\fIinteger\fR" 4m
+.br
+Category increment
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+GRASS defines vector areas as composite entities consisting of a set of
+closed boundaries and a centroid. The attribute information associated
+with that area is linked to the centroid. The \fIv.centroids\fR module
+adds centroids to closed boundaries in the \fBinput\fR file and assigns a
+category number to them. The starting value as well as the increment size
+may be set using optional parameters.
+.PP
+Multiple attributes may be linked to a single vector entity through
+numbered fields referred to as layers. Refer to \fIv.category\fR
+for more details, as \fIv.centroids\fR is simply a frontend to that
+module.
+.PP
+The boundary itself is often stored without any category reference as it
+can mark the border between two adjacent areas. Thus it would be ambiguous
+as to which feature the attribute would belong. In some cases it may, for
+example, represent a road between two parcels of land. In this case it
+is entirely appropriate for the boundary to contain category information.
+.SH EXAMPLES
+Create an area from a closed line using North Carolina sample dataset:
+.br
+.nf
+\fC
+v.type input=busroute11 output=busroute11_boundary from_type=line to_type=boundary
+v.centroids input=busroute11_boundary output=busroute11_area
+\fR
+.fi
+.br
+\fIFigure: Creating area from closed line\fR
+.SH SEE ALSO
+\fI
+v.category
+\fR
+.SH AUTHORS
+module: M. Hamish Bowman, Dept. Marine Science, Otago University, New Zealand
+.br
+help page: Trevor Wiens
+.SH SOURCE CODE
+.PP
+Available at: v.centroids source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

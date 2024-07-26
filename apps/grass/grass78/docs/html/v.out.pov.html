@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.out.pov - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.out.pov</b></em>  - Converts GRASS x,y,z points to POV-Ray x,z,y format.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.out.pov</b><br></div>
+<b>v.out.pov --help</b><br>
+<div id="synopsis"><b>v.out.pov</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em>  [<b>size</b>=<em>string</em>]   [<b>zmod</b>=<em>string</em>]   [<b>objmod</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area, face, kernel</em></dd>
+<dd>Default: <em>point,line,area,face</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output POV file</dd>
+
+<dt><b>size</b>=<em>string</em></dt>
+<dd>Radius of sphere for points and tube for lines</dd>
+<dd>May be also variable, e.g. grass_r.</dd>
+<dd>Default: <em>10</em></dd>
+
+<dt><b>zmod</b>=<em>string</em></dt>
+<dd>This string is appended to each z coordinate. Examples: '*10', '+1000', '*10+100', '*exaggeration'</dd>
+
+<dt><b>objmod</b>=<em>string</em></dt>
+<dd>Object modifier (OBJECT_MODIFIER in POV-Ray documentation)</dd>
+<dd>Example: "pigment { color red 0 green 1 blue 0 }"</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.out.pov</em> converts GRASS vector data to POV-Ray format (www.povray.com)
+
+<h2><a name="example">EXAMPLE</a></h2>
+<div class="code"><pre>
+v.out.pov input=vector3d output=vector3d.pov objmod="pigment { color red 0 green 1 blue 0 }"
+</pre></div>
+
+The generated file can be included in an existing .pov file with the following statement:
+<div class="code"><pre>
+#include "vector3d.pov"
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<a href="http://www.povray.com">POV-Ray</a>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="r.out.pov.html">r.out.pov</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.out.pov">v.out.pov source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.out.pov">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

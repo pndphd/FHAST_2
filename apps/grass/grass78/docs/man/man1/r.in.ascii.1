@@ -1,0 +1,179 @@
+.TH r.in.ascii 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.ascii\fR\fR  \- Converts a GRASS ASCII raster file to binary raster map.
+.SH KEYWORDS
+raster, import, conversion, ASCII
+.SH SYNOPSIS
+\fBr.in.ascii\fR
+.br
+\fBr.in.ascii \-\-help\fR
+.br
+\fBr.in.ascii\fR [\-\fBs\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR]   [\fBtitle\fR=\fIphrase\fR]   [\fBmultiplier\fR=\fIfloat\fR]   [\fBnull_value\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+SURFER (Golden Software) ASCII file will be imported
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file to be imported
+.br
+\(cq\-\(cq for standard input
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of raster map to be created
+.br
+Default: CELL for integer values, DCELL for floating\-point values
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for resultant raster map
+.IP "\fBmultiplier\fR=\fIfloat\fR" 4m
+.br
+Multiplier for ASCII data
+.br
+Default: read from header
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value data cell
+.br
+Default: read from header
+.SH DESCRIPTION
+\fIr.in.ascii\fR allows a user to create a (binary) GRASS raster map
+layer from an ASCII raster input file with (optional) TITLE.
+.PP
+The GRASS ASCII \fBinput\fR file has a header section which describes
+the location and size of the data, followed by the data itself.
+.PP
+The header has 6 lines:
+.br
+.nf
+\fC
+north:   xxxxxx.xx
+south:   xxxxxx.xx
+east:    xxxxxx.xx
+west:    xxxxxx.xx
+rows:    r
+cols:    c
+\fR
+.fi
+The north, south, east, and west field values entered
+are the coordinates of the edges of the geographic region.
+The rows and cols field values entered describe the dimensions
+of the matrix of data to follow.
+The data which follows is \fIr\fR rows of \fIc\fR integers.
+.PP
+Optionally the following parameters can be defined in the header section:
+.br
+.nf
+\fC
+null: nn
+type: float
+multiplier: 2.
+\fR
+.fi
+.PP
+\(dqnull\(dq defines a string or number to be converted to NULL value (no
+data).
+.br
+\(dqtype\(dq defines the data type (int, float double) and is not required.
+.br
+\(dqmultiplier\(dq is an optional parameter to multiply each cell value.
+.SH NOTES
+The geographic coordinates north, south, east, and west
+describe the outer edges of the geographic region.  They
+run along the edges of the cells at the edge of the
+geographic region and \fInot\fR through the center of the cells
+at the edges.
+The NW value occurs at the beginning of the first line of data, and the
+SW value occurs at the beginning of the last line of data.
+.PP
+The data (which follows the header section) must contain
+r \fIx\fR c values, but it is not necessary
+that all the data for a row be on one line. A row may be
+split over many lines.
+.PP
+The imported cell type can be forced using the \fBtype\fR option,
+default is auto\-detection.
+.PP
+The header information in ESRI Raster ASCII files differs from GRASS.
+To convert an Arc/Info (ArcView) ASCII grid file into GRASS, see
+\fIr.in.gdal\fR.
+.PP
+SURFER (Golden Software) ASCII files may be imported by passing the \fB\-s\fR flag.
+.SH EXAMPLE
+The following is a sample \fBinput\fR file to \fIr.in.ascii\fR:
+.br
+.nf
+\fC
+north:                   4299000.00
+south:                   4247000.00
+east:                     528000.00
+west:                     500000.00
+rows:                         10
+cols:                         15
+null:                      \-9999
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.import,
+r.out.ascii,
+r.in.gdal,
+r.out.gdal,
+r.in.bin,
+r3.in.ascii
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+Surfer support by Roger Miller
+.SH SOURCE CODE
+.PP
+Available at: r.in.ascii source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

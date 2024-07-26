@@ -1,0 +1,159 @@
+.TH g.findfile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.findfile\fR\fR  \- Searches for GRASS data base files and sets variables for the shell.
+.SH KEYWORDS
+general, map management, scripts
+.SH SYNOPSIS
+\fBg.findfile\fR
+.br
+\fBg.findfile \-\-help\fR
+.br
+\fBg.findfile\fR [\-\fBnl\fR] \fBelement\fR=\fIstring\fR \fBfile\fR=\fIstring\fR  [\fBmapset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Do not add quotes
+.IP "\fB\-l\fR" 4m
+.br
+List available elements and exit
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelement\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an element
+.IP "\fBfile\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an existing map
+.IP "\fBmapset\fR=\fIstring\fR" 4m
+.br
+Name of a mapset (default: search path)
+.br
+\(cq.\(cq for current mapset
+.SH DESCRIPTION
+\fIg.findfile\fR is designed for Bourne shell or Python scripts
+that need to search for mapset \fIelements\fR, including: raster,
+vector maps, region definitions
+and \fIimagery\fR groups.
+.PP
+The list of \fBelement\fR names to search for is not fixed; any
+subdirectory of the mapset directory is a valid \fBelement\fR name.
+.PP
+However, the user can find the list of standard GRASS \fBelement\fR
+names in the file $GISBASE/etc/element_list. This is the file
+which \fIg.remove\fR, \fIg.rename\fR
+and \fIg.copy\fR use to determine which files
+need to be deleted/renamed/copied for a given entity type.
+.SH NOTES
+\fIg.findfile\fR writes four lines to standard output:
+.br
+.nf
+\fC
+name=\(cq\fIfile_name\fR\(cq
+mapset=\(cq\fImapset_name\fR\(cq
+file=\(cq\fIunix_filename\fR\(cq
+fullname=\(cq\fIgrass_fullname\fR\(cq
+\fR
+.fi
+The output is \fIBash\fR commands to set the variable
+\fIname\fR to the GRASS data base file name,
+\fImapset\fR to the mapset in which the file resides,
+and \fIfile\fR to the full UNIX path name for the named
+file. These variables may be set in the \fIBash\fR
+as follows:
+.br
+.nf
+\fC
+eval \(gag.findfile element=name mapset=name file=name\(ga
+\fR
+.fi
+.SH EXAMPLES
+.SS SHELL
+\fBRaster map example:\fR
+.br
+.nf
+\fC
+eval \(gag.findfile element=cell file=elevation\(ga
+\fR
+.fi
+If the specified file (here: raster map) does not exist, the variables
+will be set as follows:
+.br
+.nf
+\fC
+name=
+mapset=
+fullname=
+file=
+\fR
+.fi
+The following is a way to test for this case:
+.br
+.nf
+\fC
+if [ ! \(dq$file\(dq ]
+then
+	exit 1
+fi
+\fR
+.fi
+.PP
+\fBVector map example (including error message):\fR
+.br
+.nf
+\fC
+eval \(gag.findfile element=vector file=\(dq$G_OPT_V_INPUT\(dq\(ga
+if [ ! \(dq$file\(dq ] ; then
+   g.message \-e \(dqVector map <$G_OPT_V_INPUT> not found\(dq
+   exit 1
+fi
+\fR
+.fi
+.SS PYTHON
+See \fIPython
+Scripting Library\fR for more info.
+.PP
+Note: The Python tab in the \fIwxGUI\fR can be used for entering the
+following code:
+.PP
+.br
+.nf
+\fC
+import grass.script as gcore
+gcore.find_file(\(cqelevation\(cq, element = \(cqcell\(cq)
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.filename,
+g.gisenv,
+g.mapsets,
+g.parser
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: g.findfile source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

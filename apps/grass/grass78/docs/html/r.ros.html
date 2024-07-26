@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.ros - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.ros</b></em>  - Generates rate of spread raster maps.<BR>
+Generates three, or four raster map layers showing the base (perpendicular) rate of spread (ROS), the maximum (forward) ROS, the direction of the maximum ROS, and optionally the maximum potential spotting distance for fire spread simulation.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_fire.html">fire</a>, <a href="keywords.html#spread">spread</a>, <a href="keywords.html#rate of spread">rate of spread</a>, <a href="keywords.html#hazard">hazard</a>, <a href="keywords.html#model">model</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.ros</b><br></div>
+<b>r.ros --help</b><br>
+<div id="synopsis"><b>r.ros</b> <b>model</b>=<em>name</em>  [<b>moisture_1h</b>=<em>name</em>]   [<b>moisture_10h</b>=<em>name</em>]   [<b>moisture_100h</b>=<em>name</em>]  <b>moisture_live</b>=<em>name</em>  [<b>velocity</b>=<em>name</em>]   [<b>direction</b>=<em>name</em>]   [<b>slope</b>=<em>name</em>]   [<b>aspect</b>=<em>name</em>]   [<b>elevation</b>=<em>name</em>]  <b>base_ros</b>=<em>name</em> <b>max_ros</b>=<em>name</em> <b>direction_ros</b>=<em>name</em>  [<b>spotting_distance</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>model</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing fuel models</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the standard fuel models defined by the USDA Forest Service. Valid values are 1-13; other numbers are recognized as barriers by r.ros.</dd>
+
+<dt><b>moisture_1h</b>=<em>name</em></dt>
+<dd>Raster map containing the 1-hour fuel moisture (%)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the 1-hour (&lt;.25") fuel moisture (percentage content multiplied by 100).</dd>
+
+<dt><b>moisture_10h</b>=<em>name</em></dt>
+<dd>Raster map containing the 10-hour fuel moisture (%)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the 10-hour (.25-1") fuel moisture (percentage content multiplied by 100).</dd>
+
+<dt><b>moisture_100h</b>=<em>name</em></dt>
+<dd>Raster map containing the 100-hour fuel moisture (%)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing the 100-hour (1-3") fuel moisture (percentage content multiplied by 100).</dd>
+
+<dt><b>moisture_live</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map containing live fuel moisture (%)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing live (herbaceous) fuel moisture (percentage content multiplied by 100).</dd>
+
+<dt><b>velocity</b>=<em>name</em></dt>
+<dd>Raster map containing midflame wind velocities (ft/min)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing wind velocities at half of the average flame height (feet/minute).</dd>
+
+<dt><b>direction</b>=<em>name</em></dt>
+<dd>Name of raster map containing wind directions (degree)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing wind direction, clockwise from north (degree).</dd>
+
+<dt><b>slope</b>=<em>name</em></dt>
+<dd>Name of raster map containing slope (degree)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing topographic slope (degree).</dd>
+
+<dt><b>aspect</b>=<em>name</em></dt>
+<dd>Raster map containing aspect (degree, CCW from E)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing topographic aspect, counterclockwise from east (GRASS convention) in degrees.</dd>
+
+<dt><b>elevation</b>=<em>name</em></dt>
+<dd>Raster map containing elevation (m, required for spotting)</dd>
+<dd>Name of an existing raster map layer in the user's current mapset search path containing elevation (meters). Option is required from spotting distance computation (when spotting_distance option is provided)</dd>
+
+<dt><b>base_ros</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output raster map containing base ROS (cm/min)</dd>
+<dd>Base (perpendicular) rate of spread (ROS)</dd>
+
+<dt><b>max_ros</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output raster map containing maximal ROS (cm/min)</dd>
+<dd>The maximum (forward) rate of spread (ROS)</dd>
+
+<dt><b>direction_ros</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Output raster map containing directions of maximal ROS (degree)</dd>
+<dd>The direction of the maximal (forward) rate of spread (ROS)</dd>
+
+<dt><b>spotting_distance</b>=<em>name</em></dt>
+<dd>Output raster map containing maximal spotting distance (m)</dd>
+<dd>The maximal potential spotting distance (requires elevation raster map to be provided).</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#-author" class="toc"> AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.ros</em> is part of the wildfire simulation toolset. Preparational
+steps for the fire simulation are the calculation of the rate of spread (ROS)
+with <em>r.ros</em>, and the creating of spread map with <em>r.spread</em>.
+Eventually, the fire path(s) based on starting point(s) are calculated
+with <em>r.spreadpath</em>.
+<p>
+
+<em>r.ros</em> is used for fire (wildfire) modeling. The input is fuel model
+and moisture and the outputs are rate of spread (ROS) values.
+The module generates the base ROS value, maximum ROS value,
+direction of the maximum ROS, and optionally the maximum potential spotting distance
+of wildfire for each raster cell in the current geographic region.
+These three or four raster map layers
+serve as inputs for the <em><a href="r.spread.html">r.spread</a></em> module
+which is the next step in fire simulation.
+
+<p>
+The <em>r.ros</em> module and two related modules
+<em><a href="r.spread.html">r.spread</a></em>,
+and <em><a href="r.spreadpath.html">r.spreadpath</a></em> can be used
+not only for wildfire modeling but also generally
+to simulate other events where spread of something is involved and
+elliptical spread is appropriate.
+
+<p>
+The calculation of the two ROS values for each raster cell is based on the
+Fortran code by Pat Andrews (1983) of the Northern Forest Fire Laboratory,
+USDA Forest Service. The direction of the maximum ROS results from the
+vector addition of the forward ROS in wind direction and that in upslope
+direction. The spotting distance, if required, will be calculated by a
+separate function, spot_dist(), which is based on Lathrop and Xu (in preparation),
+Chase (1984) and Rothermel (1991).  More information
+on <em>r.ros</em> and <em><a href="r.spread.html">r.spread</a></em> can be found in Xu (1994).
+
+<p>
+The <b>output</b> parameter is a basename (prefix) for all generated
+raster maps and each map gets a unique suffix:
+
+<ul>
+  <li><tt>.base</tt> for the base (perpendicular) ROS (cm/minute)
+  <li><tt>.max</tt> for the maximum (forward) ROS (cm/minute),
+  <li><tt>.maxdir</tt> for the direction of the maximum
+    ROS, clockwise from north (degree), and optionally
+  <li><tt>.spotdist</tt> for the maximum potential
+    spotting distance (meters).
+</ul>
+
+<p>
+So, if the output parameter is <tt>blackforest_ros</tt>, <em>r.ros</em> creates
+<tt>blackforest_ros.base</tt>, <tt>blackforest_ros.max</tt>,
+<tt>blackforest_ros.maxdir</tt>,
+and (optionally) <tt>blackforest_ros.spotdist</tt> raster maps.
+
+<p>If only one or two of the options <b>moisture_1h</b>, <b>moisture_10h</b>,
+and <b>moisture_100h</b> are given, the module will assign
+values to the missing option using the formula:
+
+<div class="code"><pre>
+moisture_100h = moisture_10h + 1 = moisture_1h + 2
+</pre></div>
+
+However, at least one of them should be given.
+
+<p>
+Options <b>velocity</b>
+and <b>direction</b> must be both given or both omitted.
+If none is given, the module will assume a no-wind
+condition.
+
+<p>
+Options <b>slope</b> and <b>aspect</b> must be also given together.
+If none is given, the module will assume a
+topographically flat condition. Option
+<b>elevation</b> must be given if <b>-s</b> (spotting) flag is used.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+Assume we have inputs, the following generates ROSes and spotting distances:
+
+<div class="code"><pre>
+r.ros -s model=fire_model moisture_1h=1hour_moisture moisture_live=live_moisture \
+    velocity=wind_speed direction=wind_direction \
+    slope=slope aspect=aspect elevation=elevation output=ros
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+<ol>
+  <li><em>r.ros</em> is supposed to be run before running
+    <em><a href="r.spread.html">r.spread</a></em> module.
+    The combination of these two modules forms
+    a simulation of the spread of wildfires.
+  <li>The user should be sure that the inputs to
+    <em>r.ros</em> are in proper units.
+  <li>The output units for the base and maximum ROSes are in cm/minute
+    rather than ft/minute, which is due to that a possible zero ft/minute base
+    ROS value and a positive integer ft/minute maximum ROS would result in
+    calculation failure in the
+    <em><a href="r.spread.html">r.spread</a></em> module.
+    <!-- This is caused by usage of CELL instead of FCELL/DCELL. ? -->
+    As far as the user just use <em>r.ros</em> together with
+    <em><a href="r.spread.html">r.spread</a></em>, there is no need to
+    concern about these output units.
+</ol>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+  <li><b>Albini,</b> F. A., 1976, Computer-based models of wildland fire behavior:
+    a user's manual, USDA Forest Service, Intermountain Forest and Range Experiment
+    Station, Ogden, Utah.</li>
+  <li><b>Andrews</b>, P. L., 1986, BEHAVE: fire behavior prediction and fuel
+    modeling system -- BURN subsystem, Part 1, USDA Forest Service, Intermountain
+    Research Station, Gen. Tech. Rep. INT-194, Ogden, Utah.</li>
+  <li><b>Chase</b>, Carolyn, H., 1984, Spotting distance from wind-driven
+    surface fires -- extensions of equations for pocket calculators, US Forest
+    Service, Res. Note INT-346, Ogden, Utah.</li>
+  <li><b>Lathrop</b>, Richard G. and Jianping Xu, A geographic information
+    system-based approach for calculating spotting distance. (in preparation)</li>
+  <li><b>Rothermel</b>, R. E., 1972, A mathematical model for predicting
+    fire spread in wildland fuels, USDA Forest Service, Intermountain Forest
+    and Range Experiment Station, Res. Pap. INT-115, Ogden, Utah.</li>
+  <li><b>Rothermel</b>, Richard, 1991, Predicting behavior and size of crown
+    fires in the northern Rocky Mountains, US Forest Service, Res. Paper INT-438,
+    Ogden, Utah.</li>
+  <li><b>Xu</b>, Jianping, 1994, Simulating the spread of wildfires using
+    a geographic information system and remote sensing, Ph. D. Dissertation,
+    Rutgers University, New Brunswick, Jersey
+    (<a href="https://dl.acm.org/citation.cfm?id=921466">ref</a>).</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.slope.aspect.html">r.slope.aspect</a>,
+<a href="r.spread.html">r.spread</a>,
+<a href="r.spreadpath.html">r.spreadpath</a>
+</em>
+
+Sample data download: <a href="https://grass.osgeo.org/download/data/">firedemo.sh</a>
+(run this script within the "Fire simulation data set" location.
+
+<h2><a name="-author"> AUTHOR</a></h2>
+
+Jianping Xu, Center for Remote Sensing and Spatial Analysis, Rutgers University.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.ros">r.ros source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.ros">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

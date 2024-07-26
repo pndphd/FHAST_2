@@ -1,0 +1,13 @@
+species,Acer negundo,Alnus rhombifolia,Fraxinus latifolia,Platanus racemosa,Populus fremontii,Quercus lobata,Salix gooddingii,Salix laevigata,Salix lasiolepis,Sambucus mexicana,Rosa californica,Salix exigua,default
+common,Boxelder maple,White alder,Oregon ash,Western sycamore,Fremont cottonwoo,Valley oak,Salix gooddingii,Salix laevigata,Arroyo willow,Sambucus cerulea,California Wild ros,Narrowleaf willow,default
+type,tree,tree,tree,tree,tree,tree,shrub,shrub,shrub,shrub,shrub,shrub,tree average
+d_max,80,90,80,150,180,200,70,30,30,25,8,10,130
+h_max,1829,2286,2133,2286,2743,3048,1219,1067,1067,213,305,305,2387.5
+g,116.7,133.3,100,53.3,111.1,70,200,200,200,200,230,230,97.4
+usfs_data_analogue,Boxelder maple,River birch,Oregon ash,Western sycamore,Fremont cottonwoo,Valley oak,NA,NA,NA,NA,NA,NA,NA
+usfs_region,MidWst,Piedmt,PacfNW,InlEmp,InterW,SacVal,NA,NA,NA,NA,NA,NA,NA
+eq_name,loglogw3,lin,cub,quad,quad,quad,NA,NA,NA,NA,NA,NA,quad
+a,-0.11047,2.45947,0.18904,1.59635,1.39601,1.09621,NA,NA,NA,NA,NA,NA,1.362856667
+b,1.80298,0.20529,0.37563,0.42899,0.28244,0.30138,NA,NA,NA,NA,NA,NA,0.337603333
+c,0.00065,NA,-0.00399,-0.00233,-0.00113,-0.00101,NA,NA,NA,NA,NA,NA,-0.00149
+d,NA,NA,0.00002,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA

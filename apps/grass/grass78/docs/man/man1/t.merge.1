@@ -1,0 +1,259 @@
+.TH t.merge 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.merge.py\fR\fR  \- Merges several space time datasets into a single space time dataset.
+.SH KEYWORDS
+temporal, time management, merge, time
+.SH SYNOPSIS
+\fBt.merge.py\fR
+.br
+\fBt.merge.py \-\-help\fR
+.br
+\fBt.merge.py\fR \fBinputs\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\fBtype\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of the input space time datasets
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time dataset
+.IP "\fBtype\fR=\fIname\fR" 4m
+.br
+Type of the input space time dataset
+.br
+Options: \fIstrds, stvds, str3ds\fR
+.br
+Default: \fIstrds\fR
+.SH DESCRIPTION
+This module is designed to register the maps of several input space
+time datasets in a single output dataset. The datasets to merge can be
+either space time raster, 3D raster or vector datasets and must have
+the same temporal type (absolute or relative).
+.PP
+Existing space time datasets located in the current mapset can be
+specified as output as well. The maps from the input space time
+datasets will be added to the output.
+.PP
+Maps from the input space time datasets will be registered only once in
+the output space time dataset, hence the same maps can be registered in
+different input space time datasets.
+.SH NOTES
+Temporal databases stored in other mapsets can be used as long as they
+are in the user\(cqs current mapset search path (managed with
+g.mapsets).
+.SH Examples
+In this example we will create two space time raster datasets and
+register two unique maps in each of it. Then we merge the two space
+time raster datasets together.
+.br
+.nf
+\fC
+r.mapcalc expression=\(dqmap1 = rand(0, 10)\(dq  \-s
+r.mapcalc expression=\(dqmap2 = rand(10, 20)\(dq \-s
+t.create type=strds temporaltype=absolute \(rs
+         output=precipitation_daily_1 \(rs
+         title=\(dqDaily precipitation\(dq \(rs
+         description=\(dqTest dataset with daily precipitation\(dq
+t.register \-i type=raster input=precipitation_daily_1 \(rs
+           maps=map1,map2 start=2012\-08\-20 increment=\(dq1 days\(dq
+t.info precipitation_daily_1
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Space Time Raster Dataset \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Basic information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Id: ........................ precipitation_daily_1@soeren
+ | Name: ...................... precipitation_daily_1
+ | Mapset: .................... soeren
+ | Creator: ................... soeren
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014\-11\-23 15:26:57.395355
+ | Modification time:.......... 2014\-11\-23 15:26:57.860513
+ | Semantic type:.............. mean
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Absolute time \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Start time:................. 2012\-08\-20 00:00:00
+ | End time:................... 2012\-08\-22 00:00:00
+ | Granularity:................ 1 day
+ | Temporal type of maps:...... interval
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Spatial extent \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | North:...................... 80.0
+ | South:...................... 0.0
+ | East:.. .................... 120.0
+ | West:....................... 0.0
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Metadata information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Raster register table:...... raster_map_register_6e6efe25ee9b40e39eb31421d737439b
+ | North\-South resolution min:. 10.0
+ | North\-South resolution max:. 10.0
+ | East\-west resolution min:... 10.0
+ | East\-west resolution max:... 10.0
+ | Minimum value min:.......... 0.0
+ | Minimum value max:.......... 10.0
+ | Maximum value min:.......... 9.0
+ | Maximum value max:.......... 19.0
+ | Aggregation type:........... None
+ | Number of registered maps:.. 2
+ |
+ | Title:
+ | Daily precipitation
+ | Description:
+ | Test dataset with daily precipitation
+ | Command history:
+ | # 2014\-11\-23 15:26:57
+ | t.create type=\(dqstrds\(dq temporaltype=\(dqabsolute\(dq
+ |     output=\(dqprecipitation_daily_1\(dq title=\(dqDaily precipitation\(dq
+ |     description=\(dqTest dataset with daily precipitation\(dq
+ | # 2014\-11\-23 15:26:57
+ | t.register \-i type=\(dqrast\(dq
+ |     input=\(dqprecipitation_daily_1\(dq maps=\(dqmap1,map2\(dq start=\(dq2012\-08\-20\(dq
+ |     increment=\(dq1 days\(dq
+ |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+r.mapcalc expression=\(dqmap3 = rand(20, 30)\(dq \-s
+r.mapcalc expression=\(dqmap4 = rand(30, 40)\(dq \-s
+t.create type=strds temporaltype=absolute \(rs
+         output=precipitation_daily_2 \(rs
+         title=\(dqDaily precipitation\(dq \(rs
+         description=\(dqTest dataset with daily precipitation\(dq
+t.register \-i type=raster input=precipitation_daily_2 \(rs
+           maps=map3,map4 start=2012\-08\-22 increment=\(dq1 days\(dq
+t.info precipitation_daily_2
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Space Time Raster Dataset \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Basic information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Id: ........................ precipitation_daily_2@soeren
+ | Name: ...................... precipitation_daily_2
+ | Mapset: .................... soeren
+ | Creator: ................... soeren
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014\-11\-23 15:27:20.165074
+ | Modification time:.......... 2014\-11\-23 15:27:20.613543
+ | Semantic type:.............. mean
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Absolute time \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Start time:................. 2012\-08\-22 00:00:00
+ | End time:................... 2012\-08\-24 00:00:00
+ | Granularity:................ 1 day
+ | Temporal type of maps:...... interval
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Spatial extent \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | North:...................... 80.0
+ | South:...................... 0.0
+ | East:.. .................... 120.0
+ | West:....................... 0.0
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Metadata information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Raster register table:...... raster_map_register_04eaede279b2476a80c2683254232f84
+ | North\-South resolution min:. 10.0
+ | North\-South resolution max:. 10.0
+ | East\-west resolution min:... 10.0
+ | East\-west resolution max:... 10.0
+ | Minimum value min:.......... 20.0
+ | Minimum value max:.......... 30.0
+ | Maximum value min:.......... 29.0
+ | Maximum value max:.......... 39.0
+ | Aggregation type:........... None
+ | Number of registered maps:.. 2
+ |
+ | Title:
+ | Daily precipitation
+ | Description:
+ | Test dataset with daily precipitation
+ | Command history:
+ | # 2014\-11\-23 15:27:20
+ | t.create type=\(dqstrds\(dq temporaltype=\(dqabsolute\(dq
+ |     output=\(dqprecipitation_daily_2\(dq title=\(dqDaily precipitation\(dq
+ |     description=\(dqTest dataset with daily precipitation\(dq
+ | # 2014\-11\-23 15:27:20
+ | t.register \-i type=\(dqrast\(dq
+ |     input=\(dqprecipitation_daily_2\(dq maps=\(dqmap3,map4\(dq start=\(dq2012\-08\-22\(dq
+ |     increment=\(dq1 days\(dq
+ |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+t.merge input=precipitation_daily_1,precipitation_daily_2 \(rs
+        output=precipitation_daily_3
+t.info precipitation_daily_3
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Space Time Raster Dataset \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Basic information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Id: ........................ precipitation_daily_3@soeren
+ | Name: ...................... precipitation_daily_3
+ | Mapset: .................... soeren
+ | Creator: ................... soeren
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014\-11\-23 15:27:44.069272
+ | Modification time:.......... 2014\-11\-23 15:27:44.088930
+ | Semantic type:.............. mean
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Absolute time \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Start time:................. 2012\-08\-20 00:00:00
+ | End time:................... 2012\-08\-24 00:00:00
+ | Granularity:................ 1 day
+ | Temporal type of maps:...... interval
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Spatial extent \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | North:...................... 80.0
+ | South:...................... 0.0
+ | East:.. .................... 120.0
+ | West:....................... 0.0
+ | Top:........................ 0.0
+ | Bottom:..................... 0.0
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\- Metadata information \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Raster register table:...... raster_map_register_33715c8c849a43fbb9bce02e1f28ff5a
+ | North\-South resolution min:. 10.0
+ | North\-South resolution max:. 10.0
+ | East\-west resolution min:... 10.0
+ | East\-west resolution max:... 10.0
+ | Minimum value min:.......... 0.0
+ | Minimum value max:.......... 30.0
+ | Maximum value min:.......... 9.0
+ | Maximum value max:.......... 39.0
+ | Aggregation type:........... None
+ | Number of registered maps:.. 4
+ |
+ | Title:
+ | Merged space time dataset
+ | Description:
+ | Merged space time dataset
+ | Command history:
+ | # 2014\-11\-23 15:27:44
+ | t.merge
+ |     input=\(dqprecipitation_daily_1,precipitation_daily_2\(dq
+ |     output=\(dqprecipitation_daily_3\(dq
+ |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.support,
+t.register
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.merge source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

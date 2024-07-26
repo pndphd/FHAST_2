@@ -1,0 +1,319 @@
+.TH r3.in.lidar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.in.lidar\fR\fR  \- Creates a 3D raster map from LAS LiDAR points using univariate statistics.
+.SH KEYWORDS
+raster3d, import, LIDAR, statistics, conversion, aggregation, binning
+.SH SYNOPSIS
+\fBr3.in.lidar\fR
+.br
+\fBr3.in.lidar \-\-help\fR
+.br
+\fBr3.in.lidar\fR [\-\fBdvopsg\fR]  [\fBinput\fR=\fIname\fR]   [\fBfile\fR=\fIname\fR]   [\fBn\fR=\fIname\fR]   [\fBsum\fR=\fIname\fR]   [\fBmean\fR=\fIname\fR]   [\fBproportional_n\fR=\fIname\fR]   [\fBproportional_sum\fR=\fIname\fR]   [\fBreturn_filter\fR=\fIstring\fR]   [\fBclass_filter\fR=\fIinteger\fR[,\fIinteger\fR,...]]   [\fBbase_raster\fR=\fIname\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBintensity_range\fR=\fImin,max\fR]   [\fBintensity_scale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Use base raster actual resolution instead of computational region
+.IP "\fB\-v\fR" 4m
+.br
+Use only valid points
+.br
+Points invalid according to APSRS LAS specification will be filtered out
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has same projection as the current location
+.IP "\fB\-p\fR" 4m
+.br
+Print LAS file info and exit
+.IP "\fB\-s\fR" 4m
+.br
+Scan data file for extent then exit
+.IP "\fB\-g\fR" 4m
+.br
+In scan mode, print using shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+LAS input file
+.br
+LiDAR input file in LAS format (*.las or *.laz)
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+File containing names of LAS input files
+.br
+LiDAR input files in LAS format (*.las or *.laz)
+.IP "\fBn\fR=\fIname\fR" 4m
+.br
+Count of points per cell
+.br
+Name for output 3D raster map
+.IP "\fBsum\fR=\fIname\fR" 4m
+.br
+Sum of values of point intensities per cell
+.br
+Name for output 3D raster map
+.IP "\fBmean\fR=\fIname\fR" 4m
+.br
+Mean of point intensities per cell
+.br
+Name for output 3D raster map
+.IP "\fBproportional_n\fR=\fIname\fR" 4m
+.br
+3D raster map of proportional point count
+.br
+Point count per 3D cell divided by point count per vertical column
+.IP "\fBproportional_sum\fR=\fIname\fR" 4m
+.br
+3D raster map of proportional sum of values
+.br
+Sum of values per 3D cell divided by sum of values per vertical column
+.IP "\fBreturn_filter\fR=\fIstring\fR" 4m
+.br
+Only import points of selected return type
+.br
+If not specified, all points are imported
+.br
+Options: \fIfirst, last, mid\fR
+.IP "\fBclass_filter\fR=\fIinteger[,\fIinteger\fR,...]\fR" 4m
+.br
+Only import points of selected class(es)
+.br
+Input is comma separated integers. If not specified, all points are imported.
+.IP "\fBbase_raster\fR=\fIname\fR" 4m
+.br
+Subtract raster values from the z coordinates
+.br
+The scale for z is applied beforehand, the filter afterwards
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to Z data
+.br
+Default: \fI1.0\fR
+.IP "\fBintensity_range\fR=\fImin,max\fR" 4m
+.br
+Filter range for intensity values (min,max)
+.IP "\fBintensity_scale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to intensity values
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+The \fIr.in.lidar\fR module
+is very similar to the \fIr3.in.lidar\fR module and many parts of
+its documentation apply also for \fIr3.in.lidar\fR.
+.PP
+.PP
+\fI
+Figure: Proportional count of points per 3D cell. When 50% of all
+points in a vertical column fall into a given 3D cell, the value
+is 0.5. Here, the green color was assigned to 0.5, red to 1 and
+yellow to 0. The figure shows vertical slices and green color
+indicates high vegetation while red color indicates bare ground.
+\fR
+.SH NOTES
+.RS 4n
+.IP \(bu 4n
+This module is new and partially experimental. Please don\(cqt rely
+on its interface and be critical towards its outputs.
+Please report issues on the mailing list or in the bug tracker.
+.IP \(bu 4n
+No reprojection is performed, you need to reproject ahead or
+use GRASS Location which has the right coordinate system
+which fits with the data.
+.IP \(bu 4n
+Some temporary maps are created but not cleaned up. Use of
+\fB\-\-overwrite\fR might be necessary even when not desired.
+.IP \(bu 4n
+Expects points to have intensity and causing random (undefined)
+result for related outputs (\fBsum, mean, proportional_sum\fR)
+when the intensity is not present but the outputs were requested.
+.RE
+.SH EXAMPLES
+.SS Basic import of the data
+Set the region according to a 2D raster and adding 3D minimum
+(bottom), maximum (top) and vertical (top\-bottom) resolution.
+.br
+.nf
+\fC
+g.region rast=secref b=80 t=160 tbres=5 \-p3
+\fR
+.fi
+Now, \fIr3.in.lidar\fR will create the 3D raster of the size
+given by the computation region:
+.br
+.nf
+\fC
+r3.in.lidar input=points.las n=points_n sum=points_sum \(rs
+    mean=points_mean proportional_n=points_n_prop \(rs
+    proportional_sum=points_sum_prop
+\fR
+.fi
+.SS Point density vertical structure reduced to the terrain
+Create ground raster:
+.br
+.nf
+\fC
+r.in.lidar input=points.las output=ground method=mean class_filter=2
+\fR
+.fi
+Set vertical extent of computational region to (relative) coordinates
+above ground:
+.br
+.nf
+\fC
+g.region rast=secref b=0 t=47 \-p3
+\fR
+.fi
+Compute point density:
+.br
+.nf
+\fC
+r3.in.lidar input=points.las n=points_n sum=points_sum \(rs
+    mean=points_mean proportional_n=points_n_prop \(rs
+    proportional_sum=points_sum_prop \(rs
+    base_raster=ground
+\fR
+.fi
+.SS Complete workflow for vertical structure analysis
+Compute the point density of points in 2D while setting the output
+extent to be based on the data (\fB\-e\fR) and the resolution set to
+a relatively high number (here 10 map units, i.e. meters for
+metric projections).
+.br
+.nf
+\fC
+r.in.lidar input=points.las output=points_n method=n \-e resolution=10
+\fR
+.fi
+This step can be repeated with using different resolutions (and the
+\fB\-\-overwrite\fR flag) to determine the resolution for the further
+analysis.
+.PP
+The \fBclass_filter\fR option should be also provided if only part of
+the points is analyzed, for example class_filter=3,4,5 would be
+used for low, medium, and high vegetation if the LAS file follows the
+usedstandard ASPRS class numbers.
+.PP
+The resolution should be suitable for computing digital elevation model
+which will be computed in the next steps.
+Once you decided on the resolution, you can use the 2D raster to set the
+computational region extent and resolution:
+.br
+.nf
+\fC
+g.region raster=points_n \-p3
+\fR
+.fi
+class_filter=2 is used to limit
+.br
+.nf
+\fC
+r.in.lidar input=points.las output=ground_mean method=mean class_filter=2
+\fR
+.fi
+The following steps are not necessary if the point density is high
+enough to fill the raster continuously.
+.PP
+Convert the raster to vector point resulting in a decimated point cloud:
+.br
+.nf
+\fC
+v.to.rast input=ground_mean type=point output=ground_decimated use=z
+\fR
+.fi
+Interpolate the ground surface from the decimated ground points:
+.br
+.nf
+\fC
+v.surf.rst input=ground_decimated elevation=ground
+\fR
+.fi
+Now we need to determine upper vertical limit for the 3D raster
+(the top value from g.region \-p3). This can be potentially
+done with lower resolution. The \fB\-d\fR flag ensures that the ground
+raster will be used in its actual resolution regardless of the
+resolution of the output.
+.br
+.nf
+\fC
+r.in.lidar input=points.las method=max output=veg_max class_filter=3,4,5 base_raster=ground \-d
+\fR
+.fi
+With that, we can finally set up the 3D extent and resolution:
+.br
+.nf
+\fC
+g.region rast=secref b=0 t=40 res=1 res3=1 \-p3
+\fR
+.fi
+Note that the 2D and 3D resolutions are separate so that user can
+perform the 2D calculations on a finer resolution than the 3D
+calculations. The vertical resolution can be and often is set to a
+different value as well. Here we use the same value for all resolutions
+for simplicity.
+.PP
+Finally, we perform the 3D binning where we count number of points per
+cell (voxel):
+.br
+.nf
+\fC
+r3.in.lidar input=points.las n=n class_filter=3,4,5 base_raster=ground \-d
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r3.in.xyz,
+r.in.lidar,
+v.in.lidar,
+r.to.rast3,
+r3.to.rast,
+r3.mapcalc,
+g.region
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+V. Petras, A. Petrasova, J. Jeziorska, H. Mitasova (2016):
+\fIProcessing UAV and lidar point clouds in GRASS GIS\fR.
+XXIII ISPRS Congress 2016
+[ISPRS Archives,
+ResearchGate]
+.IP \(bu 4n
+ASPRS LAS format
+.IP \(bu 4n
+LAS library
+.IP \(bu 4n
+LAS library C API documentation
+.RE
+.SH AUTHOR
+Vaclav Petras, NCSU GeoForAll Lab
+.SH SOURCE CODE
+.PP
+Available at: r3.in.lidar source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

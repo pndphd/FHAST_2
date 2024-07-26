@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.eb.netrad - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.eb.netrad</b></em>  - Net radiation approximation (Bastiaanssen, 1995).
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_energy_balance.html">energy balance</a>, <a href="keywords.html#net radiation">net radiation</a>, <a href="keywords.html#SEBAL">SEBAL</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.eb.netrad</b><br></div>
+<b>i.eb.netrad --help</b><br>
+<div id="synopsis"><b>i.eb.netrad</b> <b>albedo</b>=<em>name</em> <b>ndvi</b>=<em>name</em> <b>temperature</b>=<em>name</em> <b>localutctime</b>=<em>name</em> <b>temperaturedifference2m</b>=<em>name</em> <b>emissivity</b>=<em>name</em> <b>transmissivity_singleway</b>=<em>name</em> <b>dayofyear</b>=<em>name</em> <b>sunzenithangle</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>albedo</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of albedo raster map [0.0;1.0]</dd>
+
+<dt><b>ndvi</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of NDVI raster map [-1.0;+1.0]</dd>
+
+<dt><b>temperature</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of surface temperature raster map [K]</dd>
+
+<dt><b>localutctime</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of time of satellite overpass raster map [local time in UTC]</dd>
+
+<dt><b>temperaturedifference2m</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the difference map of temperature from surface skin to about 2 m height [K]</dd>
+
+<dt><b>emissivity</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the emissivity map [-]</dd>
+
+<dt><b>transmissivity_singleway</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the single-way atmospheric transmissivitymap [-]</dd>
+
+<dt><b>dayofyear</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the Day Of Year (DOY) map [-]</dd>
+
+<dt><b>sunzenithangle</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the sun zenith angle map [degrees]</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output net radiation layer</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.eb.netrad</em> calculates the net radiation at the time of satellite
+overpass, the way it is in the SEBAL model of Bastiaanssen (1995).
+
+It takes input of Albedo, NDVI, Surface Skin temperature, time of satellite
+overpass, surface emissivity, difference of temperature from surface skin and
+about 2 m height (dT), instantaneous satellite overpass single-way atmospheric
+transmissivity (tsw), Day of Year (DOY), and sun zenith angle.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<!-- rewrite too sloppy notes or move to addons -->
+In the old methods, dT was taken as flat images (dT=5.0), if you don't have a dT
+map from ground data, you would want to try something in this line, this is to
+calculate atmospherical energy balance. In the same way, a standard tsw is used
+in those equations. Refer to <tt>r_net.c</tt> for that and for other non-used equations,
+but stored in there for further research convenience.
+
+<h2><a name="todo">TODO</a></h2>
+Add more explanations.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.eb.soilheatflux.html">i.eb.soilheatflux</a>,
+<a href="i.eb.hsebal01.html">i.eb.hsebal01</a>,
+<a href="i.albedo.html">i.albedo</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>Bastiaanssen, W.G.M., 1995. Regionalization of surface flux 
+densities and moisture indicators in composite terrain; a remote 
+sensing approach under clear skies in mediterranean climates. PhD 
+thesis, Wageningen Agricultural Univ., The Netherland, 271 pp.
+(<a href="http://edepot.wur.nl/206553">PDF</a>)</li>
+
+<li>Chemin, Y., 2012. 
+A Distributed Benchmarking Framework for Actual ET Models, 
+in: Irmak, A. (Ed.), Evapotranspiration - Remote Sensing and Modeling. InTech.
+(<a href="http://www.intechopen.com/books/evapotranspiration-remote-sensing-and-modeling/a-distributed-benchmarking-framework-for-actual-et-models">PDF</a>)</li>
+</ul>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Yann Chemin, International Rice Research Institute, The Philippines
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.eb.netrad">i.eb.netrad source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.eb.netrad">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

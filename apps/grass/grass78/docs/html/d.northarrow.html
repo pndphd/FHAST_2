@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.northarrow - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.northarrow</b></em>  - Displays a north arrow on the graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>, <a href="keywords.html#map annotations">map annotations</a>, <a href="keywords.html#arrow">arrow</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.northarrow</b><br></div>
+<b>d.northarrow --help</b><br>
+<div id="synopsis"><b>d.northarrow</b> [-<b>twr</b>]  [<b>style</b>=<em>string</em>]   [<b>at</b>=<em>x,y</em>]   [<b>rotation</b>=<em>float</em>]   [<b>label</b>=<em>string</em>]   [<b>color</b>=<em>name</em>]   [<b>fill_color</b>=<em>name</em>]   [<b>text_color</b>=<em>name</em>]   [<b>width</b>=<em>float</em>]   [<b>font</b>=<em>string</em>]   [<b>fontsize</b>=<em>float</em>]   [<b>path</b>=<em>name</em>]   [<b>charset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Draw the symbol without text</dd>
+
+<dt><b>-w</b></dt>
+<dd>Do not rotate text with symbol</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use radians instead of degrees for rotation</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>style</b>=<em>string</em></dt>
+<dd>North arrow style</dd>
+<dd>Options: <em>1a, 1b, 2, 3, 4, 5, 6, 7a, 7b, 8a, 8b, 9, fancy_compass, basic_compass, arrow1, arrow2, arrow3, star</em></dd>
+<dd>Default: <em>1a</em></dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/1a.png" alt="1a"> 1a</b>: Two color arrowhead</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/1b.png" alt="1b"> 1b</b>: Two color arrowhead with circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/2.png" alt="2"> 2</b>: Narrow with blending N</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/3.png" alt="3"> 3</b>: Long with small arrowhead</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/4.png" alt="4"> 4</b>: Inverted narrow inside a circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/5.png" alt="5"> 5</b>: Triangle and N inside a circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/6.png" alt="6"> 6</b>: Arrowhead and N inside a circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/7a.png" alt="7a"> 7a</b>: Tall half convex arrowhead</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/7b.png" alt="7b"> 7b</b>: Tall half concave arrowhead</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/8a.png" alt="8a"> 8a</b>: Thin arrow in a circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/8b.png" alt="8b"> 8b</b>: Fat arrow in a circle</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/9.png" alt="9"> 9</b>: One color arrowhead</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/fancy_compass.png" alt="fancy_compass"> fancy_compass</b>: Fancy compass</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/basic_compass.png" alt="basic_compass"> basic_compass</b>: Basic compass</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/arrow1.png" alt="arrow1"> arrow1</b>: Simple arrow</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/arrow2.png" alt="arrow2"> arrow2</b>: Thin arrow</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/arrow3.png" alt="arrow3"> arrow3</b>: Fat arrow</dd>
+<dd><b><img height="12" style="max-width: 80;" src="northarrows/star.png" alt="star"> star</b>: 4-point star</dd>
+
+<dt><b>at</b>=<em>x,y</em></dt>
+<dd>Screen coordinates of the rectangle's top-left corner</dd>
+<dd>(0,0) is lower-left of the display frame</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>85.0,15.0</em></dd>
+
+<dt><b>rotation</b>=<em>float</em></dt>
+<dd>Rotation angle in degrees (counter-clockwise)</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>label</b>=<em>string</em></dt>
+<dd>Displayed letter on the top of arrow</dd>
+<dd>Default: <em>N</em></dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Line color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>fill_color</b>=<em>name</em></dt>
+<dd>Fill color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>text_color</b>=<em>name</em></dt>
+<dd>Text color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+
+<dt><b>width</b>=<em>float</em></dt>
+<dd>Line width</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>fontsize</b>=<em>float</em></dt>
+<dd>Font size</dd>
+<dd>Options: <em>1-360</em></dd>
+<dd>Default: <em>14</em></dd>
+
+<dt><b>path</b>=<em>name</em></dt>
+<dd>Path to font file</dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Text encoding (only applicable to TrueType fonts)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+ 
+<em>d.northarrow</em> displays a north arrow symbol at
+the given screen coordinates. If no coordinates are given it will draw the
+north arrow in the bottom right of the display. It can draw the north arrow
+in a number of styles (see the
+ <a href="https://grasswiki.osgeo.org/wiki/Cartography#Display_monitors">wiki
+page</a> for details).
+With certain styles of north arrow label 'N' is displayed by default,
+and can be changed with option <b>label</b>, for example for different languages.
+The label can be hidden with <b>-t</b> flag.
+<p>
+North arrow can be rotated, for example to align with true north, not grid north.
+The angle in degrees counter-clockwise (or radians with <b>-r</b> flag)
+can be specified with option <b>rotation</b>. Label is rotated together with the
+arrow, unless flag <b>-w</b> is specified.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Display a north arrow symbol as a basic compas with label NORTH,
+rotated by 8 degrees with label, with black line and gray fill:<br>
+
+<div class="code"><pre>
+d.mon wx0
+d.northarrow style=basic_compas rotation=8 label=NORTH -w color=black fill_color=gray
+d.mon -r
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.barscale.html">d.barscale</a>,
+<a href="d.graph.html">d.graph</a>,
+<a href="d.grid.html">d.grid</a>,
+<a href="d.legend.html">d.legend</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Hamish Bowman, <i>Department of Geology, University of Otago, New Zealand</i><br>
+Improvements as part of GSoC 2016 by Adam Laza, <i>CTU in Prague</i>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.northarrow">d.northarrow source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.northarrow">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

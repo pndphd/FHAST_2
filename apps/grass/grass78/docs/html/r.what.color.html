@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.what.color - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.what.color</b></em>  - Queries colors for a raster map layer.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_querying.html">querying</a>, <a href="keywords.html#color table">color table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.what.color</b><br></div>
+<b>r.what.color --help</b><br>
+<div id="synopsis"><b>r.what.color</b> [-<b>i</b>] <b>input</b>=<em>string</em>  [<b>value</b>=<em>float</em>[,<i>float</i>,...]]   [<b>format</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Read values from stdin</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of existing raster map to query colors</dd>
+
+<dt><b>value</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Values to query colors for</dd>
+
+<dt><b>format</b>=<em>string</em></dt>
+<dd>Output format (printf-style)</dd>
+<dd>Default: <em>%d:%d:%d</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.what.color</em> outputs the color associated with user-specified
+category values in a raster input map.
+<p>Values may be specified either using the <b>values=</b> option, or by
+specifying the <b>-i</b> flag and passing the values on
+<tt>stdin</tt>, one per line.
+<p>For each value which is specified, a line of output will be generated
+consisting of the category value followed by the color, e.g.:
+
+<div class="code"><pre>
+r.what.color input=elevation.dem value=1500
+1500: 223:127:31
+</pre></div>
+
+<p>If the input map is an integer (CELL) map, the category will be
+written as an integer (no decimal point), otherwise it will be written
+in floating point format (<i>printf("%.15g")</i> format).
+
+<p>If the lookup fails for a value, the color will be output as an
+asterisk, e.g.:
+
+<div class="code"><pre>
+r.what.color input=elevation.dem value=9999
+9999: *
+</pre></div>
+
+<p>If a value cannot be parsed, both the value and the color will be
+output as an asterisk, e.g.:
+
+<div class="code"><pre>
+r.what.color input=elevation.dem value=bogus
+*: *
+</pre></div>
+
+<p>The format can be changed using the <b>format=</b> option. The value
+should be a <i>printf()</i>-style format string containing three
+conversion specifiers for the red, green and blue values respectively,
+e.g.:
+
+<div class="code"><pre>
+r.what.color input=elevation.dem value=1500 format='%02x:%02x:%02x'
+1500: df:7f:1f
+</pre></div>
+
+<p>If your system supports the <i>%m$</i> syntax, you can change the
+ordering of the components, e.g.:
+
+<div class="code"><pre>
+r.what.color input=elevation.dem value=1500 format='%3$02x:%2$02x:%1$02x'
+1500: 1f:7f:df
+</pre></div>
+
+<p>Common formats:<br>
+<ul>
+<li>Tcl/Tk: <tt>format="#%02x%02x%02x"</tt>
+<li>WxPython: <tt>format='"#%02x%02x%02x"'</tt>  or  <tt>format='"(%d,%d,%d)"'</tt>
+</ul>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.what.html">r.what</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.what.color">r.what.color source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.what.color">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

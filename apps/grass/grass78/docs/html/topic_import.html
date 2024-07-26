@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+ <title>GRASS GIS 7.8.5 Reference Manual: Topic import</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <meta name="Author" content="GRASS Development Team">
+
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>Topic: import</h2>
+
+<table>
+<tr><td valign="top"><a href="db.in.ogr.html">db.in.ogr</a></td> <td>Imports attribute tables in various formats.</td></tr>
+<tr><td valign="top"><a href="i.in.spotvgt.html">i.in.spotvgt</a></td> <td>Imports SPOT VGT NDVI data into a raster map.</td></tr>
+<tr><td valign="top"><a href="r.external.html">r.external</a></td> <td>Links GDAL supported raster data as a pseudo GRASS raster map.</td></tr>
+<tr><td valign="top"><a href="r.import.html">r.import</a></td> <td>Imports raster data into a GRASS raster map using GDAL library and reprojects on the fly.</td></tr>
+<tr><td valign="top"><a href="r.in.ascii.html">r.in.ascii</a></td> <td>Converts a GRASS ASCII raster file to binary raster map.</td></tr>
+<tr><td valign="top"><a href="r.in.aster.html">r.in.aster</a></td> <td>Georeference, rectify, and import Terra-ASTER imagery and relative DEMs using gdalwarp.</td></tr>
+<tr><td valign="top"><a href="r.in.bin.html">r.in.bin</a></td> <td>Import a binary raster file into a GRASS raster map layer.</td></tr>
+<tr><td valign="top"><a href="r.in.gdal.html">r.in.gdal</a></td> <td>Imports raster data into a GRASS raster map using GDAL library.</td></tr>
+<tr><td valign="top"><a href="r.in.gridatb.html">r.in.gridatb</a></td> <td>Imports GRIDATB.FOR map file (TOPMODEL) into a GRASS raster map.</td></tr>
+<tr><td valign="top"><a href="r.in.lidar.html">r.in.lidar</a></td> <td>Creates a raster map from LAS LiDAR points using univariate statistics.</td></tr>
+<tr><td valign="top"><a href="r.in.mat.html">r.in.mat</a></td> <td>Imports a binary MAT-File(v4) to a GRASS raster.</td></tr>
+<tr><td valign="top"><a href="r.in.png.html">r.in.png</a></td> <td>Imports non-georeferenced PNG format image.</td></tr>
+<tr><td valign="top"><a href="r.in.poly.html">r.in.poly</a></td> <td>Creates raster maps from ASCII polygon/line/point data files.</td></tr>
+<tr><td valign="top"><a href="r.in.srtm.html">r.in.srtm</a></td> <td>Imports SRTM HGT files into raster map.</td></tr>
+<tr><td valign="top"><a href="r.in.wms.html">r.in.wms</a></td> <td>Downloads and imports data from OGC WMS and OGC WMTS web mapping servers.</td></tr>
+<tr><td valign="top"><a href="r.in.xyz.html">r.in.xyz</a></td> <td>Creates a raster map from an assemblage of many coordinates using univariate statistics.</td></tr>
+<tr><td valign="top"><a href="r.unpack.html">r.unpack</a></td> <td>Imports a GRASS GIS specific raster archive file (packed with r.pack) as a raster map</td></tr>
+<tr><td valign="top"><a href="r3.in.ascii.html">r3.in.ascii</a></td> <td>Converts a 3D ASCII raster text file into a (binary) 3D raster map.</td></tr>
+<tr><td valign="top"><a href="r3.in.bin.html">r3.in.bin</a></td> <td>Imports a binary raster file into a GRASS 3D raster map.</td></tr>
+<tr><td valign="top"><a href="r3.in.lidar.html">r3.in.lidar</a></td> <td>Creates a 3D raster map from LAS LiDAR points using univariate statistics.</td></tr>
+<tr><td valign="top"><a href="r3.in.v5d.html">r3.in.v5d</a></td> <td>Import 3-dimensional Vis5D files.</td></tr>
+<tr><td valign="top"><a href="r3.in.xyz.html">r3.in.xyz</a></td> <td>Create a 3D raster map from an assemblage of many coordinates using univariate statistics</td></tr>
+<tr><td valign="top"><a href="t.rast.import.html">t.rast.import</a></td> <td>Imports space time raster dataset.</td></tr>
+<tr><td valign="top"><a href="t.vect.import.html">t.vect.import</a></td> <td>Imports a space time vector dataset from a GRASS GIS specific archive file.</td></tr>
+<tr><td valign="top"><a href="v.external.html">v.external</a></td> <td>Creates a new pseudo-vector map as a link to an OGR-supported layer or a PostGIS feature table.</td></tr>
+<tr><td valign="top"><a href="v.import.html">v.import</a></td> <td>Imports vector data into a GRASS vector map using OGR library and reprojects on the fly.</td></tr>
+<tr><td valign="top"><a href="v.in.ascii.html">v.in.ascii</a></td> <td>Creates a vector map from an ASCII points file or ASCII vector file.</td></tr>
+<tr><td valign="top"><a href="v.in.db.html">v.in.db</a></td> <td>Creates new vector (points) map from database table containing coordinates.</td></tr>
+<tr><td valign="top"><a href="v.in.dxf.html">v.in.dxf</a></td> <td>Converts file in DXF format to GRASS vector map.</td></tr>
+<tr><td valign="top"><a href="v.in.e00.html">v.in.e00</a></td> <td>Imports E00 file into a vector map.</td></tr>
+<tr><td valign="top"><a href="v.in.geonames.html">v.in.geonames</a></td> <td>Imports geonames.org country files into a vector points map.</td></tr>
+<tr><td valign="top"><a href="v.in.lidar.html">v.in.lidar</a></td> <td>Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.</td></tr>
+<tr><td valign="top"><a href="v.in.lines.html">v.in.lines</a></td> <td>Imports ASCII x,y[,z] coordinates as a series of lines.</td></tr>
+<tr><td valign="top"><a href="v.in.mapgen.html">v.in.mapgen</a></td> <td>Imports Mapgen or Matlab-ASCII vector maps into GRASS.</td></tr>
+<tr><td valign="top"><a href="v.in.ogr.html">v.in.ogr</a></td> <td>Imports vector data into a GRASS vector map using OGR library.</td></tr>
+<tr><td valign="top"><a href="v.in.wfs.html">v.in.wfs</a></td> <td>Imports GetFeature from a WFS server.</td></tr>
+<tr><td valign="top"><a href="v.unpack.html">v.unpack</a></td> <td>Imports a GRASS GIS specific vector archive file (packed with v.pack) as a vector map</td></tr>
+</table>
+<p><em>See also the corresponding keyword <a href="keywords.html#import">import</a> for additional references.</em><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="https://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

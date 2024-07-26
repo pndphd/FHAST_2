@@ -1,0 +1,703 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.modis.qc - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.modis.qc</b></em>  - Extracts quality control parameters from MODIS QC layers.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_imagery_quality_assessment.html">imagery quality assessment</a>, <a href="keywords.html#reflectance">reflectance</a>, <a href="keywords.html#land surface temperature">land surface temperature</a>, <a href="keywords.html#vegetation">vegetation</a>, <a href="keywords.html#satellite">satellite</a>, <a href="keywords.html#MODIS">MODIS</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.modis.qc</b><br></div>
+<b>i.modis.qc --help</b><br>
+<div id="synopsis"><b>i.modis.qc</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>productname</b>=<em>string</em> <b>qcname</b>=<em>string</em>  [<b>band</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input surface reflectance QC layer [bit array]</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output QC type classification layer</dd>
+
+<dt><b>productname</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of MODIS product type</dd>
+<dd>Options: <em>mod09Q1, mod09A1, mod09A1s, mod09GA, mod09GAs, mod09CMG, mod09CMGs, mod09CMGi, mod11A1, mod11A2, mod13A2, mcd43B2, mcd43B2q, mod13Q1</em></dd>
+<dd><b>mod09Q1</b>: surf. refl. 250m 8-days</dd>
+<dd><b>mod09A1</b>: surf. refl. 500m 8-days</dd>
+<dd><b>mod09A1s</b>: surf. refl. 500m 8-days, State QA</dd>
+<dd><b>mod09GA</b>: surf. refl. 500m daily</dd>
+<dd><b>mod09GAs</b>: surf. refl. 500m daily, State QA</dd>
+<dd><b>mod09CMG</b>: surf. refl. 5000m daily</dd>
+<dd><b>mod09CMGs</b>: surf. refl. 5000m daily, State QA</dd>
+<dd><b>mod09CMGi</b>: surf. refl. 5000m daily, Internal Climatology</dd>
+<dd><b>mod11A1</b>: LST 1km daily (Day/Night)</dd>
+<dd><b>mod11A2</b>: LST 1km 8-days (Day/Night)</dd>
+<dd><b>mod13A2</b>: VI 1km 16-days</dd>
+<dd><b>mcd43B2</b>: Brdf-Albedo Quality (Ancillary SDS) 1km 8-days</dd>
+<dd><b>mcd43B2q</b>: Brdf-Albedo Quality (BRDF SDS) 1km 8-days</dd>
+<dd><b>mod13Q1</b>: VI 250m 16-days</dd>
+
+<dt><b>qcname</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of QC type to extract</dd>
+<dd>Options: <em>adjcorr, atcorr, cloud, data_quality, diff_orbit_from_500m, modland_qa, mandatory_qa_11A1, data_quality_flag_11A1, emis_error_11A1, lst_error_11A1, data_quality_flag_11A2, emis_error_11A2, mandatory_qa_11A2, lst_error_11A2, aerosol_quantity, brdf_correction_performed, cirrus_detected, cloud_shadow, cloud_state, internal_cloud_algorithm, internal_fire_algorithm, internal_snow_mask, land_water, mod35_snow_ice, pixel_adjacent_to_cloud, salt_pan, icm_cloudy, icm_clear, icm_high_clouds, icm_low_clouds, icm_snow, icm_fire, icm_sun_glint, icm_dust, icm_cloud_shadow, icm_pixel_is_adjacent_to_cloud, icm_cirrus, icm_pan_flag, icm_criteria_for_aerosol_retrieval, icm_aot_has_clim_val, modland_qa, vi_usefulness, aerosol_quantity, pixel_adjacent_to_cloud, brdf_correction_performed, mixed_clouds, land_water, possible_snow_ice, possible_shadow, platform, land_water, sun_z_angle_at_local_noon, brdf_correction_performed, modland_qa, vi_usefulness, aerosol_quantity, pixel_adjacent_to_cloud, brdf_correction_performed, mixed_clouds, land_water, possible_snow_ice, possible_shadow</em></dd>
+<dd><b>adjcorr</b>: mod09: Adjacency Correction</dd>
+<dd><b>atcorr</b>: mod09: Atmospheric Correction</dd>
+<dd><b>cloud</b>: mod09: Cloud State</dd>
+<dd><b>data_quality</b>: mod09: Band-Wise Data Quality Flag</dd>
+<dd><b>diff_orbit_from_500m</b>: mod09: 250m Band is at Different Orbit than 500m</dd>
+<dd><b>modland_qa</b>: mod13Q1: MODIS Land General Quality Assessment</dd>
+<dd><b>mandatory_qa_11A1</b>: mod11A1: MODIS Land General Quality Assessment</dd>
+<dd><b>data_quality_flag_11A1</b>: mod11A1: Detailed Quality Indications</dd>
+<dd><b>emis_error_11A1</b>: mod11A1: Average Emissivity Error Classes</dd>
+<dd><b>lst_error_11A1</b>: mod11A1: Average LST Error Classes</dd>
+<dd><b>data_quality_flag_11A2</b>: mod11A2: Detailed Quality Indications</dd>
+<dd><b>emis_error_11A2</b>: mod11A2: Average Emissivity Error Classes</dd>
+<dd><b>mandatory_qa_11A2</b>: mod11A2: MODIS Land General Quality Assessment</dd>
+<dd><b>lst_error_11A2</b>: mod11A2: Average LST Error Classes</dd>
+<dd><b>aerosol_quantity</b>: mod13Q1: Quantity range of Aerosol</dd>
+<dd><b>brdf_correction_performed</b>: mod13Q1: if BRDF correction performed</dd>
+<dd><b>cirrus_detected</b>: mod09*s: StateQA Cirrus Detected</dd>
+<dd><b>cloud_shadow</b>: mod09*s: StateQA Cloud Shadow</dd>
+<dd><b>cloud_state</b>: mod09*s: StateQA Cloud State</dd>
+<dd><b>internal_cloud_algorithm</b>: mod09*s: StateQA Internal Cloud Algorithm</dd>
+<dd><b>internal_fire_algorithm</b>: mod09*s: StateQA Internal Fire Algorithm</dd>
+<dd><b>internal_snow_mask</b>: mod09*s: StateQA Internal Snow Mask</dd>
+<dd><b>land_water</b>: mod13Q1: separate land from various water objects</dd>
+<dd><b>mod35_snow_ice</b>: mod09*s: StateQA mod35 Snow Ice</dd>
+<dd><b>pixel_adjacent_to_cloud</b>: mod13Q1: if pixel is a cloud neighbour</dd>
+<dd><b>salt_pan</b>: mod09*s: StateQA Salt Pan (mod09GAs)</dd>
+<dd><b>icm_cloudy</b>: mod09*i: Internal CM: Cloudy</dd>
+<dd><b>icm_clear</b>: mod09*i: Internal CM: Clear</dd>
+<dd><b>icm_high_clouds</b>: mod09*i: Internal CM: High Clouds</dd>
+<dd><b>icm_low_clouds</b>: mod09*i: Internal CM: Low Clouds</dd>
+<dd><b>icm_snow</b>: mod09*i: Internal CM: Snow</dd>
+<dd><b>icm_fire</b>: mod09*i: Internal CM: Fire</dd>
+<dd><b>icm_sun_glint</b>: mod09*i: Internal CM: Sun Glint</dd>
+<dd><b>icm_dust</b>: mod09*i: Internal CM: Dust</dd>
+<dd><b>icm_cloud_shadow</b>: mod09*i: Internal CM: Cloud Shadow</dd>
+<dd><b>icm_pixel_is_adjacent_to_cloud</b>: mod09*i: Internal CM: Pixel is Adjacent to Cloud</dd>
+<dd><b>icm_cirrus</b>: mod09*i: Internal CM: Cirrus</dd>
+<dd><b>icm_pan_flag</b>: mod09*i: Internal CM: Pan Flag</dd>
+<dd><b>icm_criteria_for_aerosol_retrieval</b>: mod09*i: Internal CM: Criteria for Aerosol Retrieval</dd>
+<dd><b>icm_aot_has_clim_val</b>: mod09*i: Internal CM: AOT (aerosol optical depth) has clim. val.</dd>
+<dd><b>vi_usefulness</b>: mod13Q1: Quality estimation of the pixel</dd>
+<dd><b>mixed_clouds</b>: mod13Q1: if pixel mixed with clouds</dd>
+<dd><b>possible_snow_ice</b>: mod13Q1: if snow/ice present in pixel</dd>
+<dd><b>possible_shadow</b>: mod13Q1: if shadow is present in pixel</dd>
+<dd><b>platform</b>: mcd43B2: Quality of BRDF correction performed</dd>
+<dd><b>sun_z_angle_at_local_noon</b>: mcd43B2: Quality of BRDF correction performed</dd>
+
+<dt><b>band</b>=<em>string</em></dt>
+<dd>Band number of MODIS product (mod09Q1=[1,2],mod09A1=[1-7],m[o/y]d09GA=[1-7],m[o/y]d09CMG=[1-7], mcd43B2q=[1-7])</dd>
+<dd>Options: <em>1, 2, 3, 4, 5, 6, 7</em></dd>
+<dd><b>1</b>: Band 1: Red</dd>
+<dd><b>2</b>: Band 2: NIR</dd>
+<dd><b>3</b>: Band 3: Blue</dd>
+<dd><b>4</b>: Band 4: Green</dd>
+<dd><b>5</b>: Band 5: SWIR 1</dd>
+<dd><b>6</b>: Band 6: SWIR 2</dd>
+<dd><b>7</b>: Band 7: SWIR 3</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#mod09a1-and-mod09q1" class="toc">MOD09A1 and MOD09Q1</a></li>
+        <li class="toc"><a href="#mod11a1" class="toc">MOD11A1</a></li>
+        <li class="toc"><a href="#mod11a2" class="toc">MOD11A2</a></li>
+        <li class="toc"><a href="#mod13a2" class="toc">MOD13A2</a></li>
+        <li class="toc"><a href="#mod13q1" class="toc">MOD13Q1</a></li>
+        <li class="toc"><a href="#mcd43b2" class="toc">MCD43B2</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.modis.qc</em> extracts Requested Quality Assessment flags from the
+following MODIS products: MOD09A1, MOD09Q1, MOD11A1, MOD11A2, MOD13A2, MOD13Q1,
+MCD43B2. This does include MOD09A1 QA_state_500m layer (see Notes).
+<br>
+Added MOD09GA support in 2016, it follows MOD09A1 and its StateQA, but does not have BRDF State QA, instead has Salt Pan State QA.
+
+<h3><a name="mod09a1-and-mod09q1">MOD09A1 and MOD09Q1</a></h3>
+<pre>
+<em>MOD09A1/Q1: MODLAND QA Bits. bits=[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Corrected product produced at ideal quality -- all bands</li>
+ <li>[01]= class 1: Corrected product produced at less than ideal quality -- some or all bands</li>
+ <li>[10]= class 2: Corrected product NOT produced due to cloud effect -- all bands</li>
+ <li>[11]= class 3: Corrected product NOT produced due to other reasons --
+ some or all bands maybe be fill value (Note that a value of [11] overrides a value of [01])</li>
+</ul>
+
+<pre>
+<em>MOD09Q1: Cloud State. bits=[2-3] </em>
+</pre>
+<ul>
+ <li>[00]= class 0: Clear -- No clouds</li>
+ <li>[01]= class 1: Cloudy</li>
+ <li>[10]= class 2: Mixed</li>
+ <li>[11]= class 3: Not Set ; Assumed Clear</li>
+</ul>
+
+<pre>
+<em>MOD09Q1: Band-wise Data Quality 250m bits=[4-7][8-11]</em>
+<em>MOD09A1: Band-wise Data Quality 500m bits=[2-5][6-9][10-13][14-17][18-21][22-25][26-29]</em>
+</pre>
+<ul>
+ <li>[0000]= class 0: highest quality</li>
+ <li>[0111]= class 1: noisy detector</li>
+ <li>[1000]= class 2: dead detector; data interpolated in L1B</li>
+ <li>[1001]= class 3: solar zenith &ge; 86 degrees</li>
+ <li>[1010]= class 4: solar zenith &ge; 85 and &lt; 86 degrees</li>
+ <li>[1011]= class 5: missing input</li>
+ <li>[1100]= class 6: internal constant used in place of climatological data for at least one atmospheric constant</li>
+ <li>[1101]= class 7: correction out of bounds, pixel constrained to extreme allowable value</li>
+ <li>[1110]= class 8: L1B data faulty</li>
+ <li>[1111]= class 9: not processed due to deep ocean or cloud</li>
+ <li>Class 10-15: Combination of bits unused</li>
+</ul>
+
+<pre>
+<em>MOD09A1/Q1: Atmospheric correction bit=[12]/[30]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: Not Corrected product</li>
+ <li>[1]= class 1: Corrected product</li>
+</ul>
+
+<pre>
+<em>MOD09A1/Q1: Adjacency correction bit=[13]/[31]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: Not Corrected product</li>
+ <li>[1]= class 1: Corrected product</li>
+</ul>
+
+<pre>
+<em>MOD09Q1: Different orbit from 500m product, bit=[14]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: same orbit as 500m</li>
+ <li>[1]= class 1: different orbit from 500m</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Cloud State bits=[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: clear</li>
+ <li>[01]= class 1: cloudy</li>
+ <li>[10]= class 2: mixed</li>
+ <li>[11]= class 3: not set, assumed clear</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Cloud shadow bits=[2]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: no</li>
+ <li>[1]= class 1: yes</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Land/Water Flag bits=[3-5]</em>
+</pre>
+<ul>
+ <li>[000]= class 0: Shallow ocean</li>
+ <li>[001]= class 1: Land</li>
+ <li>[010]= class 2: Ocean coastlines and lake shorelines</li>
+ <li>[011]= class 3: Shallow inland water</li>
+ <li>[100]= class 4: Ephemeral water</li>
+ <li>[101]= class 5: Deep inland water</li>
+ <li>[110]= class 6: Continental/moderate ocean</li>
+ <li>[111]= class 7: Deep ocean</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Aerosol Quantity bits=[6-7]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Climatology</li>
+ <li>[01]= class 1: Low</li>
+ <li>[10]= class 2: Average</li>
+ <li>[11]= class 3: High</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Cirrus detected bits=[8-9]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: None</li>
+ <li>[01]= class 1: Small</li>
+ <li>[10]= class 2: Average</li>
+ <li>[11]= class 3: High</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Internal Cloud Algorithm Flag bits=[10]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No cloud</li>
+ <li>[1]= class 1: Cloud</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Internal Fire Algorithm Flag bits=[11]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No fire</li>
+ <li>[1]= class 1: Fire</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: MOD35 snow/ice flag bits=[12]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Pixel adjacent to cloud bits=[13]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: BRDF correction performed bits=[14]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD09A1s: Internal Snow Mask bits=[15]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No snow</li>
+ <li>[1]= class 1: Snow</li>
+</ul>
+
+
+<h3><a name="mod11a1">MOD11A1</a></h3>
+<pre>
+<em>MOD11A1: Mandatory QA Flags bits=[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: LST produced, good quality, not necessary to examine more detailed QA</li>
+ <li>[01]= class 1: LST produced, other quality, recommend examination of more detailed QA</li>
+ <li>[10]= class 2: LST not produced due to cloud effects</li>
+ <li>[11]= class 3: LST not produced primarily due to reasons other than cloud</li>
+</ul>
+
+<pre>
+<em>MOD11A1: Data Quality Flag bits=[2-3]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Good data quality of L1B in bands 31 and 32</li>
+ <li>[01]= class 1: Other quality data</li>
+ <li>[10]= class 2: TBD</li>
+ <li>[11]= class 3: TBD</li>
+</ul>
+
+<pre>
+<em>MOD11A1: Emis Error Flag bits=[4-5]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Average emissivity error &le; 0.01</li>
+ <li>[01]= class 1: Average emissivity error &le; 0.02</li>
+ <li>[10]= class 2: Average emissivity error &le; 0.04</li>
+ <li>[11]= class 3: Average emissivity error &gt; 0.04</li>
+</ul>
+
+<pre>
+<em>MOD11A1: LST Error Flag bits=[6-7]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Average LST error &le; 1</li>
+ <li>[01]= class 1: Average LST error &le; 2</li>
+ <li>[10]= class 2: Average LST error &le; 3</li> 
+ <li>[11]= class 3: Average LST error &gt; 3</li>
+</ul>
+
+<h3><a name="mod11a2">MOD11A2</a></h3>
+<pre>
+<em>MOD11A2: Mandatory QA Flags bits=[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: LST produced, good quality, not necessary to examine more detailed QA</li>
+ <li>[01]= class 1: LST produced, other quality, recommend examination of more detailed QA</li>
+ <li>[10]= class 2: LST not produced due to cloud effects</li>
+ <li>[11]= class 3: LST not produced primarily due to reasons other than cloud</li>
+</ul>
+
+<pre>
+<em>MOD11A2: Data Quality Flag bits=[2-3]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Good data quality of L1B in 7 TIR bands</li>
+ <li>[01]= class 1: Other quality data</li>
+ <li>[10]= class 2: TBD</li>
+ <li>[11]= class 3: TBD</li>
+</ul>
+
+<pre>
+<em>MOD11A2: Emis Error Flag bits=[4-5]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Average emissivity error &le; 0.01</li>
+ <li>[01]= class 1: Average emissivity error &le; 0.02</li>
+ <li>[10]= class 2: Average emissivity error &le; 0.04</li>
+ <li>[11]= class 3: Average emissivity error &gt; 0.04</li>
+</ul>
+
+<pre>
+<em>MOD11A2: LST Error Flag bits=[6-7]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Average LST error &le; 1</li>
+ <li>[01]= class 1: Average LST error &le; 2</li>
+ <li>[10]= class 2: Average LST error &le; 3</li> 
+ <li>[11]= class 3: Average LST error &gt; 3</li>
+</ul>
+
+<h3><a name="mod13a2">MOD13A2</a></h3>
+<pre>
+<em>MOD13A2: Mandatory QA Flags 1km bits[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: VI produced, good quality</li>
+ <li>[01]= class 1: VI produced, but check other QA</li>
+ <li>[10]= class 2: Pixel produced, but most probably cloud</li>
+ <li>[11]= class 3: Pixel not produced due to other reasons than clouds</li>
+</ul>
+
+<pre>
+<em>MOD13A2: VI Usefulness Flag bits[2-5]</em>
+</pre>
+<ul>
+ <li>[0000]= class 0: Highest quality</li>
+ <li>[0001]= class 1: Lower quality</li>
+ <li>[0010]= class 2: Decreasing quality</li>
+ <li>[0100]= class 3: Decreasing quality</li>
+ <li>[1000]= class 4: Decreasing quality</li>
+ <li>[1001]= class 5: Decreasing quality</li>
+ <li>[1010]= class 6: Decreasing quality</li>
+ <li>[1100]= class 7: Lowest quality</li>
+ <li>[1101]= class 8: Quality so low that it is not useful</li>
+ <li>[1110]= class 9: L1B data faulty</li>
+ <li>[1111]= class 10: Not useful for any other reason/not processed</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Aerosol quantity Flags 1km bits[6-7]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Climatology</li>
+ <li>[01]= class 1: Low</li>
+ <li>[10]= class 2: Average</li>
+ <li>[11]= class 3: High</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Adjacent cloud detected 1km bit[8]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Atmosphere BRDF correction performed 1km bit[9]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Mixed clouds 1km bit[10]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Land/Water Flags 1km bits[11-13]</em>
+</pre>
+<ul>
+ <li>[000]= class 0: Shallow Ocean</li>
+ <li>[001]= class 1: Land (Nothing else but land)</li>
+ <li>[010]= class 2: Ocean Coastlines and lake shorelines</li>
+ <li>[011]= class 3: Shallow inland water</li>
+ <li>[100]= class 4: Ephemeral water</li>
+ <li>[101]= class 5: Deep inland water</li>
+ <li>[110]= class 6: Moderate or continental ocean</li>
+ <li>[111]= class 7: Deep ocean</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Possible Snow/Ice 1km bits[14]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13A2: Possible Shadow 1km bits[15]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<h3><a name="mod13q1">MOD13Q1</a></h3>
+<pre>
+<em>MOD13Q1: Mandatory QA Flags 250m bits[0-1]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: VI produced, good quality</li>
+ <li>[01]= class 1: VI produced, but check other QA</li>
+ <li>[10]= class 2: Pixel produced, but most probably cloud</li>
+ <li>[11]= class 3: Pixel not produced due to other reasons than clouds</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: VI Usefulness Flag 250m bits[2-5]</em>
+</pre>
+<ul>
+ <li>[0000]= class 0: Highest quality</li>
+ <li>[0001]= class 1: Lower quality</li>
+ <li>[0010]= class 2: Decreasing quality</li>
+ <li>[0100]= class 3: Decreasing quality</li>
+ <li>[1000]= class 4: Decreasing quality</li>
+ <li>[1001]= class 5: Decreasing quality</li>
+ <li>[1010]= class 6: Decreasing quality</li>
+ <li>[1100]= class 7: Lowest quality</li>
+ <li>[1101]= class 8: Quality so low that it is not useful</li>
+ <li>[1110]= class 9: L1B data faulty</li>
+ <li>[1111]= class 10: Not useful for any other reason/not processed</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Aerosol quantity Flags 250m bits[6-7]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: Climatology</li>
+ <li>[01]= class 1: Low</li>
+ <li>[10]= class 2: Average</li>
+ <li>[11]= class 3: High</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Adjacent cloud detected 250m bit[8]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Atmosphere BRDF correction performed 250m bit[9]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Mixed clouds 250m bit[10]</em>
+</pre>
+<ul>
+ <li>[00]= class 0: No</li>
+ <li>[01]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Land/Water Flags 250m bits[11-13]</em>
+</pre>
+<ul>
+ <li>[000]= class 0: Shallow Ocean</li>
+ <li>[001]= class 1: Land (Nothing else but land)</li>
+ <li>[010]= class 2: Ocean Coastlines and lake shorelines</li>
+ <li>[011]= class 3: Shallow inland water</li>
+ <li>[100]= class 4: Ephemeral water</li>
+ <li>[101]= class 5: Deep inland water</li>
+ <li>[110]= class 6: Moderate or continental ocean</li>
+ <li>[111]= class 7: Deep ocean</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Possible Snow/Ice 250m bits[14]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul>
+
+<pre>
+<em>MOD13Q1: Possible Shadow 250m bits[15]</em>
+</pre>
+<ul>
+ <li>[0]= class 0: No</li>
+ <li>[1]= class 1: Yes</li>
+</ul> 
+
+<h3><a name="mcd43b2">MCD43B2</a></h3>
+<pre>
+<em>MCD43B2: Albedo Quality Ancillary Platform Data 1km bits[0-3]</em>
+<em>SDS: BRDF_Albedo_Ancillary</em>
+</pre>
+<ul>
+ <li>[0000]= class 0: Satellite Platform: Terra</li>
+ <li>[0001]= class 1: Satellite Platform: Terrra/Aqua</li>
+ <li>[0010]= class 2: Satellite Platform: Aqua</li>
+ <li>[1111]= class 15: Fill Value</li>
+ <li>Classes 3-14: Not used</li>
+</ul>
+
+<pre>
+<em>MCD43B2: Albedo Quality Ancillary Land/Water Data 1km bits[4-7]</em>
+<em>SDS: BRDF_Albedo_Ancillary</em>
+</pre>
+<ul>
+ <li>[0000] class 0: Shallow Ocean</li>
+ <li>[0001] class 1: Land (Nothing else but land)</li>
+ <li>[0010] class 2: Ocean and lake shorelines</li>
+ <li>[0011] class 3: Shallow inland water</li>
+ <li>[0100] class 4: Ephemeral water</li>
+ <li>[0101] class 5: Deep inland water</li>
+ <li>[0110] class 6: Moderate or continental ocean</li>
+ <li>[0111] class 7: Deep ocean</li>
+ <li>[1111] class 15: Fill Value</li>
+ <li>Classes 8-14: Not used</li>
+</ul>
+
+<pre>
+<em>MCD43B2: Albedo Quality Ancillary Sun Zenith Angle at Local Solar Noon Data 1km bits[8-14]</em>
+<em>SDS: BRDF_Albedo_Ancillary</em>
+</pre>
+<ul>
+   Returns integer value [0-90], 127 is Fill Value
+</ul>
+
+
+<pre>
+<em>MCD43B2: Band-wise Albedo Quality Data 1km</em>
+<em>SDS: BRDF_Albedo_Band_Quality</em>
+</pre>
+bits[0-3][4-7][8-11][12-15][16-19][20-23][24-27]<br>
+<ul>
+ <li>[0000]= class 0: best quality, 75% or more with best full inversions</li>
+ <li>[0001]= class 1: good quality, 75% or more with full inversions</li>
+ <li>[0010]= class 2: Mixed, 50% or less full inversions and 25% or less fill values</li> 
+ <li>[0011]= class 3: All magnitude inversions or 50% or less fill values</li> 
+ <li>[0100]= class 4: 75% or more fill values</li> 
+ <li>Classes 5-14: Not Used</li>
+ <li>[1111]= class 15: Fill Value</li>
+</ul>
+
+
+<h2><a name="notes">NOTES</a></h2>
+In MOD09A1: It seems that cloud related info is not filled properly in the
+standard QC (MOD09A1 in this module) since version 3, State-QA 500m images
+(MOD09A1s in this module) should be used (see Vermote et al., 2008).
+
+MOD11A2 quality control (QC) bands do not have a FillValue (No-data) according 
+to <a href="https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod11a2_v006">MODIS Land Products site</a>. 
+However, the metadata of the QC bands (i.e.: <tt>gdalinfo QC_band</tt>) shows <tt>No-data=0</tt>. 
+This value is then transformed into GRASS NULLs when data is imported through 
+<a href="r.in.gdal.html">r.in.gdal</a>. Applying <em>i.modis.qc</em> on those QC bands
+will not give the expected range of values in the different QC bits. Therefore, 
+before using <em>i.modis.qc</em>, the user needs to set the NULL value in QC bands 
+back to zero (i.e.: <tt>r.null map=QC_band null=0</tt>) or just edit the metadata with GDAL 
+utilities before importing into GRASS GIS. This is a known issue for MOD11A2 
+(8-day LST product), but other MODIS products might be affected as well.
+
+
+<h2><a name="todo">TODO</a></h2>
+Add more daily products.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.vi.html">i.vi</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li> <a href="https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table">MODIS Products</a>
+<li> Vermote E.F., Kotchenova S.Y., Ray J.P. MODIS Surface Reflectance User's Guide. 
+ Version 1.2. June 2008. MODIS Land Surface Reflectance Science Computing Facility.
+ <a href="http://modis-sr.ltdri.org">Homepage</a>
+</ul>
+
+<h2><a name="author">AUTHOR</a></h2>
+Yann Chemin
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.modis.qc">i.modis.qc source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.modis.qc">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+.TH v.in.dxf 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.dxf\fR\fR  \- Converts file in DXF format to GRASS vector map.
+.SH KEYWORDS
+vector, import, DXF, level1
+.SH SYNOPSIS
+\fBv.in.dxf\fR
+.br
+\fBv.in.dxf \-\-help\fR
+.br
+\fBv.in.dxf\fR [\-\fBetbfli1\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBlayers\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Ignore the map extent of DXF file
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-f\fR" 4m
+.br
+Import polyface meshes as 3D wire frame
+.IP "\fB\-l\fR" 4m
+.br
+List available DXF layers and exit
+.IP "\fB\-i\fR" 4m
+.br
+Invert selection by DXF layers (don\(cqt import layers in list)
+.IP "\fB\-1\fR" 4m
+.br
+Import all objects into one layer
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Path to input DXF file
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBlayers\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+List of DXF layers to import (default: all)
+.SH DESCRIPTION
+\fIv.in.dxf\fR converts DXF format CAD files to GRASS vector
+format. The following graphical objects (DXF entities) are supported:
+.RS 4n
+.IP \(bu 4n
+point
+.RS 4n
+.IP \(bu 4n
+\fBDXF POINT\fR
+.RE
+.IP \(bu 4n
+line
+.RS 4n
+.IP \(bu 4n
+\fBDXF LINE\fR
+.IP \(bu 4n
+\fBDXF POLYLINE\fR
+.IP \(bu 4n
+\fBDXF LWPOLYLINE\fR
+.IP \(bu 4n
+\fBDXF ARC\fR
+.IP \(bu 4n
+\fBDXF CIRCLE\fR
+.IP \(bu 4n
+\fBDXF TEXT\fR
+.RE
+.IP \(bu 4n
+face
+.RS 4n
+.IP \(bu 4n
+\fBDXF POLYFACE MESHES\fR
+.IP \(bu 4n
+\fBDXF 3DFACE\fR
+.RE
+.RE
+Table and column names are changed to lowercase characters for easier
+SQL usage (lowercase table/column names avoid the need to quote them
+if the attribute table is stored in a SQL DBMS such as PostgreSQL).
+.PP
+The \(dqlayer\(dq column will contain the name(s) of the DXF input
+layer(s). The DXF entity type string will be stored in the \(dqentity\(dq
+column as uppercase.
+.PP
+The \(dqhandle\(dq column can be used to store small bits of data associated
+with any entity in the DXF file (i.e., entity handle or unique object
+identifiers in the layer). The entity handle is a \(dqtext string of up
+to 16 hexadecimal digits\(dq, which is a 64\-bit integer (currently not
+supported by GRASS database drivers).  For text type entities, the
+text value will be stored in the \(dqlabel\(dq column of the GRASS vector
+output map. Neither the \(dqhandle\(dq nor \(dqlabel\(dq column is mandatory.
+.SH REFERENCES
+AutoCad DXF (from Wikipedia, the free encyclopedia)
+.br
+DXF References (Autodesk\-supplied documentation)
+.SH SEE ALSO
+\fI
+v.out.dxf,
+v.in.ogr,
+v.out.ogr
+\fR
+.PP
+\fI
+How\-to import DXF files in wxGUI (from GRASS User Wiki)
+\fR
+.SH AUTHORS
+Original written by Chuck Ehlschlaeger, 6/1989
+.br
+Revised by Dave Gerdes, 12/1989
+.br
+US Army Construction Engineering Research Lab
+.PP
+Updated for GRASS 6 and 3D support. Huidae Cho, 3/2006
+.br
+With minor additions by Benjamin Ducke (Oxford Archaeology), 4/2009
+.SH SOURCE CODE
+.PP
+Available at: v.in.dxf source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

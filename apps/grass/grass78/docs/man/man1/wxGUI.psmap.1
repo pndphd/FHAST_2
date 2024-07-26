@@ -1,0 +1,205 @@
+.TH wxGUI.psmap 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Cartographic Composer
+.SH DESCRIPTION
+.PP
+\fBwxGUI Cartographic Composer\fR also called \fIwx.psmap\fR is
+a \fIwxGUI\fR extension which allows the
+user to create interactively hardcopy map outputs. This tool
+generates \fIps.map\fR configuration file
+and then runs \fIps.map\fR to create
+PostScript output. There are two modes \- \fIDraft mode\fR for map
+composing and \fIPreview mode\fR
+(requires Python
+Imaging Library) to see how the result will look like. In draft
+mode map features (like legend or scalebar) are represented by a
+colored rectangle with a label.
+.PP
+Possible output files:
+.RS 4n
+.IP \(bu 4n
+\fIps.map\fR instructions file
+.IP \(bu 4n
+PostScript/EPS file
+.IP \(bu 4n
+PDF (using ps2pdf)
+.RE
+.br
+.br
+.br
+.PP
+Cartographic Composer enables to load in saved instructions file.
+Loading instruction files created by Cartographic Composer is more robust,
+as opposed to loading files created manually.
+.PP
+Currently supported \fIps.map\fR instructions:
+.RS 4n
+.IP \(bu 4n
+paper
+.IP \(bu 4n
+maploc
+.IP \(bu 4n
+scale
+.IP \(bu 4n
+border
+.IP \(bu 4n
+raster
+.IP \(bu 4n
+colortable
+.IP \(bu 4n
+vpoints
+.IP \(bu 4n
+vlines
+.IP \(bu 4n
+vareas
+.IP \(bu 4n
+vlegend
+.IP \(bu 4n
+text
+.IP \(bu 4n
+scalebar
+.IP \(bu 4n
+mapinfo
+.IP \(bu 4n
+point
+.IP \(bu 4n
+line
+.IP \(bu 4n
+rectangle
+.IP \(bu 4n
+labels
+.RE
+.SS CARTOGRAPHIC COMPOSER TOOLBAR
+.IP "      \fIGenerate instructions file\fR" 4m
+.br
+Generates and saves text file with mapping instructions.
+.IP "      \fILoad instructions file\fR" 4m
+.br
+Load text file with mapping instructions.
+.IP "      \fIPage setup\fR" 4m
+.br
+Specify paper size, margins and orientation.
+.IP "      \fIPointer\fR" 4m
+.br
+Select object on the paper by clicking, drag the cursor while pressing the left mouse button to move it or resize object (currently only map frame) by clicking on a small black box in its bottom right corner. Double click to show object properties dialog
+.IP "      \fIPan\fR" 4m
+.br
+Drag the pan cursor while pressing the left mouse button to move your view.
+.IP "      \fIZoom in\fR" 4m
+.br
+Interactive zooming with the mouse in both draft and preview mode. Drawing a box or just a left click with the mouse and zoom\-in cursor causes the display to zoom in so that the area defined by the box fills the display.
+.IP "      \fIZoom out\fR" 4m
+.br
+Interactive zooming with the mouse in both draft and preview mode. Drawing a box or just a left click with the mouse and zoom\-out cursor causes the display to zoom out so that the area displayed shrinks to fill the area defined by the box.
+.IP "      \fIZoom to page\fR" 4m
+.br
+Zoom to display the entire page
+.IP "      \fIMap frame\fR" 4m
+.br
+Click and drag to place map frame. If map frame is already drawn, open a dialog to set its properties.
+.IP "      \fIRaster map\fR" 4m
+.br
+Shows a dialog to add or change the raster map.
+.IP "      \fIVector map\fR" 4m
+.br
+Shows a dialog to add or change current vector maps and their properties:
+.IP "\fIData selection\fR" 4m
+.br
+Select data to draw:
+.IP "\fIFeature type\fR" 4m
+.br
+Select which data type to draw. In case of point data, points or centroids
+can be drawn, in case of line data, lines or boundaries.
+.IP "\fILayer selection\fR" 4m
+.br
+Select layer and limit data by a SQL query or chose only certain categories.
+.IP "\fIMask\fR" 4m
+.br
+Whether to use mask or not.
+.IP "\fIColors\fR" 4m
+.br
+Color settings:
+.IP "\fIOutline\fR" 4m
+.br
+Select outline color and width in points. In case of lines, outline means highlighting.
+.IP "\fIFill\fR" 4m
+.br
+Select fill color, one color for all vector elements or color from rgb column.
+.IP "\fISize and style\fR" 4m
+.br
+Sets size, style, symbols, pattern; depends on data type:
+.IP "\fISymbology\fR" 4m
+.br
+Available for point data. Choose symbol or EPS file to draw points with.
+.IP "\fILine style\fR" 4m
+.br
+Available for line data. Select line style (solid, dashed, ...) and the look of the ends of the line (butt, round, ...)
+.IP "\fIPattern\fR" 4m
+.br
+Available for areas. Choose pattern file and set the width of the pattern.
+.IP "\fISize\fR" 4m
+.br
+Available for point data. Choose size (number of times larger than the size in the icon file) as a single value or take the size from a map table column.
+.IP "\fIRotation\fR" 4m
+.br
+Available for point data. Rotate symbols counterclockwise with the given value or with the value from a map table column
+.IP "\fIWidth\fR" 4m
+.br
+Available for line data. Set line width in points or take the value from a map table column.
+.IP "      \fIAdd overlays\fR" 4m
+.br
+Add overlays: vector labels, grid (not yet implemented)
+.IP "          \fIAdd labels\fR" 4m
+.br
+Add vector labels created beforehand by v.label module.
+.IP "      \fIAdd map elements\fR" 4m
+.br
+Add map elements: legend, scalebar, map info, text
+.IP "          \fIAdd legend\fR" 4m
+.br
+Add raster or vector legend or edit their properties.
+.IP "          \fIAdd map info\fR" 4m
+.br
+Add information about region, grid and scale or edit map info properties.
+.IP "          \fIAdd scalebar\fR" 4m
+.br
+Add scalebar or edit its properties.
+.IP "          \fIAdd text\fR" 4m
+.br
+Add text label.
+.IP "      \fIRemove selected element\fR" 4m
+.br
+Select an object and remove it. Pressing Delete key does the same.
+.IP "      \fIShow preview\fR" 4m
+.br
+Generates output and switches to Preview mode to see the result. Be patient, it can take a while.
+.IP "      \fIGenerate hardcopy map output in PS\fR" 4m
+.br
+Generates hardcopy map output in PostScript/EPS file.
+.IP "      \fIGenerate hardcopy map output in PDF\fR" 4m
+.br
+Generates hardcopy map output in PDF using ps2pdf.
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+See also wiki page.
+.SH AUTHOR
+Anna Kratochvilova, Czech Technical University in Prague, Czech
+Republic (bachelor\(cqs final project 2011, mentor: Martin Landa)
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Cartographic Composer source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

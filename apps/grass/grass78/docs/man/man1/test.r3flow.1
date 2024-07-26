@@ -1,0 +1,54 @@
+.TH test.r3flow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBtest.r3flow\fR\fR  \- Testing flow lines.
+.SH KEYWORDS
+raster3d, unit test
+.SH SYNOPSIS
+\fBtest.r3flow\fR
+.br
+\fBtest.r3flow \-\-help\fR
+.br
+\fBtest.r3flow\fR \fBtest\fR=\fIstring\fR  [\fBcoordinates\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtest\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Select what is tested
+.br
+Options: \fIinterpolation, gradient\fR
+.IP "\fBcoordinates\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+x,y,z coordinates
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input 3D raster map(s)
+.SH DESCRIPTION
+Testing module for \fIr3.flow\fR.
+.SH SEE ALSO
+\fI
+r3.flow
+\fR
+.SH AUTHORS
+Anna Petrasova
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

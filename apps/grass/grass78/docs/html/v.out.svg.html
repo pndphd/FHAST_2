@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.out.svg - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.out.svg</b></em>  - Exports a vector map to SVG file.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.out.svg</b><br></div>
+<b>v.out.svg --help</b><br>
+<div id="synopsis"><b>v.out.svg</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em> <b>type</b>=<em>string</em>  [<b>precision</b>=<em>integer</em>]   [<b>attribute</b>=<em>name</em>[,<i>name</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for SVG output file</dd>
+
+<dt><b>type</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Output type</dd>
+<dd>Defines which feature-type will be extracted</dd>
+<dd>Options: <em>poly, line, point</em></dd>
+<dd>Default: <em>poly</em></dd>
+
+<dt><b>precision</b>=<em>integer</em></dt>
+<dd>Coordinate precision</dd>
+<dd>Default: <em>6</em></dd>
+
+<dt><b>attribute</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Attribute(s) to include in output SVG</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.out.svg</em> converts GRASS vector data to SVG (Scalable Vector Graphics) code notation.
+In particular, it
+<ul>
+<li>converts GRASS line, boundary, area, point, centroid objects to SVG 
+  &lt;path /&gt;, &lt;circle /&gt; elements,</li>
+<li>reduces coordinate precision in SVG-output to save bandwidth,</li>
+<li>extracts GRASS attributes to gg:name="value" attributes.</li>
+</ul>
+
+The <em>precision</em> parameter controls the number of decimals for coordinates
+output (<em>precision=0</em> corresponds to integer precision in the output SVG file).
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<p>Export <b>polygons</b> from GRASS vector map soils (Spearfish sample data) to SVG format:
+<div class="code"><pre>
+v.out.svg input=soils output=/tmp/output.svg type=poly
+</pre></div>
+
+<p>Export <b>lines</b> from GRASS vector map t_hydro (Spearfish sample
+data) to SVG format, set coordinate precision to 0:
+<div class="code"><pre>
+v.out.svg input=t_hydro output=/tmp/output.svg type=line precision=0
+</pre></div>
+
+<p>Export <b>points</b> from GRASS vector map archsites (Spearfish sample
+data) to SVG format, include attribute <b>str1</b> (name):
+<div class="code"><pre>
+v.out.svg input=archsites output=/tmp/output.svg type=point precision=0 attrib=str1
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<a href="http://svg.cc/grass/index.html">Modul v.out.svg at svg.cc</a>
+<br>
+<a href="http://www.w3.org/Graphics/SVG/">SVG (Scalable Vector Graphics) at w3c.org</a>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="v.out.ogr.html">v.out.ogr</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Klaus Foerster (klaus svg.cc), Innsbruck, Austria
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.out.svg">v.out.svg source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.out.svg">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.databases - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.databases</b></em>  - Lists all databases for a given driver and location.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#SQL">SQL</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.databases</b><br></div>
+<b>db.databases --help</b><br>
+<div id="synopsis"><b>db.databases</b>  [<b>driver</b>=<em>name</em>]   [<b>location</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>driver</b>=<em>name</em></dt>
+<dd>Name of database driver</dd>
+<dd>Options: <em>dbf, odbc, ogr, pg, sqlite</em></dd>
+<dd>Default: <em>sqlite</em></dd>
+
+<dt><b>location</b>=<em>name</em></dt>
+<dd>Location</dd>
+<dd>Path for SQLite driver, or connection string for PostgreSQL driver</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.databases</em> lists all databases for a given <b>driver</b>
+and optionally <b>location</b>. 
+
+<h2><a name="notes">NOTES</a></h2>
+
+Currently supported database drivers are
+<em><a href="grass-sqlite.html">SQLite</a></em>, <em><a href="grass-pg.html">PostgreSQL</a></em>,
+and <em><a href="grass-odbc.html">ODBC</a></em>.
+
+<p>
+Default <b>location</b> for SQLite driver is the full path for the
+current mapset. For PostgreSQL driver it's empty connection string.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+List SQLite databases in the current mapset:
+
+<div class="code"><pre>
+db.databases driver=sqlite
+</pre></div>
+
+<p>
+List SQLite databases in a given directory:
+
+<div class="code"><pre>
+db.databases driver=sqlite location=/opt/sqlite
+</pre></div>
+
+<p>
+List PostgreSQL databases from database server running on given port:
+
+<div class="code"><pre>
+db.databases driver=pg location="host=server_name port=5333"
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.columns.html">db.columns</a>,
+<a href="db.describe.html">db.describe</a>,
+<a href="db.drivers.html">db.drivers</a>,
+<a href="db.execute.html">db.execute</a>,
+<a href="db.login.html">db.login</a>,
+<a href="db.tables.html">db.tables</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Updated for GRASS 7 by Martin Landa, Czech Technical University in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/db/db.databases">db.databases source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/db/db.databases">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

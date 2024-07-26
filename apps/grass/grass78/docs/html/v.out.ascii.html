@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.out.ascii - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.out.ascii</b></em>  - Exports a vector map to a GRASS ASCII vector representation.<BR>
+By default only features with category are exported. To export all features use 'layer=-1'.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#ASCII">ASCII</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.out.ascii</b><br></div>
+<b>v.out.ascii --help</b><br>
+<div id="synopsis"><b>v.out.ascii</b> [-<b>ocr</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>output</b>=<em>name</em>]   [<b>columns</b>=<em>name</em>[,<i>name</i>,...]]   [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]  <b>format</b>=<em>string</em>  [<b>separator</b>=<em>character</em>]   [<b>precision</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-o</b></dt>
+<dd>Create old (version 4) ASCII file</dd>
+
+<dt><b>-c</b></dt>
+<dd>Include column names in output (points mode)</dd>
+
+<dt><b>-r</b></dt>
+<dd>Only export points falling within current 3D region (points mode)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area, face, kernel</em></dd>
+<dd>Default: <em>point,line,boundary,centroid,area,face,kernel</em></dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output ASCII file or ASCII vector name if '-o' is defined</dd>
+<dd>If not given or '-' then standard output</dd>
+
+<dt><b>columns</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of attribute column(s) to be exported (point mode)</dd>
+<dd>"*" for all columns</dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>format</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Output format</dd>
+<dd>Options: <em>point, standard, wkt</em></dd>
+<dd>Default: <em>point</em></dd>
+<dd><b>point</b>: Simple point format (point per row)</dd>
+<dd><b>standard</b>: GRASS ASCII vector format</dd>
+<dd><b>wkt</b>: OGC well-known text</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Field separator (points mode)</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>precision</b>=<em>integer</em></dt>
+<dd>Number of significant digits (floating point only)</dd>
+<dd>Options: <em>0-32</em></dd>
+<dd>Default: <em>8</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#standard-mode" class="toc">Standard mode</a></li>
+        <li class="toc"><a href="#point-mode" class="toc">Point mode</a></li>
+        <li class="toc"><a href="#wkt-mode" class="toc">WKT mode</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.out.ascii</em> converts a GRASS vector map in binary format to a
+GRASS vector map in <a href="vectorascii.html">ASCII format</a>. Using
+flag <b>-o</b> <em>v.out.ascii</em> output will be in old (version 4)
+ASCII format.
+
+<p>If the <b>output</b> parameter is not given then the data is sent
+to standard output.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The <em><a href="v.in.ascii.html">v.in.ascii</a></em> module performs
+the function of <em>v.out.ascii</em> in reverse; i.e. it converts
+vector maps in ASCII format to their binary format. These two
+companion modules are useful both for importing and exporting vector
+maps between GRASS and other software, and for transferring data
+between machines.
+
+<p>If old version is requested, the <b>output</b> files
+from <em>v.out.ascii</em> is placed in
+the <tt>$LOCATION/$MAPSET/dig_ascii/</tt>
+and <tt>$LOCATION/$MAPSET/dig_att</tt> directory.
+
+<p>If <b>layer &gt; 0</b> then only features with a category number
+will be exported. Use <em><a href="v.category.html">v.category</a></em> to add
+them if needed or define <b>layer=-1</b> to export also features without category.
+
+<p><em>v.out.ascii</em> in the old version mode (<b>-o</b>) does not
+copy the <tt>dig_cats</tt> file associated with the binary
+vector <b>input</b> map to the new <b>output</b> file name. The user
+must copy the <tt>dig_cats</tt> file to the new <b>output</b> name if
+this is desired (e.g. using the UNIX <em>cp</em> command).
+
+<p>It is possible to output the coordinates of vertices in a non-points vector
+feature by first converting the vector feature to a points map with 
+<em><a href="v.to.points.html">v.to.points</a></em> and then exporting
+with <em>v.out.ascii</em> in
+<b>points</b> mode.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="standard-mode">Standard mode</a></h3>
+
+See <a href="vectorascii.html">ASCII format</a> specification.
+
+<p><div class="code"><pre>
+v.out.ascii input=quads format=standard
+
+ORGANIZATION: US Army Const. Eng. Rsch. Lab
+DIGIT DATE:   May 1987
+DIGIT NAME:   grass
+MAP NAME:     Quads
+MAP DATE:     May 1987
+MAP SCALE:    24000
+OTHER INFO:
+ZONE:         13
+MAP THRESH:   18.288000
+VERTI:
+B  4
+ 599587.1820962 4914067.53414294
+ 589639.15126831 4913922.5687301
+ 589440.96838162 4927803.62500018
+ 599375.87959179 4927959.83330436
+B  2
+ 599375.87959179 4927959.83330436
+ 599587.1820962 4914067.53414294
+B  4
+ 599587.1820962 4914067.53414294
+ 609541.5508239 4914236.0597482
+ 609316.10665227 4928116.8490555
+ 599375.87959179 4927959.83330436
+C  1 1
+ 594125.63    4921115.58
+ 1     1
+C  1 1
+ 604433.84    4921087.1
+ 1     2
+</pre></div>
+
+<h3><a name="point-mode">Point mode</a></h3>
+
+<div class="code"><pre>
+v.out.ascii input=quads format=point
+
+594125.63|4921115.58|1
+604433.84|4921087.1|2
+</pre></div>
+
+Print also selected attributes:
+
+<div class="code"><pre>
+v.out.ascii input=geodetic_pts format=point where="cat > 5 and cat <= 8" columns=GEOD_NAME
+
+573638.06289275|271623.25042595|6|27 WC 6
+574416.81289275|274116.65542595|7|27 WC 7
+575301.31189275|275303.81342595|8|27 WC 8
+</pre></div>
+
+To print all attributes type <b>columns=*</b>:
+
+<div class="code"><pre>
+v.out.ascii input=geodetic_pts format=point where="cat > 5 and cat <= 8" columns=*
+573638.06289275|271623.25042595|6|6|0.00000000|0.00000000|6|6|27 WC 6|573638.09200000|271623.24100000|0.00|0|1.00000000|1.00000000
+574416.81289275|274116.65542595|7|7|0.00000000|0.00000000|7|7|27 WC 7|574416.84100000|274116.64900000|0.00|0|1.00000000|1.00000000
+575301.31189275|275303.81342595|8|8|0.00000000|0.00000000|8|8|27 WC 8|575301.30600000|275303.82600000|0.00|0|1.00000000|1.00000000
+</pre></div>
+
+<h3><a name="wkt-mode">WKT mode</a></h3>
+
+WKT is abbreviation
+for <a href="http://en.wikipedia.org/wiki/Well-known_text">Well-known
+text</a>.
+
+<div class="code"><pre>
+v.out.ascii input=quads format=wkt
+
+POLYGON((599587.18209620 4914067.53414294, 589639.15126831 4913922.56873010,
+         589440.96838162 4927803.62500018, 599375.87959179 4927959.83330436,
+         599587.18209620 4914067.53414294))
+POLYGON((599587.18209620 4914067.53414294, 599375.87959179 4927959.83330436,
+         609316.10665227 4928116.84905550, 609541.55082390 4914236.05974820,
+         599587.18209620 4914067.53414294))
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.category.html">v.category</a>,
+<a href="v.in.ascii.html">v.in.ascii</a>,
+<a href="v.to.points.html">v.to.points</a>
+</em>
+<p>
+<a href="vectorascii.html">GRASS ASCII vector format</a> specification<br>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Higgins, 
+U.S. Army Construction Engineering 
+Research Laboratory
+<br>
+James Westervelt, 
+U.S. Army Construction Engineering 
+Research Laboratory
+<br>
+Radim Blazek, ITC-Irst, Trento, Italy
+<br>
+Attribute selection added by Martin Landa, Czech Technical University
+in Prague, Czech Republic (2008/12)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.out.ascii">v.out.ascii source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.out.ascii">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

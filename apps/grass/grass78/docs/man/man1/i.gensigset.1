@@ -1,0 +1,248 @@
+.TH i.gensigset 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.gensigset\fR\fR  \- Generates statistics for i.smap from raster map.
+.SH KEYWORDS
+imagery, classification, supervised classification, SMAP, signatures
+.SH SYNOPSIS
+\fBi.gensigset\fR
+.br
+\fBi.gensigset \-\-help\fR
+.br
+\fBi.gensigset\fR \fBtrainingmap\fR=\fIname\fR \fBgroup\fR=\fIname\fR \fBsubgroup\fR=\fIname\fR \fBsignaturefile\fR=\fIname\fR  [\fBmaxsig\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtrainingmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Ground truth training map
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBsubgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery subgroup
+.IP "\fBsignaturefile\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output file containing result signatures
+.IP "\fBmaxsig\fR=\fIinteger\fR" 4m
+.br
+Maximum number of sub\-signatures in any class
+.br
+Default: \fI5\fR
+.SH DESCRIPTION
+\fIi.gensigset\fR
+is a non\-interactive method for generating input into
+\fIi.smap.\fR
+It is used as the first pass in the a two\-pass
+classification process.  It reads a raster map layer,
+called the training map, which has some of the pixels or
+regions already classified.  \fIi.gensigset\fR will then
+extract spectral signatures from an image based on the
+classification of the pixels in the training map and make
+these signatures available to
+\fIi.smap.\fR
+.PP
+The user would then execute the GRASS program \fI
+i.smap\fR to create the
+final classified map.
+.SH OPTIONS
+.SS Parameters
+.IP "\fBtrainingmap=\fR\fIname\fR   " 4m
+.br
+ground truth training map
+.PP
+This raster layer, supplied as input by the user, has some
+of its pixels already classified, and the rest (probably
+most) of the pixels unclassified.  Classified means that
+the pixel has a non\-zero value and unclassified means that
+the pixel has a zero value.
+.PP
+This map must be prepared by the user in advance by using
+a combination of
+\fIwxGUI vector digitizer\fR
+and
+\fIv.to.rast\fR,
+or some other import/development process (e.g.,
+\fIv.transects)\fR
+to define the areas representative of the classes in the image.
+.PP
+At present, there is no fully\-interactive tool specifically
+designed for producing this layer.
+.IP "\fBgroup=\fR\fIname\fR   " 4m
+.br
+imagery group
+.PP
+This is the name of the group that contains the band files
+which comprise the image to be analyzed. The
+\fIi.group\fR
+command is used to construct groups of raster layers which
+comprise an image.
+.PP
+.IP "\fBsubgroup=\fR\fIname\fR   " 4m
+.br
+subgroup containing image files
+.PP
+This names the subgroup within the group that selects a
+subset of the bands to be analyzed. The
+\fIi.group\fR
+command is also used to prepare this subgroup.  The
+subgroup mechanism allows the user to select a subset of
+all the band files that form an image.
+.IP "\fBsignaturefile=\fR\fIname\fR  " 4m
+.br
+resultant signature file
+.PP
+This is the resultant signature file (containing the means
+and covariance matrices) for each class in the training map
+that is associated with the band files in the subgroup
+selected.
+.PP
+.IP "\fBmaxsig=\fR\fIvalue\fR   " 4m
+.br
+maximum number of sub\-signatures in any class
+.br
+default: 5
+.PP
+The spectral signatures which are produced by this program
+are \(dqmixed\(dq signatures (see NOTES).
+Each signature contains one or more subsignatures
+(represeting subclasses).  The algorithm in this program
+starts with a maximum number of subclasses and reduces this
+number to a minimal number of subclasses which are
+spectrally distinct.  The user has the option to set this
+starting value with this option.
+.SH INTERACTIVE MODE
+If none of the arguments are specified on the command line,
+\fIi.gensigset\fR will interactively prompt for the
+names of these maps and files.
+.PP
+It should be noted that interactive mode here only means
+interactive prompting for maps and files.  It does not mean
+visualization of the signatures that result from the
+process.
+.PP
+.SH NOTES
+The algorithm in \fIi.gensigset\fR determines the
+parameters of a spectral class model known as a Gaussian
+mixture distribution.  The parameters are estimated using
+multispectral image data and a training map which labels
+the class of a subset of the image pixels.  The mixture
+class parameters are stored as a class signature which can
+be used for subsequent segmentation (i.e., classification)
+of the multispectral image.
+.PP
+The Gaussian mixture class is a useful model because it can
+be used to describe the behavior of an information class
+which contains pixels with a variety of distinct spectral
+characteristics.  For example, forest, grasslands or urban
+areas are examples of information classes that a user may
+wish to separate in an image.  However, each of these
+information classes may contain subclasses each with its
+own distinctive spectral characteristic.  For example, a
+forest may contain a variety of different tree species each
+with its own spectral behavior.
+.PP
+The objective of mixture classes is to improve segmentation
+performance by modeling each information class as a
+probabilistic mixture with a variety of subclasses.  The
+mixture class model also removes the need to perform an
+initial unsupervised segmentation for the purposes of
+identifying these subclasses.  However, if misclassified
+samples are used in the training process, these erroneous
+samples may be grouped as a separate undesired subclass.
+Therefore, care should be taken to provided accurate
+training data.
+.PP
+This clustering algorithm estimates both the number of
+distinct subclasses in each class, and the spectral mean
+and covariance for each subclass.  The number of subclasses
+is estimated using Rissanen\(cqs minimum description length
+(MDL) criteria
+[1].
+This criteria attempts to determine
+the number of subclasses which \(dqbest\(dq describe the data.
+The approximate maximum likelihood estimates of the mean
+and covariance of the subclasses are computed using the
+expectation maximization (EM) algorithm
+[2,3].
+.SH WARNINGS
+If warnings like this occur, reducing the remaining classes to 0:
+.br
+.nf
+\fC
+\&...
+WARNING: Removed a singular subsignature number 1 (4 remain)
+WARNING: Removed a singular subsignature number 1 (3 remain)
+WARNING: Removed a singular subsignature number 1 (2 remain)
+WARNING: Removed a singular subsignature number 1 (1 remain)
+WARNING: Unreliable clustering. Try a smaller initial number of clusters
+WARNING: Removed a singular subsignature number 1 (\-1 remain)
+WARNING: Unreliable clustering. Try a smaller initial number of clusters
+Number of subclasses is 0
+\fR
+.fi
+then the user should check for:
+.RS 4n
+.IP \(bu 4n
+the range of the input data should be between 0 and 100 or 255 but not
+between 0.0 and 1.0 (\fIr.info\fR and \fIr.univar\fR show the range)
+.IP \(bu 4n
+the training areas need to contain a sufficient amount of pixels
+.RE
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+J. Rissanen,
+\(dqA Universal Prior for Integers and Estimation by Minimum Description Length,\(dq
+\fIAnnals of Statistics,\fR vol. 11, no. 2, pp. 417\-431, 1983.
+.IP \(bu 4n
+A. Dempster, N. Laird and D. Rubin,
+\(dqMaximum Likelihood from Incomplete Data via the EM Algorithm,\(dq
+\fIJ. Roy. Statist. Soc. B,\fR vol. 39, no. 1, pp. 1\-38, 1977.
+.IP \(bu 4n
+E. Redner and H. Walker,
+\(dqMixture Densities, Maximum Likelihood and the EM Algorithm,\(dq
+\fISIAM Review,\fR vol. 26, no. 2, April 1984.
+.RE
+.SH SEE ALSO
+\fI
+i.group,
+i.smap,
+r.info,
+r.univar,
+wxGUI vector digitizer
+\fR
+.SH AUTHORS
+Charles Bouman,
+School of Electrical Engineering, Purdue University
+.br
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: i.gensigset source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

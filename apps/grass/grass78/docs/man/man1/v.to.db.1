@@ -1,0 +1,355 @@
+.TH v.to.db 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.to.db\fR\fR  \- Populates attribute values from vector features.
+.SH KEYWORDS
+vector, attribute table, database, area, azimuth, bounding box, category, compactness, coordinates, fractal, geometry, length, perimeter, sides, sinuous, slope
+.SH SYNOPSIS
+\fBv.to.db\fR
+.br
+\fBv.to.db \-\-help\fR
+.br
+\fBv.to.db\fR [\-\fBpsc\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoption\fR=\fIstring\fR \fBcolumns\fR=\fIname\fR[,\fIname\fR,...]  [\fBunits\fR=\fIstring\fR]   [\fBquery_layer\fR=\fIstring\fR]   [\fBquery_column\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print only
+.IP "\fB\-s\fR" 4m
+.br
+Only print SQL statements
+.IP "\fB\-c\fR" 4m
+.br
+Print also totals for option length, area, or count
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (write to)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type
+.br
+For coor valid point/centroid, for length valid line/boundary
+.br
+Options: \fIpoint, line, boundary, centroid\fR
+.br
+Default: \fIpoint,line,boundary,centroid\fR
+.IP "\fBoption\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Value to upload
+.br
+Options: \fIcat, area, compact, fd, perimeter, length, count, coor, start, end, sides, query, slope, sinuous, azimuth, bbox\fR
+.br
+\fBcat\fR: insert new row for each category if doesn\(cqt exist yet
+.br
+\fBarea\fR: area size
+.br
+\fBcompact\fR: compactness of an area, calculated as
+.br
+compactness = perimeter / (2 * sqrt(PI * area))
+.br
+\fBfd\fR: fractal dimension of boundary defining a polygon, calculated as
+.br
+fd = 2 * (log(perimeter) / log(area))
+.br
+\fBperimeter\fR: perimeter length of an area
+.br
+\fBlength\fR: line length
+.br
+\fBcount\fR: number of features for each category
+.br
+\fBcoor\fR: point coordinates, X,Y or X,Y,Z
+.br
+\fBstart\fR: line/boundary starting point coordinates, X,Y or X,Y,Z
+.br
+\fBend\fR: line/boundary end point coordinates, X,Y or X,Y,Z
+.br
+\fBsides\fR: categories of areas on the left and right side of the boundary, \(cqquery_layer\(cq is used for area category
+.br
+\fBquery\fR: result of a database query for all records of the geometry(or geometries) from table specified by \(cqquery_layer\(cq option
+.br
+\fBslope\fR: slope steepness of vector line or boundary
+.br
+\fBsinuous\fR: line sinuousity, calculated as line length / distance between end points
+.br
+\fBazimuth\fR: line azimuth, calculated as angle between North direction and endnode direction at startnode
+.br
+\fBbbox\fR: bounding box of area, N,S,E,W
+.IP "\fBcolumns\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of attribute column(s) to populate
+.br
+Name of attribute column(s)
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Units
+.br
+Options: \fImiles, feet, meters, kilometers, acres, hectares, radians, degrees\fR
+.IP "\fBquery_layer\fR=\fIstring\fR" 4m
+.br
+Query layer number or name (read from)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBquery_column\fR=\fIname\fR" 4m
+.br
+Name of attribute column used for \(cqquery\(cq option
+.br
+E.g. \(cqcat\(cq, \(cqcount(*)\(cq, \(cqsum(val)\(cq
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator for print mode
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIv.to.db\fR loads vector map features or metrics into a database
+table, or prints them (or the SQL queries used to obtain them) in a
+form of a human\-readable report. For uploaded/printed category values
+\(cq\-1\(cq is used for \(cqno category\(cq and \(cqnull\(cq/\(cq\-\(cq if category cannot be
+found or multiple categories were found. For line azimuths \(cq\-1\(cq is used
+for closed lines (start equals end).
+.SH NOTES
+Measures of lengths and areas are always reported in meters, unless the
+\fIunit\fR parameter is set.
+The units \fImiles\fR, \fIfeet\fR, \fImeters\fR and
+\fIkilometers\fR are square for \fIoption=area\fR.
+.PP
+Feet and acre units are always reported in their common versions
+(i.e. the International Foot, exactly 5280 feet in a mile), even
+when the location\(cqs standard map unit is the US Survey foot.
+.PP
+When calculating perimeters in Latitude\-Longitude locations, the geodesic
+distance between the vertices is used.
+.PP
+When using \fIoption=coor\fR on a vector area map,
+only coordinates of centroids with unique category will be reported.
+.PP
+When using \fIoption=bbox\fR on a vector area map with more than one
+feature per category value, the results corresponds to the bounding box of
+all features of same category taken together.
+.PP
+Line azimuth is calculated as angle from the North direction to the line endnode
+direction at the line statnode. By default it\(cqs reported in decimal degrees (0\-360, CW) but
+it also may be repored in radians with \fIunit=radians\fR. Azimuth value
+\fB\-1\fR is used to report closed line with it\(cqs startnode and endnode being in
+same place. Azimuth values make sense only if every vector line has only one
+entry in database (unique CAT value).
+.PP
+If the module is apparently slow \fIand\fR the map attributes are
+stored in an external DBMS such as PostgreSQL, it is highly recommended
+to create an index on the key (category) column.
+.PP
+Uploading the vector map attributes to a database requires a table attached to
+a given input vector \fIlayer\fR. The \fBprint only\fR (\fB\-p\fR) mode
+doesn\(cqt require a table. Use \fIdb.execute\fR
+or \fIv.db.addtable\fR to create a table if
+needed.
+.PP
+Updating the table has to be done column\-wise. The \fIcolumn\fR will be
+created in the table if it doesn\(cqt already exist, except when using the
+\fBprint only\fR (\fB\-p\fR) mode. If the \fIcolumn\fR exists, the
+\fB\-\-overwrite\fR flag is required to overwrite it.
+.SH EXAMPLES
+.SS Updating attribute tables
+Upload category numbers to attribute table (used for new map):
+.br
+.br
+.nf
+\fC
+v.to.db map=soils type=centroid option=cat
+\fR
+.fi
+.PP
+Upload polygon areas to corresponding centroid record in the attribute table:
+.br
+.br
+.nf
+\fC
+v.to.db map=soils type=centroid option=area columns=area_size unit=h
+\fR
+.fi
+.PP
+Upload line lengths (in meters) of each vector line to attribute table
+(use \fIv.category\fR in case of missing categories):
+.br
+.br
+.nf
+\fC
+v.to.db map=roads option=length type=line columns=linelength units=me
+\fR
+.fi
+.PP
+Upload x and y coordinates from vector geometry to attribute table:
+.br
+.br
+.nf
+\fC
+v.to.db map=pointsmap option=coor columns=x,y
+\fR
+.fi
+.PP
+Upload x, y and z coordinates from vector geometry to attribute table:
+.br
+.br
+.nf
+\fC
+v.to.db map=pointsmap option=coor columns=x,y,z
+\fR
+.fi
+.PP
+Transfer attributes from a character column (with numeric contents) to a new
+integer column:
+.br
+.br
+.nf
+\fC
+v.db.addcolumn usa_income_employment2002 col=\(dqFIPS_NUM integer\(dq
+v.to.db usa_income_employment2002 option=query columns=FIPS_NUM query_column=STATE_FIPS
+\fR
+.fi
+.PP
+Upload category numbers of left and right area, to an attribute table of
+boundaries common for the areas:
+.br
+.br
+.nf
+\fC
+# add categories for boundaries of the input vector map, in layer 2:
+v.category soils out=mysoils layer=2 type=boundary option=add
+# add a table with columns named \(dqleft\(dq and \(dqright\(dq to layer 2 of the input
+# vector map:
+v.db.addtable mysoils layer=2 columns=\(dqleft integer,right integer\(dq
+# upload categories of left and right areas:
+v.to.db mysoils option=sides columns=left,right layer=2
+# display the result:
+v.db.select mysoils layer=2
+\fR
+.fi
+.PP
+Compute DL, the Fractal Dimension (Mandelbrot, 1982), of the
+boundary defining a polygon based on the formula:
+.br
+D = 2 * (log perimeter) / (log area):
+.br
+.br
+.nf
+\fC
+g.copy vect=soils,mysoils
+v.db.addcolumn mysoils col=\(dqd double precision\(dq
+v.to.db mysoils option=fd column=\(dqd\(dq
+g.region vector=mysoils res=50
+v.to.rast input=mysoils output=soils_fd type=area use=attr attribute_column=d
+r.colors map=soils_fd color=gyr
+d.mon wx0
+d.rast.leg soils_fd
+d.vect mysoils type=boundary
+\fR
+.fi
+.SS Printing reports
+Report x,y,z coordinates of points in the input vector map:
+.br
+.br
+.nf
+\fC
+v.to.db \-p bugsites option=coor type=point
+\fR
+.fi
+Report all area sizes of the input vector map:
+.br
+.br
+.nf
+\fC
+v.to.db \-p soils option=area type=boundary units=h
+\fR
+.fi
+.PP
+Report all area sizes of the input vector map, in hectares, sorted by category
+number (requires GNU \fIsort\fR utility installed):
+.br
+.br
+.nf
+\fC
+v.to.db \-p soils option=area type=boundary units=h | sort \-n
+\fR
+.fi
+.PP
+Report all line lengths of the input vector map, in kilometers:
+.br
+.br
+.nf
+\fC
+v.to.db \-p roads option=length type=line units=k
+\fR
+.fi
+.PP
+Report number of features for each category in the input vector map:
+.br
+.br
+.nf
+\fC
+v.to.db \-p roads option=count type=line
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.what.vect,
+db.execute,
+v.category,
+v.db.addtable,
+v.db.addcolumn,
+v.db.connect,
+v.distance,
+v.report,
+v.univar,
+v.what
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Mandelbrot, B. B. (1982). The fractal geometry of nature. New York: W. H. Freeman.
+.IP \(bu 4n
+Xu, Y. F. & Sun, D. A. (2005). Geotechnique 55, No. 9, 691\-695
+.RE
+.SH AUTHOR
+Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Line sinuousity implemented by Wolf Bergenheim
+.SH SOURCE CODE
+.PP
+Available at: v.to.db source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,202 @@
+.TH d.rast.arrow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rast.arrow\fR\fR  \- Draws arrows representing cell aspect direction for a raster map containing aspect data.
+.SH KEYWORDS
+display, map annotations, raster, arrow
+.SH SYNOPSIS
+\fBd.rast.arrow\fR
+.br
+\fBd.rast.arrow \-\-help\fR
+.br
+\fBd.rast.arrow\fR [\-\fBa\fR] \fBmap\fR=\fIname\fR  [\fBtype\fR=\fIstring\fR]   [\fBcolor\fR=\fIname\fR]   [\fBgrid_color\fR=\fIname\fR]   [\fBnull_color\fR=\fIname\fR]   [\fBunknown_color\fR=\fIname\fR]   [\fBskip\fR=\fIinteger\fR]   [\fBmagnitude_map\fR=\fIstring\fR]   [\fBscale\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Align grids with raster cells
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster aspect map to be displayed
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of existing raster aspect map
+.br
+Options: \fIgrass, compass, drainage, agnps, answers\fR
+.br
+Default: \fIgrass\fR
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Color for drawing arrows
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIgreen\fR
+.IP "\fBgrid_color\fR=\fIname\fR" 4m
+.br
+Color for drawing drawing grid
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIgray\fR
+.IP "\fBnull_color\fR=\fIname\fR" 4m
+.br
+Color for drawing null values (X symbol)
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBunknown_color\fR=\fIname\fR" 4m
+.br
+Color for showing unknown information (? symbol)
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIred\fR
+.IP "\fBskip\fR=\fIinteger\fR" 4m
+.br
+Draw arrow every Nth grid cell
+.br
+Default: \fI1\fR
+.IP "\fBmagnitude_map\fR=\fIstring\fR" 4m
+.br
+Raster map containing values used for arrow length
+.IP "\fBscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for arrows (magnitude map)
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fId.rast.arrow\fR
+is designed to help users better visualize surface water flow direction,
+as indicated in an aspect raster map layer.  There are two ways to specify
+the aspect layer the program is to use.  The first is to display the aspect
+map layer on the graphics monitor before running \fId.rast.arrow\fR.
+The second method involves setting the \fImap\fR parameter
+to the name of the desired aspect map.
+This allows the arrows to be drawn over any other maps already displayed
+on the graphics monitor.
+.PP
+\fId.rast.arrow\fR will draw an arrow over each displayed cell
+to indicate in which direction the cell slopes. If the aspect
+layer has a category value denoting locations of \(dqunknown\(dq aspect,
+\fId.rast.arrow\fR draws a question mark over the displayed cells
+of that category.
+Cells containing null data will be marked with an \(dqX\(dq.
+You can disable drawing of null data and unknown aspect values by
+setting its color to \(dqnone\(dq.
+.PP
+When specifying the \fImagnitude_map\fR option, arrow lengths
+denoting magnitude will be extracted from the cell values of the specified
+map. In this case the tail of the arrow will be centered on the source cell.
+You may adjust the overall scale using the \fIscale\fR option.
+\fId.rast.arrow\fR will ignore NULL and negative magnitudes, and will
+warn you if the debug level is set at 5 or higher. Be aware. If your application
+uses negative values for magnitude, you can use
+\fIr.mapcalc\fR to prepare the magnitude map to
+suit your needs (absolute value, inverted direction and so on).
+.SH NOTES
+By default, arrows are drawn at the size of a cell and cannot be seen if
+the raster map is relatively close in scale. You can use the \fIskip\fR
+option to draw arrows every n\-th cell in both directions if you are working
+with relatively high resolutions. It may be useful to disable the grid in
+this case, which is accomplished by setting its color to \(dqnone\(dq.
+.PP
+For GRASS and Compass type aspect maps, the cell values of the aspect map
+will determine the corresponding direction in 360 degrees. ANSWERS type aspect
+maps will be plotted in multiples of 15 degrees counterclockwise from east, and
+AGNPS and Drainage type aspect maps will be displayed in D8 representation,
+i.e. the eight multiples of 45 degrees. Cell values are 1 to 8 clockwise from
+north for AGNPS and 1 to 8 counterclockwise from north east for Drainage. See
+\fIr.watershed\fR for more details about the
+Drainage aspect.
+.PP
+GRASS aspect maps are measured using Cartesian conventions, i.e. in degrees
+counterclockwise from east. e.g.:
+.br
+.nf
+\fC
+90  North
+180 West
+270 South
+0,360 East
+\fR
+.fi
+They can be created from a raster elevation map with
+\fIr.slope.aspect\fR.
+.PP
+Compass type aspect maps are measured in degrees clockwise from north.
+.PP
+This module uses oceanographic conventions, i.e. arrows point downslope or
+direction \(dqto\(dq, as opposed to atmospheric conventions (direction \(dqfrom\(dq).
+.SH EXAMPLE
+Convert U,V velocity component maps into magnitude,direction maps for use
+with \fId.rast.arrow\fR:
+.br
+.nf
+\fC
+r.mapcalc \(dqmagnitude = sqrt(U_map^2 + V_map^2)\(dq
+r.mapcalc \(dqdirection = atan(U_map, V_map)\(dq
+d.rast.arrow map=direction type=grass magnitude_map=magnitude skip=3 grid=none
+\fR
+.fi
+.br
+\fISea wind speed (magnitude) and direction shown in the Tasmanian Sea\fR
+.SH SEE ALSO
+\fI
+d.frame,
+d.rast,
+d.rast.edit,
+d.rast.num,
+g.region,
+r.slope.aspect,
+r.watershed
+\fR
+.SH AUTHORS
+Original author
+.br
+Chris Rewerts
+.br
+\fIAgricultural Engineering,
+.br
+Purdue University\fR
+.br
+.br
+Magnitude and 360 arrow code
+.br
+Hamish Bowman
+.br
+\fIDepartment of Marine Science,
+.br
+University of Otago, New Zealand\fR
+.br
+.br
+Align grids with raster cells and Drainage aspect type
+.br
+Huidae Cho
+.br
+.SH SOURCE CODE
+.PP
+Available at: d.rast.arrow source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

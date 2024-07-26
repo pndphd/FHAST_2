@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.mat - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.mat</b></em>  - Exports a GRASS raster to a binary MAT-File.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.mat</b><br></div>
+<b>r.out.mat --help</b><br>
+<div id="synopsis"><b>r.out.mat</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output binary MAT file</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.out.mat</em> will export a GRASS raster map to a MAT-File which can
+be loaded into Matlab or Octave for plotting or further analysis. 
+Attributes such as map title and bounds will also be exported into 
+additional array variables.<br>
+<br>
+Specifically, the following array variables are created:<br>
+<ul>
+  <li><b> map_data</b>
+  <li><b> map_name</b>
+  <li><b> map_title</b> (if it exists)
+  <li><b> map_northern_edge</b>
+  <li><b> map_southern_edge</b>
+  <li><b> map_eastern_edge</b>
+  <li><b> map_western_edge</b>
+</ul>
+
+<br>
+In addition, <em>r.out.mat</em> makes for a nice binary container format
+for transferring georeferenced maps around, even if you don't use Matlab 
+or Octave. 
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.out.mat</em> exports a Version 4 MAT-File. These files should 
+successfully load into more modern versions of Matlab and Octave 
+without any problems.<br><br>
+
+Everything should be Endian safe, so the resultant file can be simply 
+copied between different system architectures without binary translation.
+<br><br>
+
+As there is no IEEE value for <tt>NaN</tt> for integer maps, GRASS's null 
+value is used to represent it within these maps. You'll have to do something 
+like this to clean them once the map is loaded into Matlab:
+<div class="code"><pre>    map_data(find(map_data &lt; -1e9)) = NaN;</pre></div>
+
+Null values in maps containing either floating point or double-precision 
+floating point data should translate into <tt>NaN</tt> values as expected.
+<br><br>
+
+
+<em>r.out.mat</em> must load the entire map into memory before writing, 
+therefore it might have problems with <i>huge</i> maps.
+(a 3000x4000 DCELL map uses about 100mb RAM)<br><br>
+
+GRASS defines its map bounds at the outer-edge of the bounding cells, not at
+the coordinates of their centroids. Thus, the following Matlab commands may 
+be used to determine the map's resolution information:
+<div class="code"><pre>
+    [rows cols] = size(map_data)
+    x_range = map_eastern_edge - map_western_edge
+    y_range = map_northern_edge - map_southern_edge
+    ns_res = y_range/rows
+    ew_res = x_range/cols
+</pre></div>
+<br>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In Matlab, plot with either:
+<div class="code"><pre>
+imagesc(map_data), axis equal, axis tight, colorbar
+</pre></div>
+
+or
+<div class="code"><pre>
+contourf(map_data, 24), axis ij, axis equal, axis tight, colorbar
+</pre></div>
+
+<br>
+
+<h2><a name="todo">TODO</a></h2>
+
+Add support for exporting map history, category information, color map, etc.
+<br>
+Option to export as a version 5 MAT-File, with map and support information 
+stored in a single structured array.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<i>
+<a href="r.in.mat.html">r.in.mat</a><br>
+<a href="r.out.ascii.html">r.out.ascii</a>, <a href="r.out.bin.html">r.out.bin</a><br>
+<a href="r.null.html">r.null</a><br>
+The <a href="http://www.octave.org">Octave</a> project
+</i>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Hamish Bowman<br> <i>
+Department of Marine Science<br>
+University of Otago<br>
+New Zealand</i><br>
+
+<br>
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.mat">r.out.mat source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.mat">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

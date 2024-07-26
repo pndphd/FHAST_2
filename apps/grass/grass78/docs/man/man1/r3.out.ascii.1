@@ -1,0 +1,285 @@
+.TH r3.out.ascii 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.out.ascii\fR\fR  \- Converts a 3D raster map layer into a ASCII text file.
+.SH KEYWORDS
+raster3d, export, output, voxel, conversion, ASCII
+.SH SYNOPSIS
+\fBr3.out.ascii\fR
+.br
+\fBr3.out.ascii \-\-help\fR
+.br
+\fBr3.out.ascii\fR [\-\fBhrdcm\fR] \fBinput\fR=\fIstring\fR  [\fBoutput\fR=\fIname\fR]   [\fBprecision\fR=\fIinteger\fR]   [\fBnull_value\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Suppress printing of header information
+.IP "\fB\-r\fR" 4m
+.br
+Switch the row order in output from north\->south to south\->north
+.IP "\fB\-d\fR" 4m
+.br
+Switch the depth order in output from bottom\->top to top\->bottom
+.IP "\fB\-c\fR" 4m
+.br
+Print grass6 compatible format. Flags \-d and \-r are ignored.
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with input map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+3D raster map to be converted to ASCII
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for ASCII output file
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of decimal places for floats
+.br
+Options: \fI0\-20\fR
+.br
+Default: \fI8\fR
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.SH DESCRIPTION
+\fIr3.out.ascii\fR exports a 3D raster map in ASCII format. The \fIinput\fR parameter is
+a valid 3D raster map in the current mapset search path. The \fIoutput\fR
+parameter is the name of an ASCII file which will be written in the
+current working directory.
+.PP
+If \fIoutput\fR is not specified then standard output (stdout) is used.
+The \fI\-h\fR flag may be used to suppress header information. The
+module is sensitive to region settings (set with \fIg.region\fR).
+.PP
+The \fI\-c\fR flag will create GRASS 6 \fIr3.in.ascii\fR compatible
+output.
+.SH NOTES
+The default format of the exported ASCII file is equivalent to that required
+by \fIr3.in.ascii\fR. In particular, files output by
+\fIr3.out.ascii\fR with header information may be converted back to
+3D raster maps with \fIr3.in.ascii\fR.
+.PP
+The format of the ASCII file is:
+.br
+.nf
+\fC
+version: \fI\(dqgrass7\(dq\fR
+order:   \fI\(dqnsbt\(dq or \(dqnstb\(dq or \(dqsnbt\(dq or \(dqsntb\(dq\fR
+north:   \fIfloating point\fR
+south:   \fIfloating point\fR
+east:    \fIfloating point\fR
+west:    \fIfloating point\fR
+top:     \fIfloating point\fR
+bottom:  \fIfloating point\fR
+rows:    \fIinteger\fR
+cols:    \fIinteger\fR
+levels:  \fIinteger\fR
+\fR
+.fi
+The \fBversion\fR and \fBorder\fR options have been introduced in GRASS 7 in June 2011.
+The \fBorder\fR option describes the order of rows and depths in the output.
+It is possible to create output of different row order using the \fI\-r\fR flag
+and output of different depths order using the  \fI\-d\fR flag. The default order is:
+.PP
+.br
+.nf
+\fC
+west \-> east for columns
+north \-> south for rows
+bottom \-> top for depths
+\fR
+.fi
+.PP
+This header is followed by the cell values in \fIfloating point\fR format
+organized in rows with constant \fIcol\fR and \fIlevel\fR coordinate.
+The rows are organized by constant \fIlevel\fR coordinate. Individual cell
+values are separated by \fIspace\fR or \fICR\fR.
+Cell values are exported as a series of horizontal slices in row\-major
+order. The data starts with the upper left corner (NW) at the bottom of the data set.
+The values at the following coordinates are exported:
+.br
+.nf
+\fC
+(x, y + rows,     z) (x + 1, y + rows,     z) ... (x + cols, y + rows,     z)
+(x, y + rows,     z) (x + 1, y + rows \- 1, z) ... (x + cols, y + rows \- 1, z)
+          .                     .                                .
+          .                     .                                .
+          .                     .                                .
+(x, y,   z + depths) (x + 1, y,   z + depths) ... (x + cols, y,   z + depths)
+\fR
+.fi
+This order is compatible with the \fIr.in.ascii\fR row \-> column ordering.
+.PP
+Supported orders are:
+.RS 4n
+.IP \(bu 4n
+\fBnsbt\fR: north \-> south and bottom \-> top ordering which is the default (no flags)
+.IP \(bu 4n
+\fBsnbt\fR: south \-> north and bottom \-> top ordering using \fI\-r\fR flag
+.IP \(bu 4n
+\fBnstb\fR: north \-> south and top \-> bottom ordering using \fI\-d\fR flag
+.IP \(bu 4n
+\fBsntb\fR: south \-> north and top \-> bottom ordering using \fI\-rd\fR flag
+.RE
+.PP
+The internal storage scheme of 3D raster maps is visualized in the following picture:
+.br
+.TS
+expand;
+lw60.
+T{
+\fIThe coordinate system and tile layout of a voxel map in GRASS\fR
+T}
+.sp 1
+.TE
+.PP
+One level maps can be imported with \fIr.in.ascii\fR (2D raster) using
+the default \fBnsbt\fR order and removing the header lines \(dqversion\(dq,
+\(dqorder\(dq, \(dqtop\(dq, \(dqbottom\(dq and \(dqlevels\(dq.
+.SH Example
+We define a small region with 4 columns, 3 rows and 2 depths (4x3x2) and export
+it using different ordering definitions:
+.br
+.nf
+\fC
+g.region res3=1 t=2 b=0 w=0 e=4 s=0 n=3
+r3.mapcalc \(dqsimple_example = row() + col() + depth()\(dq
+\fR
+.fi
+Default order:
+.br
+.nf
+\fC
+r3.out.ascii input=simple_example dp=0
+version: grass7
+order: nsbt
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+3 4 5 6
+4 5 6 7
+5 6 7 8
+4 5 6 7
+5 6 7 8
+6 7 8 9
+\fR
+.fi
+Inverse row order (\-r)
+.br
+.nf
+\fC
+r3.out.ascii input=simple_example dp=0 \-r
+version: grass7
+order: snbt
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+5 6 7 8
+4 5 6 7
+3 4 5 6
+6 7 8 9
+5 6 7 8
+4 5 6 7
+\fR
+.fi
+Inverse depth order (\-d)
+.br
+.nf
+\fC
+r3.out.ascii input=simple_example dp=0 \-d
+version: grass7
+order: nstb
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+4 5 6 7
+5 6 7 8
+6 7 8 9
+3 4 5 6
+4 5 6 7
+5 6 7 8
+\fR
+.fi
+Inverse row and depth order (\-rd)
+.br
+.nf
+\fC
+r3.out.ascii input=simple_example dp=0 \-rd
+version: grass7
+order: sntb
+north: 3.000000
+south: 0.000000
+east: 4.000000
+west: 0.000000
+top: 2.000000
+bottom: 0.000000
+rows: 3
+cols: 4
+levels: 2
+6 7 8 9
+5 6 7 8
+4 5 6 7
+5 6 7 8
+4 5 6 7
+3 4 5 6
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r3.in.ascii,
+r.out.ascii,
+g.region
+\fR
+.SH AUTHORS
+Roman Waupotitsch, Michael Shapiro,
+Helena Mitasova, Bill Brown, Lubos Mitas, Jaro Hofierka, Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.out.ascii source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

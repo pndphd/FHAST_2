@@ -1,0 +1,179 @@
+.TH r.buffer 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.buffer\fR\fR  \- Creates a raster map showing buffer zones surrounding cells that contain non\-NULL category values.
+.SH KEYWORDS
+raster, buffer
+.SH SYNOPSIS
+\fBr.buffer\fR
+.br
+\fBr.buffer \-\-help\fR
+.br
+\fBr.buffer\fR [\-\fBz\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBdistances\fR=\fIfloat\fR[,\fIfloat\fR,...]  [\fBunits\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Ignore zero (0) data cells instead of NULL cells
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBdistances\fR=\fIfloat[,\fIfloat\fR,...]\fR \fB[required]\fR" 4m
+.br
+Distance zone(s)
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Units of distance
+.br
+Options: \fImeters, kilometers, feet, miles, nautmiles\fR
+.br
+Default: \fImeters\fR
+.SH DESCRIPTION
+\fIr.buffer\fR creates a new raster map showing
+buffer (a.k.a. \(dqdistance\(dq or \(dqproximity\(dq) zones around all
+cells that contain non\-NULL category values in an existing
+raster map. The distances of buffer zones from cells with
+non\-zero category values are user\-chosen and must be positive value(s).
+Suppose, for example, that you want to place buffer zones around
+roads.  This program could create the raster map
+shown below on the right based on road information
+contained in the raster map shown on the left.
+.br
+.nf
+\fC
+      000000000000000000000000 222233333333333333444444
+      111000000000000000000000 111222222222223333333333
+      000111111111100000000000 222111111111122223333333
+      000000001000011100000000 332222221222211122222222
+      000000001000000011111111 333333321233222211111111
+      000000001000000000000000 433333321233333222222222
+      000000001000000000000000 444443321233333333333333
+      000000001000000000000000 444443321233443333333333
+      000000001000000000000000 444443321233444444444444
+      Category 0: No roads
+      Category 1: Road location
+      Category 2: Buffer Zone 1 around roads
+      Category 3: Buffer Zone 2 around roads
+      Category 4: Buffer Zone 3 around roads
+\fR
+.fi
+.SH NOTES
+The user has the option of identifying up to 250 continuous zones.
+The zones are identified by specifying the upper limit of each desired
+zone (\fIr.buffer\fR assumes that 0 is the starting
+point).  \(dqContinuous\(dq is used in the sense that each category zone\(cqs
+lower value is the previous zone\(cqs upper value. The first buffer zone
+always has distance 0 as its lower bound. Buffer distances
+can be specified using one of five units with the \fBunits\fR parameter.
+.PP
+Distances from cells containing the user\-specified category values
+are calculated using the \(dqfromcell\(dq method. This method locates each
+cell that contains a category value from which distances are to be
+calculated, and draws the requested distance rings around
+them. This method works very fast when there are few cells
+containing the category values of interest, but works
+slowly when there are numerous cells containing the
+category values of interest spread throughout the area.
+.PP
+\fIr.buffer\fR measures distances from center of cell to
+center of cell using Euclidean distance measure for
+planimetric locations (like UTM) and using ellipsoidal
+geodesic distance measure for latitude/longitude locations.
+.PP
+\fIr.buffer\fR calculates distance zones from all cells having
+non\-NULL category values in the \fBinput\fR map. If the user wishes
+to calculate distances from only selected \fBinput\fR map category
+values, the user should run (for example)
+\fIr.reclass\fR prior to
+\fIr.buffer\fR, to reclass all categories from which distance zones
+are not desired to be calculated into category NULL.
+.PP
+The \fB\-z\fR flag can be used to ignore raster values of zero instead of NULL
+values in the input raster map.
+.PP
+When working with massive raster regions consider
+the \fIr.buffer.lowmem\fR module
+if RAM use becomes a problem. The lowmem version can be > 40x
+slower, but will work with minimal memory requirements. The
+classic \fIr.buffer\fR should be able to deal with raster maps of
+32000x32000 size on a system with 1 GB RAM, and rasters of 90000x90000
+on a system with 8 GB RAM without going into swap.
+.SH EXAMPLE
+In the following example (North Carolina sample dataset), the buffer zones
+would be (in the default map units of meters):  0\-100, 101\-200, 201\-300,
+301\-400 and 401\-500.
+.br
+.br
+.nf
+\fC
+g.region raster=roadsmajor \-p
+r.buffer input=roadsmajor output=roadsmajor_buf distances=100,200,300,400,500
+\fR
+.fi
+Result:
+.br
+.nf
+\fC
+r.category input=roads.buf
+      1       distances calculated from these locations
+      2       0\-100 meters
+      3       100\-200 meters
+      4       200\-300 meters
+      5       300\-400 meters
+      6       400\-500 meters
+\fR
+.fi
+.br
+\fIDistances to road\fR
+.SH SEE ALSO
+\fI
+r.buffer.lowmem,
+r.grow,
+v.buffer
+\fR
+.PP
+\fI
+g.region,
+r.cost,
+r.distance,
+r.grow.distance,
+r.mapcalc,
+r.reclass
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S. Army Construction Engineering
+Research Laboratory
+.br
+James Westervelt, U.S. Army Construction Engineering
+Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.buffer source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

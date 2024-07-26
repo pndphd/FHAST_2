@@ -1,0 +1,110 @@
+.TH g.copy 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.copy\fR\fR  \- Copies available data files in the current mapset search path to the user\(cqs current mapset.
+.SH KEYWORDS
+general, map management
+.SH SYNOPSIS
+\fBg.copy\fR
+.br
+\fBg.copy \-\-help\fR
+.br
+\fBg.copy\fR  [\fBraster\fR=\fIfrom,to\fR]   [\fBraster_3d\fR=\fIfrom,to\fR]   [\fBvector\fR=\fIfrom,to\fR]   [\fBlabel\fR=\fIfrom,to\fR]   [\fBregion\fR=\fIfrom,to\fR]   [\fBgroup\fR=\fIfrom,to\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBraster\fR=\fIfrom,to\fR" 4m
+.br
+raster map(s) to be copied
+.IP "\fBraster_3d\fR=\fIfrom,to\fR" 4m
+.br
+3D raster map(s) to be copied
+.IP "\fBvector\fR=\fIfrom,to\fR" 4m
+.br
+vector map(s) to be copied
+.IP "\fBlabel\fR=\fIfrom,to\fR" 4m
+.br
+paint label file(s) to be copied
+.IP "\fBregion\fR=\fIfrom,to\fR" 4m
+.br
+region definition(s) to be copied
+.IP "\fBgroup\fR=\fIfrom,to\fR" 4m
+.br
+imagery group(s) to be copied
+.SH DESCRIPTION
+A user may access data stored under the other mapsets listed in their
+mapset search path. However, the user may only modify data stored
+under their own current mapset. \fIg.copy\fR allows the user to copy
+existing data files \fBfrom\fR other mapsets \fBto\fR the user\(cqs
+current mapset ($MAPSET). The files to be copied must exist in the
+user\(cqs current mapset search path and location; output is sent to the
+relevant data element directory(ies) under the user\(cqs current mapset.
+.SH EXAMPLES
+If the user wished to copy the existing raster
+file \fIsoils\fR to a file called \fIsoils.ph\fR and
+to copy an existing vector map \fIroads\fR to a file
+called \fIrds.old\fR, the user could type:
+.br
+.nf
+\fC
+g.copy raster=soils,soils.ph
+g.copy vector=roads,rds.old
+# or even combined:
+g.copy raster=soils,soils.ph vector=roads,rds.old
+\fR
+.fi
+.PP
+Data files can also be specified by their mapsets.  For
+example, the below command copies the raster map named
+\fIsoils\fR from the mapset \fIwilson\fR to a new
+file called \fIsoils\fR to be placed under the user\(cqs
+current mapset:
+.br
+.nf
+\fC
+g.copy raster=soils@wilson,soils
+\fR
+.fi
+If no mapset name is specified, \fIg.copy\fR searches for the
+named \fBfrom\fR map in each of the mapset directories listed in the
+user\(cqs current mapset search path in the order in which mapsets are
+listed there (see \fIg.mapsets\fR).
+.SH SEE ALSO
+\fI
+g.access,
+g.list,
+g.mapsets,
+g.remove,
+g.rename
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S. Army Construction Engineering
+Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: g.copy source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

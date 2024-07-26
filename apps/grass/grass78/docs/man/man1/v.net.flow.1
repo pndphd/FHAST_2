@@ -1,0 +1,149 @@
+.TH v.net.flow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.flow\fR\fR  \- Computes the maximum flow between two sets of nodes in the network.
+.SH KEYWORDS
+vector, network, flow
+.SH SYNOPSIS
+\fBv.net.flow\fR
+.br
+\fBv.net.flow \-\-help\fR
+.br
+\fBv.net.flow\fR \fBinput\fR=\fIname\fR  [\fBarc_layer\fR=\fIstring\fR]   [\fBnode_layer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR \fBcut\fR=\fIname\fR  [\fBarc_column\fR=\fIname\fR]   [\fBarc_backward_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIname\fR]   [\fBsource_cats\fR=\fIrange\fR]   [\fBsource_where\fR=\fIsql_query\fR]   [\fBsink_cats\fR=\fIrange\fR]   [\fBsink_where\fR=\fIsql_query\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBarc_layer\fR=\fIstring\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBnode_layer\fR=\fIstring\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBcut\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map containing a minimum cut
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIname\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIname\fR" 4m
+.br
+Node cost column (number)
+.IP "\fBsource_cats\fR=\fIrange\fR" 4m
+.br
+Source category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBsource_where\fR=\fIsql_query\fR" 4m
+.br
+Source WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBsink_cats\fR=\fIrange\fR" 4m
+.br
+Sink category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBsink_where\fR=\fIsql_query\fR" 4m
+.br
+Sink WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.SH DESCRIPTION
+\fIv.net.flow\fR computes the maximum flow and minimum cut
+between two sets of nodes.
+.SH NOTES
+The two sets of nodes are called \fIsources\fR and \fIsink\fR
+and \fIv.net.flow\fR finds the maximum flow from the former to
+the latter ones. Edge capacities can be specified by \fBarc_column\fR
+for forward direction and \fBarc_backward_column\fR for backward direction. If
+the latter parameter is omitted then the same capacity is used in
+either direction. The sets are given by the respective \fBcats\fR,
+\fBlayer\fR and \fBwhere\fR parameters. Maximum flow corresponds
+to the maximum amount of water possibly flowing through the network
+preserving the capacity constraints and minimum cut to the set of edges
+of minimum total capacity completely separating sources from sinks.
+The cut produced by this module corresponds to the first fully
+saturated edges from sources to sinks. An attribute table containing
+the flow information is linked to the \fBoutput\fR map. The table
+consists of two columns: \fIcat\fR and \fIflow\fR and stores
+the flow along each line. Negative flow means that \(dqwater\(dq is
+flowing in the backward direction. \fBCut\fR map contains the edges
+in the minimum cut.
+.br
+A famous result
+says that the total amount of water flowing is equal to the minimum
+cut.
+.SH EXAMPLES
+Find maximum flow from factories to stores using SPEED for the capacities.
+.br
+.nf
+\fC
+v.net.flow input=roads output=roads_flow cut=roads_cut arc_column=SPEED \(rs
+           source_where=\(dqtype=factory\(dq sink_where=\(dqtype=store\(dq
+\fR
+.fi
+.PP
+If all the capacties are one then the minimum cut corresponds to the
+minimum number of edges separating sources from sinks.
+.br
+.nf
+\fC
+v.net.flow input=network output=flow cut=cut arc_column=ones \(rs
+           source_cats=1\-10 sink_cats=100\-100
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.net,
+v.net.connectivity
+\fR
+.SH AUTHORS
+Daniel Bundala, Google Summer of Code 2009, Student
+.br
+Wolf Bergenheim, Mentor
+.SH SOURCE CODE
+.PP
+Available at: v.net.flow source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

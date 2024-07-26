@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.createdb - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.createdb</b></em>  - Creates an empty database.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#SQL">SQL</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.createdb</b><br></div>
+<b>db.createdb --help</b><br>
+<div id="synopsis"><b>db.createdb</b> <b>driver</b>=<em>name</em> <b>database</b>=<em>name</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>driver</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of database driver</dd>
+<dd>Options: <em>dbf, odbc, ogr, pg, sqlite</em></dd>
+<dd>Default: <em>sqlite</em></dd>
+
+<dt><b>database</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of database</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#create-a-new-sqlite-file-based-database" class="toc">Create a new SQLite file-based database</a></li>
+        <li class="toc"><a href="#create-a-new-postgresql-database" class="toc">Create a new PostgreSQL database</a></li>
+    </ul></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.createdb</em> allows the user to create a new empty database
+through different drivers. A working database connection needs to be
+established, see <em><a href="db.login.html">db.login</a></em>.
+
+<p>
+Currently only <a href="grass-sqlite.html">SQLite</a>
+and <a href="grass-pg.html">PostgreSQL</a> database drivers are
+supported.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="create-a-new-sqlite-file-based-database">Create a new SQLite file-based database</a></h3>
+
+Note that the standard GRASS GIS SQLite database is by default
+generated in the user's current mapset. This example shows an
+out-of-mapset database file creation:
+
+<div class="code"><pre>
+db.createdb driver=sqlite database=/opt/sqlite.db
+</pre></div>
+
+<h3><a name="create-a-new-postgresql-database">Create a new PostgreSQL database</a></h3>
+
+Create a new PostgreSQL database (after the PostgreSQL connection got
+established through the <em>pg</em> driver):
+
+<div class="code"><pre>
+db.createdb driver=pg database=grassdb
+</pre></div>
+
+<p>
+Create a new PostgreSQL database (after the PostgreSQL connection got
+established through the <em>odbc</em> driver):
+
+<div class="code"><pre>
+db.createdb driver=odbc database=grassdb
+</pre></div>
+
+<h2><a name="todo">TODO</a></h2>
+
+Support other database drivers, too.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.columns.html">db.columns</a>,
+<a href="db.connect.html">db.connect</a>,
+<a href="db.describe.html">db.describe</a>,
+<a href="db.drivers.html">db.drivers</a>,
+<a href="db.dropdb.html">db.dropdb</a>,
+<a href="db.droptable.html">db.droptable</a>,
+<a href="db.execute.html">db.execute</a>,
+<a href="db.login.html">db.login</a>,
+<a href="db.tables.html">db.tables</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+SQLite and PostgreSQL support by Martin Landa, Czech Technical University in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/db/db.createdb">db.createdb source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/db/db.createdb">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

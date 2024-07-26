@@ -1,0 +1,331 @@
+.TH r.walk 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.walk\fR\fR  \- Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.
+.SH KEYWORDS
+raster, cost surface, cumulative costs, cost allocation
+.SH SYNOPSIS
+\fBr.walk\fR
+.br
+\fBr.walk \-\-help\fR
+.br
+\fBr.walk\fR [\-\fBknrib\fR] \fBelevation\fR=\fIname\fR \fBfriction\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBsolver\fR=\fIname\fR]   [\fBnearest\fR=\fIname\fR]   [\fBoutdir\fR=\fIname\fR]   [\fBstart_points\fR=\fIname\fR]   [\fBstop_points\fR=\fIname\fR]   [\fBstart_raster\fR=\fIname\fR]   [\fBstart_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBstop_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBmax_cost\fR=\fIvalue\fR]   [\fBnull_cost\fR=\fIvalue\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\fBwalk_coeff\fR=\fIa,b,c,d\fR]   [\fBlambda\fR=\fIfloat\fR]   [\fBslope_factor\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-k\fR" 4m
+.br
+Use the \(cqKnight\(cqs move\(cq; slower, but more accurate
+.IP "\fB\-n\fR" 4m
+.br
+Keep null values in output raster map
+.IP "\fB\-r\fR" 4m
+.br
+Start with values in raster map
+.IP "\fB\-i\fR" 4m
+.br
+Print info about disk space and memory requirements and exit
+.IP "\fB\-b\fR" 4m
+.br
+Create bitmask encoded directions
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBfriction\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map containing friction costs
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map to contain walking costs
+.IP "\fBsolver\fR=\fIname\fR" 4m
+.br
+Name of input raster map solving equal costs
+.br
+Helper variable to pick a direction if two directions have equal cumulative costs (smaller is better)
+.IP "\fBnearest\fR=\fIname\fR" 4m
+.br
+Name for output raster map with nearest start point
+.IP "\fBoutdir\fR=\fIname\fR" 4m
+.br
+Name for output raster map to contain movement directions
+.IP "\fBstart_points\fR=\fIname\fR" 4m
+.br
+Name of starting vector points map
+.br
+Or data source for direct OGR access
+.IP "\fBstop_points\fR=\fIname\fR" 4m
+.br
+Name of stopping vector points map
+.br
+Or data source for direct OGR access
+.IP "\fBstart_raster\fR=\fIname\fR" 4m
+.br
+Name of starting raster points map
+.IP "\fBstart_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of starting point(s) (E,N)
+.IP "\fBstop_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of stopping point(s) (E,N)
+.IP "\fBmax_cost\fR=\fIvalue\fR" 4m
+.br
+Maximum cumulative cost
+.br
+Default: \fI0\fR
+.IP "\fBnull_cost\fR=\fIvalue\fR" 4m
+.br
+Cost assigned to null cells. By default, null cells are excluded
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.IP "\fBwalk_coeff\fR=\fIa,b,c,d\fR" 4m
+.br
+Coefficients for walking energy formula parameters a,b,c,d
+.br
+Default: \fI0.72,6.0,1.9998,\-1.9998\fR
+.IP "\fBlambda\fR=\fIfloat\fR" 4m
+.br
+Lambda coefficients for combining walking energy and friction cost
+.br
+Default: \fI1.0\fR
+.IP "\fBslope_factor\fR=\fIfloat\fR" 4m
+.br
+Slope factor determines travel energy cost per height step
+.br
+Default: \fI\-0.2125\fR
+.SH DESCRIPTION
+\fIr.walk\fR computes anisotropic cumulative cost of moving between
+different geographic locations on an input elevation raster map whose
+cell category values represent elevation combined with an input raster
+map layer whose cell values represent friction cost.
+.PP
+\fIr.walk\fR outputs 1) a raster map showing the lowest
+cumulative cost (time) of moving between each cell and the user\-specified
+starting points and 2) a second raster map showing the movement
+direction to the next cell on the path back to the start point (see
+Movement Direction). It uses an input elevation
+raster map whose cell category values represent elevation,
+combined with a second input raster map whose cell values
+represent friction costs.
+.PP
+This function is similar to \fIr.cost\fR,
+but in addition to a friction map, it considers an anisotropic travel
+time due to the different walking speed associated with downhill and
+uphill movements.
+.SH NOTES
+.PP
+The formula from Aitken 1977/Langmuir 1984 (based on Naismith\(cqs rule
+for walking times) has been used to estimate the cost parameters of
+specific slope intervals:
+.br
+.nf
+\fC
+T = a*delta_S + b*delta_H_uphill + c*delta_H_moderate_downhill + d*delta_H_steep_downhill
+\fR
+.fi
+where:
+.RS 4n
+.IP \(bu 4n
+T is time of movement in seconds,
+.IP \(bu 4n
+delta S is the horizontal distance covered in meters,
+.IP \(bu 4n
+delta H is the altitude difference in meters.
+.RE
+.PP
+The a, b, c, d \fBwalk_coeff\fR parameters take in account
+movement speed in the different conditions and are linked to:
+.RS 4n
+.IP \(bu 4n
+a: time in seconds it takes to walk for 1 meter a flat surface (1/walking speed)
+.IP \(bu 4n
+b: additional walking time in seconds, per meter of elevation gain
+on uphill slopes
+.IP \(bu 4n
+c: additional walking time in seconds, per meter of elevation loss
+on moderate downhill slopes (use positive value for decreasing cost)
+.IP \(bu 4n
+d: additional walking time in seconds, per meter of elevation loss
+on steep downhill slopes (use negative value for increasing cost)
+.RE
+It has been proved that moving downhill is favourable up to a specific
+slope value threshold, after that it becomes unfavourable. The default
+slope value threshold (\fBslope_factor\fR) is \-0.2125, corresponding
+to tan(\-12), calibrated on human behaviour (>5 and <12 degrees:
+moderate downhill; >12 degrees: steep downhill). The default values
+for a, b, c, d \fBwalk_coeff\fR parameters are those proposed by
+Langmuir (0.72, 6.0, 1.9998, \-1.9998), based on man walking effort in
+standard conditions.
+.PP
+The \fBfriction\fR cost parameter represents a time penalty in seconds
+of additional walking time to cross 1 meter distance.
+.PP
+The \fBlambda\fR parameter is a dimensionless scaling factor of the friction cost:
+.br
+.nf
+\fC
+total cost = movement time cost + lambda * friction costs * delta_S
+\fR
+.fi
+.PP
+For a more accurate result, the \(dqknight\(cqs move\(dq option can be used
+(although it is more time consuming). In the diagram below, the center
+location (O) represents a grid cell from which cumulative distances
+are calculated. Those neighbours marked with an x are always
+considered for cumulative cost updates. With the \(dqknight\(cqs move\(dq
+option, the neighbours marked with a K are also considered.
+.br
+.nf
+\fC
+  K   K
+K x x x K
+  x O x
+K x x x K
+  K   K
+\fR
+.fi
+.PP
+The minimum cumulative costs are computed using Dijkstra\(cqs
+algorithm, that find an optimum solution (for more details see
+\fIr.cost\fR, that uses the same algorithm).
+.SH Movement Direction
+.PP
+The movement direction surface is created to record the sequence of
+movements that created the cost accumulation surface. This movement
+direction surface can be used by \fIr.path\fR
+to recover a path from an end point back to the start point.
+The direction of each cell points towards the next cell.
+The directions are recorded as degrees CCW from East:
+.br
+.nf
+\fC
+       112.5      67.5         i.e. a cell with the value 135
+157.5  135   90   45   22.5    means the next cell is to the north\-west
+       180   x   360
+202.5  225  270  315  337.5
+       247.5     292.5
+\fR
+.fi
+.PP
+Once \fIr.walk\fR computes the cumulative cost map as a linear
+combination of friction cost (from friction map) and the altitude and
+distance covered (from the digital elevation model), the associated
+movement direction map can be used by \fIr.path\fR
+to find the minimum cost path.
+.PP
+\fIr.walk\fR, like most all GRASS raster programs, is also made to
+be run on maps larger that can fit in available computer memory. As the
+algorithm works through the dynamic list of cells it can move almost
+randomly around the entire area. \fIr.walk\fR divides the entire
+area into a number of pieces and swaps these pieces in and out of
+memory (to and from disk) as needed. This provides a virtual memory
+approach optimally designed for 2\-D raster maps. The amount of memory
+to be used by \fIr.walk\fR can be controlled with the \fBmemory\fR
+option, default is 300 MB. For systems with less memory this value will
+have to be set to a lower value.
+.SH EXAMPLES
+We compute a map showing how far a lost person could get from the
+point where he or she was last seen
+while taking into account the topography and landcover.
+.br
+.nf
+\fC
+g.region swwake_30m \-p
+# create friction map based on land cover
+r.recode landclass96 out=friction rules=\- << EOF
+1:3:0.1:0.1
+4:5:10.:10.
+6:6:1000.0:1000.0
+7:7:0.3:0.3
+EOF
+r.walk \-k elevation=elev_ned_30m friction=friction output=walkcost \(rs
+    start_coordinates=635576,216485 lambda=0.5 max=10000
+# compute contours on the cost surface to better understand
+# how far the person can get in certain time (1000 is in seconds)
+r.contour walkcost output=walkcost step=1000
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Aitken, R. 1977. Wilderness areas in Scotland. Unpublished Ph.D. thesis.
+University of Aberdeen.
+.IP \(bu 4n
+Steno Fontanari, University of Trento, Italy, Ingegneria per l\(cqAmbiente e
+il Territorio, 2000\-2001.
+Svilluppo di metodologie GIS per la determinazione dell\(cqaccessibilità
+territoriale come supporto alle decisioni nella gestione ambientale.
+.IP \(bu 4n
+Langmuir, E. 1984. Mountaincraft and leadership. The Scottish
+Sports Council/MLTB. Cordee, Leicester.
+.RE
+.SH SEE ALSO
+\fI
+r.cost,
+r.path,
+r.in.ascii,
+r.mapcalc,
+r.recode,
+r.out.ascii
+\fR
+.SH AUTHORS
+\fBBased on r.cost written by :\fR
+.br
+Antony Awaida, Intelligent Engineering, Systems Laboratory, M.I.T.
+.br
+James Westervelt, U.S.Army Construction Engineering Research Laboratory
+.br
+Updated for Grass 5 by Pierre de Mouveaux (pmx@audiovu.com)
+.PP
+\fBInitial version of r.walk:\fR
+.br
+Steno Fontanari, 2002
+.PP
+\fBCurrent version of r.walk:\fR
+.br
+Franceschetti Simone, Sorrentino Diego, Mussi Fabiano and Pasolli Mattia
+.br
+Correction by: Fontanari Steno, Napolitano Maurizio and  Flor Roberto
+.br
+In collaboration with: Franchi Matteo, Vaglia Beatrice, Bartucca Luisa, Fava Valentina and Tolotti Mathias, 2004
+.PP
+\fBUpdated for GRASS 6.1:\fR
+.br
+Roberto Flor and Markus Neteler
+.PP
+\fBUpdated for GRASS GIS 7:\fR
+.br
+Markus Metz
+.br
+Multiple path directions sponsored by mundialis
+.SH SOURCE CODE
+.PP
+Available at: r.walk source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

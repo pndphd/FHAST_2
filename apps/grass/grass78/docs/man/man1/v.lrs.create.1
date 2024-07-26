@@ -1,0 +1,269 @@
+.TH v.lrs.create 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lrs.create\fR\fR  \- Creates a linear reference system.
+.SH KEYWORDS
+vector, linear reference system, network
+.SH SYNOPSIS
+\fBv.lrs.create\fR
+.br
+\fBv.lrs.create \-\-help\fR
+.br
+\fBv.lrs.create\fR \fBin_lines\fR=\fIname\fR \fBout_lines\fR=\fIname\fR  [\fBerr\fR=\fIname\fR]  \fBpoints\fR=\fIname\fR  [\fBllayer\fR=\fIstring\fR]   [\fBplayer\fR=\fIstring\fR]  \fBlidcol\fR=\fIstring\fR \fBpidcol\fR=\fIstring\fR  [\fBstart_mp\fR=\fIstring\fR]   [\fBstart_off\fR=\fIstring\fR]   [\fBend_mp\fR=\fIstring\fR]   [\fBend_off\fR=\fIstring\fR]   [\fBrsdriver\fR=\fIstring\fR]   [\fBrsdatabase\fR=\fIstring\fR]  \fBrstable\fR=\fIstring\fR  [\fBthreshold\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBin_lines\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing lines
+.IP "\fBout_lines\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output vector map where oriented lines are written
+.IP "\fBerr\fR=\fIname\fR" 4m
+.br
+Output vector map of errors
+.IP "\fBpoints\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing reference points
+.IP "\fBllayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Line layer
+.br
+Default: \fI1\fR
+.IP "\fBplayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Point layer
+.br
+Default: \fI1\fR
+.IP "\fBlidcol\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Column containing line identifiers for lines
+.IP "\fBpidcol\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Column containing line identifiers for points
+.IP "\fBstart_mp\fR=\fIstring\fR" 4m
+.br
+Column containing milepost position for the beginning of next segment
+.br
+Default: \fIstart_mp\fR
+.IP "\fBstart_off\fR=\fIstring\fR" 4m
+.br
+Column containing offset from milepost for the beginning of next segment
+.br
+Default: \fIstart_off\fR
+.IP "\fBend_mp\fR=\fIstring\fR" 4m
+.br
+Column containing milepost position for the end of previous segment
+.br
+Default: \fIend_mp\fR
+.IP "\fBend_off\fR=\fIstring\fR" 4m
+.br
+Column containing offset from milepost for the end of previous segment
+.br
+Default: \fIend_off\fR
+.IP "\fBrsdriver\fR=\fIstring\fR" 4m
+.br
+Driver name for reference system table
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBrsdatabase\fR=\fIstring\fR" 4m
+.br
+Database name for reference system table
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBrstable\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of table where the reference system will be written
+.br
+New table is created by this module
+.IP "\fBthreshold\fR=\fIfloat\fR" 4m
+.br
+Maximum distance of point to line allowed
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIv.lrs.create\fR generates a LRS (Linear Reference System) from
+vector line and point data.
+.PP
+It is highly recommended to work with polylines instead of segmented vector
+lines. The command \fIv.build.polylines\fR creates this map structure.
+.SH NOTES
+The mileposts (point) vector map columns \fIstart_mp\fR, \fIstart_off\fR,
+\fIend_mp\fR, \fIend_off\fR must be of \(cqdouble precision\(cq type. For
+milepost ordering, it is sufficient to enter increasing numbers into the
+\fIstart_mp\fR column indicating the order along the vector line.
+.PP
+The \fIlidcol\fR and \fIpidcol\fR columns contain the line IDs which
+relate mileposts and vector line(s) to each other.
+.PP
+When creating a LRS with this module, any existing \fIrstable\fR will be
+replaced.
+.SH EXAMPLE
+This example is written for the Spearfish dataset.
+.PP
+As first step, bus route data are prepared.
+.br
+.nf
+\fC
+# break into segments for correct route selection
+v.clean roads_net out=busroute_tmp tool=break
+# make polyline for easier line selection by coordinate pairs
+v.build.polylines busroute_tmp out=busroute_tmp2
+# reverse delete: reduce route map to bus route (enter in one line)
+v.edit \-r busroute_tmp2 tool=delete coords=590273,4927304,\(rs
+590346,4927246,590414,4927210,590438,4927096,590468,4926966,\(rs
+590491,4926848,590566,4926798,590637,4926753,590701,4926698,\(rs
+590830,4926726,590935,4926751,590993,4926830,590972,4926949,\(rs
+590948,4927066,590922,4927182,590957,4927251 threshold=5
+# vector line needs to be polyline
+v.build.polylines busroute_tmp2 out=busroute_tmp3
+v.category busroute_tmp3 out=busroute op=add
+g.remove \-f type=vector name=busroute_tmp,busroute_tmp2,busroute_tmp3
+\fR
+.fi
+The result can be visualized:
+.br
+.nf
+\fC
+g.region vector=busroute n=n+100 s=s\-100 w=w\-100 e=e+100
+d.mon x0
+d.vect roads_net
+d.vect busroute col=red width=2
+\fR
+.fi
+The vector map \(cqbusroute\(cq needs have an attribute table which contain an integer column
+\fIlidcol\fR with value be \(cq22\(cq for this example (bus route):
+.br
+.nf
+\fC
+v.db.addtable busroute col=\(dqlid integer\(dq
+v.db.update busroute col=lid value=22
+v.db.select busroute
+cat|lid
+1|22
+\fR
+.fi
+A new point map \(cqbusstops\(cq shall contain mileposts (bus stops) along
+this line (use \fIthresh\fR to define maximal accepted deviation from this line):
+.br
+.nf
+\fC
+# generate points map
+echo \(dq590263|4927361
+590432|4927120
+590505|4926776
+590660|4926687
+590905|4926742
+590972|4926949
+591019|4927263\(dq | v.in.ascii out=busstops
+d.vect busstops icon=basic/triangle col=blue
+d.vect busstops disp=cat lcol=blue
+\fR
+.fi
+The milepost attributes table needs to be created with specific columns:
+.br
+.nf
+\fC
+v.db.addtable busstops col=\(dqlid integer, start_mp double precision, \(rs
+            start_off double precision, end_mp double precision, \(rs
+            end_off double precision\(dq
+v.db.update busstops col=lid value=22
+\fR
+.fi
+Since the digitizing order of v.in.ascii above reflects the bus stop
+order along the route, we can simply copy the category number as milepost
+order number in column \fIstart_mp\fR:
+.br
+.nf
+\fC
+v.db.update busstops col=start_mp qcol=cat
+# verify table
+v.db.select busstops
+cat|lid|start_mp|start_off|end_mp|end_off
+1|22|1|||
+2|22|2|||
+3|22|3|||
+4|22|4|||
+5|22|5|||
+6|22|6|||
+7|22|7|||
+# visualize with start_mp to check order
+d.erase
+d.vect roads_net
+d.vect busroute col=red width=2
+d.vect busstops icon=basic/triangle col=blue
+d.vect busstops disp=attr attrcol=start_mp lcol=blue
+\fR
+.fi
+Offsets (\fIstart_off\fR, \fIend_off\fR) can be later used in case the route or
+mileposts get modified.
+.PP
+As second step, the linear reference network is created:
+.br
+.nf
+\fC
+v.lrs.create busroute points=busstops out=route_lrs err=lrs_error \(rs
+             lidcol=lid pidcol=lid rstable=route_lrs threshold=50
+\fR
+.fi
+This creates the maps \(cqroute_lrs\(cq containing the LRS and \(cqlrs_error\(cq
+containing the errors if any. The resulting LRS table and map can
+be shown:
+.br
+.nf
+\fC
+# show LRS table
+db.select table=route_lrs
+d.vect route_lrs col=blue width=2
+\fR
+.fi
+.SH SEE ALSO
+\fILRS tutorial\fR,
+.br
+\fIIntroducing the Linear Reference System in GRASS\fR,
+.PP
+\fIv.build.polylines\fR,
+\fIv.lrs.segment\fR,
+\fIv.lrs.where\fR,
+\fIv.lrs.label\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst/MPA Solutions
+.br
+Documentation update (based on above journal article and available fragments): Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.lrs.create source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

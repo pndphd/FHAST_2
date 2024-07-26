@@ -1,0 +1,106 @@
+.TH d.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rast\fR\fR  \- Displays user\-specified raster map in the active graphics frame.
+.SH KEYWORDS
+display, graphics, raster
+.SH SYNOPSIS
+\fBd.rast\fR
+.br
+\fBd.rast \-\-help\fR
+.br
+\fBd.rast\fR [\-\fBni\fR] \fBmap\fR=\fIname\fR  [\fBvalues\fR=\fIvalue[\-value]\fR[,\fIvalue[\-value]\fR,...]]   [\fBbgcolor\fR=\fIcolor\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Make null cells opaque
+.IP "\fB\-i\fR" 4m
+.br
+Invert value list
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be displayed
+.IP "\fBvalues\fR=\fIvalue[\-value][,\fIvalue[\-value]\fR,...]\fR" 4m
+.br
+List of categories or values to be displayed
+.IP "\fBbgcolor\fR=\fIcolor\fR" 4m
+.br
+Background color (for null)
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIwhite\fR
+.SH DESCRIPTION
+\fId.rast\fR displays the specified raster map in the active
+display frame on the graphics monitor.
+.SH EXAMPLE
+Display raster map \(dqelevation\(dq:
+.br
+.nf
+\fC
+d.rast map=elevation
+\fR
+.fi
+.br
+\fIFigure: elevation raster map visualization\fR
+Display raster map \(dqelevation\(dq but only the raster cells with
+values between 75 and 80 meters:
+.br
+.nf
+\fC
+d.rast map=elevation values=75\-80
+\fR
+.fi
+.br
+\fIFigure: elevation raster map showing values between 75 and 80 meters\fR
+Display raster map \(dqlanduse96_28m\(dq but only categories 1 and 2:
+.br
+.nf
+\fC
+d.rast landuse96_28m values=1,2
+\fR
+.fi
+.br
+\fIFigure: landuse raster map showing categories 1 and 2\fR
+.SH SEE ALSO
+\fI
+d.rast.arrow,
+d.rast.num,
+d.rast.leg,
+d.legend,
+d.mon,
+d.erase,
+d.vect
+\fR
+.PP
+\fI
+wxGUI
+\fR
+.SH AUTHOR
+James Westervelt, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.rast source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

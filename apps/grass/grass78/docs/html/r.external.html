@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.external - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.external</b></em>  - Links GDAL supported raster data as a pseudo GRASS raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#external">external</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.external</b><br></div>
+<b>r.external --help</b><br>
+<div id="synopsis"><b>r.external</b> [-<b>fojeahvt</b>]  [<b>input</b>=<em>name</em>]   [<b>source</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [<b>band</b>=<em>integer</em>]   [<b>title</b>=<em>phrase</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-f</b></dt>
+<dd>List supported formats and exit</dd>
+
+<dt><b>-o</b></dt>
+<dd>Override projection check (use current location's projection)</dd>
+<dd>Assume that the dataset has same projection as the current location</dd>
+
+<dt><b>-j</b></dt>
+<dd>Perform projection check only and exit</dd>
+
+<dt><b>-e</b></dt>
+<dd>Extend region extents based on new dataset</dd>
+<dd>Also updates the default region if in the PERMANENT mapset</dd>
+
+<dt><b>-a</b></dt>
+<dd>Auto-adjustment for lat/lon</dd>
+<dd>Attempt to fix small precision errors in resolution and extents</dd>
+
+<dt><b>-h</b></dt>
+<dd>Flip horizontally</dd>
+
+<dt><b>-v</b></dt>
+<dd>Flip vertically</dd>
+
+<dt><b>-t</b></dt>
+<dd>List available bands including band type in dataset and exit</dd>
+<dd>Format: band number,type,projection check</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em></dt>
+<dd>Name of raster file to be linked</dd>
+
+<dt><b>source</b>=<em>name</em></dt>
+<dd>Name of non-file GDAL data source</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>band</b>=<em>integer</em></dt>
+<dd>Band to select (default is all bands)</dd>
+
+<dt><b>title</b>=<em>phrase</em></dt>
+<dd>Title for resultant raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#null-data-handling" class="toc">NULL data handling</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#rgb-orthophoto-from-geotiff" class="toc">RGB Orthophoto from GeoTIFF</a></li>
+        <li class="toc"><a href="#processing-workflow-without-data-import-and-export" class="toc">Processing workflow without data import and export</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.external</em> allows a user to link a GDAL supported raster file to a binary
+raster map layer, from any GDAL supported raster map format, with an optional 
+title. The file is not imported but just registered as GRASS raster map.
+
+<h2><a name="notes">NOTES</a></h2>
+
+In essence, <em>r.external</em> creates a read-only link to the 
+original dataset which is only valid if the original dataset remains 
+at the originally indicated directory and filename.
+
+<h2><a name="null-data-handling">NULL data handling</a></h2>
+
+GDAL-linked (<em>r.external</em>) maps do not have or use a NULL 
+bitmap, hence <em>r.null</em> cannot manipulate them directly. Here 
+NULL cells are those whose value matches the value reported by the 
+GDALGetRasterNoDataValue() function.
+
+To apply the GDAL-linked the user need to either create a MASK (e.g. 
+with <em>r.mask</em>) and then "apply" it using e.g. <em>r.resample</em>,
+or use <em>r.mapcalc</em> to create a copy with the appropriate categories
+changed to NULL (if() condition).
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="rgb-orthophoto-from-geotiff">RGB Orthophoto from GeoTIFF</a></h3>
+
+<div class="code"><pre>
+# import of all channels (each channel will become a GRASS raster map):
+r.external input=/home/user/data/maps/059100.tif output=ortho
+g.region raster=ortho.3 -p
+d.rgb r=ortho.1 g=ortho.2 b=ortho.3
+r.composite r=ortho.1 g=ortho.2 b=ortho.3 output=ortho.rgb
+</pre></div>
+
+<h3><a name="processing-workflow-without-data-import-and-export">Processing workflow without data import and export</a></h3>
+
+External raster maps to be processed can be directly linked using <em>r.external</em>;
+likewise, results can be written out to standard raster formats with
+<em>r.external.out</em> (GDAL supported formats):
+
+<div class="code"><pre>
+# register GeoTIFF file to be used in current mapset:
+r.external input=terra_lst1km20030314.LST_Day.tif output=modis_celsius
+ 
+# define output directory for files resulting from GRASS calculation:
+r.external.out directory=$HOME/gisoutput/ format="GTiff"
+
+# perform GRASS calculation (here: extract pixels &gt; 20 deg C)
+# this stores the output map directly as GeoTIFF:
+r.mapcalc "warm.tif = if(modis_celsius &gt; 20.0, modis_celsius, null() )"
+
+# cease GDAL output connection and turn back to write GRASS raster files:
+r.external.out -r
+
+# now use the resulting file elsewhere
+gdalinfo $HOME/gisoutput/warm.tif
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+GDAL Pages: <a href="http://www.gdal.org">http://www.gdal.org/</a><br>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.import.html">r.import</a>,
+<a href="r.in.gdal.html">r.in.gdal</a>,
+<a href="r.external.out.html">r.external.out</a>
+</em>
+
+<p>
+<em>
+<a href="v.import.html">v.import</a>,
+<a href="v.in.ogr.html">v.in.ogr</a>,
+<a href="v.external.html">v.external</a>,
+<a href="v.external.out.html">v.external.out</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.external">r.external source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.external">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

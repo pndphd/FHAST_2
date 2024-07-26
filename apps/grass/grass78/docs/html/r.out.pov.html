@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.pov - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.pov</b></em>  - Converts a raster map layer into a height-field file for POV-Ray.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.pov</b><br></div>
+<b>r.out.pov --help</b><br>
+<div id="synopsis"><b>r.out.pov</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>hftype</b>=<em>integer</em>]   [<b>bias</b>=<em>float</em>]   [<b>scale</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of output povray file (TGA height field file)</dd>
+
+<dt><b>hftype</b>=<em>integer</em></dt>
+<dd>Height-field type (0=actual heights 1=normalized)</dd>
+
+<dt><b>bias</b>=<em>float</em></dt>
+<dd>Elevation bias</dd>
+
+<dt><b>scale</b>=<em>float</em></dt>
+<dd>Vertical scaling factor</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+r.out.pov converts a user-specified raster map layer (map==name) into a
+height-field file for POVray (tga==name). The hftype==value option (where
+value is either 0 or 1) specifies the height-field type. When the user
+enters 0 the output will be actual heights. If entered 1 the cell-values
+will be normalized. If hftype is 0 (actual heights) the bias==value can
+be used to add or subtract a value from heights. Use scale==value to scale
+your heights by value. The GRASS program r.out.pov can be used to create
+height- field files for Persistence of Vision (POV) raytracer. POV can
+use a height-field defined in Targa (.TGA) image file format where the
+RGB pixel values are 24 bits (3 bytes). A 16 bit unsigned integer height-field
+value is assigned as follows: RED = high byte, GREEN = low byte, BLUE =
+empty.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+An example Povray script file may look like this:
+<p><div class="code"><pre>
+#include "shapes.inc"
+#include "colors.inc"
+#include "textures.inc"
+
+#declare Scale = 7;
+
+light_source { <40000, Scale*3000, 5000> color MainLight }
+ 
+camera {
+   location &lt; 23000, Scale*2000, 0>
+   angle  90
+   look_at &lt; 23000, Scale*1400, 5000>
+}
+ 
+height_field  {
+   tga "dem.lr.tga"
+   smooth
+   water_level 0.11  // 726 / 6553.6 = 0.111
+    texture {
+      pigment {
+          image_map { // image is always projected from -z, with front facing  +z, top to +Y
+             ppm "map.lr.ppm"
+             once
+          }
+          rotate x*90 // align map to height_field
+      }
+    }
+   finish {
+          ambient 0.2         // Very dark shadows
+          diffuse 0.8         // Whiten the whites
+          phong 0.2           // shiny
+          phong_size 100.0    // with tight highlights
+          specular 0.5
+          roughness 0.05
+   }
+   scale &lt; 14500, Scale*6553.6, 13000 >
+   translate <18300, 0, 1100>
+}
+</pre></div>
+
+<h2><a name="author">AUTHOR</a></h2>
+Klaus D. Meyer, GEUM.tec GbR, eMail: <i>GEUM.tec@geum.de</i>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.pov">r.out.pov source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.pov">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

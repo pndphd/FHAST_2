@@ -1,0 +1,416 @@
+.TH wxGUI.nviz 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI 3D View Mode
+.SH KEYWORDS
+display, GUI, visualization, graphics, raster, vector, raster3d
+.SH DESCRIPTION
+Note: \fBwxNviz is currently under development. Not
+all planned functionality is already implemented.\fR
+.PP
+\fBwxNviz\fR is a \fIwxGUI\fR \fB3D view
+mode\fR which allows users to realistically render multiple
+\fIsurfaces\fR (2D raster maps) in a 3D space, optionally using
+thematic coloring, draping 2D \fIvector\fR data or different 2D raster data
+over the surfaces, displaying 3D vector data in the space, and visualization
+of \fI3D rasters\fR.
+.PP
+To start the wxGUI 3D view mode, choose \(cq3D view\(cq from the map
+toolbar. You can switch between 2D and 3D view. The region in
+3D view is updated according to displayed region in 2D view.
+.PP
+wxNviz is emphasized on the ease and speed of viewer positioning and
+provided flexibility for using a wide range of data. A low resolution
+surface or wire grid (optional) provides real\-time viewer positioning
+capabilities. Coarse and fine resolution controls allow the user to
+further refine drawing speed and detail as needed. Continuous scaling
+of elevation provides the ability to use various data types for the
+vertical dimension.
+.PP
+For each session of wxNviz, you might want the same set of 2D/3D
+raster and vector data, view parameters, or other attributes. For
+consistency between sessions, you can store this information in the
+GRASS \fIworkspace\fR file (gxw). Workspace contains information to
+restore \(dqstate\(dq of the system in 2D and if wxNviz is enabled also in
+the 3D display mode.
+.SH 3D View Toolbar
+.br
+.br
+.br
+.IP "      \fIGenerate command for m.nviz.image\fR" 4m
+.br
+Generate command for m.nviz.image based on current state.
+.IP "      \fIShow 3D view mode settings\fR" 4m
+.br
+Show dialog with settings for wxGUI 3D view mode. The user
+settings can be stored in wxGUI settings file.
+.IP "      \fIShow help\fR" 4m
+.br
+Show this help.
+.SH 3D View Layer Manager Toolbox
+The 3D view toolbox is integrated in the Layer Manager. The toolbox
+has several tabs:
+.RS 4n
+.IP \(bu 4n
+\fBView\fR for view controlling,
+.IP \(bu 4n
+\fBData\fR for data properties,
+.IP \(bu 4n
+\fBAppearance\fR for appearance settings (lighting, fringes, ...).
+.IP \(bu 4n
+\fBAnalysis\fR for various data analyses (only cutting planes so far).
+.IP \(bu 4n
+\fBAnimation\fR for creating simple animations.
+.RE
+.SS View
+You can use this panel to set the \fIposition, direction, and
+perspective\fR of the view. The position box shows a puck with a
+direction line pointing to the center. The direction line indicates
+the look direction (azimuth). You click and drag the puck to change
+the current eye position. Another way to change eye position is
+to press the buttons around the position box representing cardinal
+and ordinal directions.
+.PP
+There are four other buttons for view control in the bottom of this panel
+(following label \fILook:\fR):
+.RS 4n
+.IP \(bu 4n
+\fIhere\fR requires you to click on Map Display Window to determine
+the point to look at.
+.IP \(bu 4n
+\fIcenter\fR changes the point you are looking at to the center.
+.IP \(bu 4n
+\fItop\fR moves the current eye position above the map center.
+.IP \(bu 4n
+\fIreset\fR returns all current view settings to their default values.
+.RE
+.br
+.br
+.br
+You can adjust the viewer\(cqs height above the scene, perspective and
+twist value to rotate the scene about the horizontal axis. An angle of
+0 is flat. The scene rotates between \-90 and 90 degrees.
+.PP
+You can also adjusts the vertical exaggeration of the surface. As an
+example, if the easting and northing are in meters and the elevation
+in feet, a vertical exaggeration of 0.305 would produce a true
+(unexaggerated) surface.
+.PP
+View parameters can be controlled by sliders or edited directly in the
+text boxes. It is possible to enter values which are out of slider\(cqs range
+(and it will then adjust to the new range).
+.SS Fly\-through mode
+View can be changed in fly\-through mode (can be activated in Map Display
+toolbar), which enables to change the view smoothly and therefore it is
+suitable for creating animation (see below). To start flying, press left
+mouse button and hold it down to continue flying. Flight direction is
+controlled by mouse cursor position on screen. Flight speed can be
+increased/decreased stepwise by keys PageUp/PageDown, Home/End or Up/Down
+arrows. Speed is increased multiple times while Shift key is held down.
+Holding down Ctrl key switches flight mode in the way that position of
+viewpoint is changed (not the direction).
+.SS Data properties
+This tab controls the parameters related to map layers. It consists
+of four collapsible panels \- \fISurface\fR, \fIConstant surface\fR,
+\fIVector\fR and \fI3D raster\fR.
+.SS Surface
+Each active raster map layer from the current layer tree is displayed as
+surface in the 3D space. This panel controls how loaded surfaces are
+drawn. To change parameters of a surface, it must be selected in the very
+top part of the panel.
+.PP
+The top half of the panel has drawing style options.
+Surface can be drawn as a wire mesh or using filled polygons (most
+realistic). You can set draw \fBmode\fR to \fIcoarse\fR (fast
+display mode), \fIfine\fR (draws surface as filled polygons with
+fine resolution) or \fIboth\fR (which combines coarse and fine
+mode). Additionally set coarse \fBstyle\fR to \fIwire\fR to draw
+the surface as wire mesh (you can also choose color of the wire)
+or \fIsurface\fR to draw the surface using coarse resolution filled
+polygons. This is a low resolution version of the polygon surface
+style.
+E.g. surface is drawn as a wire mesh if you set \fBmode\fR
+to \fIcoarse\fR and \fBstyle\fR to \fIwire\fR. Note that it
+differs from the mesh drawn in fast display mode because hidden lines
+are not drawn. To draw the surface using filled polygons, but with
+wire mesh draped over it, choose \fBmode\fR \fIboth\fR
+and \fBstyle\fR \fIwire\fR.
+Beside mode and style you can also choose style of \fBshading\fR used
+for the surface. \fIGouraud\fR style draws the surfaces with a
+smooth shading to blend individual cell colors together, \fIflat\fR
+draws the surfaces with flat shading with one color for every two
+cells. The surface appears faceted.
+.PP
+To set given draw settings for all loaded surfaces press button \(dqSet to
+all\(dq.
+.PP
+The bottom half of the panel has options to set, unset or modify
+attributes of the current surface. Separate raster data or constants can
+be used for various attributes of the surface:
+.RS 4n
+.IP \(bu 4n
+\fBcolor\fR \- raster map or constant color to drape over the current
+surface. This option is useful for draping imagery such as aerial
+photography over a DEM.
+.IP \(bu 4n
+\fBmask\fR \- raster map that controls the areas displayed from
+the current surface.
+.IP \(bu 4n
+\fBtransparency\fR \- raster map or constant value that controls
+the transparency of the current surface. The default is completely
+opaque. Range from 0 (opaque) to 100 (transparent).
+.IP \(bu 4n
+\fBshininess\fR \- raster map or constant value that controls
+the shininess (reflectivity) of the current surface. Range from 0 to
+100.
+.RE
+.PP
+In the very bottom part of the panel position of surface can be set.
+To move the surface right (looking from the south) choose \fIX\fR axis
+and set some positive value. To reset the surface position press
+\fIReset\fR button.
+.br
+.br
+.br
+.SS Constant surface
+It is possible to add constant surface and set its properties like
+fine resolution, value (height), color and transparency. It behaves
+similarly to surface but it has less options.
+.SS Vector
+2D vector data can be draped on the selected surfaces with various
+markers to represent point data; you can use attribute of vector
+features to determine size, color, shape of glyph.
+3D vector data including volumes (closed group of faces with one
+kernel inside) is also supported.
+This panel controls how loaded 2D or 3D vector data are drawn.
+.PP
+You can define the width (in pixels) of the line features, the color
+used for lines or point markers.
+.PP
+If vector map is 2D you can display vector features as flat at a
+specified elevation or drape it over a surface(s) at a specified
+height. Use the height control to set the flat elevation or the drape
+height above the surface(s). In case of multiple surfaces it is possible
+to specify which surfaces is the vector map draped over.
+.PP
+For display purposes, it is better to set the height slightly above
+the surface. If the height is set at zero, portions of the vector may
+disappear into the surface(s).
+.PP
+For 2D/3D vector points you can also set the size of the markers.
+Currently are implemented these markers:
+.RS 4n
+.IP \(bu 4n
+\fBx\fR sets the current points markers to a 2D \(dqX\(dq,
+.IP \(bu 4n
+\fBsphere\fR \- solid 3D sphere,
+.IP \(bu 4n
+\fBdiamond\fR \- solid 3D diamond,
+.IP \(bu 4n
+\fBcube\fR \- solid 3D cube,
+.IP \(bu 4n
+\fBbox\fR \- hollow 3D cube,
+.IP \(bu 4n
+\fBgyroscope\fR \- hollow 3D sphere,
+.IP \(bu 4n
+\fBasterisk\fR \- 3D line\-star.
+.RE
+.PP
+Thematic mapping can be used to determine marker color and size
+(and line color and width).
+.br
+.br
+.br
+.SS 3D rasters
+3D raster maps (volumes, voxel models) can be displayed either as isosurfaces
+or slices.
+Similarly to surface panel you can define draw \fBshading\fR \-
+\fIgouraud\fR (draws the 3D rasters with a smooth shading to blend
+individual cell colors together) and \fIflat\fR (draws the 3D rasters with
+flat shading with one color for every two cells. The 3D raster appears
+faceted). As mentioned above currently are supported two visualization
+modes:
+.RS 4n
+.IP \(bu 4n
+\fBisosurface\fR \- the levels of values for drawing the
+3D raster(s) as isosurfaces,
+.IP \(bu 4n
+and \fBslice\fR \-  drawing the 3D raster
+as cross\-sections.
+.RE
+.PP
+The middle part of the panel has controls to add, delete, move up/down
+selected  isosurface or slice. The bottom part differs for isosurface and
+slice.  When choosing an isosurface, this part the of panel has options to
+set, unset or modify attributes of the current isosurface.  Various
+attributes of the isosurface can be defined, similarly to surface
+attributes:
+.RS 4n
+.IP \(bu 4n
+\fBisosurface value\fR \- reference isosurface value (height in map
+units).
+.IP \(bu 4n
+\fBcolor\fR \- raster map or constant color to drape over the
+current 3D raster.
+.IP \(bu 4n
+\fBmask\fR \- raster map that controls the areas displayed from
+the current 3D raster.
+.IP \(bu 4n
+\fBtransparency\fR \- raster map or constant value that controls
+the transparency of the current 3D raster. The default is completely
+opaque. Range from 0 (opaque) to 100 (transparent).
+.IP \(bu 4n
+\fBshininess\fR \- raster map or constant value that controls
+the shininess (reflectivity) of the current 3D raster. Range from 0 to
+100.
+.RE
+In case of 3D raster slice the bottom part of the panel controls the slice
+attributes (which axis is slice parallel to, position of slice edges,
+transparency). Press button \fIReset\fR to reset slice position
+attributes.
+.PP
+3D rasters can be moved the same way like surfaces do.
+.br
+.br
+.br
+.SS Analysis
+\fIAnalysis\fR tab contains \fICutting planes\fR panel.
+.SS Cutting planes
+Cutting planes allow cutting surfaces along a plane. You can switch
+between six planes; to disable cutting planes switch to \fINone\fR.
+Initially the plane is vertical, you can change it to horizontal by
+setting \fItilt\fR 90 degrees. The \fIX\fR and \fIY\fR values
+specify the rotation center of plane. You can see better what \fIX\fR
+and \fIY\fR do when changing \fIrotation\fR.  The \fIHeight\fR
+parameter applies only when changing \fItilt\fR concurrently.
+Press the \fIReset\fR button to reset the current cutting plane.
+.PP
+In case of multiple surfaces you can visualize the cutting plane by
+\fIShading\fR. Shading is visible only when more than one surface
+is loaded and these surfaces must have the same fine resolution set.
+.SS Appearance
+Appearance tab consists of three collapsible panels:
+.RS 4n
+.IP \(bu 4n
+\fILighting\fR for adjusting light source
+.IP \(bu 4n
+\fIFringe\fR for drawing fringes
+.IP \(bu 4n
+\fIDecorations\fR to display north arrow and scale bar
+.RE
+.PP
+The \fIlighting\fR panel enables to change the position of light
+source, light color, brightness and ambient. Light position is controlled
+similarly to eye position. If option \fIShow light model\fR is enabled
+light model is displayed to visualize the light settings.
+.br
+.br
+.br
+.PP
+The \fIFringe\fR panel allows you to draw fringes in different
+directions (North & East, South & East, South & West, North
+& West). It is possible to set the fringe color and height of the
+bottom edge.
+.PP
+The \fIDecorations\fR panel enables to display north arrow and simple
+scale bar. North arrow and scale bar length is determined in map units.
+You can display more than one scale bar.
+.SS Animation
+Animation panel enables to create a simple animation as a sequence of
+images. Press \(cqRecord\(cq button and start changing the view. Views are
+recorded in given interval (FPS \- Frames Per Second). After recording, the
+animation can be replayed. To save the animation, fill in the directory
+and file prefix, choose image format (PPM or TIF) and then press \(cqSave\(cq.
+Now wait until the last image is generated.
+It is recommended to record animations using fly\-through mode to achieve
+smooth motion.
+.SH Settings
+This panel has controls which allows user to set default surface,
+vector and 3D raster data attributes. You can also modify default view
+parameters, or to set the background color of the Map Display Window
+(the default color is white).
+.SH To be implemented
+.RS 4n
+.IP \(bu 4n
+Labels, decoration, etc. (Implemented, but not fully functional)
+.IP \(bu 4n
+Surface \- mask by zero/elevation, more interactive positioning
+.IP \(bu 4n
+Vector points \- implement display mode flat/surface for 2D points
+.IP \(bu 4n
+\&...
+.RE
+.SH NOTE
+wxNviz is under active development and
+distributed as \(dqExperimental Prototype\(dq.
+.PP
+Please note that with wxGTK port of wxPython (Linux systems), a problem
+might appear during wxNviz initialization (nothing is rendered at all) or
+when rendering vectors (bad order of rendering surfaces and vectors). If
+you encounter such problems, try to change a depth buffer number in
+\fIwxGUI Settings > Preferences > Map Display  > Advanced\fR
+(possible numbers are 0, 16, 24, 32). It is currently not possible to
+automatically determine the right number which is working for your
+computer.
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components
+\fR
+.PP
+See also wiki page
+(especially various video
+tutorials).
+.br
+.br
+Command\-line module \fIm.nviz.image\fR.
+.br
+.br
+.SH AUTHORS
+\fBThe wxNviz GUI\fR
+.PP
+Martin
+Landa, Google
+Summer of Code 2008 (mentor: Michael Barton)
+and 2010 (mentor: Helena Mitasova)
+.br
+Anna Kratochvilova, Google
+Summer of Code 2011 (mentor: Martin Landa)
+.PP
+\fBThe OGSF library and NVIZ engine\fR
+.PP
+NVIZ (GRASS\(cqs \fIn\fR\-dimensional visualization suite) was written
+by Bill Brown, Terry Baker, Mark Astley, and David Gerdes,
+U.S. Army Corps of Engineers Research Laboratories, Champaign,
+Illinois and UI GMS Laboratory, Urbana, IL in the early 1990s.
+.PP
+Original documentation was written by Terry Baker (spring 1995), and
+updated by Mark Astley, based on a document written by Bill Brown.
+Additional design help and funding in the early 1990s by Helena
+Mitasova (CERL). Tcl/Tk support added by Terry Baker. Ported to Linux
+by Jaro Hofierka and others. Conversion from SGI IRIS GL code to
+OpenGL by Justin Hickey. Further program and documentation (2004)
+updates by Bob Covill, Tekmap Consulting. 3D volume support by Tomas
+Paudits with supervision from Jaro Hofierka and Helena Mitasova.
+Fly\-through mode, thematic site attributes, and picking by Massimo
+Cuomo (ACS) with updates by Michael Barton. GRASS 6 vector support by
+Radim Blazek. Additional updates by Markus Neteler, Martin Landa,
+Glynn Clements, and Hamish Bowman.
+.PP
+NVIZ evolved from the earlier GRASS program \fISG3d\fR written
+for Silicon Graphics IRIS GL by Bill Brown and Dave Gerdes at USA
+CERL, 1990\-1995 and from the NVIZ Motif version written by Bill Brown
+with contributions by Terrance McGhee.
+.SH SOURCE CODE
+.PP
+Available at: wxGUI 3D View Mode source code (history)
+.PP
+Main index |
+Wxgui index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

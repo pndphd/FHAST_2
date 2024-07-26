@@ -1,0 +1,399 @@
+.TH i.ortho.photo 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.ortho.photo\fR\fR  \- Menu driver for the photo imagery programs.
+.SH KEYWORDS
+imagery, orthorectify, geometry
+.SH SYNOPSIS
+\fBi.ortho.photo\fR
+.br
+\fBi.ortho.photo \-\-help\fR
+.br
+\fBi.ortho.photo\fR \fBgroup\fR=\fIname\fR \fBproductname\fR=\fIstring\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of imagery group for ortho\-rectification
+.IP "\fBproductname\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of Modules
+.br
+Options: \fIi.group, i.ortho.target, i.ortho.elev, i.ortho.camera, g.gui.photo2image, i.ortho.init, g.gui.image2target, i.ortho.rectify\fR
+.br
+\fBi.group\fR: 1 \- Select/Modify imagery group
+.br
+\fBi.ortho.target\fR: 2 \- Select/Modify imagery group target
+.br
+\fBi.ortho.elev\fR: 3 \- Select/Modify target elevation model
+.br
+\fBi.ortho.camera\fR: 4 \- Select/Modify imagery group camera
+.br
+\fBg.gui.photo2image\fR: 5 \- Compute image\-to\-photo transformation
+.br
+\fBi.ortho.init\fR: 6 \- Initialize exposure station parameters
+.br
+\fBg.gui.image2target\fR: 7 \- Compute ortho\-rectification parameters
+.br
+\fBi.ortho.rectify\fR: 8 \- Ortho\-rectify imagery files
+.SH DESCRIPTION
+\fIi.ortho.photo\fR is a menu to launch the different parts of the
+ortho rectification process of aerial imagery. \fIi.ortho.photo\fR
+allows the user to ortho\-rectify imagery group files consisting of
+several scanned aerial photographs (raster maps) of a common area.
+\fIi.ortho.photo\fR guides the user through 8 steps required to
+ortho\-rectify the raster maps in a single imagery group. Alternatively,
+all the steps can be performed separately by running the appropriate modules.
+.RS 4n
+.IP \(bu 4n
+\fIInitialization Options\fR
+.IP
+.IP \(bu 4n
+Create/Modify imagery group to be orthorectified:
+i.group
+.IP \(bu 4n
+Select/Modify target location and mapset for orthorectification:
+i.ortho.target
+.IP \(bu 4n
+Select/Modify target elevation model used for orthorectification:
+i.ortho.elev
+.IP \(bu 4n
+Create/Modify camera file of imagery group:
+i.ortho.camera
+.PP
+.IP \(bu 4n
+\fITransformation Parameters Computation\fR
+.IP
+.IP \(bu 4n
+Compute image\-to\-photo transformation:
+g.gui.photo2image
+.IP \(bu 4n
+Initialize parameters of camera:
+i.ortho.init
+.IP \(bu 4n
+Compute ortho\-rectification parameters from ground control points:
+g.gui.image2target
+.PP
+.IP \(bu 4n
+\fIOrtho\-rectification\fR
+.IP
+.IP \(bu 4n
+Ortho\-rectify imagery group:
+i.ortho.rectify
+.PP
+.RE
+.PP
+The ortho\-rectification procedure in GRASS GIS places the image pixels on
+the surface of the earth by matching the coordinate system of the aerial
+image in pixels (\fIimage coordinate system\fR) and the coordinate
+system of the camera sensor in millimetres (\fIphoto coordinate system\fR)
+for the interior orientation of the image, and further to the georeferenced
+coordinate system defined by projection parametres
+(\fItarget coordinate system\fR) for exterior orientation.
+.SH EXAMPLE
+Five groups of input parameters are required for ortho\-rectification:
+.RS 4n
+.IP \(bu 4n
+Aerial image (images),
+.IP \(bu 4n
+Exposure and characteristics of the camera, i.e. its coordinates in
+target coordinate system and height above sea level, focal length, yaw,
+pitch and roll, dimensions of the camera sensor and resolution of aerial
+images,
+.IP \(bu 4n
+Reference surface, i.e. digital elevation model in the target coordinate
+system used to normalize the terrain undulation,
+.IP \(bu 4n
+Topographic reference map used to find corresponding ground control
+points and/or,
+.IP \(bu 4n
+Coordinates of ground control points in the target coordinate system.
+.RE
+.br
+\fIExample of an input oblique image in a source location\fR
+.PP
+To ortho\-rectify aerial images the user has to follow the menu options
+step by step. Alternatively, all the steps can be performed separately
+by running the corresponding modules.
+.PP
+The aerial photos shall be stored in a \fBsource location\fR \- a general
+Cartesian coordinate system (XY). Digital elevation model and a map reference
+(topo sheet or other map used for ground control point matching) shall
+be stored in a \fBtarget location\fR in a real\-world coordinate system
+(e.g. ETRS33).
+.PP
+The steps to follow are described below:
+.IP
+.IP \fB1\fR
+\fICreate/Modify imagery group to be orthorectified:
+i.group\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+In this first step an imagery group of aerial images for ortho\-rectification
+is created or modified. The current imagery group is displayed at the top
+of the menu. You may select a new or existing imagery
+group for the ortho\-rectification. After choosing this option you will
+be prompted for the name of a new or existing imagery group. As a result,
+a new file \fImapset/group/name_of_group/\fBREF\fR\fR
+is created that contatins the names of all images in a group.
+.br
+.nf
+\fC
+IMG_0020 source_mapset
+IMG_0021 source_mapset
+IMG_0022 source_mapset
+\fR
+.fi
+.IP \fB2\fR
+\fISelect/Modify target location and mapset for orthorectification:
+i.ortho.target\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+The target location and mapset may be selected or modified in Step 2.
+You will be prompted for the names of the projected target location and
+mapset where the ortho\-rectified raster maps will reside. The target
+location is also the location from which the elevation model (raster
+map) will be selected (see Step 3). In Step 2, a new file
+\fImapset/group/name_of_group/\fBTARGET\fR\fR
+is created contatining the names of target location and mapset.
+.br
+.nf
+\fC
+ETRS_33N
+target_mapset
+\fR
+.fi
+.IP \fB3\fR
+\fISelect/Modify target elevation model used for orthorectification:
+i.ortho.elev\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+Step 3 allows you to select the raster map from the target location to be
+used as the elevation model. The elevation model is required for both the
+computation of photo\-to\-target parameters (Step 6) and for the
+ortho\-rectification of the imagery group files (Step 8).
+The raster map selected for the elevation model should cover the entire
+area of the image group to be ortho\-rectified. DTED and DEM files are
+suitable for use as elevation model in the ortho\-rectification program.
+In Step 3 you will be prompted for the name of the raster map in the
+target location that you want to use as the elevation model. As a result
+of this step, a new file \fImapset/group/name_of_group/\fBELEVATION\fR\fR
+is created contatining the name and mapset of the chosen DEM.
+.br
+.nf
+\fC
+elevation layer :ELEVATION
+mapset elevation:target_mapset
+location        :ETRS_33N
+math expression :(null)
+units           :(null)
+no data values  :(null)
+\fR
+.fi
+.IP \fB4\fR
+\fI Create/Modify camera file of imagery group:
+i.ortho.camera\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+In Step 4 you may select or create a camera reference file that will be
+used with the current imagery group. A camera reference file contains
+information on the internal characteristics of the aerial camera, as well
+as the geometry of the fiducial or reseau marks. The most important
+characteristic of the camera is its focal length. Fiducial or reseau marks
+locations are required to compute the scanned image to photo coordinate
+transformation parameter (Step 5). Two new files are created in this step:
+a file \fImapset/group/name_of_group/\fBCAMERA\fR\fR, contatining
+the name of the reference camera and a file
+\fImapset/camera/\fBname_of_reference\fR\fR, contatining the
+camera parameters.
+.br
+.nf
+\fC
+CAMERA NAME   sony
+CAMERA ID     123
+CAMERA XP     0
+CAMERA YP     0
+CAMERA CFL    16
+NUM FID       4
+      0 \-11.6 0
+      1 0 7.7
+      2 11.6 0
+      3 0 \-7.7
+\fR
+.fi
+.IP \fB5\fR
+\fI Compute image\-to\-photo transformation:
+g.gui.photo2image\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+The scanned image to photo coordinate transformation parameters, i.e. the
+\(dqinterior orientation\(dq, is computed in Step 5. In this interactive step you
+associate the scanned reference points (fiducials, reseau marks, etc.)
+with their known photo coordinates from the camera reference file. A new
+file \fImapset/group/name_of_group/\fBREF_POINTS\fR\fR
+is created, contatining a list of pairs of coordinates in image and photo
+coordinate systems.
+.br
+.nf
+\fC
+# Ground Control Points File
+#
+# target location: XY
+# target mapset: source_mapset
+# source  target  status
+# east north east north (1=ok, 0=ignore)
+#\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+0 1816     \-11.6 0.0     1
+2728 3632     0.0 7.7     1
+5456 1816     11.6 0.0     1
+2728 0.0     0.0 \-7.7     1
+\fR
+.fi
+.br
+\fIStep 5: Image\-to\-photo transformation of an oblique image\fR
+.IP \fB6\fR
+\fI Initialize parameters of camera:
+i.ortho.init\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+In Step 6, initial camera exposure station parameters and initial variances
+may be selected or modified.
+.RS 4n
+.IP \(bu 4n
+\fBX\fR: East aircraft position;
+.IP \(bu 4n
+\fBY\fR: North aircraft position;
+.IP \(bu 4n
+\fBZ\fR: Flight heigh above surface;
+.IP \(bu 4n
+\fBOmega (roll)\fR: Raising or lowering of the wings (turning
+around the aircraft\(cqs axis);
+.IP \(bu 4n
+\fBPhi (pitch)\fR: Raising or lowering of the aircraft\(cqs front
+(turning around the wings\(cq axis);
+.IP \(bu 4n
+\fBKappa (yaw)\fR: Rotation needed to align the aerial photo to
+true north: needs to be denoted as +90° for clockwise turn and
+\-90° for a counter\-clockwise turn.
+.RE
+.br
+\fIPrinciple of pitch and yaw\fR
+.PP
+In Step 6, a new file \fImapset/group/name_of_group/\fBINIT_EXP\fR\fR
+is created, contatining camera parameters.
+.br
+.nf
+\fC
+INITIAL XC    215258.345387
+INITIAL YC    6911444.022270
+INITIAL ZC    1101.991120
+INITIAL OMEGA 0.000000
+INITIAL PHI   \-0.168721
+INITIAL KAPPA 3.403392
+VARIANCE XC    5.000000
+VARIANCE YC    5.000000
+VARIANCE ZC    5.000000
+VARIANCE OMEGA 0.000000
+VARIANCE PHI   0.020153
+VARIANCE KAPPA 0.017453
+STATUS (1=OK, 0=NOT OK) 0
+\fR
+.fi
+.IP \fB7\fR
+\fI Compute ortho\-rectification parameters from ground control points:
+g.gui.image2target\fR
+.PP
+This step is to be run in the \fBtarget location\fR.
+.PP
+The photo to target transformation parameters, i.e. the \(dqexterior
+orientation\(dq, is computed in Step 7. In this interactive step, control
+points are marked on one or more imagery group files and associated with
+the known standard (e.g. UTM) and elevation coordinates.
+Reasonable rectification results can be obtained with around twelve
+control points well distributed over the image.
+In this step, a new file \fImapset/group/name_of_group/\fBCONTROL_POINTS\fR\fR
+is created, contatining a list of pairs of coordinates of ground control
+points in photo and target coordinate systems.
+.br
+.nf
+\fC
+# Ground Control Points File
+#
+# target location: ETRS_33N
+# target mapset: target_mapset
+#	source                          target                     status
+#	east	north	height          east	north	height    (1=ok, 0=ignore)
+#\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-     \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-    \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+98.3679932698 906.327649515 0.0 	1.0 5.0  100.0             1
+733.293023813 1329.61100321 0.0 	2.0 6.0  100.0             1
+1292.6317412  1703.76325335 0.0 	3.0 7.0  100.0             1
+1625.54617472 1368.11694482 0.0 	4.0 6.0  100.3             1
+3239.82849913 1390.97403968 0.0 	7.4 6.0  100.3             1
+1570.09788497 2790.06537829 0.0 	3.0 11.0 100.0             1
+\fR
+.fi
+.br
+\fIStep 7: Detail of ground control points matching in an oblique image and terrain model\fR
+.IP \fB8\fR
+\fI Ortho\-rectify imagery group:
+i.ortho.rectify\fR
+.PP
+This step is to be run in the \fBsource location\fR.
+.PP
+Step 8 is used to perform the actual image ortho\-rectification after all
+of the transformation parameters have been computed. Ortho\-rectified raster
+files will be created in the target location for each selected imagery
+group file. You may select either the current window in the target
+location or the minimal bounding window for the ortho\-rectified image.
+.br
+\fIStep 8: Ortho\-rectified oblique image\fR
+As a result, the ortho\-rectified raster map is available for visualization
+and further image analysis.
+.PP
+.SH SEE ALSO
+\fI
+g.gui.image2target,
+g.gui.photo2image,
+i.group,
+i.ortho.camera,
+i.ortho.elev,
+i.ortho.init,
+i.ortho.rectify,
+i.ortho.target
+\fR
+.SH AUTHOR
+Mike Baba,  DBA Systems, Inc.
+.br
+GRASS development team, 199?\-2017
+.br
+.SH SOURCE CODE
+.PP
+Available at: i.ortho.photo source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

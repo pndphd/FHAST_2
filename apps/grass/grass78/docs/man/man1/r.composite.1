@@ -1,0 +1,131 @@
+.TH r.composite 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.composite\fR\fR  \- Combines red, green and blue raster maps into a single composite raster map.
+.SH KEYWORDS
+raster, composite, RGB
+.SH SYNOPSIS
+\fBr.composite\fR
+.br
+\fBr.composite \-\-help\fR
+.br
+\fBr.composite\fR [\-\fBdc\fR] \fBred\fR=\fIname\fR \fBgreen\fR=\fIname\fR \fBblue\fR=\fIname\fR  [\fBlevels\fR=\fIinteger\fR]   [\fBlevel_red\fR=\fIinteger\fR]   [\fBlevel_green\fR=\fIinteger\fR]   [\fBlevel_blue\fR=\fIinteger\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Dither
+.IP "\fB\-c\fR" 4m
+.br
+Use closest color
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBred\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <red>
+.IP "\fBgreen\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <green>
+.IP "\fBblue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <blue>
+.IP "\fBlevels\fR=\fIinteger\fR" 4m
+.br
+Number of levels to be used for each component
+.br
+Options: \fI1\-256\fR
+.br
+Default: \fI32\fR
+.IP "\fBlevel_red\fR=\fIinteger\fR" 4m
+.br
+Number of levels to be used for <red>
+.br
+Options: \fI1\-256\fR
+.IP "\fBlevel_green\fR=\fIinteger\fR" 4m
+.br
+Number of levels to be used for <green>
+.br
+Options: \fI1\-256\fR
+.IP "\fBlevel_blue\fR=\fIinteger\fR" 4m
+.br
+Number of levels to be used for <blue>
+.br
+Options: \fI1\-256\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+This program combines three raster maps to form a
+composite RGB map. For each input map layer, the corresponding
+component from the map\(cqs color table is used (e.g. for
+the red map, the red component is used, and so on). In
+general, the maps should use a grey\-scale color table.
+.SH NOTES
+The default number of intensity levels for each component is 32,
+resulting in a total of 32768 possible colors (equivalent to 15 bits
+per pixel). If significantly more levels than this are used, not only
+will \fIr.composite\fR take longer to run, but displaying the
+resulting layer with \fId.rast\fR will
+also be significantly slower.
+.PP
+Floyd\-Steinberg dithering is optionally used with the \fB\-d\fR flag.
+.SH EXAMPLES
+.SS RGB composite of three satellite bands
+Color composite of a LANDSAT scene (North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10
+r.composite blue=lsat7_2002_10 green=lsat7_2002_20 red=lsat7_2002_30 \(rs
+            output=lsat7_2002_rgb
+\fR
+.fi
+.SS RGB composite with dithering
+Creating a composite RGB raster using 32 color levels per layer, with dithering:
+.br
+.nf
+\fC
+r.composite \-d red=elevation.r green=elevation.g blue=elevation.b \(rs
+            output=elev.composite
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.rast,
+d.rgb,
+r.blend,
+r.colors,
+r.rgb
+\fR
+.PP
+\fI
+Wikipedia Entry: Floyd\-Steinberg dithering
+\fR
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.composite source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

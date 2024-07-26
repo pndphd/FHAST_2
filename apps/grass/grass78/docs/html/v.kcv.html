@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.kcv - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.kcv</b></em>  - Randomly partition points into test/train sets.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#points">points</a>, <a href="keywords.html#point pattern">point pattern</a>, <a href="keywords.html#sampling">sampling</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.kcv</b><br></div>
+<b>v.kcv --help</b><br>
+<div id="synopsis"><b>v.kcv</b> <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>npartitions</b>=<em>integer</em>  [<b>column</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>npartitions</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of partitions</dd>
+<dd>Must be &gt; 1</dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name for new column to which partition number is written</dd>
+<dd>Default: <em>part</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.kcv</em> randomly divides a points lists into <em>k</em> sets of
+test/train data (for <b>npartitions</b>-fold <b>c</b>ross <b>v</b>alidation).
+Test partitions are mutually exclusive. That is, a point will appear in
+only one test partition and <em>k-1</em> training partitions.
+
+The module generates a random point using the selected random number
+generator and then finds the closest point to it. This site is removed
+from the candidate list (meaning that it will not be selected for any
+other test set) and saved in the first test partition file. This is
+repeated until enough points have been selected for the test partition.
+The number of points chosen for test partitions depends upon the number
+of sites available and the number of partitions chosen (this number is
+made as consistent as possible while ensuring that all sites will be
+chosen for testing). This process of filling up a test partition is
+done <em>k</em> times.
+
+<h2><a name="notes">NOTES</a></h2>
+
+An ideal random sites generator will follow a Poisson distribution and 
+will only be as random as the original sites. This module simply 
+divides vector points up in a random manner.
+
+<p>
+Be warned that random number generation occurs over the
+intervals defined by the current region of the map.
+
+<p>
+This program may not work properly with Lat-long data.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+All examples are based on the North Carolina sample dataset.
+
+<div class="code"><pre>
+g.copy vect=geonames_wake,my_geonames_wake
+v.kcv map=my_geonames_wake column=part npartitions=10
+</pre></div>
+
+<p>
+<div class="code"><pre>
+g.copy vect=geodetic_pts,my_geodetic_pts
+v.kcv map=my_geodetic_pts column=part npartitions=10
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href=v.random.html>v.random</a>,
+<a href=g.region.html>g.region</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+James Darrell McCauley,
+<br>when he was at: 
+<a href="http://ABE.www.ecn.purdue.edu/ABE/">Agricultural Engineering</a>
+<a href="http://www.purdue.edu/">Purdue University</a>
+
+<p>
+27 Jan 1994: fixed RAND_MAX for Solaris 2.3<br>
+13 Sep 2000: released under GPL<br>
+Updated to 5.7 Radim Blazek 10 / 2004<br>
+OGR support by Martin Landa (2009)<br>
+Speed-up by Jan Vandrol and Jan Ruzicka (2013)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.kcv">v.kcv source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.kcv">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

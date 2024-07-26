@@ -1,0 +1,112 @@
+.TH v.parallel 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.parallel\fR\fR  \- Creates parallel line to input vector lines.
+.SH KEYWORDS
+vector, geometry, buffer, line
+.SH SYNOPSIS
+\fBv.parallel\fR
+.br
+\fBv.parallel \-\-help\fR
+.br
+\fBv.parallel\fR [\-\fBrb\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR \fBdistance\fR=\fIfloat\fR  [\fBminordistance\fR=\fIfloat\fR]   [\fBangle\fR=\fIfloat\fR]  \fBside\fR=\fIstring\fR  [\fBtolerance\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Make outside corners round
+.IP "\fB\-b\fR" 4m
+.br
+Create buffer\-like parallel lines
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBdistance\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Offset along major axis in map units
+.br
+Options: \fI0\-100000000\fR
+.IP "\fBminordistance\fR=\fIfloat\fR" 4m
+.br
+Offset along minor axis in map units
+.br
+Options: \fI0\-100000000\fR
+.IP "\fBangle\fR=\fIfloat\fR" 4m
+.br
+Angle of major axis in degrees
+.br
+Default: \fI0\fR
+.IP "\fBside\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Side
+.br
+Options: \fIleft, right, both\fR
+.br
+Default: \fIright\fR
+.br
+\fBleft\fR: Parallel line is on the left
+.br
+\fBright\fR: Parallel line is on the right
+.br
+\fBboth\fR: Parallel lines on both sides
+.IP "\fBtolerance\fR=\fIfloat\fR" 4m
+.br
+Tolerance of arc polylines in map units
+.br
+Options: \fI0\-100000000\fR
+.SH DESCRIPTION
+\fIv.parallel\fR creates parallel lines to the input vector lines which
+can be used as half\-buffers.
+.SH NOTES
+Usage of \fB\-b\fR flag will overrule the \fBside\fR parameter.
+.SH KNOWN ISSUES
+There is a problem with side\-offset parallel line generation for inside corners.
+To avoid this problem, the \fB\-b\fR flag might be used.
+.SH SEE ALSO
+\fI
+v.buffer
+\fR
+.SH AUTHORS
+Radim Blazek
+.br
+Rewritten by Rosen Matev (with support through the Google Summer of Code program 2008)
+.SH SOURCE CODE
+.PP
+Available at: v.parallel source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

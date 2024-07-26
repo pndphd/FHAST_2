@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.ascii - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.ascii</b></em>  - Converts a raster map layer into a GRASS ASCII text file.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#ASCII">ASCII</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.ascii</b><br></div>
+<b>r.out.ascii --help</b><br>
+<div id="synopsis"><b>r.out.ascii</b> [-<b>hsmi</b>] <b>input</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [<b>precision</b>=<em>integer</em>]   [<b>width</b>=<em>integer</em>]   [<b>null_value</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Suppress printing of header information</dd>
+
+<dt><b>-s</b></dt>
+<dd>Write SURFER (Golden Software) ASCII grid</dd>
+
+<dt><b>-m</b></dt>
+<dd>Write MODFLOW (USGS) ASCII array</dd>
+
+<dt><b>-i</b></dt>
+<dd>Force output of integer values</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output ASCII grid map (use out=- for stdout)</dd>
+
+<dt><b>precision</b>=<em>integer</em></dt>
+<dd>Number of significant digits (floating point only)</dd>
+
+<dt><b>width</b>=<em>integer</em></dt>
+<dd>Number of values printed before wrapping a line (only SURFER or MODFLOW format)</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String to represent null cell (GRASS grid only)</dd>
+<dd>Default: <em>*</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.out.ascii</em> converts a user-specified raster map layer
+(<b>input=</b><em>name</em>) into an ASCII grid in a text file
+(<b>output=</b><em>name</em>) suitable for export to
+other computer systems.
+
+<p>
+The GRASS program <em><a href="r.in.ascii.html">r.in.ascii</a></em> can be
+used to perform the reverse function, converting an ASCII file in suitable
+format to GRASS raster map format.
+<p><!--With <b>-s</b> flag SURFER .grd ASCII GRID instead of GRASS ASCII GRID is
+written (with reverted row order, different header).
+<p>With <b>-m</b> flag MODFLOW (USGS) free-format array instead of GRASS ASCII
+GRID is written.-->
+
+<p>To write a SURFER .grd ASCII GRID file (with reverted row order and different
+header) use the <em>-s</em> flag:
+
+<div class="code"><pre>
+r.out.ascii -s input=inname output=outname.grd [dp=value]
+</pre></div>
+
+NULL data are coded to "1.70141e+038" for SURFER ASCII GRID files (ignoring
+the <em>null=</em> parameter).
+
+<h2><a name="notes">NOTES</a></h2>
+
+The output from <em>r.out.ascii</em> may be placed into a file by using the
+UNIX redirection mechanism; e.g.:
+
+<div class="code"><pre>
+r.out.ascii input=soils output=- &gt; out.file
+</pre></div>
+
+The output file out.file can then be printed or copied onto a CDROM
+or floppy disk for export purposes.
+<p>To export the raster values as x,y,z values of cell centers (one per line)
+use the <em><a href="r.out.xyz.html">r.out.xyz</a></em> module.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.in.ascii.html">r.in.ascii</a>,
+<a href="r.in.gdal.html">r.in.gdal</a>,
+<a href="r.out.bin.html">r.out.bin</a>,
+<a href="r.out.gdal.html">r.out.gdal</a>,
+<a href="r.out.xyz.html">r.out.xyz</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+<p>Surfer support by Markus Neteler
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.ascii">r.out.ascii source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.ascii">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

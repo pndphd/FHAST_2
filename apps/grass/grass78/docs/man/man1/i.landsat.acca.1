@@ -1,0 +1,132 @@
+.TH i.landsat.acca 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.landsat.acca\fR\fR  \- Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).
+.SH KEYWORDS
+imagery, ACCA, cloud detection, satellite, Landsat
+.SH SYNOPSIS
+\fBi.landsat.acca\fR
+.br
+\fBi.landsat.acca \-\-help\fR
+.br
+\fBi.landsat.acca\fR [\-\fB5fx2s\fR] \fBinput\fR=\fIbasename\fR \fBoutput\fR=\fIname\fR  [\fBb56composite\fR=\fIfloat\fR]   [\fBb45ratio\fR=\fIfloat\fR]   [\fBhistogram\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-5\fR" 4m
+.br
+Data is Landsat\-5 TM
+.br
+I.e. Thermal band is \(cq.6\(cq not \(cq.61\(cq)
+.IP "\fB\-f\fR" 4m
+.br
+Apply post\-processing filter to remove small holes
+.IP "\fB\-x\fR" 4m
+.br
+Always use cloud signature (step 14)
+.IP "\fB\-2\fR" 4m
+.br
+Bypass second\-pass processing, and merge warm (not ambiguous) and cold clouds
+.IP "\fB\-s\fR" 4m
+.br
+Include a category for cloud shadows
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+Base name of input raster bands
+.br
+Example: \(cqB.\(cq for B.1, B.2, ...
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBb56composite\fR=\fIfloat\fR" 4m
+.br
+B56composite (step 6)
+.br
+Default: \fI225.\fR
+.IP "\fBb45ratio\fR=\fIfloat\fR" 4m
+.br
+B45ratio: Desert detection (step 10)
+.br
+Default: \fI1.\fR
+.IP "\fBhistogram\fR=\fIinteger\fR" 4m
+.br
+Number of classes in the cloud temperature histogram
+.br
+Default: \fI100\fR
+.SH DESCRIPTION
+\fIi.landsat.acca\fR implements the \fBAutomated Cloud\-Cover
+Assessment\fR (ACCA) Algorithm from Irish (2000) with the constant
+values for pass filter one from Irish et al. (2006). To do this, it
+needs Landsat band numbers 2, 3, 4, 5, and 6 (or band 61 for Landsat\-7
+ETM+) which have already been processed from DN into reflectance and
+band\-6 temperature
+with \fIi.landsat.toar\fR).
+.PP
+The ACCA algorithm gives good results over most of the planet with the
+exception of ice sheets because ACCA operates on the premise that
+clouds are colder than the land surface they cover. The algorithm was
+designed for Landsat\-7 ETM+ but because reflectance is used it is also
+useful for Landsat\-4/5 TM.
+.SH NOTES
+\fIi.landsat.acca\fR works in the current region settings.
+.SH EXAMPLES
+Run the standard ACCA algorithm with filling of small cloud holes
+(the \fB\-f\fR flag): With per\-band reflectance raster maps
+named 226_62.toar.1, 226_62.toar.2,  [...] and LANDSAT\-7
+thermal band 226_62.toar.61, outputting to a new raster map
+named 226_62.acca:
+.br
+.nf
+\fC
+i.landsat.toar sensor=7 gain=HHHLHLHHL date=2003\-04\-07 \(rs
+  product_date=2008\-11\-27 band_prefix=226_62 solar_elevation=49.51654
+i.landsat.acca \-f band_prefix=226_62.toar output=226_62.acca
+\fR
+.fi
+.SH REFERENCES
+.IP
+.IP \fB1\fR
+Irish R.R., Barker J.L., Goward S.N., and Arvidson T., 2006.
+Characterization of the Landsat\-7 ETM+ Automated Cloud\-Cover
+Assessment (ACCA) Algorithm. Photogrammetric Engineering and Remote
+Sensing vol. 72(10): 1179\-1188.
+.IP \fB2\fR
+Irish, R.R., 2000. Landsat 7 Automatic Cloud Cover Assessment. In
+S.S. Shen and M.R. Descour (Eds.): Algorithms for Multispectral,
+Hyperspectral, and Ultraspectral Imagery VI. Proceedings of SPIE,
+4049: 348\-355.
+.PP
+.SH SEE ALSO
+\fI
+i.atcorr,
+i.landsat.toar
+\fR
+.SH AUTHOR
+E. Jorge Tizado  (ej.tizado unileon es), Dept. Biodiversity and Environmental Management, University of León, Spain
+.SH SOURCE CODE
+.PP
+Available at: i.landsat.acca source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Time Series Clustering Along with Optimizations for the Dynamic
+Time Warping Distance</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Time Series Clustering Along with Optimizations for the Dynamic
+Time Warping Distance
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;dtwclust&rsquo; version 5.5.11</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="dtwclust-package.html">dtwclust-package</a></td>
+<td>Time series clustering along with optimizations for the Dynamic Time Warping distance</td></tr>
+<tr><td style="width: 25%;"><a href="as.matrix.html">as.matrix</a></td>
+<td>as.matrix</td></tr>
+<tr><td style="width: 25%;"><a href="uciCT.html">CharTraj</a></td>
+<td>Subset of character trajectories data set</td></tr>
+<tr><td style="width: 25%;"><a href="uciCT.html">CharTrajLabels</a></td>
+<td>Subset of character trajectories data set</td></tr>
+<tr><td style="width: 25%;"><a href="uciCT.html">CharTrajMV</a></td>
+<td>Subset of character trajectories data set</td></tr>
+<tr><td style="width: 25%;"><a href="compare_clusterings.html">compare_clusterings</a></td>
+<td>Compare different clustering configurations</td></tr>
+<tr><td style="width: 25%;"><a href="compare_clusterings_configs.html">compare_clusterings_configs</a></td>
+<td>Create clustering configurations.</td></tr>
+<tr><td style="width: 25%;"><a href="compute_envelope.html">compute_envelope</a></td>
+<td>Time series warping envelopes</td></tr>
+<tr><td style="width: 25%;"><a href="cvi.html">cvi</a></td>
+<td>Cluster validity indices</td></tr>
+<tr><td style="width: 25%;"><a href="cvi.html">cvi,FuzzyTSClusters</a></td>
+<td>Cluster validity indices</td></tr>
+<tr><td style="width: 25%;"><a href="cvi.html">cvi,HierarchicalTSClusters</a></td>
+<td>Cluster validity indices</td></tr>
+<tr><td style="width: 25%;"><a href="cvi.html">cvi,PartitionalTSClusters</a></td>
+<td>Cluster validity indices</td></tr>
+<tr><td style="width: 25%;"><a href="cvi.html">cvi-method</a></td>
+<td>Cluster validity indices</td></tr>
+<tr><td style="width: 25%;"><a href="cvi_evaluators.html">cvi_evaluators</a></td>
+<td>Cluster comparison based on CVIs</td></tr>
+<tr><td style="width: 25%;"><a href="DBA.html">DBA</a></td>
+<td>DTW Barycenter Averaging</td></tr>
+<tr><td style="width: 25%;"><a href="DBA.html">dba</a></td>
+<td>DTW Barycenter Averaging</td></tr>
+<tr><td style="width: 25%;"><a href="dtw2.html">dtw2</a></td>
+<td>DTW distance with L2 norm</td></tr>
+<tr><td style="width: 25%;"><a href="dtwclust-package.html">dtwclust</a></td>
+<td>Time series clustering along with optimizations for the Dynamic Time Warping distance</td></tr>
+<tr><td style="width: 25%;"><a href="dtwclustTimings.html">dtwclustTimings</a></td>
+<td>Results of timing experiments</td></tr>
+<tr><td style="width: 25%;"><a href="dtw_basic.html">dtw_basic</a></td>
+<td>Basic DTW distance</td></tr>
+<tr><td style="width: 25%;"><a href="dtw_lb.html">dtw_lb</a></td>
+<td>DTW distance matrix guided by Lemire's improved lower bound</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">FuzzyTSClusters</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">FuzzyTSClusters-class</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">fuzzy_control</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="GAK.html">GAK</a></td>
+<td>Fast global alignment kernels</td></tr>
+<tr><td style="width: 25%;"><a href="GAK.html">gak</a></td>
+<td>Fast global alignment kernels</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">HierarchicalTSClusters</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">HierarchicalTSClusters-class</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">hierarchical_control</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">initialize,TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">initialize-method</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="interactive_clustering.html">interactive_clustering</a></td>
+<td>A shiny app for interactive clustering</td></tr>
+<tr><td style="width: 25%;"><a href="lb_improved.html">lb_improved</a></td>
+<td>Lemire's improved DTW lower bound</td></tr>
+<tr><td style="width: 25%;"><a href="lb_keogh.html">lb_keogh</a></td>
+<td>Keogh's DTW lower bound</td></tr>
+<tr><td style="width: 25%;"><a href="NCCc.html">NCCc</a></td>
+<td>Cross-correlation with coefficient normalization</td></tr>
+<tr><td style="width: 25%;"><a href="pam_cent.html">pam_cent</a></td>
+<td>Centroid for partition around medoids</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">PartitionalTSClusters</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">PartitionalTSClusters-class</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">partitional_control</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="pdc_configs.html">pdc_configs</a></td>
+<td>Helper function for preprocessing/distance/centroid configurations</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">plot,TSClusters,missing</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">plot-method</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">plot.TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">predict,TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">predict-method</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">predict.TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="reinterpolate.html">reinterpolate</a></td>
+<td>Wrapper for simple linear reinterpolation</td></tr>
+<tr><td style="width: 25%;"><a href="repeat_clustering.html">repeat_clustering</a></td>
+<td>Repeat a clustering configuration</td></tr>
+<tr><td style="width: 25%;"><a href="SBD.html">SBD</a></td>
+<td>Shape-based distance</td></tr>
+<tr><td style="width: 25%;"><a href="SBD.html">sbd</a></td>
+<td>Shape-based distance</td></tr>
+<tr><td style="width: 25%;"><a href="sdtw.html">sdtw</a></td>
+<td>Soft-DTW distance</td></tr>
+<tr><td style="width: 25%;"><a href="sdtw_cent.html">sdtw_cent</a></td>
+<td>Centroid calculation based on soft-DTW</td></tr>
+<tr><td style="width: 25%;"><a href="shape_extraction.html">shape_extraction</a></td>
+<td>Shape average of several time series</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">show,TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">show-method</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="ssdtwclust.html">ssdtwclust</a></td>
+<td>A shiny app for semi-supervised DTW-based clustering</td></tr>
+<tr><td style="width: 25%;"><a href="TADPole.html">TADPole</a></td>
+<td>TADPole clustering</td></tr>
+<tr><td style="width: 25%;"><a href="TADPole.html">tadpole</a></td>
+<td>TADPole clustering</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">tadpole_control</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust.html">tsclust</a></td>
+<td>Time series clustering</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">tsclust-controls</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">TSClusters</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="TSClusters-class.html">TSClusters-class</a></td>
+<td>Class definition for 'TSClusters' and derived classes</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">TSClusters-methods</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">tsclusters-methods</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclustFamily-class.html">tsclustFamily</a></td>
+<td>Class definition for 'tsclustFamily'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclustFamily-class.html">tsclustFamily-class</a></td>
+<td>Class definition for 'tsclustFamily'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclust-controls.html">tsclust_args</a></td>
+<td>Control parameters for clusterings with 'tsclust()'</td></tr>
+<tr><td style="width: 25%;"><a href="tslist.html">tslist</a></td>
+<td>Coerce matrices or data frames to a list of time series</td></tr>
+<tr><td style="width: 25%;"><a href="uciCT.html">uciCT</a></td>
+<td>Subset of character trajectories data set</td></tr>
+<tr><td style="width: 25%;"><a href="uciCT.html">ucict</a></td>
+<td>Subset of character trajectories data set</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">update,TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">update-method</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="tsclusters-methods.html">update.TSClusters</a></td>
+<td>Methods for 'TSClusters'</td></tr>
+<tr><td style="width: 25%;"><a href="zscore.html">zscore</a></td>
+<td>Wrapper for z-normalization</td></tr>
+</table>
+</div></body></html>

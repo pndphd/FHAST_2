@@ -1,0 +1,228 @@
+.TH r.topmodel 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.topmodel\fR\fR  \- Simulates TOPMODEL which is a physically based hydrologic model.
+.SH KEYWORDS
+raster, hydrology, model
+.SH SYNOPSIS
+\fBr.topmodel\fR
+.br
+\fBr.topmodel \-\-help\fR
+.br
+\fBr.topmodel\fR [\-\fBp\fR] \fBparameters\fR=\fIname\fR \fBtopidxstats\fR=\fIname\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBtimestep\fR=\fIinteger\fR]   [\fBtopidxclass\fR=\fIinteger\fR]   [\fBtopidx\fR=\fIname\fR]   [\fBntopidxclasses\fR=\fIinteger\fR]   [\fBouttopidxstats\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Preprocess only and stop after generating outtopidxstats
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBparameters\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input TOPMODEL parameters file
+.IP "\fBtopidxstats\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input topographic index statistics file
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input rainfall and potential evapotranspiration data file
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output file
+.IP "\fBtimestep\fR=\fIinteger\fR" 4m
+.br
+Time step
+.br
+Generate output for this time step
+.IP "\fBtopidxclass\fR=\fIinteger\fR" 4m
+.br
+Topographic index class
+.br
+Generate output for this topographic index class
+.IP "\fBtopidx\fR=\fIname\fR" 4m
+.br
+Name of input topographic index raster map
+.br
+Must be clipped to the catchment boundary. Used for generating outtopidxstats
+.IP "\fBntopidxclasses\fR=\fIinteger\fR" 4m
+.br
+Number of topographic index classes
+.br
+Used for generating outtopidxstats
+.br
+Default: \fI30\fR
+.IP "\fBouttopidxstats\fR=\fIname\fR" 4m
+.br
+Name for output topographic index statistics file
+.br
+Requires topidx and ntopidxclasses
+.SH DESCRIPTION
+\fIr.topmodel\fR simulates TOPMODEL which is a physically based
+hydrologic model.
+.SS Parameters description
+.IP "\fBparameters\fR" 4m
+.br
+This file contains TOPMODEL parameters that describe the study area. Any lines
+starting with a # sign or empty lines are ignored.
+.br
+.nf
+\fC
+# Subcatchment name
+Subcatchment 1
+################################################################################
+# A [m^2]: Total subcatchment area
+3.31697E+07
+################################################################################
+# qs0 [m/h]: Initial subsurface flow per unit area
+#		\(dqThe first streamflow input is assumed to represent
+#		 only the subsurface flow contribution in the watershed.\(dq
+#								\- Liaw (1988)
+0.000075
+# lnTe [ln(m^2/h)]: Areal average of the soil surface transmissivity
+4.
+# m [m]: Parameter controlling the decline rate of transmissivity
+# See Beven and Kirkby (1979)
+0.0125
+# Sr0 [m]: Initial root zone storage deficit
+0.0025
+# Srmax [m]: Maximum root zone storage deficit
+0.041
+# td [h]: Unsaturated zone time delay per unit storage deficit if greater than 0
+#  OR
+# \-alpha: Effective vertical hydraulic gradient if not greater than 0.
+#
+# For example, \-10 means alpha=10.
+60.
+# vch [m/h]: Main channel routing velocity
+20000.
+# vr [m/h]: Internal subcatchment routing velocity
+10000.
+################################################################################
+# infex: Calculate infiltration excess if not zero (integer)
+0
+# K0 [m/h]: Surface hydraulic conductivity
+2.
+# psi [m]: Wetting front suction
+0.1
+# dtheta: Water content change across the wetting front
+0.1
+################################################################################
+# d [m]: Distance from the catchment outlet
+#		The first value should be the mainstream distance from
+#		the subcatchment outlet to the catchment outlet.
+# Ad_r:  Cumulative area ratio of subcatchment (0.0 to 1.0)
+#		The first and last values should be 0 and 1, respectively.
+#   d  Ad_r
+    0   0.0
+ 1000   0.2
+ 2000   0.4
+ 3000   0.6
+ 4000   0.8
+ 5000   1.0
+\fR
+.fi
+.IP "\fBinput\fR" 4m
+.IP " " 4m
+.br
+This file contains observed weather data.
+.br
+.nf
+\fC
+# dt [h]: Time step
+24
+################################################################################
+# R [m/dt]:  Rainfall
+# Ep [m/dt]: Potential evapotranspiration
+# R             Ep
+0.000033        0.000000
+0.000053        0.011938
+0.004821        0.000000
+\&.
+\&.
+\&.
+\fR
+.fi
+.IP "\fBtimestep\fR" 4m
+.br
+If a time step is specified, output will be generated for the specific time
+step in addition to the summary and total flows at the outlet. This parameter
+can be combined with \fBtopidxclass\fR to specify a time step and topographic index
+class at the same time. If no \fBtopidxclass\fR is given, output will be generated
+for all the topographic index classes.
+.IP "\fBtoptopidxclass\fR" 4m
+.br
+If a topographic index class is specified, output will be generated for the
+given topographic index class. This parameter can be combined with \fBtimestep\fR. If
+no \fBtimestep\fR is given, output will be generated for all the time steps.
+.IP "\fBtopidx\fR, \fBntoptopidxclasses\fR, \fBouttoptopidxstats\fR" 4m
+.br
+The \fBtopidx\fR map can optionally be used for creating a new topographic
+index statistics file. This map has to be already clipped to the catchment
+boundary. The entire range of topographic index values will be divided into
+\fBntoptopidxclasses\fR and the area ratio of each class will be reported in the
+\fBouttoptopidxstats\fR file. These three parameters can be omitted unless a new
+\fBtopidxstats\fR file needs to be created.
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Beven, K. J., 1984. Infiltration into a class of vertically non\-uniform
+soils. Hydrological Sciences Journal 29 (4), 425\-434.
+.IP \(bu 4n
+Beven, K. J., Kirkby, M. J., 1979. A physically based, variable
+contributing area model of basin hydrology. Hydrological Sciences Bulletin 24
+(1), 43\-69.
+.IP \(bu 4n
+Beven K. J., R. Lamb, P. Quinn, R. Romanowicz, and J. Freer, 1995.
+TOPMODEL, in V.P. Singh (Ed.). Computer Models of Watershed Hydrology. Water
+Resources Publications.
+.IP \(bu 4n
+Cho, H., 2000. GIS Hydrological Modeling System by Using Programming
+Interface of GRASS. Master\(cqs Thesis, Department of Civil Engineering,
+Kyungpook National University, Korea.
+.IP \(bu 4n
+Liaw, S. C., 1988. Streamflow Simulation Using a Physically Based
+Hydrologic Model in Humid Forested Watersheds. Dissertation, Colorado State
+University, CO. p163.
+.IP \(bu 4n
+Morel\-Seytoux, H. J., Khanji, J., 1974. Derivation of an equation of
+infiltration. Water Resources Research 10 (4), 795\-800.
+.RE
+.SH SEE ALSO
+\fI
+r.fill.dir,
+r.mapcalc,
+r.topidx
+\fR
+.br
+How to run r.topmodel
+.SH AUTHORS
+Huidae Cho,
+Hydro Laboratory, Kyungpook National University, South Korea
+.PP
+Based on TMOD9502.FOR by Keith Beven.
+.SH SOURCE CODE
+.PP
+Available at: r.topmodel source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

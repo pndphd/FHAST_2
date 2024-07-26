@@ -1,0 +1,355 @@
+.TH r.horizon 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.horizon\fR\fR  \- Computes horizon angle height from a digital elevation model.
+.br
+The module has two different modes of operation: 1. Computes the entire horizon around a single point whose coordinates are given with the \(cqcoord\(cq option. The horizon height (in radians). 2. Computes one or more raster maps of the horizon height in a single direction. The input for this is the angle (in degrees), which is measured counterclockwise with east=0, north=90 etc. The output is the horizon height in radians.
+.SH KEYWORDS
+raster, solar, sun position
+.SH SYNOPSIS
+\fBr.horizon\fR
+.br
+\fBr.horizon \-\-help\fR
+.br
+\fBr.horizon\fR [\-\fBdc\fR] \fBelevation\fR=\fIname\fR  [\fBdirection\fR=\fIfloat\fR]   [\fBstep\fR=\fIfloat\fR]   [\fBstart\fR=\fIfloat\fR]   [\fBend\fR=\fIfloat\fR]   [\fBbufferzone\fR=\fIfloat\fR]   [\fBe_buff\fR=\fIfloat\fR]   [\fBw_buff\fR=\fIfloat\fR]   [\fBn_buff\fR=\fIfloat\fR]   [\fBs_buff\fR=\fIfloat\fR]   [\fBmaxdistance\fR=\fIfloat\fR]   [\fBoutput\fR=\fIbasename\fR]   [\fBcoordinates\fR=\fIeast,north\fR]   [\fBdistance\fR=\fIfloat\fR]   [\fBfile\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Write output in degrees (default is radians)
+.IP "\fB\-c\fR" 4m
+.br
+Write output in compass orientation (default is CCW, East=0)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBdirection\fR=\fIfloat\fR" 4m
+.br
+Direction in which you want to know the horizon height
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Angle step size for multidirectional horizon [degrees]
+.IP "\fBstart\fR=\fIfloat\fR" 4m
+.br
+Start angle for multidirectional horizon [degrees]
+.br
+Default: \fI0.0\fR
+.IP "\fBend\fR=\fIfloat\fR" 4m
+.br
+End angle for multidirectional horizon [degrees]
+.br
+Default: \fI360.0\fR
+.IP "\fBbufferzone\fR=\fIfloat\fR" 4m
+.br
+For horizon rasters, read from the DEM an extra buffer around the present region
+.IP "\fBe_buff\fR=\fIfloat\fR" 4m
+.br
+For horizon rasters, read from the DEM an extra buffer eastward the present region
+.IP "\fBw_buff\fR=\fIfloat\fR" 4m
+.br
+For horizon rasters, read from the DEM an extra buffer westward the present region
+.IP "\fBn_buff\fR=\fIfloat\fR" 4m
+.br
+For horizon rasters, read from the DEM an extra buffer northward the present region
+.IP "\fBs_buff\fR=\fIfloat\fR" 4m
+.br
+For horizon rasters, read from the DEM an extra buffer southward the present region
+.IP "\fBmaxdistance\fR=\fIfloat\fR" 4m
+.br
+The maximum distance to consider when finding the horizon height
+.IP "\fBoutput\fR=\fIbasename\fR" 4m
+.br
+Name for output basename raster map(s)
+.IP "\fBcoordinates\fR=\fIeast,north\fR" 4m
+.br
+Coordinate for which you want to calculate the horizon
+.IP "\fBdistance\fR=\fIfloat\fR" 4m
+.br
+Sampling distance step coefficient (0.5\-1.5)
+.br
+Default: \fI1.0\fR
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name of file for output (use output=\- for stdout)
+.br
+Default: \fI\-\fR
+.SH DESCRIPTION
+\fBr.horizon\fR computes the angular height of terrain horizon in
+radians. It reads a raster of elevation data and outputs the horizon
+outline in one of two modes:
+.RS 4n
+.IP \(bu 4n
+single point: as a series of horizon
+heights in the specified directions from the given point. The results are
+written to the stdout.
+.IP \(bu 4n
+raster: in this case the output is
+one or more raster maps, with each point in a raster giving the horizon
+height in a specific direction. One raster is created for each direction.
+.RE
+.PP
+The directions are given as azimuthal angles (in degrees), with
+the angle starting with 0 towards East and moving counterclockwise
+(North is 90, etc.). The calculation takes into account the actual
+projection, so the angles are corrected for direction distortions
+imposed by it. The directions are thus aligned to those of the
+geographic projection and not the coordinate system given by the rows
+and columns of the raster map. This correction implies that the
+resulting cardinal directions represent true orientation towards the
+East, North, West and South. The only exception of this feature is
+LOCATION with x,y coordinate system, where this correction is
+not applied.
+.PP
+Using the \fB\-c\fR flag, the azimuthal angles will be printed in compass
+orientation (North=0, clockwise).
+.SS Input parameters:
+.PP
+The \fIelevation\fR parameter is an input elevation raster map. If
+the buffer options are used (see below), this raster should extend
+over the area that accommodate the presently defined region plus
+defined buffer zones.
+.PP
+The \fIstep\fR parameter gives the angle step (in degrees)
+between successive azimuthal directions for the calculation of the
+horizon. Thus, a value of 5 for the \fIstep\fR will give a total of
+360/5=72 directions (72 raster maps if used in the raster map mode).
+.PP
+The \fIstart\fR parameter gives the angle start (in degrees)
+for the calculation of the horizon. The default value is 0 (East with
+North being 90 etc.).
+.PP
+The \fIend\fR parameter gives the angle end (in degrees)
+for the calculation of the horizon. The end point is omitted!
+So for example if we run r.horizon with step=10, start=30 and end=70
+the raster maps generated by r.horizon will be only for angles:
+30, 40, 50, 60. The default value is 360.
+.PP
+The \fIdirection\fR parameter gives the initial direction of the
+first output. This parameter acts as an direction angle offset. For
+example, if you want to get horizon angles for directions 45 and 225
+degrees, the \fIdirection\fR should be set to 45 and \fIstep\fR to
+180. If you only want one single direction, use this parameter to
+specify desired direction of horizon angle, and set the \fIstep\fR
+size to 0 degrees. Otherwise all angles for a given starting \fIdirection\fR
+with step of \fIstep\fR are calculated.
+.PP
+The \fIdistance\fR controls the sampling distance step size for the
+search for horizon along the line of sight. The default value is 1.0
+meaning that the step size will be taken from the raster resolution.
+Setting the value below 1.0 might slightly improve results for
+directions apart from the cardinal ones, but increasing the
+processing load of the search algorithm.
+.PP
+The \fImaxdistance\fR value gives a maximum distance to move away
+from the origin along the line of sight in order to search for the
+horizon height.
+The default \fImaxdistance\fR is the full map extent.
+The smaller this value the faster the calculation but
+the higher the risk that you may miss a terrain feature that can
+contribute significantly to the horizon outline. Note that a viewshed
+can be calculated with \fIr.viewshed\fR.
+.PP
+The \fIcoordinate\fR parameter takes a pair of easting\-northing values
+in the current coordinate system and calculates the values of angular
+height of the horizon around this point. To achieve the
+consistency of the results, the point coordinate is
+aligned to the midpoint of the closest elevation raster cell.
+.PP
+If an analyzed point (or raster cell) lies close to the edge of
+the defined region, the horizon calculation may not be realistic,
+since it may not see some significant terrain features which could
+have contributed to the horizon, because these features are outside
+the region. There are to options how to set the size of the buffer
+that is used to increase the area of the horizon analysis. The
+\fIbufferzone\fR parameter allows you to specify the same size of
+buffer for all cardinal directions and the parameters \fIe_buff\fR,
+\fIn_buff\fR, \fIs_buff\fR, and \fIw_buff\fR allow you to specify
+a buffer size individually for each of the four directions. The
+buffer parameters influence only size of the read elevation map,
+while the analysis in the raster mode will be done only for the
+area specified by the current region definition.
+.PP
+The \fIoutput\fR parameter defines the basename of the output
+horizon raster maps. The raster name of each horizon direction
+raster will be constructed as \fIbasename_\fRANGLE, where ANGLE
+is the angle in degrees with the direction. If you use \fBr.horizon\fR
+in the single point mode this option will be ignored.
+.PP
+The \fIfile\fR parameter allows saving the resulting horizon
+angles in a comma separated ASCII file (single point mode only). If
+you use \fBr.horizon\fR in the raster map mode this option will be ignored.
+.PP
+At the moment the elevation and maximum distance must be measured in meters,
+even if you use geographical coordinates (longitude/latitude). If your
+projection is based on distance (easting and northing), these too must
+be in meters. The buffer parameters must be in the same units as the
+raster coordinates (e.g., for latitude\-longitude locations buffers are
+measured in degree unit).
+.SH METHOD
+The calculation method is based on the method used in \fBr.sun\fR
+to calculate shadows. It starts at a very shallow angle and walks
+along the line of sight and asks at each step whether the line of
+sight \(dqhits\(dq the terrain. If so, the angle is increased to
+allow the line of sight to pass just above the terrain at that point.
+This is continued until the line of sight reaches a height that is
+higher than any point in the region or until it reaches the border of
+the region (see also the \fIbufferzone,e_buff\fR, \fIn_buff\fR,
+\fIs_buff\fR, and \fIw_buff\fR). The the number of lines of sight (azimuth
+directions) is determined from the \fIdirection\fR and
+\fIstep\fR parameters. The method takes into account the curvature
+of the Earth whereby remote features will seem to be lower than they
+actually are. It also accounts for the changes of angles towards
+cardinal directions caused by the projection (see above).
+.PP
+The output with the \fB\-d\fR flag is azimuth degree (\-90 to 90, where
+0 is parallel with the focal cell). In case of negative horizon values
+obtained this indicates that the horizon height is below the cell it is
+computed from.
+.SH EXAMPLES
+The examples are intended for the North Carolina sample dataset.
+.SS Single point mode
+\fBExample 1\fR: determine horizon angle in 225 degree direction (output
+of horizon angles CCW from East):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.horizon elevation=elevation direction=215 step=0 bufferzone=200 \(rs
+    coordinates=638871.6,223384.4 maxdistance=5000
+\fR
+.fi
+.PP
+\fBExample 2\fR: determine horizon values starting at 90 deg (North),
+step size of 5 deg, saving result as CSV file:
+.br
+.nf
+\fC
+r.horizon elevation=elevation direction=90 step=5 bufferzone=200 \(rs
+    coordinates=638871.6,223384.4 maxdistance=5000 file=horizon.csv
+\fR
+.fi
+.PP
+\fBExample 3\fR: test point near highway intersection, saving result
+as CSV file for plotting the horizon around the highway intersection:
+.br
+.nf
+\fC
+g.region n=223540 s=220820 w=634650 e=638780 res=10 \-p
+r.horizon elevation=elevation direction=0 step=5 bufferzone=200 \(rs
+    coordinates=636483.54,222176.25 maxdistance=5000 \-d file=horizon.csv
+\fR
+.fi
+.br
+Test point near high way intersection (North Carolina sample dataset)
+.PP
+.br
+Horizon angles for test point (CCW from East)
+.PP
+We can plot horizon in polar coordinates using Matplotlib in Python:
+.br
+.nf
+\fC
+import numpy as np
+import matplotlib.pyplot as plt
+horizon = np.genfromtxt(\(cqhorizon.csv\(cq, delimiter=\(cq,\(cq)
+horizon = horizon[1:, :]
+ax = plt.subplot(111, polar=True)
+bars = ax.plot(horizon[:, 0] / 180 * np.pi,
+               (90 \- horizon[:, 1]) / 180 * np.pi)
+# uncomment the 2 following lines when using \-c flag
+# ax.set_theta_direction(\-1)
+# ax.set_theta_zero_location(\(cqN\(cq)
+plt.show()
+\fR
+.fi
+.br
+Horizon plot in polar coordinates.
+.SS Raster map mode
+Raster map mode (output maps \(dqhorangle*\(dq become input for \fIr.sun\fR):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# we put a bufferzone of 10% of maxdistance around the study area
+# compute only direction between 90 and 270 degrees
+r.horizon elevation=elevation step=30 start=90 end=300 \(rs
+    bufferzone=200 output=horangle maxdistance=5000
+\fR
+.fi
+.SH REFERENCES
+.PP
+Hofierka J., 1997. Direct solar radiation modelling within an
+open GIS environment. Proceedings of JEC\-GI\(cq97 conference in Vienna,
+Austria, IOS Press Amsterdam, 575\-584
+.PP
+Hofierka J., Huld T., Cebecauer T., Suri M., 2007. Open Source Solar
+Radiation Tools for Environmental and Renewable Energy Applications,
+International Symposium on
+Environmental Software Systems, Prague, 2007
+.PP
+Neteler M., Mitasova H., 2004. Open Source GIS: A GRASS GIS
+Approach, Springer, New York.
+ISBN: 1\-4020\-8064\-6, 2nd Edition 2004 (reprinted 2005), 424 pages
+.PP
+Project PVGIS, European
+Commission, DG Joint Research Centre 2001\-2007
+.PP
+Suri M., Hofierka J., 2004.
+A New GIS\-based Solar Radiation Model and Its Application for
+Photovoltaic Assessments. Transactions
+in GIS, 8(2), 175\-190
+.SH SEE ALSO
+\fI
+r.sun,
+r.sunmask,
+r.viewshed
+\fR
+.SH AUTHORS
+.PP
+Thomas Huld, Joint Research Centre of
+the European Commission, Ispra, Italy
+.br
+.PP
+Tomas Cebecauer, Joint Research Centre
+of the European Commission, Ispra, Italy
+.br
+.PP
+Jaroslav Hofierka, GeoModel s.r.o.,
+Bratislava, Slovakia
+.br
+Marcel Suri, Joint Research Centre of the
+European Commission, Ispra, Italy
+.PP
+© 2007, Thomas Huld, Tomas Cebecauer, Jaroslav Hofierka, Marcel Suri
+Thomas.Huld@jrc.it
+Tomas.Cebecauer@jrc.it
+hofierka@geomodel.sk
+Marcel.Suri@jrc.it
+.SH SOURCE CODE
+.PP
+Available at: r.horizon source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

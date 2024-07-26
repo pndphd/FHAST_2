@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.rectify - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.rectify</b></em>  - Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_rectify.html">rectify</a>, <a href="keywords.html#level1">level1</a>, <a href="keywords.html#geometry">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.rectify</b><br></div>
+<b>v.rectify --help</b><br>
+<div id="synopsis"><b>v.rectify</b> [-<b>3orb</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>group</b>=<em>name</em>]   [<b>points</b>=<em>name</em>]   [<b>rmsfile</b>=<em>name</em>]   [<b>order</b>=<em>integer</em>]   [<b>separator</b>=<em>character</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-3</b></dt>
+<dd>Perform 3D transformation</dd>
+
+<dt><b>-o</b></dt>
+<dd>Perform orthogonal 3D transformation</dd>
+
+<dt><b>-r</b></dt>
+<dd>Print RMS errors</dd>
+<dd>Print RMS errors and exit without rectifying the input map</dd>
+
+<dt><b>-b</b></dt>
+<dd>Do not build topology</dd>
+<dd>Advantageous when handling a large number of points</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>group</b>=<em>name</em></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>points</b>=<em>name</em></dt>
+<dd>Name of input file with control points</dd>
+
+<dt><b>rmsfile</b>=<em>name</em></dt>
+<dd>Name of output file with RMS errors (if omitted or '-' output to stdout</dd>
+
+<dt><b>order</b>=<em>integer</em></dt>
+<dd>Rectification polynomial order (1-3)</dd>
+<dd>Options: <em>1-3</em></dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator for RMS report</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#coordinate-transformation-and-rmse" class="toc">Coordinate transformation and RMSE</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.rectify</em> uses control points to calculate a 2D or 3D 
+transformation matrix based on a first, second, or third order 
+polynomial and then converts x,y(, z) coordinates to standard map 
+coordinates for each object in the vector map. The result is a vector 
+map with a transformed coordinate system (i.e., a different coordinate
+system than before it was rectified).
+<p>
+The <em>-o</em> flag enforces orthogonal rotation (currently for 3D only) 
+where the axes remain orthogonal to each other, e.g. a cube with right 
+angles remains a cube with right angles after transformation. This is not 
+guaranteed even with affine (1<sup>st</sup> order) 3D transformation.
+
+<p>
+Great care should be taken with the placement of Ground Control Points. 
+For 2D transformation, the control points must not lie on a line, instead 
+3 of the control points must form a triangle. For 3D transformation, the 
+control points must not lie on a plane, instead 4 of the control points 
+must form a triangular pyramid. It is recommended to investigate RMS 
+errors and deviations of the Ground Control Points prior to transformation.
+
+<p>
+2D Ground Control Points can be identified in 
+<em><a href="g.gui.gcp.html">g.gui.gcp</a></em>.
+<p>
+3D Ground Control Points must be provided in a text file with the 
+<b>points</b> option. The 3D format is equivalent to the format for 2D 
+ground control points with an additional third coordinate:
+
+<div class="code"><pre>
+ x y z east north height status
+</pre></div>
+where <em>x, y, z</em> are source coordinates, <em>east, north, height</em> 
+are target coordinates and status (0 or 1) indicates whether a given 
+point should be used. Numbers must be separated by space and must use a 
+point (.) as decimal separator.
+
+<p>
+If no <b>group</b> is given, the rectified vector will be written to 
+the current mapset. If a <b>group</b> is given and a target has been 
+set for this group with <em><a href="i.target.html">i.target</a></em>, 
+the rectified vector will be written to the target location and mapset.
+
+<h3><a name="coordinate-transformation-and-rmse">Coordinate transformation and RMSE</a></h3>
+<p>The desired order of transformation (1, 2, or 3) is selected with the
+<b>order</b> option.
+
+<em>v.rectify</em> will calculate the RMSE if the <b>-r</b> flag is 
+given and print out statistcs in tabular format. The last row gives a 
+summary with the first column holding the number of active points, 
+followed by average deviations for each dimension and both forward and 
+backward transformation and finally forward and backward overall RMSE.
+
+<h4>2D linear affine transformation (1st order transformation)</h4>
+
+<dl>
+	<dd> x' = a1 + b1 * x + c1 * y
+	<dd> y' = a2 + b2 * x + c2 * y
+</dl>
+
+<h4>3D linear affine transformation (1st order transformation)</h4>
+
+<dl>
+	<dd> x' = a1 + b1 * x + c1 * y + d1 * z
+	<dd> y' = a2 + b2 * x + c2 * y + d2 * z
+	<dd> z' = a3 + b3 * x + c3 * y + d3 * z
+</dl>
+
+The a,b,c,d coefficients are determined by least squares regression
+based on the control points entered.  This transformation
+applies scaling, translation and rotation. It is NOT a
+general purpose rubber-sheeting, nor is it ortho-photo
+rectification using a DEM, not second order polynomial,
+etc. It can be used if (1) you have geometrically correct
+data, and (2) the terrain or camera distortion effect can
+be ignored.
+
+<h4>Polynomial Transformation Matrix (2nd, 3d order transformation)</h4>
+
+<em>v.rectify</em> uses a first, second, or third order transformation
+matrix to calculate the registration coefficients. The minimum number
+of control points required for a 2D transformation of the selected order
+(represented by n) is
+
+<dl>
+<dd>((n + 1) * (n + 2) / 2) 
+</dl>
+
+or 3, 6, and 10 respectively. For a 3D transformation of first, second, 
+or third order, the minimum number of required control points is 4, 10, 
+and 20, respectively. It is strongly recommended that more than the 
+minimum number of points be identified to allow for an overly-determined 
+transformation calculation which will generate the Root Mean Square (RMS) 
+error values for each included point. The polynomial equations are 
+determined using a modified Gaussian elimination method.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+The GRASS 4 <em>
+<a href="https://grass.osgeo.org/gdp/imagery/grass4_image_processing.pdf">Image
+Processing manual</a></em>
+
+<p>
+<em>
+<a href="g.gui.gcp.html">g.gui.gcp</a>,
+<a href="i.group.html">i.group</a>,
+<a href="i.rectify.html">i.rectify</a>,
+<a href="i.target.html">i.target</a>,
+<a href="m.transform.html">m.transform</a>,
+<a href="r.proj.html">r.proj</a>,
+<a href="v.proj.html">v.proj</a>,
+<a href="v.transform.html">v.transform</a>,
+</em>
+
+<br>
+<em>
+<a href="wxGUI.gcp.html">Manage Ground Control Points</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Metz
+
+<p>
+based on <a href="i.rectify.html">i.rectify</a>
+
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.rectify">v.rectify source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.rectify">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

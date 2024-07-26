@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.transform - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.transform</b></em>  - Performs an affine transformation (shift, scale and rotate) on vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_transformation.html">transformation</a>, <a href="keywords.html#geometry">geometry</a>, <a href="keywords.html#GCP">GCP</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.transform</b><br></div>
+<b>v.transform --help</b><br>
+<div id="synopsis"><b>v.transform</b> [-<b>twxyab</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em>  [<b>xshift</b>=<em>float</em>]   [<b>yshift</b>=<em>float</em>]   [<b>zshift</b>=<em>float</em>]   [<b>xscale</b>=<em>float</em>]   [<b>yscale</b>=<em>float</em>]   [<b>zscale</b>=<em>float</em>]   [<b>zrotation</b>=<em>float</em>]   [<b>columns</b>=<em>name</em>[,<i>name</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Shift all z values to bottom=0</dd>
+
+<dt><b>-w</b></dt>
+<dd>Swap coordinates x, y and then apply other parameters</dd>
+
+<dt><b>-x</b></dt>
+<dd>Swap coordinates x, z and then apply other parameters</dd>
+
+<dt><b>-y</b></dt>
+<dd>Swap coordinates y, z and then apply other parameters</dd>
+
+<dt><b>-a</b></dt>
+<dd>Swap coordinates after the other transformations</dd>
+
+<dt><b>-b</b></dt>
+<dd>Do not build topology</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>xshift</b>=<em>float</em></dt>
+<dd>Shifting value for x coordinates</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>yshift</b>=<em>float</em></dt>
+<dd>Shifting value for y coordinates</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>zshift</b>=<em>float</em></dt>
+<dd>Shifting value for z coordinates</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>xscale</b>=<em>float</em></dt>
+<dd>Scaling factor for x coordinates</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>yscale</b>=<em>float</em></dt>
+<dd>Scaling factor for y coordinates</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>zscale</b>=<em>float</em></dt>
+<dd>Scaling factor for z coordinates</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>zrotation</b>=<em>float</em></dt>
+<dd>Rotation around z axis in degrees (counter-clockwise)</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>columns</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of attribute column(s) used as transformation parameters</dd>
+<dd>Format: parameter:column, e.g. xshift:xs,yshift:ys,zrot:zr</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#dxf/dwg-drawings" class="toc">DXF/DWG drawings</a></li>
+        <li class="toc"><a href="#extrude-2d-vector-points-to-3d-based-on-attribute-column-values" class="toc">Extrude 2D vector points to 3D based on attribute column values</a></li>
+        <li class="toc"><a href="#extrude-2d-vector-points-to-3d-based-on-attribute-column-values" class="toc">Extrude 2D vector points to 3D based on attribute column values</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.transform</em> performs an affine transformation (translate and rotate) of a
+vector map. An affine transform includes one or several linear transformations
+(scaling, rotation) and translation (shifting). Several linear transformations
+can be combined in a single operation. The command can be used to georeference
+unreferenced vector maps or to modify existing geocoded maps.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Coordinate transformation based on Ground Control Points (GCPs) is done 
+by <em><a href="v.rectify.html">v.rectify</a></em> and not supported by
+<em>v.transform</em>.
+
+<p>Transformation parameters (i.e. <em>xshift</em>, <em>yshift</em>,
+etc.) can be fetched from attribute table connected to the vector
+map. In this case vector objects can be transformed with different
+parameters based on their category number. If the parameter cannot be
+fetched from the table, default value is used instead.
+<p>
+Note that the transformation matrix can be printed by
+<em><a href="m.transform.html">m.transform</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="dxf/dwg-drawings">DXF/DWG drawings</a></h3>
+
+<p>Most DXF/DWG drawings are done within XY coordinate space. To transform 
+them to a national grid, we can use <em>v.transform</em> together with 
+<em>v.rectify</em> and a first-order transformation.
+
+<div class="code"><pre>
+v.transform -t in=watertowerXY out=watertower_z zscale=0.04 zshift=1320
+v.rectify in=watertower_z out=watertowerUTM points=wt.points order=1
+</pre></div>
+
+<h3><a name="extrude-2d-vector-points-to-3d-based-on-attribute-column-values">Extrude 2D vector points to 3D based on attribute column values</a></h3>
+
+Spearfish example with manual table editing for vertical shift:
+
+<div class="code"><pre>
+# work on own map copy:
+g.copy vect=archsites@PERMANENT,myarchsites
+# add new 'zs' column to later store height of each site:
+v.db.addcolumn myarchsites col="zs double precision"
+v.db.update myarchsites layer=1 column=zs value="cat * 1000"
+
+# perform z transformation:
+v.transform -t input=archsites output=myarchsites3d column="zshift:zs" table="archsites_t"
+# drop table containing transformation parameters:
+echo "drop table archsites_t" | db.execute
+</pre></div>
+The resulting map is a 3D vector map.
+
+<h3><a name="extrude-2d-vector-points-to-3d-based-on-attribute-column-values">Extrude 2D vector points to 3D based on attribute column values</a></h3>
+
+Spearfish example with automated elevation extraction for vertical shift:
+
+<div class="code"><pre>
+# work on own map copy:
+g.copy vect=archsites@PERMANENT,myarchsites
+# add new 'zs' column to later store height of each site:
+v.db.addcolumn myarchsites col="zs double precision"
+
+# set region to elevation map and fetch individual heights:
+g.region raster=elevation.10m -p
+v.what.rast myarchsites rast=elevation.10m col=zs
+# verify:
+v.db.select myarchsites
+
+# perform transformation to 3D
+v.transform -t myarchsites output=myarchsites3d column="zshift:zs" layer=1
+# drop table containing transformation parameters
+v.db.dropcolumn myarchsites3d col=zs
+</pre></div>
+The resulting map is a 3D vector map.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="m.transform.html">m.transform</a>,
+<a href="i.rectify.html">i.rectify</a>,
+<a href="v.rectify.html">v.rectify</a>,
+<a href="r.region.html">r.region</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-irst, Trento, Italy,<br>
+Column support added by Martin Landa, FBK-irst (formerly ITC-irst), Trento, Italy (2007/09)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.transform">v.transform source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.transform">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

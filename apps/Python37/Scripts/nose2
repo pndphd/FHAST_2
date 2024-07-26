@@ -1,0 +1,8 @@
+#!C:\OSGEO4~1\bin\python3.exe
+
+__unittest = True
+
+from nose2 import discover
+
+if __name__ == '__main__':
+  discover()

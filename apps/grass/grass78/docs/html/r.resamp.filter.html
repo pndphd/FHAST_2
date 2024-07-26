@@ -1,0 +1,195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.resamp.filter - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.resamp.filter</b></em>  - Resamples raster map layers using an analytic kernel.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_resample.html">resample</a>, <a href="keywords.html#kernel filter">kernel filter</a>, <a href="keywords.html#filter">filter</a>, <a href="keywords.html#convolution">convolution</a>, <a href="keywords.html#FIR">FIR</a>, <a href="keywords.html#bartlett">bartlett</a>, <a href="keywords.html#blackman">blackman</a>, <a href="keywords.html#box">box</a>, <a href="keywords.html#gauss">gauss</a>, <a href="keywords.html#hamming">hamming</a>, <a href="keywords.html#hann">hann</a>, <a href="keywords.html#hermite">hermite</a>, <a href="keywords.html#lanczos">lanczos</a>, <a href="keywords.html#sinc">sinc</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.resamp.filter</b><br></div>
+<b>r.resamp.filter --help</b><br>
+<div id="synopsis"><b>r.resamp.filter</b> [-<b>n</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>filter</b>=<em>string</em>[,<i>string</i>,...]  [<b>radius</b>=<em>float</em>[,<i>float</i>,...]]   [<b>x_radius</b>=<em>float</em>[,<i>float</i>,...]]   [<b>y_radius</b>=<em>float</em>[,<i>float</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Propagate NULLs</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>filter</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Filter kernel(s)</dd>
+<dd>Options: <em>box, bartlett, gauss, normal, hermite, sinc, lanczos1, lanczos2, lanczos3, hann, hamming, blackman</em></dd>
+
+<dt><b>radius</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Filter radius</dd>
+
+<dt><b>x_radius</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Filter radius (horizontal)</dd>
+
+<dt><b>y_radius</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Filter radius (vertical)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.resamp.filter</em> resamples an input raster, filtering the
+input with an analytic kernel. Each output cell is typically calculated
+based upon a small subset of the input cells, not the entire input.
+<em>r.resamp.filter</em> performs convolution (i.e. a weighted sum is
+calculated for every raster cell).
+
+<p>
+The module maps the input range to the width of the window function, so
+wider windows will be "sharper" (have a higher cut-off frequency), e.g.
+lanczos3 will be sharper than lanczos2.
+
+<p>
+r.resamp.filter implements FIR (finite impulse response) filtering. All
+of the functions are low-pass filters, as they are symmetric. See
+<a href="http://en.wikipedia.org/wiki/Window_function">Wikipedia: Window function</a>
+for examples of common window functions and their frequency responses.
+
+<p>
+A piecewise-continuous function defined by sampled data can be considered
+a mixture (sum) of the underlying signal and quantisation noise. The
+intent of a low pass filter is to discard the quantisation noise while
+retaining the signal.
+
+The cut-off frequency is normally chosen according to the sampling
+frequency, as the quantisation noise is dominated by the sampling
+frequency and its harmonics. In general, the cut-off frequency is
+inversely proportional to the width of the central "lobe" of the window
+function.
+
+<p>
+When using <em>r.resamp.filter</em> with a specific radius, a specific
+cut-off frequency regardless of the method is chosen. So while lanczos3
+uses 3 times as large a window as lanczos1, the cut-off frequency remains
+the same. Effectively, the radius is "normalised".
+
+<p>
+All of the kernels specified by the <b>filter</b> parameter are
+multiplied together. Typical usage will use either a single kernel or an
+infinite kernel along with a finite window.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Resampling modules (<em>r.resample, r.resamp.stats, r.resamp.interp,
+r.resamp.rst, r.resamp.filter</em>) resample the map to match the
+current region settings.
+
+<p>
+When using a kernel which can have negative values (sinc, Lanczos),
+the <em>-n</em> flag should be used. Otherwise, extreme values can
+arise due to the total weight being close (or even equal) to zero.
+
+<p>
+Kernels with infinite extent (Gauss, normal, sinc, Hann, Hamming,
+Blackman) must be used in conjunction with a finite windowing function
+(box, Bartlett, Hermite, Lanczos).
+
+<p>
+The way that Lanczos filters are defined, the number of samples is
+supposed to be proportional to the order ("a" parameter), so lanczos3
+should use 3 times as many samples (at the same sampling frequency, i.e.
+cover 3 times as large a time interval) as lanczos1 in order to get a
+similar frequency response (higher-order filters will fall off faster, but
+the frequency at which the fall-off starts should be the same). See 
+<a href="http://en.wikipedia.org/wiki/File:Lanczos-kernel.svg">Wikipedia: Lanczos-kernel.svg</a>
+for an illustration. If both graphs were drawn on the same axes, they
+would have roughly the same shape, but the a=3 window would have a longer
+tail. By scaling the axes to the same width, the a=3 window has a narrower
+central lobe.
+
+<p>
+For longitude-latitude locations, the interpolation algorithm is based on
+degree fractions, not on the absolute distances between cell centers.  Any
+attempt to implement the latter would violate the integrity of the
+interpolation method.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.mfilter.html">r.mfilter</a>,
+<a href="r.resample.html">r.resample</a>,
+<a href="r.resamp.interp.html">r.resamp.interp</a>,
+<a href="r.resamp.rst.html">r.resamp.rst</a>,
+<a href="r.resamp.stats.html">r.resamp.stats</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.resamp.filter">r.resamp.filter source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.resamp.filter">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

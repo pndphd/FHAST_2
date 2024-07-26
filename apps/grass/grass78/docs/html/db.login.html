@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.login - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.login</b></em>  - Sets user/password for DB driver/database.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_connection_settings.html">connection settings</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.login</b><br></div>
+<b>db.login --help</b><br>
+<div id="synopsis"><b>db.login</b> [-<b>p</b>] <b>driver</b>=<em>name</em> <b>database</b>=<em>name</em>  [<b>user</b>=<em>string</em>]   [<b>password</b>=<em>string</em>]   [<b>host</b>=<em>string</em>]   [<b>port</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Print connection settings and exit</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>driver</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of database driver</dd>
+<dd>Options: <em>dbf, odbc, ogr, pg, sqlite</em></dd>
+<dd>Default: <em>sqlite</em></dd>
+
+<dt><b>database</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of database</dd>
+<dd>Default: <em>$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db</em></dd>
+
+<dt><b>user</b>=<em>string</em></dt>
+<dd>Username</dd>
+
+<dt><b>password</b>=<em>string</em></dt>
+<dd>Password</dd>
+
+<dt><b>host</b>=<em>string</em></dt>
+<dd>Hostname</dd>
+<dd>Relevant only for pg and mysql driver</dd>
+
+<dt><b>port</b>=<em>string</em></dt>
+<dd>Port</dd>
+<dd>Relevant only for pg and mysql driver</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.login</em> sets login parameters such an user name and
+optionally also a password, a hostname or a port for the connection to
+the selected <b>database</b> through the DB <b>driver</b>.
+
+<h2><a name="note">NOTE</a></h2>
+
+Options <b>host</b> and <b>port</b> are related to only SQL database
+backends like <a href="grass-pg.html">PostgreSQL</a>,
+<a href="grass-mysql.html">MySQL</a> or <a href="grass-odbc.html">ODBC</a>.
+
+<p>
+Note that the passwords are stored in a hidden, <i>unencrypted</i>
+file in the user account, specifically
+
+<ul>
+<li> in the 'home' directory, i.e. <tt>$HOME/.grass7/dblogin</tt> (Unix-like systems)</li>
+<li> <tt>%APPDATA%/GRASS7/dblogin</tt> (MS-Windows)</li>
+</ul>
+
+Only the file owner can access this file.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Only username specified (assuming locally accessible PostgreSQL DB
+without password):
+
+<div class="code"><pre>
+db.login driver=pg database=mydb
+</pre></div>
+
+<p>
+Username, password and hostname specified (note that the command lines
+history will store the password in this way):
+
+<div class="code"><pre>
+db.login driver=pg database=mydb user=bacava password=secret host=db.example.com
+</pre></div>
+
+<p>
+Username and empty password specified:
+
+<div class="code"><pre>
+db.login driver=pg database=mydb user=bacava password=""
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.connect.html">db.connect</a>,
+<a href="db.test.html">db.test</a>,
+<a href="db.tables.html">db.tables</a>
+</em>
+
+<p>
+<a href="sql.html">SQL support in GRASS GIS</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek<br>
+Support for hostname and port by Martin Landa, OSGeoREL, Czech Technical University in Prague, Czech Republic (GRASS 7.1)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/db/db.login">db.login source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/db/db.login">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

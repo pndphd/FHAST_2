@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jan Salecker" />
+
+<meta name="date" content="2023-05-16" />
+
+<title>Approximate Bayesian Computation (ABC)</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Approximate Bayesian Computation (ABC)</h1>
+<h4 class="author">Jan Salecker</h4>
+<h4 class="date">2023-05-16</h4>
+
+
+
+<div id="approximate-bayesian-computation-abc-with-nlrx" class="section level1">
+<h1>Approximate bayesian computation (ABC) with nlrx</h1>
+<p>Approximate bayesian computation (ABC) algorithms have been
+increasingly used for calibration of agent-based simulation models. The
+nlrx package provides different algorithms from the <a href="https://cran.r-project.org/package=EasyABC">EasyABC package</a>.
+These algorithms can be used by attaching the corresponding simdesigns
+(<code>simdesign_ABCmcmc_Marjoram()</code>,
+<code>simdesign_ABCmcmc_Marjoram_original()</code>,
+<code>simdesign_ABCmcmc_Wegmann()</code>). Example 1 shows the process
+of how to use ABC with nlrx. Additionally, Latin Hypercube Sampling
+output can be used to calculate parameter distributions based on
+rejection sampling and local linear regression. Example 2 shows, how the
+<code>simdesign_lhs()</code> can be used in combination with the <a href="https://cran.r-project.org/package=abc">abc package</a>.</p>
+<div id="example-1-approximate-bayesian-computation-with-monte-carlo-markov-chain" class="section level2">
+<h2>Example 1: Approximate bayesian computation with Monte-Carlo
+Markov-Chain</h2>
+<p>Here we present one example for the widely used Marjoram algorithm
+which combines ABC with a Markov-Chain Monte-Carlo parameter sampling
+scheme. However, the other two ABCmcmc simdesigns work in a very similar
+way except for the parameter definitions within the simdesigns (see
+respective documentation pages for help).</p>
+<p>We use the Wolf Sheep Predation model from the models library to show
+a basic example of the calibration workflow.</p>
+<div id="step-1-create-a-nl-object" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>Because we want to apply a calibration algorithm, we need to define
+proper variable ranges. The algorithm is allowed to change the values of
+these parameters within these ranges in order to reach our specified
+target values. Possible choices for the distribution type are qunif,
+qnorm, qlnorm and qexp. Each model run is evaluated for each specified
+metric within the metrics slot. When the simdesign is attached (see step
+3) we will define target values for each metric. Thus, we should only
+enter metrics and reporters that should be used for calibrating the
+model.</p>
+<p>For this simple example, we just want to check if we can find a
+parameterization that leads to a specific number of wolves and sheep
+after a runtime of 100 ticks. Thus, we define <code>count sheep</code>
+and <code>count wolves</code> as metrics, set the runtime to 100 and set
+tickmetrics to <code>false</code> (because we only want to measure the
+last simulation tick).</p>
+<p>If more than one tick would be measured, the algorithm automatically
+calculates the mean value of the selected reporter over all measured
+ticks. If you wish to apply other functions to aggregate temporal
+information into one value, you can use a self-defined post-processing
+function when attaching the simdesign (see step 3).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;false&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">100</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">2</span>, <span class="at">max=</span><span class="dv">6</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">10</span>, <span class="at">max=</span><span class="dv">30</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="dv">100</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="dv">50</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>We use the <code>simdesign_ABCmcmc_Marjoram()</code> function to
+attach a calibration simdesign. The <code>summary_stat_target</code>
+represents the vector of our target values that we want to reach. These
+values corresponds to the defined metrics of the experiment and should
+have the same length and order. <code>n_rec</code> defines the number of
+samples and <code>n_calibration</code> defines the number of calibration
+runs. If this value is too low, a subscript out of bounds error message
+might appear. If <code>use_seed</code> is set to <code>TRUE</code>, the
+algorithm will automatically use a newly generated seed for each model
+run. If it is set to false, a user-specified seed (set in the
+<code>run_nl_dyn()</code> function) will be used instead. The
+<code>progress_bar</code> gives you expected runtime information during
+the execution of the algorithm. The nseeds command allows to generate a
+vector of random-seeds that may be used for setting model seeds.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_ABCmcmc_Marjoram</span>(<span class="at">nl=</span>nl,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">summary_stat_target =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">80</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">n_rec =</span> <span class="dv">100</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">n_calibration=</span><span class="dv">200</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">use_seed =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">progress_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">nseeds =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>These are the most important simdesign parameters, but there are many
+more to fine control the behavior of the algorithm. Check out the
+simdesign help page for more information. As already mentioned before,
+it is also possible to define a custom post-processing function. To
+apply this function for model output, the function name needs to be
+entered as <code>postpro_function</code> within the simdesign. For
+example, we might want to use the maximum value of some measured metrics
+to calibrate our model. Or maybe we want to run some tests and use the
+test statistics as calibration criterion. In such cases, we can define a
+function that accepts the nl object (with simulation results attached)
+as function input and returns a vector of numerics. This vector needs to
+represent the values that we defined as <code>sumary_stat_target</code>
+and thus should have the same length and order. Below is an example of a
+custom post-processing function that calculates the maximum value of
+selected metrics over all simulation ticks.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>post <span class="ot">&lt;-</span> <span class="cf">function</span>(nl){</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">getexp</span>(nl, <span class="st">&quot;metrics&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise_each</span>(<span class="fu">list</span>(<span class="at">max=</span>max))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">as.numeric</span>(res))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_ABCmcmc_Marjoram</span>(<span class="at">nl=</span>nl,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">postpro_function =</span> post,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">summary_stat_target =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">80</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">n_rec =</span> <span class="dv">100</span>, </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">n_calibration=</span><span class="dv">200</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">use_seed =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">progress_bar =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">nseeds =</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>For calibration simdesigns, the <code>run_nl_dyn()</code> function
+lets you execute the simulations. There are some notable differences
+between <code>run_nl_all()</code> and <code>run_nl_dyn()</code>. First,
+because parameterizations depend of results from previous runs,
+<code>run_nl_dyn()</code> can not be parallelized. Second, the procedure
+does not automatically loop over created random seeds of the simdesign.
+If you want to repeat the same algorithm several times, just embed the
+<code>run_nl_dyn()</code> function in any kind of loop and iterate
+through the <code>nl@simdesign@simseeds</code> vector. We set the
+<code>use_seed</code> parameter of the simdesign to true, however we
+still need to define a random-seed in run_nl_dyn although it will be
+overwritten by the EasyABC functions.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_dyn</span>(nl, <span class="at">seed =</span> nl<span class="sc">@</span>simdesign<span class="sc">@</span>simseeds[<span class="dv">1</span>])</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>The output is reported as nested tibble which can be attached to the
+nl object. There are many possible ways to inspect the simulation output
+of the <code>ABCmcmc</code> functions. Below you find some guidance on
+how to summarize the output for calculating parameter statistics,
+sampling distributions, sampling density and exporting the best
+parameter combination.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;ABCmcmc.rds&quot;</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate descriptive statistics</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># get simulation results from nl object</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span> <span class="co"># select param column</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param) <span class="sc">%&gt;%</span>  <span class="co"># unnest param column</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise_each</span>(<span class="fu">list</span>(<span class="at">min=</span>min, <span class="at">max=</span>max, <span class="at">mean=</span>mean, <span class="at">median=</span>median)) <span class="sc">%&gt;%</span> <span class="co"># calculate statistics</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> <span class="co"># convert to long format</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">separate</span>(parameter, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;parameter&quot;</span>, <span class="st">&quot;stat&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># seperate parameter name and statistic</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">spread</span>(stat, value) <span class="co"># convert back to wide format</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot histogram of parameter sampling distribution:</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># get simulation results from nl object</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span> <span class="co"># select param column</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param) <span class="sc">%&gt;%</span>  <span class="co"># unnest param column</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> <span class="co"># convert to long format</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="co"># plot histogram with a facet for each parameter</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>parameter, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x=</span>value), <span class="at">bins =</span> <span class="dv">40</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Plot density of parameter sampling distribution:</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># get simulation results from nl object</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span> <span class="co"># select param column</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param) <span class="sc">%&gt;%</span> <span class="co"># unnest param column</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> <span class="co"># convert to long format</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="co"># plot density with a facet for each parameter</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>parameter, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">fill=</span>parameter))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="do">## Get best parameter combinations and corresponding function values</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span>  <span class="co"># get simulation results from nl object</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(dist,epsilon) <span class="sc">%&gt;%</span>  <span class="co"># select dist and epsilon columns</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span><span class="fu">c</span>(dist,epsilon)) <span class="sc">%&gt;%</span>  <span class="co"># unnest dist and epsilon columns</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">runID=</span>dplyr<span class="sc">::</span><span class="fu">row_number</span>()) <span class="sc">%&gt;%</span> <span class="co"># add row ID column</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(dist <span class="sc">==</span> epsilon) <span class="sc">%&gt;%</span> <span class="co"># only keep runs with dist=epsilon</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># join parameter values of best runs</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>                     tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">runID=</span>dplyr<span class="sc">::</span><span class="fu">row_number</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">left_join</span>(<span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> <span class="co"># join output values best runs</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">select</span>(stats) <span class="sc">%&gt;%</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>                     tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>stats) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">runID=</span>dplyr<span class="sc">::</span><span class="fu">row_number</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(runID, dist, epsilon, dplyr<span class="sc">::</span><span class="fu">everything</span>()) <span class="co"># update order of columns</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="do">## Analyse mcmc using coda summary and plot functions:</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(coda<span class="sc">::</span><span class="fu">as.mcmc</span>(<span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>                        dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>                        tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param)), <span class="at">quantiles =</span><span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.95</span>,<span class="fl">0.5</span>))</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(coda<span class="sc">::</span><span class="fu">as.mcmc</span>(<span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>                        dplyr<span class="sc">::</span><span class="fu">select</span>(param) <span class="sc">%&gt;%</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>                        tidyr<span class="sc">::</span><span class="fu">unnest</span>(<span class="at">cols=</span>param)))</span></code></pre></div>
+</div>
+</div>
+<div id="example-2-using-latin-hypercube-sampling-for-approximate-bayesian-computation" class="section level2">
+<h2>Example 2: Using Latin Hypercube Sampling for Approximate bayesian
+computation</h2>
+<div id="step-1-create-a-nl-object-1" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment-1" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>We want to run a Latin Hypercube sampling, thus we need to define
+proper variable ranges. We also need to define our output metrics. These
+metrics are also used for the rejection sampling later on.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;false&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">100</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span>, <span class="st">&quot;count wolves&quot;</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">2</span>, <span class="at">max=</span><span class="dv">6</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">10</span>, <span class="at">max=</span><span class="dv">30</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="dv">100</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="dv">50</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design-1" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>We use the <code>simdesign_lhs()</code> helper function to generate a
+Latin Hypercube Sampling with 500 samples</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_lhs</span>(nl, </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">samples=</span><span class="dv">500</span>, </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">nseeds=</span><span class="dv">1</span>, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">precision=</span><span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations-1" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>We can simply use <code>run_nl_all()</code> to execute our
+simulations.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_all</span>(nl)</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output-1" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>We first attach the output results to our nl object and store a copy
+of the nl object on disk.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> results</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;ABClhs.rds&quot;</span>))</span></code></pre></div>
+<p>For post-processing, we need a tibble with input parameter
+distributions. This can be easily extracted from the
+<code>siminput</code> slot of the <code>simdesign</code> by selecting
+only the columns with variable (non-constant) parameters. Next, we need
+corresponding outputs for these parameters. In this example we just take
+the measured output tibble (<code>simoutput</code>) and only select the
+columns with our metrics. Of course, you can also perform additional
+post-processing of these outputs if desired. Third, we need to define
+expected values for our outputs. In our case, we just assume that
+<code>count sheep</code> should have a value of 100, whereas
+<code>count wolves</code> should have a value of 80.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>input <span class="ot">&lt;-</span> <span class="fu">getsim</span>(nl, <span class="st">&quot;siminput&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">names</span>(<span class="fu">getexp</span>(nl, <span class="st">&quot;variables&quot;</span>)))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">getsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">getexp</span>(nl, <span class="st">&quot;metrics&quot;</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;count sheep&quot;</span><span class="ot">=</span><span class="dv">100</span>, <span class="st">&quot;count wolves&quot;</span><span class="ot">=</span><span class="dv">80</span>)</span></code></pre></div>
+<p>We use the <code>abc</code> function of the <a href="https://cran.r-project.org/package=abc">abc package</a> to perform
+the rejection sampling. For this example, we perform both algorithms
+provided by this function (“rejection” and “loclinear”).</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>results.abc.reject <span class="ot">&lt;-</span> abc<span class="sc">::</span><span class="fu">abc</span>(<span class="at">target=</span>target, </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">param=</span>input,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sumstat=</span>output,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">tol=</span><span class="fl">0.3</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method=</span><span class="st">&quot;rejection&quot;</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>results.abc.loclin <span class="ot">&lt;-</span> abc<span class="sc">::</span><span class="fu">abc</span>(<span class="at">target=</span>target, </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                               <span class="at">param=</span>input,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                               <span class="at">sumstat=</span>output,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                               <span class="at">tol=</span><span class="fl">0.3</span>, </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                               <span class="at">method=</span><span class="st">&quot;loclinear&quot;</span>)</span></code></pre></div>
+<p>Finally, we might want to compare the accepted parameter
+distributions of both algorithms and the initial distribution of the
+Latin Hypercube sampling. Thus, we reformat the results to a tidy data
+format and attach the initial parameter distributions. This dataset can
+now be used for displaying the parameter distributions with ggplot.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>results.abc.all <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">as_tibble</span>(results.abc.reject<span class="sc">$</span>unadj.values) <span class="sc">%&gt;%</span> <span class="co"># results from rejection method</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">method=</span><span class="st">&quot;rejection&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(tibble<span class="sc">::</span><span class="fu">as_tibble</span>(results.abc.loclin<span class="sc">$</span>adj.values) <span class="sc">%&gt;%</span> <span class="co"># results from local linear regression method</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                     tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">method=</span><span class="st">&quot;loclinear&quot;</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">bind_rows</span>(input <span class="sc">%&gt;%</span>                <span class="co"># initial parameter distribution (lhs)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                     tidyr<span class="sc">::</span><span class="fu">gather</span>(parameter, value) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                     dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">method=</span><span class="st">&quot;lhs&quot;</span>))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(results.abc.all) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">facet_grid</span>(method<span class="sc">~</span>parameter, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_histogram</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x=</span>value))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(results.abc.all) <span class="sc">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">facet_wrap</span>(<span class="sc">~</span>parameter, <span class="at">scales=</span><span class="st">&quot;free&quot;</span>) <span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  ggplot2<span class="sc">::</span><span class="fu">geom_density</span>(ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x=</span>value, <span class="at">fill=</span>method), <span class="at">alpha=</span><span class="fl">0.1</span>)</span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

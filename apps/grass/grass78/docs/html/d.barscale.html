@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.barscale - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.barscale</b></em>  - Displays a barscale on the graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.barscale</b><br></div>
+<b>d.barscale --help</b><br>
+<div id="synopsis"><b>d.barscale</b> [-<b>ftn</b>]  [<b>style</b>=<em>string</em>]   [<b>at</b>=<em>x,y</em>]   [<b>length</b>=<em>integer</em>]   [<b>units</b>=<em>string</em>]   [<b>label</b>=<em>string</em>]   [<b>segment</b>=<em>integer</em>]   [<b>color</b>=<em>name</em>]   [<b>bgcolor</b>=<em>name</em>]   [<b>text_position</b>=<em>string</em>]   [<b>width_scale</b>=<em>float</em>]   [<b>font</b>=<em>string</em>]   [<b>fontsize</b>=<em>float</em>]   [<b>path</b>=<em>name</em>]   [<b>charset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-f</b></dt>
+<dd>Use feet/miles instead of meters</dd>
+
+<dt><b>-t</b></dt>
+<dd>Draw the scale bar without text</dd>
+
+<dt><b>-n</b></dt>
+<dd>Display north-arrow symbol.</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>style</b>=<em>string</em></dt>
+<dd>Type of barscale to draw</dd>
+<dd>Options: <em>classic, line, solid, hollow, full_checker, part_checker, mixed_checker, tail_checker, up_ticks, down_ticks, both_ticks, arrow_ends</em></dd>
+<dd>Default: <em>classic</em></dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/classic.png" alt="classic"> classic</b>: Classic style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/line.png" alt="line"> line</b>: Line style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/solid.png" alt="solid"> solid</b>: Solid style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/hollow.png" alt="hollow"> hollow</b>: Hollow style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/full_checker.png" alt="full_checker"> full_checker</b>: Full checker style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/part_checker.png" alt="part_checker"> part_checker</b>: Part checker style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/mixed_checker.png" alt="mixed_checker"> mixed_checker</b>: Mixed checker style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/tail_checker.png" alt="tail_checker"> tail_checker</b>: Tail checker style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/up_ticks.png" alt="up_ticks"> up_ticks</b>: Up ticks style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/down_ticks.png" alt="down_ticks"> down_ticks</b>: Down ticks style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/both_ticks.png" alt="both_ticks"> both_ticks</b>: Both ticks style</dd>
+<dd><b><img height="12" style="max-width: 80;" src="barscales/arrow_ends.png" alt="arrow_ends"> arrow_ends</b>: Arrow ends style</dd>
+
+<dt><b>at</b>=<em>x,y</em></dt>
+<dd>Screen coordinates of the rectangle's top-left corner</dd>
+<dd>(0,0) is lower-left of the display frame</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>0.0,10.0</em></dd>
+
+<dt><b>length</b>=<em>integer</em></dt>
+<dd>Length of barscale in map units</dd>
+<dd>Options: <em>0-</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Barscale units to display</dd>
+<dd>Options: <em>meters,  kilometers,  feet,  miles</em></dd>
+
+<dt><b>label</b>=<em>string</em></dt>
+<dd>Custom label of unit</dd>
+
+<dt><b>segment</b>=<em>integer</em></dt>
+<dd>Number of segments</dd>
+<dd>Options: <em>1-100</em></dd>
+<dd>Default: <em>10</em></dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Bar scale and text color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>bgcolor</b>=<em>name</em></dt>
+<dd>Background color (drawn behind the bar)</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>text_position</b>=<em>string</em></dt>
+<dd>Text position</dd>
+<dd>Options: <em>under, over, left, right</em></dd>
+<dd>Default: <em>right</em></dd>
+
+<dt><b>width_scale</b>=<em>float</em></dt>
+<dd>Scale factor to change bar width</dd>
+<dd>Options: <em>0.5-100</em></dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>fontsize</b>=<em>float</em></dt>
+<dd>Font size</dd>
+<dd>Options: <em>1-360</em></dd>
+<dd>Default: <em>12</em></dd>
+
+<dt><b>path</b>=<em>name</em></dt>
+<dd>Path to font file</dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Text encoding (only applicable to TrueType fonts)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+ 
+<em>d.barscale</em> displays a barscale on the graphics monitor at the
+given screen coordinates. If no coordinates are given it will draw the
+barscale in the bottom left of the display.
+
+<p>
+The barscale can drawn in a number of styles (see <b>style</b>
+parameter for their previews).
+
+<h2><a name="note">NOTE</a></h2>
+
+<em>d.barscale</em> will not work in Lat/Lon locations as the horizontal
+scale distance changes with latitude.
+Try <em><a href="d.grid.html">d.grid</a></em> instead.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.graph.html">d.graph</a>,
+<a href="d.grid.html">d.grid</a>,
+<a href="d.legend.html">d.legend</a>,
+<a href="d.northarrow.html">d.northarrow</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+unknown, but from USACE/CERL.<br>
+Major rewrite for GRASS 7 by Hamish Bowman
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.barscale">d.barscale source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.barscale">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

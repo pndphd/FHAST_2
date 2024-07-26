@@ -1,0 +1,148 @@
+.TH v.lidar.growing 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lidar.growing\fR\fR  \- Building contour determination and Region Growing algorithm for determining the building inside
+.SH KEYWORDS
+vector, LIDAR
+.SH SYNOPSIS
+\fBv.lidar.growing\fR
+.br
+\fBv.lidar.growing \-\-help\fR
+.br
+\fBv.lidar.growing\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBfirst\fR=\fIname\fR  [\fBtj\fR=\fIfloat\fR]   [\fBtd\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector (v.lidar.edgedetection output)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBfirst\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the first pulse vector map
+.IP "\fBtj\fR=\fIfloat\fR" 4m
+.br
+Threshold for cell object frequency in region growing
+.br
+Default: \fI0.2\fR
+.IP "\fBtd\fR=\fIfloat\fR" 4m
+.br
+Threshold for double pulse in region growing
+.br
+Default: \fI0.6\fR
+.SH DESCRIPTION
+\fIv.lidar.growing\fR is the second of three steps to filter LiDAR data.
+The filter aims to recognize and extract attached and detached object
+(such as buildings, bridges, power lines,  trees, etc.) in order to create
+a Digital Terrain Model.
+.br
+.br
+The modules identifies which is the internal area of every object on a
+LiDAR point surface. The classification categories from
+\fIv.lidar.edgedetection\fR are now rasterized. For each cell, it is
+evaluated if it (the cell) contains a point with double impulse (difference
+between the first and last pulse greater than a given threshold). Starting
+from cells classified as OBJECT and with only one pulse all linked cells
+are selected and a convex hull algorithm is applied to them. Simultaneously,
+the mean of the corresponding heights (mean edge height) are computed.
+Points inside the convex hull are classified as OBJECT if their height is
+greater than or equal to the previously mean computed edge height. This
+last step is done only in case of high planimetric resolution.
+.SH NOTES
+The input data should be the output result of the \fIv.lidar.edgedetection\fR,
+module. Otherwise, it goes to error! The output of this module will be
+the input of \fIv.lidar.correction\fR module. The output will be a vector
+map which points are pre\-classified as:
+.br
+.br
+TERRAIN SINGLE PULSE (cat = 1, layer = 2)
+.br
+TERRAIN DOUBLE PULSE (cat = 2, layer = 2)
+.br
+OBJECT SINGLE PULSE (cat = 3, layer = 2)
+.br
+OBJECT DOUBLE PULSE (cat = 4, layer = 2)
+.br
+.br
+The final result of the whole procedure (\fIv.lidar.edgedetection\fR,
+\fIv.lidar.growing\fR, \fIv.lidar.correction\fR) will be a point
+classification in the same categories as above.
+.SH EXAMPLES
+.SS Basic region growing procedure
+.br
+.nf
+\fC
+v.lidar.growing input=edge output=growing first=firstpulse
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.lidar.edgedetection,
+v.lidar.correction,
+v.surf.bspline,
+v.surf.rst,
+v.in.lidar,
+v.in.ascii
+\fR
+.SH AUTHOR
+Original version of program in GRASS 5.4:
+.br
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni and Mirko Reguzzoni
+.PP
+Update for GRASS 6.X:
+.br
+Roberto Antolin and Gonzalo Moreno
+.SH REFERENCES
+Antolin, R. et al., 2006. Digital terrain models determination by LiDAR
+technology: Po basin experimentation. Bolletino di Geodesia e Scienze
+Affini, anno LXV, n. 2, pp. 69\-89.
+.PP
+Brovelli M. A., Cannata M., Longoni U.M., 2004. LIDAR Data Filtering and
+DTM Interpolation Within GRASS, Transactions in GIS, April 2004,  vol. 8,
+iss. 2, pp. 155\-174(20), Blackwell Publishing Ltd.
+.PP
+Brovelli M. A., Cannata M., 2004. Digital Terrain model reconstruction in
+urban areas from airborne laser scanning data: the method and an  example
+for Pavia (Northern Italy). Computers and Geosciences 30 (2004) pp.325\-331
+.PP
+Brovelli M. A. and Longoni U.M., 2003. Software per il filtraggio di dati
+LIDAR, Rivista dell?Agenzia del Territorio, n. 3\-2003, pp. 11\-22 (ISSN 1593\-2192).
+.PP
+Brovelli M. A., Cannata M. and Longoni U.M., 2002. DTM LIDAR in area urbana,
+Bollettino SIFET N.2, pp. 7\-26.
+.PP
+Performances of the filter can be seen in the
+ISPRS WG III/3 Comparison of Filters
+report by Sithole, G. and Vosselman, G., 2003.
+.br
+.SH SOURCE CODE
+.PP
+Available at: v.lidar.growing source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

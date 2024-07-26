@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.font - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.font</b></em>  - Selects the font in which text will be displayed on the user's graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_settings.html">settings</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.font</b><br></div>
+<b>d.font --help</b><br>
+<div id="synopsis"><b>d.font</b> [-<b>lv</b>]  [<b>font</b>=<em>string</em>]   [<b>path</b>=<em>name</em>]   [<b>charset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>List fonts</dd>
+
+<dt><b>-v</b></dt>
+<dd>List fonts verbosely</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Choose new current font</dd>
+<dd>Default: <em>romans</em></dd>
+
+<dt><b>path</b>=<em>name</em></dt>
+<dd>Path to Freetype-compatible font including file name</dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Character encoding</dd>
+<dd>Default: <em>UTF-8</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.font</em> allows the user to select use of a specific text font for 
+display of text on the graphics monitor. 
+
+<!--
+The GRASS program 
+<em><a href="../html/show.fonts.sh.html">show.fonts.sh</a></em>
+is a UNIX Bourne shell macro which 
+names and displays the fonts that can be selected using <em>d.font</em>.
+-->
+
+If the user does not specify a font when using other GRASS programs 
+that display text, the font type <em>romans</em> is used by default. 
+
+<p>The user can run this program either non-interactively or interactively. 
+If the user specifies a font type name on the command line the program will 
+run non-interactively. 
+Alternately, the user can simply type <b>d.font</b> on the command line; 
+in this case, the program will prompt the user for a display 
+text font type.
+
+<p><b>Parameter:</b> 
+<dl>
+<dt><b>font=</b><em>name</em>
+<dd>Name of a font type, from among the font types italicized below. 
+<br>
+Default: <em>romans</em> 
+<br>
+Options: (italized) 
+<br><em>cyrilc</em> Cyrillic 
+<br><em>gothgbt</em> Gothic Great Britain triplex 
+<br><em>gothgrt</em> Gothic German triplex 
+<br><em>gothitt</em> Gothic Italian triplex 
+<br><em>greekc</em> Greek complex 
+<br><em>greekcs</em> Greek complex script 
+<br><em>greekp</em> Greek plain 
+<br><em>greeks</em> Greek simplex 
+<br><em>italicc</em> Italian complex 
+<br><em>italiccs</em> Italian complex small 
+<br><em>italict</em> Italian triplex 
+<br><em>romanc</em> Roman complex 
+<br><em>romancs</em> Roman complex small 
+<br><em>romand</em> Roman duplex 
+<br><em>romanp</em> Roman plain 
+<br><em>romans</em> Roman simplex 
+<br><em>romant</em> Roman triplex 
+<br><em>scriptc</em> Script complex 
+<br><em>scripts</em> Script simplex 
+</dl>
+
+<h2><a name="notes">NOTES</a></h2>
+
+The font type 
+<em>romans</em>
+is the fastest font type to display to the graphics monitor. 
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="d.text.html">d.text</a></em><br>
+<em><a href="d.title.html">d.title</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+James Westervelt, U.S. Army Construction Engineering 
+Research Laboratory
+
+<p><em>d.font</em> uses the public domain version of the Hershey Fonts created 
+by Dr. A.V. Hershey while working at the U.S. National Bureau of 
+Standards.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.font">d.font source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.font">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

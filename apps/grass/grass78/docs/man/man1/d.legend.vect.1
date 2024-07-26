@@ -1,0 +1,240 @@
+.TH d.legend.vect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.legend.vect\fR\fR  \- Displays a vector legend in the active graphics frame.
+.SH KEYWORDS
+display, cartography, vector, legend
+.SH SYNOPSIS
+\fBd.legend.vect\fR
+.br
+\fBd.legend.vect \-\-help\fR
+.br
+\fBd.legend.vect\fR [\-\fBb\fR]  [\fBat\fR=\fIleft,top\fR]   [\fBcolumns\fR=\fIinteger\fR]   [\fBtitle\fR=\fIstring\fR]   [\fBsymbol_size\fR=\fIinteger\fR]   [\fBborder_color\fR=\fIname\fR]   [\fBbgcolor\fR=\fIname\fR]   [\fBborder_width\fR=\fIinteger\fR]   [\fBfont\fR=\fIstring\fR]   [\fBfontsize\fR=\fIfloat\fR]   [\fBtitle_font\fR=\fIstring\fR]   [\fBtitle_fontsize\fR=\fIfloat\fR]   [\fBsub_font\fR=\fIstring\fR]   [\fBsub_fontsize\fR=\fIfloat\fR]   [\fBfontcolor\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBinput\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-b\fR" 4m
+.br
+Display legend background
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBat\fR=\fIleft,top\fR" 4m
+.br
+Screen position of legend to be drawn (percentage, [0,0] is lower left)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI10,40\fR
+.IP "\fBcolumns\fR=\fIinteger\fR" 4m
+.br
+Number of legend columns
+.br
+Default: \fI1\fR
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Legend title
+.IP "\fBsymbol_size\fR=\fIinteger\fR" 4m
+.br
+Symbol size
+.br
+Default: \fI20\fR
+.IP "\fBborder_color\fR=\fIname\fR" 4m
+.br
+Border color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIwhite\fR
+.IP "\fBborder_width\fR=\fIinteger\fR" 4m
+.br
+Background border width
+.br
+Default: \fI2\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBfontsize\fR=\fIfloat\fR" 4m
+.br
+Font size
+.br
+Default: 12
+.br
+Options: \fI1\-360\fR
+.IP "\fBtitle_font\fR=\fIstring\fR" 4m
+.br
+Title font name
+.IP "\fBtitle_fontsize\fR=\fIfloat\fR" 4m
+.br
+Title font size
+.br
+Default: 18
+.br
+Options: \fI1\-360\fR
+.IP "\fBsub_font\fR=\fIstring\fR" 4m
+.br
+Subtitle font name
+.IP "\fBsub_fontsize\fR=\fIfloat\fR" 4m
+.br
+Subtitle font size
+.br
+Default: 14
+.br
+Options: \fI1\-360\fR
+.IP "\fBfontcolor\fR=\fIname\fR" 4m
+.br
+Font color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator for input file
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Input legend file
+.br
+Path to legend file
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Output csv file
+.br
+Path to output file or \(cq\-\(cq for standard output
+.SH DESCRIPTION
+Module \fId.legend.vect\fR draws vector legend of currently displayed vector maps.
+.PP
+Parameter \fBat\fR defines the screen position of upper\-left legend corner.
+Parameter \fBcolumns\fR defines the number of legend columns.
+User can specify a title of the legend using parameter \fBtitle\fR.
+The font of the title can be changed with \fBtitle_font\fR, \fBtitle_fontsize\fR.
+Flag \fB\-b\fR is used to draw background of specified color (\fBbgcolor\fR),
+border color and border width (\fBborder_color\fR and \fBborder_width\fR).
+Parameter \fBsymbol_size\fR defines the size of line and area symbols.
+The size of point symbols is based on currently set symbology of vector maps using
+\fId.vect\fR or
+\fId.vect.thematic\fR.
+.PP
+Module \fId.vect.legend\fR supports subtitles (see section Notes).
+Their font and font size can be set using parameters \fBsub_font\fR
+and \fBsub_fontsize\fR.
+.SS Changing legend symbols and labels
+Symbols for vector areas and lines, and labels for individual vector labels
+can be changed in the symbology setting of each vector map in
+\fId.vect\fR or
+\fId.vect.thematic\fR
+module (in Legend tab). Use its parameters
+\fBicon_area\fR and \fBicon_line\fR to pick from available symbols.
+By using parameter \fBlegend_label\fR of \fId.vect\fR module, users can change
+the default label, which is the map name.
+.SS Modifying the order of legend entries and omitting certain vector maps
+from legend
+Modules \fId.vect\fR and
+\fId.vect.thematic\fR
+have a flag \fB\-s\fR
+which removes the particular vector or thematic vector from vector legend.
+.PP
+The order of entries is defined by the order in Layer Manager (if used
+in GRASS GIS GUI). If that\(cqs not desired, one can export the legend file
+into a text file using parameter \fBoutput\fR, change the order of entries
+(see section Notes for format description) and then upload the modified file
+with parameter \fBinput\fR.
+Parameter \fBoutput\fR defines path to the file where the internal legend
+file will be saved to, \fBinput\fR defines the input file which
+the vector legend will be based on (input file must have correct format).
+.SH NOTES
+Module \fId.legend.vect\fR draws vector legend based on legend file defined
+in shell environment variable GRASS_LEGEND_FILE.
+This file is automatically created and updated whenever
+\fId.vect\fR command is used.
+User can create custom legend file and then use
+\fIexport GRASS_LEGEND_FILE=path/to/file\fR in shell.
+GRASS GUI and MONITORS create the legend file automatically.
+By default the legend file is stored in grassdata/location/mapset/.tmp/user
+directory (in case of d.mon deeper in /monitor_name directory).
+.br
+.PP
+Legend file has this format:
+.br
+.nf
+\fC
+label|symbol_name|size|color_type|feature_color|fill_color|line_width|geometry_type|feature_count
+\fR
+.fi
+Color type can be \(cqlf\(cq or \(cqps\(cq. Based on color type color columns are interpreted
+as line color and fill colors (lf), or primary and secondary colors (ps).
+Module d.vect always uses \(cqlf\(cq and d.vect.thematic \(cqps\(cq.
+Here is an example of legend file with subtitles:
+.br
+.nf
+\fC
+Infrastructure||||||||
+major roads|legend/line|5|lf|black|200:200:200|2|line|355
+bridges|extra/bridge|15|lf|black|black|1|point|10938
+Hydrology||||||||
+streams|legend/line_crooked|5|lf|30:144:255|200:200:200|3|line|8554
+water bodies|legend/area_curved|5|lf|none|30:144:255|1|area|27764
+\fR
+.fi
+.SH EXAMPLES
+Open cairo monitor to render to file:
+.br
+.nf
+\fC
+g.region vector=nc_state
+d.mon cairo
+d.vect map=nc_state color=26:26:26 fill_color=229:229:229 width=2 legend_label=\(dqstate boundaries\(dq
+d.vect map=urbanarea color=none fill_color=127:127:127 width=1 legend_label=\(dqurban areas\(dq
+d.vect map=railroads color=red width=1
+d.vect map=hospitals color=77:77:77 fill_color=0:187:0 width=1 icon=basic/cross3 size=10
+d.legend.vect \-b at=2,40 title=\(dqHospitals in North Carolina\(dq symbol_size=26 fontsize=16 title_fontsize=20
+\fR
+.fi
+.br
+.SH SEE ALSO
+\fI
+d.vect,
+d.vect.thematic,
+d.legend
+\fR
+.PP
+Check also Python module from
+AddOns: \fId.vect.thematic2\fR
+.SH AUTHOR
+Adam Laza, during GSoC 2016
+Mentors: Anna Petrasova, Vaclav Petras, Martin Landa
+.SH SOURCE CODE
+.PP
+Available at: d.legend.vect source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

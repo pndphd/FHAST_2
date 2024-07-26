@@ -1,0 +1,90 @@
+.TH v.db.dropcolumn 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.dropcolumn.py\fR\fR  \- Drops a column from the attribute table connected to a given vector map.
+.SH KEYWORDS
+vector, attribute table, database
+.SH SYNOPSIS
+\fBv.db.dropcolumn.py\fR
+.br
+\fBv.db.dropcolumn.py \-\-help\fR
+.br
+\fBv.db.dropcolumn.py\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumns\fR=\fIname\fR[,\fIname\fR,...]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumns\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of attribute column(s) to drop
+.SH DESCRIPTION
+\fIv.db.dropcolumn\fR drops a column from the attribute table connected
+to a given vector map. It automatically checks the connection for the specified
+layer. \fIv.db.dropcolumn\fR omits to delete the \(cqcat\(cq column which is
+relevant to keep the connection between vector map and table.
+.SH NOTES
+\fIv.db.dropcolumn\fR is a front\-end to \fIdb.execute\fR to allow easier usage.
+.PP
+The existing database connection(s) can be verified with \fIv.db.connect\fR.
+.SH EXAMPLES
+Dropping a column:
+.br
+.br
+.nf
+\fC
+g.copy vect=roadsmajor,myroads
+v.info \-c myroads
+v.db.dropcolumn myroads column=SHAPE_LEN
+v.info \-c myroads
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.dropcolumn,
+db.execute,
+v.db.addcolumn,
+v.db.connect,
+v.db.droptable,
+v.db.select,
+v.db.update
+.br
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.db.dropcolumn source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

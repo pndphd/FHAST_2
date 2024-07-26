@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>GRASS GIS Manual: Display drivers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+<h2>Display drivers</h2>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#notes" class="toc">NOTES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#grass_render_command" class="toc">GRASS_RENDER_COMMAND</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+</ul>
+</div>
+<!-- meta page description: Display drivers -->
+<!-- meta page index: display --> 
+
+The current command line rendering mechanism is direct rendering into
+a file. The driver is selected by setting
+the <tt>GRASS_RENDER_IMMEDIATE</tt> variable or by
+running <em><a href="d.mon.html">d.mon</a></em> module.
+
+<p>
+<b>List of available display drivers:</b>
+<ul>
+  <li><a href="cairodriver.html">Cairo driver</a>
+  <li><a href="pngdriver.html">PNG driver</a>
+  <li><a href="psdriver.html">PS driver (Postscript)</a>
+  <li><a href="htmldriver.html">HTMLMAP driver</a>
+</ul>
+
+<h2><a name="notes">NOTES</a></h2>
+
+<h3><a name="grass_render_command">GRASS_RENDER_COMMAND</a></h3>
+
+If environmental variable GRASS_RENDER_COMMAND is defined,
+rendering is redirected by display library to the given external command
+defined by this variable. Currently only Python scrips are supported.
+
+<p>
+Lets start with simple example of Python script called <i>render.py</i>:
+
+<div class="code"><pre>
+#!/usr/bin/env python3
+
+import os
+import sys
+
+import grass.script as grass
+from grass.script import task as gtask
+
+os.environ['GRASS_RENDER_IMMEDIATE'] = 'default'
+os.environ['GRASS_RENDER_FILE'] = 'output.png'
+
+cmd, dcmd = gtask.cmdstring_to_tuple(sys.argv[1])
+
+grass.run_command('d.text', text="Test of GRASS_RENDER_COMMAND redirection")
+
+os.environ['GRASS_RENDER_FILE_READ'] = 'TRUE'
+grass.run_command(cmd, **dcmd)
+</pre></div>
+
+After defining GRASS_RENDER_COMMAND variable (example for Bash):
+
+<div class="code"><pre>
+export GRASS_RENDER_COMMAND=render.py
+</pre></div>
+
+Display GRASS modules like <em><a href="d.rast.html">d.rast</a></em>
+or <em><a href="d.vect.html">d.vect</a></em> will be executed
+by <i>render.py</i> program.
+
+For example the command
+
+<div class="code"><pre>
+d.vect roadsmajor
+</pre></div>
+
+produces output PNG file <i>output.png</i> which will contain rendered
+features from vector map <i>roadsmajor</i> and sample text <i>&quot;Test of
+GRASS_RENDER_COMMAND redirection&quot;</i>.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.mon.html">d.mon</a>,
+<a href="variables.html#list-of-selected-grass-environment-variables-for-rendering">variables</a>
+</em><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display">Display drivers source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

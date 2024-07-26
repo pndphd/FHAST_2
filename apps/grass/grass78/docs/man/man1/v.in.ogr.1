@@ -1,0 +1,603 @@
+.TH v.in.ogr 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.ogr\fR\fR  \- Imports vector data into a GRASS vector map using OGR library.
+.SH KEYWORDS
+vector, import, OGR, topology, geometry, snapping, create location
+.SH SYNOPSIS
+\fBv.in.ogr\fR
+.br
+\fBv.in.ogr \-\-help\fR
+.br
+\fBv.in.ogr\fR [\-\fBflc2tojrewi\fR] \fBinput\fR=\fIstring\fR  [\fBgdal_config\fR=\fIstring\fR]   [\fBgdal_doo\fR=\fIstring\fR]   [\fBlayer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBspatial\fR=\fIxmin,ymin,xmax,ymax\fR[,\fIxmin,ymin,xmax,ymax\fR,...]]   [\fBwhere\fR=\fIsql_query\fR]   [\fBmin_area\fR=\fIfloat\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBsnap\fR=\fIfloat\fR]   [\fBlocation\fR=\fIname\fR]   [\fBcolumns\fR=\fIname\fR[,\fIname\fR,...]]   [\fBencoding\fR=\fIstring\fR]   [\fBkey\fR=\fIstring\fR]   [\fBgeometry\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+List supported OGR formats and exit
+.IP "\fB\-l\fR" 4m
+.br
+List available OGR layers in data source and exit
+.IP "\fB\-c\fR" 4m
+.br
+Do not clean polygons (not recommended)
+.IP "\fB\-2\fR" 4m
+.br
+Force 2D output even if input is 3D
+.br
+Useful if input is 3D but all z coordinates are identical
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has the same projection as the current location
+.IP "\fB\-j\fR" 4m
+.br
+Perform projection check only and exit
+.IP "\fB\-r\fR" 4m
+.br
+Limit import to the current region
+.IP "\fB\-e\fR" 4m
+.br
+Extend region extents based on new dataset
+.br
+Also updates the default region if in the PERMANENT mapset
+.IP "\fB\-w\fR" 4m
+.br
+Change column names to lowercase characters
+.IP "\fB\-i\fR" 4m
+.br
+Create the location specified by the \(dqlocation\(dq parameter and exit. Do not import the vector data.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of OGR datasource to be imported
+.br
+Examples:
+.br
+        ESRI Shapefile: directory containing shapefiles
+.br
+        MapInfo File: directory containing mapinfo files
+.IP "\fBgdal_config\fR=\fIstring\fR" 4m
+.br
+GDAL configuration options
+.br
+Comma\-separated list of key=value pairs
+.IP "\fBgdal_doo\fR=\fIstring\fR" 4m
+.br
+GDAL dataset open options
+.br
+Comma\-separated list of key=value pairs
+.IP "\fBlayer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+OGR layer name. If not given, all available layers are imported
+.br
+Examples:
+.br
+        ESRI Shapefile: shapefile name
+.br
+        MapInfo File: mapinfo file name
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map
+.IP "\fBspatial\fR=\fIxmin,ymin,xmax,ymax[,\fIxmin,ymin,xmax,ymax\fR,...]\fR" 4m
+.br
+Import subregion only
+.br
+Format: xmin,ymin,xmax,ymax \- usually W,S,E,N
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBmin_area\fR=\fIfloat\fR" 4m
+.br
+Minimum size of area to be imported (square meters)
+.br
+Smaller areas and islands are ignored. Should be greater than snap^2
+.br
+Default: \fI0.0001\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Optionally change default input type
+.br
+Options: \fIpoint, line, boundary, centroid\fR
+.br
+Default: \fI\fR
+.br
+\fBpoint\fR: import area centroids as points
+.br
+\fBline\fR: import area boundaries as lines
+.br
+\fBboundary\fR: import lines as area boundaries
+.br
+\fBcentroid\fR: import points as centroids
+.IP "\fBsnap\fR=\fIfloat\fR" 4m
+.br
+Snapping threshold for boundaries (map units)
+.br
+\(cq\-1\(cq for no snap
+.br
+Default: \fI\-1\fR
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Name for new location to create
+.IP "\fBcolumns\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+List of column names to be used instead of original names, first is used for category column
+.IP "\fBencoding\fR=\fIstring\fR" 4m
+.br
+Encoding value for attribute data
+.br
+Overrides encoding interpretation, useful when importing ESRI Shapefile
+.IP "\fBkey\fR=\fIstring\fR" 4m
+.br
+Name of column used for categories
+.br
+If not given, categories are generated as unique values and stored in \(cqcat\(cq column
+.IP "\fBgeometry\fR=\fIname\fR" 4m
+.br
+Name of geometry column
+.br
+If not given, all geometry columns from the input are used
+.SH DESCRIPTION
+\fIv.in.ogr\fR imports vector data from files and database connections
+supported by the OGR library) into the
+current location and mapset.
+.PP
+If the \fBlayer\fR parameter is not given, all available OGR layers
+are imported as separate GRASS layers into one GRASS vector map. If
+several OGR layer names are given, all these layers are imported as
+separate GRASS layers into one GRASS vector map.
+.PP
+The optional \fBspatial\fR parameter defines spatial query extents.
+This parameter allows the user to restrict the region to a spatial
+subset while importing the data. All vector features completely or
+partially falling into this rectangle subregion are imported.
+The \fB\-r\fR current region flag is identical, but uses the current
+region settings as the spatial bounds
+(see \fIg.region\fR).
+.SS Supported Vector Formats
+\fIv.in.ogr\fR uses the OGR library which supports various vector
+data formats including ESRI Shapefile, Mapinfo File, UK .NTF,
+SDTS, TIGER, IHO S\-57 (ENC), DGN, GML, GPX, AVCBin, REC, Memory, OGDI,
+and PostgreSQL, depending on the local OGR installation. For details
+see the OGR web
+site. The \fB\-f\fR prints a list of the vector formats supported
+by the system\(cqs OGR (Simple Features Library). The OGR (Simple Features
+Library) is part of the GDAL library,
+hence GDAL needs to be installed to use \fIv.in.ogr\fR.
+.PP
+The list of actually supported formats can be printed by \fB\-f\fR flag.
+.SS Topology cleaning
+Topology cleaning on areas is automatically performed, but may fail in
+special cases. In these cases, a \fBsnap\fR threshold value is
+estimated from the imported vector data and printed out at the end. The
+vector data can then be imported again with the suggested \fBsnap\fR
+threshold value which is incremented by powers of 10 until either an
+estimated upper limit for the threshold value is reached or the topology
+cleaning on areas was successful. In some cases, manual cleaning might
+be required or areas are truly overlapping, e.g. buffers created with
+non\-topological software.
+.PP
+The \fBmin_area\fR threshold value is being specified as area size in
+map units with the exception of latitude\-longitude locations in which
+it is being specified solely in square meters.
+.PP
+The \fBsnap\fR threshold value is used to snap boundary vertices to
+each other if the distance in map units between two vertices is not
+larger than the threshold. Snapping is by default disabled with
+\-1. See also the \fIv.clean\fR manual.
+.SS Overlapping polygons
+When importing overlapping polygons, the overlapping parts will become
+new areas with multiple categories, one unique category for each
+original polygon. An original polygon will thus be converted to
+multiple areas with the same shared category. These multiple areas
+will therefore also link to the same entry in the attribute table. A
+single category value may thus refer to multiple non\-overlapping areas
+which together represent the original polygon overlapping with another
+polygon. The original polygon can be recovered by
+using \fIv.extract\fR with the desired
+category value or \fBwhere\fR statement and the \fB\-d\fR flag to
+dissolve common boundaries.
+.SH Location Creation
+\fIv.in.ogr\fR attempts to preserve projection information when
+importing datasets if the source format includes projection
+information, and if the OGR driver supports it.  If the projection of
+the source dataset does not match the projection of the current
+location \fIv.in.ogr\fR will report an error message
+(\(dqProjection of dataset does not appear to match current
+location\(dq).
+.PP
+If the user wishes to ignore the difference between the apparent
+coordinate system of the source data and the current location, they
+may pass the \fB\-o\fR flag to override the projection check.
+.PP
+If the user wishes to import the data with the full projection
+definition, it is possible to have \fIv.in.ogr\fR automatically
+create a new location based on the projection and extents of the file
+being read. This is accomplished by passing the name to be used for
+the new location via the \fBlocation\fR parameter.  Upon completion
+of the command, a new location will have been created (with only a
+PERMANENT mapset), and the vector map will have been imported with the
+indicated \fBoutput\fR name into the PERMANENT mapset.
+.PP
+An interesting wrapper command around \fIv.in.ogr\fR is
+v.import which reprojects (if needed) the
+vector dataset during import to the projection of the current location.
+.SH NOTES
+.SS Table column names: supported characters
+The characters which are eligible for table column names are limited
+by the SQL standard. Supported are:
+.br
+.nf
+\fC
+[A\-Za\-z][A\-Za\-z0\-9_]*
+\fR
+.fi
+This means that SQL neither supports \(cq.\(cq (dots) nor \(cq\-\(cq (minus) nor
+\(cq#\(cq in table column names. Also a table name must start with a
+character, not a number.
+.PP
+\fIv.in.ogr\fR converts \(cq.\(cq, \(cq\-\(cq and \(cq#\(cq to \(cq_\(cq (underscore) during
+import. The \fB\-w\fR flag changes capital column names to
+lowercase characters as a convenience for SQL usage (lowercase column
+names avoid the need to quote them if the attribute table is stored in
+a SQL DBMS such as PostgreSQL). The \fBcolumns\fR parameter is used
+to define new column names during import.
+.PP
+The DBF database specification limits column names to 10 characters.
+If the default DB is set to DBF and the input data contains longer
+column/field names, they will be truncated. If this results in
+multiple columns with the same name then \fIv.in.ogr\fR will
+produce an error.  In this case you will either have to modify the
+input data or use
+\fIv.in.ogr\fR\(cqs \fBcolumns\fR parameter to rename columns to something
+unique. (hint: copy and modify the list given with the error message).
+Alternatively, change the local DB with
+\fIdb.connect\fR.
+.SS File encoding
+When importing ESRI Shapefiles the OGR library tries to read the
+LDID/codepage setting from the .dbf file and use it to translate
+string fields to UTF\-8. LDID \(dq87 / 0x57\(dq is treated as
+ISO8859_1 which may not be appropriate for many
+languages. Unfortunately it is not clear what other values may be
+appropriate (see example below). To change encoding the user can set
+up SHAPE_ENCODING
+environmental variable or simply to define
+encoding value using \fBencoding\fR parameter. Note that recoding
+support is new for GDAL/OGR 1.9.0.
+.PP
+Value for \fBencoding\fR also affects text recoding when importing
+DXF files. For other formats has encoding value no effect.
+.SS Defining the key column
+Option \fBkey\fR specifies the column name used for feature
+categories. This column must be integer. If not specified, categories
+numbers are generated starting with 1 and stored in the column named
+\(dqcat\(dq.
+.SS Supports of multiple geometry columns
+Starting with GDAL 1.11 the library supports multiple geometry columns
+in OGR. By default \fIv.in.ogr\fR reads all geometry columns from
+given layer. The user can choose desired geometry column
+by \fBgeometry\fR option,
+see example below.
+.SS Latitude\-longitude data: Vector postprocessing after import
+For vector data like a grid, horizontal lines need to be broken at their
+intersections with vertical lines (\fBv.clean ... tool=break\fR).
+.SH EXAMPLES
+The command imports various vector formats:
+.SS SHAPE files
+.br
+.nf
+\fC
+v.in.ogr input=/home/user/shape_data/test_shape.shp output=grass_map
+\fR
+.fi
+Alternate method:
+.br
+.nf
+\fC
+v.in.ogr input=/home/user/shape_data layer=test_shape output=grass_map
+\fR
+.fi
+Define encoding value for attribute data (in this example we expect
+attribute data
+in Windows\-1250
+encoding; ie. in Central/Eastern European languages that
+use Latin script, Microsoft Windows encoding).
+.br
+.nf
+\fC
+v.in.ogr input=/home/user/shape_data/test_shape.shp output=grass_map encoding=cp1250
+\fR
+.fi
+.SS MapInfo files
+.br
+.nf
+\fC
+v.in.ogr input=./ layer=mapinfo_test output=grass_map
+\fR
+.fi
+.SS Arc Coverage
+We import the Arcs and Label points, the module takes care to build
+areas.
+.br
+.nf
+\fC
+v.in.ogr input=gemeinden layer=LAB,ARC type=centroid,boundary output=mymap
+\fR
+.fi
+.SS E00 file
+See also \fIv.in.e00\fR.
+.PP
+First we have to convert the E00 file to an Arc Coverage with
+\(cqavcimport\(cq
+(AVCE00
+tools, use \fIe00conv\fR first in case that \fIavcimport\fR
+fails):
+.br
+.nf
+\fC
+avcimport e00file coverage
+v.in.ogr input=coverage layer=LAB,ARC type=centroid,boundary output=mymap
+\fR
+.fi
+.SS SDTS files
+You have to select the CATD file.
+.br
+.nf
+\fC
+v.in.ogr input=CITXCATD.DDF output=cities
+\fR
+.fi
+.SS TIGER files
+.br
+.nf
+\fC
+v.in.ogr input=input/2000/56015/ layer=CompleteChain,PIP output=t56015_all \(rs
+type=boundary,centroid snap=\-1
+\fR
+.fi
+.SS PostGIS tables
+Import polygons as areas:
+.br
+.nf
+\fC
+v.in.ogr input=\(dqPG:host=localhost dbname=postgis user=postgres\(dq layer=polymap \(rs
+output=polygons type=boundary,centroid
+\fR
+.fi
+If the table containing the polygons are in a specific schema, you can use:
+.br
+.nf
+\fC
+v.in.ogr input=\(dqPG:host=localhost dbname=postgis user=postgres\(dq \(rs
+layer=myschema.polymap \(rs
+output=polygons type=boundary,centroid
+\fR
+.fi
+Generally, v.in.ogr just follows the
+format\-specific
+syntax defined by the OGR library.
+.SS OpenStreetMap (OSM)
+OSM data are available in
+\&.osm (XML based) and .pbf (optimized binary) formats. The .pbf format
+is recommended because file sizes are smaller. The OSM driver will
+categorize features into 5 layers :
+.RS 4n
+.IP \(bu 4n
+\fBpoints\fR: \(dqnode\(dq features that have significant tags attached.
+.IP \(bu 4n
+\fBlines\fR: \(dqway\(dq features that are recognized as non\-area.
+.IP \(bu 4n
+\fBmultilinestrings\fR: \(dqrelation\(dq features that form a
+multilinestring(type = \(cqmultilinestring\(cq or type = \(cqroute\(cq).
+.IP \(bu 4n
+\fBmultipolygons\fR: \(dqrelation\(dq features that form a multipolygon (type
+= \(cqmultipolygon\(cq or type = \(cqboundary\(cq), and \(dqway\(dq features that are
+recognized as area.
+.IP \(bu 4n
+\fBother_relations\fR: \(dqrelation\(dq features that do
+not belong to any of the above layers.
+.RE
+It is recommended to import one layer at a time, and to select features
+with the \fBwhere\fR option, e.g. to import roads, use
+.br
+.nf
+\fC
+v.in.ogr where=\(dqhighway <> \(cq\(cq\(dq
+\fR
+.fi
+i.e. the OSM tag \fIhighway\fR must be set.
+.PP
+When importing administrative boundaries from OSM, it is important to
+not only select administrative boundaries, but also the admin level to
+be imported (valid range is 1 \- 11), e.g. with
+.br
+.nf
+\fC
+v.in.ogr where=\(dqboundary = \(cqadministrative\(cq and admin_level = \(cq1\(cq\(dq
+\fR
+.fi
+.PP
+The OSM topological model differs from the GRASS topological model. OSM
+topologically correct connections of lines can be on all vertices of a
+line. During import, lines are automatically split at those vertices
+where an OSM connection to another line exists.
+.PP
+Import of OSM data requires a configuration file, defined with the
+OSM_CONFIG_FILE configuration option. In the data folder of the GDAL
+distribution, you can find a osmconf.ini file
+that can be customized to fit your needs. See
+OSM map features
+for keys and their values. You should set \(dqother_tags=no\(dq to
+avoid problems with import or querying the imported vector. Once a
+OSM_CONFIG_FILE has been created, OSM data can be imported with e.g.
+.br
+.nf
+\fC
+export OSM_CONFIG_FILE=/path/to/osmconf.ini
+v.in.ogr input=name.pbf layer=lines output=osm_data
+\fR
+.fi
+.SS Oracle Spatial
+Note that you have to set the environment\-variables ORACLE_BASE,
+ORACLE_SID, ORACLE_HOME and TNS_ADMIN accordingly.
+.br
+.nf
+\fC
+v.in.ogr input=OCI:username/password@database_instance output=grasslayer layer=roads_oci
+\fR
+.fi
+.SS Multiple geometry columns
+This example shows how to work with data which contain multiple
+geometry per feature. The number of geometry columns per feature can
+be checked by \fIv.external\fR
+together with \fB\-t\fR flag.
+.br
+.nf
+\fC
+v.external \-t input=20141130_ST_UKSH.xml.gz
+\&...
+Okresy,point,1,DefinicniBod
+Okresy,multipolygon,1,OriginalniHranice
+Okresy,multipolygon,1,GeneralizovaneHranice
+\&...
+\fR
+.fi
+In our example layer \(dqOkresy\(dq has three geometry columns:
+\(dqDefinicniBod\(dq, \(dqOriginalniHranice\(dq and
+\(dqGeneralizovanaHranice\(dq. By default \fIv.in.ogr\fR reads data from
+all three geometry columns. The user can specify desired geometry
+column by \fBgeometry\fR option, in this case the module will read
+geometry only from the specified geometry column. In the example below,
+the output vector map will contain only geometry saved in
+\(dqOriginalniHranice\(dq geometry column.
+.br
+.nf
+\fC
+v.in.ogr input=20141130_ST_UKSH.xml.gz layer=Okresy geometry=OriginalniHranice
+\fR
+.fi
+.SH WARNINGS
+If a message like
+.br
+.nf
+\fC
+WARNING: Area size 1.3e\-06, area not imported
+\fR
+.fi
+appears, the \fBmin_area\fR may be adjusted to a
+smaller value so that all areas are imported. Otherwise tiny areas are
+filtered out during import (useful to polish digitization errors or
+non\-topological data).
+.PP
+If a message like
+.br
+.nf
+\fC
+Try to import again, snapping with at least 1e\-008: \(cqsnap=1e\-008\(cq
+\fR
+.fi
+appears, then the map to be imported
+contains topological errors. The message suggests a value for the
+\fIsnap\fR parameter to be tried. For more details, see above in
+\fITopology Cleaning\fR.
+.SH ERROR MESSAGES
+.SS SQL syntax errors
+Depending on the currently selected SQL driver, error messages such as follows may arise:
+.br
+.nf
+\fC
+DBMI\-SQLite driver error:
+Error in sqlite3_prepare():
+near \(dqORDER\(dq: syntax error
+\fR
+.fi
+Or:
+.br
+.nf
+\fC
+DBMI\-DBF driver error:
+SQL parser error:
+syntax error, unexpected DESC, expecting NAME processing \(cqDESC
+\fR
+.fi
+This indicates that a column name in the input dataset corresponds to a reserved
+SQL word (here: \(cqORDER\(cq and \(cqDESC\(cq respectively). A different column name has to be
+used in this case. The \fBcolumns\fR parameter can be used to assign different
+column names on the fly in order to avoid using reserved SQL words.
+For a list of SQL reserved words for SQLite (the default driver),
+see here.
+.SS Projection errors
+.br
+.nf
+\fC
+Projection of dataset does not appear to match the current location.
+\fR
+.fi
+Here you need to create or use a location whose projection matches that
+of the vector data you wish to import. Try using \fBlocation\fR parameter to
+create a new location based upon the projection information in the file. If
+desired, you can then re\-project it to another location
+with \fIv.proj\fR.
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+OGR vector library
+.IP \(bu 4n
+OGR vector library C API documentation
+.RE
+.SH SEE ALSO
+\fI
+db.connect,
+v.clean,
+v.extract,
+v.build.polylines,
+v.edit,
+v.external,
+v.import,
+v.in.db,
+v.in.e00,
+v.out.ogr
+\fR
+.PP
+GRASS GIS Wiki page: Import of Global datasets
+.SH AUTHORS
+Original author: Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Location and spatial extent support by Markus Neteler and Paul Kelly
+.br
+Various improvements by Markus Metz
+.br
+Multiple geometry columns support by Martin Landa, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.in.ogr source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

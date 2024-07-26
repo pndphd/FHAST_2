@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.db.addtable.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.db.addtable.py</b></em>  - Creates and connects a new attribute table to a given layer of an existing vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#database">database</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.db.addtable.py</b><br></div>
+<b>v.db.addtable.py --help</b><br>
+<div id="synopsis"><b>v.db.addtable.py</b> <b>map</b>=<em>name</em>  [<b>table</b>=<em>string</em>]   [<b>layer</b>=<em>integer</em>]   [<b>key</b>=<em>name</em>]   [<b>columns</b>=<em>name type</em>[,<i>name type</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>table</b>=<em>string</em></dt>
+<dd>Name of new attribute table (default: vector map name)</dd>
+
+<dt><b>layer</b>=<em>integer</em></dt>
+<dd>Layer number where to add new attribute table</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>key</b>=<em>name</em></dt>
+<dd>Name of key column</dd>
+<dd>Must refer to an integer column</dd>
+<dd>Default: <em>cat</em></dd>
+
+<dt><b>columns</b>=<em>name type[,<i>name type</i>,...]</em></dt>
+<dd>Name and type of the new column(s) ('name type [,name type, ...]')</dd>
+<dd>Types depend on database backend, but all support VARCHAR(), INT, DOUBLE PRECISION and DATE. Example: 'label varchar(250), value integer'</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.db.addtable</em> creates and adds a new attribute table to a given vector
+map. It links the table to the specified layer of the vector map. If the vector
+map is not yet linked to any table, new a database link is established based on
+the MAPSET database settings (see <em>db.connect</em>).
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>v.db.addtable</em> is a front-end to <em>db.execute</em> to allow easier
+usage.
+<p>
+<em>v.db.addtable</em> will only insert category values into the table for those features 
+which actually have a category value in the relevant layer. The user can add 
+category values automatically by using <em>v.category</em> or manually with 
+<em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em>
+before running v.db.addtable. Or one can run v.db.addtable first
+and then use either a combinatino of <em>v.category</em> + <em>v.to.db</em> or 
+<em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em>
+to add the relevant lines to the table.
+<p>
+The supported types of columns depend on the database backend. However, all
+backends should support VARCHAR, INT, DOUBLE PRECISION and DATE.
+<p>The existing database connection(s) can be verified with <em>v.db.connect</em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Adding a new attribute table with a single column to default layer 1:<br>
+<div class="code"><pre>
+g.copy vect=roadsmajor,myroads
+v.db.addtable myroads columns="slope double precision"
+v.db.connect -p myroads
+v.info -c myroads
+</pre></div>
+
+<p>Adding a new attribute table with two columns to layer 2:<br>
+<div class="code"><pre>
+g.copy vect=roadsmajor,myroads
+v.db.addtable myroads columns="slope double precision, roadname varchar(15)" layer=2
+v.db.connect -p myroads
+v.info -c myroads
+v.info -c myroads layer=2
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.connect.html">db.connect</a>,
+<a href="db.droptable.html">db.droptable</a>,
+<a href="db.execute.html">db.execute</a>,
+<a href="v.db.connect.html">v.db.connect</a>,
+<a href="v.db.dropcolumn.html">v.db.dropcolumn</a>,
+<a href="v.db.droptable.html">v.db.droptable</a>,
+<a href="v.db.select.html">v.db.select</a>,
+<a href="v.db.update.html">v.db.update</a><br>
+<a href="sql.html">GRASS SQL interface</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Neteler
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.db.addtable">v.db.addtable source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.db.addtable">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

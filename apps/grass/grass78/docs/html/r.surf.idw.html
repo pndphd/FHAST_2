@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.surf.idw - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.surf.idw</b></em>  - Provides surface interpolation from raster point data by Inverse Distance Squared Weighting.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#IDW">IDW</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.surf.idw</b><br></div>
+<b>r.surf.idw --help</b><br>
+<div id="synopsis"><b>r.surf.idw</b> [-<b>e</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>npoints</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Output is the interpolation error</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>npoints</b>=<em>integer</em></dt>
+<dd>Number of interpolation points</dd>
+<dd>Default: <em>12</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.surf.idw</em> fills a grid cell (raster) matrix with
+interpolated values generated from input raster
+data points. It uses a numerical approximation technique
+based on distance squared weighting of the values of
+nearest data points. The number of nearest data points used
+to determined the interpolated value of a cell can be
+specified by the user (default: 12 nearest data points).
+
+<p>
+If there is a current working mask, it applies to the output 
+raster map. Only those cells falling within the mask will be 
+assigned interpolated values. The search procedure for the 
+selection of nearest neighboring points will consider all 
+input data, without regard to the mask. 
+
+The <b>-e</b> flag is the error analysis option that interpolates values
+only for those cells of the input raster map which have non-zero values and
+outputs the difference (see <a href="#minuse.html">NOTES</a> below).
+<p>The <b>npoints</b> parameter defines the number of nearest data points used
+to determine the interpolated value of an output raster cell.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.surf.idw</em> is a surface generation utility which
+uses inverse distance squared weighting (as described in
+<i>Applied Geostatistics</i> by E. H. Isaaks and R. M.
+Srivastava, Oxford University Press, 1989) to assign
+interpolated values. The implementation includes a
+customized data structure somewhat akin to a sparse matrix
+which enhances the efficiency with which nearest data
+points are selected.  For latitude/longitude projections,
+distances are calculated from point to point along a
+geodesic.
+
+<p>
+Unlike <em><a href="https://grass.osgeo.org/grass7/manuals/addons/r.surf.idw2.html">r.surf.idw2</a></em> (addon),
+which processes all input data points in each interpolation cycle, <em>r.surf.idw</em>
+attempts to minimize the number of input data for which distances must be
+calculated. Execution speed is therefore a function of the search effort,
+and does not increase appreciably with the number of input data points.
+
+<p>
+<em>r.surf.idw</em> will generally outperform 
+<em>r.surf.idw2</em> except when the input data
+layer contains few non-zero data, i.e. when the cost of the search exceeds
+the cost of the additional distance calculations performed by 
+<em>r.surf.idw2</em>. The relative performance
+of these utilities will depend on the comparative speed of boolean, integer
+and floating point operations on a particular platform.
+
+<p>
+Worst case search performance by <em>r.surf.idw</em> occurs
+when the interpolated cell is located outside of the region
+in which input data are distributed. It therefore behooves
+the user to employ a mask when geographic region boundaries
+include large areas outside the general extent of the input
+data.
+
+<p>
+The degree of smoothing produced by the interpolation will
+increase relative to the number of nearest data points
+considered.  The utility may be used with regularly or
+irregularly spaced input data.  However, the output result
+for the former may include unacceptable nonconformities in
+the surface pattern.
+
+<a name="minuse.html"></a>
+<p>
+The <b>-e</b> flag option provides a standard
+surface-generation error analysis facility. It produces an output raster map
+of the difference of interpolated values minus input values for those cells
+whose input data are non-zero. For each interpolation cycle, the known value
+of the cell under consideration is ignored, and the remaining input values
+are used to interpolate a result. The output raster map may be compared to
+the input raster map to analyze the distribution of interpolation error.
+This procedure may be helpful in choosing the number of nearest neighbors
+considered for surface generation.
+
+<!-- requires https://trac.osgeo.org/grass/ticket/2672 to be fixed:
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Interpolation of raster surface from randomly sampled vector elevation
+points (North Carolina sample dataset region):
+
+<div class="code"><pre>
+g.region vector=elev_lid792_randpts res=1 -p
+# rasterize points
+v.to.rast input=elev_lid792_randpts use=attr attribute_column=value \
+          output=elev_lid792_randpts_1m
+# interpolation DEM
+r.surf.idw input=elev_lid792_randpts_1m output=elev_surf_1m_idw
+
+# validate: differences to original DEM
+r.mapcalc "elev_diff = elev_lid792_1m - elev_surf_1m_idw"
+r.colors map=elev_diff color=differences
+</pre></div>
+-->
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+Module <em>r.surf.idw</em> works only for integer (CELL) raster maps.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.surf.contour.html">r.surf.contour</a>,
+<a href="r.surf.gauss.html">r.surf.gauss</a>,
+<a href="r.surf.fractal.html">r.surf.fractal</a>,
+<a href="r.surf.random.html">r.surf.random</a>,
+<a href="v.surf.idw.html">v.surf.idw</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Greg Koerper <br>
+Global Climate Research Project <br>
+U.S. EPA Environmental Research Laboratory <br>
+200 S.W. 35th Street, JSB <br>
+Corvallis, OR 97333 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.surf.idw">r.surf.idw source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.surf.idw">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

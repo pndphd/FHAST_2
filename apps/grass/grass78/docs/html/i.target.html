@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.target - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.target</b></em>  - Targets an imagery group to a GRASS location and mapset.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_map_management.html">map management</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.target</b><br></div>
+<b>i.target --help</b><br>
+<div id="synopsis"><b>i.target</b> [-<b>c</b>] <b>group</b>=<em>name</em>  [<b>location</b>=<em>string</em>]   [<b>mapset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Set current location and mapset as target for imagery group</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>location</b>=<em>string</em></dt>
+<dd>Name of imagery target location</dd>
+
+<dt><b>mapset</b>=<em>string</em></dt>
+<dd>Name of target mapset</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.target</em> targets an <a href="i.group.html">imagery
+group</a> to a GRASS data base location name and mapset.
+
+A location name and mapset are required for the
+<em><a href="i.rectify.html">i.rectify</a></em> imagery module, into which
+to write the rectified map just prior to completion of the program;
+<em>i.target</em> enables the user to specify this location.
+
+<em>i.target</em> must be run before 
+<em><a href="g.gui.gcp.html">g.gui.gcp</a></em> and 
+<em><a href="i.rectify.html">i.rectify</a></em>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>The module's first option asks for the name of the
+<a href="i.group.html">imagery group</a> that needs a target.
+The imagery group must be present in the user's current mapset.
+
+An <a href="i.group.html">imagery group</a> may be targeted to any GRASS
+location.
+<p>If a group name is given without setting options, the currently targeted
+group will be displayed.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+The GRASS 4 <em>
+<a href="https://grass.osgeo.org/gdp/imagery/grass4_image_processing.pdf">Image Processing manual</a></em>
+
+<p>
+<em>
+<a href="g.gui.gcp.html">g.gui.gcp</a>,
+<a href="i.group.html">i.group</a>,
+<a href="i.rectify.html">i.rectify</a>
+</em>
+
+<br>
+<em>
+<a href="wxGUI.gcp.html">Manage Ground Control Points</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory<p>Parser support: Bob Covill
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.target">i.target source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.target">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

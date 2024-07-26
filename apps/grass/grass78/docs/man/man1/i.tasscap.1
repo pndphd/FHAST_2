@@ -1,0 +1,158 @@
+.TH i.tasscap 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.tasscap.py\fR\fR  \- Performs Tasseled Cap (Kauth Thomas) transformation.
+.SH KEYWORDS
+imagery, transformation, Landsat, MODIS, Worldview, Sentinel, Tasseled Cap transformation
+.SH SYNOPSIS
+\fBi.tasscap.py\fR
+.br
+\fBi.tasscap.py \-\-help\fR
+.br
+\fBi.tasscap.py\fR \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIbasename\fR \fBsensor\fR=\fIstring\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+For Landsat4\-7: bands 1, 2, 3, 4, 5, 7; for Landsat8: bands 2, 3, 4, 5, 6, 7; for MODIS: bands 1, 2, 3, 4, 5, 6, 7; for Sentinel\-2: bands 1 to 12, 8A; for Worldview\-2: bands 1, 2, 3, 4, 5, 6, 7, 8
+.IP "\fBoutput\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+basename for output raster map(s)
+.br
+Name for output basename raster map(s)
+.IP "\fBsensor\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Satellite sensor
+.br
+Options: \fIlandsat4_tm, landsat5_tm, landsat7_etm, landsat8_oli, modis, sentinel2, worldview2\fR
+.SH DESCRIPTION
+\fIi.tasscap\fR calculates Tasseled Cap (Kauth Thomas, TC) transformation
+for Landsat TM data (TM4, TM5, ETM7), MODIS and Sentinel\-2 data.
+The tasseled cap transformation is effectively a compression method to
+reduce multiple spectral data into a few bands. The method was originally
+developed for understanding important phenomena of crop development in
+spectral space (Kauth and Thomas, 1976).
+.PP
+Tasseled cap coefficients for Landsat 7 ETM+ are at\-satellite reflectance
+values (C. Huang et al., 2001), the conversion can be achieved with
+\fIi.landsat.toar\fR.
+.PP
+The following tasseled cap components are generated:
+.RS 4n
+.IP \(bu 4n
+tasscap.1: corresponds to brightness,
+.IP \(bu 4n
+tasscap.2: corresponds to greenness,
+.IP \(bu 4n
+tasscap.3: corresponds to wetness,
+.IP \(bu 4n
+tasscap.4: corresponds to atmospheric haze (only selected sensors: Landsat 5,7,8).
+.RE
+.SH EXAMPLE
+Calculation of TC maps from North Carolina Landsat 7 ETM scene:
+.br
+.nf
+\fC
+# See manual page of i.landsat.toar for pre\-processing
+g.region raster=lsat7_2002_toar.1 \-p
+i.tasscap sensor=landsat7_etm \(rs
+  input=lsat7_2002_toar.1,lsat7_2002_toar.2,lsat7_2002_toar.3,lsat7_2002_toar.4,lsat7_2002_toar.5,lsat7_2002_toar.7 \(rs
+  output=lsat7_2002_tasscap
+\fR
+.fi
+Results:
+.PP
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+ 
+\fI\(cqBrightness\(cq Tasseled Cap component 1\fR
+T}	 	T{
+ 
+\fI\(cqGreenness\(cq Tasseled Cap component 2\fR
+T}
+.sp 1
+T{
+ 
+\fI\(cqWetness\(cq Tasseled Cap component 3\fR
+T}	 	T{
+ 
+\fI\(cqAtmospheric haze\(cq Tasseled Cap component 4\fR
+T}
+.sp 1
+.TE
+.br
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+LANDSAT\-4/LANDSAT\-5: TC\-factor changed to CRIST et al. 1986,
+Proc. IGARSS 1986, p.1467
+.IP \(bu 4n
+Crist, E. P., 1985, A TM tasseled cap equivalent transformation for reflectance
+factor data, Remote Sensing of Environment, 17: 301\-306.
+.IP \(bu 4n
+LANDSAT\-7: TASSCAP factors cited from:
+DERIVATION OF A TASSELED CAP TRANSFORMATION BASED ON LANDSAT 7 AT\-SATELLITE REFLECTANCE.
+Chengquan Huang, Bruce Wylie, Limin Yang, Collin Homer and Gregory Zylstra Raytheon ITSS,
+USGS EROS Data Center Sioux Falls, SD 57198, USA (http://landcover.usgs.gov/pdf/tasseled.pdf).
+This is published as well in INT. J. OF RS, 2002, VOL 23, NO. 8, 1741\-1748.
+.IP \(bu 4n
+MODIS Tasseled Cap coefficients \- Ref: Lobser & Cohen (2007). MODIS tasseled cap:
+land cover characteristics expressed through transformed MODIS data.
+International Journal of Remote Sensing, Volume 28(22), Table 3
+.IP \(bu 4n
+Sentinel\-2 Tasseled Cap coefficients \- Ref: Nedkov, R. (2017). Orthogonal transformation
+of segmented images from the satellite Sentinel\-2.
+Comptes rendus de l\(cqAcadémie bulgare des sciences, 70:687\-692.
+.IP \(bu 4n
+Yarbrough, L., Navulur, R., 2014, Presentation of the Kauth\-Thomas transform
+for WorldView\-2 reflectance data. Remote Sensing Letters. 5. DOI: 10.1080/2150704X.2014.885148.
+.RE
+.SH SEE ALSO
+\fI
+i.albedo,
+i.atcorr,
+i.landsat.toar,
+i.vi
+\fR
+.SH AUTHORS
+Dr. Agustin Lobo, original script, 1997
+.PP
+Markus Neteler, ITC\-irst, 2001
+.PP
+Converted to Python by Glynn Clements
+.PP
+Code improvements by Leonardo Perathoner
+.PP
+Sentinel\-2 support by Veronica Andreo
+.PP
+Worldview\-2 support by Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: i.tasscap source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

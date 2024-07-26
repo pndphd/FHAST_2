@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.landsat.acca - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.landsat.acca</b></em>  - Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_ACCA.html">ACCA</a>, <a href="keywords.html#cloud detection">cloud detection</a>, <a href="keywords.html#satellite">satellite</a>, <a href="keywords.html#Landsat">Landsat</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.landsat.acca</b><br></div>
+<b>i.landsat.acca --help</b><br>
+<div id="synopsis"><b>i.landsat.acca</b> [-<b>5fx2s</b>] <b>input</b>=<em>basename</em> <b>output</b>=<em>name</em>  [<b>b56composite</b>=<em>float</em>]   [<b>b45ratio</b>=<em>float</em>]   [<b>histogram</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-5</b></dt>
+<dd>Data is Landsat-5 TM</dd>
+<dd>I.e. Thermal band is '.6' not '.61')</dd>
+
+<dt><b>-f</b></dt>
+<dd>Apply post-processing filter to remove small holes</dd>
+
+<dt><b>-x</b></dt>
+<dd>Always use cloud signature (step 14)</dd>
+
+<dt><b>-2</b></dt>
+<dd>Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds</dd>
+
+<dt><b>-s</b></dt>
+<dd>Include a category for cloud shadows</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>basename</em>&nbsp;<b>[required]</b></dt>
+<dd>Base name of input raster bands</dd>
+<dd>Example: 'B.' for B.1, B.2, ...</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>b56composite</b>=<em>float</em></dt>
+<dd>B56composite (step 6)</dd>
+<dd>Default: <em>225.</em></dd>
+
+<dt><b>b45ratio</b>=<em>float</em></dt>
+<dd>B45ratio: Desert detection (step 10)</dd>
+<dd>Default: <em>1.</em></dd>
+
+<dt><b>histogram</b>=<em>integer</em></dt>
+<dd>Number of classes in the cloud temperature histogram</dd>
+<dd>Default: <em>100</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.landsat.acca</em> implements the <b>Automated Cloud-Cover
+Assessment</b> (ACCA) Algorithm from Irish (2000) with the constant
+values for pass filter one from Irish et al. (2006). To do this, it
+needs Landsat band numbers 2, 3, 4, 5, and 6 (or band 61 for Landsat-7
+ETM+) which have already been processed from DN into reflectance and
+band-6 temperature
+with <em><a href="i.landsat.toar.html">i.landsat.toar</a></em>).
+
+<p>The ACCA algorithm gives good results over most of the planet with the
+exception of ice sheets because ACCA operates on the premise that
+clouds are colder than the land surface they cover. The algorithm was
+designed for Landsat-7 ETM+ but because reflectance is used it is also
+useful for Landsat-4/5 TM.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>i.landsat.acca</em> works in the current region settings.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Run the standard ACCA algorithm with filling of small cloud holes
+(the <b>-f</b> flag): With per-band reflectance raster maps
+named <tt>226_62.toar.1, 226_62.toar.2, </tt> [...] and LANDSAT-7
+thermal band <tt>226_62.toar.61</tt>, outputting to a new raster map
+named <tt>226_62.acca</tt>:
+
+<div class="code"><pre>
+i.landsat.toar sensor=7 gain=HHHLHLHHL date=2003-04-07 \
+  product_date=2008-11-27 band_prefix=226_62 solar_elevation=49.51654
+
+i.landsat.acca -f band_prefix=226_62.toar output=226_62.acca
+</pre></div>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ol>
+  <li>Irish R.R., Barker J.L., Goward S.N., and Arvidson T., 2006.
+    Characterization of the Landsat-7 ETM+ Automated Cloud-Cover
+    Assessment (ACCA) Algorithm. Photogrammetric Engineering and Remote
+    Sensing vol. 72(10): 1179-1188.</li>
+  
+  <li>Irish, R.R., 2000. Landsat 7 Automatic Cloud Cover Assessment. In
+    S.S. Shen and M.R. Descour (Eds.): Algorithms for Multispectral,
+    Hyperspectral, and Ultraspectral Imagery VI. Proceedings of SPIE,
+    4049: 348-355.</li>
+</ol>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.atcorr.html">i.atcorr</a>,
+<a href="i.landsat.toar.html">i.landsat.toar</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+E. Jorge Tizado  (ej.tizado unileon es), Dept. Biodiversity and Environmental Management, University of Le&oacute;n, Spain
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.landsat.acca">i.landsat.acca source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.landsat.acca">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

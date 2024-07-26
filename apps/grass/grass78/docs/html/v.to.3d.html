@@ -1,0 +1,165 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.to.3d - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.to.3d</b></em>  - Performs transformation of 2D vector features to 3D.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#3D">3D</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.to.3d</b><br></div>
+<b>v.to.3d --help</b><br>
+<div id="synopsis"><b>v.to.3d</b> [-<b>rt</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em>  [<b>column</b>=<em>name</em>]   [<b>height</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Reverse transformation; 3D vector features to 2D</dd>
+
+<dt><b>-t</b></dt>
+<dd>Do not copy attribute table</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid</em></dd>
+<dd>Default: <em>point,line,boundary,centroid</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>Name of attribute column used for height</dd>
+<dd>Can be used for reverse transformation, to store height of points</dd>
+
+<dt><b>height</b>=<em>float</em></dt>
+<dd>Fixed height for 3D vector features</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#-notes" class="toc"> NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#transform-2d-vector-features-to-3d" class="toc">Transform 2D vector features to 3D</a></li>
+        <li class="toc"><a href="#transform-3d-vector-features-to-2d" class="toc">Transform 3D vector features to 2D</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>v.to.3d</em> module is used to transform 2D vector features
+to 3D. Height (z-coordinate) of 3D vector features can be specified
+by <b>height</b> parameter as fixed value or by <b>column</b>
+parameter.
+
+<p>
+Flag <b>-r</b> enables to perform reverse transformation, i.e.,
+transform 3D vector to 2D by omitting z-coordinate. Height of input 3D
+features can be optionally stored in <b>column</b>.
+
+<h2><a name="-notes"> NOTES</a></h2>
+
+When transforming 2D vector features to 3D based on attribute, all
+NULL values are silently converted to height 0.0.
+<p>
+Reverse transformation is possible for points and lines.
+In case of lines, the reverse transformation should be used
+only when all vertices of a line have the same z-coordinate
+(for example contours).
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="transform-2d-vector-features-to-3d">Transform 2D vector features to 3D</a></h3>
+
+<div class="code"><pre>
+# convert z-values from string to double
+v.db.addcolumn map=geodetic_pts columns="Z_VALUE_D double precision"
+v.db.update map=geodetic_pts column=Z_VALUE_D qcolumn=Z_VALUE
+v.db.select map=geodetic_pts columns=cat,Z_VALUE,Z_VALUE_D
+
+# convert 2D vector point map to 3D based on attribute
+v.to.3d input=geodetic_pts out=geodetic_pts_3d column=Z_VALUE_D
+</pre></div>
+
+<h3><a name="transform-3d-vector-features-to-2d">Transform 3D vector features to 2D</a></h3>
+
+<div class="code"><pre>
+v.to.3d -rt input=elev_lid792_bepts output=elev_lid_2d
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.transform.html">v.transform</a>,
+<a href="v.extrude.html">v.extrude</a>,
+<a href="v.drape.html">v.drape</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Martin Landa, Czech Technical University in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.to.3d">v.to.3d source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.to.3d">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

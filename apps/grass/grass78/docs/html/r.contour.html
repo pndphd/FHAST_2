@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.contour - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.contour</b></em>  - Produces a vector map of specified contours from a raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#contours">contours</a>, <a href="keywords.html#vector">vector</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.contour</b><br></div>
+<b>r.contour --help</b><br>
+<div id="synopsis"><b>r.contour</b> [-<b>t</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>step</b>=<em>float</em>]   [<b>levels</b>=<em>float</em>[,<i>float</i>,...]]   [<b>minlevel</b>=<em>float</em>]   [<b>maxlevel</b>=<em>float</em>]   [<b>cut</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Do not create attribute table</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>step</b>=<em>float</em></dt>
+<dd>Increment between contour levels</dd>
+
+<dt><b>levels</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>List of contour levels</dd>
+
+<dt><b>minlevel</b>=<em>float</em></dt>
+<dd>Minimum contour level</dd>
+
+<dt><b>maxlevel</b>=<em>float</em></dt>
+<dd>Maximum contour level</dd>
+
+<dt><b>cut</b>=<em>integer</em></dt>
+<dd>Minimum number of points for a contour line (0 -&gt; no limit)</dd>
+<dd>Default: <em>2</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.contour</em> produces a vector map of specified contours from input raster map.
+
+Contours can be produced using a comma-separated list of values
+in <b>levels</b>, or at some regular increment using the <b>step</b>
+parameter, using <b>minlevel</b> and <b>maxlevel</b> as minimum and
+maximum contour values, respectively. If no <b>minlevel</b>
+or <b>maxlevel</b> is specified, the minimum and maximum cell values
+in the <b>input</b> raster map will be used.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.contour</em> will either step through incremental contours or produce
+contours from a list of levels, not both. If both a list of levels and
+a step are specified, the list will be produced and the step will be ignored.
+
+<p>Zero is treated as a valid data value by <em>r.contour</em>.
+
+<p>If a contour level exactly matches a category value in the raster map,
+the contour line may backtrack on itself, causing illegal arcs to be produced
+in the output vector map.
+
+<p>The optional <b>cut</b> parameter allows the user to specify a minimum number of
+raster cells eligilble to be included in a contour line written to the <b>output</b> 
+vector map. It acts like a filter, omitting spurs, single points, etc., making the output more generalized.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+In the Spearfish location, produce a vector contour map from input raster <i>elevation.dem</i> 
+with contour levels from 1000m to 2000m, 100m contour step, and a minimum of 200 input raster
+points contributing to the contour line:
+
+<div class="code"><pre>
+r.contour input=elevation.dem output=elevation_dem_contours \
+          minlevel=1000 maxlevel=2000 step=100 cut=200
+</pre></div>
+
+<p>
+For an example of using levels with <em>r.contour</em> this example uses
+the elevation map from the North Carolina database:
+
+<div class="code"><pre>
+g.region raster=elevation
+r.contour in=elevation out=contours levels=60,90,120,150 --o
+d.mon wx0
+d.rast elevation_shade
+d.vect contours color=red
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="r_contour_using_levels.png">
+<img src="r_contour_using_levels.png" width="600" alt="r.contours example" border=0><br>
+</a>
+<i>Contour lines shown on shaded terrain map</i>
+</div>
+
+
+<p>
+For an example of using steps with <em>r.contour</em> this example uses
+the LiDAR data derived elevation map from the North Carolina database:
+
+<div class="code"><pre>
+g.region raster=elev_lid792_1m -p
+r.contour input=elev_lid792_1m output=elev_lid792_1m_contours \
+          minlevel=100 maxlevel=150 step=10
+</pre></div>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Terry Baker, U.S. Army Construction Engineering Research Laboratory<br>
+3/2001: cut parameter and fixes by Andrea Aime (aaime@libero.it)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.contour">r.contour source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.contour">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

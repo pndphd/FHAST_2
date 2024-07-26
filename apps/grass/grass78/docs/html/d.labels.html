@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.labels - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.labels</b></em>  - Displays text labels (created with v.label) to the active frame on the graphics monitor.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_paint_labels.html">paint labels</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.labels</b><br></div>
+<b>d.labels --help</b><br>
+<div id="synopsis"><b>d.labels</b> [-<b>i</b>] <b>labels</b>=<em>string</em>  [<b>minreg</b>=<em>float</em>]   [<b>maxreg</b>=<em>float</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Ignore rotation setting and draw horizontally</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>labels</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of label file</dd>
+
+<dt><b>minreg</b>=<em>float</em></dt>
+<dd>Minimum region size (diagonal) when labels are displayed</dd>
+
+<dt><b>maxreg</b>=<em>float</em></dt>
+<dd>Maximum region size (diagonal) when labels are displayed</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.labels</em> displays a <em>paint</em> label file in the 
+active display frame on the graphics monitor. Each label has components 
+which determine the text, the location of the text on the image, its 
+size, and the background for the text. This file can be generated with 
+the <em><a href="v.label.html">v.label</a></em> program or simply created 
+by the user as an ASCII file (using a text editor) and placed in the 
+appropriate directory under the user's current mapset and location 
+(i.e. <tt>$MAPSET/paint/labels/</tt>).
+
+<h2><a name="notes">NOTES</a></h2>
+
+Some of the information stored in the label file is unused by 
+<em>d.labels</em>.
+<!-- The unused information found in a label file is printed to standard 
+output. -->
+This extra information is used by such programs as 
+<em><a href="ps.map.html">ps.map</a></em>.
+
+<p>This module was formerly known as <em>d.paint.labels</em>.
+The the old version of <em>d.labels</em> from GRASS 5, which provided
+interactive placement and modification of paint labels, still needs to 
+have its functionality merged into this module.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="d.font.html">d.font</a></em><br>
+<em><a href="d.text.html">d.text</a></em><br>
+<em><a href="d.title.html">d.title</a></em><br>
+<em><a href="ps.map.html">ps.map</a></em><br>
+<em><a href="v.label.html">v.label</a></em>
+<br>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+James Westervelt, 
+U.S. Army Construction Engineering 
+Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.labels">d.labels source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.labels">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

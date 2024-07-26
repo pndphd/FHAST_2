@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.rescale.eq - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.rescale.eq</b></em>  - Rescales histogram equalized the range of category values in a raster map layer.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_rescale.html">rescale</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.rescale.eq</b><br></div>
+<b>r.rescale.eq --help</b><br>
+<div id="synopsis"><b>r.rescale.eq</b> <b>input</b>=<em>name</em>  [<b>from</b>=<em>min,max</em>]  <b>output</b>=<em>name</em> <b>to</b>=<em>min,max</em>  [<b>title</b>=<em>phrase</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>The name of the raster map to be rescaled</dd>
+
+<dt><b>from</b>=<em>min,max</em></dt>
+<dd>The input data range to be rescaled (default: full range of input map)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>The resulting raster map name</dd>
+
+<dt><b>to</b>=<em>min,max</em>&nbsp;<b>[required]</b></dt>
+<dd>The output data range</dd>
+
+<dt><b>title</b>=<em>phrase</em></dt>
+<dd>Title for new raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>r.rescale.eq</em> program rescales the range of
+category values appearing in a raster map layer with equalized histogram. 
+A new raster map layer, and an appropriate category file and
+color table based upon the original raster map layer, are
+generated with category labels that reflect the original
+category values that produced each category.  This command
+is useful for producing representations with a reduced
+number of categories from a raster map layer with a large
+range of category values (e.g., elevation).
+<em>Rescaled</em> map layers are appropriate for use in
+such GRASS GIS commands as
+
+<em><a href="r.stats.html">r.stats</a></em>,
+<em><a href="r.report.html">r.report</a></em>, and 
+<em><a href="r.coin.html">r.coin</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+To rescale an elevation raster map layer with category
+values ranging from 1090 meters to 1800 meters into the
+range 0-255, the following command line could be used
+(without the <em>from</em> parameter, the full value range will
+be used):
+
+<div class="code"><pre>
+r.rescale.eq input=elevation from=1090,1800 output=elevation.255 to=0,255
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+Category values that fall beyond the input range will
+become NULL.  This allows the user to select a subset of
+the full category value range for rescaling if desired.
+This also means that the user should know the category
+value range for the input raster map layer.  The user can
+request the <em>r.rescale.eq</em> program to determine
+this range, or can obtain it using the
+<em><a href="r.describe.html">r.describe</a></em> or
+<em><a href="r.info.html">r.info</a></em>
+command.  If the category value range is determined using
+<em>r.rescale.eq</em>, the input raster map layer is examined,
+and the minimum and maximum non-NULL category values are
+selected as the input range.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.coin.html">r.coin</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.info.html">r.info</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.reclass.html">r.reclass</a>,
+<a href="r.rescale.html">r.rescale</a>,
+<a href="r.report.html">r.report</a>,
+<a href="r.resample.html">r.resample</a>,
+<a href="r.stats.html">r.stats</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.rescale.eq">r.rescale.eq source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.rescale.eq">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

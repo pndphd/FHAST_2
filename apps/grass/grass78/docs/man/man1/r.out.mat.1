@@ -1,0 +1,161 @@
+.TH r.out.mat 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.mat\fR\fR  \- Exports a GRASS raster to a binary MAT\-File.
+.SH KEYWORDS
+raster, export, output
+.SH SYNOPSIS
+\fBr.out.mat\fR
+.br
+\fBr.out.mat \-\-help\fR
+.br
+\fBr.out.mat\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output binary MAT file
+.SH DESCRIPTION
+\fIr.out.mat\fR will export a GRASS raster map to a MAT\-File which can
+be loaded into Matlab or Octave for plotting or further analysis.
+Attributes such as map title and bounds will also be exported into
+additional array variables.
+.br
+.br
+Specifically, the following array variables are created:
+.br
+.RS 4n
+.IP \(bu 4n
+\fB map_data\fR
+.IP \(bu 4n
+\fB map_name\fR
+.IP \(bu 4n
+\fB map_title\fR (if it exists)
+.IP \(bu 4n
+\fB map_northern_edge\fR
+.IP \(bu 4n
+\fB map_southern_edge\fR
+.IP \(bu 4n
+\fB map_eastern_edge\fR
+.IP \(bu 4n
+\fB map_western_edge\fR
+.RE
+.br
+In addition, \fIr.out.mat\fR makes for a nice binary container format
+for transferring georeferenced maps around, even if you don\(cqt use Matlab
+or Octave.
+.SH NOTES
+\fIr.out.mat\fR exports a Version 4 MAT\-File. These files should
+successfully load into more modern versions of Matlab and Octave
+without any problems.
+.br
+.br
+Everything should be Endian safe, so the resultant file can be simply
+copied between different system architectures without binary translation.
+.br
+.br
+As there is no IEEE value for NaN for integer maps, GRASS\(cqs null
+value is used to represent it within these maps. You\(cqll have to do something
+like this to clean them once the map is loaded into Matlab:
+.br
+.nf
+\fC
+    map_data(find(map_data < \-1e9)) = NaN;
+\fR
+.fi
+Null values in maps containing either floating point or double\-precision
+floating point data should translate into NaN values as expected.
+.br
+.br
+\fIr.out.mat\fR must load the entire map into memory before writing,
+therefore it might have problems with \fIhuge\fR maps.
+(a 3000x4000 DCELL map uses about 100mb RAM)
+.br
+.br
+GRASS defines its map bounds at the outer\-edge of the bounding cells, not at
+the coordinates of their centroids. Thus, the following Matlab commands may
+be used to determine the map\(cqs resolution information:
+.br
+.nf
+\fC
+    [rows cols] = size(map_data)
+    x_range = map_eastern_edge \- map_western_edge
+    y_range = map_northern_edge \- map_southern_edge
+    ns_res = y_range/rows
+    ew_res = x_range/cols
+\fR
+.fi
+.br
+.SH EXAMPLE
+In Matlab, plot with either:
+.br
+.nf
+\fC
+imagesc(map_data), axis equal, axis tight, colorbar
+\fR
+.fi
+or
+.br
+.nf
+\fC
+contourf(map_data, 24), axis ij, axis equal, axis tight, colorbar
+\fR
+.fi
+.br
+.SH TODO
+Add support for exporting map history, category information, color map, etc.
+.br
+Option to export as a version 5 MAT\-File, with map and support information
+stored in a single structured array.
+.SH SEE ALSO
+\fI
+r.in.mat
+.br
+r.out.ascii, r.out.bin
+.br
+r.null
+.br
+The Octave project
+\fR
+.SH AUTHOR
+Hamish Bowman
+.br
+\fI
+Department of Marine Science
+.br
+University of Otago
+.br
+New Zealand\fR
+.br
+.br
+.SH SOURCE CODE
+.PP
+Available at: r.out.mat source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

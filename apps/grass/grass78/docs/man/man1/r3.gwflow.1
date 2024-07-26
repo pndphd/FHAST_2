@@ -1,0 +1,249 @@
+.TH r3.gwflow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.gwflow\fR\fR  \- Numerical calculation program for transient, confined groundwater flow in three dimensions.
+.SH KEYWORDS
+raster3d, groundwater flow, voxel, hydrology
+.SH SYNOPSIS
+\fBr3.gwflow\fR
+.br
+\fBr3.gwflow \-\-help\fR
+.br
+\fBr3.gwflow\fR [\-\fBmf\fR] \fBphead\fR=\fIname\fR \fBstatus\fR=\fIname\fR \fBhc_x\fR=\fIname\fR \fBhc_y\fR=\fIname\fR \fBhc_z\fR=\fIname\fR  [\fBsink\fR=\fIname\fR]  \fByield\fR=\fIname\fR  [\fBrecharge\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\fBvelocity_x\fR=\fIname\fR]   [\fBvelocity_y\fR=\fIname\fR]   [\fBvelocity_z\fR=\fIname\fR]   [\fBbudget\fR=\fIname\fR]  \fBdtime\fR=\fIfloat\fR  [\fBmaxit\fR=\fIinteger\fR]   [\fBerror\fR=\fIfloat\fR]   [\fBsolver\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists)
+.IP "\fB\-f\fR" 4m
+.br
+Use a full filled quadratic linear equation system, default is a sparse linear equation system.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBphead\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map with initial piezometric heads in [m]
+.IP "\fBstatus\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map providing the status for each cell, = 0 \- inactive, 1 \- active, 2 \- dirichlet
+.IP "\fBhc_x\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map with the x\-part of the hydraulic conductivity tensor in [m/s]
+.IP "\fBhc_y\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map with the y\-part of the hydraulic conductivity tensor in [m/s]
+.IP "\fBhc_z\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Input 3D raster map with the z\-part of the hydraulic conductivity tensor in [m/s]
+.IP "\fBsink\fR=\fIname\fR" 4m
+.br
+Input 3D raster map with sources and sinks in [m^3/s]
+.IP "\fByield\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Specific yield [1/m] input 3D raster map
+.IP "\fBrecharge\fR=\fIname\fR" 4m
+.br
+Recharge input 3D raster map in m^3/s
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output 3D raster map storing the piezometric head result of the numerical calculation
+.IP "\fBvelocity_x\fR=\fIname\fR" 4m
+.br
+Output 3D raster map storing the groundwater filter velocity vector part in x direction [m/s]
+.IP "\fBvelocity_y\fR=\fIname\fR" 4m
+.br
+Output 3D raster map storing the groundwater filter velocity vector part in y direction [m/s]
+.IP "\fBvelocity_z\fR=\fIname\fR" 4m
+.br
+Output 3D raster map storing the groundwater filter velocity vector part in z direction [m/s]
+.IP "\fBbudget\fR=\fIname\fR" 4m
+.br
+Output 3D raster map storing the groundwater budget for each cell [m^3/s]
+.IP "\fBdtime\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+The calculation time in seconds
+.br
+Default: \fI86400\fR
+.IP "\fBmaxit\fR=\fIinteger\fR" 4m
+.br
+Maximum number of iteration used to solve the linear equation system
+.br
+Default: \fI10000\fR
+.IP "\fBerror\fR=\fIfloat\fR" 4m
+.br
+Error break criteria for iterative solver
+.br
+Default: \fI0.000001\fR
+.IP "\fBsolver\fR=\fIname\fR" 4m
+.br
+The type of solver which should solve the symmetric linear equation system
+.br
+Options: \fIcg, pcg, cholesky\fR
+.br
+Default: \fIcg\fR
+.SH DESCRIPTION
+This numerical module calculates implicit transient and steady state,
+confined groundwater flow in three dimensions based on volume maps
+and the current 3D region settings.
+All initial\- and boundary\-conditions must be provided as volume maps.
+The unit in the location must be meters.
+.PP
+This module is sensitive to mask settings. All cells which are outside
+the mask are ignored and handled as no flow boundaries.
+.PP
+The module calculates the piezometric head and optionally the water
+balance for each cell and the groundwater velocity field in 3 dimensions.
+The vector components can be visualized with ParaView if they are exported
+with \fIr3.out.vtk\fR.
+.PP
+The groundwater flow will always be calculated transient.
+For steady state computation the user should set the timestep
+to a large number (billions of seconds) or set the
+specific yield raster map to zero.
+.SH NOTES
+The groundwater flow calculation is based on Darcy\(cqs law and a numerical
+implicit finite volume discretization. The discretization results in a
+symmetric and positive definite linear equation system in form of
+\fIAx = b\fR, which must be solved. The groundwater flow partial
+differential equation is of the following form:
+.PP
+(dh/dt)*S = div (K grad h) + q
+.PP
+In detail for 3 dimensions:
+.PP
+(dh/dt)*S = Kxx * (d^2h/dx^2) + Kyy * (d^2h/dy^2) + Kzz * (d^2h/dz^2) + q
+.RS 4n
+.IP \(bu 4n
+h \-\- the piezometric head im meters [m]
+.IP \(bu 4n
+dt \-\- the time step for transient calculation in seconds [s]
+.IP \(bu 4n
+S \-\- the specific yield  [1/m]
+.IP \(bu 4n
+b \-\- the bottom surface of the aquifer meters [m]
+.IP \(bu 4n
+Kxx \-\- the hydraulic conductivity tensor part in x direction in meter per second [m/s]
+.IP \(bu 4n
+Kyy \-\- the hydraulic conductivity tensor part in y direction in meter per seconds [m/s]
+.IP \(bu 4n
+Kzz \-\- the hydraulic conductivity tensor part in z direction in meter per seconds [m/s]
+.IP \(bu 4n
+q \- inner source/sinc in [1/s]
+.RE
+.PP
+Two different boundary conditions are implemented, the Dirichlet and
+Neumann conditions. By default the calculation area is surrounded by
+homogeneous Neumann boundary conditions. The calculation and boundary
+status of single cells can be set with the status map, the following
+cell states are supported:
+.RS 4n
+.IP \(bu 4n
+0 == inactive \- the cell with status 0 will not be calculated,
+active cells will have a no flow boundary to an inactive cell
+.IP \(bu 4n
+1 == active \- this cell is used for groundwater calculation,
+inner sources can be defined for those cells
+.IP \(bu 4n
+2 == Dirichlet \- cells of this type will have a fixed piezometric
+head value which do not change over time
+.RE
+.PP
+Note that all required raster maps are read into main memory. Additionally
+the linear equation system will be allocated, so the memory consumption of
+this module rapidely grow with the size of the input maps.
+.PP
+The resulting linear equation system \fIAx = b\fR can be solved with
+several solvers. An iterative solvers with sparse and quadratic matrices
+support is implemented.
+The conjugate gradients method with (pcg) and without (cg) precondition.
+Additionally a direct Cholesky solver is available. This direct solver
+only work with normal quadratic matrices, so be careful using them with
+large maps (maps of size 10.000 cells will need more than one Gigabyte
+of RAM). The user should always prefer to use a sparse matrix solver.
+.SH EXAMPLE 1
+This small script creates a working groundwater flow area and
+data. It cannot be run in a lat/lon location.
+.br
+.nf
+\fC
+# set the region accordingly
+g.region res=25 res3=25 t=100 b=0 n=1000 s=0 w=0 e=1000 \-p3
+#now create the input raster maps for a confined aquifer
+r3.mapcalc expression=\(dqphead = if(row() == 1 && depth() == 4, 50, 40)\(dq
+r3.mapcalc expression=\(dqstatus = if(row() == 1 && depth() == 4, 2, 1)\(dq
+r3.mapcalc expression=\(dqwell = if(row() == 20 && col() == 20 && depth() == 2, \-0.25, 0)\(dq
+r3.mapcalc expression=\(dqhydcond = 0.00025\(dq
+r3.mapcalc expression=\(dqsyield = 0.0001\(dq
+r.mapcalc  expression=\(dqrecharge = 0.0\(dq
+r3.gwflow solver=cg phead=phead statuyield=status hc_x=hydcond hc_y=hydcond  \(rs
+   hc_z=hydcond sink=well yield=syield r=recharge output=gwresult dt=8640000 vx=vx vy=vy vz=vz budget=budget
+# The data can be visualized with ParaView when exported with r3.out.vtk
+r3.out.vtk \-p in=gwresult,status,budget vector=vx,vy,vz out=/tmp/gwdata3d.vtk
+#now load the data into ParaView
+paraview \-\-data=/tmp/gwdata3d.vtk
+\fR
+.fi
+.SH EXAMPLE 2
+This will create a nice 3D model with geological layer with different
+hydraulic conductivities. Make sure you are not in a lat/lon projection.
+.br
+.nf
+\fC
+# set the region accordingly
+g.region res=15 res3=15 t=500 b=0 n=1000 s=0 w=0 e=1000
+#now create the input raster maps for a confined aquifer
+r3.mapcalc expression=\(dqphead = if(col() == 1 && depth() == 33, 50, 40)\(dq
+r3.mapcalc expression=\(dqstatus = if(col() == 1 && depth() == 33, 2, 1)\(dq
+r3.mapcalc expression=\(dqwell = if(row() == 20 && col() == 20 && depth() == 3, \-0.25, 0)\(dq
+r3.mapcalc expression=\(dqwell = if(row() == 50 && col() == 50 && depth() == 3, \-0.25, well)\(dq
+r3.mapcalc expression=\(dqhydcond = 0.0025\(dq
+r3.mapcalc expression=\(dqhydcond = if(depth() < 30 && depth() > 23 && col() < 60, 0.000025, hydcond)\(dq
+r3.mapcalc expression=\(dqhydcond = if(depth() < 20 && depth() > 13 && col() >  7, 0.000025, hydcond)\(dq
+r3.mapcalc expression=\(dqhydcond = if(depth() < 10 && depth() >  7 && col() < 60, 0.000025, hydcond)\(dq
+r3.mapcalc expression=\(dqsyield = 0.0001\(dq
+r3.gwflow solver=cg phead=phead statuyield=status hc_x=hydcond hc_y=hydcond  \(rs
+   hc_z=hydcond sink=well yield=syield output=gwresult dt=8640000 vx=vx vy=vy vz=vz budget=budget
+# The data can be visualized with paraview when exported with r3.out.vtk
+r3.out.vtk \-p in=gwresult,status,budget,hydcond,well vector=vx,vy,vz out=/tmp/gwdata3d.vtk
+#now load the data into paraview
+paraview \-\-data=/tmp/gwdata3d.vtk
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.gwflow,
+r.solute.transport,
+r3.out.vtk
+\fR
+.SH AUTHOR
+Sören Gebbert
+.PP
+This work is based on the Diploma Thesis of Sören Gebbert available
+here
+at Technical University Berlin, Germany.
+.SH SOURCE CODE
+.PP
+Available at: r3.gwflow source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

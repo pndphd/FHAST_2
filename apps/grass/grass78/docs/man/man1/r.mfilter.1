@@ -1,0 +1,187 @@
+.TH r.mfilter 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.mfilter\fR\fR  \- Performs raster map matrix filter.
+.SH KEYWORDS
+raster, algebra, statistics, filter
+.SH SYNOPSIS
+\fBr.mfilter\fR
+.br
+\fBr.mfilter \-\-help\fR
+.br
+\fBr.mfilter\fR [\-\fBz\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBfilter\fR=\fIname\fR  [\fBrepeat\fR=\fIinteger\fR]   [\fBtitle\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Apply filter only to null data values
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBfilter\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Path to filter file
+.IP "\fBrepeat\fR=\fIinteger\fR" 4m
+.br
+Number of times to repeat the filter
+.br
+Default: \fI1\fR
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Output raster map title
+.SH DESCRIPTION
+\fIr.mfilter\fR filters the raster \fIinput\fR to produce the
+raster \fIoutput\fR according to the matrix \fIfilter\fR designed
+by the user (see \fIFILTERS\fR below).
+The filter is applied \fIrepeat\fR times (default \fIvalue\fR is 1).
+The \fIoutput\fR raster map layer can be given a \fITITLE\fR if desired.
+(This TITLE should be put in quotes if it contains more than one word.)
+With \fB\-z\fR flag the filter is applied only to null values in
+the input raster map layer.  The non\-null category values are not changed.
+Note that if there is more than one filter step, this rule is applied to the
+intermediate raster map layer \-\- only null category values which result from
+the first filter will be changed.  In most cases this will NOT be the
+desired result. Hence \-z should be used only with single step filters.
+.PP
+The \fBfilter\fR parameter defines the name of an existing, user\-created
+UNIX ASCII file whose contents is a matrix defining the way in which the
+\fIinput\fR file will be filtered. The format of this file is described
+below, under FILTERS.
+.PP
+The \fBrepeat\fR parameter defines the number of times the \fIfilter\fR
+is to be applied to the \fIinput\fR data.
+.SH FILTERS
+The \fIfilter\fR file is a normal UNIX ASCII file designed by the user.
+It has the following format:
+.br
+.nf
+\fC
+     TITLE      TITLE
+     MATRIX     n
+                  .
+     n lines of n values
+                  .
+     DIVISOR    d
+     TYPE        S/P
+\fR
+.fi
+.IP "TITLE   " 4m
+.br
+A one\-line TITLE for the filter.
+If a TITLE was not specified on the command line, it can be specified here.
+This TITLE would be used to construct a TITLE for the resulting raster map
+layer.  It should be a one\-line description of the filter.
+.IP "MATRIX   " 4m
+.br
+The matrix (n x n) follows on the next n lines.  \fIn\fR must be
+an odd integer greater than or equal to 3.
+The matrix itself consists of n rows of n values.
+The values must be separated from each other by at least 1 blank.
+.IP "DIVISOR   " 4m
+.br
+The filter divisor is \fId\fR.  If not specified, the default is 1.
+If the divisor is zero (0), then the divisor is dependent on the
+category values in the neighborhood
+(see HOW THE FILTER WORKS below).
+.IP "TYPE   " 4m
+.br
+The filter type.  \fIS\fR means sequential, while \fIP\fR mean parallel.
+If not specified, the default is S.
+.PP
+Sequential filtering happens in place.  As the filter is applied to the
+raster map layer, the category values that were changed in neighboring
+cells affect the resulting category value of the current
+cell being filtered.
+.PP
+Parallel filtering happens in such a way that the original raster
+map layer category values are used to produce the new category value.
+.PP
+More than one filter may be specified in the filter file.
+The additional filter(s) are described just like the first.
+For example, the following describes two filters:
+.SH EXAMPLE FILTER FILE
+.br
+.nf
+\fC
+      TITLE     3x3 average, non\-null data only, followed by 5x5 average
+     MATRIX    3
+     1 1 1
+     1 1 1
+     1 1 1
+     DIVISOR   0
+     TYPE      P
+     MATRIX    5
+     1 1 1 1 1
+     1 1 1 1 1
+     1 1 1 1 1
+     1 1 1 1 1
+     1 1 1 1 1
+     DIVISOR   25
+     TYPE      P
+\fR
+.fi
+.SH HOW THE FILTER WORKS
+The filter process produces a new category value for each cell
+in the input raster map layer by multiplying the category values of the
+cells in the n x n neighborhood around the center cell
+by the corresponding matrix value and adding them together.
+If a divisor is specified, the sum is divided by this divisor.
+(If a zero divisor was specified, then
+the divisor is computed for each cell as the sum of the MATRIX
+values where the corresponding input cell is non\-null.)
+.PP
+If more than one filter step is specified, either because the
+repeat value was greater than one or because the filter file
+contained more than one matrix, these steps are performed
+sequentially. This means that first one filter is applied to
+the entire input raster map layer to produce an intermediate result;
+then the next filter is applied to the intermediate result to
+produce another intermediate result;  and so on, until the
+final filter is applied.  Then the output cell is written.
+.SH NOTES
+If the resolution of the geographic region does not agree with the
+resolution of the raster map layer, unintended resampling of the original
+data may occur.  The user should be sure that the geographic region
+is set properly.
+.SH SEE ALSO
+\fI
+g.region,
+r.clump,
+r.neighbors,
+r.resamp.filter
+\fR
+.SH AUTHOR
+Glynn Clements.
+Based upon r.mfilter, by Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.mfilter source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

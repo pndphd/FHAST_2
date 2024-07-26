@@ -1,0 +1,301 @@
+.TH temporalintro 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH Temporal data processing in GRASS GIS
+The temporal enabled GRASS introduces three new data types that
+are designed to handle time series data:
+.RS 4n
+.IP \(bu 4n
+\fISpace time raster datasets\fR (strds) are designed to
+manage raster map time series. Modules that process strds have the
+naming prefix \fIt.rast\fR.
+.IP \(bu 4n
+\fISpace time 3D raster datasets\fR (str3ds) are designed to
+manage 3D raster map time series. Modules that process str3ds have
+the naming prefix \fIt.rast3d\fR.
+.IP \(bu 4n
+\fISpace time vector datasets\fR (stvds) are designed to
+manage vector map time series. Modules that process stvds have the
+naming prefix \fIt.vect\fR.
+.RE
+These new data types can be managed, analyzed and processed with
+temporal modules that are based on the GRASS GIS temporal framework.
+.SS Temporal data management in general
+Space time datasets are stored in a temporal database. A core principle
+of the temporal framework is that temporal databases are mapset
+specific. A new temporal database is created when a temporal command is
+invoked in a mapset that does not contain any temporal databases yet.
+For example, when a mapset was recently created.
+.PP
+\fBTherefore, as space\-time datasets are mapset specific, they can only
+register raster, 3D raster or vector maps from the same mapset.\fR
+.PP
+By default, space\-time datasets can not register maps from other
+mapsets. This is a security measure, since the registration of maps in
+a space\-time dataset will always modify the metadata of the registered
+map. This is critical if:
+.RS 4n
+.IP \(bu 4n
+The user has no write access to the maps from other mapsets
+he/she wants to register
+.IP \(bu 4n
+If registered maps are removed from other mapsets, the temporal
+database will not be updated and will contain ghost maps
+.RE
+SQLite3 or PostgreSQL are supported as temporal database backends.
+Temporal databases stored in other mapsets can be accessed as long as
+those other mapsets are in the user\(cqs current mapset search path
+(managed with g.mapsets). Access to
+space\-time datasets from other mapsets is read\-only. They can not be
+modified or removed.
+.PP
+Connection settings are performed with t.connect.
+By default, a SQLite3 database is
+created in the current mapset to store all space\-time datasets and
+registered time series maps in that mapset.
+.PP
+New space\-time datasets are created in the temporal database with
+t.create. The name of the new dataset, the
+type (strds, str3ds, stvds), the title and the description must be
+provided for creation. Optionally, the temporal type (absolute,
+relative) and the semantic information can be provided.
+.PP
+The module t.register is designed to
+register raster, 3D raster and vector maps in the temporal database and
+in the space\-time datasets. It supports different input options. Maps
+to register can be provided as a comma separated string at the command
+line, or in an input file. The module supports the definition of time
+stamps (time instances or intervals) for each map in the input file.
+With  t.unregister maps can be
+unregistered from space\-time datasets and from the temporal database.
+.PP
+\fBImportant\fR
+.br
+\fIUse only temporal commands like t.register
+to attach a time stamp to raster,
+3D raster and vector maps. The commands r.timestamp, r3.timestamp and
+v.timestamp should not be used because they only modify the metadata of
+the map in the spatial database, but they do not register maps in the
+temporal database. However, maps with timestamps attached by means of
+*.timestamp modules can be registered in space\-time datasets using the
+existing timestamp.\fR
+.PP
+The module t.remove will remove the
+space\-time datasets from the temporal database and optionally all
+registered maps. It will take care of multiple map registration, hence
+if maps are registered in several space\-time datasets in the current
+mapset. Use t.support to modify the
+metadata of space time datasets or to update the metadata that is
+derived from registered maps. This module also checks for removed and
+modified maps and updates the space\-time datasets accordingly. Rename a
+space\-time dataset with t.rename.
+.PP
+To print information about space\-time datasets or registered maps, the
+module  t.info can be used.
+t.list will list all space\-time datasets and
+registered maps in the temporal database.
+.PP
+The module t.topology was designed to
+compute and check the temporal topology of space\-time datasets.
+Moreover, the module t.sample samples input
+space\-time dataset(s) with a sample space\-time dataset and prints the
+result to standard output. Different sampling methods are supported and
+can be combined.
+.PP
+List of general management modules:
+.RS 4n
+.IP \(bu 4n
+t.connect
+.IP \(bu 4n
+t.create
+.IP \(bu 4n
+t.rename
+.IP \(bu 4n
+t.remove
+.IP \(bu 4n
+t.register
+.IP \(bu 4n
+t.unregister
+.IP \(bu 4n
+t.info
+.IP \(bu 4n
+t.list
+.IP \(bu 4n
+t.sample
+.IP \(bu 4n
+t.support
+.IP \(bu 4n
+t.topology
+.RE
+.SS Modules to visualize space\-time datasets and temporal data
+.RS 4n
+.IP \(bu 4n
+g.gui.animation
+.IP \(bu 4n
+g.gui.timeline
+.IP \(bu 4n
+g.gui.mapswipe
+.IP \(bu 4n
+g.gui.tplot
+.RE
+.SS Modules to process space\-time raster datasets
+The focus of the temporal GIS framework is the processing and analysis
+of raster time series. Hence, the majority of the temporal modules are
+designed to process space\-time raster datasets (strds). However, there
+are several modules to process space\-time 3D raster datasets and
+space\-time vector datasets as well.
+.SS Querying and map calculation
+Maps registered in a space\-time raster dataset can be listed using
+t.rast.list. This module supports several
+methods to list maps and uses SQL queries to determine how these maps
+are selected and sorted. Subsets of space\-time raster datasets can be
+extracted with t.rast.extract that
+allows performing additional mapcalc operations on the selected raster
+maps.
+.PP
+Several modules in the temporal framework have a \fIwhere\fR option.
+This option allows performing different selections of maps registered
+in the temporal database and in space\-time datasets. The columns that
+can be used to perform these selections are: \fIid, name, creator,
+mapset, temporal_type, creation_time, start_time, end_time, north,
+south, west, east, nsres, ewres, cols, rows, number_of_cells, min and
+max\fR. Note that for vector time series, i.e. stvds, some of the
+columns that can be queried to list/select vector maps differ from
+those for space\-time raster datasets (check with \fCt.vect.list \-\-help\fR).
+.RS 4n
+.IP \(bu 4n
+t.rast.extract
+.IP \(bu 4n
+t.rast.gapfill
+.IP \(bu 4n
+t.rast.mapcalc
+.IP \(bu 4n
+t.rast.colors
+.IP \(bu 4n
+t.rast.neighbors
+.RE
+.PP
+Moreover, there is v.what.strds, that
+uploads space\-time raster dataset values at positions of vector points,
+to the attribute table of the vector map.
+.SS Aggregation and accumulation analysis
+The temporal framework supports the aggregation of space\-time raster
+datasets. It provides three modules to perform aggregation using
+different approaches. To aggregate a space\-time raster dataset using a
+temporal granularity like 4 months, 7 days and so on, use
+t.rast.aggregate. The module
+t.rast.aggregate.ds allows
+aggregating a space\-time raster dataset using the time intervals of the
+maps of another space\-time dataset (raster, 3D raster and vector). A
+simple interface to r.series is the module
+t.rast.series that processes the whole
+input space\-time raster dataset or a subset of it.
+.RS 4n
+.IP \(bu 4n
+t.rast.aggregate
+.IP \(bu 4n
+t.rast.aggregate.ds
+.IP \(bu 4n
+t.rast.series
+.IP \(bu 4n
+t.rast.accumulate
+.IP \(bu 4n
+t.rast.accdetect
+.RE
+.SS Export/import conversion
+Space\-time raster datasets can be exported with
+t.rast.export as a compressed tar
+archive. Such archives can be then imported using
+t.rast.import.
+.PP
+The module t.rast.to.rast3 converts
+space\-time raster datasets into space\-time voxel cubes. All 3D raster
+modules can be used to process such voxel cubes. This conversion allows
+the export of space\-time raster datasets as netCDF files that include
+time as one dimension.
+.RS 4n
+.IP \(bu 4n
+t.rast.export
+.IP \(bu 4n
+t.rast.import
+.IP \(bu 4n
+t.rast.out.vtk
+.IP \(bu 4n
+t.rast.to.rast3
+.IP \(bu 4n
+r3.out.netcdf
+.RE
+.SS Statistics and gap filling
+.RS 4n
+.IP \(bu 4n
+t.rast.univar
+.IP \(bu 4n
+t.rast.gapfill
+.RE
+.SS Modules to manage, process and analyze STR3DS and STVDS
+Several space\-time vector dataset modules were developed to allow the
+handling of vector time series data.
+.RS 4n
+.IP \(bu 4n
+t.vect.extract
+.IP \(bu 4n
+t.vect.import
+.IP \(bu 4n
+t.vect.export
+.IP \(bu 4n
+t.vect.observe.strds
+.IP \(bu 4n
+t.vect.univar
+.IP \(bu 4n
+t.vect.what.strds
+.IP \(bu 4n
+t.vect.db.select
+.RE
+The space\-time 3D raster dataset modules are doing exactly the same as
+their raster pendants, but with 3D raster map layers:
+.RS 4n
+.IP \(bu 4n
+t.rast3d.list
+.IP \(bu 4n
+t.rast3d.extract
+.IP \(bu 4n
+t.rast3d.mapcalc
+.IP \(bu 4n
+t.rast3d.univar
+.RE
+.SS See also
+.RS 4n
+.IP \(bu 4n
+Gebbert, S., Pebesma, E. 2014. \fITGRASS: A temporal GIS for field based environmental modeling\fR.
+Environmental Modelling & Software 53, 1\-12 (DOI)
+\- preprint PDF
+.IP \(bu 4n
+Gebbert, S., Pebesma, E. 2017. \fIThe GRASS GIS temporal framework\fR. International Journal of
+Geographical Information Science 31, 1273\-1292 (DOI)
+.IP \(bu 4n
+Gebbert, S., Leppelt, T., Pebesma, E., 2019. \fIA topology based spatio\-temporal map algebra for big data analysis\fR.
+Data 4, 86. (DOI)
+.IP \(bu 4n
+Temporal
+data processing (Wiki)
+.IP \(bu 4n
+Vaclav Petras, Anna Petrasova, Helena Mitasova, Markus Neteler,
+\fBFOSS4G 2014 workshop\fR:
+.br
+Spatio\-temporal
+data handling and visualization in GRASS GIS
+.IP \(bu 4n
+GEOSTAT 2012 GRASS Course
+.RE
+.SH SOURCE CODE
+.PP
+Available at: Temporal data processing in GRASS GIS source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

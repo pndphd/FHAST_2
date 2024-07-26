@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.rhumbline - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.rhumbline</b></em>  - Displays the rhumbline joining two longitude/latitude coordinates.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_distance.html">distance</a>, <a href="keywords.html#rhumbline">rhumbline</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.rhumbline</b><br></div>
+<b>d.rhumbline --help</b><br>
+<div id="synopsis"><b>d.rhumbline</b> <b>coordinates</b>=<em>lon1,lat1,lon2,lat2</em>  [<b>line_color</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>coordinates</b>=<em>lon1,lat1,lon2,lat2</em>&nbsp;<b>[required]</b></dt>
+<dd>Starting and ending coordinates</dd>
+
+<dt><b>line_color</b>=<em>name</em></dt>
+<dd>Line color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+A rhumbline (loxodrome) is a line following a constant angle of the
+compass (i.e., a line of constant direction). It crosses all meridians
+at the same angle, i.e. a path of constant bearing.
+
+<!-- There are 32 points on the compass (points are roughly 11 degrees 15
+minutes apart). -->
+<em>d.rhumbline</em> displays the
+rhumbline joining any two user-specified points in the
+active frame on the user's graphics monitor.  The named
+coordinate locations must fall within the boundaries of the
+user's current geographic region.
+
+<p>The user has to specify the starting and ending
+longitude/latitude coordinates of the rhumbline and
+(optionally) the color in which the rhumbline will be
+displayed; in this case, the program will run
+non-interactively.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+A geodesic line if shown over the political map of the world
+(demolocation dataset):
+
+<div class="code"><pre>
+g.region vector=country_boundaries -p
+d.mon wx0
+d.vect country_boundaries type=area
+d.rhumbline coordinates=55:58W,33:18S,26:43E,60:37N \
+  line_color=yellow
+# show additionally 10 degree grid
+d.grid 10
+</pre></div>
+
+<p><center>
+<img src="d_rhumbline.png" border=1><br>
+<i>Rhumbline (loxodrome)</i>
+</center>
+
+<h2><a name="notes">NOTES</a></h2>
+
+This program works only in GRASS locations with longitude/latitude 
+coordinate system. 
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.geodesic.html">d.geodesic</a>,
+<a href="d.grid.html">d.grid</a>,
+<a href="m.measure.html">m.measure</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.rhumbline">d.rhumbline source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.rhumbline">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

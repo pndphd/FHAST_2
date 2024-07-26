@@ -1,0 +1,120 @@
+.TH r.resamp.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.resamp.stats\fR\fR  \- Resamples raster map layers to a coarser grid using aggregation.
+.SH KEYWORDS
+raster, resample, univariate statistics, aggregation
+.SH SYNOPSIS
+\fBr.resamp.stats\fR
+.br
+\fBr.resamp.stats \-\-help\fR
+.br
+\fBr.resamp.stats\fR [\-\fBnw\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBmethod\fR=\fIstring\fR]   [\fBquantile\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Propagate NULLs
+.IP "\fB\-w\fR" 4m
+.br
+Weight according to area (slower)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Aggregation method
+.br
+Options: \fIaverage, median, mode, minimum, maximum, range, quart1, quart3, perc90, sum, variance, stddev, quantile, count, diversity\fR
+.br
+Default: \fIaverage\fR
+.IP "\fBquantile\fR=\fIfloat\fR" 4m
+.br
+Quantile to calculate for method=quantile
+.br
+Options: \fI0.0\-1.0\fR
+.br
+Default: \fI0.5\fR
+.SH DESCRIPTION
+.PP
+\fIr.resamp.stats\fR fills a grid cell (raster) matrix with
+aggregated values generated from a set of input layer data points.
+.PP
+Without the \fI\-w\fR switch, the aggregate is computed over all of
+the input cells whose centers lie within the output cell.
+.PP
+With the \fI\-w\fR switch, the aggregate uses the values from all
+input cells which intersect the output cell, weighted according to the
+proportion of the source cell which lies inside the output cell. This
+is slower, but produces a more accurate result.
+.SH NOTES
+.PP
+Resampling modules (\fIr.resample, r.resamp.stats, r.resamp.interp,
+r.resamp.rst\fR) resample the map to match the current region settings.
+.PP
+The notion of weighting doesn\(cqt make any sense for the min and max
+aggregates. However, the \fI\-w\fR flag still has significance in
+that, when multiple destination cells overlap a source cell, the
+source cell is included in the calculation of all of the destination
+cells.
+.SH EXAMPLE
+.PP
+Resample elevation raster map to a lower resolution (from 6m to 20m;
+North Carolina sample dataset):
+.br
+.nf
+\fC
+g.region raster=el_D782_6m \-p
+g.region res=20 \-ap
+# from 6m to 20m: weighted resampling \-w
+r.resamp.stats \-w input=el_D782_6m output=el_D782_20m
+\fR
+.fi
+.br
+\fIResampling of 6m DEM (left) to 20m DEM (right) with weighted resampling (subset)\fR
+.SH SEE ALSO
+\fI
+g.region,
+r.resample,
+r.resamp.rst,
+r.resamp.filter,
+r.resamp.interp,
+r.neighbors
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.PP
+Examples how statistical functions are applied can be found in the r.neighbors module documentation.
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.resamp.stats source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

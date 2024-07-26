@@ -1,0 +1,1 @@
+/c qgis-ltr --customizationfile ..\customize.ini --profiles-path ..\profile

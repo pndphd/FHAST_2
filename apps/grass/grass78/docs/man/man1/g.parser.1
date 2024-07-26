@@ -1,0 +1,643 @@
+.TH g.parser 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.parser\fR\fR \- Provides full parser support for GRASS scripts.
+.SH KEYWORDS
+general, support, scripts
+.SH SYNOPSIS
+\fBg.parser \-\-help\fR
+.br
+\fBg.parser\fR [\-\fBs\fR] [\-\fBt\fR]  [\-\fBn\fR] \fIfilename\fR [\fIargument\fR,...]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Print strings for translation
+.IP "\fB\-s\fR" 4m
+.br
+Write option values to standard output instead of reinvoking script
+.IP "\fB\-n\fR" 4m
+.br
+Write option values to standard output separated by null character
+.SH DESCRIPTION
+The \fIg.parser\fR module provides full parser support for GRASS
+scripts, including an auto\-generated GUI interface, help page
+template, and command line option checking. In this way a simple
+script can very quickly be made into a full\-fledged GRASS module.
+.SH OPTIONS
+Unless the \fB\-s\fR or \fB\-n\fR switch is used, the arguments are stored in
+environment variables for use in your scripts. These variables are
+named \(dqGIS_FLAG_<NAME>\(dq for flags and \(dqGIS_OPT_<NAME>\(dq for
+options. The names of variables are converted to upper case. For
+example if an option with key \fBinput\fR was defined in the script
+header, the value will be available in variable \fBGIS_OPT_INPUT\fR
+and the value of flag with key \fBf\fR will be available in variable
+\fBGIS_FLAG_F\fR.
+.PP
+For flags, the value will be \(dq1\(dq if the flag was given, and \(dq0\(dq otherwise.
+.PP
+If the \fB\-s\fR or \fB\-n\fR switch is used, the options and flags are written to
+standard output in the form \fIopt_<name>=<value>\fR and
+\fIflag_<name>=<value>\fR, preceded by the string
+\fB@ARGS_PARSED@\fR. If this string doesn\(cqt appear as the first line
+of standard output, it indicates that the script was invoked with a switch such
+as \fB\-\-html\-description\fR. In this case, the data written by
+\fIg.parser\fR to standard output should be copied to the script\(cqs standard output
+verbatim.
+If the \fB\-s\fR switch is used, the options and flags are separated
+by newlines. If the \fB\-n\fR switch is used, the options and flags
+are separated by null characters.
+.PP
+Typical header definitions are as follows:
+.br
+.nf
+\fC
+#%module
+#% description: g.parser test script
+#%end
+#%flag
+#% key: f
+#% description: A flag
+#%end
+#%option
+#% key: raster
+#% type: string
+#% gisprompt: old,cell,raster
+#% description: Raster input map
+#% required: yes
+#%end
+\fR
+.fi
+With {NULL} it is possible to suppress a predefined description
+or label.
+.PP
+The parsers allows using predefined \fIstandardized options and
+flags\fR, see the list
+of options and flags
+in the programmer manual. Eg. the option
+.br
+.nf
+\fC
+#%option
+#% key: raster
+#% type: string
+#% gisprompt: old,cell,raster
+#% description: Raster input map
+#% required: yes
+#%end
+\fR
+.fi
+can be easily defined as
+.br
+.nf
+\fC
+#%option G_OPT_R_MAP
+#% key: raster
+#%end
+\fR
+.fi
+The parser allows defining predefined \fIrules\fR
+for used options.
+The syntax of the rules section is following:
+.br
+.nf
+\fC
+#%rules
+#% exclusive: capfile_output, capfile
+#%end
+\fR
+.fi
+The parser also allows defining \(dqOR\(dq conditions, e.g. requiring raster
+OR vector (for details, see below), e.g.for options:
+.br
+.nf
+\fC
+#%rules
+#% required: raster, vector
+#%end
+\fR
+.fi
+and e.g., for flags:
+.br
+.nf
+\fC
+#%rules
+#% required: \-i,\-d,\-c
+#%end
+\fR
+.fi
+.SH NOTES
+An option can be instructed to allow multiple inputs by adding the
+following line:
+.br
+.nf
+\fC
+#% multiple: yes
+\fR
+.fi
+While this will only directly change the \fIUsage\fR section of the help
+screen, the option\(cqs environmental string may be easily parsed from within
+a script. For example, individual comma separated identities for an option
+named \(dqinput\(dq can be parsed with the following Bash shell code:
+.br
+.nf
+\fC
+IFS=,
+for opt in $GIS_OPT_INPUT ; do
+    ... \(dq$opt\(dq
+done
+\fR
+.fi
+.PP
+A \(dqguisection\(dq field may be added to each option and flag to
+specify that the options should appear in multiple tabs in the
+auto\-generated GUI.  Any options without a guisection field
+go into the \(dqRequired\(dq or \(dqOptions\(dq tab.  For example:
+.br
+.nf
+\fC
+#% guisection: tabname
+\fR
+.fi
+would put that option in a tab named \fItabname\fR.
+.PP
+A \(dqkey_desc\(dq field may be added to each option to specify the text that
+appears in the module\(cqs usage help section. For example:
+.br
+.nf
+\fC
+#% key_desc: filename
+\fR
+.fi
+added to an \fBinput\fR option would create the usage summary
+[input=filename].
+.PP
+If a script is run with \fB\-\-o\fR, the parser will
+set GRASS_OVERWRITE=1, which has the same effect as passing
+\fB\-\-o\fR to every module which is run from the script. Similarly, passing
+\fB\-\-q\fR or \fB\-\-v\fR will set GRASS_VERBOSE to 0 or 3 respectively,
+which has the same effect as passing \fB\-\-q\fR or \fB\-\-v\fR to every module which
+is run from the script.  Rather than checking whether \fB\-\-o\fR, \fB\-\-q\fR or \fB\-\-v\fR
+were used, you should be checking GRASS_OVERWRITE and/or
+GRASS_VERBOSE instead. If those variables are set, the script
+should behave the same way regardless of whether they were set
+by \fB\-\-o\fR, \fB\-\-q\fR or \fB\-\-v\fR being passed to the script or
+set by other means.
+.SH Conditional parameters
+Marking an option as \(dqrequired\(dq will result in the parser raising a
+fatal error if the option is not given, with one exception: if a flag
+has the suppress_required option, and that flag is given, all
+requirements are ignored. This feature is intended for flags which
+abandon \(dqnormal operation\(dq for the module; e.g. \fIr.in.gdal\fR\(cqs
+\fB\-f\fR flag (list supported formats) uses it.
+.br
+But in general, an option cannot be marked as required if it is
+optional except for the special case of a suppress_required flag.
+The parser has the ability to specify option relationships.
+.PP
+For C, the relevant functions are those in
+lib/gis/parser_dependencies.c.
+.PP
+For scripts, relationships are specified using a \(dqrules\(dq section, e.g.
+.br
+.nf
+\fC
+#%rules
+#% required: altitude,elevation
+#%end
+\fR
+.fi
+specifies that at least one of those options must be given. Both
+options and flags can be specified (a leading \(dq\fB\-\fR\(dq denotes a flag).
+The available rule types are:
+.RS 4n
+.IP \(bu 4n
+exclusive: at most one of the options may be given
+.IP \(bu 4n
+required: at least one of the options must be given
+.IP \(bu 4n
+requires: if the first option is given, at least one of the
+subsequent options must also be given
+.IP \(bu 4n
+requires_all: if the first option is given, all of the
+subsequent options must also be given
+.IP \(bu 4n
+excludes: if the first option is given, none of the
+subsequent options may be given
+.IP \(bu 4n
+collective: all or nothing; if any option is given, all
+must be given
+.RE
+.SH AUTOMATED SCRIPT CREATION
+The flag \fB\-\-script\fR added to a GRASS command, generates shell
+output. To write out a \fIg.parser\fR boilerplate for easy
+prototyping of Python scripts, the flag \fB\-\-script\fR can be added
+to any GRASS command. Example:
+.br
+.nf
+\fC
+v.in.db \-\-script
+\fR
+.fi
+.SH Help page template (HTML)
+The flag \fB\-\-html\-description\fR added to a GRASS command
+generates a related help page template in HTML. Example:
+.br
+.nf
+\fC
+v.in.db \-\-html\-description
+\fR
+.fi
+.SH GUI window parser (XML)
+The flag \fB\-\-interface\-description\fR added to a GRASS command
+generates a related help page template in XML. Example:
+.br
+.nf
+\fC
+v.in.db \-\-interface\-description
+\fR
+.fi
+.SH JSON
+The flag \fB\-\-json\fR added to a GRASS command with parameters mandatorily
+to be specified generates a module interface description in JSON. Example:
+.br
+.nf
+\fC
+v.in.db driver=sqlite database=mysqlite.db table=pointsfile x=x y=y z=z key=idcol out=dtmpoints \-\-json
+{
+  \(dqmodule\(dq: \(dqv.in.db\(dq,
+  \(dqid\(dq: \(dqv.in.db_1804289383\(dq,
+  \(dqinputs\(dq:[
+     {\(dqparam\(dq: \(dqtable\(dq, \(dqvalue\(dq: \(dqpointsfile\(dq},
+     {\(dqparam\(dq: \(dqdriver\(dq, \(dqvalue\(dq: \(dqsqlite\(dq},
+     {\(dqparam\(dq: \(dqdatabase\(dq, \(dqvalue\(dq: \(dqmysqlite.db\(dq},
+     {\(dqparam\(dq: \(dqx\(dq, \(dqvalue\(dq: \(dqx\(dq},
+     {\(dqparam\(dq: \(dqy\(dq, \(dqvalue\(dq: \(dqy\(dq},
+     {\(dqparam\(dq: \(dqz\(dq, \(dqvalue\(dq: \(dqz\(dq},
+     {\(dqparam\(dq: \(dqkey\(dq, \(dqvalue\(dq: \(dqidcol\(dq}
+   ],
+  \(dqoutputs\(dq:[
+     {\(dqparam\(dq: \(dqoutput\(dq, \(dqvalue\(dq: \(dqdtmpoints\(dq}
+   ]
+}
+\fR
+.fi
+.SH Web Processing Service (WPS)
+The flag \fB\-\-wps\-process\-description\fR added to a GRASS command
+generates a Web Processing Service process description. Example:
+.br
+.nf
+\fC
+v.in.db \-\-wps\-process\-description
+\fR
+.fi
+.SH reStructuredText
+The flag \fB\-\-rst\-description\fR added to a GRASS command
+generates module interface description in reStructuredText, a lightweight
+markup language. Example:
+.br
+.nf
+\fC
+v.in.db \-\-rst\-description
+\fR
+.fi
+reStructuredText is sometimes abbreviated as reST, ReST, or RST.
+The commonly used file extension is .rst.
+Don\(cqt be confused with Representational State Transfer (REST) technology.
+.SH TRANSLATION
+\fIg.parser\fR provides some support for translating the options of
+scripts. If called with the \-t switch before the script filename like
+this
+.br
+.nf
+\fC
+g.parser \-t somescriptfile
+\fR
+.fi
+\fIg.parser\fR will print the text of the translatable options to
+standard output, one per line, and exit. This is for internal use within
+the build system to prepare GRASS scripts for translation.
+.SH EXAMPLES
+All examples below autogenerate the graphical user interface when invoked
+without parameters of flags:
+.PP
+.PP
+To run properly, the script needs to be copied into a directory listed
+in $GRASS_ADDON_PATH environmental variable with the
+executable flag being set.
+.PP
+The script will provide a GUI (as above) and the following usage help
+text:
+.br
+.nf
+\fC
+test.py|sh|pl \-\-help
+Description:
+ g.parser test script (python)
+Usage:
+ test.sh [\-f] raster=string vector=string [option1=string]
+   [\-\-verbose] [\-\-quiet]
+Flags:
+  \-f   A flag
+ \-\-v   Verbose module output
+ \-\-q   Quiet module output
+Parameters:
+   raster   Raster input map
+   vector   Vector input map
+  option1   An option
+\fR
+.fi
+.SS Example code for Python
+.br
+.nf
+\fC
+#!/usr/bin/env python3
+# g.parser demo script for python programming
+#%module
+#% description: g.parser test script (python)
+#% keyword: keyword1
+#% keyword: keyword2
+#%end
+#%flag
+#% key: f
+#% description: A flag
+#%end
+#%option G_OPT_R_MAP
+#% key: raster
+#% required: yes
+#%end
+#%option G_OPT_V_MAP
+#% key: vector
+#%end
+#%option
+#% key: option1
+#% type: string
+#% description: An option
+#% required: no
+#%end
+import os
+import sys
+import grass.script as grass
+def main():
+    flag_f = flags[\(cqf\(cq]
+    option1 = options[\(cqoption1\(cq]
+    raster = options[\(cqraster\(cq]
+    vector = options[\(cqvector\(cq]
+    #### add your code here ####
+    if flag_f:
+        print \(dqFlag \-f set\(dq
+    else:
+        print \(dqFlag \-f not set\(dq
+    # test if parameter present:
+    if option1:
+        print \(dqValue of option1 option: \(cq%s\(cq\(dq % option1
+    print \(dqValue of raster option: \(cq%s\(cq\(dq % raster
+    print \(dqValue of vector option: \(cq%s\(cq\(dq % vector
+    #### end of your code ####
+    return 0
+if __name__ == \(dq__main__\(dq:
+    options, flags = grass.parser()
+    sys.exit(main())
+\fR
+.fi
+.SS Example code for SHELL
+.br
+.nf
+\fC
+#!/bin/sh
+# g.parser demo script for shell programming
+#%module
+#% description: g.parser test script (shell)
+#%end
+#%flag
+#% key: f
+#% description: A flag
+#%end
+#%option G_OPT_R_MAP
+#% key: raster
+#% required: yes
+#%end
+#%option G_OPT_V_MAP
+#% key: vector
+#%end
+#%option
+#% key: option1
+#% type: string
+#% description: An option
+#% required: no
+#%end
+if [ \-z \(dq$GISBASE\(dq ] ; then
+    echo \(dqYou must be in GRASS GIS to run this program.\(dq 1>&2
+    exit 1
+fi
+if [ \(dq$1\(dq != \(dq@ARGS_PARSED@\(dq ] ; then
+    exec g.parser \(dq$0\(dq \(dq$@\(dq
+fi
+#### add your code below ####
+echo \(dq\(dq
+if [ $GIS_FLAG_F \-eq 1 ] ; then
+  g.message message=\(dqFlag \-f set\(dq
+else
+  g.message message=\(dqFlag \-f not set\(dq
+fi
+# test if parameter present:
+if [ \-n \(dq$GIS_OPT_OPTION1\(dq ] ; then
+    echo \(dqValue of GIS_OPT_OPTION1: \(cq$GIS_OPT_OPTION1\(cq\(dq
+fi
+g.message message=\(dqValue of GIS_OPT_option1: \(cq$GIS_OPT_option1\(cq\(dq
+g.message message=\(dqValue of GIS_OPT_raster: \(cq$GIS_OPT_raster\(cq\(dq
+g.message message=\(dqValue of GIS_OPT_vect: \(cq$GIS_OPT_vector\(cq\(dq
+#### end of your code ####
+\fR
+.fi
+.SS Example code for Perl
+.br
+.nf
+\fC
+#!/usr/bin/perl \-w
+use strict;
+# g.parser demo script
+#%module
+#%  description: g.parser test script (perl)
+#%  keyword: keyword1
+#%  keyword: keyword2
+#%end
+#%flag
+#%  key: f
+#%  description: A flag
+#%end
+#%option G_OPT_R_MAP
+#% key: raster
+#% required: yes
+#%end
+#%option G_OPT_V_MAP
+#% key: vector
+#%end
+#%option
+#% key: option1
+#% type: string
+#% description: An option
+#% required: no
+#%end
+if ( !$ENV{\(cqGISBASE\(cq} ) {
+    printf(STDERR  \(dqYou must be in GRASS GIS to run this program.\(rsn\(dq);
+    exit 1;
+}
+if( $ARGV[0] ne \(cq@ARGS_PARSED@\(cq ){
+    my $arg = \(dq\(dq;
+    for (my $i=0; $i < @ARGV;$i++) {
+        $arg .= \(dq $ARGV[$i] \(dq;
+    }
+    system(\(dq$ENV{GISBASE}/bin/g.parser $0 $arg\(dq);
+    exit;
+}
+#### add your code here ####
+print  \(dq\(rsn\(dq;
+if ( $ENV{\(cqGIS_FLAG_F\(cq} eq \(dq1\(dq ){
+   print \(dqFlag \-f set\(rsn\(dq
+}
+else {
+   print \(dqFlag \-f not set\(rsn\(dq
+}
+printf (\(dqValue of GIS_OPT_option1: \(cq%s\(cq\(rsn\(dq, $ENV{\(cqGIS_OPT_OPTION1\(cq});
+printf (\(dqValue of GIS_OPT_raster: \(cq%s\(cq\(rsn\(dq, $ENV{\(cqGIS_OPT_RASTER\(cq});
+printf (\(dqValue of GIS_OPT_vect: \(cq%s\(cq\(rsn\(dq, $ENV{\(cqGIS_OPT_VECTOR\(cq});
+#### end of your code ####
+\fR
+.fi
+.SS Easy creation of a script
+By using the \fB\-\-script\fR flag with any GRASS GIS module (must be run in
+a GRASS GIS session) header, description, keywords, parameters, flags and
+a template main Python script section will be printed in the terminal which
+can be saved to a file and used for further script programming.
+.PP
+In this example, the module \fIv.what.rast\fR is used as an example.
+The output is shown below:
+.br
+.nf
+\fC
+v.what.rast \-\-script
+#!/usr/bin/env python3
+############################################################################
+#
+# MODULE:       v.what.rast_wrapper
+# AUTHOR(S):    username
+# PURPOSE:      Wrapper for v.what.rast
+# COPYRIGHT:    (C) 2017 by username, and the GRASS Development Team
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+############################################################################
+#%module
+#% description: Uploads raster values at positions of vector points to the table.
+#% keyword: vector, sampling, raster, position, querying, attribute table, surface information
+#%end
+#%flag
+#% key: i
+#% description: Interpolate values from the nearest four cells
+#%end
+#%flag
+#% key: p
+#% description: Print categories and values instead of updating the database
+#%end
+#%option
+#% key: map
+#% type: string
+#% required: yes
+#% multiple: no
+#% key_desc: name
+#% label: Name of vector points map for which to edit attributes
+#% description: Or data source for direct OGR access
+#% gisprompt: old,vector,vector
+#%end
+#%option
+#% key: layer
+#% type: string
+#% required: no
+#% multiple: no
+#% label: Layer number or name
+#% description: Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+#% answer: 1
+#% gisprompt: old,layer,layer
+#%end
+#%option
+#% key: type
+#% type: string
+#% required: no
+#% multiple: yes
+#% options: point,centroid
+#% description: Input feature type
+#% answer: point
+#%end
+#%option
+#% key: raster
+#% type: string
+#% required: yes
+#% multiple: no
+#% key_desc: name
+#% description: Name of existing raster map to be queried
+#% gisprompt: old,cell,raster
+#%end
+#%option
+#% key: column
+#% type: string
+#% required: no
+#% multiple: no
+#% key_desc: name
+#% description: Name of attribute column to be updated with the query result
+#% gisprompt: old,dbcolumn,dbcolumn
+#%end
+#%option
+#% key: where
+#% type: string
+#% required: no
+#% multiple: no
+#% key_desc: sql_query
+#% label: WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+#% description: Example: income < 1000 and population >= 10000
+#%end
+import sys
+import grass.script as grass
+def main():
+    # put code here
+    return 0
+if __name__ == \(dq__main__\(dq:
+    options, flags = grass.parser()
+    sys.exit(main())
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.filename,
+g.findfile,
+g.tempfile
+\fR
+.PP
+Overview table: Parser standard options
+.PP
+Submitting rules for Python
+.PP
+Related Wiki pages:
+Using GRASS GIS with other programming languages
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: g.parser source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.rast.extract.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.rast.extract.py</b></em>  - Extracts a subset of a space time raster datasets.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_extract.html">extract</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.rast.extract.py</b><br></div>
+<b>t.rast.extract.py --help</b><br>
+<div id="synopsis"><b>t.rast.extract.py</b> [-<b>n</b>] <b>input</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]   [<b>expression</b>=<em>string</em>]  <b>output</b>=<em>name</em>  [<b>basename</b>=<em>string</em>]   [<b>suffix</b>=<em>string</em>]   [<b>nprocs</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Register Null maps</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time raster dataset</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>expression</b>=<em>string</em></dt>
+<dd>r.mapcalc expression assigned to all extracted raster maps</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the output space time raster dataset</dd>
+
+<dt><b>basename</b>=<em>string</em></dt>
+<dd>Basename of the new generated output maps</dd>
+<dd>A numerical suffix separated by an underscore will be attached to create a unique identifier</dd>
+
+<dt><b>suffix</b>=<em>string</em></dt>
+<dd>Suffix to add at basename: set 'gran' for granularity, 'time' for the full time format, 'num' for numerical suffix with a specific number of digits (default %05)</dd>
+<dd>Default: <em>gran</em></dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>Number of r.mapcalc processes to run in parallel</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The purpose of <b>t.rast.extract</b> is to extract a subset of a space
+time raster dataset and to store that subset in a different space time
+raster dataset. The <b>where</b> condition is used to select the
+subset. In addition a <em>r.mapcalc</em> sub-expression can be
+specified that performs operations on all maps of the selected subset.
+In this expression the name of the input space time raster dataset can
+be used as simple map name. Other STRDS than the input STRDS can not be
+specified, but any raster map. In case a <em>r.mapcalc</em>
+sub-expression is defined, the base name of the resulting raster maps
+must be specified. The <em>r.mapcalc</em> expression can be used to
+select maps as well, since by default resulting empty maps are not
+registered in the output space time raster dataset and removed after
+processing. The number of parallel GRASS GIS processes can be specified
+to speed up the processing.
+<p>
+If no <em>r.mapcalc</em> expression is defined, the selected maps are
+simply registered in the new created output space time raster dataset
+to avoid data duplication.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The <em>r.mapcalc</em> sub-expression should not contain the left side
+<tt>"map ="</tt> of a full <em>r.mapcalc</em> expression, only the right
+side, eg.:
+
+
+<div class="code"><pre>
+t.rast.extract input=tempmean_monthly where="start_time > '2010-01-05'" \
+               output=selected_tempmean_monthly basename=new_tmean_month \
+               expression="if(tempmean_monthly < 0, null(), tempmean_monthly)"
+</div>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<div class="code"><pre>
+t.rast.extract input=tempmean_monthly output=tempmean_monthly_later_2012 \
+               where="start_time >= '2012-01-01'"
+
+t.rast.list tempmean_monthly_later_2012
+name|mapset|start_time|end_time
+2012_01_tempmean|climate_2000_2012|2012-01-01 00:00:00|2012-02-01 00:00:00
+2012_02_tempmean|climate_2000_2012|2012-02-01 00:00:00|2012-03-01 00:00:00
+2012_03_tempmean|climate_2000_2012|2012-03-01 00:00:00|2012-04-01 00:00:00
+2012_04_tempmean|climate_2000_2012|2012-04-01 00:00:00|2012-05-01 00:00:00
+2012_05_tempmean|climate_2000_2012|2012-05-01 00:00:00|2012-06-01 00:00:00
+2012_06_tempmean|climate_2000_2012|2012-06-01 00:00:00|2012-07-01 00:00:00
+2012_07_tempmean|climate_2000_2012|2012-07-01 00:00:00|2012-08-01 00:00:00
+2012_08_tempmean|climate_2000_2012|2012-08-01 00:00:00|2012-09-01 00:00:00
+2012_09_tempmean|climate_2000_2012|2012-09-01 00:00:00|2012-10-01 00:00:00
+2012_10_tempmean|climate_2000_2012|2012-10-01 00:00:00|2012-11-01 00:00:00
+2012_11_tempmean|climate_2000_2012|2012-11-01 00:00:00|2012-12-01 00:00:00
+2012_12_tempmean|climate_2000_2012|2012-12-01 00:00:00|2013-01-01 00:00:00
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.rast.extract">t.rast.extract source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.rast.extract">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

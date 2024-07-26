@@ -1,0 +1,93 @@
+.TH wxGUI.rdigit 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI Raster Digitizer
+.SH KEYWORDS
+display, GUI, raster, editing, digitizer
+.SH DESCRIPTION
+\fBRaster Digitizer\fR is a simple tool to quickly
+to draw lines, areas, and circles and save these features in a raster map.
+It is accessible from Map Display toolbar (from the combo box on the right).
+.PP
+\fIRaster Digitizer\fR currently allows you to:
+.RS 4n
+.IP \(bu 4n
+draw polygons, lines and points
+.IP \(bu 4n
+set category value of the feature you are drawing
+.IP \(bu 4n
+set feature width (width of currently digitized line or diameter of a digitized point in map units)
+.IP \(bu 4n
+create a new raster from scratch or from an already existing raster
+.IP \(bu 4n
+undo edits and save edits before leaving the digitizer
+.RE
+.PP
+The typical workflow includes these steps:
+.IP
+.IP \fB1\fR
+Set computational region as needed.
+.IP \fB2\fR
+Switch to Raster Digitizer and select a map to create.
+Select either a new raster or create a new raster from existing raster,
+also select raster type (CELL, FCELL, DCELL)
+.IP \fB3\fR
+Specify category value and width \fIbefore\fR drawing a feature
+.IP \fB4\fR
+Specify digitizing tool (area, line, point)
+.IP \fB5\fR
+Start digitizing and when you want to finish area or line, \fIuse right click\fR
+.IP \fB6\fR
+Change color of temporary overlay depending on your needs
+.IP \fB7\fR
+Set different category and repeat
+.IP \fB8\fR
+At any point you can use \fIUndo\fR or \fISave\fR
+.IP \fB9\fR
+If existing raster is used for the new raster, digitized areas will respect
+the color table, but you can always set different color table.
+.PP
+.SH NOTES
+Raster Digitizer respects computational region including the currently set resolution.
+.SH EXAMPLES
+In the following figures we start with elev_lid792_1m raster map in North carolina sample dataset
+and digitize two buildings, one rectangular and one with circular footprint.
+Both buildings have the roof level at 130 m. We set the width when digitizing the point to 50 meters
+which results in the building having 50 m in diameter.
+When we are done with digitizing, we save the result and explore cast shadows of the buildings with
+r.sun module:
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m
+# now create elev_edited raster by digitizing and save
+r.slope.aspect elevation=elev_edited slope=elev_slope aspect=elev_aspect
+r.sun elevation=elev_edited aspect=elev_aspect slope=elev_slope beam_rad=beam day=172 time=6
+\fR
+.fi
+.br
+\fIFigure: Steps to digitize new buildings on elev_lid792_1m raster map.\fR
+.SH SEE ALSO
+\fI
+wxGUI
+.br
+wxGUI components,
+.br
+r.in.poly (backend of digitizer),
+.br
+g.gui.vdigit
+\fR
+.SH AUTHOR
+Anna Petrasova, NCSU GeoForALL Laboratory
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Raster Digitizer source code (history)
+.PP
+Main index |
+Wxgui index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,191 @@
+.TH d.text 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.text\fR\fR  \- Draws text in the active display frame on the graphics monitor using the current font.
+.SH KEYWORDS
+display, cartography
+.SH SYNOPSIS
+\fBd.text\fR
+.br
+\fBd.text \-\-help\fR
+.br
+\fBd.text\fR [\-\fBpgbrs\fR]  [\fBtext\fR=\fIstring\fR]   [\fBinput\fR=\fIname\fR]   [\fBcolor\fR=\fIstring\fR]   [\fBbgcolor\fR=\fIstring\fR]   [\fBrotation\fR=\fIfloat\fR]   [\fBlinespacing\fR=\fIfloat\fR]   [\fBat\fR=\fIx,y\fR]   [\fBline\fR=\fIinteger\fR]   [\fBalign\fR=\fIstring\fR]   [\fBfont\fR=\fIstring\fR]   [\fBsize\fR=\fIfloat\fR]   [\fBpath\fR=\fIname\fR]   [\fBcharset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Screen position in pixels ([0,0] is top left)
+.IP "\fB\-g\fR" 4m
+.br
+Screen position in geographic coordinates
+.IP "\fB\-b\fR" 4m
+.br
+Use bold text
+.IP "\fB\-r\fR" 4m
+.br
+Use radians instead of degrees for rotation
+.IP "\fB\-s\fR" 4m
+.br
+Font size is height in pixels
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtext\fR=\fIstring\fR" 4m
+.br
+Text to display
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Input file
+.IP "\fBcolor\fR=\fIstring\fR" 4m
+.br
+Text color, either a standard GRASS color or R:G:B triplet
+.br
+Default: \fIgray\fR
+.IP "\fBbgcolor\fR=\fIstring\fR" 4m
+.br
+Text background color, either a standard GRASS color or R:G:B triplet
+.IP "\fBrotation\fR=\fIfloat\fR" 4m
+.br
+Rotation angle in degrees (counter\-clockwise)
+.br
+Default: \fI0\fR
+.IP "\fBlinespacing\fR=\fIfloat\fR" 4m
+.br
+Line spacing
+.br
+Default: \fI1.25\fR
+.IP "\fBat\fR=\fIx,y\fR" 4m
+.br
+Screen position at which text will begin to be drawn (percentage, [0,0] is lower left)
+.IP "\fBline\fR=\fIinteger\fR" 4m
+.br
+The screen line number on which text will begin to be drawn
+.br
+Options: \fI1\-1000\fR
+.IP "\fBalign\fR=\fIstring\fR" 4m
+.br
+Text alignment
+.br
+Options: \fIll, lc, lr, cl, cc, cr, ul, uc, ur\fR
+.br
+Default: \fIll\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBsize\fR=\fIfloat\fR" 4m
+.br
+Height of letters in percentage of available frame height
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI5\fR
+.IP "\fBpath\fR=\fIname\fR" 4m
+.br
+Path to font file
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Text encoding (only applicable to TrueType fonts)
+.SH DESCRIPTION
+\fId.text\fR draws text in the active display frame on
+the graphics monitor.  Text can be provided through
+standard input or redirected from a file (using the UNIX
+redirection mechanism).
+In addition to the options provided on the command line,
+colors, text size, font type, rotation angle, and boldness can be adjusted
+with commands in the standard input (i.e., if the user
+invokes \fId.text\fR without options on the command
+line, and then assigns values to these options on lines
+within the standard input).
+.SS Commands:
+.IP "\fB.C\fR \fIcolor\fR  " 4m
+.br
+(where \fIcolor\fR is one of the available colors) causes text appearing on
+subsequent lines to be drawn in that color.
+.IP "\fB.G\fR \fIcolor\fR " 4m
+.br
+(where \fIcolor\fR is one of the available colors) causes the background of text
+appearing on subsequent lines to be drawn in that color.
+.IP "\fB.S \fR \fIsize\fR " 4m
+.br
+(where \fIsize\fR is a percentage within the range 0 to
+100) adjusts text size.  Note that a size of 10 would allow
+10 lines to be drawn in the active display frame, 5 would
+allow the drawing of 20 lines, and 50 would allow the
+drawing of 2 lines.
+.PP
+.IP "\fB.F\fR \fIfont\fR " 4m
+.br
+(where \fIfont\fR is one of the fonts known by the GRASS program
+\fId.font\fR) manipulates
+the font type. Available fonts are listed in the GRASS manual entry for
+\fId.font\fR.
+The default font type used (if unspecified by the user)
+is \fIromans\fR.
+.IP "\fB.R \fR \fIrotation\fR " 4m
+.br
+(where \fIrotation\fR is an angle in degrees, counter\-clockwise)
+to rotate the text.
+.IP "\fB.B 1\fR " 4m
+.br
+stipulates that following text be printed in \fBbold\fR.
+This command means \fIbold on\fR.
+.IP "\fB.B 0\fR " 4m
+.br
+turns \fIbold off\fR of all text appearing on lines beneath
+it. (\fIBold off\fR is used by default, if unspecified by the user.)
+.SH EXAMPLE
+The following command will print the short phrase \(dqThis is
+a test of d.text\(dq in the active display frame using the
+color yellow, in bold, and using 4/100\(cqths (4%) of the
+active frame\(cqs vertical space per line:
+.PP
+.br
+.nf
+\fC
+d.text text=\(dqThis is a test of d.text\(dq color=yellow bgcolor=gray size=4
+\fR
+.fi
+.br
+\fIDisplayed Text\fR
+.SH NOTES
+Note that the GRASS command
+\fId.title\fR creates map TITLEs in a format
+suitable for input to \fId.text\fR.
+.PP
+\fId.text\fR needs escape sequences that can be used
+within lines to change colors, boldness, and perhaps size.
+.SH SEE ALSO
+\fId.font\fR
+.br
+\fId.title\fR
+.br
+\fId.labels\fR
+.br
+.SH AUTHOR
+James Westervelt,
+U.S. Army Construction Engineering
+Research Laboratory
+.PP
+Updates by Huidae Cho
+.SH SOURCE CODE
+.PP
+Available at: d.text source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

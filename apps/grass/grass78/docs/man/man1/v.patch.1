@@ -1,0 +1,138 @@
+.TH v.patch 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.patch\fR\fR  \- Creates a new vector map by combining other vector maps.
+.SH KEYWORDS
+vector, geometry, level1
+.SH SYNOPSIS
+\fBv.patch\fR
+.br
+\fBv.patch \-\-help\fR
+.br
+\fBv.patch\fR [\-\fBnzeab\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\fBbbox\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Do not expect input with topology
+.br
+Applicable when input is points without topology
+.IP "\fB\-z\fR" 4m
+.br
+Expect z coordinate even when not using topology
+.br
+Applicable when input is points with z coordinate but without topology
+.IP "\fB\-e\fR" 4m
+.br
+Copy also attribute table
+.br
+Only the table of layer 1 is currently supported
+.IP "\fB\-a\fR" 4m
+.br
+Append files to existing file (overwriting existing files must be activated)
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input vector map(s)
+.br
+Or data source(s) for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBbbox\fR=\fIname\fR" 4m
+.br
+Name for output vector map where bounding boxes of input vector maps are written to
+.SH DESCRIPTION
+\fIv.patch\fR allows the user to combine any number of
+vector maps together to create one composite vector
+map. If the table structures are identical, attributes are
+transferred to the new table.
+.SH NOTES
+Any vectors that are duplicated among the maps being
+patched together (e.g., border lines) will have to be
+edited or removed after \fIv.patch\fR is run. Such
+editing can be done automatically using
+\fIv.clean\fR.
+.PP
+Lines may need to be snapped with \fIv.clean tool=snap,break,rmdupl\fR.
+.PP
+Boundaries may need to be cleaned with
+\fIv.clean tool=break,rmdupl,rmsa\fR
+repeatedly until the \fIrmsa\fR tool (Remove small angles at nodes)
+no longer modifies any boundaries. If vector topology is still not
+clean, boundaries may also need to be snapped with
+\fIv.clean tool=snap,break,rmdupl\fR.
+.PP
+When using the \fI\-e\fR flag, \fIv.patch\fR shifts category (cat)
+values in the output so that category numbers from the different input
+maps do not overlap. This shift is applied to both the category values
+of the features and the category values in the attribute tables. Hence,
+there is no need to run \fIv.category\fR
+and \fIv.db.update\fR beforehand.
+.PP
+When using the \fI\-a\fR flag, the user has to make sure that the
+features in the different maps added to the output map do not have
+overlapping category numbers, unless identical category numbers
+reflect identical attributes, otherwise the attributes of the added
+maps are lost. To avoid this, the user can use \fIv.category
+option=sum\fR to change category values of some of the maps before
+patching.
+.SH EXAMPLES
+Patch together two maps with mixed feature types:
+.br
+.nf
+\fC
+   v.patch input=geology,streams out=geol_streams
+\fR
+.fi
+.br
+Append one map to another:
+.br
+.nf
+\fC
+   g.copy vect=roads,transport
+   v.patch \-a input=railroads output=transport \-\-overwrite
+\fR
+.fi
+.SH SEE ALSO
+\fIv.clean\fR,
+\fIv.build\fR,
+\fIv.select\fR,
+\fIv.overlay\fR
+.SH AUTHORS
+Dave Gerdes, U.S.Army Construction Engineering
+Research Laboratory
+.br
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.patch source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

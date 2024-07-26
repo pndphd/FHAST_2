@@ -1,0 +1,116 @@
+.TH d.where 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.where\fR\fR  \- Identifies the geographic coordinates associated with point locations given in display coordinates.
+.SH KEYWORDS
+display, sampling, position, querying
+.SH SYNOPSIS
+\fBd.where\fR
+.br
+\fBd.where \-\-help\fR
+.br
+\fBd.where\fR [\-\fBdlwf\fR]  [\fBat\fR=\fIx,y\fR[,\fIx,y\fR,...]]   [\fBinput\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Output lat/long in decimal degree
+.IP "\fB\-l\fR" 4m
+.br
+Output lat/long referenced to current ellipsoid
+.IP "\fB\-w\fR" 4m
+.br
+Output lat/long referenced to WGS84 ellipsoid using datum transformation parameters defined in current location (if available)
+.IP "\fB\-f\fR" 4m
+.br
+Output frame coordinates of current display monitor (percentage)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBat\fR=\fIx,y[,\fIx,y\fR,...]\fR" 4m
+.br
+Display coordinates to convert
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+File from which to read coordinates (\(dq\-\(dq to read from stdin)
+.SH DESCRIPTION
+\fId.where\fR is an \fIinteractive\fR program that
+allows the user, using the pointing device (mouse), to
+identify the geographic coordinates associated with point
+locations within the current geographic region in the
+active display frame on the graphics monitor.
+.PP
+Each mouse click will output the easting and northing of the point
+currently located beneath the mouse pointer.
+A mouse\-button menu is presented so the user knows which
+mouse buttons to use. The output is always printed to the
+terminal screen; if the output is redirected into a file,
+it will be written to the file as well.
+.PP
+Mouse buttons:
+.br
+.nf
+\fC
+     Left:   where am i
+     Middle: draw to/from here
+     Right:  quit this
+\fR
+.fi
+The left mouse button prints the coordinates at the selected point,
+the middle mouse button allows you to query two points (they are connected
+by a line for convenience). Use the right mouse button to exit the module.
+.SH NOTES
+This program uses the current geographic region setting and active frame.
+It is not necessary, although useful, to have displayed a map in the current
+frame before running \fId.where\fR. The \fB\-d\fR flag allows the user to
+optionally output latitude/longitude coordinates pair(s) in decimal degree
+rather than DD:MM:SS format. The \fB\-w\fR flag is only valid
+if a datum is defined for the current location.
+If the \fB\-f\fR flag is given the x,y frame coordinates of the active display
+monitor will be returned (as a percentage, 0,0 is bottom left).
+.SH EXAMPLE
+Query position in map (North Carolina sample dataset):
+.br
+.nf
+\fC
+d.rast elevation
+d.where
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.what.rast,
+d.what.vect,
+g.region,
+v.what.rast,
+v.what.vect
+\fR
+.SH AUTHORS
+James Westervelt,
+.br
+Michael Shapiro,
+.br
+U.S. Army Construction Engineering
+Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: d.where source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

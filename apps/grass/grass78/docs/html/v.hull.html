@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.hull - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.hull</b></em>  - Produces a 2D/3D convex hull for a given vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#3D">3D</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.hull</b><br></div>
+<b>v.hull --help</b><br>
+<div id="synopsis"><b>v.hull</b> [-<b>rf</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em>  [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Limit to current region</dd>
+
+<dt><b>-f</b></dt>
+<dd>Create a 'flat' 2D hull even if the input is 3D points</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.hull</em> computes the convex hull of a vector map and outputs
+the convex hull polygon as a vector area map. The convex hull, or
+convex envelope, for an object or a set of objects is the minimal
+convex set containing the given objects. This module creates a vector
+polygon containing all vector points or lines of the input map.
+
+<p>In the case of 3D input points, the hull will be a 3D hull as well,
+unless the user specifies the <b>-f</b> flag. The 3D hull will be
+composed of triangular faces.
+
+<center>
+<img src="v_hull.png" border="1"><br>
+Fig: Convex hull polygon created with <em>v.hull</em>
+</center>
+
+<h2><a name="notes">NOTES</a></h2>
+
+In order to use the <b>where</b> option the <b>layer</b> option must
+be set to a positive number (the default is '-1' for 'all layers'), otherwise
+all points from all layers will be used and the <b>cats</b> and <b>where</b>
+options will be ignored.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Example of <em>v.hull</em> 3D output (using two random 3D point 
+clouds, North Carolina sample data set):
+
+<div class="code"><pre>
+g.region rural_1m -p
+r.mapcalc "zero = 0"
+v.random -z output=random3d_a n=10 zmin=0 zmax=200
+v.random -z output=random3d_b n=15 zmin=400 zmax=600
+v.hull input=random3d_a output=random3d_a_hull
+v.hull input=random3d_b output=random3d_b_hull
+
+d.mon wx0
+d.vect random3d_a_hull
+d.vect random3d_a color=red
+
+d.vect random3d_b_hull
+d.vect random3d_b color=red
+
+# 3D view in wxGUI (g.gui)
+</pre></div>
+
+<center>
+<img src="v_hull_3d.png" border="1"><br>
+Fig: Convex hull in 3D from 3D points created with <em>v.hull</em>
+</center>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+  <li>M. de Berg, M. van Kreveld, M. Overmars, O. Schwarzkopf,
+    (2000). Computational geometry, chapter 1.1, 2-8.
+  <li>J. O'Rourke, (1998). Computational Geometry in C (Second
+  Edition), chapter 4.
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.delaunay.html">v.delaunay</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Andrea Aime, Modena, Italy<br>
+Markus Neteler, ITC-irst (update to 5.7)<br>
+Benjamin Ducke, CAU Kiel (3D hull support)<br>
+Martin Landa, CTU in Prague, Czech Republic (vector lines support)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.hull">v.hull source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.hull">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

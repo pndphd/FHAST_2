@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.topology.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.topology.py</b></em>  - Lists temporal topology of a space time dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_topology.html">topology</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.topology.py</b><br></div>
+<b>t.topology.py --help</b><br>
+<div id="synopsis"><b>t.topology.py</b> [-<b>ms</b>] <b>input</b>=<em>name</em>  [<b>type</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Print temporal topological relationships and exit</dd>
+
+<dt><b>-s</b></dt>
+<dd>Print spatio-temporal topological relationships and exit</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time dataset</dd>
+
+<dt><b>type</b>=<em>name</em></dt>
+<dd>Type of the input space time dataset</dd>
+<dd>Options: <em>strds, stvds, str3ds</em></dd>
+<dd>Default: <em>strds</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The module <em>t.topology</em> lists temporal relations of the maps in
+a space time dataset.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In order to obtain information about space time dataset topology, run:
+
+<div class="code"><pre>
+t.topology tempmean_monthly@climate_2009_2012
+ +-------------------- Basic information -------------------------------------+
+ | Id: ........................ tempmean_monthly@climate_2009_2012
+ | Name: ...................... tempmean_monthly
+ | Mapset: .................... climate_2009_2012
+ | Creator: ................... lucadelu
+ | Temporal type: ............. absolute
+ | Creation time: ............. 2014-11-28 10:40:55.060096
+ | Modification time:.......... 2014-11-28 16:08:42.166628
+ | Semantic type:.............. mean
+ +-------------------- Temporal topology -------------------------------------+
+ | Is subset of dataset: ...... False
+ | Temporal topology is: ...... valid
+ | Number of intervals: ....... 48
+ | Invalid time stamps: ....... 0
+ | Number of points: .......... 0
+ | Number of gaps: ............ 0
+ | Granularity: ............... 1 month
+ +-------------------- Topological relations ---------------------------------+
+ | Overlaps: .................. 0
+ | Overlapped: ................ 0
+ | Finishes: .................. 0
+ | Started: ................... 0
+ | Follows: ................... 47
+ | Contains: .................. 0
+ | Equal:...................... 0
+ | Finished: .................. 0
+ | Precedes: .................. 47
+ | Starts: .................... 0
+ | During: .................... 0
+ +----------------------------------------------------------------------------+
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.topology">t.topology source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.topology">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

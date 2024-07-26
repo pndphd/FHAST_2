@@ -1,0 +1,106 @@
+.TH db.createdb 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.createdb\fR\fR  \- Creates an empty database.
+.SH KEYWORDS
+database, attribute table, SQL
+.SH SYNOPSIS
+\fBdb.createdb\fR
+.br
+\fBdb.createdb \-\-help\fR
+.br
+\fBdb.createdb\fR \fBdriver\fR=\fIname\fR \fBdatabase\fR=\fIname\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdriver\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of database
+.SH DESCRIPTION
+\fIdb.createdb\fR allows the user to create a new empty database
+through different drivers. A working database connection needs to be
+established, see \fIdb.login\fR.
+.PP
+Currently only SQLite
+and PostgreSQL database drivers are
+supported.
+.SH EXAMPLES
+.SS Create a new SQLite file\-based database
+Note that the standard GRASS GIS SQLite database is by default
+generated in the user\(cqs current mapset. This example shows an
+out\-of\-mapset database file creation:
+.br
+.nf
+\fC
+db.createdb driver=sqlite database=/opt/sqlite.db
+\fR
+.fi
+.SS Create a new PostgreSQL database
+Create a new PostgreSQL database (after the PostgreSQL connection got
+established through the \fIpg\fR driver):
+.br
+.nf
+\fC
+db.createdb driver=pg database=grassdb
+\fR
+.fi
+.PP
+Create a new PostgreSQL database (after the PostgreSQL connection got
+established through the \fIodbc\fR driver):
+.br
+.nf
+\fC
+db.createdb driver=odbc database=grassdb
+\fR
+.fi
+.SH TODO
+Support other database drivers, too.
+.SH SEE ALSO
+\fI
+db.columns,
+db.connect,
+db.describe,
+db.drivers,
+db.dropdb,
+db.droptable,
+db.execute,
+db.login,
+db.tables
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHORS
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+SQLite and PostgreSQL support by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: db.createdb source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,270 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.info - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.info</b></em>  - Outputs basic information about a vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_metadata.html">metadata</a>, <a href="keywords.html#topology">topology</a>, <a href="keywords.html#extent">extent</a>, <a href="keywords.html#history">history</a>, <a href="keywords.html#attribute columns">attribute columns</a>, <a href="keywords.html#level1">level1</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.info</b><br></div>
+<b>v.info --help</b><br>
+<div id="synopsis"><b>v.info</b> [-<b>hcget</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Print history instead of info and exit</dd>
+
+<dt><b>-c</b></dt>
+<dd>Print types/names of table columns for specified layer instead of info and exit</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print region info in shell script style</dd>
+
+<dt><b>-e</b></dt>
+<dd>Print extended metadata info in shell script style</dd>
+
+<dt><b>-t</b></dt>
+<dd>Print topology info in shell script style</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-metadata-information" class="toc">Basic metadata information</a></li>
+        <li class="toc"><a href="#map-history" class="toc">Map history</a></li>
+        <li class="toc"><a href="#attribute-columns-for-given-layer" class="toc">Attribute columns for given layer</a></li>
+        <li class="toc"><a href="#basic-metadata-information-in-shell-script-style" class="toc">Basic metadata information in shell script style</a></li>
+    </ul></li>
+    <li class="toc"><a href="#python" class="toc">PYTHON</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.info</em> reports some basic information (metadata) about a
+user-specified vector map and its topology status.
+
+<p>
+If topology info is not available (i.e., vector map cannot be opened on
+level 2), vector map extends and number of features need to be counted
+on the fly which may take some time.
+
+<p>
+Note that the flag <b>-c</b> only works when the vector map is connected
+to one or several attribute table(s). This connection can be shown or set
+with <em>v.db.connect</em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="basic-metadata-information">Basic metadata information</a></h3>
+
+<div class="code"><pre>
+v.info map=geology
+
+ +----------------------------------------------------------------------------+
+ | Name:            geology                                                   |
+ | Mapset:          PERMANENT                                                 |
+ | Location:        nc_spm_08                                                 |
+ | Database:        /home/martin/grassdata                                    |
+ | Title:           North Carolina geology map (polygon map)                  |
+ | Map scale:       1:1                                                       |
+ | Map format:      native                                                    |
+ | Name of creator: helena                                                    |
+ | Organization:    NC OneMap                                                 |
+ | Source date:     Mon Nov  6 15:48:53 2006                                  |
+ |----------------------------------------------------------------------------|
+ |   Type of map: vector (level: 2)                                           |
+ |                                                                            |
+ |   Number of points:       0               Number of centroids:  1832       |
+ |   Number of lines:        0               Number of boundaries: 3649       |
+ |   Number of areas:        1832            Number of islands:    907        |
+ |                                                                            |
+ |   Map is 3D:              No                                               |
+ |   Number of dblinks:      1                                                |
+ |                                                                            |
+ |   Projection: Lambert Conformal Conic                                      |
+ |                                                                            |
+ |               N:   318117.43741634    S:    10875.82723209                 |
+ |               E:   930172.31282271    W:   123971.19498978                 |
+ |                                                                            |
+ |   Digitization threshold: 0                                                |
+ |   Comment:                                                                 |
+ |                                                                            |
+ +----------------------------------------------------------------------------+
+</pre></div>
+
+<h3><a name="map-history">Map history</a></h3>
+
+<div class="code"><pre>
+v.info -h map=geology
+
+COMMAND: v.in.ogr input="geol.shp" output="geology" min_area=0.0001 snap=-1
+GISDBASE: /bigdata/grassdata05
+LOCATION: ncfromfile MAPSET: PERMANENT USER: helena DATE: Mon Nov  6 15:48:53 2006
+---------------------------------------------------------------------------------
+1832 input polygons
+total area: 1.276093e+11 (1832 areas)
+overlapping area: 0.000000e+00 (0 areas)
+area without category: 0.000000e+00 (0 areas)
+---------------------------------------------------------------------------------
+</pre></div>
+
+<h3><a name="attribute-columns-for-given-layer">Attribute columns for given layer</a></h3>
+
+<div class="code"><pre>
+v.info -c map=geology
+
+Displaying column types/names for database connection of layer <1>:
+INTEGER|cat
+DOUBLE PRECISION|onemap_pro
+DOUBLE PRECISION|PERIMETER
+INTEGER|GEOL250_
+INTEGER|GEOL250_ID
+CHARACTER|GEO_NAME
+DOUBLE PRECISION|SHAPE_area
+DOUBLE PRECISION|SHAPE_len
+</pre></div>
+
+<h3><a name="basic-metadata-information-in-shell-script-style">Basic metadata information in shell script style</a></h3>
+
+<div class="code"><pre>
+v.info -get map=geology 
+
+name=geology
+mapset=PERMANENT
+location=nc_spm_08
+database=/home/martin/grassdata
+title=North Carolina geology map (polygon map)
+scale=1:1
+format=native
+creator=helena
+organization=NC OneMap
+source_date=Mon Nov  6 15:48:53 2006
+level=2
+map3d=0
+num_dblinks=1
+projection=Lambert Conformal Conic
+digitization_threshold=0.000000
+comment=
+north=318117.43741634
+south=10875.82723209
+east=930172.31282271
+west=123971.19498978
+top=0.000000
+bottom=0.000000
+nodes=4556
+points=0
+lines=0
+boundaries=3649
+centroids=1832
+areas=1832
+islands=907
+primitives=5481
+</pre></div>
+
+<div class="code"><pre>
+v.info -g map=geology
+
+north=318117.43741634
+south=10875.82723209
+east=930172.31282271
+west=123971.19498978
+top=0.000000
+bottom=0.000000
+</pre></div>
+
+<h2><a name="python">PYTHON</a></h2>
+
+See <em><a href="https://grass.osgeo.org/grass78/manuals/libpython/">Python
+Scripting Library</a></em> for more info.
+<p>
+Note: The Python tab in the <em>wxGUI</em> can be used for entering the
+following code:
+<p>
+<div class="code"><pre>
+import grass.script as gcore
+    
+gcore.vector_columns('geology')   # for `v.info -c`
+gcore.vector_info_topo('geology') # for `v.info shell=topo`
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.info.html">r.info</a>,
+<a href="r3.info.html">r3.info</a>,
+<a href="t.info.html">t.info</a>,
+<a href="v.db.connect.html">v.db.connect</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Original author CERL<br>
+Updated to GRASS 6 by Radim Blazek, ITC-Irst, Trento, Italy<br>
+Level 1 support by Markus Metz<br>
+Updated to GRASS 7 by Martin Landa, CTU in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.info">v.info source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.info">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

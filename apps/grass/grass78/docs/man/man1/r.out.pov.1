@@ -1,0 +1,114 @@
+.TH r.out.pov 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.pov\fR\fR  \- Converts a raster map layer into a height\-field file for POV\-Ray.
+.SH KEYWORDS
+raster, export, output
+.SH SYNOPSIS
+\fBr.out.pov\fR
+.br
+\fBr.out.pov \-\-help\fR
+.br
+\fBr.out.pov\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBhftype\fR=\fIinteger\fR]   [\fBbias\fR=\fIfloat\fR]   [\fBscale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of output povray file (TGA height field file)
+.IP "\fBhftype\fR=\fIinteger\fR" 4m
+.br
+Height\-field type (0=actual heights 1=normalized)
+.IP "\fBbias\fR=\fIfloat\fR" 4m
+.br
+Elevation bias
+.IP "\fBscale\fR=\fIfloat\fR" 4m
+.br
+Vertical scaling factor
+.SH DESCRIPTION
+r.out.pov converts a user\-specified raster map layer (map==name) into a
+height\-field file for POVray (tga==name). The hftype==value option (where
+value is either 0 or 1) specifies the height\-field type. When the user
+enters 0 the output will be actual heights. If entered 1 the cell\-values
+will be normalized. If hftype is 0 (actual heights) the bias==value can
+be used to add or subtract a value from heights. Use scale==value to scale
+your heights by value. The GRASS program r.out.pov can be used to create
+height\- field files for Persistence of Vision (POV) raytracer. POV can
+use a height\-field defined in Targa (.TGA) image file format where the
+RGB pixel values are 24 bits (3 bytes). A 16 bit unsigned integer height\-field
+value is assigned as follows: RED = high byte, GREEN = low byte, BLUE =
+empty.
+.SH EXAMPLE
+An example Povray script file may look like this:
+.PP
+.br
+.nf
+\fC
+#include \(dqshapes.inc\(dq
+#include \(dqcolors.inc\(dq
+#include \(dqtextures.inc\(dq
+#declare Scale = 7;
+light_source { <40000, Scale*3000, 5000> color MainLight }
+camera {
+   location < 23000, Scale*2000, 0>
+   angle  90
+   look_at < 23000, Scale*1400, 5000>
+}
+height_field  {
+   tga \(dqdem.lr.tga\(dq
+   smooth
+   water_level 0.11  // 726 / 6553.6 = 0.111
+    texture {
+      pigment {
+          image_map { // image is always projected from \-z, with front facing  +z, top to +Y
+             ppm \(dqmap.lr.ppm\(dq
+             once
+          }
+          rotate x*90 // align map to height_field
+      }
+    }
+   finish {
+          ambient 0.2         // Very dark shadows
+          diffuse 0.8         // Whiten the whites
+          phong 0.2           // shiny
+          phong_size 100.0    // with tight highlights
+          specular 0.5
+          roughness 0.05
+   }
+   scale < 14500, Scale*6553.6, 13000 >
+   translate <18300, 0, 1100>
+}
+\fR
+.fi
+.SH AUTHOR
+Klaus D. Meyer, GEUM.tec GbR, eMail: \fIGEUM.tec@geum.de\fR
+.SH SOURCE CODE
+.PP
+Available at: r.out.pov source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

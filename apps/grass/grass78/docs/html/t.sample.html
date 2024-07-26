@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.sample.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.sample.py</b></em>  - Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.sample.py</b><br></div>
+<b>t.sample.py --help</b><br>
+<div id="synopsis"><b>t.sample.py</b> [-<b>cs</b>] <b>inputs</b>=<em>name</em>[,<i>name</i>,...] <b>sample</b>=<em>name</em>  [<b>intype</b>=<em>name</em>]   [<b>samtype</b>=<em>name</em>]   [<b>method</b>=<em>name</em>[,<i>name</i>,...]]   [<b>separator</b>=<em>character</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Print the column names as first row</dd>
+
+<dt><b>-s</b></dt>
+<dd>Check for spatial topological overlap</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>inputs</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time datasets</dd>
+
+<dt><b>sample</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the sample space time dataset</dd>
+
+<dt><b>intype</b>=<em>name</em></dt>
+<dd>Type of the input space time dataset</dd>
+<dd>Options: <em>strds, stvds, str3ds</em></dd>
+<dd>Default: <em>strds</em></dd>
+
+<dt><b>samtype</b>=<em>name</em></dt>
+<dd>Type of the sample space time dataset</dd>
+<dd>Options: <em>strds, stvds, str3ds</em></dd>
+<dd>Default: <em>strds</em></dd>
+
+<dt><b>method</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>The method to be used for sampling the input dataset</dd>
+<dd>Options: <em>start, during, overlap, contain, equal, follows, precedes</em></dd>
+<dd>Default: <em>during,overlap,contain,equal</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Do not use "," as this char is reserved to list several map ids in a sample granule</dd>
+<dd>Field separator between output columns, default is tabular " | "</dd>
+<dd>Default: <em>pipe</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The purpose of this module is to compute and to show spatio-temporal 
+relations between space time datasets of different type. Several input 
+space time datasets are sampled by a <em>sample</em> space time dataset 
+using temporal topological relations. The types of the input space time 
+datasets and the type of the sample space time dataset can be 
+different.
+<p>
+This module is useful to analyze temporal relationships between space 
+time datasets using temporal topology. The flag <em>-s</em> enables a 
+spatio-temporal topology, so that only spatio-temporal related map 
+layers of space time datasets are considered in the analysis.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The temporal relation <em>start</em> means that the start time of an 
+input map layer is temporally located in an interval of a sample map 
+layer.
+<p>
+The textual output at the command line shows the names of the maps, 
+start and end time as well as the <em>interval length</em> in days and 
+the temporal <em>distance from begin</em> in days.
+<p>
+The default <em>separator</em> is the pipe symbol.
+<p>
+Temporal gaps, if present, in the input and sampling space time 
+datasets will be used in the sampling process. Gaps have no map name, 
+instead <em>None</em> is printed.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In the examples below we create a space time raster dataset <em>A</em> 
+and a space time vector dataset <em>P</em> that have different temporal 
+layouts and number of map layers. The space time vector dataset 
+contains a gap, that will be used in the sampling process.
+<p>
+We use <em>t.sample</em> to inspect the topological relations between the
+time stamped map layers in <em>A</em> and <em>P</em>.
+<p>
+<div class="code"><pre>
+# Set an appropriate region
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10 res3=10 -p3
+
+# Generate the raster map layer
+r.mapcalc expression="a1 = rand(0, 550)" -s
+r.mapcalc expression="a2 = rand(0, 450)" -s
+r.mapcalc expression="a3 = rand(0, 320)" -s
+r.mapcalc expression="a4 = rand(0, 510)" -s
+r.mapcalc expression="a5 = rand(0, 300)" -s
+r.mapcalc expression="a6 = rand(0, 650)" -s
+
+# Generate the vector map layer
+v.random -z output=pnts1 n=20 zmin=0 zmax=100 column=height
+v.random -z output=pnts2 n=20 zmin=0 zmax=100 column=height
+
+n1=`g.tempfile pid=1 -d` 
+n2=`g.tempfile pid=2 -d`
+
+cat > "${n1}" << EOF
+a1
+a2
+a3
+a4
+a5
+a6
+EOF
+
+cat > "${n2}" << EOF
+pnts1|2001-01-01|2001-03-01
+pnts2|2001-05-01|2001-07-01
+EOF
+
+# Register the maps in new space time datasets
+t.create type=strds temporaltype=absolute output=A \
+    title="A test with raster input files" descr="A test with raster input files"
+
+t.create type=stvds temporaltype=absolute output=P \
+    title="A test with vector input files" descr="A test with vector input files"
+
+t.register type=raster -i input=A file="${n1}" start="2001-01-01" increment="1 months"
+
+# Raster map layer in A
+t.rast.list A
+
+name|mapset|start_time|end_time
+a1|PERMANENT|2001-01-01 00:00:00|2001-02-01 00:00:00
+a2|PERMANENT|2001-02-01 00:00:00|2001-03-01 00:00:00
+a3|PERMANENT|2001-03-01 00:00:00|2001-04-01 00:00:00
+a4|PERMANENT|2001-04-01 00:00:00|2001-05-01 00:00:00
+a5|PERMANENT|2001-05-01 00:00:00|2001-06-01 00:00:00
+a6|PERMANENT|2001-06-01 00:00:00|2001-07-01 00:00:00
+
+
+t.register type=vector input=P file="${n2}"
+
+# Vector map layer in P
+t.vect.list P
+
+name|layer|mapset|start_time|end_time
+pnts1|None|PERMANENT|2001-01-01 00:00:00|2001-03-01 00:00:00
+pnts2|None|PERMANENT|2001-05-01 00:00:00|2001-07-01 00:00:00
+
+# Start time of maps in A located in maps in P
+t.sample method=start input=A samtype=stvds sample=P -c
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a1@PERMANENT,a2@PERMANENT|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|a3@PERMANENT,a4@PERMANENT|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a5@PERMANENT,a6@PERMANENT|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+
+
+# P contains A
+t.sample method=contain input=A samtype=stvds sample=P -c
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a1@PERMANENT,a2@PERMANENT|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|a3@PERMANENT,a4@PERMANENT|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a5@PERMANENT,a6@PERMANENT|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+
+
+# A during P
+t.sample method=during intype=stvds input=P samtype=strds sample=A -c
+
+A@PERMANENT|P@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+a1@PERMANENT|pnts1@PERMANENT|2001-01-01 00:00:00|2001-02-01 00:00:00|31.0|0.0
+a2@PERMANENT|pnts1@PERMANENT|2001-02-01 00:00:00|2001-03-01 00:00:00|28.0|31.0
+a3@PERMANENT|None|2001-03-01 00:00:00|2001-04-01 00:00:00|31.0|59.0
+a4@PERMANENT|None|2001-04-01 00:00:00|2001-05-01 00:00:00|30.0|90.0
+a5@PERMANENT|pnts2@PERMANENT|2001-05-01 00:00:00|2001-06-01 00:00:00|31.0|120.0
+a6@PERMANENT|pnts2@PERMANENT|2001-06-01 00:00:00|2001-07-01 00:00:00|30.0|151.0
+
+
+# No Overlapping
+t.sample method=overlap input=A samtype=stvds sample=P -cs
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|None|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|None|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|None|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+
+
+t.sample method=precedes input=A samtype=stvds sample=P -c
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a3@PERMANENT|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|a5@PERMANENT|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|None|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+
+
+t.sample method=follows  input=A samtype=stvds sample=P -c
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|None|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|a2@PERMANENT|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a4@PERMANENT|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+
+
+t.sample method=precedes,follows input=A samtype=stvds sample=P -c
+
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a3@PERMANENT|2001-01-01 00:00:00|2001-03-01 00:00:00|59.0|0.0
+None|a5@PERMANENT,a2@PERMANENT|2001-03-01 00:00:00|2001-05-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a4@PERMANENT|2001-05-01 00:00:00|2001-07-01 00:00:00|61.0|120.0
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.sample">t.sample source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.sample">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+.TH r.stats.quantile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.stats.quantile\fR\fR  \- Compute category quantiles using two passes.
+.SH KEYWORDS
+raster, statistics, zonal statistics, percentile, quantile
+.SH SYNOPSIS
+\fBr.stats.quantile\fR
+.br
+\fBr.stats.quantile \-\-help\fR
+.br
+\fBr.stats.quantile\fR [\-\fBrpt\fR] \fBbase\fR=\fIname\fR \fBcover\fR=\fIname\fR  [\fBquantiles\fR=\fIinteger\fR]   [\fBpercentiles\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBbins\fR=\fIinteger\fR]   [\fBoutput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBfile\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Create reclass map with statistics as category labels
+.IP "\fB\-p\fR" 4m
+.br
+Do not create output maps; just print statistics
+.IP "\fB\-t\fR" 4m
+.br
+Print statistics in table format
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBbase\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of base raster map
+.IP "\fBcover\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of cover raster map
+.IP "\fBquantiles\fR=\fIinteger\fR" 4m
+.br
+Number of quantiles
+.IP "\fBpercentiles\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+List of percentiles
+.br
+Default: \fI50\fR
+.IP "\fBbins\fR=\fIinteger\fR" 4m
+.br
+Number of bins to use
+.br
+Default: \fI1000\fR
+.IP "\fBoutput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Resultant raster map(s)
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fI:\fR
+.SH DESCRIPTION
+\fIr.stats.quantile\fR is a tool to analyse exploratory statistics of a
+floating\-point \(dqcover layer\(dq according to how it intersects with objects
+in a \(dqbase layer\(dq. It provides quantile calculations as selected
+\(dqzonal statistics\(dq.
+.SH NOTES
+\fIr.stats.quantile\fR is intended to be a partial replacement for
+\fIr.statistics\fR, with support
+for floating\-point cover maps. It provides quantile calculations,
+which are absent from
+\fIr.stats.zonal\fR.
+.SH EXAMPLE
+In this example, the raster polygon map zipcodes in the North
+Carolina sample dataset is used to calculate quantile raster statistics using
+the elevation raster map:
+.br
+.nf
+\fC
+g.region raster=zipcodes \-p
+# print quantiles
+r.stats.quantile base=zipcodes cover=elevation quantiles=3 \-p
+27511:0:33.333333:134.717392
+27511:1:66.666667:143.985723
+27513:0:33.333333:140.669993
+27513:1:66.666667:146.279449
+27518:0:33.333333:115.140101
+27518:1:66.666667:129.893723
+[...]
+# write out percentile raster maps
+r.stats.quantile base=zipcodes cover=elevation percentiles=25,50,75 \(rs
+  output=zipcodes_elev_q25,zipcodes_elev_q50,zipcodes_elev_q75
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.quantile,
+r.stats.zonal,
+r.statistics
+\fR
+.SH AUTHOR
+Glynn Clements
+.br
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: r.stats.quantile source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.sim.sediment - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.sim.sediment</b></em>  - Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_hydrology.html">hydrology</a>, <a href="keywords.html#soil">soil</a>, <a href="keywords.html#sediment flow">sediment flow</a>, <a href="keywords.html#erosion">erosion</a>, <a href="keywords.html#deposition">deposition</a>, <a href="keywords.html#model">model</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.sim.sediment</b><br></div>
+<b>r.sim.sediment --help</b><br>
+<div id="synopsis"><b>r.sim.sediment</b> [-<b>s</b>] <b>elevation</b>=<em>name</em> <b>water_depth</b>=<em>name</em> <b>dx</b>=<em>name</em> <b>dy</b>=<em>name</em> <b>detachment_coeff</b>=<em>name</em> <b>transport_coeff</b>=<em>name</em> <b>shear_stress</b>=<em>name</em>  [<b>man</b>=<em>name</em>]   [<b>man_value</b>=<em>float</em>]   [<b>observation</b>=<em>name</em>]   [<b>transport_capacity</b>=<em>name</em>]   [<b>tlimit_erosion_deposition</b>=<em>name</em>]   [<b>sediment_concentration</b>=<em>name</em>]   [<b>sediment_flux</b>=<em>name</em>]   [<b>erosion_deposition</b>=<em>name</em>]   [<b>logfile</b>=<em>name</em>]   [<b>walkers_output</b>=<em>name</em>]   [<b>nwalkers</b>=<em>integer</em>]   [<b>niterations</b>=<em>integer</em>]   [<b>output_step</b>=<em>integer</em>]   [<b>diffusion_coeff</b>=<em>float</em>]   [<b>random_seed</b>=<em>integer</em>]   [<b>nprocs</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Generate random seed</dd>
+<dd>Automatically generates random seed for random number generator (use when you don't want to provide the seed option)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>elevation</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input elevation raster map</dd>
+
+<dt><b>water_depth</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of water depth raster map [m]</dd>
+
+<dt><b>dx</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of x-derivatives raster map [m/m]</dd>
+
+<dt><b>dy</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of y-derivatives raster map [m/m]</dd>
+
+<dt><b>detachment_coeff</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of detachment capacity coefficient raster map [s/m]</dd>
+
+<dt><b>transport_coeff</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of transport capacity coefficient raster map [s]</dd>
+
+<dt><b>shear_stress</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of critical shear stress raster map [Pa]</dd>
+
+<dt><b>man</b>=<em>name</em></dt>
+<dd>Name of Manning's n raster map</dd>
+
+<dt><b>man_value</b>=<em>float</em></dt>
+<dd>Manning's n unique value</dd>
+<dd>Default: <em>0.1</em></dd>
+
+<dt><b>observation</b>=<em>name</em></dt>
+<dd>Name of sampling locations vector points map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>transport_capacity</b>=<em>name</em></dt>
+<dd>Name for output transport capacity raster map [kg/ms]</dd>
+
+<dt><b>tlimit_erosion_deposition</b>=<em>name</em></dt>
+<dd>Name for output transport limited erosion-deposition raster map [kg/m2s]</dd>
+
+<dt><b>sediment_concentration</b>=<em>name</em></dt>
+<dd>Name for output sediment concentration raster map [particle/m3]</dd>
+
+<dt><b>sediment_flux</b>=<em>name</em></dt>
+<dd>Name for output sediment flux raster map [kg/ms]</dd>
+
+<dt><b>erosion_deposition</b>=<em>name</em></dt>
+<dd>Name for output erosion-deposition raster map [kg/m2s]</dd>
+
+<dt><b>logfile</b>=<em>name</em></dt>
+<dd>Name for sampling points output text file. For each observation vector point the time series of sediment transport is stored.</dd>
+
+<dt><b>walkers_output</b>=<em>name</em></dt>
+<dd>Base name of the output walkers vector points map</dd>
+
+<dt><b>nwalkers</b>=<em>integer</em></dt>
+<dd>Number of walkers</dd>
+
+<dt><b>niterations</b>=<em>integer</em></dt>
+<dd>Time used for iterations [minutes]</dd>
+<dd>Default: <em>10</em></dd>
+
+<dt><b>output_step</b>=<em>integer</em></dt>
+<dd>Time interval for creating output maps [minutes]</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>diffusion_coeff</b>=<em>float</em></dt>
+<dd>Water diffusion constant</dd>
+<dd>Default: <em>0.8</em></dd>
+
+<dt><b>random_seed</b>=<em>integer</em></dt>
+<dd>Seed for random number generator</dd>
+<dd>The same seed can be used to obtain same results or random seed can be generated by other means.</dd>
+
+<dt><b>nprocs</b>=<em>integer</em></dt>
+<dd>Number of threads which will be used for parallel compute</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<i>r.sim.sediment</i> is a landscape scale, simulation 
+model of soil erosion, sediment transport and deposition caused by flowing 
+water designed for spatially variable terrain, soil, cover and  
+rainfall excess conditions. The soil erosion model is based on the theory
+used in the USDA WEPP hillslope erosion model, but it has been generalized
+to 2D flow. The solution is based on the concept of duality between fields and 
+particles and the underlying equations are solved by Green's 
+function Monte  Carlo method, to provide robustness necessary for 
+spatially variable conditions and high resolutions (Mitas and Mitasova 
+1998).  Key inputs of the model include the following raster maps:
+ elevation (<i>elevation</i> [m]), flow gradient given by the first-order partial 
+derivatives of elevation field (<i> dx</i> and <i>dy</i>), 
+overland flow water depth (<i>water_depth</i> [m]), detachment capacity coefficient 
+(<i>detachment_coeff</i> [s/m]), transport capacity coefficient (<i>transport_coeff</i> [s]), 
+critical shear stress (<i>shear_stress</i> [Pa]) 
+and surface  roughness coefficient called Manning's n (<i>man</i> raster map). 
+Partial derivatives can be computed by <a href="v.surf.rst.html">v.surf.rst</a>
+or <a href="r.slope.aspect.html">r.slope.aspect</a>
+module. The data are automatically converted from feet to metric
+system using database/projection information, so the elevation always should be in meters. 
+The water depth file can be computed using <a href="r.sim.water.html">r.sim.water</a>
+module. Other parameters must be determined using field measurements or
+reference literature (see suggested values in Notes and References). <br>
+
+<p>
+Output includes transport capacity raster map <i>transport_capacity</i>  in [kg/ms],
+transport capacity limited erosion/deposition raster map
+<i>tlimit_erosion_deposition</i> [kg/m<sup>2</sup>s]i that are output almost immediately and
+can be viewed while the simulation continues. Sediment flow rate raster map 
+<i>sediment_flux</i> [kg/ms], and net erosion/deposition raster map [kg/m<sup>2</sup>s]
+can take longer time depending on time step and simulation time. 
+Simulation time is controlled by <i>niterations</i> [minutes] parameter. 
+<!-- Output files can be saved during simulation using <i>outiter</i> parameter
+defining simulation time step for writing output files. This option requires
+time series flag <i>-t</i>. Files are saved with suffix   containing
+iteration number (e.g. name.500, name.1000, etc.) representing time in seconds.
+-->
+If the resulting erosion/deposition map is noisy, higher number of walkers,
+given by <i>nwalkers</i> should be used. 
+<br>
+
+<!--
+<h2><a name="notes">NOTES</a></h2>
+TODO: provide a table of suggested parameters for bare soil, grass, forest, pavement
+wetland or pond, provide links to movies that explain the impact of the  parameters
+-->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<a href="v.surf.rst.html">v.surf.rst</a>,
+<a href="r.slope.aspect.html">r.slope.aspect</a>,
+<a href="r.sim.water.html">r.sim.water</a>
+                                                          
+<h2><a name="authors">AUTHORS</a></h2>
+
+Helena Mitasova, Lubos Mitas<br>
+North Carolina State University<br>
+<a href="mailto:hmitaso@unity.ncsu.edu">hmitaso@unity.ncsu.edu</a><br>
+<br>
+Jaroslav Hofierka<br>
+GeoModel, s.r.o. Bratislava, Slovakia<br><address>
+<a href="mailto:hofi@geomodel.sk">
+hofierka@geomodel.sk</a>
+</address>
+<br>
+Chris Thaxton<br>
+North Carolina State University<br>
+csthaxto@unity.ncsu.edu<br>
+<address><a href="mailto:csthaxto@unity.ncsu.edu">
+csthaxto@unity.ncsu.edu</a></address>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<p>
+<a href="http://www4.ncsu.edu/~hmitaso/gmslab/papers/II.6.8_Mitasova_044.pdf">
+Mitasova, H., Thaxton, C., Hofierka, J., McLaughlin, R., Moore, A., Mitas L., 2004,</a>
+Path sampling method for modeling overland water flow, sediment transport
+and short term terrain evolution in Open Source GIS.
+In: C.T. Miller, M.W. Farthing, V.G. Gray, G.F. Pinder eds.,
+Proceedings of the XVth International Conference on Computational Methods in Water
+Resources (CMWR XV), June 13-17 2004, Chapel Hill, NC, USA, Elsevier, pp. 1479-1490.
+<p>
+<a href="http://www4.ncsu.edu/~hmitaso/gmslab/gisc00/duality.html">
+Mitasova H, Mitas, L., 2000, Modeling spatial processes in multiscale framework: 
+exploring duality between particles and fields, </a>
+plenary talk at GIScience2000 conference, Savannah, GA.
+<p>
+Mitas, L., and Mitasova, H., 1998, Distributed soil erosion simulation
+for effective erosion prevention. Water Resources Research, 34(3), 505-516.
+<p>
+<a href="http://www4.ncsu.edu/~hmitaso/gmslab/papers/LLEmiterev1.pdf">
+Mitasova, H., Mitas, L., 2001, Multiscale soil erosion simulations for land use management, </a>
+In: Landscape erosion and landscape evolution modeling, Harmon R. and Doe W. eds.,
+Kluwer Academic/Plenum Publishers, pp. 321-347.
+<p>
+<a href="http://www.grassbook.org">
+Neteler, M. and Mitasova, H., 2008, Open Source GIS: A GRASS GIS Approach. Third Edition.</a>
+The International Series in Engineering and Computer Science: Volume 773. Springer New York Inc, p. 406.
+<p>
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.sim/r.sim.sediment">r.sim.sediment source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.sim/r.sim.sediment">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

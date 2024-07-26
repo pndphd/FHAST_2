@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.sample - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.sample</b></em>  - Samples a raster map at vector point locations.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#raster">raster</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.sample</b><br></div>
+<b>v.sample --help</b><br>
+<div id="synopsis"><b>v.sample</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>column</b>=<em>name</em> <b>output</b>=<em>name</em> <b>raster</b>=<em>name</em>  [<b>method</b>=<em>string</em>]   [<b>zscale</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector point map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column to use for comparison</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map to store differences</dd>
+
+<dt><b>raster</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map to be sampled</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Sampling interpolation method</dd>
+<dd>Options: <em>nearest, bilinear, bicubic</em></dd>
+<dd>Default: <em>nearest</em></dd>
+<dd><b>nearest</b>: Nearest-neighbor interpolation</dd>
+<dd><b>bilinear</b>: Bilinear interpolation</dd>
+<dd><b>bicubic</b>: Bicubic interpolation</dd>
+
+<dt><b>zscale</b>=<em>float</em></dt>
+<dd>Scaling factor for values read from raster map</dd>
+<dd>Sampled values will be multiplied by this factor</dd>
+<dd>Default: <em>1.0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.sample</em> samples a GRASS raster map at the point
+locations in the input file by either cubic convolution
+interpolation, bilinear interpolation, or nearest neighbor
+sampling (default).
+
+<p>This program may be especially useful when sampling for
+cross validation of interpolations whose output is a raster
+map.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The output points will have the easting and northing of the input points.
+The input category value is used. The input attribute, raster value 
+and difference is written to output.
+
+<p>When NULL values are encountered for a cell, zero value is used
+instead.  In these cases, more acurrate results may be obtained
+by using the default nearest neighbor comparisons.
+
+<p>This program may not work properly with lat-long data when
+the <b>-bc</b> flags are used.
+
+<p>When interpolation is done (i.e., the <b>-bc</b> flags are
+used), values are assumed to be located at the centroid of
+grid cells.  Therefore, current resolution settings are
+important.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Comparison of "elev_ned_30m" and "elev_srtm_30m" North Carolina
+sample dataset elevation models at random positions:
+
+<div class="code"><pre>
+# set computational region:
+ g.region raster=elev_srtm_30m -p
+# generate random points:
+ v.random output=random n=100
+# add table with one column:
+ v.db.addtable random col="elev_srtm30 double precision"
+# transfer elevations at random points into table:
+ v.what.rast map=random rast=elev_srtm_30m col=elev_srtm30
+# verify:
+ v.db.select random
+
+# perform sampling on other elevation map:
+ v.sample in=random col=elev_srtm30 rast=elev_ned_30m out=elev_samples
+
+#verify:
+ v.db.select elev_samples
+
+#univariate statistics of differences between elevation maps:
+ v.univar elev_samples column=diff type=point
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="v.random.html">v.random</a>,
+<a href="v.what.rast.html">v.what.rast</a>
+</em>
+
+
+<em>Image Sampling Methods</em> - GRASS Tutorial on <em>s.sample</em>
+(available as 
+<a href="https://grass.osgeo.org/gdp/sites/">s.sample-tutorial.ps.gz</a>) 
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+<a href="http://mccauley-usa.com/">James Darrell McCauley</a>
+<br>when he was at: 
+<a href="http://ABE.www.ecn.purdue.edu/ABE/">Agricultural Engineering</a>
+<a href="http://www.purdue.edu/">Purdue University</a>
+<p>Updated for GRASS 5.0 by Eric G. Miller
+<br>
+Updated for GRASS 5.7 by Radim Blazek
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.sample">v.sample source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.sample">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

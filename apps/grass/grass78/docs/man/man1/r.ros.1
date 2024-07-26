@@ -1,0 +1,258 @@
+.TH r.ros 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.ros\fR\fR  \- Generates rate of spread raster maps.
+.br
+Generates three, or four raster map layers showing the base (perpendicular) rate of spread (ROS), the maximum (forward) ROS, the direction of the maximum ROS, and optionally the maximum potential spotting distance for fire spread simulation.
+.SH KEYWORDS
+raster, fire, spread, rate of spread, hazard, model
+.SH SYNOPSIS
+\fBr.ros\fR
+.br
+\fBr.ros \-\-help\fR
+.br
+\fBr.ros\fR \fBmodel\fR=\fIname\fR  [\fBmoisture_1h\fR=\fIname\fR]   [\fBmoisture_10h\fR=\fIname\fR]   [\fBmoisture_100h\fR=\fIname\fR]  \fBmoisture_live\fR=\fIname\fR  [\fBvelocity\fR=\fIname\fR]   [\fBdirection\fR=\fIname\fR]   [\fBslope\fR=\fIname\fR]   [\fBaspect\fR=\fIname\fR]   [\fBelevation\fR=\fIname\fR]  \fBbase_ros\fR=\fIname\fR \fBmax_ros\fR=\fIname\fR \fBdirection_ros\fR=\fIname\fR  [\fBspotting_distance\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmodel\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map containing fuel models
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing the standard fuel models defined by the USDA Forest Service. Valid values are 1\-13; other numbers are recognized as barriers by r.ros.
+.IP "\fBmoisture_1h\fR=\fIname\fR" 4m
+.br
+Raster map containing the 1\-hour fuel moisture (%)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing the 1\-hour (<.25\(dq) fuel moisture (percentage content multiplied by 100).
+.IP "\fBmoisture_10h\fR=\fIname\fR" 4m
+.br
+Raster map containing the 10\-hour fuel moisture (%)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing the 10\-hour (.25\-1\(dq) fuel moisture (percentage content multiplied by 100).
+.IP "\fBmoisture_100h\fR=\fIname\fR" 4m
+.br
+Raster map containing the 100\-hour fuel moisture (%)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing the 100\-hour (1\-3\(dq) fuel moisture (percentage content multiplied by 100).
+.IP "\fBmoisture_live\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Raster map containing live fuel moisture (%)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing live (herbaceous) fuel moisture (percentage content multiplied by 100).
+.IP "\fBvelocity\fR=\fIname\fR" 4m
+.br
+Raster map containing midflame wind velocities (ft/min)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing wind velocities at half of the average flame height (feet/minute).
+.IP "\fBdirection\fR=\fIname\fR" 4m
+.br
+Name of raster map containing wind directions (degree)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing wind direction, clockwise from north (degree).
+.IP "\fBslope\fR=\fIname\fR" 4m
+.br
+Name of raster map containing slope (degree)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing topographic slope (degree).
+.IP "\fBaspect\fR=\fIname\fR" 4m
+.br
+Raster map containing aspect (degree, CCW from E)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing topographic aspect, counterclockwise from east (GRASS convention) in degrees.
+.IP "\fBelevation\fR=\fIname\fR" 4m
+.br
+Raster map containing elevation (m, required for spotting)
+.br
+Name of an existing raster map layer in the user\(cqs current mapset search path containing elevation (meters). Option is required from spotting distance computation (when spotting_distance option is provided)
+.IP "\fBbase_ros\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output raster map containing base ROS (cm/min)
+.br
+Base (perpendicular) rate of spread (ROS)
+.IP "\fBmax_ros\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output raster map containing maximal ROS (cm/min)
+.br
+The maximum (forward) rate of spread (ROS)
+.IP "\fBdirection_ros\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output raster map containing directions of maximal ROS (degree)
+.br
+The direction of the maximal (forward) rate of spread (ROS)
+.IP "\fBspotting_distance\fR=\fIname\fR" 4m
+.br
+Output raster map containing maximal spotting distance (m)
+.br
+The maximal potential spotting distance (requires elevation raster map to be provided).
+.SH DESCRIPTION
+\fIr.ros\fR is part of the wildfire simulation toolset. Preparational
+steps for the fire simulation are the calculation of the rate of spread (ROS)
+with \fIr.ros\fR, and the creating of spread map with \fIr.spread\fR.
+Eventually, the fire path(s) based on starting point(s) are calculated
+with \fIr.spreadpath\fR.
+.PP
+\fIr.ros\fR is used for fire (wildfire) modeling. The input is fuel model
+and moisture and the outputs are rate of spread (ROS) values.
+The module generates the base ROS value, maximum ROS value,
+direction of the maximum ROS, and optionally the maximum potential spotting distance
+of wildfire for each raster cell in the current geographic region.
+These three or four raster map layers
+serve as inputs for the \fIr.spread\fR module
+which is the next step in fire simulation.
+.PP
+The \fIr.ros\fR module and two related modules
+\fIr.spread\fR,
+and \fIr.spreadpath\fR can be used
+not only for wildfire modeling but also generally
+to simulate other events where spread of something is involved and
+elliptical spread is appropriate.
+.PP
+The calculation of the two ROS values for each raster cell is based on the
+Fortran code by Pat Andrews (1983) of the Northern Forest Fire Laboratory,
+USDA Forest Service. The direction of the maximum ROS results from the
+vector addition of the forward ROS in wind direction and that in upslope
+direction. The spotting distance, if required, will be calculated by a
+separate function, spot_dist(), which is based on Lathrop and Xu (in preparation),
+Chase (1984) and Rothermel (1991).  More information
+on \fIr.ros\fR and \fIr.spread\fR can be found in Xu (1994).
+.PP
+The \fBoutput\fR parameter is a basename (prefix) for all generated
+raster maps and each map gets a unique suffix:
+.RS 4n
+.IP \(bu 4n
+\&.base for the base (perpendicular) ROS (cm/minute)
+.IP \(bu 4n
+\&.max for the maximum (forward) ROS (cm/minute),
+.IP \(bu 4n
+\&.maxdir for the direction of the maximum
+ROS, clockwise from north (degree), and optionally
+.IP \(bu 4n
+\&.spotdist for the maximum potential
+spotting distance (meters).
+.RE
+.PP
+So, if the output parameter is blackforest_ros, \fIr.ros\fR creates
+blackforest_ros.base, blackforest_ros.max,
+blackforest_ros.maxdir,
+and (optionally) blackforest_ros.spotdist raster maps.
+.PP
+If only one or two of the options \fBmoisture_1h\fR, \fBmoisture_10h\fR,
+and \fBmoisture_100h\fR are given, the module will assign
+values to the missing option using the formula:
+.br
+.nf
+\fC
+moisture_100h = moisture_10h + 1 = moisture_1h + 2
+\fR
+.fi
+However, at least one of them should be given.
+.PP
+Options \fBvelocity\fR
+and \fBdirection\fR must be both given or both omitted.
+If none is given, the module will assume a no\-wind
+condition.
+.PP
+Options \fBslope\fR and \fBaspect\fR must be also given together.
+If none is given, the module will assume a
+topographically flat condition. Option
+\fBelevation\fR must be given if \fB\-s\fR (spotting) flag is used.
+.SH EXAMPLES
+Assume we have inputs, the following generates ROSes and spotting distances:
+.br
+.nf
+\fC
+r.ros \-s model=fire_model moisture_1h=1hour_moisture moisture_live=live_moisture \(rs
+    velocity=wind_speed direction=wind_direction \(rs
+    slope=slope aspect=aspect elevation=elevation output=ros
+\fR
+.fi
+.SH NOTES
+.IP
+.IP \fB1\fR
+\fIr.ros\fR is supposed to be run before running
+\fIr.spread\fR module.
+The combination of these two modules forms
+a simulation of the spread of wildfires.
+.IP \fB2\fR
+The user should be sure that the inputs to
+\fIr.ros\fR are in proper units.
+.IP \fB3\fR
+The output units for the base and maximum ROSes are in cm/minute
+rather than ft/minute, which is due to that a possible zero ft/minute base
+ROS value and a positive integer ft/minute maximum ROS would result in
+calculation failure in the
+\fIr.spread\fR module.
+As far as the user just use \fIr.ros\fR together with
+\fIr.spread\fR, there is no need to
+concern about these output units.
+.PP
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+\fBAlbini,\fR F. A., 1976, Computer\-based models of wildland fire behavior:
+a user\(cqs manual, USDA Forest Service, Intermountain Forest and Range Experiment
+Station, Ogden, Utah.
+.IP \(bu 4n
+\fBAndrews\fR, P. L., 1986, BEHAVE: fire behavior prediction and fuel
+modeling system \-\- BURN subsystem, Part 1, USDA Forest Service, Intermountain
+Research Station, Gen. Tech. Rep. INT\-194, Ogden, Utah.
+.IP \(bu 4n
+\fBChase\fR, Carolyn, H., 1984, Spotting distance from wind\-driven
+surface fires \-\- extensions of equations for pocket calculators, US Forest
+Service, Res. Note INT\-346, Ogden, Utah.
+.IP \(bu 4n
+\fBLathrop\fR, Richard G. and Jianping Xu, A geographic information
+system\-based approach for calculating spotting distance. (in preparation)
+.IP \(bu 4n
+\fBRothermel\fR, R. E., 1972, A mathematical model for predicting
+fire spread in wildland fuels, USDA Forest Service, Intermountain Forest
+and Range Experiment Station, Res. Pap. INT\-115, Ogden, Utah.
+.IP \(bu 4n
+\fBRothermel\fR, Richard, 1991, Predicting behavior and size of crown
+fires in the northern Rocky Mountains, US Forest Service, Res. Paper INT\-438,
+Ogden, Utah.
+.IP \(bu 4n
+\fBXu\fR, Jianping, 1994, Simulating the spread of wildfires using
+a geographic information system and remote sensing, Ph. D. Dissertation,
+Rutgers University, New Brunswick, Jersey
+(ref).
+.RE
+.SH SEE ALSO
+\fI
+g.region,
+r.slope.aspect,
+r.spread,
+r.spreadpath
+\fR
+Sample data download: firedemo.sh
+(run this script within the \(dqFire simulation data set\(dq location.
+.SH  AUTHOR
+Jianping Xu, Center for Remote Sensing and Spatial Analysis, Rutgers University.
+.SH SOURCE CODE
+.PP
+Available at: r.ros source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

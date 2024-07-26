@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.info - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.info</b></em>  - Outputs basic information about a raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_metadata.html">metadata</a>, <a href="keywords.html#extent">extent</a>, <a href="keywords.html#history">history</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.info</b><br></div>
+<b>r.info --help</b><br>
+<div id="synopsis"><b>r.info</b> [-<b>grseh</b>] <b>map</b>=<em>name</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print raster array information in shell script style</dd>
+
+<dt><b>-r</b></dt>
+<dd>Print range in shell script style</dd>
+
+<dt><b>-s</b></dt>
+<dd>Print stats in shell script style</dd>
+
+<dt><b>-e</b></dt>
+<dd>Print extended metadata information in shell script style</dd>
+
+<dt><b>-h</b></dt>
+<dd>Print raster history instead of info</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.info</em> reports some basic information about a
+user-specified raster map layer.  This map layer must exist
+in the user's current mapset search path.  Information
+about the map's boundaries, resolution, projection, data
+type, category number, data base location and mapset, 
+the timestamp and history are put into a table and written to standard
+output. The types of information listed can also be found
+in the <i>cats</i>, <i>cellhd</i>, and <i>hist</i>
+directories under the mapset in which the named map is
+stored.
+
+<p>
+The user can save the tabular output to a file 
+by using the UNIX redirection mechanism (&gt;); for example, the user 
+might save a report on the <em>soils</em> map layer in a file called 
+<em>soil.txt</em> by typing: 
+
+<div class="code"><pre>
+r.info map=soils &gt; soil.txt
+</pre></div> 
+
+<h2><a name="notes">NOTES</a></h2>
+
+On large maps, the total number of cells in the map may not be displayed 
+with an accurate number. This is only cosmetic.
+
+<p>
+Some standards (ISO-C90) and compilers do not support the 'long long' type 
+as a 64-bit type. In the case that GRASS GIS was built with such a compiler, 
+an accuracy message may be displayed in the output of <em>r.info</em> 
+after Total Cells.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Below is a full report produced by <em>r.info</em> for the raster map 
+<i>slope</i> in the North Carolina sample data base: 
+
+<div class="code"><pre>
+r.info slope
+ +----------------------------------------------------------------------------+
+ | Map:      slope                          Date: Tue Nov  7 01:11:23 2006    |
+ | Mapset:   PERMANENT                      Login of Creator: helena          |
+ | Location: nc_spm_08_grass7                                                 |
+ | DataBase: /grassdata                                                       |
+ | Title:    South-West Wake county: slope in degrees ( slope_ned10m )        |
+ | Timestamp: none                                                            |
+ |----------------------------------------------------------------------------|
+ |                                                                            |
+ |   Type of Map:  raster               Number of Categories: 255             |
+ |   Data Type:    FCELL                                                      |
+ |   Rows:         1350                                                       |
+ |   Columns:      1500                                                       |
+ |   Total Cells:  2025000                                                    |
+ |        Projection: Lambert Conformal Conic                                 |
+ |            N:     228500    S:     215000   Res:    10                     |
+ |            E:     645000    W:     630000   Res:    10                     |
+ |   Range of data:    min = 0  max = 38.68939                                |
+ |                                                                            |
+ |   Data Source:                                                             |
+ |    raster elevation file elev_ned10m                                       |
+ |                                                                            |
+ |                                                                            |
+ |   Data Description:                                                        |
+ |    generated by r.slope.aspect                                             |
+ |                                                                            |
+ |   Comments:                                                                |
+ |    slope map elev = elev_ned10m                                            |
+ |    zfactor = 1.00 format = degrees                                         |
+ |    min_slope = 0.000000                                              |
+ |                                                                            |
+ +----------------------------------------------------------------------------+
+</pre></div>
+
+Alternatively, the output from <em>r.info</em> may be confined to a more terse
+subset of the available information by passing various flags to the module:
+
+<p>
+Output in shell script style, useful for eval (<tt>eval `r.info -g slope`</tt>):
+
+<div class="code"><pre>
+r.info -g slope
+north=228500
+south=215000
+east=645000
+west=630000
+nsres=10
+ewres=10
+rows=1350
+cols=1500
+cells=2025000
+datatype=FCELL
+ncats=255
+</pre></div>
+
+<p>
+Output the map data range:
+<div class="code"><pre>
+r.info -r slope
+min=0
+max=38.68939
+</pre></div>
+
+<p>
+Output the extended map data metadata in shell style:
+<div class="code"><pre>
+r.info -e slope
+map=slope
+mapset=PERMANENT
+location=nc_spm_08_grass7
+database=/grassdata
+date="Tue Nov  7 01:11:23 2006"
+creator="helena"
+title="South-West Wake county: slope in degrees (slope_ned10m)"
+timestamp="none"
+units="none"
+vdatum="none"
+source1="raster elevation file elev_ned10m"
+source2=""
+description="generated by r.slope.aspect"
+comments="slope map elev = elev_ned10mzfactor = 1.00 format = degreesmin_slp_allowed = 0.000000"
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.mapsets.html">g.mapsets</a>,
+<a href="r.coin.html">r.coin</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.report.html">r.report</a>,
+<a href="r.stats.html">r.stats</a>,
+<a href="r.support.html">r.support</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="r.what.html">r.what</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael O'Shea, 
+<a href="http://www.cecer.army.mil/">U.S. Army Construction Engineering Research Laboratory</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.info">r.info source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.info">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+.TH r.surf.contour 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.surf.contour\fR\fR  \- Generates surface raster map from rasterized contours.
+.SH KEYWORDS
+raster, surface, interpolation
+.SH SYNOPSIS
+\fBr.surf.contour\fR
+.br
+\fBr.surf.contour \-\-help\fR
+.br
+\fBr.surf.contour\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map containing contours
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIr.surf.contour\fR creates a raster elevation map from a rasterized
+contour map.  Elevation values are determined using procedures similar
+to a manual methods.
+To determine the elevation of a point on a contour map, an individual
+might interpolate its value from those of the two nearest contour lines
+(uphill and downhill).
+.PP
+\fIr.surf.contour\fR works in a similar way.  Initially, a vector map of
+the contour lines is made with the elevation of each line as an attribute.
+When the program \fIv.to.rast\fR
+is run on the vector map, continuous \(dqlines\(dq of rasters containing the
+contour line values will be the input for \fIr.surf.contour\fR. For each
+cell in the input map, either the cell is a contour line cell (which is
+given that value), or a flood fill is generated from that spot until the
+fill comes to two unique values. So the \fIr.surf.contour\fR algorithm
+linearly interpolates between contour lines. The flood fill
+is not allowed to cross over
+the rasterized contour lines, thus ensuring that an uphill and downhill
+contour value will be the two values chosen.  \fIr.surf.contour\fR
+interpolates from the uphill and downhill values by the true distance.
+.SS Parameters:
+.IP "\fBinput=\fR\fIname\fR   " 4m
+.br
+Name of an existing raster map that contains a set of
+initial category values (i.e., some cells contain known elevation
+values (denoting contours) while the rest contain NULL values).
+.IP "\fBoutput=\fR\fIname\fR   " 4m
+.br
+Name to be assigned to new output raster map that represents
+a smooth (e.g., elevation) surface generated from
+the known category values in the input raster map layer.
+.PP
+An existing MASK raster map is respected for both reading \fIinput\fR
+and writing \fIoutput\fR.
+.SH NOTES
+\fIr.surf.contour\fR works well under the following circumstances:
+1) the contour lines extend to the the edge of the current region,
+2) the program is run at the same resolution as that of the input map,
+3) there are no disjointed contour lines,
+and 4) no spot elevation data BETWEEN contour lines exist.  Spot elevations at
+the tops of hills and the bottoms of depressions, on the other hand, improve
+the output greatly.
+Violating these constraints will cause non\-intuitive anomalies to appear in
+the output map.  Run \fI r.slope.aspect
+\fR on \fIr.surf.contour\fR results to locate potential anomalies.
+.PP
+The running of \fIr.surf.contour\fR is very sensitive to the resolution of
+rasterized vector map.  If multiple contour lines go through the same raster,
+slight anomalies may occur.  The speed of \fIr.surf.contour\fR is dependent
+on how far \(dqapart\(dq the contour lines are from each other (as measured in
+raster cells).  Since a flood fill algorithm is used, the program\(cqs running
+time will grow exponentially with the distance between contour lines.
+.SH EXAMPLE
+Example to create contour lines from elevation model, then recreating DEM
+from these contour lines along with differences analysis (North Carolina
+sample data set):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+# get minimum elevation value
+r.univar elevation
+# generate vector contour lines
+r.contour input=elevation output=contours_5m step=5 minlevel=50
+# rasterize contour lines
+v.info \-c contours_5m
+v.to.rast input=contours_5m output=contours_5m use=attr attribute_column=level
+# generate DEM from rasterized contour lines
+r.surf.contour input=contours_5m output=elevation_from_cont5m
+# calculate difference map
+r.mapcalc \(dqdiff = elevation \- elevation_from_cont5m\(dq
+r.colors diff color=differences
+# analyze differences statistically
+r.univar diff
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.mapcalc,
+r.slope.aspect,
+r.surf.idw,
+wxGUI vector digitizer,
+v.surf.idw,
+v.surf.rst,
+v.to.rast
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHOR
+Chuck Ehlschlaeger, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.surf.contour source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

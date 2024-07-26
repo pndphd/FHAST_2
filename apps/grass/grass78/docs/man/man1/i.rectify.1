@@ -1,0 +1,257 @@
+.TH i.rectify 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.rectify\fR\fR  \- Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points.
+.SH KEYWORDS
+imagery, rectify, geometry
+.SH SYNOPSIS
+\fBi.rectify\fR
+.br
+\fBi.rectify \-\-help\fR
+.br
+\fBi.rectify\fR [\-\fBcat\fR] \fBgroup\fR=\fIname\fR  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]  \fBextension\fR=\fIstring\fR \fBorder\fR=\fIinteger\fR  [\fBresolution\fR=\fIfloat\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\fBmethod\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Use current region settings in target location (def.=calculate smallest area)
+.IP "\fB\-a\fR" 4m
+.br
+Rectify all raster maps in group
+.IP "\fB\-t\fR" 4m
+.br
+Use thin plate spline
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBextension\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Output raster map(s) suffix
+.IP "\fBorder\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Rectification polynomial order (1\-3)
+.br
+Options: \fI1\-3\fR
+.br
+Default: \fI1\fR
+.IP "\fBresolution\fR=\fIfloat\fR" 4m
+.br
+Target resolution (ignored if \-c flag used)
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Interpolation method to use
+.br
+Options: \fInearest, linear, cubic, lanczos, linear_f, cubic_f, lanczos_f\fR
+.br
+Default: \fInearest\fR
+.SH DESCRIPTION
+\fIi.rectify\fR uses the control points included in the source data
+or identified with the
+Ground Control Points Manager
+to calculate a transformation matrix and then converts x,y
+cell coordinates to standard map coordinates for each pixel
+in the image. The result is a planimetric image with a
+transformed coordinate system (i.e., a different coordinate
+system than before it was rectified). Supported transformation methods
+are first, second, and third order polynomial and thin plate spline.
+Thin plate spline is recommended for ungeoreferenced satellite imagery
+where ground control points (GCPs) are included. Examples are
+NOAA/AVHRR
+and ENVISAT
+imagery which include throusands of GCPs.
+.PP
+If no ground control points are available, the
+Ground Control Points Manager
+must be run before \fIi.rectify\fR. An image must be
+georeferences before it can reside in a standard coordinate
+LOCATION, and therefore be analyzed with the other map
+layers in the standard coordinate LOCATION. Upon
+completion of \fIi.rectify\fR, the rectified image is
+deposited in the target standard coordinate LOCATION. This
+LOCATION is selected using
+\fIi.target\fR.
+.PP
+More than one raster map may be rectified at a time. Each cell file
+should be given a unique output file name. The rectified image or
+rectified raster maps will be located in the target LOCATION when the
+program is completed. The original unrectified files are not modified
+or removed.
+.PP
+If the \fB\-c\fR flag is used, \fIi.rectify\fR will only rectify that
+portion of the image or raster map that occurs within the chosen window
+region in the target location, and only that portion of the cell
+file will be relocated in the target database. It is
+important therefore, to check the current mapset window in
+the target LOCATION if the \fB\-c\fR flag is used.
+.PP
+If you are rectifying a file with plans to patch it to
+another file using the GRASS program \fIr.patch\fR,
+choose option number one, the current window in the target
+location. This window, however, must be the default window
+for the target LOCATION. When a file being rectified is
+smaller than the default window in which it is being
+rectified, NULLs are added to the rectified file. Patching
+files of the same size that contain NULL data,
+eliminates the possibility of a no\-data line in the patched
+result. This is because, when the images are patched, the
+NULLs in the image are \(dqcovered\(dq with non\-NULL pixel
+values. When rectifying files that are going to be
+patched, rectify all of the files using the same default
+window.
+.SS Coordinate transformation
+.PP
+The desired order of transformation (1, 2, or 3) is selected with the
+\fBorder\fR option.
+The program will calculate the RMSE and check the required number of points.
+.SS Linear affine transformation (1st order transformation)
+.br
+x\(cq = ax + by + c
+.br
+y\(cq = Ax + By + C
+The a,b,c,A,B,C are determined by least squares regression
+based on the control points entered.  This transformation
+applies scaling, translation and rotation. It is NOT a
+general purpose rubber\-sheeting like TPS, nor is it ortho\-photo
+rectification using a DEM, not second order polynomial,
+etc. It can be used if (1) you have geometrically correct
+images, and (2) the terrain or camera distortion effect can
+be ignored.
+.SS Polynomial Transformation Matrix (2nd, 3d order transformation)
+\fIi.rectify\fR uses a first, second, or third order transformation
+matrix to calculate the registration coefficients. The number
+of control points required for a selected order of transformation
+(represented by n) is
+.br
+((n + 1) * (n + 2) / 2)
+or 3, 6, and 10 respectively. It is strongly recommended
+that one or more additional points be identified to allow
+for an overly\-determined transformation calculation which
+will generate the Root Mean Square (RMS) error values for
+each included point. The RMS error values for all the
+included control points are immediately recalculated when
+the user selects a different transformation order from the
+menu bar. The polynomial equations are performed using a
+modified Gaussian elimination method.
+.SS Thin plate spline (TPS) transformation
+TPS transformation is selected with the \fB\-t\fR flag. This method of
+coordinate transformation is recommended for satellite imagery where
+hundreds or thousands of GCPs are included, and for historical printed
+or scanned maps with unknown georeferencing and/or known localized
+distortions.
+.PP
+TPS combines a linear affine transformation with individual
+transformation coefficients for each GCP, using the radial basis kernel
+function with the distance \fIdist\fR between any two points:
+.br
+dist\u2\d * log(dist)
+As a consequence, localized distortions can be removed with TPS
+transformation. For example, scan line sensors will have due to the
+changing viewing angle larger distortions towards the end points of the
+scan line than at the center of the scan line. Even higher order
+polynomial transformations are not able to remove these locally
+different distortions, but TPS transformation can. For best results,
+TPS requires an even and, for localized distortions, dense spacing of
+GCPs.
+.SS Resampling method
+.PP
+The rectified data is resampled with one of seven different methods:
+\fInearest\fR, \fIbilinear\fR, \fIcubic\fR, \fIlanczos\fR,
+\fIbilinear_f\fR, \fIcubic_f\fR, or \fIlanczos_f\fR.
+.PP
+The \fImethod=nearest\fR method, which performs a nearest neighbor assignment,
+is the fastest of the resampling methods. It is primarily used for
+categorical data such as a land use classification, since it will not change
+the values of the data cells. The \fImethod=bilinear\fR method determines the new
+value of the cell based on a weighted distance average of the 4 surrounding
+cells in the input map. The \fImethod=cubic\fR method determines the new value of
+the cell based on a weighted distance average of the 16 surrounding cells in
+the input map.  The \fImethod=lanczos\fR method determines the new value of
+the cell based on a weighted distance average of the 25 surrounding cells in
+the input map.
+.PP
+The bilinear, cubic and lanczos interpolation methods are most appropriate for
+continuous data and cause some smoothing. These options should not be used
+with categorical data, since the cell values will be altered.
+.PP
+In the bilinear, cubic and lanczos methods, if any of the surrounding cells used to
+interpolate the new cell value are NULL, the resulting cell will be NULL, even if
+the nearest cell is not NULL. This will cause some thinning along NULL borders,
+such as the coasts of land areas in a DEM. The bilinear_f, cubic_f and lanczos_f
+interpolation methods can be used if thinning along NULL edges is not desired.
+These methods \(dqfall back\(dq to simpler interpolation methods along NULL borders.
+That is, from lanczos to cubic to bilinear to nearest.
+.PP
+If nearest neighbor assignment is used, the output map has the same raster
+format as the input map. If any of the other interpolations is used, the
+output map is written as floating point.
+.PP
+.SH NOTES
+If \fIi.rectify\fR starts normally but after some time the following text is seen:
+.br
+ERROR: Error writing segment file
+.br
+the user may try the \fB\-c\fR flag or the module needs more free space
+on the hard drive.
+.SH SEE ALSO
+The GRASS 4 \fI
+Image
+Processing manual\fR
+.PP
+\fI
+m.transform,
+r.proj,
+v.proj,
+i.group,
+i.target
+.br
+Ground Control Points Manager
+\fR
+.SH AUTHORS
+William R. Enslin,
+Michigan State University,
+Center for Remote Sensing
+.PP
+Modified for GRASS 5.0 by:
+.br
+Luca Palmeri (palmeri@ux1.unipd.it)
+.br
+Bill Hughes
+.br
+Pierre de Mouveaux (pmx@audiovu.com)
+.br
+CMD mode by Bob Covill
+.SH SOURCE CODE
+.PP
+Available at: i.rectify source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,277 @@
+.TH r.in.bin 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.bin\fR\fR  \- Import a binary raster file into a GRASS raster map layer.
+.SH KEYWORDS
+raster, import
+.SH SYNOPSIS
+\fBr.in.bin\fR
+.br
+\fBr.in.bin \-\-help\fR
+.br
+\fBr.in.bin\fR [\-\fBfdsbh\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBtitle\fR=\fIphrase\fR]   [\fBbytes\fR=\fIinteger\fR]   [\fBheader\fR=\fIinteger\fR]   [\fBbands\fR=\fIinteger\fR]   [\fBorder\fR=\fIstring\fR]   [\fBnorth\fR=\fIfloat\fR]   [\fBsouth\fR=\fIfloat\fR]   [\fBeast\fR=\fIfloat\fR]   [\fBwest\fR=\fIfloat\fR]   [\fBrows\fR=\fIinteger\fR]   [\fBcols\fR=\fIinteger\fR]   [\fBanull\fR=\fIfloat\fR]   [\fBflip\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Import as floating\-point data (default: integer)
+.IP "\fB\-d\fR" 4m
+.br
+Import as double\-precision floating\-point data (default: integer)
+.IP "\fB\-s\fR" 4m
+.br
+Signed data (two\(cqs complement)
+.IP "\fB\-b\fR" 4m
+.br
+Byte swap the data during import
+.IP "\fB\-h\fR" 4m
+.br
+Get region info from GMT style header
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of binary raster file to be imported
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output name or prefix if several bands are imported
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for resultant raster map
+.IP "\fBbytes\fR=\fIinteger\fR" 4m
+.br
+Number of bytes per cell
+.br
+Options: \fI1, 2, 4, 8\fR
+.IP "\fBheader\fR=\fIinteger\fR" 4m
+.br
+Header size in bytes
+.br
+Default: \fI0\fR
+.IP "\fBbands\fR=\fIinteger\fR" 4m
+.br
+Number of bands in input file
+.br
+Bands must be in band\-sequential order
+.br
+Default: \fI1\fR
+.IP "\fBorder\fR=\fIstring\fR" 4m
+.br
+Output byte order
+.br
+Options: \fIbig, little, native, swap\fR
+.br
+Default: \fInative\fR
+.IP "\fBnorth\fR=\fIfloat\fR" 4m
+.br
+Northern limit of geographic region (outer edge)
+.IP "\fBsouth\fR=\fIfloat\fR" 4m
+.br
+Southern limit of geographic region (outer edge)
+.IP "\fBeast\fR=\fIfloat\fR" 4m
+.br
+Eastern limit of geographic region (outer edge)
+.IP "\fBwest\fR=\fIfloat\fR" 4m
+.br
+Western limit of geographic region (outer edge)
+.IP "\fBrows\fR=\fIinteger\fR" 4m
+.br
+Number of rows
+.IP "\fBcols\fR=\fIinteger\fR" 4m
+.br
+Number of columns
+.IP "\fBanull\fR=\fIfloat\fR" 4m
+.br
+Set Value to NULL
+.IP "\fBflip\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Flip input horizontal and/or vertical
+.br
+Options: \fIh, v\fR
+.br
+\fBh\fR: Flip input horizontal (East \- West)
+.br
+\fBv\fR: Flip input vertical (North \- South)
+.SH DESCRIPTION
+\fIr.in.bin\fR allows the user to create a (binary) GRASS raster map layer
+from a variety of binary raster data formats.
+.PP
+The \fB \-s\fR flag is used for importing two\(cqs\-complement signed data.
+.PP
+The \fB \-h\fR flag is used to read region information from a Generic
+Mapping Tools (GMT) type binary header. It is compatible with GMT binary
+grid types 1 and 2.
+.PP
+The north, south, east, and west field values are the coordinates of the
+edges of the geographic region. The rows and cols values describe the dimensions
+of the matrix of data to follow. If the input is a
+GMT binary array
+(\-h flag), the six dimension fields (north, south, east, west, rows and cols)
+are obtained from the GMT header. If the bytes field is entered incorrectly an
+error will be generated suggesting a closer bytes value.
+.PP
+\fIr.in.bin\fR can be used to import numerous binary arrays including:
+ETOPO30, ETOPO\-5, ETOPO\-2, Globe DEM, BIL, AVHRR and GMT binary arrays
+(ID 1 & 2).
+.SH NOTES
+If optional parameters are not supplied, \fBr.in.bin\fR attempts
+to calculate them. For example if the rows and columns parameters are
+not entered, \fBr.in.bin\fR automatically calculates them by subtracting
+south from north and west from east. This will only produce correct
+results if the raster resolution equals 1. Also, if the north, south,
+east, and west parameters are not entered, \fBr.in.bin\fR assigns
+them from the rows and columns parameters. In the AVHRR example (see below),
+the raster would be assigned a north=128, south=0, east=128, west=0.
+.PP
+The geographic coordinates north, south, east, and west
+describe the outer edges of the geographic region. They run along the edges of
+the cells at the edge of the geographic region and \fInot\fR through the
+center of the cells at the edges.
+.PP
+Eastern limit of geographic region (in projected coordinates must be east
+of the west parameter value, but in geographical coordinates will wrap
+around the globe; user errors can be detected by comparing the \fIewres\fR and
+\fInsres\fR values of the imported map layer carefully).
+.br
+Western limit of geographic region (in projected coordinates must be west
+of the east parameter value, but in geographical coordinates will wrap
+around the globe; user errors can be detected by comparing the \fIewres\fR and
+\fInsres\fR values of the imported map layer carefully).
+.PP
+Notes on (non)signed data:
+.PP
+If you use the \fB\-s\fR flag, the highest bit is the
+sign bit. If this is 1, the data is negative, and the data interval is half of
+the unsigned (not exactly).
+.PP
+This flag is only used if \fBbytes=\fR 1. If \fBbytes\fR is greater
+than 1, the flag is ignored.
+.SH EXAMPLES
+.SS GTOPO30 DEM
+The following is a sample call of \fIr.in.bin\fR to import
+GTOPO30 DEM
+data:
+.PP
+.br
+.nf
+\fC
+r.in.bin \-sb input=E020N90.DEM output=gtopo30 bytes=2 north=90 south=40
+east=60 west=20 r=6000 c=4800
+\fR
+.fi
+.PP
+(you can add \(dqanull=\-9999\(dq if you want sea level to have a NULL value)
+.SS GMT
+The following is a sample call of \fIr.in.bin\fR to import a GMT
+type 1 (float) binary array:
+.PP
+.br
+.nf
+\fC
+r.in.bin \-hf input=sample.grd output=sample.grass
+\fR
+.fi
+.PP
+(\-b could be used to swap bytes if required)
+.SS AVHRR
+The following is a sample call of \fIr.in.bin\fR to import an AVHRR image:
+.PP
+.br
+.nf
+\fC
+r.in.bin in=p07_b6.dat out=avhrr c=128 r=128
+\fR
+.fi
+.SS ETOPO2
+The following is a sample call of \fIr.in.bin\fR to import
+ETOPO2 DEM data (here full data set):
+.PP
+.br
+.nf
+\fC
+r.in.bin ETOPO2.dos.bin out=ETOPO2min r=5400 c=10800 n=90 s=\-90 w=\-180 e=180 bytes=2
+r.colors ETOPO2min rules=terrain
+\fR
+.fi
+.SS TOPEX/SRTM30 PLUS
+The following is a sample call of \fIr.in.bin\fR to import
+SRTM30 PLUS data:
+.PP
+.br
+.nf
+\fC
+r.in.bin \-sb input=e020n40.Bathymetry.srtm output=e020n40_topex \(rs
+         bytes=2 north=40 south=\-10 east=60 west=20 r=6000 c=4800
+r.colors e020n40_topex rules=etopo2
+\fR
+.fi
+.SS GPCP
+The following is a sample call of \fIr.in.bin\fR to import GPCP 1DD v1.2 data:
+.PP
+.br
+.nf
+\fC
+YEAR=\(dq2000\(dq
+MONTH=\(dq01\(dq
+# number of days of this month
+MDAYS=\(gadate \-d\(dq${YEAR}\-${MONTH}\-01 + 1 month \- 1 day\(dq +%d\(ga
+r.in.bin in=gpcp_1dd_v1.2_p1d.${YEAR}${MONTH} out=gpcp_${YEAR}.${MONTH}. \(rs
+         order=big bytes=4 \-f header=1440 anull=\-99999 \(rs
+         n=90 s=\-90 w=0 e=360 rows=180 cols=360 bands=$MDAYS
+\fR
+.fi
+.PP
+The following is a sample call of \fIr.in.bin\fR to import GPCP v2.2 data:
+.PP
+.br
+.nf
+\fC
+r.in.bin in=gpcp_v2.2_psg.1979 out=gpcp_1979. \(rs
+         order=big bytes=4 \-f header=576 anull=\-99999 \(rs
+         n=90 s=\-90 w=0 e=360 rows=72 cols=144 bands=12
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.import,
+r.out.bin,
+r.in.ascii,
+r.out.ascii,
+r.in.gdal,
+r.out.gdal,
+r.in.srtm
+\fR
+.SH AUTHORS
+Jacques Bouchard, France (bouchard@onera.fr)
+.br
+Bob Covill, Canada (bcovill@tekmap.ns.ca)
+.br
+Markus Metz
+.br
+Man page: Zsolt Felker (felker@c160.pki.matav.hu)
+.SH SOURCE CODE
+.PP
+Available at: r.in.bin source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

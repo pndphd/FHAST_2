@@ -1,0 +1,191 @@
+.TH v.lidar.correction 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lidar.correction\fR\fR  \- Corrects the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.
+.SH KEYWORDS
+vector, LIDAR
+.SH SYNOPSIS
+\fBv.lidar.correction\fR
+.br
+\fBv.lidar.correction \-\-help\fR
+.br
+\fBv.lidar.correction\fR [\-\fBe\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBterrain\fR=\fIname\fR  [\fBew_step\fR=\fIfloat\fR]   [\fBns_step\fR=\fIfloat\fR]   [\fBlambda_c\fR=\fIfloat\fR]   [\fBtch\fR=\fIfloat\fR]   [\fBtcl\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Estimate point density and distance and quit
+.br
+Estimate point density and distance in map units for the input vector points within the current region extents and quit
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input observation vector map name (v.lidar.growing output)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output classified vector map name
+.IP "\fBterrain\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output only \(cqterrain\(cq points vector map
+.IP "\fBew_step\fR=\fIfloat\fR" 4m
+.br
+Length of each spline step in the east\-west direction
+.br
+Default: 25 * east\-west resolution
+.IP "\fBns_step\fR=\fIfloat\fR" 4m
+.br
+Length of each spline step in the north\-south direction
+.br
+Default: 25 * north\-south resolution
+.IP "\fBlambda_c\fR=\fIfloat\fR" 4m
+.br
+Regularization weight in reclassification evaluation
+.br
+Default: \fI1\fR
+.IP "\fBtch\fR=\fIfloat\fR" 4m
+.br
+High threshold for object to terrain reclassification
+.br
+Default: \fI2\fR
+.IP "\fBtcl\fR=\fIfloat\fR" 4m
+.br
+Low threshold for terrain to object reclassification
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIv.lidar.correction\fR is the last of three steps to filter LiDAR
+data. The filter aims to recognize and extract attached and
+detached object (such as buildings, bridges, power lines,  trees, etc.)
+in order to create a Digital Terrain Model.
+.br
+.br
+The module, which could be iterated several times, makes a comparison
+between the LiDAR observations and a bilinear spline interpolation with
+a Tychonov regularization parameter performed on the TERRAIN SINGLE PULSE
+points only. The gradient is minimized by the regularization parameter.
+Analysis of the residuals between the observations and the interpolated
+values results in four cases (the next classification is referred to that
+of the v.lidar.growing output vector):
+.br
+.br
+\fBa)\fR Points classified as TERRAIN differing more than a threshold
+value are interpreted and reclassified as OBJECT, for both single and
+double pulse points.
+.br
+.br
+\fBb)\fR Points classified as OBJECT and closed enough to the
+interpolated surface are interpreted and reclassified as TERRAIN, for
+both single and double pulse points.
+.PP
+The length (in mapping units) of each spline step is defined by
+\fBew_step\fR for the east\-west direction and \fBns_step\fR for the
+north\-south direction.
+.SH NOTES
+The input should be the output of \fIv.lidar.growing\fR module or the
+output of this \fIv.lidar.correction\fR itself. That means, this module
+could be applied more times (although, two are usually enough) for a better
+filter solution. The outputs are a vector map with a final point classification
+as as TERRAIN SINGLE PULSE, TERRAIN DOUBLE PULSE, OBJECT SINGLE PULSE or
+OBJECT DOUBLE PULSE; and an vector map with only the points classified as
+TERRAIN SINGLE PULSE or TERRAIN DOUBLE PULSE.
+The final result of the whole procedure (\fIv.lidar.edgedetection\fR,
+\fIv.lidar.growing\fR, \fIv.lidar.correction\fR) will be a point
+classification in four categories:
+.br
+.br
+TERRAIN SINGLE PULSE (cat = 1, layer = 2)
+.br
+TERRAIN DOUBLE PULSE (cat = 2, layer = 2)
+.br
+OBJECT SINGLE PULSE (cat = 3, layer = 2)
+.br
+OBJECT DOUBLE PULSE (cat = 4, layer = 2)
+.SH EXAMPLES
+.SS Basic correction procedure
+.br
+.nf
+\fC
+v.lidar.correction input=growing output=correction out_terrain=only_terrain
+\fR
+.fi
+.SS Second correction procedure
+.br
+.nf
+\fC
+v.lidar.correction input=correction output=correction_bis terrain=only_terrain_bis
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.lidar.edgedetection,
+v.lidar.growing,
+v.surf.bspline,
+v.surf.rst,
+v.in.lidar,
+v.in.ascii
+\fR
+.SH AUTHORS
+Original version of program in GRASS 5.4:
+.br
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni and Mirko Reguzzoni
+.br
+.br
+Update for GRASS 6.X:
+.br
+Roberto Antolin and Gonzalo Moreno
+.SH REFERENCES
+Antolin, R. et al., 2006. Digital terrain models determination by LiDAR
+technology: Po basin experimentation. Bolletino di Geodesia e Scienze
+Affini, anno LXV, n. 2, pp. 69\-89.
+.br
+.br
+Brovelli M. A., Cannata M., Longoni U.M., 2004. LIDAR Data Filtering and
+DTM Interpolation Within GRASS, Transactions in GIS, April 2004,  vol. 8,
+iss. 2, pp. 155\-174(20), Blackwell Publishing Ltd.
+.br
+.br
+Brovelli M. A., Cannata M., 2004. Digital Terrain model reconstruction in
+urban areas from airborne laser scanning data: the method and an  example
+for Pavia (Northern Italy). Computers and Geosciences 30 (2004) pp.325\-331
+.br
+.br
+Brovelli M. A. and Longoni U.M., 2003. Software per il filtraggio di dati
+LIDAR, Rivista dell\(cqAgenzia del Territorio, n. 3\-2003, pp. 11\-22 (ISSN 1593\-2192).
+.br
+.br
+Brovelli M. A., Cannata M. and Longoni U.M., 2002. DTM LIDAR in area urbana,
+Bollettino SIFET N.2, pp. 7\-26.
+.br
+.br
+Performances of the filter can be seen in the
+ISPRS WG III/3 Comparison of Filters
+report by Sithole, G. and Vosselman, G., 2003.
+.SH SOURCE CODE
+.PP
+Available at: v.lidar.correction source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

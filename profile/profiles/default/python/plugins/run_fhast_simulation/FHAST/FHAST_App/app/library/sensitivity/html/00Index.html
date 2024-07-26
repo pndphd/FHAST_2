@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Global Sensitivity Analysis of Model Outputs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Global Sensitivity Analysis of Model Outputs
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;sensitivity&rsquo; version 1.28.0</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../NEWS">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<p style="text-align: center;">
+<a href="# "> </a>
+<a href="#A">A</a>
+<a href="#C">C</a>
+<a href="#D">D</a>
+<a href="#E">E</a>
+<a href="#F">F</a>
+<a href="#G">G</a>
+<a href="#H">H</a>
+<a href="#I">I</a>
+<a href="#L">L</a>
+<a href="#M">M</a>
+<a href="#P">P</a>
+<a href="#Q">Q</a>
+<a href="#R">R</a>
+<a href="#S">S</a>
+<a href="#T">T</a>
+<a href="#W">W</a>
+</p>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sensitivity-package.html">sensitivity-package</a></td>
+<td>Sensitivity Analysis</td></tr>
+</table>
+
+<h2><a id="A">-- A --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="addelman_const.html">addelman_const</a></td>
+<td>Addelman and Kempthorne construction</td></tr>
+<tr><td style="width: 25%;"><a href="decoupling.html">ask</a></td>
+<td>Decoupling Simulations and Estimations</td></tr>
+<tr><td style="width: 25%;"><a href="sb.html">ask.sb</a></td>
+<td>Sequential Bifurcations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolGP.html">ask.sobolGP</a></td>
+<td>Kriging-based sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrec.html">ask.sobolrec</a></td>
+<td>Recursive estimation of Sobol' indices</td></tr>
+<tr><td style="width: 25%;"><a href="testmodels.html">atantemp.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+</table>
+
+<h2><a id="C">-- C --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="testmodels.html">campbell1D.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="correlRatio.html">correlRatio</a></td>
+<td>Correlation Ratio</td></tr>
+</table>
+
+<h2><a id="D">-- D --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="decoupling.html">decoupling</a></td>
+<td>Decoupling Simulations and Estimations</td></tr>
+<tr><td style="width: 25%;"><a href="delsa.html">delsa</a></td>
+<td>Distributed Evaluation of Local Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">dgumbel.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="discrepancyCriteria_cplus.html">discrepancyCriteria_cplus</a></td>
+<td>Discrepancy measure</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">dnorm.trunc</a></td>
+<td>Truncated distributions</td></tr>
+</table>
+
+<h2><a id="E">-- E --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="decoupling.html">extract</a></td>
+<td>Decoupling Simulations and Estimations</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">extract.shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">extract.sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+</table>
+
+<h2><a id="F">-- F --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="fast99.html">fast99</a></td>
+<td>Extended Fourier Amplitude Sensitivity Test</td></tr>
+<tr><td style="width: 25%;"><a href="testmodels.html">friedman.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+</table>
+
+<h2><a id="G">-- G --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="pcc.html">ggplot.pcc</a></td>
+<td>Partial Correlation Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="pme.html">ggplot.pme_knn</a></td>
+<td>Data-given proportional marginal effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="qosa.html">ggplot.qosa</a></td>
+<td>Quantile-oriented sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sensiFdiv.html">ggplot.sensiFdiv</a></td>
+<td>Sensitivity Indices based on Csiszar f-divergence</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermEx.html">ggplot.shapleyPermEx</a></td>
+<td>Estimation of Shapley effects by examining all permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermRand.html">ggplot.shapleyPermRand</a></td>
+<td>Estimation of Shapley effects by random permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">ggplot.shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">ggplot.sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">ggplot.sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">ggplot.sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolEff.html">ggplot.sobolEff</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Janon-Monod)</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">ggplot.soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">ggplot.sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmartinez.html">ggplot.sobolmartinez</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">ggplot.sobolMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="sobolowen.html">ggplot.sobolowen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Owen (2013)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrank.html">ggplot.sobolrank</a></td>
+<td>First-order sensitivity indices estimation via ranking</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroalhs.html">ggplot.sobolroalhs</a></td>
+<td>Sobol' Indices Estimation Using Replicated OA-based LHS</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroauc.html">ggplot.sobolroauc</a></td>
+<td>Sobol' Indices estimation under inequality constraints</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSalt.html">ggplot.sobolSalt</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices based on Saltelli schemes</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">ggplot.sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">ggplot.sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">ggplot.sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="soboltouati.html">ggplot.soboltouati</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011) and Touati (2016))</td></tr>
+<tr><td style="width: 25%;"><a href="src.html">ggplot.src</a></td>
+<td>Standardized Regression Coefficients</td></tr>
+</table>
+
+<h2><a id="H">-- H --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="testmodels.html">heterdisc.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+</table>
+
+<h2><a id="I">-- I --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="testmodels.html">ishigami.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+</table>
+
+<h2><a id="L">-- L --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="testmodels.html">linkletter.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="lmg.html">lmg</a></td>
+<td>LMG R-squared decomposition for linear and logistic regression models</td></tr>
+</table>
+
+<h2><a id="M">-- M --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="testmodels.html">matyas.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="maximin_cplus.html">maximin_cplus</a></td>
+<td>Maximin criterion</td></tr>
+<tr><td style="width: 25%;"><a href="morris.html">morris</a></td>
+<td>Morris's Elementary Effects Screening Method</td></tr>
+<tr><td style="width: 25%;"><a href="testmodels.html">morris.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="morrisMultOut.html">morrisMultOut</a></td>
+<td>Morris's Elementary Effects Screening Method for Multidimensional Outputs</td></tr>
+</table>
+
+<h2><a id="P">-- P --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="parameterSets.html">parameterSets</a></td>
+<td>Generate parameter sets</td></tr>
+<tr><td style="width: 25%;"><a href="pcc.html">pcc</a></td>
+<td>Partial Correlation Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">pgumbel.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="PLI.html">PLI</a></td>
+<td>Perturbed-Law based sensitivity Indices (PLI) for failure probability</td></tr>
+<tr><td style="width: 25%;"><a href="PLIquantile.html">PLIquantile</a></td>
+<td>Perturbed-Law based sensitivity Indices (PLI) for quantile</td></tr>
+<tr><td style="width: 25%;"><a href="PLIquantile_multivar.html">PLIquantile_multivar</a></td>
+<td>Perturbed-Law based sensitivity Indices (PLI) for quantile and simultaneous perturbations of 2 inputs</td></tr>
+<tr><td style="width: 25%;"><a href="PLIsuperquantile.html">PLIsuperquantile</a></td>
+<td>Perturbed-Law based sensitivity Indices (PLI) for superquantile</td></tr>
+<tr><td style="width: 25%;"><a href="PLIsuperquantile_multivar.html">PLIsuperquantile_multivar</a></td>
+<td>Perturbed-Law based sensitivity Indices (PLI) for superquantile and simultaneous perturbations of 2 inputs</td></tr>
+<tr><td style="width: 25%;"><a href="plot.support.html">plot</a></td>
+<td>Support index functions: Measuring the effect of input variables over their support</td></tr>
+<tr><td style="width: 25%;"><a href="delsa.html">plot.delsa</a></td>
+<td>Distributed Evaluation of Local Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="fast99.html">plot.fast99</a></td>
+<td>Extended Fourier Amplitude Sensitivity Test</td></tr>
+<tr><td style="width: 25%;"><a href="lmg.html">plot.lmg</a></td>
+<td>LMG R-squared decomposition for linear and logistic regression models</td></tr>
+<tr><td style="width: 25%;"><a href="morris.html">plot.morris</a></td>
+<td>Morris's Elementary Effects Screening Method</td></tr>
+<tr><td style="width: 25%;"><a href="pcc.html">plot.pcc</a></td>
+<td>Partial Correlation Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="pme.html">plot.pme_knn</a></td>
+<td>Data-given proportional marginal effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="pmvd.html">plot.pmvd</a></td>
+<td>Proportional Marginal Variance Decomposition indices for linear and logistic models</td></tr>
+<tr><td style="width: 25%;"><a href="qosa.html">plot.qosa</a></td>
+<td>Quantile-oriented sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sb.html">plot.sb</a></td>
+<td>Sequential Bifurcations</td></tr>
+<tr><td style="width: 25%;"><a href="sensiFdiv.html">plot.sensiFdiv</a></td>
+<td>Sensitivity Indices based on Csiszar f-divergence</td></tr>
+<tr><td style="width: 25%;"><a href="sensiHSIC.html">plot.sensiHSIC</a></td>
+<td>Sensitivity Indices based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermEx.html">plot.shapleyPermEx</a></td>
+<td>Estimation of Shapley effects by examining all permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermRand.html">plot.shapleyPermRand</a></td>
+<td>Estimation of Shapley effects by random permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">plot.shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="shapleySubsetMc.html">plot.shapleySubsetMc</a></td>
+<td>Estimation of Shapley effects from data using nearest neighbors method</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">plot.sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">plot.sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">plot.sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolEff.html">plot.sobolEff</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Janon-Monod)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolGP.html">plot.sobolGP</a></td>
+<td>Kriging-based sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">plot.soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">plot.sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmartinez.html">plot.sobolmartinez</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">plot.sobolMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="sobolowen.html">plot.sobolowen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Owen (2013)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrank.html">plot.sobolrank</a></td>
+<td>First-order sensitivity indices estimation via ranking</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrec.html">plot.sobolrec</a></td>
+<td>Recursive estimation of Sobol' indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrep.html">plot.sobolrep</a></td>
+<td>Sobol' indices estimation based on replicated orthogonal arrays</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroalhs.html">plot.sobolroalhs</a></td>
+<td>Sobol' Indices Estimation Using Replicated OA-based LHS</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroauc.html">plot.sobolroauc</a></td>
+<td>Sobol' Indices estimation under inequality constraints</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSalt.html">plot.sobolSalt</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices based on Saltelli schemes</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">plot.sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">plot.sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">plot.sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="soboltouati.html">plot.soboltouati</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011) and Touati (2016))</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">plot.sobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="src.html">plot.src</a></td>
+<td>Standardized Regression Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="plot.support.html">plot.support</a></td>
+<td>Support index functions: Measuring the effect of input variables over their support</td></tr>
+<tr><td style="width: 25%;"><a href="testHSIC.html">plot.testHSIC</a></td>
+<td>Tests of Independence based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="morris.html">plot3d.morris</a></td>
+<td>Morris's Elementary Effects Screening Method</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">plotFG</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">plotFG.sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">plotFG.sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">plotMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">plotMultOut.sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">plotMultOut.sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">plotMultOut.sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">plotMultOut.soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">plotMultOut.sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">plotMultOut.sobolMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="pme.html">pme_knn</a></td>
+<td>Data-given proportional marginal effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="pmvd.html">pmvd</a></td>
+<td>Proportional Marginal Variance Decomposition indices for linear and logistic models</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">pnorm.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="PoincareChaosSqCoef.html">PoincareChaosSqCoef</a></td>
+<td>Squared coefficients computation in generalized chaos</td></tr>
+<tr><td style="width: 25%;"><a href="PoincareConstant.html">PoincareConstant</a></td>
+<td>Poincare constants for Derivative-based Global Sensitivity Measures (DGSM)</td></tr>
+<tr><td style="width: 25%;"><a href="PoincareOptimal.html">PoincareOptimal</a></td>
+<td>Optimal Poincare constants for Derivative-based Global Sensitivity Measures (DGSM)</td></tr>
+<tr><td style="width: 25%;"><a href="delsa.html">print.delsa</a></td>
+<td>Distributed Evaluation of Local Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="fast99.html">print.fast99</a></td>
+<td>Extended Fourier Amplitude Sensitivity Test</td></tr>
+<tr><td style="width: 25%;"><a href="lmg.html">print.lmg</a></td>
+<td>LMG R-squared decomposition for linear and logistic regression models</td></tr>
+<tr><td style="width: 25%;"><a href="morris.html">print.morris</a></td>
+<td>Morris's Elementary Effects Screening Method</td></tr>
+<tr><td style="width: 25%;"><a href="pcc.html">print.pcc</a></td>
+<td>Partial Correlation Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="pme.html">print.pme_knn</a></td>
+<td>Data-given proportional marginal effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="pmvd.html">print.pmvd</a></td>
+<td>Proportional Marginal Variance Decomposition indices for linear and logistic models</td></tr>
+<tr><td style="width: 25%;"><a href="qosa.html">print.qosa</a></td>
+<td>Quantile-oriented sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sb.html">print.sb</a></td>
+<td>Sequential Bifurcations</td></tr>
+<tr><td style="width: 25%;"><a href="sensiFdiv.html">print.sensiFdiv</a></td>
+<td>Sensitivity Indices based on Csiszar f-divergence</td></tr>
+<tr><td style="width: 25%;"><a href="sensiHSIC.html">print.sensiHSIC</a></td>
+<td>Sensitivity Indices based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermEx.html">print.shapleyPermEx</a></td>
+<td>Estimation of Shapley effects by examining all permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermRand.html">print.shapleyPermRand</a></td>
+<td>Estimation of Shapley effects by random permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">print.shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">print.sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">print.sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">print.sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolEff.html">print.sobolEff</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Janon-Monod)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolGP.html">print.sobolGP</a></td>
+<td>Kriging-based sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">print.soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">print.sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmartinez.html">print.sobolmartinez</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">print.sobolMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="sobolowen.html">print.sobolowen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Owen (2013)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrank.html">print.sobolrank</a></td>
+<td>First-order sensitivity indices estimation via ranking</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrec.html">print.sobolrec</a></td>
+<td>Recursive estimation of Sobol' indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrep.html">print.sobolrep</a></td>
+<td>Sobol' indices estimation based on replicated orthogonal arrays</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroalhs.html">print.sobolroalhs</a></td>
+<td>Sobol' Indices Estimation Using Replicated OA-based LHS</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroauc.html">print.sobolroauc</a></td>
+<td>Sobol' Indices estimation under inequality constraints</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSalt.html">print.sobolSalt</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices based on Saltelli schemes</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">print.sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">print.sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">print.sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="soboltouati.html">print.soboltouati</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011) and Touati (2016))</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">print.sobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="src.html">print.src</a></td>
+<td>Standardized Regression Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="testHSIC.html">print.testHSIC</a></td>
+<td>Tests of Independence based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+</table>
+
+<h2><a id="Q">-- Q --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">qgumbel.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">qnorm.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="qosa.html">qosa</a></td>
+<td>Quantile-oriented sensitivity analysis</td></tr>
+</table>
+
+<h2><a id="R">-- R --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">rgumbel.trunc</a></td>
+<td>Truncated distributions</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">rnorm.trunc</a></td>
+<td>Truncated distributions</td></tr>
+</table>
+
+<h2><a id="S">-- S --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="sb.html">sb</a></td>
+<td>Sequential Bifurcations</td></tr>
+<tr><td style="width: 25%;"><a href="plot.support.html">scatterplot</a></td>
+<td>Support index functions: Measuring the effect of input variables over their support</td></tr>
+<tr><td style="width: 25%;"><a href="plot.support.html">scatterplot.support</a></td>
+<td>Support index functions: Measuring the effect of input variables over their support</td></tr>
+<tr><td style="width: 25%;"><a href="sensiFdiv.html">sensiFdiv</a></td>
+<td>Sensitivity Indices based on Csiszar f-divergence</td></tr>
+<tr><td style="width: 25%;"><a href="sensiHSIC.html">sensiHSIC</a></td>
+<td>Sensitivity Indices based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="sensitivity-package.html">sensitivity</a></td>
+<td>Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyBlockEstimation.html">shapleyBlockEstimation</a></td>
+<td>Computation of the Shapley effects in the Gaussian linear framework with an unknown block-diagonal covariance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyBlockEstimation.html">shapleyBlockEstimationS</a></td>
+<td>Computation of the Shapley effects in the Gaussian linear framework with an unknown block-diagonal covariance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyBlockEstimation.html">shapleyBlockEstimationX</a></td>
+<td>Computation of the Shapley effects in the Gaussian linear framework with an unknown block-diagonal covariance matrix</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyLinearGaussian.html">shapleyLinearGaussian</a></td>
+<td>Computation of the Shapley effects in the linear Gaussian framework</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermEx.html">shapleyPermEx</a></td>
+<td>Estimation of Shapley effects by examining all permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermRand.html">shapleyPermRand</a></td>
+<td>Estimation of Shapley effects by random permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="shapleySubsetMc.html">shapleySubsetMc</a></td>
+<td>Estimation of Shapley effects from data using nearest neighbors method</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="testmodels.html">sobol.fun</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolEff.html">sobolEff</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Janon-Monod)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolGP.html">sobolGP</a></td>
+<td>Kriging-based sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmartinez.html">sobolmartinez</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolMultOut.html">sobolMultOut</a></td>
+<td>Monte Carlo Estimation of Aggregated Sobol' Indices for multiple and functional outputs</td></tr>
+<tr><td style="width: 25%;"><a href="sobolowen.html">sobolowen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Owen (2013)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrank.html">sobolrank</a></td>
+<td>First-order sensitivity indices estimation via ranking</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrec.html">sobolrec</a></td>
+<td>Recursive estimation of Sobol' indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrep.html">sobolrep</a></td>
+<td>Sobol' indices estimation based on replicated orthogonal arrays</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroalhs.html">sobolroalhs</a></td>
+<td>Sobol' Indices Estimation Using Replicated OA-based LHS</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroauc.html">sobolroauc</a></td>
+<td>Sobol' Indices estimation under inequality constraints</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSalt.html">sobolSalt</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices based on Saltelli schemes</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSmthSpl.html">sobolSmthSpl</a></td>
+<td>Estimation of Sobol' First Order Indices with B-spline Smoothing</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="soboltouati.html">soboltouati</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011) and Touati (2016))</td></tr>
+<tr><td style="width: 25%;"><a href="squaredIntEstim.html">squaredIntEstim</a></td>
+<td>Squared integral estimate</td></tr>
+<tr><td style="width: 25%;"><a href="src.html">src</a></td>
+<td>Standardized Regression Coefficients</td></tr>
+<tr><td style="width: 25%;"><a href="support.html">support</a></td>
+<td>Support index functions: Measuring the effect of input variables over their support</td></tr>
+</table>
+
+<h2><a id="T">-- T --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="decoupling.html">tell</a></td>
+<td>Decoupling Simulations and Estimations</td></tr>
+<tr><td style="width: 25%;"><a href="delsa.html">tell.delsa</a></td>
+<td>Distributed Evaluation of Local Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="fast99.html">tell.fast99</a></td>
+<td>Extended Fourier Amplitude Sensitivity Test</td></tr>
+<tr><td style="width: 25%;"><a href="morris.html">tell.morris</a></td>
+<td>Morris's Elementary Effects Screening Method</td></tr>
+<tr><td style="width: 25%;"><a href="morrisMultOut.html">tell.morrisMultOut</a></td>
+<td>Morris's Elementary Effects Screening Method for Multidimensional Outputs</td></tr>
+<tr><td style="width: 25%;"><a href="pme.html">tell.pme_knn</a></td>
+<td>Data-given proportional marginal effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="qosa.html">tell.qosa</a></td>
+<td>Quantile-oriented sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="sb.html">tell.sb</a></td>
+<td>Sequential Bifurcations</td></tr>
+<tr><td style="width: 25%;"><a href="sensiFdiv.html">tell.sensiFdiv</a></td>
+<td>Sensitivity Indices based on Csiszar f-divergence</td></tr>
+<tr><td style="width: 25%;"><a href="sensiHSIC.html">tell.sensiHSIC</a></td>
+<td>Sensitivity Indices based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermEx.html">tell.shapleyPermEx</a></td>
+<td>Estimation of Shapley effects by examining all permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleyPermRand.html">tell.shapleyPermRand</a></td>
+<td>Estimation of Shapley effects by random permutations of inputs (Agorithm of Song et al, 2016), in cases of independent or dependent inputs</td></tr>
+<tr><td style="width: 25%;"><a href="shapleysobol_knn.html">tell.shapleysobol_knn</a></td>
+<td>Data given Shapley effects estimation via nearest-neighbors procedure</td></tr>
+<tr><td style="width: 25%;"><a href="sobol.html">tell.sobol</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2002.html">tell.sobol2002</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (scheme by Saltelli 2002)</td></tr>
+<tr><td style="width: 25%;"><a href="sobol2007.html">tell.sobol2007</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Mauntz: Sobol et al. (2007) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolEff.html">tell.sobolEff</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Janon-Monod)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolGP.html">tell.sobolGP</a></td>
+<td>Kriging-based sensitivity analysis</td></tr>
+<tr><td style="width: 25%;"><a href="soboljansen.html">tell.soboljansen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Jansen (1999) and Saltelli et al. (2010))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmara.html">tell.sobolmara</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices via matrix permutations</td></tr>
+<tr><td style="width: 25%;"><a href="sobolmartinez.html">tell.sobolmartinez</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011))</td></tr>
+<tr><td style="width: 25%;"><a href="sobolowen.html">tell.sobolowen</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (improved formulas of Owen (2013)</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrank.html">tell.sobolrank</a></td>
+<td>First-order sensitivity indices estimation via ranking</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrec.html">tell.sobolrec</a></td>
+<td>Recursive estimation of Sobol' indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolrep.html">tell.sobolrep</a></td>
+<td>Sobol' indices estimation based on replicated orthogonal arrays</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroalhs.html">tell.sobolroalhs</a></td>
+<td>Sobol' Indices Estimation Using Replicated OA-based LHS</td></tr>
+<tr><td style="width: 25%;"><a href="sobolroauc.html">tell.sobolroauc</a></td>
+<td>Sobol' Indices estimation under inequality constraints</td></tr>
+<tr><td style="width: 25%;"><a href="sobolSalt.html">tell.sobolSalt</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices based on Saltelli schemes</td></tr>
+<tr><td style="width: 25%;"><a href="sobolshap_knn.html">tell.sobolshap_knn</a></td>
+<td>Flexible sensitivity analysis via ranking / nearest neighbours</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIlo.html">tell.sobolTIIlo</a></td>
+<td>Liu and Owen Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="sobolTIIpf.html">tell.sobolTIIpf</a></td>
+<td>Pick-freeze Estimation of Total Interaction Indices</td></tr>
+<tr><td style="width: 25%;"><a href="soboltouati.html">tell.soboltouati</a></td>
+<td>Monte Carlo Estimation of Sobol' Indices (formulas of Martinez (2011) and Touati (2016))</td></tr>
+<tr><td style="width: 25%;"><a href="template_replace.html">template.replace</a></td>
+<td>Replace Values in a Template Text</td></tr>
+<tr><td style="width: 25%;"><a href="testHSIC.html">testHSIC</a></td>
+<td>Tests of Independence based on the Hilbert-Schmidt Independence Criterion (HSIC)</td></tr>
+<tr><td style="width: 25%;"><a href="testmodels.html">testmodels</a></td>
+<td>Test Models for Sensitivity Analysis</td></tr>
+<tr><td style="width: 25%;"><a href="truncateddistrib.html">truncateddistrib</a></td>
+<td>Truncated distributions</td></tr>
+</table>
+
+<h2><a id="W">-- W --</a></h2>
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="weightTSA.html">weightTSA</a></td>
+<td>Weight-function to transform an output variable in order to perform Target Sensitivity Analysis (TSA)</td></tr>
+</table>
+</div></body></html>

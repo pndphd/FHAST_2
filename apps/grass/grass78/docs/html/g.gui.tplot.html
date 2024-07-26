@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.gui.tplot - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.gui.tplot</b></em>  - Plots the values of temporal datasets.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_GUI.html">GUI</a>, <a href="keywords.html#temporal">temporal</a>, <a href="keywords.html#plot">plot</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.gui.tplot</b><br></div>
+<b>g.gui.tplot --help</b><br>
+<div id="synopsis"><b>g.gui.tplot</b> [-<b>h</b>]  [<b>stvds</b>=<em>name</em>[,<i>name</i>,...]]   [<b>strds</b>=<em>name</em>[,<i>name</i>,...]]   [<b>coordinates</b>=<em>east,north</em>]   [<b>cats</b>=<em>string</em>]   [<b>attr</b>=<em>string</em>]   [<b>output</b>=<em>name</em>]   [<b>csv</b>=<em>name</em>]   [<b>title</b>=<em>string</em>]   [<b>xlabel</b>=<em>string</em>]   [<b>ylabel</b>=<em>string</em>]   [<b>size</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Set the header of CSV file, to be used with csv option</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>stvds</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of the input space time vector datasets</dd>
+
+<dt><b>strds</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of the input space time raster datasets</dd>
+
+<dt><b>coordinates</b>=<em>east,north</em></dt>
+<dd>Coordinates</dd>
+
+<dt><b>cats</b>=<em>string</em></dt>
+<dd>Categories of vectores features</dd>
+<dd>To use only with stvds</dd>
+
+<dt><b>attr</b>=<em>string</em></dt>
+<dd>Name of attribute</dd>
+<dd>Name of attribute which represent data for plotting</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output graphical file</dd>
+<dd>Full path for output file containing the plot, ddd extension to specify format (.png, .pdf, .svg)</dd>
+
+<dt><b>csv</b>=<em>name</em></dt>
+<dd>Name for output CSV file</dd>
+<dd>Full path for the CSV file containing the plotted data</dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Title for plot</dd>
+<dd>The title for the output plot</dd>
+
+<dt><b>xlabel</b>=<em>string</em></dt>
+<dd>Label for x axis</dd>
+<dd>The x axis label for the output plot</dd>
+
+<dt><b>ylabel</b>=<em>string</em></dt>
+<dd>Label for y axis</dd>
+<dd>The y axis label for the output plot</dd>
+
+<dt><b>size</b>=<em>string</em></dt>
+<dd>The size for output image</dd>
+<dd>It works only with output parameter</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<!-- meta page description: wxGUI Temporal Plot Tool -->
+<!-- meta page index: topic_gui|GUI -->
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <b>Temporal Plot Tool</b> is a <em><a href="wxGUI.html">wxGUI</a></em>
+component that queries and plots the values of a point, defined by a coordinate
+pair, in one or more temporal datasets (strds, stvds, str3ds).
+
+<p>
+Supported features:
+<ul>
+  <li>temporal datasets with interval/point and absolute/relative time,</li>
+  <li>pop-up annotations with values information,</li>
+  <li>query and plot multiple points via the command line,</li>
+  <li>zoom and pan,</li>
+  <li>change labels to x and y axes,</li>
+  <li>add title to the plot, and</li>
+  <li>export the time series values to a CSV file.</li>
+</ul>
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_labels.png">
+<img src="tplot.png" width="600" height="367" alt="Temporal Plot Tool" border="0" >
+</a><br>
+<i>Figure: Temporal Plot Tool</i>
+</div>
+
+To optionally add a title to the temporal plot and/or change the x and y
+axes labels, first type the desired text and then click <em>Draw</em> as
+showed below.
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_labels.png">
+<img src="g_gui_tplot_labels.png" width="600" height="482" alt="g.gui.tplot add title and axes labels" border="0">
+</a><br>
+<i>Figure: Add title and labels to a time series plot</i>
+</div>
+
+To export the time series data to a text file (date and data values), type a
+name for the file and click <em>Draw</em> again. Optionally, set the 
+check-box to print headers, as well.
+
+<div align="center" style="margin: 10px">
+<a href="g_gui_tplot_export_csv.png">
+<img src="g_gui_tplot_export_csv.png" width="600" height="481" alt="g.gui.tplot export time series as csv file" border="0">
+</a><br>
+<i>Figure: Export time series values to a text file</i>
+</div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>g.gui.tplot</em> requires the Python plotting library 
+<a href="http://matplotlib.org/">Matplotlib</a>.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="temporal.html">Temporal data processing</a><br>
+  <a href="wxGUI.html">wxGUI</a><br>
+  <a href="wxGUI.components.html">wxGUI components</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Luca Delucchi,
+<a href="http://www.gis.cri.fmach.it">Fondazione Edmund Mach</a>, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/gui/wxpython/tplot">wxGUI Temporal Plot Tool source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/gui/wxpython/tplot">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topic_gui.html">GUI index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

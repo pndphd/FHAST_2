@@ -1,0 +1,178 @@
+.TH i.pca 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.pca\fR\fR  \- Principal components analysis (PCA) for image processing.
+.SH KEYWORDS
+imagery, transformation, PCA, principal components analysis
+.SH SYNOPSIS
+\fBi.pca\fR
+.br
+\fBi.pca \-\-help\fR
+.br
+\fBi.pca\fR [\-\fBnf\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIbasename\fR  [\fBrescale\fR=\fImin,max\fR]   [\fBpercent\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Normalize (center and scale) input maps
+.br
+Default: center only
+.IP "\fB\-f\fR" 4m
+.br
+Output will be filtered input bands
+.br
+Apply inverse PCA after PCA
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of two or more input raster maps or imagery group
+.IP "\fBoutput\fR=\fIbasename\fR \fB[required]\fR" 4m
+.br
+Name for output basename raster map(s)
+.br
+A numerical suffix will be added for each component map
+.IP "\fBrescale\fR=\fImin,max\fR" 4m
+.br
+Rescaling range for output maps
+.br
+For no rescaling use 0,0
+.br
+Default: \fI0,255\fR
+.IP "\fBpercent\fR=\fIinteger\fR" 4m
+.br
+Cumulative percent importance for filtering
+.br
+Options: \fI50\-99\fR
+.br
+Default: \fI99\fR
+.SH DESCRIPTION
+\fIi.pca\fR is an image processing program based on the
+algorithm provided by Vali (1990), that processes n
+(n >= 2) input raster map layers and produces n output
+raster map layers containing the principal components of
+the input data in decreasing order of variance
+(\(dqcontrast\(dq).  The output raster map layers are assigned
+names with .1, .2, ... .n suffixes. The numbers used as suffix
+correspond to percent importance with .1 being the scores of the
+principal component with the highest importance.
+.PP
+The current geographic region definition and MASK settings are
+respected when reading the input raster map layers. When the rescale
+option is used, the output files are rescaled to fit the min,max range.
+.PP
+The order of the input bands does not matter for the output maps
+(PC scores), but does matter for the vectors (loadings), since each
+loading refers to a specific input band.
+.PP
+If the output is not rescaled (\fIrescale=0,0\fR, the output raster
+maps will be of type DCELL, otherwise the output raster maps will be of
+type CELL.
+.PP
+By default, the values of the input raster maps are centered for each
+map separately with \fIx \- mean\fR. With \fI\-n\fR, the input raster
+maps are normalized for each map separately with \fI(x \- mean) / stddev\fR.
+Normalizing is highly recommended when the input raster maps have different
+units, e.g. represent different environmental parameters.
+.PP
+The \fI\-f\fR flag, together with the \fIpercent\fR option, can
+be used to remove noise from input bands. Input bands will be
+recalculated from a subset of the principal components (inverse PCA).
+The subset is selected by using only the most important (highest
+eigenvalue) principal components which explain together \fIpercent\fR
+percent variance observed in the input bands.
+.SH NOTES
+Richards (1986) gives a good example of the application of principal
+components analysis (PCA) to a time series of LANDSAT images of a burned
+region in Australia.
+.PP
+Eigenvalue and eigenvector information is stored in the output maps\(cq
+history files. View with \fIr.info\fR.
+.SH EXAMPLE
+PCA calculation using Landsat7 imagery in the North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+i.pca in=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \(rs
+    out=lsat7_2002_pca
+r.info \-h lsat7_2002_pca.1
+   Eigen values, (vectors), and [percent importance]:
+   PC1   4334.35 ( 0.2824, 0.3342, 0.5092,\-0.0087, 0.5264, 0.5217) [83.04%]
+   PC2    588.31 ( 0.2541, 0.1885, 0.2923,\-0.7428,\-0.5110,\-0.0403) [11.27%]
+   PC3    239.22 ( 0.3801, 0.3819, 0.2681, 0.6238,\-0.4000,\-0.2980) [ 4.58%]
+   PC4     32.85 ( 0.1752,\-0.0191,\-0.4053, 0.1593,\-0.4435, 0.7632) [ 0.63%]
+   PC5     20.73 (\-0.6170,\-0.2514, 0.6059, 0.1734,\-0.3235, 0.2330) [ 0.40%]
+   PC6      4.08 (\-0.5475, 0.8021,\-0.2282,\-0.0607,\-0.0208, 0.0252) [ 0.08%]
+d.mon wx0
+d.rast lsat7_2002_pca.1
+# ...
+d.rast lsat7_2002_pca.6
+\fR
+.fi
+In this example, the first two PCAs (PCA1 and PCA2) already explain 94.31% of
+the variance in the six input channels.
+.PP
+.br
+Resulting PCA maps calculated from the Landsat7 imagery (NC, USA)
+.SH SEE ALSO
+Richards, John A.,
+\fBRemote Sensing Digital Image Analysis\fR,
+Springer\-Verlag, 1986.
+.PP
+Vali, Ali R., Personal communication,
+Space Research Center, University of Texas, Austin, 1990.
+.PP
+\fI
+i.cca,
+g.gui.iclass,
+i.fft,
+i.ifft,
+m.eigensystem,
+r.covar,
+r.mapcalc
+\fR
+.PP
+\fI
+Principal Components Analysis article
+(GRASS Wiki)
+\fR
+.SH AUTHORS
+David Satnik, GIS Laboratory
+.PP
+Major modifications for GRASS 4.1 were made by
+.br
+Olga Waupotitsch and
+Michael Shapiro,
+U.S.Army Construction Engineering
+Research Laboratory
+.PP
+Rewritten for GRASS 6.x and major modifications by
+.br
+Brad Douglas
+.SH SOURCE CODE
+.PP
+Available at: i.pca source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

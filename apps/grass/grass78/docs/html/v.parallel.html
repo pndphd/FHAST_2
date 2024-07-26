@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.parallel - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.parallel</b></em>  - Creates parallel line to input vector lines.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#buffer">buffer</a>, <a href="keywords.html#line">line</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.parallel</b><br></div>
+<b>v.parallel --help</b><br>
+<div id="synopsis"><b>v.parallel</b> [-<b>rb</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em> <b>distance</b>=<em>float</em>  [<b>minordistance</b>=<em>float</em>]   [<b>angle</b>=<em>float</em>]  <b>side</b>=<em>string</em>  [<b>tolerance</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Make outside corners round</dd>
+
+<dt><b>-b</b></dt>
+<dd>Create buffer-like parallel lines</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>distance</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Offset along major axis in map units</dd>
+<dd>Options: <em>0-100000000</em></dd>
+
+<dt><b>minordistance</b>=<em>float</em></dt>
+<dd>Offset along minor axis in map units</dd>
+<dd>Options: <em>0-100000000</em></dd>
+
+<dt><b>angle</b>=<em>float</em></dt>
+<dd>Angle of major axis in degrees</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>side</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Side</dd>
+<dd>Options: <em>left, right, both</em></dd>
+<dd>Default: <em>right</em></dd>
+<dd><b>left</b>: Parallel line is on the left</dd>
+<dd><b>right</b>: Parallel line is on the right</dd>
+<dd><b>both</b>: Parallel lines on both sides</dd>
+
+<dt><b>tolerance</b>=<em>float</em></dt>
+<dd>Tolerance of arc polylines in map units</dd>
+<dd>Options: <em>0-100000000</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.parallel</em> creates parallel lines to the input vector lines which
+can be used as half-buffers.
+
+<h2><a name="notes">NOTES</a></h2>
+Usage of <b>-b</b> flag will overrule the <b>side</b> parameter.
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+There is a problem with side-offset parallel line generation for inside corners.
+To avoid this problem, the <b>-b</b> flag might be used.
+<!-- in Vect_line_parallel(), v.segment is also affected -->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.buffer.html">v.buffer</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek<br>
+Rewritten by Rosen Matev (with support through the Google Summer of Code program 2008)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.parallel">v.parallel source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.parallel">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

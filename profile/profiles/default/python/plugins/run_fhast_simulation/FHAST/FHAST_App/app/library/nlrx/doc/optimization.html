@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Jan Salecker" />
+
+<meta name="date" content="2023-05-16" />
+
+<title>Optimization</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Optimization</h1>
+<h4 class="author">Jan Salecker</h4>
+<h4 class="date">2023-05-16</h4>
+
+
+
+<div id="optimization-with-nlrx" class="section level2">
+<h2>Optimization with nlrx</h2>
+<p>Here we present two simple examples for running an optimization
+algorithm on a NetLogo model with nlrx. In our example, we use the
+Simulated Annealing simdesign (<code>simdesign_GenSA()</code>). However,
+except for the parameter definitions in the simdesign function and the
+output of the function, the genetic algorithm optimization
+(<code>simdesign_GenAlg()</code>) works in the same way.</p>
+<p>We use the Wolf Sheep Predation model from the models library to show
+a basic example of the optimization workflow. Example 1 shows, how a
+NetLogo reporter can be used as a fitness criterion for optimization.
+Example 2 uses a self-defined evaluation function that calculates
+landscape metrics that are then used as fitness criterion.</p>
+</div>
+<div id="example-1-netlogo-reporter-as-fitness-criterion" class="section level2">
+<h2>Example 1: NetLogo reporter as fitness criterion</h2>
+<div id="step-1-create-a-nl-object" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>Because we want to apply an optimization algorithm, we need to define
+proper variable ranges. The algorithm is allowed to change the values of
+these parameters within these ranges in order to minimize our fitness
+criterion. In this example we want to use a reporter from the metrics
+slot for evaluating our model runs. Here we want to find a
+parameterization that leads to the maximum number of wolfs after 50
+ticks. Because the algorithm automatically searches for minimum values,
+we add <code>&quot;1 / count wolves&quot;</code> to the metrics vector in order to
+find the maximum number of wolves.</p>
+<p>It is also important to think about the settings for tickmetrics,
+runtime and evalticks. Because we only want to consider the last tick of
+the simulation, we set tickmetrics to “false” and runtime to 50. If more
+than one tick would be measured, the algorithm automatically calculates
+the mean value of the selected reporter. If you wish to apply other
+functions to aggregate temporal information into one value, you can use
+a self-defined evaluation function (see Example 2).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep-GenSA1&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;false&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">50</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics=</span><span class="fu">c</span>(<span class="st">&quot;(1 / count wolves)&quot;</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>, <span class="at">qfun=</span><span class="st">&quot;qunif&quot;</span>)),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">20</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>We use the <code>simdesgin_GenSA()</code> function to attach a
+Simulated Annealing simdesign. We select the evaluation criterion
+(<code>evalcrit</code>) by assigning the position of the reporter that
+we want to evaluate within the metrics vector of the experiment. In our
+case, there is only one reporter in the metrics vector thus we set
+evalcrit to use the first reporter (<code>evalcrit = 1</code>). The
+control parameter allows us to provide additional parameters for the
+GenSA function (see ?GenSA for details). For demonstration purposes, we
+set the maximum number of iterations to 20.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_GenSA</span>(nl, </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">evalcrit =</span> <span class="dv">1</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nseeds =</span> <span class="dv">1</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">20</span>))</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>For optimization simdesign, the <code>run_nl_dyn()</code> function
+lets you execute the simulations. There are some notable differences
+between <code>run_nl_all()</code> and <code>run_nl_dyn()</code>. First,
+because parameterizations depend of results from previous runs,
+<code>run_nl_dyn()</code> can not be parallelized. Second, the procedure
+does not automatically loop over created random seeds of the simdesign.
+If you want to repeat the same algorithm several times, just embed the
+<code>run_nl_dyn()</code> function in any kind of loop and iterate
+through the <code>nl@simdesign@simseeds</code> vector. Third, the output
+of <code>run_nl_dyn()</code> is reported as objects from the specific
+optimization procedures and not in tibble format. In order to attach
+these results to the nl object, the output needs to be converted to
+tibble format first. However, attaching optimization results to the nl
+does not enable any further post-processing functions of the nlrx
+package and is only relevant for storing results together with the nl
+object. This design decision was made in order to allow application of
+the method specific summary functions to the results of the
+optimization.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_dyn</span>(nl, <span class="at">seed =</span> nl<span class="sc">@</span>simdesign<span class="sc">@</span>simseeds[<span class="dv">1</span>])</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>The output list of the Simulated Annealing procedure contains four
+elements: <code>value</code> reports the minimum final value of the
+evaluation criterion. <code>par</code> reports the parameter settings of
+the final parameterisation in the same order as defined in the
+experiment of the nl object. <code>trace.mat</code> gives you detailed
+information on the optimization process over all iterations.
+<code>counts</code> indicates how often the optimization procedure was
+executed in total.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div>
+<p>In order to store our results together with the nl object we need to
+attach the results to the nl object first. As explained above, we need
+to enframe the results as a tibble.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">enframe</span>(results)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;genSA_1.rds&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="example-2-evaluation-function-as-fitness-criterion" class="section level2">
+<h2>Example 2: Evaluation function as fitness criterion</h2>
+<div id="step-1-create-a-nl-object-1" class="section level4">
+<h4>Step 1: Create a nl object:</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlrx)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/Program Files/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;C:/out&quot;</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unix default NetLogo installation path (adjust to your needs!):</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>netlogopath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/NetLogo 6.0.3&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>modelpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(netlogopath, <span class="st">&quot;app/models/Sample Models/Biology/Wolf Sheep Predation.nlogo&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>outpath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;/home/out&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>nl <span class="ot">&lt;-</span> <span class="fu">nl</span>(<span class="at">nlversion =</span> <span class="st">&quot;6.0.3&quot;</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">nlpath =</span> netlogopath,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">modelpath =</span> modelpath,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">jvmmem =</span> <span class="dv">1024</span>)</span></code></pre></div>
+</div>
+<div id="step-2-attach-an-experiment-1" class="section level4">
+<h4>Step 2: Attach an experiment</h4>
+<p>Because we want to apply an optimization algorithm, we need to define
+proper variable ranges. The algorithm is allowed to change the values of
+these parameters within these ranges in order to minimize our fitness
+criterion. In this example we want to use a self-defined evaluation
+function to calculate a fitness criterion. Thus, we add the patch
+coordinates and patch color (as a patch class indicator) to the
+<code>metrics.patches</code> vector. We want to use spatial data to
+calculate the landscape edge density index of the final tick and find a
+parameterization that leads to the edge density. Because we only want to
+consider the last tick of the simulation, we set tickmetrics to “false”
+and runtime to 50.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>experiment <span class="ot">&lt;-</span> <span class="fu">experiment</span>(<span class="at">expname=</span><span class="st">&quot;wolf-sheep-GenSA2&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">outpath=</span>outpath,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">repetition=</span><span class="dv">1</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">tickmetrics=</span><span class="st">&quot;false&quot;</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idsetup=</span><span class="st">&quot;setup&quot;</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">idgo=</span><span class="st">&quot;go&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">runtime=</span><span class="dv">50</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">metrics.patches =</span> <span class="fu">c</span>(<span class="st">&quot;pxcor&quot;</span>, <span class="st">&quot;pycor&quot;</span>, <span class="st">&quot;pcolor&quot;</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">variables =</span> <span class="fu">list</span>(<span class="st">&#39;initial-number-sheep&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&#39;initial-number-wolves&#39;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">min=</span><span class="dv">50</span>, <span class="at">max=</span><span class="dv">150</span>)),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">constants =</span> <span class="fu">list</span>(<span class="st">&quot;model-version&quot;</span> <span class="ot">=</span> <span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">sheep-wolves-grass</span><span class="sc">\&quot;</span><span class="st">&quot;</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;grass-regrowth-time&quot;</span> <span class="ot">=</span> <span class="dv">30</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-gain-from-food&quot;</span> <span class="ot">=</span> <span class="dv">20</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;sheep-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">4</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;wolf-reproduce&quot;</span> <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">&quot;show-energy?&quot;</span> <span class="ot">=</span> <span class="st">&quot;false&quot;</span>))</span></code></pre></div>
+</div>
+<div id="step-3-attach-a-simulation-design-1" class="section level4">
+<h4>Step 3: Attach a simulation design</h4>
+<p>We use the <code>simdesgin_GenSA()</code> function to attach a
+Simulated Annealing simdesign. Because we want to post-process our
+simulation results, we need to define an evaluation function. The
+evaluation function needs to accept the nl object as input and must
+return a single numeric value. First we load the package
+landscapemetrics. We then convert the spatial data to a raster format
+and calculate the landscape edge density index. Finally, we report only
+the index value of the resulting tibble.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>critfun <span class="ot">&lt;-</span> <span class="cf">function</span>(nl) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(landscapemetrics)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  res_spat <span class="ot">&lt;-</span> <span class="fu">nl_to_raster</span>(nl)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  res_spat_raster <span class="ot">&lt;-</span> res_spat<span class="sc">$</span>spatial.raster[[<span class="dv">1</span>]]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  lsm <span class="ot">&lt;-</span> <span class="fu">lsm_l_ed</span>(res_spat_raster)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  crit <span class="ot">&lt;-</span> lsm<span class="sc">$</span>value</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(crit)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>In the <code>simdesign_GenSA()</code> function we now provide our
+evaluation function (<code>critfun</code>) as evaluation criterion
+(<code>evalcrit</code>). The control parameter allows us to provide
+additional parameters for the GenSA function (see ?GenSA for details).
+For demonstration purposes, we set the maximum number of iterations to
+20.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>nl<span class="sc">@</span>simdesign <span class="ot">&lt;-</span> <span class="fu">simdesign_GenSA</span>(nl, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">evalcrit =</span> critfun, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nseeds =</span> <span class="dv">1</span>, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">control=</span><span class="fu">list</span>(<span class="at">maxit =</span> <span class="dv">20</span>))</span></code></pre></div>
+</div>
+<div id="step-4-run-simulations-1" class="section level4">
+<h4>Step 4: Run simulations</h4>
+<p>For optimization simdesign, the <code>run_nl_dyn()</code> function
+lets you execute the simulations. There are some notable differences
+between <code>run_nl_all()</code> and <code>run_nl_dyn()</code>. First,
+because parameterizations depend of results from previous runs,
+<code>run_nl_dyn()</code> can not be parallelized. Second, the procedure
+does not automatically loop over created random seeds of the simdesign.
+If you want to repeat the same algorithm several times, just embed the
+<code>run_nl_dyn()</code> function in any kind of loop and iterate
+through the <code>nl@simdesign@simseeds</code> vector. Third, the output
+of <code>run_nl_dyn()</code> is reported as objects from the specific
+optimization procedures and not in tibble format. In order to attach
+these results to the nl object, the output needs to be converted to
+tibble format first. However, attaching optimization results to the nl
+does not enable any further post-processing functions of the nlrx
+package and is only relevant for storing results together with the nl
+object. This design decision was made in order to allow application of
+the method specific summary functions to the results of the
+optimization.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_nl_dyn</span>(nl, <span class="at">seed =</span> nl<span class="sc">@</span>simdesign<span class="sc">@</span>simseeds[<span class="dv">1</span>])</span></code></pre></div>
+</div>
+<div id="step-5-investigate-output-1" class="section level4">
+<h4>Step 5: Investigate output</h4>
+<p>The output list of the Simulated Annealing procedure contains four
+elements: <code>value</code> reports the minimum final value of the
+evaluation criterion. <code>par</code> reports the parameter settings of
+the final parameterisation in the same order as defined in the
+experiment of the nl object. <code>trace.mat</code> gives you detailed
+information on the optimization process over all iterations.
+<code>counts</code> indicates how often the optimization procedure was
+executed in total.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div>
+<p>In order to store our results together with the nl object we need to
+attach the results to the nl object first. As explained above, we need
+to enframe the results as a tibble.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setsim</span>(nl, <span class="st">&quot;simoutput&quot;</span>) <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">enframe</span>(results)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(nl, <span class="fu">file.path</span>(nl<span class="sc">@</span>experiment<span class="sc">@</span>outpath, <span class="st">&quot;genSA_2.rds&quot;</span>))</span></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

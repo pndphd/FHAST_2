@@ -1,0 +1,80 @@
+.TH d.correlate 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.correlate.py\fR\fR  \- Prints a graph of the correlation between raster maps (in pairs).
+.SH KEYWORDS
+display, statistics, raster, diagram, correlation
+.SH SYNOPSIS
+\fBd.correlate.py\fR
+.br
+\fBd.correlate.py \-\-help\fR
+.br
+\fBd.correlate.py\fR \fBmap\fR=\fIname\fR[,\fIname\fR,...]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of raster map(s)
+.SH DESCRIPTION
+\fId.correlate\fR displays graphically the results of a
+\fIr.stats\fR analysis run on two raster map layers. This module
+highlights the correlation (or lack of it) among data
+layers (scattergram).
+.PP
+The results are displayed in the active display frame on
+the user\(cqs graphics monitor. \fId.correlate\fR erases
+the active frame before displaying results. If no graphics monitor
+is open, a file map.png is generated in the current directory.
+.SH NOTES
+If three or four map layers are specified, the correlation
+among each combination of two data layers is displayed.
+.SH EXAMPLE
+Scatterplot of two LANDSAT TM7 channels (North Carolina sample dataset):
+.PP
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_30 \-p
+d.correlate map=lsat7_2002_30,lsat7_2002_40
+\fR
+.fi
+.br
+Scatterplot of two LANDSAT TM7 channels
+.SH SEE ALSO
+\fI
+d.text,
+d.graph,
+r.coin,
+r.regression.line,
+r.stats
+\fR
+.SH AUTHORS
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.PP
+Rewritten to GRASS 6 (from csh to sh) by Markus Neteler; from sh to Python by Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: d.correlate source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

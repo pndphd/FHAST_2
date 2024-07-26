@@ -1,0 +1,134 @@
+.TH r.to.rast3elev 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.to.rast3elev\fR\fR  \- Creates a 3D volume map based on 2D elevation and value raster maps.
+.SH KEYWORDS
+raster, conversion, raster3d, voxel
+.SH SYNOPSIS
+\fBr.to.rast3elev\fR
+.br
+\fBr.to.rast3elev \-\-help\fR
+.br
+\fBr.to.rast3elev\fR [\-\fBulm\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBelevation\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\fBupper\fR=\fIfloat\fR]   [\fBlower\fR=\fIfloat\fR]   [\fBtilesize\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-u\fR" 4m
+.br
+Use the input map values to fill the upper cells
+.IP "\fB\-l\fR" 4m
+.br
+Use the input map values to fill the lower cells
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with input map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map(s)
+.IP "\fBelevation\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map(s)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBupper\fR=\fIfloat\fR" 4m
+.br
+The value to fill the upper cells, default is null
+.IP "\fBlower\fR=\fIfloat\fR" 4m
+.br
+The value to fill the lower cells, default is null
+.IP "\fBtilesize\fR=\fIinteger\fR" 4m
+.br
+The maximum tile size in kilo bytes. Default is 32KB.
+.br
+Default: \fI32\fR
+.SH DESCRIPTION
+Creates a 3D volume map based on 2D elevation and value raster maps.
+If the 2d and 3d region settings are different,
+the 2d resolution will be adjust to the 3d resolution.
+.br
+.TS
+expand;
+lw60.
+T{
+\fIHow r.to.rast3elev works\fR
+T}
+.sp 1
+.TE
+.SH NOTES
+The hight of the 2D elevation maps will be used to verify the position
+within the 3D region. If the cell value of the elevation raster maps is located within the 3D region, the
+cell value of the appropriate 2D input raster maps will be written to the associated 3D cell.
+There are flags and options to fill the upper and lower 3D cells with a specific value, or the
+input raster maps values.
+.SH Example
+Simple Spearfish sample data set example
+.br
+.nf
+\fC
+g.region raster=elevation.10m \-p
+g.region res=200 res3=200 t=2000 b=0 tbres=20 \-p
+# Write the values of raster map soils based on the elevation of elevation.10m
+# to the 3D map volev
+r.to.rast3elev in=soils elev=elevation.10m out=volev
+# Write the values of map soils based on the elevation of elevation.10m
+# to the 3D map volev_l and fill the lower cells with the soils map values
+r.to.rast3elev in=soils elev=elevation.10m out=volev_l \-l
+# Write the values of map soils based on the elevation of elevation.10m
+# to the 3D map volev_u and fill the upper cells with the soils map values
+r.to.rast3elev in=soils elev=elevation.10m out=volev_u \-u
+# Example with multiple elevation maps.
+## first we need three support maps
+r.mapcalc expression=\(dqone = 1\(dq
+r.mapcalc expression=\(dqtwo = 2\(dq
+r.mapcalc expression=\(dqthree = 3\(dq
+## Now we generate the new evelation maps
+r.mapcalc expression=\(dqelev_mid = elevation.10m \- 500\(dq
+r.mapcalc expression=\(dqelev_bottom = elevation.10m \- 1000\(dq
+## Now fill the lower cells below the elevation maps with the values one, two and three
+r.to.rast3elev \-l input=one,two,three elevation=elevation.10m,elev_mid,elev_bottom output=threelayer
+## Export the map for visualization with paraview (http://www.paraview.org)
+## By default the null value is \-9999.99, we adjust it to 0.0 for
+## better visualization
+r3.out.vtk null=0.0 input=threelayer output=/tmp/threelayer.vtk
+# Start paraview
+paraview \-\-data=/tmp/threelayer.vtk
+# Note: First you need to choose the surface representation style and
+# then color by \(dqthreelayer\(dq in paraview.
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.to.rast3,
+r3.cross.rast,
+g.region
+\fR
+.SH AUTHOR
+Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r.to.rast3elev source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

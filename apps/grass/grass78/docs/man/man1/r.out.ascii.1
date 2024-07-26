@@ -1,0 +1,119 @@
+.TH r.out.ascii 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.ascii\fR\fR  \- Converts a raster map layer into a GRASS ASCII text file.
+.SH KEYWORDS
+raster, export, output, ASCII
+.SH SYNOPSIS
+\fBr.out.ascii\fR
+.br
+\fBr.out.ascii \-\-help\fR
+.br
+\fBr.out.ascii\fR [\-\fBhsmi\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBprecision\fR=\fIinteger\fR]   [\fBwidth\fR=\fIinteger\fR]   [\fBnull_value\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Suppress printing of header information
+.IP "\fB\-s\fR" 4m
+.br
+Write SURFER (Golden Software) ASCII grid
+.IP "\fB\-m\fR" 4m
+.br
+Write MODFLOW (USGS) ASCII array
+.IP "\fB\-i\fR" 4m
+.br
+Force output of integer values
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output ASCII grid map (use out=\- for stdout)
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of significant digits (floating point only)
+.IP "\fBwidth\fR=\fIinteger\fR" 4m
+.br
+Number of values printed before wrapping a line (only SURFER or MODFLOW format)
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String to represent null cell (GRASS grid only)
+.br
+Default: \fI*\fR
+.SH DESCRIPTION
+\fIr.out.ascii\fR converts a user\-specified raster map layer
+(\fBinput=\fR\fIname\fR) into an ASCII grid in a text file
+(\fBoutput=\fR\fIname\fR) suitable for export to
+other computer systems.
+.PP
+The GRASS program \fIr.in.ascii\fR can be
+used to perform the reverse function, converting an ASCII file in suitable
+format to GRASS raster map format.
+.PP
+.PP
+To write a SURFER .grd ASCII GRID file (with reverted row order and different
+header) use the \fI\-s\fR flag:
+.br
+.nf
+\fC
+r.out.ascii \-s input=inname output=outname.grd [dp=value]
+\fR
+.fi
+NULL data are coded to \(dq1.70141e+038\(dq for SURFER ASCII GRID files (ignoring
+the \fInull=\fR parameter).
+.SH NOTES
+The output from \fIr.out.ascii\fR may be placed into a file by using the
+UNIX redirection mechanism; e.g.:
+.br
+.nf
+\fC
+r.out.ascii input=soils output=\- > out.file
+\fR
+.fi
+The output file out.file can then be printed or copied onto a CDROM
+or floppy disk for export purposes.
+.PP
+To export the raster values as x,y,z values of cell centers (one per line)
+use the \fIr.out.xyz\fR module.
+.SH SEE ALSO
+\fI
+r.in.ascii,
+r.in.gdal,
+r.out.bin,
+r.out.gdal,
+r.out.xyz
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+.PP
+Surfer support by Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: r.out.ascii source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

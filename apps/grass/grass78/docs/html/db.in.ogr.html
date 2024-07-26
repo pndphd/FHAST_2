@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.in.ogr.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.in.ogr.py</b></em>  - Imports attribute tables in various formats.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#attribute table">attribute table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.in.ogr.py</b><br></div>
+<b>db.in.ogr.py --help</b><br>
+<div id="synopsis"><b>db.in.ogr.py</b> <b>input</b>=<em>name</em>  [<b>db_table</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [<b>key</b>=<em>string</em>]   [<b>encoding</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Table file to be imported or DB connection string</dd>
+
+<dt><b>db_table</b>=<em>name</em></dt>
+<dd>Name of table from given DB to be imported</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output table</dd>
+
+<dt><b>key</b>=<em>string</em></dt>
+<dd>Name for auto-generated unique key column</dd>
+
+<dt><b>encoding</b>=<em>string</em></dt>
+<dd>Encoding value for attribute data</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#import-csv-file" class="toc">Import CSV file</a></li>
+        <li class="toc"><a href="#import-dbf-table" class="toc">Import DBF table</a></li>
+        <li class="toc"><a href="#import-of-a-sqlite-table" class="toc">Import of a SQLite table</a></li>
+        <li class="toc"><a href="#import-of-a-postgresql-table" class="toc">Import of a PostgreSQL table</a></li>
+        <li class="toc"><a href="#import-xls-file" class="toc">Import XLS file</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.in.ogr</em> imports attribute tables in various formats as
+supported by the <a href="http://www.gdal.org/">OGR library</a>
+on the local system (DBF, CSV, PostgreSQL, SQLite, MySQL, ODBC,
+etc.). Optionally a unique <b>key</b> (ID) column can be
+added to the table.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="import-csv-file">Import CSV file</a></h3>
+
+Limited type recognition can be done for Integer, Real, String, Date, Time and DateTime
+columns through a descriptive file with same name as the CSV file, but .csvt extension
+(see details <a href="http://www.gdal.org/drv_csv.html">here</a>).
+
+<div class="code"><pre>
+# NOTE: create koeppen_gridcode.csvt first for automated type recognition
+db.in.ogr input=koeppen_gridcode.csv output=koeppen_gridcode
+db.select table=koeppen_gridcode
+</pre></div>
+
+<h3><a name="import-dbf-table">Import DBF table</a></h3>
+
+Import of a DBF table with additional unique key column (e.g., needed
+for <em><a href="v.in.db.html">v.in.db</a></em>).
+
+<div class="code"><pre>
+db.in.ogr input=/path/to/mydata.dbf output=census_raleigh key=myid
+db.describe -c census_raleigh
+</pre></div>
+
+<h3><a name="import-of-a-sqlite-table">Import of a SQLite table</a></h3>
+
+<div class="code"><pre>
+db.in.ogr input=/path/to/sqlite.db db_table=census_raleigh output=census_raleigh
+</pre></div>
+
+<h3><a name="import-of-a-postgresql-table">Import of a PostgreSQL table</a></h3>
+<div class="code"><pre>
+# HINT: if the database contains spatial tables, but you want to import a non-spatial 
+table, set the environmental variable PG_LIST_ALL_TABLES to YES before importing
+
+db.in.ogr input="PG:host=localhost dbname=ecad user=neteler" \
+          db_table=ecad_verona_tmean output=ecad_verona_tmean
+db.select table=ecad_verona_tmean
+db.describe -c ecad_verona_tmean
+</pre></div>
+
+<h3><a name="import-xls-file">Import XLS file</a></h3>
+
+To force reading headers, define environmental
+variable <tt>OGR_XLS_HEADERS='FORCE'</tt>. Parameter <b>db_table</b>
+refers to the list within XLS file.
+
+<div class="code"><pre>
+export OGR_XLS_HEADERS='FORCE'
+db.in.ogr input=address.xls db_table=address_data
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.select.html">db.select</a>,
+<a href="v.in.ogr.html">v.in.ogr</a>,
+<a href="v.in.db.html">v.in.db</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Neteler
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/db.in.ogr">db.in.ogr source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/db.in.ogr">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

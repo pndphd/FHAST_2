@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.ppm - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.ppm</b></em>  - Converts a GRASS raster map to a PPM image file.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.ppm</b><br></div>
+<b>r.out.ppm --help</b><br>
+<div id="synopsis"><b>r.out.ppm</b> [-<b>gh</b>] <b>input</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Output greyscale instead of color</dd>
+
+<dt><b>-h</b></dt>
+<dd>Suppress printing of PPM header</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for new PPM file (use '-' for stdout)</dd>
+<dd>Default: <em>&lt;rasterfilename&gt;.ppm</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#hints" class="toc">HINTS</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.out.ppm</em> converts a GRASS raster map into a PPM image 
+at the pixel resolution of the CURRENTLY DEFINED REGION. 
+To get the resolution and region settings of the raster map, run:<p>
+<div class="code"><pre>
+g.region -p raster=[mapname]
+</pre></div>
+
+<p>
+before running <em>r.out.ppm</em>.<p>
+By default the PPM file created is 24-bit color, rawbits storage.
+You can use the <b>-g</b> flag to force <em>r.out.ppm</em> to 
+output an 8-bit greyscale instead.
+The greyscale conversion uses the NTSC conversion:
+<p>
+<div class="code"><pre>
+Y = .30*Red + .59*Green + .11*Blue
+</pre></div>
+
+<p>One pixel is written for each cell value, so if <tt>ew_res</tt> and 
+<tt>ns_res</tt> differ, the aspect ratio of the resulting image will be off.
+
+
+<h2><a name="notes">NOTES</a></h2>
+A few ppm file comments are written: the name of the GRASS
+raster map, resolution, etc.  Although these are perfectly legal,
+I've found one PD image utility that chokes on them, so if you need 
+a commentless PPM file, use '<tt>out=-&nbsp;&gt;&nbsp;outfile.ppm</tt>'. (When sending 
+output to stdout, no comments are written.)
+
+<h2><a name="hints">HINTS</a></h2>
+
+You can create a PNG image with NULL values represented by a transparent 
+background by using the <a href="pngdriver.html">PNG driver</a> with 
+<a href="variables.html">GRASS_RENDER_TRANSPARENT</a> set to TRUE.
+Alternatively, you can use the <em>pnmtopng</em> program from 
+<a href="http://netpbm.sourceforge.net">netpbm</a> to do this:
+
+<div class="code"><pre>
+r.out.ppm raster
+pnmtopng -transparent white raster.ppm > raster.png
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="d.out.file.html">d.out.file</a>,
+<a href="r.out.ascii.html">r.out.ascii</a>,
+<a href="r.out.gdal.html">r.out.gdal</a>,
+<a href="r.out.mpeg.html">r.out.mpeg</a>,
+<a href="r.out.png.html">r.out.png</a>,
+<a href="r.out.ppm3.html">r.out.ppm3</a>
+</em>
+ 
+<h2><a name="author">AUTHOR</a></h2>
+
+Bill Brown, UIUC
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.ppm">r.out.ppm source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.ppm">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

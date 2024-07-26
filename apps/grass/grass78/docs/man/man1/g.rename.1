@@ -1,0 +1,129 @@
+.TH g.rename 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.rename\fR\fR  \- Renames data base element files in the user\(cqs current mapset.
+.SH KEYWORDS
+general, map management, rename
+.SH SYNOPSIS
+\fBg.rename\fR
+.br
+\fBg.rename \-\-help\fR
+.br
+\fBg.rename\fR  [\fBraster\fR=\fIfrom,to\fR]   [\fBraster_3d\fR=\fIfrom,to\fR]   [\fBvector\fR=\fIfrom,to\fR]   [\fBlabel\fR=\fIfrom,to\fR]   [\fBregion\fR=\fIfrom,to\fR]   [\fBgroup\fR=\fIfrom,to\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBraster\fR=\fIfrom,to\fR" 4m
+.br
+raster map(s) to be renamed
+.IP "\fBraster_3d\fR=\fIfrom,to\fR" 4m
+.br
+3D raster map(s) to be renamed
+.IP "\fBvector\fR=\fIfrom,to\fR" 4m
+.br
+vector map(s) to be renamed
+.IP "\fBlabel\fR=\fIfrom,to\fR" 4m
+.br
+paint label file(s) to be renamed
+.IP "\fBregion\fR=\fIfrom,to\fR" 4m
+.br
+region definition(s) to be renamed
+.IP "\fBgroup\fR=\fIfrom,to\fR" 4m
+.br
+imagery group(s) to be renamed
+.SH DESCRIPTION
+\fIg.rename\fR allows the user to rename data base
+element files in the user\(cqs current mapset.  The user can
+specify all necessary information to \fIg.rename\fR on
+the command line, by specifying:  the type of data base
+element to be renamed (one or more of:  \fBraster\fR,
+\fBraster_3d\fR, \fBvector\fR, \fBicon\fR, \fBlabels\fR,
+\fBregion\fR, and \fBgroup\fR); the specific file element
+in the current mapset to be renamed (\fIold\fR); and the
+new name to be assigned to this file element (\fInew\fR)
+in the current mapset.  The file element \fIold\fR is
+then renamed to \fInew\fR.
+.PP
+Users can also simply type \fIg.rename \-\-help\fR without
+arguments on the command line, to receive a menu of
+existing data base element types and files from which to
+choose for possible renaming:
+.br
+.nf
+\fC
+       raster   raster map(s) to be renamed
+    raster_3d   3D raster map(s) to be renamed
+       vector   vector map(s) to be renamed
+       labels   paint label file(s) to be renamed
+       region   region definition(s) to be renamed
+        group   imagery group(s) to be renamed
+\fR
+.fi
+.SH NOTES
+If a data base element has support files (e.g., as is
+commonly the case with raster maps), these support files
+also are renamed.
+.PP
+If the user attempts to rename a file to itself by setting
+the \fInew\fR file name equal to the \fIold\fR file
+name (e.g., \fBg.rename raster=soils,soils\fR),
+\fIg.rename\fR will not execute the rename, but instead
+state that no rename is needed.  However, \fIg.rename\fR
+will allow the user to overwrite other existing files in
+the current mapset by making the \fInew\fR file name
+that of an already existing file.
+.PP
+For portability reasons, \fIg.rename\fR is ignoring case of
+names. To change the case of a map name, first rename the map
+to a name which differs by more than case, then rename it to
+the intended name.
+.SH EXAMPLE
+.br
+.nf
+\fC
+# rename raster map
+g.rename raster=oldrast,newrast
+# rename vector map
+g.rename vector=oldvect,newvect
+# combined renaming
+g.rename raster=oldrast,newrast vector=oldvect,newvect
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.copy,
+g.list,
+g.remove
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering
+Research Laboratory
+.PP
+.SH SOURCE CODE
+.PP
+Available at: g.rename source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

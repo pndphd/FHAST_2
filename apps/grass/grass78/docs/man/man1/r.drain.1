@@ -1,0 +1,379 @@
+.TH r.drain 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.drain.py\fR\fR  \- Traces a flow through an elevation model or cost surface on a raster map.
+.SH KEYWORDS
+raster, hydrology, cost surface
+.SH SYNOPSIS
+\fBr.drain.py\fR
+.br
+\fBr.drain.py \-\-help\fR
+.br
+\fBr.drain.py\fR [\-\fBcand\fR] \fBinput\fR=\fIname\fR  [\fBdirection\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\fBdrain\fR=\fIname\fR]   [\fBstart_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBstart_points\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Copy input cell values on output
+.IP "\fB\-a\fR" 4m
+.br
+Accumulate input values along the path
+.IP "\fB\-n\fR" 4m
+.br
+Count cell numbers along the path
+.IP "\fB\-d\fR" 4m
+.br
+The input raster map is a cost surface (direction surface must also be specified)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation or cost surface raster map
+.IP "\fBdirection\fR=\fIname\fR" 4m
+.br
+Name of input movement direction map associated with the cost surface
+.br
+Direction in degrees CCW from east
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBdrain\fR=\fIname\fR" 4m
+.br
+Name for output drain vector map
+.br
+Recommended for cost surface made using knight\(cqs move
+.IP "\fBstart_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of starting point(s) (E,N)
+.IP "\fBstart_points\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of starting vector points map(s)
+.SH DESCRIPTION
+\fIr.drain\fR traces a flow through a least\-cost path in an
+elevation model or cost surface. For cost surfaces, a movement
+direction map must be specified with the
+\fBdirection\fR option and the \fB\-d\fR flag to trace a flow path following
+the given directions. Such a movement direction map can be generated with
+\fIr.walk\fR,
+\fIr.cost\fR,
+\fIr.slope.aspect\fR or
+\fIr.watershed\fR
+provided that the direction is in degrees, measured counterclockwise
+from east.
+.PP
+The \fBoutput\fR raster map will show one or more least\-cost paths
+between each user\-provided location(s) and the minima (low category
+values) in the raster \fBinput\fR map. If the \fB\-d\fR flag is used
+the output least\-cost paths will be found using the direction raster
+map.  By default, the \fBoutput\fR will be an integer CELL map with
+category 1 along the least cost path, and null cells elsewhere.
+.PP
+With the \fB\-c\fR (\fIcopy\fR) flag, the input raster map cell values are
+copied verbatim along the path. With the \fB\-a\fR (\fIaccumulate\fR)
+flag, the accumulated cell value from the starting point up to the current
+cell is written on output. With either the \fB\-c\fR or the \fB\-a\fR flags, the
+\fBoutput\fR map is created with the same cell type as
+the \fBinput\fR raster map (integer, float or double).  With
+the \fB\-n\fR (\fInumber\fR) flag, the cells are numbered
+consecutively from the starting point to the final point.
+The \fB\-c\fR, \fB\-a\fR, and \fB\-n\fR flags are mutually
+incompatible.
+.PP
+For an elevation surface, the path is calculated by choosing the
+steeper \(dqslope\(dq between adjacent cells. The slope calculation
+accurately accounts for the variable scale in lat\-lon projections. For
+a cost surface, the path is calculated by following the movement
+direction surface back to the start point given
+in \fIr.walk\fR or
+\fIr.cost\fR. The path search stops
+as soon as a region border or a neighboring NULL cell is encountered,
+because in these cases the direction can not be determined (the path
+could continue outside the current region).
+.PP
+The \fBstart_coordinates\fR parameter consists of map E and N grid coordinates of
+a starting point. Each x,y pair is the easting and northing (respectively) of
+a starting point from which a least\-cost corridor will be developed.
+The \fBstart_points\fR parameter can take multiple vector maps containing
+additional starting points.
+Up to 1024 starting points can be input from a combination of the
+\fBstart_coordinates\fR and \fBstart_points\fR parameters.
+.SS Explanation of output values
+Consider the following example:
+.br
+.nf
+\fC
+Input:                          Output:
+  ELEVATION SURFACE               LEAST COST PATH
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 19. 20. 18. 19. 16. 15. 15.    .   .   .   .   .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 20| 19| 17. 16. 17. 16. 16.    .   . 1 . 1 . 1 .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 18. 18. 24. 18. 15. 12. 11.    .   .   .   .   . 1 .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 22. 16. 16. 18. 10. 10. 10.    .   .   .   .   . 1 .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 15. 15. 15. 10. 8 . 8 .    .   .   .   .   .   . 1 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 24. 16. 8 . 7 . 8 . 0 . 12.    .   .   .   .   .   . 1 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 9 . 8 . 7 . 8 . 6 . 12.    .   .   .   .   .   .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\fR
+.fi
+.PP
+The user\-provided starting location in the above example is
+the boxed \fB19\fR in the left\-hand map. The path in the output
+shows the least\-cost corridor for moving from the starting
+box to the lowest (smallest) possible point. This is the path a raindrop
+would take in this landscape.
+.PP
+With the \fB\-c\fR \fI(copy)\fR flag, you get the following result:
+.br
+.nf
+\fC
+Input:                          Output:
+  ELEVATION SURFACE               LEAST COST PATH
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 19. 20. 18. 19. 16. 15. 15.    .   .   .   .   .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 20| 19| 17. 16. 17. 16. 16.    .   . 19. 17. 16.   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 18. 18. 24. 18. 15. 12. 11.    .   .   .   .   . 15.   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 22. 16. 16. 18. 10. 10. 10.    .   .   .   .   . 10.   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 15. 15. 15. 10. 8 . 8 .    .   .   .   .   .   . 8 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 24. 16. 8 . 7 . 8 . 0 .12 .    .   .   .   .   .   . 0 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 9 . 8 . 7 . 8 . 6 .12 .    .   .   .   .   .   .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+Note that the last \fI0\fR will not be put in the null values map.
+\fR
+.fi
+.PP
+With the \fB\-a\fR \fI(accumulate)\fR flag, you get the following result:
+.br
+.nf
+\fC
+Input:                          Output:
+  ELEVATION SURFACE               LEAST COST PATH
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 19. 20. 18. 19. 16. 15. 15.    .   .   .   .   .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 20| 19| 17. 16. 17. 16. 16.    .   . 19. 36. 52.   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 18. 18. 24. 18. 15. 12. 11.    .   .   .   .   . 67.   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 22. 16. 16. 18. 10. 10. 10.    .   .   .   .   . 77.   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 15. 15. 15. 10. 8 . 8 .    .   .   .   .   .   . 85.   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 24. 16. 8 . 7 . 8 . 0 .12 .    .   .   .   .   .   . 85.   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 9 . 8 . 7 . 8 . 6 .12 .    .   .   .   .   .   .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\fR
+.fi
+.PP
+With the \fB\-n\fR \fI(number)\fR flag, you get the following result:
+.br
+.nf
+\fC
+Input:                          Output:
+  ELEVATION SURFACE               LEAST COST PATH
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 19. 20. 18. 19. 16. 15. 15.    .   .   .   .   .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 20| 19| 17. 16. 17. 16. 16.    .   . 1 . 2 . 3 .   .   .   .
+\&. .  \-\-\-  . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 18. 18. 24. 18. 15. 12. 11.    .   .   .   .   . 4 .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 22. 16. 16. 18. 10. 10. 10.    .   .   .   .   . 5 .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 15. 15. 15. 10. 8 . 8 .    .   .   .   .   .   . 6 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 24. 16. 8 . 7 . 8 . 0 .12 .    .   .   .   .   .   . 7 .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\&. 17. 9 . 8 . 7 . 8 . 6 .12 .    .   .   .   .   .   .   .   .
+\&. . . . . . . . . . . . . . .    . . . . . . . . . . . . . . .
+\fR
+.fi
+With the \fB\-d\fR \fI(direction)\fR flag, the direction raster is used
+for the input, rather than the elevation surface. The output is then created
+according to one of the \fB\-can\fR flags.
+.br
+.nf
+\fC
+The directions are recorded as degrees CCW from East:
+       112.5     67.5         i.e. a cell with the value 135
+157.5  135   90  45   22.5    means the next cell is to the North\-West
+       180   x   0
+202.5  225  270  315  337.5
+       247.5     292.5
+\fR
+.fi
+.SH NOTES
+If no direction input map is given, \fIr.drain\fR currently finds
+only the lowest point (the cell having the smallest category value) in
+the input file that can be reached through directly adjacent cells
+that are less than or equal in value to the cell reached immediately
+prior to it; therefore, it will not necessarily reach the lowest point
+in the input file. It currently finds \fIpits\fR in the data,
+rather than the lowest point in the entire input
+map. The \fIr.fill.dir\fR,
+\fIr.terraflow\fR,
+and \fIr.basins.fill\fR modules
+can be used to fill in subbasins prior to processing
+with \fIr.drain\fR.
+.PP
+\fIr.drain\fR will not give sane results at the region boundary. On outer rows
+and columns bordering the edge of the region, the flow direction is always directly out
+of the map. In this case, the user could try adjusting the region extents slightly with
+\fIg.region\fR to allow additional outlet paths for \fIr.drain\fR.
+.SH EXAMPLES
+.SS Path to the lowest point
+In this example we compute drainage paths from two given points
+following decreasing elevation values to the lowest point.
+We are using the full North Carolina sample dataset.
+First we create the two points from a text file using
+\fIv.in.ascii\fR module
+(here the text file is CSV and we are using unix here\-file syntax
+with EOF, in GUI just enter the values directly for the parameter input):
+.br
+.nf
+\fC
+v.in.ascii input=\- output=start format=point separator=comma <<EOF
+638667.15686275,220610.29411765
+638610.78431373,220223.03921569
+EOF
+\fR
+.fi
+Now we compute the drainage path:
+.br
+.nf
+\fC
+r.drain input=elev_lid792_1m output=drain_path drain=drain start_points=start
+\fR
+.fi
+Before we visualize the result, we set a color table for the elevation
+we are using and we create a shaded relief map:
+.br
+.nf
+\fC
+r.colors map=elev_lid792_1m color=elevation
+r.relief input=elev_lid792_1m output=relief
+\fR
+.fi
+Finally we visualize all the input and output data:
+.br
+.nf
+\fC
+d.shade shade=relief color=elev_lid792_1m
+d.vect map=drain_path color=0:0:61 width=4 legend_label=\(dqdrainage paths\(dq
+d.vect map=start color=none fill_color=224:0:0 icon=basic/circle size=15 legend_label=origins
+d.legend.vect \-b
+\fR
+.fi
+.br
+\fIFigure: Drainage paths from two points flowing into the points with
+lowest values\fR
+.SS Path following directions
+To continue flow even after it hits a depression, we need to supply a
+direction raster map which will tell the \fIr.drain\fR module how to
+continue from the depression. To get these directions, we use the
+\fIr.watershed\fR module:
+.br
+.nf
+\fC
+r.watershed elevation=elev_lid792_1m accumulation=accum drainage=drain_dir
+\fR
+.fi
+The directions are categorical and we convert them to degrees using
+raster algebra:
+.br
+.nf
+\fC
+r.mapcalc \(dqdrain_deg = if(drain_dir != 0, 45. * abs(drain_dir), null())\(dq
+\fR
+.fi
+Together with directions, we need to provide the \fIr.drain\fR module
+with cost values. We don\(cqt have any cost to assign to specific cells,
+so we create a constant surface:
+.br
+.nf
+\fC
+r.mapcalc \(dqconst1 = 1\(dq
+\fR
+.fi
+Now we are ready to compute the drainage paths.
+We are using the two points from the previous example.
+.br
+.nf
+\fC
+r.drain \-d input=const1 direction=drain_deg output=drain_path_2 drain=drain_2 start_points=start
+\fR
+.fi
+We visualize the result in the same way as in the previous example.
+.br
+\fIFigure: Drainage paths from two points where directions from
+r.watershed were used\fR
+.SH KNOWN ISSUES
+.PP
+Sometimes, when the differences among integer cell category values in the
+\fIr.cost\fR cumulative cost surface output are
+small, this cumulative cost output cannot accurately be used as input to
+\fIr.drain\fR (\fIr.drain\fR will output bad results).
+This problem can be circumvented by making the differences
+between cell category values in the cumulative cost output bigger. It
+is recommended that if the output from \fIr.cost\fR is to be used
+as input to \fIr.drain\fR, the user multiply the \fIr.cost\fR
+input cost surface map by the value of the map\(cqs cell resolution,
+before running \fIr.cost\fR. This can be done using
+\fIr.mapcalc\fR. The map resolution can be
+found using \fIg.region\fR.
+This problem doesn\(cqt arise with floating point maps.
+.SH SEE ALSO
+\fI
+g.region,
+r.cost,
+r.fill.dir,
+r.basins.fill,
+r.watershed,
+r.terraflow,
+r.mapcalc,
+r.walk
+\fR
+.SH AUTHORS
+Completely rewritten by Roger S. Miller, 2001
+.br
+July 2004 at WebValley 2004, error checking and vector points added by
+Matteo Franchi (Liceo Leonardo Da Vinci, Trento) and
+Roberto Flor (ITC\-irst, Trento, Italy)
+.SH SOURCE CODE
+.PP
+Available at: r.drain source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

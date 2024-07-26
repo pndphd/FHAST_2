@@ -1,0 +1,88 @@
+.TH i.emissivity 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.emissivity\fR\fR  \- Computes emissivity from NDVI, generic method for sparse land.
+.SH KEYWORDS
+imagery, emissivity, land flux, energy balance
+.SH SYNOPSIS
+\fBi.emissivity\fR
+.br
+\fBi.emissivity \-\-help\fR
+.br
+\fBi.emissivity\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the NDVI map [\-]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output emissivity layer
+.SH DESCRIPTION
+\fIi.emissivity\fR calculates the emissivity in the longwave radiation
+spectrum, according to the semi\-empirical equation related to NDVI by
+Caselles et al. (1997), valid in the NDVI range of 0.16 to 0.74 (Bastiaanssen, 1995).
+.PP
+Caselles et al. (1997) give reference (in Table 3 and Figure 2) to both
+the NDVI range used (0.15 \- 0.71) and the corresponding emissivity range
+used (0.97 \- 0.99).
+.PP
+The emissivity is the efficiency of longwave energy returning to the
+atmosphere from the skin surface. The skin surface receives heat from
+the thermal infrared radiation of the Sun, through atmospheric interaction.
+A part is returned to the atmosphere fastly, and another part is kept in
+the surface skin to be returned later. In more scientific terms, the
+grey body radiation is equal to the black body radiation times the emissivity.
+.SH SEE ALSO
+\fI
+i.eb.netrad
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Bastiaanssen, W.G.M., 1995.
+Estimation of Land surface parameters by remote sensing under clear\-sky
+conditions. PhD thesis, Wageningen University, Wageningen, The Netherlands.
+(PDF)
+.IP \(bu 4n
+Caselles, V., C. Coll, and E. Valor, 1997.
+Land surface emissivity and temperature determination in the whole
+HAPEX\-Sahel area from AVHRR data. International Journal of Remote
+Sensing 18(5):1009\-1027.
+.IP \(bu 4n
+Rubio, E., V. Caselles, and C. Badenas, 1997.
+Emissivity measurements of several soils and vegetation types in the
+8\-14 µm wave band: Analysis of two field methods. Remote Sensing of
+Environment 59(3): 490\-521.
+.RE
+.SH AUTHOR
+Yann Chemin, GRASS Development Team
+.br
+.SH SOURCE CODE
+.PP
+Available at: i.emissivity source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

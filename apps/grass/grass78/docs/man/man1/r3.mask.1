@@ -1,0 +1,60 @@
+.TH r3.mask 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.mask\fR\fR  \- Establishes the current working 3D raster mask.
+.SH KEYWORDS
+raster3d, mask, voxel
+.SH SYNOPSIS
+\fBr3.mask\fR
+.br
+\fBr3.mask \-\-help\fR
+.br
+\fBr3.mask\fR \fBmap\fR=\fIstring\fR  [\fBmaskvalues\fR=\fIval[\-val]\fR[,\fIval[\-val]\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+3D raster map with reference values
+.IP "\fBmaskvalues\fR=\fIval[\-val][,\fIval[\-val]\fR,...]\fR" 4m
+.br
+List of cell values to be masked out
+.SH DESCRIPTION
+File \fImap\fR is used as reference file.
+Cells in the mask are marked as \(dqmask out\(dq if the corresponding cell in
+\fImap\fR contains a value in the range specified with \fImaskvalues\fR.
+.PP
+Before a new 3D\-mask can be created the exisitng mask has to be removed
+with \fIg.remove\fR.
+.SH SEE ALSO
+\fI
+g.remove
+\fR
+.SH AUTHORS
+Roman Waupotitsch, Michael Shapiro,
+Helena Mitasova, Bill Brown, Lubos Mitas,
+Jaro Hofierka
+.SH SOURCE CODE
+.PP
+Available at: r3.mask source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

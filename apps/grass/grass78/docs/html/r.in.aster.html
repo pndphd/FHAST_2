@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.in.aster.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.in.aster.py</b></em>  - Georeference, rectify, and import Terra-ASTER imagery and relative DEMs using gdalwarp.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#imagery">imagery</a>, <a href="keywords.html#ASTER">ASTER</a>, <a href="keywords.html#elevation">elevation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.in.aster.py</b><br></div>
+<b>r.in.aster.py --help</b><br>
+<div id="synopsis"><b>r.in.aster.py</b> <b>input</b>=<em>name</em> <b>proctype</b>=<em>string</em> <b>band</b>=<em>string</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input ASTER image</dd>
+
+<dt><b>proctype</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>ASTER imagery processing type (Level 1A, Level 1B, or relative DEM)</dd>
+<dd>Options: <em>L1A, L1B, DEM</em></dd>
+<dd>Default: <em>L1B</em></dd>
+
+<dt><b>band</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>List L1A or L1B band to translate (1,2,3n,...), or enter 'all' to translate all bands</dd>
+<dd>Default: <em>all</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Base name for output raster map (band number will be appended to base name)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.in.aster</em> rectifies, georeferences, and imports Terra-ASTER imagery 
+to current location using gdalwarp, hdf 4, and r.in.gdal, using projection parameters 
+from g.proj. It can import Level 1A, Level 1B, and relative DEM products.
+<p>The program may be run interactively or non-interactively from the command 
+  line. In either case, the user must specify an <b>input</b> *.hdf file name, 
+  the <b>type</b> of processing used, the image <b>band</b> to import, and an 
+  <b>output</b> GRASS raster map name. 
+<p>The <b>type</b> parameter can take values of L1A, L1B, or DEM. 
+<p>The <b>band</b> parameter can take values of 1, 2, 3n, 3b, 4-14
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.in.aster</em> requires GDAL library to be in the user's path and the hdf 4 driver
+to be installed. The GDAL library must be compiled with hdf support.
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Barton, Arizona State University and Paul Kelly 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.in.aster">r.in.aster source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.in.aster">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.in.region - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.in.region</b></em>  - Creates a vector polygon from the current region extent.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.in.region</b><br></div>
+<b>v.in.region --help</b><br>
+<div id="synopsis"><b>v.in.region</b> [-<b>d</b>] <b>output</b>=<em>name</em>  [<b>type</b>=<em>string</em>]   [<b>cat</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-d</b></dt>
+<dd>Densify lines using region resolution</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Select type: line or area</dd>
+<dd>Options: <em>line, area</em></dd>
+<dd>Default: <em>area</em></dd>
+
+<dt><b>cat</b>=<em>integer</em></dt>
+<dd>Category value</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.in.region</em> creates a new vector map from current region
+extent.
+
+<p>
+If the output of <em>v.in.region</em> is to be used for raster
+reprojection, the <b>-d</b> flag should be used after setting the
+region to the raster map to be reprojected with
+<em><a href="r.proj.html">r.proj</a></em>.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The example is based on the North Carolina sample data location.
+To create a bounding box vector map based on a raster map, the 
+computational region is first set to the raster map. Then a
+vector bounding box is created based on the actual computational
+region (in this case precisely reflecting the pixel geometry of
+the raster map), resulting in a new vector polygon:
+
+<div class="code"><pre>
+g.region raster=soils_Kfactor -p
+v.in.region output=soils_Kfactor_bbox
+v.info map=soils_Kfactor_bbox
+</pre></div>
+
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.proj.html">r.proj</a>,
+<a href="v.info.html">v.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.in.region">v.in.region source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.in.region">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

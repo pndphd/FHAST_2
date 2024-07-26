@@ -1,0 +1,70 @@
+.TH r3.retile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.retile\fR\fR  \- Retiles an existing 3D raster map with user defined x, y and z tile size.
+.SH KEYWORDS
+raster3d, tiling, voxel
+.SH SYNOPSIS
+\fBr3.retile\fR
+.br
+\fBr3.retile \-\-help\fR
+.br
+\fBr3.retile\fR [\-\fBc\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBtiledimension\fR=\fIXxYxZ\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Disable tile caching
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input 3D raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the retiled 3D raster map
+.IP "\fBtiledimension\fR=\fIXxYxZ\fR" 4m
+.br
+The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8)
+.br
+Default: \fIdefault\fR
+.SH DESCRIPTION
+\fIr3.retile\fR writes a copy of an existing 3D raster map with
+a user defined number of tiles in x, y and z direction.
+The precision and the type of the original 3D raster map are used for
+the new retiled 3D raster map.
+.SH SEE ALSO
+\fI
+r3.cross.rast,
+r3.out.ascii,
+g.region,
+r.tile
+\fR
+.SH AUTHOR
+Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.retile source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

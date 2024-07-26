@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.in.v5d - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.in.v5d</b></em>  - Import 3-dimensional Vis5D files.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.in.v5d</b><br></div>
+<b>r3.in.v5d --help</b><br>
+<div id="synopsis"><b>r3.in.v5d</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>null_value</b>=<em>string</em>]   [<b>type</b>=<em>string</em>]   [<b>precision</b>=<em>string</em>]   [<b>compression</b>=<em>string</em>]   [<b>tiledimension</b>=<em>XxYxZ</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of V5D raster file to be imported</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Data type used in the output raster3d map</dd>
+<dd>Options: <em>default, double, float</em></dd>
+<dd>Default: <em>default</em></dd>
+
+<dt><b>precision</b>=<em>string</em></dt>
+<dd>Number of digits used as mantissa in the internal map storage, 0 -23 for float, 0 - 52 for double, max or default</dd>
+<dd>Default: <em>default</em></dd>
+
+<dt><b>compression</b>=<em>string</em></dt>
+<dd>The compression method used in the output raster3d map</dd>
+<dd>Options: <em>default, zip, none</em></dd>
+<dd>Default: <em>default</em></dd>
+
+<dt><b>tiledimension</b>=<em>XxYxZ</em></dt>
+<dd>The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8)</dd>
+<dd>Default: <em>default</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.in.v5d</em> imports 3-dimensional files (i.e. the V5D file with
+one variable and one time step). Otherwise, only first variable and
+timestep from 4/5D V5D file will be imported.
+
+<p><a href="http://www.ssec.wisc.edu/~billh/vis5d.html">Vis5D</a> is a system
+for interactive visualization of large 5D gridded data sets such as those
+produced by numerical weather models. The user can make isosurfaces, contour
+line slices, colored slices, volume renderings, etc. of data in a 3D raster map,
+then rotate and animate the images in real time. There's also a feature
+for wind trajectory tracing, a way to make text anotations for publications,
+support for interactive data analysis, etc.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r3.out.v5d.html">r3.out.v5d</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Jaro Hofierka, GeoModel s.r.o., Slovakia
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.in.v5d">r3.in.v5d source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.in.v5d">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

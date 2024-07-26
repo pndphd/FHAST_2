@@ -1,0 +1,30 @@
+Package: pandoc
+Title: Manage and Run Universal Converter 'Pandoc' from 'R'
+Version: 0.1.0
+Authors@R: c(
+    person("Christophe", "Dervieux", , "cderv@rstudio.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4474-2498")),
+    person("RStudio", role = c("cph", "fnd"))
+  )
+Description: Provides a set of tools to install, manage and run several
+    'Pandoc' versions.
+License: MIT + file LICENSE
+URL: https://github.com/cderv/pandoc, https://cderv.github.io/pandoc/
+BugReports: https://github.com/cderv/pandoc/issues
+Depends: R (>= 3.4.0)
+Imports: fs, rappdirs, rlang (>= 1.0.1)
+Suggests: covr, gh, rmarkdown (>= 2.14), testthat (>= 3.0.0), tibble,
+        withr
+Config/testthat/edition: 3
+Encoding: UTF-8
+RoxygenNote: 7.1.2
+Config/Needs/website: tidyverse/tidytemplate, dplyr, tidyr, purrr
+NeedsCompilation: no
+Packaged: 2022-09-27 13:15:23 UTC; chris
+Author: Christophe Dervieux [aut, cre]
+    (<https://orcid.org/0000-0003-4474-2498>),
+  RStudio [cph, fnd]
+Maintainer: Christophe Dervieux <cderv@rstudio.com>
+Repository: CRAN
+Date/Publication: 2022-09-29 08:40:05 UTC
+Built: R 4.2.2; ; 2023-02-21 02:21:45 UTC; windows

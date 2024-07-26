@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.stats.quantile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.stats.quantile</b></em>  - Compute category quantiles using two passes.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#zonal statistics">zonal statistics</a>, <a href="keywords.html#percentile">percentile</a>, <a href="keywords.html#quantile">quantile</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.stats.quantile</b><br></div>
+<b>r.stats.quantile --help</b><br>
+<div id="synopsis"><b>r.stats.quantile</b> [-<b>rpt</b>] <b>base</b>=<em>name</em> <b>cover</b>=<em>name</em>  [<b>quantiles</b>=<em>integer</em>]   [<b>percentiles</b>=<em>float</em>[,<i>float</i>,...]]   [<b>bins</b>=<em>integer</em>]   [<b>output</b>=<em>name</em>[,<i>name</i>,...]]   [<b>file</b>=<em>name</em>]   [<b>separator</b>=<em>character</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Create reclass map with statistics as category labels</dd>
+
+<dt><b>-p</b></dt>
+<dd>Do not create output maps; just print statistics</dd>
+
+<dt><b>-t</b></dt>
+<dd>Print statistics in table format</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>base</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of base raster map</dd>
+
+<dt><b>cover</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of cover raster map</dd>
+
+<dt><b>quantiles</b>=<em>integer</em></dt>
+<dd>Number of quantiles</dd>
+
+<dt><b>percentiles</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>List of percentiles</dd>
+<dd>Default: <em>50</em></dd>
+
+<dt><b>bins</b>=<em>integer</em></dt>
+<dd>Number of bins to use</dd>
+<dd>Default: <em>1000</em></dd>
+
+<dt><b>output</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Resultant raster map(s)</dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>Name for output file (if omitted or "-" output to stdout)</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>:</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.stats.quantile</em> is a tool to analyse exploratory statistics of a
+floating-point "cover layer" according to how it intersects with objects
+in a "base layer". It provides quantile calculations as selected
+"zonal statistics".
+
+<h2>NOTES</H2>
+
+<em>r.stats.quantile</em> is intended to be a partial replacement for
+<em><a href="r.statistics.html">r.statistics</a></em>, with support
+for floating-point cover maps. It provides quantile calculations,
+which are absent from
+<em><a href="r.stats.zonal.html">r.stats.zonal</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In this example, the raster polygon map <tt>zipcodes</tt> in the North 
+Carolina sample dataset is used to calculate quantile raster statistics using
+the <tt>elevation</tt> raster map: 
+
+<div class="code"><pre>
+g.region raster=zipcodes -p
+
+# print quantiles
+r.stats.quantile base=zipcodes cover=elevation quantiles=3 -p
+27511:0:33.333333:134.717392
+27511:1:66.666667:143.985723
+27513:0:33.333333:140.669993
+27513:1:66.666667:146.279449
+27518:0:33.333333:115.140101
+27518:1:66.666667:129.893723
+[...]
+
+# write out percentile raster maps
+r.stats.quantile base=zipcodes cover=elevation percentiles=25,50,75 \
+  output=zipcodes_elev_q25,zipcodes_elev_q50,zipcodes_elev_q75
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.quantile.html">r.quantile</a>,
+<a href="r.stats.zonal.html">r.stats.zonal</a>,
+<a href="r.statistics.html">r.statistics</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements<br>
+Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.stats.quantile">r.stats.quantile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.stats.quantile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

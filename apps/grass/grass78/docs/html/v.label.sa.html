@@ -1,0 +1,193 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.label.sa - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.label.sa</b></em>  - Create optimally placed labels for vector map(s)
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_paint_labels.html">paint labels</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.label.sa</b><br></div>
+<b>v.label.sa --help</b><br>
+<div id="synopsis"><b>v.label.sa</b> <b>map</b>=<em>name</em>  [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>layer</b>=<em>string</em>]  <b>column</b>=<em>string</em> <b>labels</b>=<em>name</em> <b>font</b>=<em>string</em>  [<b>size</b>=<em>float</em>]   [<b>isize</b>=<em>float</em>]   [<b>charset</b>=<em>string</em>]   [<b>color</b>=<em>string</em>]   [<b>hcolor</b>=<em>string</em>]   [<b>hwidth</b>=<em>float</em>]   [<b>background</b>=<em>string</em>]   [<b>opaque</b>=<em>yes|no</em>]   [<b>border</b>=<em>string</em>]   [<b>width</b>=<em>float</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, area</em></dd>
+<dd>Default: <em>point,line,area</em></dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column to be used for labels</dd>
+
+<dt><b>labels</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for new paint-label file</dd>
+
+<dt><b>font</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of TrueType font (as listed in the fontcap)</dd>
+
+<dt><b>size</b>=<em>float</em></dt>
+<dd>Label size (in map-units)</dd>
+<dd>Default: <em>100</em></dd>
+
+<dt><b>isize</b>=<em>float</em></dt>
+<dd>Icon size of point features (in map-units)</dd>
+<dd>Default: <em>10</em></dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Character encoding (default: UTF-8)</dd>
+<dd>Default: <em>UTF-8</em></dd>
+
+<dt><b>color</b>=<em>string</em></dt>
+<dd>Text color</dd>
+<dd>Options: <em>aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow</em></dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>hcolor</b>=<em>string</em></dt>
+<dd>Highlight color for text</dd>
+<dd>Options: <em>none, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow</em></dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>hwidth</b>=<em>float</em></dt>
+<dd>Width of highlight coloring</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>background</b>=<em>string</em></dt>
+<dd>Background color</dd>
+<dd>Options: <em>none, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow</em></dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>opaque</b>=<em>yes|no</em></dt>
+<dd>Opaque to vector (only relevant if background color is selected)</dd>
+<dd>Options: <em>yes, no</em></dd>
+<dd>Default: <em>yes</em></dd>
+
+<dt><b>border</b>=<em>string</em></dt>
+<dd>Border color</dd>
+<dd>Options: <em>none, aqua, black, blue, brown, cyan, gray, green, grey, indigo, magenta, orange, purple, red, violet, white, yellow</em></dd>
+<dd>Default: <em>none</em></dd>
+
+<dt><b>width</b>=<em>float</em></dt>
+<dd>Border width (only for ps.map output)</dd>
+<dd>Default: <em>0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.label.sa</em> makes a label-file from a GRASS vector map
+with labels created from attributes in the attached table. The labels are
+placed in as optimal place as possible. The label file has the same syntax
+as the one created by <a href="v.label.html">v.label</a>
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+North Carolina example:
+<p><div class="code"><pre>
+# get font names:
+d.font -L
+
+v.label.sa roadsmajor labels=roads_labels column=ROAD_NAME color=red \
+           background=white size=250 font=Vera
+
+# set region:
+g.region raster=lsat7_2002_10 -p
+
+# display:
+d.rgb b=lsat7_2002_10 g=lsat7_2002_20 r=lsat7_2002_30
+d.vect roadsmajor col=yellow
+d.labels roads_labels
+</pre></div>
+
+<p><center>
+<img src="v_label_sa.jpg" alt="Road labeling with v.label.sa"><br>
+<i>Road labeling with v.label.sa (Raleigh, North Carolina, USA, area)</i>
+</center>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+Edmondson, Christensen, Marks and Shieber: A General Cartographic
+Labeling Algorithm, Cartographica, Vol. 33, No. 4, Winter 1996, pp. 13-23
+The algorithm works by the principle of Simulated Annealing.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="v.labels.html">d.label</a><br>
+<a href="d.labels.html">d.labels</a><br>
+<a href="ps.map.html">ps.map</a>
+<a href="http://en.wikipedia.org/wiki/Simulated_Annealing">Wikipedia article on simulated annealing</a>
+</em><br>
+
+<h2><a name="author">AUTHOR</a></h2>
+Wolf Bergenheim
+<br>
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.label.sa">v.label.sa source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.label.sa">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+.TH v.transform 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.transform\fR\fR  \- Performs an affine transformation (shift, scale and rotate) on vector map.
+.SH KEYWORDS
+vector, transformation, geometry, GCP
+.SH SYNOPSIS
+\fBv.transform\fR
+.br
+\fBv.transform \-\-help\fR
+.br
+\fBv.transform\fR [\-\fBtwxyab\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBxshift\fR=\fIfloat\fR]   [\fByshift\fR=\fIfloat\fR]   [\fBzshift\fR=\fIfloat\fR]   [\fBxscale\fR=\fIfloat\fR]   [\fByscale\fR=\fIfloat\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBzrotation\fR=\fIfloat\fR]   [\fBcolumns\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Shift all z values to bottom=0
+.IP "\fB\-w\fR" 4m
+.br
+Swap coordinates x, y and then apply other parameters
+.IP "\fB\-x\fR" 4m
+.br
+Swap coordinates x, z and then apply other parameters
+.IP "\fB\-y\fR" 4m
+.br
+Swap coordinates y, z and then apply other parameters
+.IP "\fB\-a\fR" 4m
+.br
+Swap coordinates after the other transformations
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBxshift\fR=\fIfloat\fR" 4m
+.br
+Shifting value for x coordinates
+.br
+Default: \fI0.0\fR
+.IP "\fByshift\fR=\fIfloat\fR" 4m
+.br
+Shifting value for y coordinates
+.br
+Default: \fI0.0\fR
+.IP "\fBzshift\fR=\fIfloat\fR" 4m
+.br
+Shifting value for z coordinates
+.br
+Default: \fI0.0\fR
+.IP "\fBxscale\fR=\fIfloat\fR" 4m
+.br
+Scaling factor for x coordinates
+.br
+Default: \fI1.0\fR
+.IP "\fByscale\fR=\fIfloat\fR" 4m
+.br
+Scaling factor for y coordinates
+.br
+Default: \fI1.0\fR
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scaling factor for z coordinates
+.br
+Default: \fI1.0\fR
+.IP "\fBzrotation\fR=\fIfloat\fR" 4m
+.br
+Rotation around z axis in degrees (counter\-clockwise)
+.br
+Default: \fI0.0\fR
+.IP "\fBcolumns\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of attribute column(s) used as transformation parameters
+.br
+Format: parameter:column, e.g. xshift:xs,yshift:ys,zrot:zr
+.SH DESCRIPTION
+\fIv.transform\fR performs an affine transformation (translate and rotate) of a
+vector map. An affine transform includes one or several linear transformations
+(scaling, rotation) and translation (shifting). Several linear transformations
+can be combined in a single operation. The command can be used to georeference
+unreferenced vector maps or to modify existing geocoded maps.
+.SH NOTES
+Coordinate transformation based on Ground Control Points (GCPs) is done
+by \fIv.rectify\fR and not supported by
+\fIv.transform\fR.
+.PP
+Transformation parameters (i.e. \fIxshift\fR, \fIyshift\fR,
+etc.) can be fetched from attribute table connected to the vector
+map. In this case vector objects can be transformed with different
+parameters based on their category number. If the parameter cannot be
+fetched from the table, default value is used instead.
+.PP
+Note that the transformation matrix can be printed by
+\fIm.transform\fR.
+.SH EXAMPLE
+.SS DXF/DWG drawings
+.PP
+Most DXF/DWG drawings are done within XY coordinate space. To transform
+them to a national grid, we can use \fIv.transform\fR together with
+\fIv.rectify\fR and a first\-order transformation.
+.br
+.nf
+\fC
+v.transform \-t in=watertowerXY out=watertower_z zscale=0.04 zshift=1320
+v.rectify in=watertower_z out=watertowerUTM points=wt.points order=1
+\fR
+.fi
+.SS Extrude 2D vector points to 3D based on attribute column values
+Spearfish example with manual table editing for vertical shift:
+.br
+.nf
+\fC
+# work on own map copy:
+g.copy vect=archsites@PERMANENT,myarchsites
+# add new \(cqzs\(cq column to later store height of each site:
+v.db.addcolumn myarchsites col=\(dqzs double precision\(dq
+v.db.update myarchsites layer=1 column=zs value=\(dqcat * 1000\(dq
+# perform z transformation:
+v.transform \-t input=archsites output=myarchsites3d column=\(dqzshift:zs\(dq table=\(dqarchsites_t\(dq
+# drop table containing transformation parameters:
+echo \(dqdrop table archsites_t\(dq | db.execute
+\fR
+.fi
+The resulting map is a 3D vector map.
+.SS Extrude 2D vector points to 3D based on attribute column values
+Spearfish example with automated elevation extraction for vertical shift:
+.br
+.nf
+\fC
+# work on own map copy:
+g.copy vect=archsites@PERMANENT,myarchsites
+# add new \(cqzs\(cq column to later store height of each site:
+v.db.addcolumn myarchsites col=\(dqzs double precision\(dq
+# set region to elevation map and fetch individual heights:
+g.region raster=elevation.10m \-p
+v.what.rast myarchsites rast=elevation.10m col=zs
+# verify:
+v.db.select myarchsites
+# perform transformation to 3D
+v.transform \-t myarchsites output=myarchsites3d column=\(dqzshift:zs\(dq layer=1
+# drop table containing transformation parameters
+v.db.dropcolumn myarchsites3d col=zs
+\fR
+.fi
+The resulting map is a 3D vector map.
+.SH SEE ALSO
+\fI
+m.transform,
+i.rectify,
+v.rectify,
+r.region
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst, Trento, Italy,
+.br
+Column support added by Martin Landa, FBK\-irst (formerly ITC\-irst), Trento, Italy (2007/09)
+.SH SOURCE CODE
+.PP
+Available at: v.transform source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,104 @@
+.TH i.biomass 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.biomass\fR\fR  \- Computes biomass growth, precursor of crop yield calculation.
+.SH KEYWORDS
+imagery, biomass, FPAR, yield
+.SH SYNOPSIS
+\fBi.biomass\fR
+.br
+\fBi.biomass \-\-help\fR
+.br
+\fBi.biomass\fR \fBfpar\fR=\fIname\fR \fBlightuse_efficiency\fR=\fIname\fR \fBlatitude\fR=\fIname\fR \fBdayofyear\fR=\fIname\fR \fBtransmissivity_singleway\fR=\fIname\fR \fBwater_availability\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBfpar\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of fPAR raster map
+.IP "\fBlightuse_efficiency\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of light use efficiency raster map (UZB:cotton=1.9)
+.IP "\fBlatitude\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of degree latitude raster map [dd.ddd]
+.IP "\fBdayofyear\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of Day of Year raster map [1\-366]
+.IP "\fBtransmissivity_singleway\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of single\-way transmissivity raster map [0.0\-1.0]
+.IP "\fBwater_availability\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Value of water availability raster map [0.0\-1.0]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output daily biomass growth raster map [kg/ha/d]
+.SH DESCRIPTION
+\fIi.biomass\fR calculates the biomass growth for a day after [1][2].
+Input:
+.RS 4n
+.IP \(bu 4n
+fPAR, the modified Photosynthetic Active Radiation for crops.
+.IP \(bu 4n
+Light Use Efficiency [0.0\-1.0], in Uzbekistan cotton is at 1.9 most of the time.
+.IP \(bu 4n
+Latitude [0.0\-90.0], from \fIr.latlong\fR.
+.IP \(bu 4n
+DOY [1\-366].
+.IP \(bu 4n
+Transmissivity of the atmosphere single\-way [0.0\-1.0], mostly around 0.7+ in clear sky.
+.IP \(bu 4n
+Water availability [0.0\-1.0], possibly using direct output from \fIi.eb.evapfr\fR.
+.RE
+.SH NOTES
+\fIi.biomass\fR can use the output of \fIi.eb.evapfr\fR directly
+as water availability input.
+.SH TODO
+Remove Latitude, DOY and Tsw from input and replace with a raster
+input compatible with \fIr.sun\fR output.
+.SH SEE ALSO
+\fI
+i.eb.evapfr,
+r.latlong,
+r.sun
+\fR
+.SH REFERENCES
+.PP
+[1] Bastiaanssen, W.G.M., Ali, S., 2002. A new crop yield
+forecasting model based on satellite measurements applied across the
+Indus Basin, Pakistan. Agriculture, Ecosystems and Environment,
+94(3):321\-340. (PDF)
+.PP
+[2] Chemin, Y., Platonov, A., Abdullaev, I., Ul\-Hassan, M. 2005.
+Supplementing farm level water productivity assessment by remote
+sensing in transition economies. Water International. 30(4):513\-521.
+.SH AUTHOR
+Yann Chemin, Bec de Mortagne, France
+.SH SOURCE CODE
+.PP
+Available at: i.biomass source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

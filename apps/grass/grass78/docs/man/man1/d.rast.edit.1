@@ -1,0 +1,179 @@
+.TH d.rast.edit 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.rast.edit.py\fR\fR  \- Edits cell values in a raster map.
+.SH KEYWORDS
+display, editing, raster
+.SH SYNOPSIS
+\fBd.rast.edit.py\fR
+.br
+\fBd.rast.edit.py \-\-help\fR
+.br
+\fBd.rast.edit.py\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBaspect\fR=\fIname\fR]   [\fBwidth\fR=\fIinteger\fR]   [\fBheight\fR=\fIinteger\fR]   [\fBsize\fR=\fIinteger\fR]   [\fBrows\fR=\fIinteger\fR]   [\fBcols\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBaspect\fR=\fIname\fR" 4m
+.br
+Name of input aspect raster map
+.IP "\fBwidth\fR=\fIinteger\fR" 4m
+.br
+Width of display canvas
+.br
+Default: \fI640\fR
+.IP "\fBheight\fR=\fIinteger\fR" 4m
+.br
+Height of display canvas
+.br
+Default: \fI480\fR
+.IP "\fBsize\fR=\fIinteger\fR" 4m
+.br
+Minimum size of each cell
+.br
+Default: \fI12\fR
+.IP "\fBrows\fR=\fIinteger\fR" 4m
+.br
+Maximum number of rows to load
+.br
+Default: \fI100\fR
+.IP "\fBcols\fR=\fIinteger\fR" 4m
+.br
+Maximum number of columns to load
+.br
+Default: \fI100\fR
+.SH DESCRIPTION
+The \fId.rast.edit\fR program allows users to interactively
+edit cell category values in a raster map layer displayed to the
+graphics monitor using a mouse cursor.
+.SS Overview window
+An overview window shows the entire map with a red box showing the current
+editing region. The edit window shows the cells within the selected area.
+Click on a new spot on the overview window to move the editing area.
+.SS Raster cell editing
+Cell editing is done using the mouse cursor to indicate the cell(s) on
+the displayed raster map that are to be edited.
+.PP
+To change the value of a cell put the new value to use in the \(dqNew value\(dq
+box at the bottom left of the edit window. A value of \(dq*\(dq indicates a
+NULL value should be used.
+.PP
+\fBImportant:\fR the new value in the \(dqNew value\(dq box must be confirmed
+with ENTER, otherwise it is not yet active.
+.SS Saving the edited map
+To save the edited map, the \(dqFile\(dq menu contains the entry \fBSave\fR.
+To leave \fId.rast.edit\fR, use \fBExit\fR in the menu.
+.SS Map pan with arrow keys
+The map can be shifted using the arrow keys on the keyboard.
+.SH NOTES
+There is no \(dqundo\(dq command nor way to exit edit mode without saving
+changes to the output map.
+.PP
+Any MASK in place will be respected when writing the new raster map layer,
+including any edits to the MASKed areas.
+.SS Geographic Region Concerns
+\fId.rast.edit\fR reads the region definition for the raster map layer
+being edited from its internal cell header file. The new, edited copy of
+the raster layer will be created with the same resolution and region
+dimensions.
+.PP
+The primary bane of the \fId.rast.edit\fR program involves large map
+layers with lots of rows and columns) and/or slow computers,
+since the program must read and write raster map layers row by row for
+the full size of the map layer as dictated by its region size and resolution.
+(The current region settings of north, south, east, and west
+will not limit the size of the edited copy of the map layer,
+since by use of the overview selection these values may change several
+times during the editing session).
+.SH EXAMPLE
+Editing raster values in a LiDAR DEM, North Carolina sample data:
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m \-p
+# pan to area of interest and edit raster cells (I used \(dq102\(dq as value to modifiy cells
+# Use:  File > Save to save
+# then: File > Exit
+d.rast.edit input=elev_lid792_1m output=elev_lid792_1m_modified
+# comparison of raster statistics
+# original stats, note the min value
+r.univar \-g elev_lid792_1m
+# modified map stats, note the min value
+r.univar \-g elev_lid792_1m_modified
+\fR
+.fi
+.br
+\fIFigure: Editing of pixels in an elevation raster map using d.rast.edit\fR
+.SH TODO
+\fId.rast.edit\fR should not create a new raster map layer if
+the user makes no cell edits while running the program and leaving it
+without saving.
+.PP
+It would be nice to incorporate a scrollable version of \fI
+d.legend
+\fR
+(such that one could see a label legend for files with many categories on
+a standard size sub\-frame).  It would be even nicer to be able
+to select the category values from a graphical legend when editing
+cell values (thereby saving a trip to the text frame to type in the
+new value).
+.PP
+Perhaps method(s) for multiple  or mass cell edits would be useful.
+This could be done by providing modes in which the user may:
+.IP
+.IP \fB1\fR
+edit a block of cells to a given value by drawing a box;
+.IP \fB2\fR
+be able to choose a given value which is automatically used as
+the new value on each cell chosen until a different value is desired.
+.PP
+.PP
+There is no user\-interrupt handling. This could leave files in .tmp
+or (rarely) result in half\-baked raster maps.  The original file
+would survive unscathed by an interrupt at most any point in execution.
+Beware of exiting the program
+by means other than using \fIexit\fR on the \fIMain Menu\fR.
+.SH SEE ALSO
+\fI
+d.rast.arrow,
+d.rast.num,
+wxGUI.rdigit
+\fR
+.SH AUTHOR
+Tcl/Tk (2007) and wxPython versions (2008): Glynn Clements
+.br
+.br
+Replaces Xdriver version in C by Chris Rewerts, April 1991,
+Agricultural Engineering, Purdue University
+.SH SOURCE CODE
+.PP
+Available at: d.rast.edit source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

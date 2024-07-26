@@ -1,0 +1,88 @@
+.TH g.access 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.access\fR\fR  \- Controls access to the current mapset for other users on the system.
+.br
+If no option given, prints current status.
+.SH KEYWORDS
+general, map management, permission
+.SH SYNOPSIS
+\fBg.access\fR
+.br
+\fBg.access \-\-help\fR
+.br
+\fBg.access\fR  [\fBgroup\fR=\fIstring\fR]   [\fBother\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIstring\fR" 4m
+.br
+Access for group
+.br
+Options: \fIgrant, revoke\fR
+.IP "\fBother\fR=\fIstring\fR" 4m
+.br
+Access for others
+.br
+Options: \fIgrant, revoke\fR
+.SH DESCRIPTION
+This program allows the user to control access to the
+current mapset.  Normally, any user can read data from any
+GRASS mapset. But sometimes it is desirable to prohibit
+access to certain sensitive data. The \fIg.access\fR
+command allows a user to restrict read and execute access
+to the current mapset (see UNIX \fIchmod\fR command).
+\fIg.access\fR will not modify write access to the
+current mapset.
+.PP
+The user may, for example, allow only users in the same
+UNIX group to read data files in the mapset, or restrict
+the mapset to personal use only.
+.SH NOTES
+.PP
+Under GRASS, access to the mapset PERMANENT must be open to
+all users.  This is because GRASS looks for the user\(cqs default geographic
+region definition settings and the location TITLE in files that are stored
+under the PERMANENT mapset directory.  The \fIg.access\fR command,
+therefore, will not allow you to restrict access to the PERMANENT mapset.
+.PP
+The \fIg.mapsets\fR command isn\(cqt smart
+enough to tell if access to a specified mapset is restricted, and the user
+is therefore allowed to include the names of restricted mapsets in his
+search path.  However, the data in a restricted mapset is still protected;
+any attempts to look for or use data in a restricted mapset will fail.  The
+user will simply not see any data listed for a restricted mapset.
+.PP
+UNIX filesystem access controls and \fIg.access\fR actions are not
+supported by MS\-Windows.
+.SH SEE ALSO
+UNIX manual entries for \fIchmod(1)\fR and \fIgroup(5)\fR
+.br
+\fIg.mapsets\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: g.access source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

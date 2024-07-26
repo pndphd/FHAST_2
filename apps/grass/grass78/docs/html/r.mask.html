@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.mask.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.mask.py</b></em>  - Creates a MASK for limiting raster operation.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_mask.html">mask</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.mask.py</b><br></div>
+<b>r.mask.py --help</b><br>
+<div id="synopsis"><b>r.mask.py</b> [-<b>ir</b>]  [<b>raster</b>=<em>name</em>]   [<b>maskcats</b>=<em>string</em>]   [<b>vector</b>=<em>name</em>]   [<b>layer</b>=<em>string</em>]   [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Create inverse mask</dd>
+
+<dt><b>-r</b></dt>
+<dd>Remove existing mask (overrides other options)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>raster</b>=<em>name</em></dt>
+<dd>Name of raster map to use as mask</dd>
+
+<dt><b>maskcats</b>=<em>string</em></dt>
+<dd>Raster values to use for mask</dd>
+<dd>Format: 1 2 3 thru 7 *</dd>
+<dd>Default: <em>*</em></dd>
+
+<dt><b>vector</b>=<em>name</em></dt>
+<dd>Name of vector map to use as mask</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name (vector)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values (vector)</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword (vector)</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em><b>r.mask</b></em> - Facilitates creation of a raster "MASK" map to
+control raster operations.
+
+<p>
+The MASK is only applied when <em>reading</em> an existing GRASS raster map,
+for example when used in a module as an input map.
+
+The MASK will block out certain areas of a raster map from analysis and/or
+display, by "hiding" them from sight of other GRASS modules. Data falling
+within the boundaries of the MASK can be modified and operated upon by other
+GRASS raster modules; data falling outside the MASK is treated as if it were NULL.
+<p>
+Because the MASK is actually only a reclass map named "MASK", it can be
+copied, renamed, removed, and used in analyses, just like other GRASS
+raster map layers.  The user should be aware that a MASK remains in
+place until a user renames it to something other than "MASK", or removes
+it using "<tt>r.mask -r</tt>" or <em>g.remove</em>.
+<p>
+Grid cells in the MASK map containing <tt>0</tt> or <tt>NULL</tt>
+will replace data with NULL, while cells containing other values will allow
+data to pass through unaltered.
+<p>
+To restore raster operations to normal (i.e., all cells of the current region),
+remove the MASK file by setting the <b>-r</b> remove MASK flag. In this case, a
+dummy value must also be given for the input parameter.
+A MASK also can be removed by using <em>g.remove</em>
+or by renaming it to any other name with <em>g.rename</em>.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+The above method for specifying a "mask" may seem
+counterintuitive.  Areas inside the MASK are not hidden;
+areas outside the MASK will be ignored until the MASK file
+is removed.
+<p>
+The MASK is read as an integer map. If MASK is actually a
+floating-point map, the values will be converted to integers using the
+map's quantisation rules (this defaults to round-to-nearest, but can
+be changed with r.quant).
+<p>
+<em>r.mask</em> uses <em>r.reclass</em> to create a reclassification of an
+existing raster map and name it <tt>MASK</tt>. A reclass map takes up less space, but
+is affected by any changes to the underlying map from which it was created.
+The user can select category values from the input raster to use in the MASK
+with the <em>maskcats</em> parameter; if <em>r.mask</em> is run from the
+command line, the category values listed in <em>maskcats</em> must be quoted
+(see example below).
+<p>
+Somewhat similar program functions to those performed by
+<em>r.mask</em> can be done using <em>r.mapcalc</em>, 
+<em>g.region</em>, and other commands.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+The examples are based on the North Carolina sample dataset.
+<p>
+Create a raster mask, for contraining the calculation of
+univariate statistics of the elevation values for "lakes":
+<div class="code"><pre>
+# set computation region to lakes raster map
+g.region raster=lakes -p
+# use lakes as MASK
+r.mask raster=lakes
+# get statistics for elevation pixels of lakes:
+r.univar elevation
+</pre></div>
+
+Remove the raster mask ("MASK" map) with the -r flag:
+<div class="code"><pre>
+r.mask -r
+</pre></div>
+
+Creating a mask from selected categories in the North Carolina
+'geology_30m' raster map:
+<div class="code"><pre>
+g.region raster=geology_30m -p
+r.category geology_30m
+d.mon wx0
+d.rast geology_30m
+r.mask raster=geology_30m maskcats="217 thru 720"
+d.mon wx0
+d.rast geology_30m
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.reclass.html">r.reclass</a>,
+<a href="g.remove.html">g.remove</a>,
+<a href="g.rename.html">g.rename</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Barton, Arizona State University
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.mask">r.mask source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.mask">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

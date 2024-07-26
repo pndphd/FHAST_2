@@ -1,0 +1,126 @@
+.TH v.lrs.where 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lrs.where\fR\fR  \- Finds line id and real km+offset for given points in vector map using linear reference system.
+.SH KEYWORDS
+vector, linear reference system, network
+.SH SYNOPSIS
+\fBv.lrs.where\fR
+.br
+\fBv.lrs.where \-\-help\fR
+.br
+\fBv.lrs.where\fR \fBlines\fR=\fIname\fR \fBpoints\fR=\fIname\fR  [\fBllayer\fR=\fIstring\fR]   [\fBplayer\fR=\fIstring\fR]   [\fBrsdriver\fR=\fIstring\fR]   [\fBrsdatabase\fR=\fIstring\fR]  \fBrstable\fR=\fIstring\fR  [\fBthreshold\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBlines\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing lines
+.IP "\fBpoints\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing points
+.IP "\fBllayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Line layer
+.br
+Default: \fI1\fR
+.IP "\fBplayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Point layer
+.br
+Default: \fI1\fR
+.IP "\fBrsdriver\fR=\fIstring\fR" 4m
+.br
+Driver name for reference system table
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBrsdatabase\fR=\fIstring\fR" 4m
+.br
+Database name for reference system table
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBrstable\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of the reference system table
+.IP "\fBthreshold\fR=\fIfloat\fR" 4m
+.br
+Maximum distance to nearest line
+.br
+Default: \fI1000\fR
+.SH DESCRIPTION
+\fIv.lrs.where\fR identifies line id and real milepost+offset for
+points in vector map using linear reference system.
+.SH EXAMPLE
+This example is written for the Spearfish dataset (it continues the example
+from \fIv.lrs.create\fR).
+.PP
+In this example, the \(cqroute_lrs\(cq shall be queried for unknown
+positions (points, stored in the map \fInewpoints\fR) along the LRS:
+.br
+.nf
+\fC
+# generate query points
+echo \(dq590866.15|4926737.0
+590933|4927133\(dq | v.in.ascii out=newpoints
+v.lrs.where lines=route_lrs points=newpoints rstable=route_lrs
+pcat|lid|mpost|offset
+pcat|lid|mpost|offset
+1|22|4.000000+212.091461
+2|22|6.000000+188.112093
+# verification
+g.region vector=route_lrs n=n+100 s=s\-100 \-p
+d.erase
+d.vect route_lrs
+d.vect busstops disp=attr attr=cat size=10 bg=white lcol=blue yref=bottom
+d.vect busstops icon=basic/circle fcol=blue
+d.vect newpoints col=red
+# measure distance to previous bus stop:
+# use measuring tool in graphical user interface
+\fR
+.fi
+.SH SEE ALSO
+\fILRS tutorial\fR,
+.br
+\fIIntroducing the Linear Reference System in GRASS\fR,
+.br
+\fIv.lrs.where\fR,
+\fIv.lrs.segment\fR,
+\fIv.lrs.label\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst/MPA Solutions
+.br
+Documentation update (based on above journal article and available fragments): Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.lrs.where source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

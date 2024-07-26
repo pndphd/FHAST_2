@@ -1,0 +1,75 @@
+.TH r3.colors.out 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.colors.out\fR\fR  \- Exports the color table associated with a 3D raster map.
+.SH KEYWORDS
+raster3d, color table, export
+.SH SYNOPSIS
+\fBr3.colors.out\fR
+.br
+\fBr3.colors.out \-\-help\fR
+.br
+\fBr3.colors.out\fR [\-\fBp\fR] \fBmap\fR=\fIname\fR  [\fBrules\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Output values as percentages
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of 3D raster map
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Path to output rules file
+.br
+If not given write to standard output
+.SH DESCRIPTION
+\fIr3.colors.out\fR allows the user to export the color table for a
+3D raste map to a file which is suitable as input
+to \fIr3.colors\fR.
+.SH EXAMPLES
+.br
+.nf
+\fC
+r3.colors.out map=volume_1 rules=rules.txt
+r3.colors map=volume_2 rules=rules.txt
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.colors,
+r.colors.out,
+r3.colors
+v.colors,
+v.colors.out
+\fR
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r3.colors.out source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

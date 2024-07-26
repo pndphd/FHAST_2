@@ -1,0 +1,97 @@
+.TH v.db.renamecolumn 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.renamecolumn.py\fR\fR  \- Renames a column in the attribute table connected to a given vector map.
+.SH KEYWORDS
+vector, attribute table, database, rename
+.SH SYNOPSIS
+\fBv.db.renamecolumn.py\fR
+.br
+\fBv.db.renamecolumn.py \-\-help\fR
+.br
+\fBv.db.renamecolumn.py\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIoldcol,newcol\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIoldcol,newcol\fR \fB[required]\fR" 4m
+.br
+Old and new name of the column (old,new)
+.SH DESCRIPTION
+\fIv.db.renamecolumn\fR renames a column in the attribute table connected
+to a given vector map. It automatically checks the connection for the specified
+layer.
+.SH NOTES
+If the map table is connected through the DBF or SQLite drivers, the renaming
+is internally done by adding a new column with new name, transferring the contents
+of the old column to the new column and dropping the old column. This is needed
+as DBF or SQLite do not support \(dqALTER TABLE\(dq command to rename columns. Due to
+this the renamed column is found as last column of the table, it\(cqs original position
+cannot be maintained.
+.PP
+The SQLite driver will exit with an error if the column rename involves only a change of
+case, i.e., upper\-to\-lowercase, or lower\-to\-uppercase. The SQLite protocol considers \(dqNAME\(dq
+and \(dqname\(dq to be identical column names. In cases like these, the user should rename the original
+column to an intermediary name, then rename the intermediary to the final name.
+.SH EXAMPLES
+Renaming a column:
+.br
+.br
+.nf
+\fC
+g.copy vect=roadsmajor,myroads
+v.info \-c myroads
+v.db.renamecolumn myroads column=ROAD_NAME,roadname
+v.info \-c myroads
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.execute,
+v.db.addcolumn,
+v.db.addtable,
+v.db.connect,
+v.db.dropcolumn,
+v.db.droptable,
+v.db.select,
+v.db.update
+.br
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.db.renamecolumn source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

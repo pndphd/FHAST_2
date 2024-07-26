@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.profile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.profile</b></em>  - Outputs the raster map layer values lying on user-defined line(s).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_profile.html">profile</a>, <a href="keywords.html#transect">transect</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.profile</b><br></div>
+<b>r.profile --help</b><br>
+<div id="synopsis"><b>r.profile</b> [-<b>gc</b>] <b>input</b>=<em>name</em>  [<b>output</b>=<em>name</em>]   [<b>coordinates</b>=<em>east,north</em>[,<i>east,north</i>,...]]   [<b>file</b>=<em>name</em>]   [<b>resolution</b>=<em>float</em>]   [<b>null_value</b>=<em>string</em>]   [<b>units</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Output easting and northing in first two columns of four column output</dd>
+
+<dt><b>-c</b></dt>
+<dd>Output RRR:GGG:BBB color values for each profile point</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name of file for output (use output=- for stdout)</dd>
+<dd>Default: <em>-</em></dd>
+
+<dt><b>coordinates</b>=<em>east,north[,<i>east,north</i>,...]</em></dt>
+<dd>Profile coordinate pairs</dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>Name of input file containing coordinate pairs</dd>
+<dd>Use instead of the 'coordinates' option. "-" reads from stdin.</dd>
+
+<dt><b>resolution</b>=<em>float</em></dt>
+<dd>Resolution along profile (default = current region resolution)</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>*</em></dd>
+
+<dt><b>units</b>=<em>string</em></dt>
+<dd>Units</dd>
+<dd>If units are not specified, current location units are used. Meters are used by default in geographic (latlon) locations.</dd>
+<dd>Options: <em>meters, kilometers, feet, miles</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#output-format" class="toc">OUTPUT FORMAT</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#extraction-of-values-along-profile-defined-by-coordinates-(variant-1)" class="toc">Extraction of values along profile defined by coordinates (variant 1)</a></li>
+        <li class="toc"><a href="#extraction-of-values-along-profile-defined-by-coordinates-(variant-2)" class="toc">Extraction of values along profile defined by coordinates (variant 2)</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This program outputs two or four column (with <b>-g</b>) data to stdout or 
+an ASCII file. The default two column output consists of cumulative profile 
+length and raster value. The optional four column output consists 
+of easting, northing, cumulative profile length, and raster value. Profile
+end or "turning" points can be set manually with the <b>coordinates</b>
+argument. The profile resolution, or distance between profile
+points, is obtained from the current region resolution, or can be manually
+set with the <b>resolution</b> argument.
+
+<p>
+The <b>coordinates</b> parameter can be set to comma separated geographic
+coordinates for profile line endpoints.
+Alternatively the coordinate pairs can be piped from the text file specified
+by <b>file</b> option, or if set to "-", from <tt>stdin</tt>.
+In these cases the coordinate pairs should be given one comma separated pair
+per line.
+
+<p>
+The <b>resolution</b> parameter sets the distance between each profile point
+(resolution). The resolution must be provided in GRASS database units (i.e.
+decimal degrees for Lat Long databases and meters for UTM). By default
+<em>r.profile</em> uses the resolution of the current GRASS region.
+
+<p>
+The <b>null</b> parameter can optionally be set to change the character
+string representing null values.
+
+
+<h2><a name="output-format">OUTPUT FORMAT</a></h2>
+
+The multi column output from <em>r.profile</em> is intended for easy use in
+other programs.  The output can be piped (|) directly into other programs or
+saved to a file for later use. Output with geographic coordinates (<em>-g</em>)
+is compatible with <em><a href="v.in.ascii.html">v.in.ascii</a></em> and can 
+be piped direcly into this program.
+
+<div class="code"><pre>
+r.profile -g input=elevation coordinates=... | v.in.ascii output=elevation_profile separator=space
+</pre></div>
+
+The 2 column output is compatible with most plotting programs.
+<p>
+The optional RGB output provides the associated GRASS colour value for
+each profile point.
+
+<p>Option <b>units</b> enables to set units of the profile length output.
+If the units are not specified, current location units will be used.
+In case of geographic locations (latitude/longitude), meters are used as default unit.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The profile resolution is measured exactly from the supplied end or
+"turning" point along the profile. The end of a profile segment will be an
+exact multiple of the profile resolution and will therefore not always match
+the end point coordinates entered for the segmanet.
+
+<p>To extract the numbers in scripts, following parameters can be used:
+<div class="code"><pre>
+r.profile input=dgm12.5 coordinates=3570631,5763556 2>/dev/null
+</pre></div>
+
+This filters out the everything except the numbers.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="extraction-of-values-along-profile-defined-by-coordinates-(variant-1)">Extraction of values along profile defined by coordinates (variant 1)</a></h3>
+
+Extract a profile with coordinates (wayoints) provided on the command line
+(North Carolina data set):
+
+<div class="code"><pre>
+g.region raster=elevation -p
+r.profile -g input=elevation output=profile_points.csv \
+          coordinates=641712,226095,641546,224138,641546,222048,641049,221186
+</pre></div>
+This will extract a profile along the track defined by the three coordinate
+pairs. The output file "profile_points.csv" contains
+east,north,distance,value (here: elevation).
+<p><br>
+
+
+<!-- d.where no longer there
+<b>Example 2</b><br>
+Extract a profile with coordinates provided from standard input or an external file:
+<p>First create a points file with <em><a href="d.where.html">d.where</a></em>
+
+<div class="code"><pre>
+d.where > saved.points
+</pre></div>
+
+Then pipe the points file into r.profile
+
+<div class="code"><pre>
+cat saved.points | r.profile input=elev.rast output=profile.pts file=-
+</pre></div>
+
+The advantage of this method is that the same profile points can be piped
+into different GRASS rasters by changing the input parameter.
+<p>
+With this method the coordinates must be given as space or tab separated
+easting and northing. Labels after these values are ignored.
+<p>
+Another example using d.where:
+
+<div class="code"><pre>
+d.where | r.profile elevation.dem
+</pre></div>
+<p><br>
+-->
+
+<h3><a name="extraction-of-values-along-profile-defined-by-coordinates-(variant-2)">Extraction of values along profile defined by coordinates (variant 2)</a></h3>
+
+Coordinate pairs can also being "piped" into <em>r.profile</em> (variant 2a):
+
+<div class="code"><pre>
+r.profile elevation resolution=1000 file=- &lt;&lt; EOF
+641712,226095
+641546,224138
+641546,222048
+641049,221186
+EOF
+</pre></div>
+
+<p>
+Coordinate pairs can also being "piped" into <em>r.profile</em> (variant 2b):
+
+<div class="code"><pre>
+echo "641712,226095
+641546,224138
+641546,222048
+641049,221186" > coors.txt
+cat coors.txt | r.profile elevation resolution=1000 file=-
+</pre></div>
+
+The output is printed into the terminal (unless the <em>output</em> parameter
+is used) and looks as follows:
+
+<div class="code"><pre>
+Using resolution: 1000 [meters]
+Output columns:
+Along track dist. [meters], Elevation
+Approx. transect length: 1964.027749 [meters]
+ 0.000000 84.661507
+ 1000.000000 98.179062
+Approx. transect length: 2090.000000 [meters]
+ 1964.027749 83.638138
+ 2964.027749 89.141029
+ 3964.027749 78.497757
+Approx. transect length: 995.014070 [meters]
+ 4054.027749 73.988029
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.in.ascii.html">v.in.ascii</a>,
+<a href="r.what.html">r.what</a>,
+<a href="r.transect.html">r.transect</a>,
+<a href="wxGUI.html">wxGUI profile tool</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+<a href="mailto:bcovill@tekmap.ns.ca">Bob Covill</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.profile">r.profile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.profile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

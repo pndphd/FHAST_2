@@ -1,0 +1,14 @@
+prefix=D:/src/osgeo4w64/src/hdf5/osgeo4w/install-x86_64
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: hdf5_cpp
+Description: HDF5 (Hierarchical Data Format 5) Software Library
+Version: 1.10.5
+
+Cflags: -I${includedir}
+Libs: -L${libdir}  -lhdf5_cpp
+Requires: hdf5
+Libs.private:   -lhdf5_cpp
+Requires.private: hdf5

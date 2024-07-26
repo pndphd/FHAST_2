@@ -1,0 +1,155 @@
+.TH v.reclass 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.reclass\fR\fR  \- Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.
+.SH KEYWORDS
+vector, reclassification, attributes
+.SH SYNOPSIS
+\fBv.reclass\fR
+.br
+\fBv.reclass \-\-help\fR
+.br
+\fBv.reclass\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBcolumn\fR=\fIname\fR]   [\fBrules\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid\fR
+.br
+Default: \fIpoint,line,boundary,centroid\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+The name of the column whose values are to be used as new categories
+.br
+The source for the new key column must be type integer or string
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Full path to the reclass rule file
+.SH DESCRIPTION
+\fIv.reclass\fR allows user to create a new vector map based on
+the reclassification of an existing vector map. It also allows the user
+to change the \fIkey column\fR away from the default of \(dq\fBcat\fR\(dq with
+the \fBcolumn\fR option.
+.PP
+Rules file may contain on each row either pair:
+.br
+.nf
+\fC
+keyword value
+\fR
+.fi
+(separated by space) or comment beginning with \(cq#\(cq (hash).
+Definition of new category begins with keyword \fIcat\fR followed
+by the new category value.
+Keyword \fIwhere\fR specifies SQL where condition.
+.SH NOTES
+No table is created for the reclassed map if the \fBcolumn\fR option is
+used and the column type is integer (as the result could contain ambiguities).
+If the \fBcolumn\fR option is used and the column type is string, a new
+table is created containing the newly generated cat numbers and a single
+column containing the unique string column values, sorted in alphabetical
+order.
+.PP
+For dissolving common boundaries, see
+\fIv.dissolve\fR.
+.SH EXAMPLES
+.SS Example 1: Reclass by rules
+.br
+.nf
+\fC
+v.reclass input=land output=land_u type=boundary rules=land.rcl
+\fR
+.fi
+the rules file contains :
+.br
+.nf
+\fC
+# land reclass file
+cat 1
+where use = \(cqE13\(cq and owner = \(cqJara Cimrman\(cq
+cat 2
+where use = \(cqE14\(cq
+\fR
+.fi
+Produces a new vector area map \fIland_u\fR containing boundaries from
+\fIland\fR with area category values selected from database by SQL
+select statement:
+.br
+select id from tland where use = \(cqE13\(cq and owner = \(cqJara Cimrman\(cq
+changed to category 1;
+.br
+values selected from database by SQL select statement:
+.br
+select id from tland where use = \(cqE14\(cq changed to category 2.
+.SS Example 2: Reclass by attribute column
+(North Carolina sample dataset)
+.br
+.br
+.nf
+\fC
+v.reclass in=streams out=streams_by_type column=I_vs_P
+v.db.select streams_by_type
+cat|I_vs_P
+1|intermittent
+2|perennial
+\fR
+.fi
+.SH KNOWN ISSUES
+No table is created for reclassed layer if \fBrules\fR option is used.
+.SH SEE ALSO
+\fI
+v.dissolve,
+v.extract
+\fR
+.PP
+\fIGRASS SQL interface\fR
+.SH AUTHOR
+R.L. Glenn, USDA, SCS, NHQ\-CGIS
+.br
+from v.reclass to v.db.reclass and later to v.reclass in 5.7 rewritten
+by Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.reclass source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

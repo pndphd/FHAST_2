@@ -1,0 +1,282 @@
+.TH lrs 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH LRS (Linear Referencing System)
+.SH DESCRIPTION
+A Linear Referencing System (LRS) is a system
+where features (points or segments) are localized by a measure along a linear element.
+The LRS can be used to reference events for any network of linear
+features, for example roads, railways, rivers, pipelines, electric and
+telephone lines, water and sewer networks. An event is defined in LRS
+by a route ID and a measure. A route is a path on the network, usually
+composed from more features in the input map.  Events can be either
+points or lines (segments).
+.PP
+LRS is created from input lines and points in vector map.
+Points \- MP (mileposts) must have attached attributes specifying
+line and distance.
+The distances from the beginning of the linear feature in real world
+are specified by MP+offset.
+Typically, MP is in kilometers and offset in meters.
+.PP
+The implementation of LRS in GRASS has some particularities.
+.SS Double referenced system
+This feature gives a possibility to continue to use most of
+old mileposts if only small part of linear object in real world
+has changed. Example:
+.br
+.nf
+\fC
+\-\-\- road (linear feature)
+ +   MP (milepost, point, distance from the beginning in km)
+\fR
+.fi
+Old situation:
+.br
+.nf
+\fC
++\-\-\-\-+\-\-\-\-+\-\-\-\-+\-\-\-\-+\-\-\-\-+
+0    2    3    4    5    6
+\fR
+.fi
+New situation (for example a new bypass around the village)
+.br
+.nf
+\fC
+          ?    ?
+          +\-\-\-\-+
+          |    |
+          |    |
++\-\-\-\-+\-\-\-\-+    +\-\-\-\-+\-\-\-\-+
+0    2    3    4    5    6
+\fR
+.fi
+The segment between km 3 and 4 is now longer, it is now 3 km
+not 1 km as in old version. It would be expensive to change also
+all MP >= 4, but we cannot use km 4 twice.
+It is possible to use another notation for the new segment,
+we reference the segment from the kilometer 3, using only offset.
+.br
+.nf
+\fC
+      3+1000  3+2000
+          +\-\-\-\-+
+          |    |
+          |    |
++\-\-\-\-+\-\-\-\-+    +\-\-\-\-+\-\-\-\-+
+0    2    3  3+3000 5    6
+               4
+\fR
+.fi
+This way, there is no ambiguity and minimal changes are needed.
+But the MP 4 is no more the end of segment 3 \- 4 but
+the end of segment 3+2000 \- 3+3000. This information
+must be entered to the system and it is done by optional MP attributes:
+.RS 4n
+.IP \(bu 4n
+end_mp \- end MP
+.IP \(bu 4n
+end_off \- end offset
+.RE
+In this case original MP on km 4 will have these attributes:
+.br
+.nf
+\fC
+start_mp:  4
+start_off: 0
+end_mp:    3
+end_off:   3000
+\fR
+.fi
+Because each MP can keep 2 values (start, end) it is called \(cqdouble\(cq referenced LRS.
+.PP
+To avoid potential confusion, MP values are limited to integers only.
+It would be ambiguous to have for example segments 3.500 \- 3.500+200
+and 3.600 \- 3.600+200. The position 3+650 would fall into 2 segments,
+correct would be 3.600+50.
+That means, that MP must be the beginning of antonomous segment
+and all parts which becomes longer then before must be referenced
+from the last not changed MP.
+.PP
+The MP \fIstart_mp\fR and \fIend_mp\fR columns must be decimal, but
+\fIv.lrs.create\fR takes only the decimal part, and adds its value to
+offset and prints a warning.
+.PP
+It is highly recommended to work with polylines instead of segmented vector
+lines. The command \fIv.build.polylines\fR creates this map structure.
+.SS LRS table structure
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60.
+T{
+\fBAttribute\fR
+T}	 	T{
+\fBType\fR
+T}	 	T{
+\fBDescription\fR
+T}
+.sp 1
+T{
+rsid
+T}	 	T{
+integer
+T}	 	T{
+reference segment ID, unique in the table
+T}
+.sp 1
+T{
+lcat
+T}	 	T{
+integer
+T}	 	T{
+category of the line in the LRS map
+T}
+.sp 1
+T{
+lid
+T}	 	T{
+integer
+T}	 	T{
+route ID (LID)
+T}
+.sp 1
+T{
+start_map
+T}	 	T{
+double precision
+T}	 	T{
+distance measured along the line in LRS map from the beginning of the line to the beginning of the segment (absolute milepost distance)
+T}
+.sp 1
+T{
+end_map
+T}	 	T{
+double precision
+T}	 	T{
+distance measured along the line in LRS map from the beginning of the line to the end of the segment  (absolute distance of subsequent milepost)
+T}
+.sp 1
+T{
+start_mp
+T}	 	T{
+double precision
+T}	 	T{
+milepost number assigned to the start of the segment
+T}
+.sp 1
+T{
+start_off
+T}	 	T{
+double precision
+T}	 	T{
+distance from start_mp to the start of the segment measured along the physical object
+T}
+.sp 1
+T{
+end_mp
+T}	 	T{
+double precision
+T}	 	T{
+milepost number assigned to the end of the segment
+T}
+.sp 1
+T{
+end_off
+T}	 	T{
+double precision
+T}	 	T{
+distance from end_mp to end of the segment measured along the physical object
+T}
+.sp 1
+T{
+end_type
+T}	 	T{
+integer
+T}	 	T{
+1: the same as specified for from_ ; 2: calculated from map along the line from previous MP; 3: defined by user
+T}
+.sp 1
+.TE
+.SS Available commands
+.RS 4n
+.IP \(bu 4n
+v.lrs.create to create a linear referencing system,
+.IP \(bu 4n
+v.lrs.label to create stationing on the LRS,
+.IP \(bu 4n
+v.lrs.segment to create points/segments on LRS,
+and
+.IP \(bu 4n
+v.lrs.where to find line id and real km+offset
+for given points in vector map using linear referencing system.
+.RE
+.SS Input lines for v.lrs.segment and v.lrs.label
+\fIv.lrs.create\fR joins all connected lines of the same line ID into one line,
+the LRS library and other modules using LRS expect this!
+LR_get_nearest_offset in the LRS library checks duplicate segments only
+by line_cat and map_offset, not by coordinates in map.
+.SS Duplicate positions
+It can happen that one offset appears on 2 different lines:
+.br
+.nf
+\fC
+\-\-\-\-\-\-1\-\-\-\-\-\-\-     \-\-\-\-\-\-\-\-2\-\-\-\-\-\-
++0.0            +1.0              +2.0
+\fR
+.fi
+In this case, the module gives error because the position
+results in 2 points.
+.PP
+It can be also intended, for example a part of the road is shared
+with another one, but MP are used only for one:
+.br
+.nf
+\fC
+ + road1/km15         + road1/km22
+  \(rs                  /
+   \(rs road1/km17     / road1/km20
+    +\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+   / road2/km52     \(rs road2/km52
+  /                  \(rs
+ + road2/km50         + road2/km54
+\fR
+.fi
+.SH NOTES
+Explanations of selected options:
+.RS 4n
+.IP \(bu 4n
+llayer: vector layer in line map (usually 1; see vectorintro
+for \(dqlayer\(dq concept)
+.IP \(bu 4n
+player: vector layer in point map (usually 1; see vectorintro
+for \(dqlayer\(dq concept)
+.IP \(bu 4n
+rsdriver: Driver name for LRS table \- DBMI SQL driver (dbf, pg, mysql, sqlite, etc)
+.IP \(bu 4n
+rsdatabase: Database name for LRS table \- DBMI SQL database name (e.g., \(dqlrsdb\(dq)
+.IP \(bu 4n
+rstable: Name of the LRS table \- DBMI SQL table name (e.g., \(dqstreamslrs\(dq)
+.RE
+.SH SEE ALSO
+\fIR. Blazek, 2004, Introducing the Linear Reference System in GRASS, Bangkok, GRASS User Conf. Proc.\fR
+.br
+\fIR. Blazek, 2005, Introducing the Linear Reference System in GRASS, International Journal of Geoinformatics, Vol. 1(3), pp. 95\-100\fR
+.br
+.PP
+\fIv.build.polylines\fR,
+\fIv.lrs.create\fR,
+\fIv.lrs.segment\fR,
+\fIv.lrs.where\fR,
+\fIv.lrs.label\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst/MPA Solutions Trento
+.br
+Documentation update (based on above journal article and available fragments): Markus Neteler
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

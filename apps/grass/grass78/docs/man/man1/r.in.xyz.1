@@ -1,0 +1,530 @@
+.TH r.in.xyz 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.xyz\fR\fR  \- Creates a raster map from an assemblage of many coordinates using univariate statistics.
+.SH KEYWORDS
+raster, import, statistics, conversion, aggregation, binning, ASCII, LIDAR
+.SH SYNOPSIS
+\fBr.in.xyz\fR
+.br
+\fBr.in.xyz \-\-help\fR
+.br
+\fBr.in.xyz\fR [\-\fBsgi\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBmethod\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBx\fR=\fIinteger\fR]   [\fBy\fR=\fIinteger\fR]   [\fBz\fR=\fIinteger\fR]   [\fBskip\fR=\fIinteger\fR]   [\fBzrange\fR=\fImin,max\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBvalue_column\fR=\fIinteger\fR]   [\fBvrange\fR=\fImin,max\fR]   [\fBvscale\fR=\fIfloat\fR]   [\fBtype\fR=\fIstring\fR]   [\fBpercent\fR=\fIinteger\fR]   [\fBpth\fR=\fIinteger\fR]   [\fBtrim\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-s\fR" 4m
+.br
+Scan data file for extent then exit
+.IP "\fB\-g\fR" 4m
+.br
+In scan mode, print using shell script style
+.IP "\fB\-i\fR" 4m
+.br
+Ignore broken lines
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+ASCII file containing input data (or \(dq\-\(dq to read from stdin)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Statistic to use for raster values
+.br
+Options: \fIn, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean\fR
+.br
+Default: \fImean\fR
+.br
+\fBn\fR: Number of points in cell
+.br
+\fBmin\fR: Minimum value of point values in cell
+.br
+\fBmax\fR: Maximum value of point values in cell
+.br
+\fBrange\fR: Range of point values in cell
+.br
+\fBsum\fR: Sum of point values in cell
+.br
+\fBmean\fR: Mean (average) value of point values in cell
+.br
+\fBstddev\fR: Standard deviation of point values in cell
+.br
+\fBvariance\fR: Variance of point values in cell
+.br
+\fBcoeff_var\fR: Coefficient of variance of point values in cell
+.br
+\fBmedian\fR: Median value of point values in cell
+.br
+\fBpercentile\fR: Pth (nth) percentile of point values in cell
+.br
+\fBskewness\fR: Skewness of point values in cell
+.br
+\fBtrimmean\fR: Trimmed mean of point values in cell
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.IP "\fBx\fR=\fIinteger\fR" 4m
+.br
+Column number of x coordinates in input file (first column is 1)
+.br
+Default: \fI1\fR
+.IP "\fBy\fR=\fIinteger\fR" 4m
+.br
+Column number of y coordinates in input file
+.br
+Default: \fI2\fR
+.IP "\fBz\fR=\fIinteger\fR" 4m
+.br
+Column number of data values in input file
+.br
+If a separate value column is given, this option refers to the z\-coordinate column to be filtered by the zrange option
+.br
+Default: \fI3\fR
+.IP "\fBskip\fR=\fIinteger\fR" 4m
+.br
+Number of header lines to skip at top of input file
+.br
+Default: \fI0\fR
+.IP "\fBzrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for z data (min,max)
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to z data
+.br
+Default: \fI1.0\fR
+.IP "\fBvalue_column\fR=\fIinteger\fR" 4m
+.br
+Alternate column number of data values in input file
+.br
+If not given (or set to 0) the z\-column data is used
+.br
+Default: \fI0\fR
+.IP "\fBvrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for alternate value column data (min,max)
+.IP "\fBvscale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to alternate value column data
+.br
+Default: \fI1.0\fR
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of raster map to be created
+.br
+Storage type for resultant raster map
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+Default: \fIFCELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBpercent\fR=\fIinteger\fR" 4m
+.br
+Percent of map to keep in memory
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI100\fR
+.IP "\fBpth\fR=\fIinteger\fR" 4m
+.br
+Pth percentile of the values
+.br
+Options: \fI1\-100\fR
+.IP "\fBtrim\fR=\fIfloat\fR" 4m
+.br
+Discard <trim> percent of the smallest and <trim> percent of the largest observations
+.br
+Options: \fI0\-50\fR
+.SH DESCRIPTION
+The \fIr.in.xyz\fR module will load and bin ungridded x,y,z ASCII data
+into a new raster map. The user may choose from a variety of statistical
+methods in creating the new raster. Gridded data provided as a stream of
+x,y,z points may also be imported.
+.PP
+Please note that the current region extents and resolution are used for
+the import. It is therefore recommended to first use the \fB\-s\fR
+flag to get the extents of the input points to be imported, then
+adjust the current region accordingly, and only then proceed with the
+actual import.
+.PP
+\fIr.in.xyz\fR is designed for processing massive point cloud datasets,
+for example raw LIDAR or sidescan sonar swath data. It has been tested with
+datasets as large as tens of billion of points (705GB in a single file).
+.PP
+Available statistics for populating the raster are (\fBmethod\fR):
+.PP
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+\fIn\fR
+T}	 	T{
+number of points in cell
+T}
+.sp 1
+T{
+\fImin\fR
+T}	 	T{
+minimum value of points in cell
+T}
+.sp 1
+T{
+\fImax\fR
+T}	 	T{
+maximum value of points in cell
+T}
+.sp 1
+T{
+\fIrange\fR
+T}	 	T{
+range of points in cell
+T}
+.sp 1
+T{
+\fIsum\fR
+T}	 	T{
+sum of points in cell
+T}
+.sp 1
+T{
+\fImean\fR
+T}	 	T{
+average value of points in cell
+T}
+.sp 1
+T{
+\fIstddev\fR
+T}	 	T{
+standard deviation of points in cell
+T}
+.sp 1
+T{
+\fIvariance\fR
+T}	 	T{
+variance of points in cell
+T}
+.sp 1
+T{
+\fIcoeff_var\fR
+T}	 	T{
+coefficient of variance of points in cell
+T}
+.sp 1
+T{
+\fImedian\fR
+T}	 	T{
+median value of points in cell
+T}
+.sp 1
+T{
+\fIpercentile\fR 
+T}	 	T{
+p\u\fIth\fR\d percentile of points in cell
+T}
+.sp 1
+T{
+\fIskewness\fR
+T}	 	T{
+skewness of points in cell
+T}
+.sp 1
+T{
+\fItrimmean\fR
+T}	 	T{
+trimmed mean of points in cell
+T}
+.sp 1
+.TE
+.RS 4n
+.IP \(bu 4n
+\fIVariance\fR and derivatives use the biased estimator (n). [subject to change]
+.IP \(bu 4n
+\fICoefficient of variance\fR is given in percentage and defined as
+(stddev/mean)*100.
+.RE
+.PP
+It is also possible to bin and store another data column (e.g. backscatter)
+while simultaneously filtering and scaling both the data column values and
+the z range.
+.SH NOTES
+.SS Gridded data
+If data is known to be on a regular grid \fIr.in.xyz\fR can reconstruct
+the map perfectly as long as some care is taken to set up the region
+correctly and that the data\(cqs native map projection is used. A typical
+method would involve determining the grid resolution either by examining
+the data\(cqs associated documentation or by studying the text file. Next scan
+the data with \fIr.in.xyz\fR\(cqs \fB\-s\fR (or \fB\-g\fR) flag to find the
+input data\(cqs bounds. GRASS uses the cell\-center raster convention where
+data points fall within the center of a cell, as opposed to the grid\-node
+convention. Therefore you will need to grow the region out by half a cell
+in all directions beyond what the scan found in the file. After the region
+bounds and resolution are set correctly with \fIg.region\fR, run
+\fIr.in.xyz\fR using the \fIn\fR method and verify that n=1 at all places.
+\fIr.univar\fR can help. Once you are confident that the region exactly
+matches the data proceed to run \fIr.in.xyz\fR using one of the \fImean,
+min, max\fR, or \fImedian\fR methods. With n=1 throughout, the result
+should be identical regardless of which of those methods are used.
+.SS Memory use
+While the \fBinput\fR file can be arbitrarily large, \fIr.in.xyz\fR
+will use a large amount of system memory for large raster regions (10000x10000).
+If the module refuses to start complaining that there isn\(cqt enough memory,
+use the \fBpercent\fR parameter to run the module in several passes.
+In addition using a less precise map format (CELL [integer] or
+FCELL [floating point]) will use less memory than a DCELL
+[double precision floating point] \fBoutput\fR map. Methods such as \fIn,
+min, max, sum\fR will also use less memory, while \fIstddev, variance,
+and coeff_var\fR will use more.
+The aggregate functions \fImedian, percentile, skewness\fR and
+\fItrimmed mean\fR will use even more memory and may not be appropriate
+for use with arbitrarily large input files.
+.PP
+The default map \fBtype\fR=FCELL is intended as compromise between
+preserving data precision and limiting system resource consumption.
+If reading data from a stdin stream, the program can only run using
+a single pass.
+.SS Setting region bounds and resolution
+You can use the \fB\-s\fR scan flag to find the extent of the input data
+(and thus point density) before performing the full import. Use
+\fIg.region\fR to adjust the region bounds to match. The \fB\-g\fR shell
+style flag prints the extent suitable as parameters for \fIg.region\fR.
+A suitable resolution can be found by dividing the number of input points
+by the area covered. e.g.
+.br
+.nf
+\fC
+wc \-l inputfile.txt
+g.region \-p
+# points_per_cell = n_points / (rows * cols)
+g.region \-e
+# UTM location:
+# points_per_sq_m = n_points / (ns_extent * ew_extent)
+# Lat/Lon location:
+# points_per_sq_m = n_points / (ns_extent * ew_extent*cos(lat) * (1852*60)^2)
+\fR
+.fi
+.PP
+If you only intend to interpolate the data with \fIr.to.vect\fR and
+\fIv.surf.rst\fR, then there is little point to setting the region
+resolution so fine that you only catch one data point per cell \-\- you might
+as well use \(dqv.in.ascii \-zbt\(dq directly.
+.SS Filtering
+Points falling outside the current region will be skipped. This includes
+points falling \fIexactly\fR on the southern region bound.
+(to capture those adjust the region with \(dqg.region s=s\-0.000001\(dq;
+see \fIg.region\fR)
+.PP
+Blank lines and comment lines starting with the hash symbol (#)
+will be skipped.
+.PP
+The \fBzrange\fR parameter may be used for filtering the input data by
+vertical extent. Example uses might include preparing multiple raster
+sections to be combined into a 3D raster array with \fIr.to.rast3\fR, or
+for filtering outliers on relatively flat terrain.
+.PP
+In varied terrain the user may find that \fImin\fR maps make for a good
+noise filter as most LIDAR noise is from premature hits. The \fImin\fR map
+may also be useful to find the underlying topography in a forested or urban
+environment if the cells are over sampled.
+.PP
+The user can use a combination of \fIr.in.xyz\fR \fBoutput\fR maps to create
+custom filters. e.g. use \fIr.mapcalc\fR to create a mean\-(2*stddev)
+map. [In this example the user may want to include a lower bound filter in
+\fIr.mapcalc\fR to remove highly variable points (small \fIn\fR) or run
+\fIr.neighbors\fR to smooth the stddev map before further use.]
+.SS Alternate value column
+The \fBvalue_column\fR parameter can be used in specialized cases when you
+want to filter by z\-range but bin and store another column\(cqs data. For
+example if you wanted to look at backscatter values between 1000 and 1500
+meters elevation. This is particularly useful when using \fIr.in.xyz\fR
+to prepare depth slices for a 3D raster — the \fBzrange\fR option defines
+the depth slice but the data values stored in the voxels describe an
+additional dimension. As with the z column, a filtering range and scaling
+factor may be applied.
+.SS Reprojection
+If the raster map is to be reprojected, it may be more appropriate to reproject
+the input points with \fIm.proj\fR or \fIcs2cs\fR before running
+\fIr.in.xyz\fR.
+.SS Interpolation into a DEM
+The vector engine\(cqs topographic abilities introduce a finite memory overhead
+per vector point which will typically limit a vector map to approximately
+3 million points (~ 1750^2 cells). If you want more, use the \fIr.to.vect\fR
+\fB\-b\fR flag to skip building topology. Without topology, however, all
+you\(cqll be able to do with the vector map is display with \fId.vect\fR and
+interpolate with \fIv.surf.rst\fR.
+Run \fIr.univar\fR on your raster map to check the number of non\-NULL cells
+and adjust bounds and/or resolution as needed before proceeding.
+.PP
+Typical commands to create a DEM using a regularized spline fit:
+.br
+.nf
+\fC
+r.univar lidar_min
+r.to.vect \-z type=point in=lidar_min out=lidar_min_pt
+v.surf.rst in=lidar_min_pt elev=lidar_min.rst
+\fR
+.fi
+.SS Import of x,y,string data
+\fIr.in.xyz\fR is expecting numeric values as z column. In order to
+perform a occurrence count operation even on x,y data with non\-numeric
+attribute(s), the data can be imported using either the x or y
+coordinate as a fake z column for \fBmethod\fR=n (count
+number of points per grid cell), the z values are ignored anyway.
+.SH EXAMPLES
+.SS Import of x,y,z ASCII into DEM
+Sometimes elevation data are delivered as x,y,z ASCII files instead of a raster
+matrix. The import procedure consists of a few steps: calculation of the
+map extent, setting of the computational region accordingly with an additional
+extension into all directions by half a raster cell in order to register the
+elevation points at raster cell centers.
+.PP
+Note: if the z column is separated by several spaces from the coordinate columns,
+it may be sufficient to adapt the \fBz\fR position value.
+.br
+.nf
+\fC
+# Important: observe the raster spacing from the ASCII file:
+# ASCII file format (example):
+# 630007.5 228492.5 141.99614
+# 630022.5 228492.5 141.37904
+# 630037.5 228492.5 142.29822
+# 630052.5 228492.5 143.97987
+# ...
+# In this example the distance is 15m in x and y direction.
+# detect extent, print result as g.region parameters
+r.in.xyz input=elevation.xyz separator=space \-s \-g
+# ... n=228492.5 s=215007.5 e=644992.5 w=630007.5 b=55.578793 t=156.32986
+# set computational region, along with the actual raster resolution
+# as defined by the point spacing in the ASCII file:
+g.region n=228492.5 s=215007.5 e=644992.5 w=630007.5 res=15 \-p
+# now enlarge computational region by half a raster cell (here 7.5m) to
+# store the points as cell centers:
+g.region n=n+7.5 s=s\-7.5 w=w\-7.5 e=e+7.5 \-p
+# import XYZ ASCII file, with z values as raster cell values
+r.in.xyz input=elevation.xyz separator=space method=mean output=myelev
+# univariate statistics for verification of raster values
+r.univar myelev
+\fR
+.fi
+.SS Import of LiDAR data and DEM creation
+Import the Jockey\(cqs
+Ridge, NC, LIDAR dataset (compressed file \(dqlidaratm2.txt.gz\(dq), and process it
+into a clean DEM:
+.br
+.nf
+\fC
+# scan and set region bounds
+r.in.xyz \-s \-g separator=\(dq,\(dq in=lidaratm2.txt
+g.region n=35.969493 s=35.949693 e=\-75.620999 w=\-75.639999
+g.region res=0:00:00.075 \-a
+# create \(dqn\(dq map containing count of points per cell for checking density
+r.in.xyz in=lidaratm2.txt out=lidar_n separator=\(dq,\(dq method=n zrange=\-2,50
+# check point density [rho = n_sum / (rows*cols)]
+r.univar lidar_n
+# create \(dqmin\(dq map (elevation filtered for premature hits)
+r.in.xyz in=lidaratm2.txt out=lidar_min separator=\(dq,\(dq method=min zrange=\-2,50
+# set computational region to area of interest
+g.region n=35:57:56.25N s=35:57:13.575N w=75:38:23.7W e=75:37:15.675W
+# check number of non\-null cells (try and keep under a few million)
+r.univar lidar_min
+# convert to points
+r.to.vect \-z type=point in=lidar_min out=lidar_min_pt
+# interpolate using a regularized spline fit
+v.surf.rst in=lidar_min_pt elev=lidar_min.rst
+# set color scale to something interesting
+r.colors lidar_min.rst rule=bcyr \-n \-e
+# prepare a 1:1:1 scaled version for NVIZ visualization (for lat/lon input)
+r.mapcalc \(dqlidar_min.rst_scaled = lidar_min.rst / (1852*60)\(dq
+r.colors lidar_min.rst_scaled rule=bcyr \-n \-e
+\fR
+.fi
+.SH TODO
+.RS 4n
+.IP \(bu 4n
+Support for multiple map output from a single run.
+.br
+method=string[,string,...] output=name[,name,...]
+.br
+This can be easily handled by a wrapper script, with the added
+benefit of it being very simple to parallelize that way.
+.RE
+.SH KNOWN ISSUES
+.RS 4n
+.IP \(bu 4n
+\(dqnan\(dq can leak into \fIcoeff_var\fR maps.
+.br
+Cause unknown. Possible work\-around: \(dqr.null setnull=nan\(dq
+.RE
+If you encounter any problems (or solutions!) please contact the GRASS
+Development Team.
+.SH SEE ALSO
+\fI
+g.region,
+m.proj,
+r.fillnulls,
+r.in.ascii,
+r.in.lidar,
+r3.in.xyz,
+r.mapcalc,
+r.neighbors,
+r.out.xyz,
+r.to.rast3,
+r.to.vect,
+r.univar,
+v.in.ascii,
+v.surf.rst
+\fR
+.PP
+\fI
+v.lidar.correction,
+v.lidar.edgedetection,
+v.lidar.growing,
+v.outlier,
+v.surf.bspline
+\fR
+.PP
+\fIpv\fR
+\- The UNIX pipe viewer utility
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHORS
+Hamish Bowman, Department of Marine Science, University of Otagom New Zealand
+.br
+Extended by Volker Wichmann to support the aggregate functions
+\fImedian, percentile, skewness\fR and \fItrimmed mean\fR.
+.SH SOURCE CODE
+.PP
+Available at: r.in.xyz source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

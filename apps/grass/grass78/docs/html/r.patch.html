@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.patch - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.patch</b></em>  - Creates a composite raster map layer by using known category values from one (or more) map layer(s) to fill in areas of "no data" in another map layer.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#mosaicking">mosaicking</a>, <a href="keywords.html#merge">merge</a>, <a href="keywords.html#patching">patching</a>, <a href="keywords.html#aggregation">aggregation</a>, <a href="keywords.html#series">series</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.patch</b><br></div>
+<b>r.patch --help</b><br>
+<div id="synopsis"><b>r.patch</b> [-<b>zs</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-z</b></dt>
+<dd>Use zero (0) for transparency instead of NULL</dd>
+
+<dt><b>-s</b></dt>
+<dd>Do not create color and category files</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster maps to be patched together</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for resultant raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#stacking-order" class="toc">Stacking order</a></li>
+        <li class="toc"><a href="#relation-to-sql-coalesce()-function" class="toc">Relation to SQL COALESCE() function</a></li>
+        <li class="toc"><a href="#example-of-filling-areas" class="toc">Example of filling areas</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example-with-three-maps" class="toc">Example with three maps</a></li>
+        <li class="toc"><a href="#map-mosaic-example-using-bash-syntax" class="toc">Map mosaic example using Bash syntax</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The GRASS program <em>r.patch</em> allows the user to build a new
+raster map the size and resolution of the current region by assigning
+known data values from input raster maps to the cells in this region.
+<br>
+In case of overlapping input raster maps this is done by filling in
+"no data" cells, those that do not yet contain data, contain NULL data,
+or, optionally contain 0 data, with the data from the first input map.
+Once this is done the remaining holes are filled in by the next input map,
+and so on.
+<br>
+In case of adjacent input raster maps the output map contains the map
+mosaic.
+
+<p>
+Hence this command is useful for
+<ul>
+<li> making a composite raster map layer from two or more adjacent map layers,</li>
+<li> for filling in "holes" in a raster map layer's data (e.g., in digital
+     elevation data), or
+<li> for updating an older map layer with more recent data.</li>
+</ul>
+
+The current geographic region definition and mask settings are respected.
+
+<center>
+<img src="r_patch.png">
+<p><em>Figure: Result of patching of two raster maps containing NULLs
+using the default settings.</em></p>
+</center>
+
+<h3><a name="stacking-order">Stacking order</a></h3>
+
+<p>The first <em>name</em> listed in the string
+<b>input=</b><em>name</em>,<em>name</em>,<em>name</em>,... is the name
+of the first map whose data values will be used to fill in
+cells in the current region.
+Then, the second through the last input
+maps (..., <em>name</em>, <em>name</em>, ...) will be used,
+in order, to supply data values for the remaining
+"no data" cells (or cells with value 0 with <b>-z</b> flag).
+
+<p>
+In other words, the first raster map is used first and if it had some
+"no data" cells, then second raster map is used for these cells, then
+the third and so on.
+So the formal command line syntax can be also written as
+<b>input=</b><em>primary</em>,<em>secondary</em>,<em>tertiary</em>,...
+For two raster maps, the first one can be viewed as the primary one
+or the default one and the second one as the secondary one or a fallback. 
+
+<center>
+<img src="r_patch_zeros_as_nulls.png">
+<p><em>Figure: Result of patching of two raster maps using the
+<b>-z</b> flag to treat zeros as NULLs. Note the value 1 being preserved
+from the first raster while the value 6 is taken from the second raster
+instead of the value 0 from the first raster because zeros are replaced
+with the <b>-z</b> flag active.</em></p>
+</center>
+
+<h3><a name="relation-to-sql-coalesce()-function">Relation to SQL COALESCE() function</a></h3>
+
+The module is corresponds to the SQL COALESCE() function.
+This function takes two or more arguments and returns
+a copy of its first non-NULL argument. If all arguments are NULL,
+the function returns NULL.
+
+<p>
+The <em>r.patch</em> module iterates over all cells and for each cell
+of the output raster map uses the first corresponding non-NULL cell
+in the series of the input raster maps.
+
+<h3><a name="example-of-filling-areas">Example of filling areas</a></h3>
+
+<!-- this example is also used in the tests -->
+
+Below, the raster map layer on the far left is <b>patched</b>
+with the middle (<em>patching</em>) raster map layer,
+to produce the <em>composite</em> raster map layer on the right.
+The example assumes zero values to be treated as NULLs (<b>-z</b> flag).
+
+<div class="code"><pre>
+  1 1 1 0 2 2 0 0    0 0 1 1 0 0 0 0    1 1 1 1 2 2 0 0
+  1 1 0 2 2 2 0 0    0 0 1 1 0 0 0 0    1 1 1 2 2 2 0 0
+  3 3 3 3 2 2 0 0    0 0 0 0 0 0 0 0    3 3 3 3 2 2 0 0
+  3 3 3 3 0 0 0 0    4 4 4 4 4 4 4 4    3 3 3 3 4 4 4 4
+  3 3 3 0 0 0 0 0    4 4 4 4 4 4 4 4    3 3 3 4 4 4 4 4
+  0 0 0 0 0 0 0 0    4 4 4 4 4 4 4 4    4 4 4 4 4 4 4 4
+</pre></div>
+
+Switching the <em>patched</em> and the <em>patching</em> raster map layers 
+produces the following results: 
+
+<div class="code"><pre>
+  0 0 1 1 0 0 0 0    1 1 1 0 2 2 0 0    1 1 1 1 2 2 0 0
+  0 0 1 1 0 0 0 0    1 1 0 2 2 2 0 0    1 1 1 1 2 2 0 0
+  0 0 0 0 0 0 0 0    3 3 3 3 2 2 0 0    3 3 3 3 2 2 0 0
+  4 4 4 4 4 4 4 4    3 3 3 3 0 0 0 0    4 4 4 4 4 4 4 4
+  4 4 4 4 4 4 4 4    3 3 3 0 0 0 0 0    4 4 4 4 4 4 4 4
+  4 4 4 4 4 4 4 4    0 0 0 0 0 0 0 0    4 4 4 4 4 4 4 4
+</pre></div>
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Frequently, this program is used to patch together adjacent map layers which
+have been digitized separately.  The program 
+<em><a href="v.mkgrid.html">v.mkgrid</a></em> can be used to make adjacent
+maps align neatly.
+
+<p>The user should check the current geographic region settings before running 
+<em>r.patch</em>, to ensure that the region boundaries encompass all 
+of the data desired to be included in the composite map and to ensure that the
+region resolution is the resolution of the desired data. To set the
+geographic region settings to one or several raster maps, the <em>g.region</em>
+program can be used:
+
+<div class="code"><pre>
+g.region raster=map1[,map2[,...]]
+</pre></div>
+
+<p>
+Use of <em>r.patch</em> is generally followed by use of the GRASS programs 
+<em><a href="g.remove.html">g.remove</a></em> and 
+<em><a href="g.rename.html">g.rename</a></em>;
+<em>g.remove</em> is used to remove the original (un-patched) raster map
+layers, while <em>g.rename</em> is used to then assign to the newly-created
+composite (patched) raster map layer the name of the original raster map
+layer.
+
+<p>
+<em>r.patch</em> reads the existing category label files and color tables
+from the <em>input</em> maps and creates these files for the patched, 
+composite <em>output</em> map.  This can be quite time consuming for 
+certain maps, especially if there are many different category values 
+across the patched maps. The <em>-s</em> flag allows disabling the reading
+and creation of these support files,  meaning that the <em>output</em> 
+map will have no category labels and no explicit color table.
+
+<p>
+Number of raster maps to be processed is given by the limit of the
+operating system. For example, both the hard and soft limits are
+typically 1024. The soft limit can be changed with e.g. <tt>ulimit -n
+1500</tt> (UNIX-based operating systems) but not higher than the hard
+limit. If it is too low, you can as superuser add an entry in
+
+<div class="code"><pre>
+/etc/security/limits.conf
+# &lt;domain&gt;      &lt;type&gt;  &lt;item&gt;         &lt;value&gt;
+your_username  hard    nofile          1500
+</pre></div>
+
+This would raise the hard limit to 1500 file. Be warned that more
+files open need more RAM. See also the Wiki page
+<a href="https://grasswiki.osgeo.org/wiki/Large_raster_data_processing">Hints for large raster data processing</a>.
+
+<p>
+Operating systems usually limit the length of the command line
+which limits the number of input raster maps user can pass to the module
+using the option <b>input</b>. In that case,
+<em><a href="r.series.html">r.series</a></em> can be used instead of
+<em>r.patch</em>.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="example-with-three-maps">Example with three maps</a></h3>
+
+The input are three maps called roads, water and forest. Primarily,
+we want to use the values from roads, then from water and if no
+other values are available we want to use forest.
+First we set the computation region assuming that the all three maps
+fully overlap and have the same resolution (so we can safely use the
+just the one without further modifications of the region).
+Then we perform the patching.
+
+<div class="code"><pre>
+g.region raster=roads
+r.patch input=roads,water,forest output=result
+</pre></div>
+
+<h3><a name="map-mosaic-example-using-bash-syntax">Map mosaic example using Bash syntax</a></h3>
+
+Create a list of maps matching a pattern, extend the region to include them
+all, and patch them together to create a mosaic. Overlapping maps will be 
+used in the order listed.
+
+<div class="code"><pre>
+MAPS=`g.list type=raster separator=comma pat="map_*"`
+g.region raster=$MAPS -p
+r.patch input=$MAPS output=maps_mosaic
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="g.remove.html">g.remove</a>,
+<a href="g.rename.html">g.rename</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.support.html">r.support</a>,
+<a href="r.series.html">r.series</a>,
+<a href="v.mkgrid.html">v.mkgrid</a>
+</em>
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/Large_raster_data_processing">Hints for large raster data processing</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro, 
+U.S. Army Construction Engineering Research Laboratory
+<br>
+-z flag and performance improvement by Huidae Cho
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.patch">r.patch source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.patch">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

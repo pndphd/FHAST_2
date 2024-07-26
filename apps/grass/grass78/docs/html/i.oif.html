@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.oif.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.oif.py</b></em>  - Calculates Optimum-Index-Factor table for spectral bands
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_multispectral.html">multispectral</a>, <a href="keywords.html#statistics">statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.oif.py</b><br></div>
+<b>i.oif.py --help</b><br>
+<div id="synopsis"><b>i.oif.py</b> [-<b>gs</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...]  [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print in shell script style</dd>
+
+<dt><b>-s</b></dt>
+<dd>Process bands serially (default: run in parallel)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map(s)</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file (if omitted or "-" output to stdout)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.oif</em> calculates the Optimum Index Factor for 
+multi-spectral satellite imagery.
+
+<p>
+The Optimum Index Factor (OIF) determines the three-band combination 
+that maximizes the variability (information) in a multi-spectral 
+scene. The index is a ratio of the total variance (standard 
+deviation) within and the correlation between all possible band 
+combinations. The bands that comprise the highest scoring 
+combination from <em>i.oif</em> are used as the three color channels 
+required for <em>d.rgb</em> or <em>r.composite</em>.
+
+<p>The analysis is saved to a file in the current directory called "i.oif.result".
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Landsat 1-7 TM:
+Colour Composites in BGR order as important Landsat TM band combinations
+(example: 234 in BGR order means: B=2, G=3, R=4):
+
+<ul>
+<li> 123: near natural ("true") colour; however, because of 
+correlation of the 3 bands in visible spectrum, this combination 
+contains not much more info than is contained in single band.</li>
+<li> 234: sensitive to green vegetation (portrayed as red), 
+coniferous as distinctly darker red than deciduous forests. Roads 
+and water bodies are clear.</li>
+<li> 243: green vegetation is green but coniferous forests aren't as 
+clear as the 234 combination.</li>
+<li> 247: one of the best for info pertaining to forestry. Good for 
+operation scale mapping of recent harvest areas and road 
+construction.</li>
+<li> 345: contains one band from each of the main reflective units 
+(vis, nir, shortwave infra). Green vegetation is green and the 
+shortwave band shows vegetational stress and mortality. Roads are 
+less evident as band 3 is blue.</li>
+<li> 347: similar to 345 but depicts burned areas better.</li>
+<li> 354: appears more like a colour infrared photo.</li>
+<li> 374: similar to 354.</li>
+<li> 457: shows soil texture classes (clay, loam, sandy).</li>
+</ul>
+
+<p>
+By default the module will calculate standard deviations for all bands in
+parallel. To run serially use the <b>-s</b> flag. If the <tt>WORKERS</tt>
+environment variable is set, the number of concurrent processes will be
+limited to that number of jobs.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+North Carolina sample dataset:
+<div class="code"><pre>
+g.region raster=lsat7_2002_10 -p
+i.oif input=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70
+</pre></div>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+Jensen, 1996. Introductory digital image processing. Prentice Hall, 
+p.98. ISBN 0-13-205840-5
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.rgb.html">d.rgb</a>,
+<a href="r.composite.html">r.composite</a>,
+<a href="r.covar.html">r.covar</a>,
+<a href="r.univar.html">r.univar</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Markus Neteler, ITC-Irst, Trento, Italy<br>
+Updated to GRASS 5.7 by Michael Barton, Arizona State University
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/i.oif">i.oif source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/i.oif">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

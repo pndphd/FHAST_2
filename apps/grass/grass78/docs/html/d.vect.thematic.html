@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.vect.thematic - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.vect.thematic</b></em>  - Displays a thematic vector map in the active graphics frame.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>, <a href="keywords.html#choropleth map">choropleth map</a>, <a href="keywords.html#legend">legend</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.vect.thematic</b><br></div>
+<b>d.vect.thematic --help</b><br>
+<div id="synopsis"><b>d.vect.thematic</b> [-<b>lnes</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>column</b>=<em>name</em>  [<b>breaks</b>=<em>string</em>[,<i>string</i>,...]]   [<b>algorithm</b>=<em>string</em>]   [<b>nclasses</b>=<em>integer</em>]  <b>colors</b>=<em>string</em>[,<i>string</i>,...]  [<b>where</b>=<em>sql_query</em>]   [<b>boundary_width</b>=<em>integer</em>]   [<b>boundary_color</b>=<em>name</em>]   [<b>icon</b>=<em>string</em>]   [<b>size</b>=<em>float</em>]   [<b>icon_line</b>=<em>string</em>]   [<b>icon_area</b>=<em>string</em>]   [<b>legend_title</b>=<em>string</em>]   [<b>legendfile</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>Create legend information and send to stdout</dd>
+
+<dt><b>-n</b></dt>
+<dd>Do not draw map, only output the legend information</dd>
+
+<dt><b>-e</b></dt>
+<dd>[DEPRECATED] When printing legend info, include extended statistical info from classification algorithm</dd>
+
+<dt><b>-s</b></dt>
+<dd>Do not show this layer in vector legend</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Layer number. If -1, all layers are displayed.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column to be classified</dd>
+
+<dt><b>breaks</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Class breaks, without minimum and maximum</dd>
+
+<dt><b>algorithm</b>=<em>string</em></dt>
+<dd>Algorithm to use for classification</dd>
+<dd>Options: <em>int, std, qua, equ, dis</em></dd>
+<dd><b>int</b>: simple intervals</dd>
+<dd><b>std</b>: standard deviations</dd>
+<dd><b>qua</b>: quantiles</dd>
+<dd><b>equ</b>: equiprobable (normal distribution)</dd>
+
+<dt><b>nclasses</b>=<em>integer</em></dt>
+<dd>Number of classes to define</dd>
+
+<dt><b>colors</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Colors (one per class)</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>boundary_width</b>=<em>integer</em></dt>
+<dd>Boundary width</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>boundary_color</b>=<em>name</em></dt>
+<dd>Boundary color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>icon</b>=<em>string</em></dt>
+<dd>Point and centroid symbol</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>basic/x</em></dd>
+
+<dt><b>size</b>=<em>float</em></dt>
+<dd>Symbol size</dd>
+<dd>Default: <em>5</em></dd>
+
+<dt><b>icon_line</b>=<em>string</em></dt>
+<dd>Legend symbol for lines</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>legend/line</em></dd>
+
+<dt><b>icon_area</b>=<em>string</em></dt>
+<dd>Legend symbol for areas</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>legend/area</em></dd>
+
+<dt><b>legend_title</b>=<em>string</em></dt>
+<dd>Thematic map title</dd>
+
+<dt><b>legendfile</b>=<em>name</em></dt>
+<dd>[DEPRECATED] Output legend file</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#thematic-map-with-classes" class="toc">Thematic map with classes</a></li>
+        <li class="toc"><a href="#thematic-map-with-calculated-class-breaks" class="toc">Thematic map with calculated class breaks</a></li>
+        <li class="toc"><a href="#thematic-map-with-legend" class="toc">Thematic map with legend</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.vect.thematic</em> draws thematic choropleth vector maps based 
+on an attribute column or an expression involving several columns. 
+It takes a list of class <b>breaks</b> (excluding the minimum and maximum 
+values) and a list of <b>colors</b> to apply to the classes (has to be the 
+number of class breaks + 1).
+<p>
+Instead of a list of class breaks, the user can also chose a
+classification <b>algorithm</b> and a number of classes
+(<b>nbclasses</b>). See the
+<em><a href="v.class.html">v.class</a></em> for more information on
+these different algorithms.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+The <b>-l</b> flag instructs the module to print legend information
+in vector legend format as described in <em><a href="d.legend.vect.html">d.legend.vect</a></em>
+ to standard output for further use in graphical software.
+When combined with the verbose flag, the legend information will
+be extended with some additional statistical information. If the
+<b>-n</b> flag is set, the module will only print the legend 
+information without drawing the map.
+
+<p>Option <b>legendfile</b>, is deprecated, instead
+use the GRASS_LEGEND_FILE environmental variable
+(see <em><a href="d.legend.vect.html">d.legend.vect</a></em>)
+to save legend into a file.
+Flag <b>-e</b> is deprecated, instead use verbose flag.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="thematic-map-with-classes">Thematic map with classes</a></h3>
+
+<div class="code"><pre>
+d.vect.thematic -l map=communes3 column=pop \
+  breaks=111393.250000,222785.500000,334177.750000 \
+  colors="255:0:0,0:255:0,0:0:255,0,0,0"
+</pre></div>
+
+<h3><a name="thematic-map-with-calculated-class-breaks">Thematic map with calculated class breaks</a></h3>
+
+The following example uses a calculated attribute (<tt>density = 
+pop/area</tt>) and the standard deviation algorithm to calculate class 
+breaks for 5 classes:
+
+<div class="code"><pre>
+d.vect.thematic -l map=communes2 column=pop/area algorithm=std \
+  nbclasses=5 colors="0:0:255,50:100:255,255:100:50,255:0:0,156:0:0"
+</pre></div>
+
+<h3><a name="thematic-map-with-legend">Thematic map with legend</a></h3>
+
+Example for the North Carolina sample dataset, colorizing basin polygons by
+average elevation and displaying school capacity:
+
+<div class="code"><pre>
+# create watersheds from elevation map
+g.region raster=elevation
+r.watershed elevation=elevation threshold=10000 basin=basins_10k
+
+# convert raster to vector
+r.to.vect input=basins_10k output=basins_10k type=area column=basin_num
+
+# upload raster statistics to each polygon in vector map
+v.rast.stats map=basins_10k raster=elevation column_prefix=elev
+
+# open a graphical display
+d.mon wx0
+
+# draw thematic polygons and specify legend title
+d.vect.thematic map=basins_10k column=elev_average algorithm=int \
+  nclasses=5 colors=0:195:176,39:255:0,251:253:0,242:127:11,193:126:60 \
+  legend_title="Average elevation (m)"
+
+# draw thematic points and specify legend title
+d.vect.thematic map=schools_wake@PERMANENT column=CORECAPACI algorithm=std \
+  nclasses=3 colors=149:203:255,45:143:240,0:81:161 icon=basic/circle size=15 \
+  legend_title="School capacity"
+
+# and finally draw legend
+d.legend.vect -b at=2,80 font=Sans symbol_size=25
+</pre></div>
+
+<center>
+<a href="d_vect_thematic.png">
+<img src="d_vect_thematic.png" alt="d_vect_thematic example" width="600" height="377"></a>
+<br>
+<i>Thematic map of average elevation and school capacity</i>
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.class.html">v.class</a>,
+<a href="d.legend.vect.html">d.legend.vect</a>,
+<a href="d.vect.html">d.vect</a>,
+<a href="d.graph.html">d.graph</a>,
+<a href="v.univar.html">v.univar</a>
+</em>
+
+<p>
+Check also Python module from
+AddOns: <em><a href="https://grass.osgeo.org/grass7/manuals/addons/d.vect.thematic2.html">d.vect.thematic2</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Moritz Lennert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.vect.thematic">d.vect.thematic source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.vect.thematic">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

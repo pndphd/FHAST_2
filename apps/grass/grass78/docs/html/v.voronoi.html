@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.voronoi - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.voronoi</b></em>  - Creates a Voronoi diagram constrained to the extents of the current region from an input vector map containing points or centroids.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#triangulation">triangulation</a>, <a href="keywords.html#skeleton">skeleton</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.voronoi</b><br></div>
+<b>v.voronoi --help</b><br>
+<div id="synopsis"><b>v.voronoi</b> [-<b>aslt</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>output</b>=<em>name</em>  [<b>smoothness</b>=<em>float</em>]   [<b>thin</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-a</b></dt>
+<dd>Create Voronoi diagram for input areas</dd>
+
+<dt><b>-s</b></dt>
+<dd>Extract skeletons for input areas</dd>
+
+<dt><b>-l</b></dt>
+<dd>Output tessellation as a graph (lines), not areas</dd>
+
+<dt><b>-t</b></dt>
+<dd>Do not create attribute table</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>smoothness</b>=<em>float</em></dt>
+<dd>Factor for output smoothness</dd>
+<dd>Applies to input areas only. Smaller values produce smoother output but can cause numerical instability.</dd>
+<dd>Default: <em>0.25</em></dd>
+
+<dt><b>thin</b>=<em>float</em></dt>
+<dd>Maximum dangle length of skeletons</dd>
+<dd>Applies only to skeleton extraction. Default = -1 will extract the center line.</dd>
+<dd>Default: <em>-1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#voronoi-diagram-for-points" class="toc">Voronoi diagram for points</a></li>
+        <li class="toc"><a href="#voronoi-diagram-for-areas" class="toc">Voronoi diagram for areas</a></li>
+        <li class="toc"><a href="#skeletons-and-center-lines-of-areas" class="toc">Skeletons and center lines of areas</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.voronoi</em> creates a Voronoi diagram (Thiessen polygons) from 
+points or centroids. 
+<p>The bounds of the output map are limited by the current region 
+(see <em><a href="g.region.html">g.region</a></em>).
+
+<p>
+The <em>-a</em> flag can be used to create a Voronoi diagram for areas.
+
+<p>
+The <em>-s</em> flag can be used to extract the center line of areas or 
+skeletons of areas with <em>thin</em> >= 0. Smaller values for the 
+<em>thin</em> option will preserve more detail, while negative values 
+will extract only the center line.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>v.voronoi</em> suffers from numerical instability, results can 
+sometimes contain many artefacts. When creating Voronoi diagrams for areas 
+or skeletons for areas, it is highly recommended to simplify the areas first 
+with <em><a href="v.generalize.html">v.generalize</a></em>.
+
+<p>
+Voronoi diagrams may be used for nearest-neighbor flood filling.
+Give the centroids attributes (start with
+<em><a href="v.db.addcolumn.html">v.db.addcolumn</a></em>),
+then optionally convert the result to a raster map with
+<em><a href="v.to.rast.html">v.to.rast</a></em>.
+
+<p>
+The extraction of skeletons and center lines with the <em>-s</em> flag 
+is a brute force approach. Faster and more accurate algorithms to 
+extract skeletons from areas exist but are not yet implemented. In the 
+meantime, skeletons and center lines can be simplified with the 
+Douglas-Peucker algorithm: 
+<em><a href="v.generalize.html">v.generalize method=douglas</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="voronoi-diagram-for-points">Voronoi diagram for points</a></h3>
+This example uses the hospitals in the North Carolina dataset.
+<div class="code"><pre>
+g.region -p raster=elev_state_500m
+v.voronoi input=hospitals output=hospitals_voronoi
+</pre></div>
+
+Result:
+<center>
+<img src="v_voronoi_points.png" border="0"><br>
+<i>Voronoi diagram for hospitals in North Carolina</i>
+</center>
+
+<h3><a name="voronoi-diagram-for-areas">Voronoi diagram for areas</a></h3>
+This example uses urban areas in the North Carolina dataset.
+<div class="code"><pre>
+g.region -p n=162500 s=80000 w=727000 e=846000 res=500
+v.voronoi input=urbanarea output=urbanarea_voronoi -a
+</pre></div>
+
+Result:
+<center>
+<img src="v_voronoi_areas.png" border="0"><br>
+<i>Voronoi diagram for urban areas in North Carolina</i>
+</center>
+
+<h3><a name="skeletons-and-center-lines-of-areas">Skeletons and center lines of areas</a></h3>
+This example uses urban areas in the North Carolina dataset.
+<div class="code"><pre>
+g.region -p n=161000 s=135500 w=768500 e=805500 res=500
+v.voronoi input=urbanarea output=urbanarea_centerline -s
+v.voronoi input=urbanarea output=urbanarea_skeleton -s thin=2000
+</pre></div>
+
+Result:
+<center>
+<img src="v_voronoi_skeleton.png" border="0"><br>
+<i>Skeleton (blue) and center line (red) for urban areas in North Carolina</i>
+</center>
+
+<h2><a name="references">REFERENCES</a></h2>
+<em>Steve J. Fortune,  (1987).  A Sweepline Algorithm for
+    Voronoi Diagrams, Algorithmica 2, 153-174
+    (<a href="http://dx.doi.org/10.1007/BF01840357">DOI</a>).</em>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="v.delaunay.html">v.delaunay</a>, 
+<a href="v.hull.html">v.hull</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+James Darrell McCauley, Purdue University<br>
+GRASS 5 update, improvements: <a href="mailto:aaime@libero.it">Andrea Aime</a>, Modena, Italy<br>
+GRASS 5.7 update: Radim Blazek<br>
+Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.voronoi">v.voronoi source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.voronoi">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+
+citEntry(entry="Article",
+         author = "Friedrich Leisch",
+         title = "A Toolbox for K-Centroids Cluster Analysis",
+         journal = "Computational Statistics and Data Analysis",
+         year = 2006,
+         volume = 51,
+         number = 2,
+         pages = "526--544",
+
+         header = "To cite package flexclust in publications use:",
+
+         textVersion = paste("Friedrich Leisch.",
+         "A Toolbox for K-Centroids Cluster Analysis.",
+         "Computational Statistics and Data Analysis, 51 (2), 526-544, 2006."))
+
+
+citEntry(entry = "Article",
+	 author = "Friedrich Leisch",
+         title = "Neighborhood graphs, stripes and shadow plots for cluster visualization",
+         journal = "Statistics and Computing",
+         year = 2010,
+	 volume = 20,
+	 issue = 4,
+	 pages = "457--469",
+         doi = "10.1007/s11222-009-9137-8",
+
+         header = "Visualization methods are explained in:",
+
+         textVersion = "Friedrich Leisch. Neighborhood graphs, stripes and shadow plots for cluster visualization. Statistics and Computing, 20 (4), 457-469, 2010.")
+
+         
+        
+citEntry(entry="InProceedings",
+         author = "Friedrich Leisch and Bettina Gruen",
+         title	       = "Extending Standard Cluster Algorithms to Allow for Group Constraints",
+         booktitle    = "Compstat 2006---Proceedings in Computational
+                  Statistics",
+         pages	       = "885--892",
+         editor       = "Alfredo Rizzi and Maurizio Vichi",
+         publisher    = "Physica Verlag, Heidelberg, Germany",
+         isbn	       = "3-7908-1708-2",
+         year	       = 2006,
+
+         header = "Group constraints are explained in:",
+
+        textVersion = paste("Friedrich Leisch and Bettina Gruen.",
+        "Extending standard cluster algorithms to allow for group constraints.",
+        "In Alfredo Rizzi and Maurizio Vichi, editors,",
+        "Compstat 2006-Proceedings in Computational Statistics, pages 885-892.",
+        "Physica Verlag, Heidelberg, Germany, 2006."))
+         
+citEntry(entry="InProceedings",
+         author = "Theresa Scharl and Friedrich Leisch",
+         title	= "The Stochastic QT--clust Algorithm: Evaluation of Stability and Variance on Time--course Microarray Data",
+         booktitle    = "Compstat 2006---Proceedings in Computational Statistics",
+         pages	       = "1015--1022",
+         editor       = "Alfredo Rizzi and Maurizio Vichi",
+         publisher    = "Physica Verlag, Heidelberg, Germany",
+         isbn	       = "3-7908-1708-2",
+         year	       = 2006,
+
+         header = "Function qtclust() is explained in:",
+
+        textVersion = paste("Theresa Scharl and Friedrich Leisch.",
+        "The Stochastic QT-clust Algorithm: Evaluation of Stability and Variance",
+        "on Time-course Microarray Data. In Alfredo Rizzi and Maurizio Vichi, editors,",
+        "Compstat 2006-Proceedings in Computational Statistics, pages 1015-1022.",
+        "Physica Verlag, Heidelberg, Germany, 2006."))
+
+citEntry(entry = "Book",
+         author = "Sara Dolnicar and Bettina Gruen and Friedrich Leisch",
+         title	= "Market Segmentation Analysis --- Understanding It, Doing It, and Making It Useful",
+         publisher = "Springer",
+         year	   = "2018",
+         address   = "Singapore",
+         doi	   = "10.1007/978-981-10-8818-6",
+
+         header = "Using flexclust for market segmentation is explained in:",
+
+         textVersion =
+         paste("Sara Dolnicar, Bettina Gruen, and Friedrich Leisch.",
+               "Market Segmentation Analysis --- Understanding It,",
+               "Doing It, and Making It Useful.",
+               "Management for Professionals. Springer, Singapore, 2018.",
+               "doi:10.1007/978-981-10-8818-6"))
+
+
+
+         
+citFooter("Papers are available from https://homepage.boku.ac.at/leisch/papers/fl-publications.html")

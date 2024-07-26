@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.colors.stddev.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.colors.stddev.py</b></em>  - Sets color rules based on stddev from a raster map's mean value.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_color_table.html">color table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.colors.stddev.py</b><br></div>
+<b>r.colors.stddev.py --help</b><br>
+<div id="synopsis"><b>r.colors.stddev.py</b> [-<b>bz</b>] <b>map</b>=<em>name</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-b</b></dt>
+<dd>Color using standard deviation bands</dd>
+
+<dt><b>-z</b></dt>
+<dd>Force center at zero</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.colors.stddev</em> set raster map color rules based on standard
+deviations from a map's mean value, either as a continuous color gradient
+or in color bands per standard deviation (S.D.) from the mean.
+
+<p>With the color band option values less that 1 S.D. from the mean are
+colored green, within 1-2 S.D. are colored yellow, within 2-3 S.D. are
+colored red, and beyond 3 S.D. are colored black.
+<p>For a differences map there is an option to lock the center of the color
+table at zero. Values more than two S.D. below the mean will be colored blue;
+values below the mean but less than 2 S.D. away will transition to white,
+and above the mean the colors will simularly transition to full red at +2 S.D.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+North Carolina sample dataset location:
+
+<div class="code"><pre>
+g.region raster=elevation -p
+r.colors.stddev elevation
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.colors.html">r.colors</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="v.colors.html">v.colors</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Hamish Bowman, <i>Dunedin, New Zealand</i>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.colors.stddev">r.colors.stddev source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.colors.stddev">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

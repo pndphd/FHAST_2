@@ -1,0 +1,106 @@
+.TH psdriver 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH PostScript DISPLAY DRIVER
+\fIPS display driver\fR to create PostScript files.
+.SH DESCRIPTION
+The PS driver generates a PostScript file from GRASS display commands.
+.SH USAGE
+.SS Environment variables
+The PS driver can be enabled by setting \fBGRASS_RENDER_IMMEDIATE\fR
+variable, eg.
+.br
+.nf
+\fC
+export GRASS_RENDER_IMMEDIATE=ps
+\fR
+.fi
+Several environment variables affect the operation of the PS driver:
+.RS 4n
+.IP \(bu 4n
+\fBGRASS_RENDER_WIDTH=xxx\fR
+.br
+the width of the image map (default is 640).
+.IP \(bu 4n
+\fBGRASS_RENDER_HEIGHT=yyy\fR
+.br
+the height of the image map (default is 480).
+.IP \(bu 4n
+\fBGRASS_RENDER_TRUECOLOR=[TRUE|FALSE]\fR
+.br
+sets true\-color support. Default is FALSE.
+.IP \(bu 4n
+\fBGRASS_RENDER_FILE\fR
+.br
+name of output file. If it ends with \(dq.eps\(dq an EPS file
+will be created.
+.IP \(bu 4n
+\fBGRASS_RENDER_PS_PAPER\fR
+.br
+sets the screen dimensions and margins to
+fit a standard paper size, see also GRASS_RENDER_WIDTH, GRASS_RENDER_HEIGHT.
+.IP \(bu 4n
+\fBGRASS_RENDER_PS_LANDSCAPE\fR
+.br
+if TRUE, the screen is rotated 90 degrees
+counter\-clockwise so that a \(dqlandscape\(dq screen fits better on
+\(dqportrait\(dq paper.
+.IP \(bu 4n
+\fBGRASS_RENDER_PS_HEADER\fR
+.br
+if FALSE, the output is appended to any existing file,
+and no prolog or setup sections are generated.
+.IP \(bu 4n
+\fBGRASS_RENDER_PS_TRAILER\fR
+.br
+if FALSE, no trailer section is generated.
+.RE
+.SS Example
+.br
+.nf
+\fC
+export GRASS_RENDER_IMMEDIATE=ps
+export GRASS_RENDER_TRUECOLOR=TRUE
+g.region raster=elevation
+d.rast elevation
+d.vect roadsmajor color=red
+\fR
+.fi
+This writes a file named map.ps in your current directory.
+.SH NOTES
+The resolution of the output files is defined by current region
+extents. Use g.region \-p to get the number of rows and cols
+and use the environment variables to set the image size. If you would
+like a larger image, multiply both rows and cols by the same whole
+number to preserve the aspect ratio.
+.PP
+GRASS_RENDER_TRUECOLOR requires either PostScript level 2 or level 1 plus the
+colorimage and setrgbcolor operators (this is the case for colour
+printers which pre\-date level 2 PostScript).
+.PP
+Masked images (d.rast, d.rgb, d.his \-n)
+require PostScript level 3.
+.SH SEE ALSO
+\fI
+Cairo driver,
+PNG driver,
+HTML driver,
+variables
+.br
+.br
+d.rast,
+d.vect,
+d.mon,
+d.erase,
+d.redraw
+\fR
+.SH AUTHOR
+Glynn Clements, 2007
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

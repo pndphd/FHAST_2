@@ -1,0 +1,239 @@
+.TH v.decimate 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.decimate\fR\fR  \- Decimates a point cloud
+.br
+Copies points from one vector to another while applying different decimations
+.SH KEYWORDS
+vector, LIDAR, generalization, decimation, extract, select, points, level1
+.SH SYNOPSIS
+\fBv.decimate\fR
+.br
+\fBv.decimate \-\-help\fR
+.br
+\fBv.decimate\fR [\-\fBgfczxbt\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBoutput\fR=\fIname\fR  [\fBzrange\fR=\fImin,max\fR]   [\fBcats\fR=\fIrange\fR]   [\fBskip\fR=\fIinteger\fR]   [\fBpreserve\fR=\fIinteger\fR]   [\fBoffset\fR=\fIinteger\fR]   [\fBlimit\fR=\fIinteger\fR]   [\fBzdiff\fR=\fIfloat\fR]   [\fBcell_limit\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Apply grid\-based decimation
+.IP "\fB\-f\fR" 4m
+.br
+Use only first point in grid cell during grid\-based decimation
+.IP "\fB\-c\fR" 4m
+.br
+Only one point per cat in grid cell
+.IP "\fB\-z\fR" 4m
+.br
+Use z in grid decimation
+.IP "\fB\-x\fR" 4m
+.br
+Store only the coordinates, throw away categories
+.br
+Do not story any categories even if they are present in input data
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBzrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for z data (min,max)
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBskip\fR=\fIinteger\fR" 4m
+.br
+Throw away every n\-th point
+.br
+For example, 5 will import 80 percent of points. If not specified, all points are copied
+.IP "\fBpreserve\fR=\fIinteger\fR" 4m
+.br
+Preserve only every n\-th point
+.br
+For example, 4 will import 25 percent of points. If not specified, all points are copied
+.IP "\fBoffset\fR=\fIinteger\fR" 4m
+.br
+Skip first n points
+.br
+Skips the given number of points at the beginning.
+.IP "\fBlimit\fR=\fIinteger\fR" 4m
+.br
+Copy only n points
+.br
+Copies only the given number of points
+.IP "\fBzdiff\fR=\fIfloat\fR" 4m
+.br
+Minimal difference of z values
+.br
+Minimal difference between z values in grid\-based decimation
+.IP "\fBcell_limit\fR=\fIinteger\fR" 4m
+.br
+Preserve only n points per grid cell
+.br
+Preserves only the given number of points per grid cell in grid\-based decimation
+.SH DESCRIPTION
+\fIv.decimate\fR reduces number of points in the input vector map
+and copies them over to the output vector map. Different point decimation
+techniques can be applied to reduce the number of points.
+.PP
+Two main decimation techniques are:
+.RS 4n
+.IP \(bu 4n
+count\-based decimation (\fBskip\fR, \fBpreserve\fR, \fBoffset\fR
+and \fBlimit\fR options)
+.IP \(bu 4n
+grid\-based decimation (\fB\-g\fR flag)
+.RE
+.PP
+The grid\-based decimation will remove points based on:
+.RS 4n
+.IP \(bu 4n
+similar z coordinates (\fB\-z\fR flag and \fBzdiff\fR option)
+.IP \(bu 4n
+same categories (\fB\-c\fR flag)
+.IP \(bu 4n
+count of points (\fB\-f\fR flag and \fBcell_limit\fR option)
+.RE
+.PP
+The grid\-based decimation is currently using a 2D grid, so the points
+are placed and compared within this 2D grid. The comparison can happen
+using z coordinates or categories.
+Note that although the grid is only 2D, the module works with 3D points.
+.PP
+The grid\-based decimation extent and resolution depend on the current
+computational region as set by \fIg.region\fR.
+As a consequence, the output is limited only to computational region
+in this case.
+.PP
+TODO: Currently, any output is limited by the region.
+.PP
+The count\-based decimation result highly depends on how the data are
+ordered in the input. This applies especially to \fBoffset\fR and
+\fBlimit\fR options where the resulting shape and densities can be
+surprising. The options \fBskip\fR and \fBpreserve\fR are influenced
+by order of points in a similar way but they usually keep relative
+density of points (which may or may not be desired).
+On the other hand, the grid\-based decimation will generally result in
+more even density of output points (see Figure 1).
+.PP
+Besides decimation, point count can be reduced by applying different
+selections or filters, these are:
+.RS 4n
+.IP \(bu 4n
+selection by category (\fBcats\fR option)
+.IP \(bu 4n
+selection by z values (\fBzrange\fR option)
+.RE
+.SH NOTES
+The grid\-based decimation requires all points which will be saved in output
+to fit into the computer\(cqs memory (RAM).
+It is advantageous to have the region only in the area
+with the points, otherwise unnecessary memory is allocated.
+Higher (finer) resolutions and higher amount of preserved points
+per cell require more memory.
+The count\-based decimation has no limitation regarding the available memory.
+.PP
+Significant speed up can be gained using \fB\-b\fR flag which disables
+building of topology for the output vector map. This may limit the use
+of the vector map by some modules, but for example, this module works
+without topology as well.
+.SH EXAMPLES
+Keep only every forth point, throw away the rest:
+.br
+.nf
+\fC
+v.decimate input=points_all output=points_decimated_every_4 preserve=4
+\fR
+.fi
+.PP
+Keep only points within a grid cell (given by the current computational
+region) which has unique categories (e.g. LIDAR classes):
+.br
+.nf
+\fC
+v.decimate input=points_all output=points_decimated_unique_cats layer=1 \-g \-c
+\fR
+.fi
+.PP
+\fI
+Figure 1: Comparison of original points, decimation result
+with every forth point preserved, and grid\-based decimation
+result with points with unique categories in each grid cell
+\fR
+.PP
+Keep only points with category 2 and keep only approximately 80% of the points:
+.br
+.nf
+\fC
+v.decimate input=points_all output=points_decimated_ skip=5 cats=2 layer=1
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Petras, V., Petrasova, A., Jeziorska, J., Mitasova, H. (2016). Processing UAV
+and LiDAR point clouds in grass GIS. The International Archives of Photogrammetry,
+Remote Sensing and Spatial Information Sciences, 41, 945
+(DOI)
+.RE
+.SH SEE ALSO
+\fI
+v.extract,
+v.outlier,
+v.select,
+v.category,
+v.build,
+v.in.lidar,
+g.region
+\fR
+.SH AUTHORS
+Vaclav Petras, NCSU OSGeoREL
+.SH SOURCE CODE
+.PP
+Available at: v.decimate source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

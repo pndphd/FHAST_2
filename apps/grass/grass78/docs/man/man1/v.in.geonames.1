@@ -1,0 +1,121 @@
+.TH v.in.geonames 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.geonames.py\fR\fR  \- Imports geonames.org country files into a vector points map.
+.SH KEYWORDS
+vector, import, gazetteer
+.SH SYNOPSIS
+\fBv.in.geonames.py\fR
+.br
+\fBv.in.geonames.py \-\-help\fR
+.br
+\fBv.in.geonames.py\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of uncompressed geonames file (with .txt extension)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.SH DESCRIPTION
+\fIv.in.geonames\fR imports Geonames.org country files (Gazetteer
+data) into a GRASS vector points map. The country files can be
+downloaded from the
+GeoNames Data Dump
+Server. Only original files can be processed (unzip compressed
+file first). These Geonames files are encoded in UTF\-8 which is
+maintained in the GRASS database.
+.SH NOTES
+.PP
+\fIv.in.geonames\fR
+calls \fIv.in.ascii\fR to import data
+into GRASS.
+.PP
+The current DB connection is used to write the database table
+(see \fIdb.connect\fR). If importing
+into a DBF database, the original column
+names longer that 10 characters are shortened to 10 characters to meet
+the DBF column name restrictions. If this is a problem consider
+choosing another database driver
+with \fIdb.connect\fR
+(eg. to SQLite driver).
+.PP
+The main \(cqgeoname\(cq table has the following fields
+.br
+.nf
+\fC
+geonameid         : integer id of record in geonames database
+name              : name of geographical point (utf8) varchar(200)
+asciiname         : name of geographical point in plain ascii characters, varchar(200)
+alternatenames    : alternatenames, comma separated varchar(4000)
+latitude          : latitude in decimal degrees (wgs84)
+longitude         : longitude in decimal degrees (wgs84)
+feature class     : see http://www.geonames.org/export/codes.html, char(1)
+feature code      : see http://www.geonames.org/export/codes.html, varchar(10)
+country code      : ISO\-3166 2\-letter country code, 2 characters
+cc2               : alternate country codes, comma separated, ISO\-3166 2\-letter country code, 60 characters
+admin1 code       : fipscode (subject to change to iso code), isocode for the us and ch, see file admin1Codes.txt for display names of this code; varchar(20)
+admin2 code       : code for the second administrative division, a county in the US, see file admin2Codes.txt; varchar(80)
+admin3 code       : code for third level administrative division, varchar(20)
+admin4 code       : code for fourth level administrative division, varchar(20)
+population        : integer
+elevation         : in meters, integer
+gtopo30           : average elevation of 30\(cqx30\(cq (ca 900mx900m) area in meters, integer
+timezone          : the timezone id (see file http://download.geonames.org/export/dump/timeZones.txt)
+modification date : date of last modification in yyyy\-MM\-dd format
+\fR
+.fi
+.SH EXAMPLE
+Download and import geonames for Czech Republic.
+.br
+.nf
+\fC
+wget http://download.geonames.org/export/dump/CZ.zip
+unzip CZ.zip
+v.in.geonames input=CZ.txt output=geonames_cz
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+GeoNames Web site
+.IP \(bu 4n
+GeoNames Data Dump Server
+.RE
+.SH SEE ALSO
+\fI
+db.connect,
+v.in.ascii,
+v.select
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.in.geonames source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

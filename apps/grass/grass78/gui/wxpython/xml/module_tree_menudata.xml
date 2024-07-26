@@ -1,0 +1,3575 @@
+<menudata>
+  <menubar>
+    <menu>
+      <label>Import, export and link data</label>
+      <items>
+        <menu>
+          <label>Import raster data</label>
+          <items>
+            <menuitem>
+              <label>Simplified raster import with reprojection</label>
+              <handler>OnImportGdalLayers</handler>
+              <command>r.import</command>
+              <help>Imports raster data into a GRASS raster map using GDAL library.</help>
+              <keywords>raster,import</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Import of common raster formats</label>
+              <command>r.in.gdal</command>
+              <help>Imports raster data into a GRASS raster map using GDAL library.</help>
+              <keywords>raster,import,create location</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>ASCII x,y,z point import and gridding</label>
+              <command>r.in.xyz</command>
+              <help>Creates a raster map from an assemblage of many coordinates using univariate statistics.</help>
+              <keywords>raster,import,statistics,conversion,aggregation,binning,ASCII,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>ASCII grid import</label>
+              <command>r.in.ascii</command>
+              <help>Converts a GRASS ASCII raster file to binary raster map.</help>
+              <keywords>raster,import,conversion,ASCII</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>ASCII polygons, lines, and point import</label>
+              <command>r.in.poly</command>
+              <help>Creates raster maps from ASCII polygon/line/point data files.</help>
+              <keywords>raster,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Raw binary array import</label>
+              <command>r.in.bin</command>
+              <help>Import a binary raster file into a GRASS raster map layer.</help>
+              <keywords>raster,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>GRIDATB.FOR import</label>
+              <command>r.in.gridatb</command>
+              <help>Imports GRIDATB.FOR map file (TOPMODEL) into a GRASS raster map.</help>
+              <keywords>raster,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Matlab 2D array import</label>
+              <command>r.in.mat</command>
+              <help>Imports a binary MAT-File(v4) to a GRASS raster.</help>
+              <keywords>raster,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>PNG import</label>
+              <command>r.in.png</command>
+              <help>Imports non-georeferenced PNG format image.</help>
+              <keywords>raster,import,PNG</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>SPOT NDVI import</label>
+              <command>i.in.spotvgt</command>
+              <help>Imports SPOT VGT NDVI data into a raster map.</help>
+              <keywords>imagery,import,NDVI,SPOT</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>SRTM HGT import</label>
+              <command>r.in.srtm</command>
+              <help>Imports SRTM HGT files into raster map.</help>
+              <keywords>raster,import,SRTM</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Terra ASTER HDF import</label>
+              <command>r.in.aster</command>
+              <help>Georeference, rectify, and import Terra-ASTER imagery and relative DEMs using gdalwarp.</help>
+              <keywords>raster,import,imagery,ASTER,elevation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>LAS LiDAR points import</label>
+              <command>r.in.lidar</command>
+              <help>Creates a raster map from LAS LiDAR points using univariate statistics.</help>
+              <keywords>raster,import,LIDAR,statistics,conversion,aggregation,binning</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Unpack raster map</label>
+              <command>r.unpack</command>
+              <help>Imports a GRASS GIS specific raster archive file (packed with r.pack) as a raster map</help>
+              <keywords>raster,import,copying</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reproject raster map from different GRASS location</label>
+              <command>r.proj</command>
+              <help>Re-projects a raster map from given location to the current location.</help>
+              <keywords>raster,projection,transformation,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Import vector data</label>
+          <items>
+            <menuitem>
+              <label>Simplified vector import with reprojection</label>
+              <handler>OnImportOgrLayers</handler>
+              <command>v.import</command>
+              <help>Imports vector data into a GRASS vector map using OGR library.</help>
+              <keywords>vector,import</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Import of common vector formats</label>
+              <command>v.in.ogr</command>
+              <help>Imports vector data into a GRASS vector map using OGR library.</help>
+              <keywords>vector,import,OGR,topology,geometry,snapping,create location</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>ASCII points or GRASS ASCII format</label>
+              <command>v.in.ascii</command>
+              <help>Creates a vector map from an ASCII points file or ASCII vector file.</help>
+              <keywords>vector,import,ASCII,level1,area,line,point</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>ASCII points as a vector lines</label>
+              <command>v.in.lines</command>
+              <help>Imports ASCII x,y[,z] coordinates as a series of lines.</help>
+              <keywords>vector,import,line,point</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>DXF import</label>
+              <handler>OnImportDxfFile</handler>
+              <command>v.in.dxf</command>
+              <help>Converts files in DXF format to GRASS vector map format.</help>
+              <keywords>vector,import,dxf</keywords>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>WFS</label>
+              <command>v.in.wfs</command>
+              <help>Imports GetFeature from a WFS server.</help>
+              <keywords>vector,import,OGC web services,OGC WFS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>ESRI e00 import</label>
+              <command>v.in.e00</command>
+              <help>Imports E00 file into a vector map.</help>
+              <keywords>vector,import,E00</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Geonames import</label>
+              <command>v.in.geonames</command>
+              <help>Imports geonames.org country files into a vector points map.</help>
+              <keywords>vector,import,gazetteer</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Matlab array or Mapgen format import</label>
+              <command>v.in.mapgen</command>
+              <help>Imports Mapgen or Matlab-ASCII vector maps into GRASS.</help>
+              <keywords>vector,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>LAS LiDAR points import</label>
+              <command>v.in.lidar</command>
+              <help>Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.</help>
+              <keywords>vector,import,LIDAR,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Unpack vector map</label>
+              <command>v.unpack</command>
+              <help>Imports a GRASS GIS specific vector archive file (packed with v.pack) as a vector map</help>
+              <keywords>vector,import,copying</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reproject vector map from different GRASS location</label>
+              <command>v.proj</command>
+              <help>Re-projects a vector map from one location to the current location.</help>
+              <keywords>vector,projection,transformation,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Import 3D raster data</label>
+          <items>
+            <menuitem>
+              <label>ASCII 3D import</label>
+              <command>r3.in.ascii</command>
+              <help>Converts a 3D ASCII raster text file into a (binary) 3D raster map.</help>
+              <keywords>raster3d,import,voxel,conversion,ASCII</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raw binary array 3D import</label>
+              <command>r3.in.bin</command>
+              <help>Imports a binary raster file into a GRASS 3D raster map.</help>
+              <keywords>raster3d,import,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Vis5D import</label>
+              <command>r3.in.v5d</command>
+              <help>Import 3-dimensional Vis5D files.</help>
+              <keywords>raster3d,import,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Import database table</label>
+          <items>
+            <menuitem>
+              <label>Common import formats</label>
+              <command>db.in.ogr</command>
+              <help>Imports attribute tables in various formats.</help>
+              <keywords>database,import,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Export raster map</label>
+          <items>
+            <menuitem>
+              <label>Common export formats</label>
+              <command>r.out.gdal</command>
+              <help>Exports GRASS raster maps into GDAL supported formats.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>ASCII grid export</label>
+              <command>r.out.ascii</command>
+              <help>Converts a raster map layer into a GRASS ASCII text file.</help>
+              <keywords>raster,export,output,ASCII</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>ASCII x,y,z points export</label>
+              <command>r.out.xyz</command>
+              <help>Exports a raster map to a text file as x,y,z values based on cell centers.</help>
+              <keywords>raster,export,output,ASCII,conversion</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>GRIDATB.FOR export</label>
+              <command>r.out.gridatb</command>
+              <help>Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL).</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Matlab 2D array export</label>
+              <command>r.out.mat</command>
+              <help>Exports a GRASS raster to a binary MAT-File.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Raw binary array export</label>
+              <command>r.out.bin</command>
+              <help>Exports a GRASS raster to a binary array.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>MPEG-1 export</label>
+              <command>r.out.mpeg</command>
+              <help>Converts raster map series to MPEG movie.</help>
+              <keywords>raster,export,output,animation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>PNG export</label>
+              <command>r.out.png</command>
+              <help>Export a GRASS raster map as a non-georeferenced PNG image.</help>
+              <keywords>raster,export,output,PNG</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>PPM export</label>
+              <command>r.out.ppm</command>
+              <help>Converts a GRASS raster map to a PPM image file.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>PPM from RGB export</label>
+              <command>r.out.ppm3</command>
+              <help>Converts 3 GRASS raster layers (R,G,B) to a PPM image file.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>POV-Ray export</label>
+              <command>r.out.pov</command>
+              <help>Converts a raster map layer into a height-field file for POV-Ray.</help>
+              <keywords>raster,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>VRML export</label>
+              <command>r.out.vrml</command>
+              <help>Exports a raster map to the Virtual Reality Modeling Language (VRML).</help>
+              <keywords>raster,export,output,VRML</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>VTK export</label>
+              <command>r.out.vtk</command>
+              <help>Converts raster maps into the VTK-ASCII format.</help>
+              <keywords>raster,export,output,VTK</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Pack raster map</label>
+              <command>r.pack</command>
+              <help>Exports a raster map as GRASS GIS specific archive file</help>
+              <keywords>raster,export,copying</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Export vector map</label>
+          <items>
+            <menuitem>
+              <label>Common export formats</label>
+              <command>v.out.ogr</command>
+              <help>Exports a vector map layer to any of the supported OGR vector formats. By default a vector map layer is exported to OGC GeoPackage format.</help>
+              <keywords>vector,export,output,OGR,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>ASCII points or GRASS ASCII vector export</label>
+              <command>v.out.ascii</command>
+              <help>Exports a vector map to a GRASS ASCII vector representation. By default only features with category are exported. To export all features use 'layer=-1'.</help>
+              <keywords>vector,export,output,ASCII</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>DXF export</label>
+              <command>v.out.dxf</command>
+              <help>Exports vector map to DXF file format.</help>
+              <keywords>vector,export,output,DXF</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>PostGIS export</label>
+              <command>v.out.postgis</command>
+              <help>Exports a vector map layer to PostGIS feature table.</help>
+              <keywords>vector,export,output,PostGIS,simple features,topology,3D</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>POV-Ray export</label>
+              <command>v.out.pov</command>
+              <help>Converts GRASS x,y,z points to POV-Ray x,z,y format.</help>
+              <keywords>vector,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>SVG export</label>
+              <command>v.out.svg</command>
+              <help>Exports a vector map to SVG file.</help>
+              <keywords>vector,export,output</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>VTK export</label>
+              <command>v.out.vtk</command>
+              <help>Converts a vector map to VTK ASCII output.</help>
+              <keywords>vector,export,output,VTK</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Pack vector map</label>
+              <command>v.pack</command>
+              <help>Exports a vector map as GRASS GIS specific archive file</help>
+              <keywords>vector,export,copying</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Export 3D raster maps</label>
+          <items>
+            <menuitem>
+              <label>ASCII 3D export</label>
+              <command>r3.out.ascii</command>
+              <help>Converts a 3D raster map layer into a ASCII text file.</help>
+              <keywords>raster3d,export,output,voxel,conversion,ASCII</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raw binary array 3D export</label>
+              <command>r3.out.bin</command>
+              <help>Exports a GRASS 3D raster map to a binary array.</help>
+              <keywords>raster3d,export,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Vis5D export</label>
+              <command>r3.out.v5d</command>
+              <help>Exports GRASS 3D raster map to 3-dimensional Vis5D file.</help>
+              <keywords>raster3d,export,output,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>VTK export</label>
+              <command>r3.out.vtk</command>
+              <help>Converts 3D raster maps into the VTK-ASCII format.</help>
+              <keywords>raster3d,export,output,voxel,VTK</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Export database table</label>
+          <items>
+            <menuitem>
+              <label>Common export formats</label>
+              <command>db.out.ogr</command>
+              <help>Exports attribute tables into various formats.</help>
+              <keywords>database,export,output,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Link external data</label>
+          <items>
+            <menuitem>
+              <label>Link external raster data</label>
+              <handler>OnLinkGdalLayers</handler>
+              <command>r.external</command>
+              <help>Link GDAL supported raster data as a pseudo GRASS raster map layer.</help>
+              <keywords>raster,import,input,external</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Link external vector data</label>
+              <handler>OnLinkOgrLayers</handler>
+              <command>v.external</command>
+              <help>Creates a new pseudo-vector map as a link to an OGR-supported layer.</help>
+              <keywords>vector,import,input,external,OGR,PostGIS</keywords>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Output format for raster data</label>
+              <command>r.external.out</command>
+              <help>Redirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.</help>
+              <keywords>raster,export,output,external</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Output format for vector data</label>
+              <handler>OnVectorOutputFormat</handler>
+              <command>v.external.out</command>
+              <help>Defines vector output format utilizing OGR library.</help>
+              <keywords>vector,export,output,external,OGR,PostGIS</keywords>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>Manage maps</label>
+      <items>
+        <menuitem>
+          <label>Copy</label>
+          <command>g.copy</command>
+          <help>Copies available data files in the current mapset search path to the user's current mapset.</help>
+          <keywords>general,map management</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>List</label>
+          <command>g.list</command>
+          <help>Lists available GRASS data base files of the user-specified data type optionally using the search pattern.</help>
+          <keywords>general,map management,list,search</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Rename</label>
+          <command>g.rename</command>
+          <help>Renames data base element files in the user's current mapset.</help>
+          <keywords>general,map management,rename</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Delete</label>
+          <command>g.remove</command>
+          <help>Removes data base element files from the user's current mapset using the search pattern.</help>
+          <keywords>general,map management,remove</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+      </items>
+    </menu>
+    <menu>
+      <label>Computational region</label>
+      <items>
+        <menuitem>
+          <label>Show current region</label>
+          <command>g.region -p</command>
+          <help>Shows the extent and resolution of the computational region.</help>
+          <keywords>general,settings</keywords>
+          <handler>RunMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Show region using latitude and longitude</label>
+          <command>g.region -pl</command>
+          <help>Shows the extent and resolution of the computational region.</help>
+          <keywords>general,settings</keywords>
+          <handler>RunMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Show current region extent in Map Display</label>
+          <handler>OnShowRegionExtent</handler>
+          <help>Shows the extent of the computational region in Map Display.</help>
+          <keywords>general,settings</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Set region</label>
+          <command>g.region</command>
+          <help>Manages the boundary definitions for the geographic region.</help>
+          <keywords>general,settings,computational region,extent,resolution,level1</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+      </items>
+    </menu>
+    <menu>
+      <label>&amp;Raster</label>
+      <items>
+        <menu>
+          <label>Develop raster map</label>
+          <items>
+            <menuitem>
+              <label>Compress/decompress</label>
+              <command>r.compress</command>
+              <help>Compresses and decompresses raster maps.</help>
+              <keywords>raster,map management,compression</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Region boundaries</label>
+              <command>r.region</command>
+              <help>Sets the boundary definitions for a raster map.</help>
+              <keywords>raster,metadata,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Manage NULL values</label>
+              <command>r.null</command>
+              <help>Manages NULL-values of given raster map.</help>
+              <keywords>raster,null data</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Quantization</label>
+              <command>r.quant</command>
+              <help>Produces the quantization file for a floating-point map.</help>
+              <keywords>raster,statistics,quantization</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Timestamp</label>
+              <command>r.timestamp</command>
+              <help>Modifies a timestamp for a raster map. Print/add/remove a timestamp for a raster map.</help>
+              <keywords>raster,metadata,timestamp,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Resample using aggregate statistics</label>
+              <command>r.resamp.stats</command>
+              <help>Resamples raster map layers to a coarser grid using aggregation.</help>
+              <keywords>raster,resample,univariate statistics,aggregation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Resample using multiple methods</label>
+              <command>r.resamp.interp</command>
+              <help>Resamples raster map to a finer grid using interpolation.</help>
+              <keywords>raster,resample,interpolation,nearest neighbor,bilinear,bicubic,lanczos</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Resample using nearest neighbor</label>
+              <command>r.resample</command>
+              <help>GRASS raster map layer data resampling capability.</help>
+              <keywords>raster,resample,nearest neighbor</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Resample using spline tension</label>
+              <command>r.resamp.rst</command>
+              <help>Reinterpolates and optionally computes topographic analysis from input raster map to a new raster map (possibly with different resolution) using regularized spline with tension and smoothing.</help>
+              <keywords>raster,resample,splines,RST</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Resample using bspline</label>
+              <command>r.resamp.bspline</command>
+              <help>Performs bilinear or bicubic spline interpolation with Tykhonov regularization.</help>
+              <keywords>raster,surface,resample,interpolation,splines,bilinear,bicubic,no-data filling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Resample using analytic kernel</label>
+              <command>r.resamp.filter</command>
+              <help>Resamples raster map layers using an analytic kernel.</help>
+              <keywords>raster,resample,kernel filter,filter,convolution,FIR,bartlett,blackman,box,gauss,hamming,hann,hermite,lanczos,sinc</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Support file maintenance</label>
+              <command>r.support</command>
+              <help>Allows creation and/or modification of raster map layer support files.</help>
+              <keywords>raster,metadata</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Update map statistics</label>
+              <command>r.support.stats</command>
+              <help>Update raster map statistics</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reproject raster map from different GRASS location</label>
+              <command>r.proj</command>
+              <help>Re-projects a raster map from given location to the current location.</help>
+              <keywords>raster,projection,transformation,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Tiling</label>
+              <command>r.tileset</command>
+              <help>Produces tilings of the source projection for use in the destination region and projection.</help>
+              <keywords>raster,tiling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Manage colors</label>
+          <items>
+            <menuitem>
+              <label>Color tables</label>
+              <command>r.colors</command>
+              <help>Creates/modifies the color table associated with a raster map.</help>
+              <keywords>raster,color table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Color tables (stddev)</label>
+              <command>r.colors.stddev</command>
+              <help>Sets color rules based on stddev from a raster map's mean value.</help>
+              <keywords>raster,color table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Manage color rules interactively</label>
+              <handler>OnRasterRules</handler>
+              <help>Interactive management of raster color tables.</help>
+              <keywords>raster,color table</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Export color table</label>
+              <command>r.colors.out</command>
+              <help>Exports the color table associated with a raster map.</help>
+              <keywords>raster,color table,export</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Blend 2 color rasters</label>
+              <command>r.blend</command>
+              <help>Blends color components of two raster maps by a given ratio.</help>
+              <keywords>raster,composite</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Create RGB</label>
+              <command>r.composite</command>
+              <help>Combines red, green and blue raster maps into a single composite raster map.</help>
+              <keywords>raster,composite,RGB</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>RGB to HIS</label>
+              <command>r.his</command>
+              <help>Generates red, green and blue (RGB) raster map layers combining hue, intensity and saturation (HIS) values from user-specified input raster map layers.</help>
+              <keywords>raster,color transformation,RGB,HIS,IHS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Query raster maps</label>
+          <items>
+            <menuitem>
+              <label>Query values by coordinates</label>
+              <command>r.what</command>
+              <help>Queries raster maps on their category values and category labels.</help>
+              <keywords>raster,querying,position</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Query colors by value</label>
+              <command>r.what.color</command>
+              <help>Queries colors for a raster map layer.</help>
+              <keywords>raster,querying,color table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Map type conversions</label>
+          <items>
+            <menuitem>
+              <label>Raster to vector</label>
+              <command>r.to.vect</command>
+              <help>Converts a raster map into a vector map.</help>
+              <keywords>raster,conversion,geometry,vectorization</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raster series to 3D raster</label>
+              <command>r.to.rast3</command>
+              <help>Converts 2D raster map slices to one 3D raster volume map.</help>
+              <keywords>raster,conversion,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raster 2.5D to 3D raster</label>
+              <command>r.to.rast3elev</command>
+              <help>Creates a 3D volume map based on 2D elevation and value raster maps.</help>
+              <keywords>raster,conversion,raster3d,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Raster buffers and distance</label>
+          <items>
+            <menuitem>
+              <label>Buffer rasters</label>
+              <command>r.buffer</command>
+              <help>Creates a raster map showing buffer zones surrounding cells that contain non-NULL category values.</help>
+              <keywords>raster,buffer</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Concentric circles</label>
+              <command>r.circle</command>
+              <help>Creates a raster map containing concentric rings around a given point.</help>
+              <keywords>raster,buffer,geometry,circle</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Closest points</label>
+              <command>r.distance</command>
+              <help>Locates the closest points between objects in two raster maps.</help>
+              <keywords>raster,distance</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Grow by one cell</label>
+              <command>r.grow</command>
+              <help>Generates a raster map layer with contiguous areas grown by one cell.</help>
+              <keywords>raster,distance,proximity</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Distance to features</label>
+              <command>r.grow.distance</command>
+              <help>Generates a raster map containing distances to nearest raster features and/or the value of the nearest non-null cell.</help>
+              <keywords>raster,distance,proximity</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menuitem>
+          <label>Mask</label>
+          <command>r.mask</command>
+          <help>Creates a MASK for limiting raster operation.</help>
+          <keywords>raster,mask</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Raster map calculator</label>
+          <items>
+            <menuitem>
+              <label>Simplified raster map calculator</label>
+              <command>r.mapcalc.simple</command>
+              <help>Calculates a new raster map from a simple r.mapcalc expression.</help>
+              <keywords>raster,algebra,simple</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raster map calculator</label>
+              <handler>OnMapCalculator</handler>
+              <command>r.mapcalc</command>
+              <help>Raster map calculator.</help>
+              <keywords>raster,algebra</keywords>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Neighborhood analysis</label>
+          <items>
+            <menuitem>
+              <label>Moving window</label>
+              <command>r.neighbors</command>
+              <help>Makes each cell category value a function of the category values assigned to the cells around it, and stores new cell values in an output raster map layer.</help>
+              <keywords>raster,algebra,statistics,aggregation,neighbor,focal statistics,filter</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Neighborhood points</label>
+              <command>v.neighbors</command>
+              <help>Neighborhood analysis tool for vector point maps. Makes each cell value a function of the attribute values assigned to the vector points or centroids around it, and stores new cell values in an output raster map.</help>
+              <keywords>vector,algebra,statistics,raster,aggregation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Overlay rasters</label>
+          <items>
+            <menuitem>
+              <label>Cross product</label>
+              <command>r.cross</command>
+              <help>Creates a cross product of the category values from multiple raster map layers.</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch raster maps</label>
+              <command>r.patch</command>
+              <help>Creates a composite raster map layer by using known category values from one (or more) map layer(s) to fill in areas of "no data" in another map layer.</help>
+              <keywords>raster,geometry,mosaicking,merge,patching,aggregation,series</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raster series aggregation</label>
+              <command>r.series</command>
+              <help>Makes each output cell value a function of the values assigned to the corresponding cells in the input raster map layers.</help>
+              <keywords>raster,aggregation,series</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Raster series accumulation</label>
+              <command>r.series.accumulate</command>
+              <help>Makes each output cell value a accumulationfunction of the values assigned to the corresponding cells in the input raster map layers.</help>
+              <keywords>raster,series,accumulation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Statistical overlay</label>
+              <command>r.stats.zonal</command>
+              <help>Calculates category or object oriented statistics (accumulator-based statistics).</help>
+              <keywords>raster,statistics,zonal statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Quantiles overlay</label>
+              <command>r.stats.quantile</command>
+              <help>Compute category quantiles using two passes.</help>
+              <keywords>raster,statistics,zonal statistics,percentile,quantile</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Solar radiance and shadows</label>
+          <items>
+            <menuitem>
+              <label>LatLong map</label>
+              <command>r.latlong</command>
+              <help>Creates a latitude/longitude raster map.</help>
+              <keywords>raster,latitude,longitude,projection</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Solar irradiance and irradiation</label>
+              <command>r.sun</command>
+              <help>Solar irradiance and irradiation model. Computes direct (beam), diffuse and reflected solar irradiation raster maps for given day, latitude, surface and atmospheric conditions. Solar parameters (e.g. sunrise, sunset times, declination, extraterrestrial irradiance, daylight length) are saved in the map history file. Alternatively, a local time can be specified to compute solar incidence angle and/or irradiance raster maps. The shadowing effect of the topography is optionally incorporated.</help>
+              <keywords>raster,solar,sun energy,shadow</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shadows map</label>
+              <command>r.sunmask</command>
+              <help>Calculates cast shadow areas from sun position and elevation raster map. Either exact sun position (A) is specified, or date/time to calculate the sun position (B) by r.sunmask itself.</help>
+              <keywords>raster,solar,sun position,shadow</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sunshine hours and solar angles</label>
+              <command>r.sunhours</command>
+              <help>Calculates solar elevation, solar azimuth, and sun hours. Solar elevation: the angle between the direction of the geometric center of the sun's apparent disk and the (idealized) horizon. Solar azimuth: the angle from due north in clockwise direction.</help>
+              <keywords>raster,solar,sun energy,sun position</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Terrain analysis</label>
+          <items>
+            <menuitem>
+              <label>Generate contour lines</label>
+              <command>r.contour</command>
+              <help>Produces a vector map of specified contours from a raster map.</help>
+              <keywords>raster,surface,contours,vector</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Cost surface</label>
+              <command>r.cost</command>
+              <help>Creates a raster map showing the cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.</help>
+              <keywords>raster,cost surface,cumulative costs,cost allocation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Cumulative movement costs</label>
+              <command>r.walk</command>
+              <help>Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.</help>
+              <keywords>raster,cost surface,cumulative costs,cost allocation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Least cost route or flow</label>
+              <command>r.drain</command>
+              <help>Traces a flow through an elevation model or cost surface on a raster map.</help>
+              <keywords>raster,hydrology,cost surface</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Compute shaded relief</label>
+              <command>r.relief</command>
+              <help>Creates shaded relief map from an elevation map (DEM). </help>
+              <keywords>raster,elevation,relief,terrain,hillshade</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Apply shade to raster</label>
+              <command>r.shade</command>
+              <help>Drapes a color raster over an shaded relief or aspect map.</help>
+              <keywords>raster,elevation,relief,hillshade,visualization</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Slope and aspect</label>
+              <command>r.slope.aspect</command>
+              <help>Generates raster maps of slope, aspect, curvatures and partial derivatives from an elevation raster map. Aspect is calculated counterclockwise from east.</help>
+              <keywords>raster,terrain,aspect,slope,curvature</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Landforms</label>
+              <command>r.geomorphon</command>
+              <help>Calculates geomorphons (terrain forms) and associated geometry using machine vision approach.</help>
+              <keywords>raster,geomorphons,terrain patterns,machine vision geomorphometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Terrain parameters</label>
+              <command>r.param.scale</command>
+              <help>Extracts terrain parameters from a DEM. Uses a multi-scale approach by taking fitting quadratic parameters to any size window (via least squares).</help>
+              <keywords>raster,geomorphology,terrain,elevation,landform</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Textural features</label>
+              <command>r.texture</command>
+              <help>Generate images with textural features from a raster map.</help>
+              <keywords>raster,algebra,statistics,texture</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Visibility</label>
+              <command>r.viewshed</command>
+              <help>Computes the viewshed of a point on an elevation raster map. Default format: NULL (invisible), vertical angle wrt viewpoint (visible).</help>
+              <keywords>raster,viewshed,line of sight,LOS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Distance to features</label>
+              <command>r.grow.distance</command>
+              <help>Generates a raster map containing distances to nearest raster features and/or the value of the nearest non-null cell.</help>
+              <keywords>raster,distance,proximity</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Horizon angle</label>
+              <command>r.horizon</command>
+              <help>Computes horizon angle height from a digital elevation model. The module has two different modes of operation: 1. Computes the entire horizon around a single point whose coordinates are given with the 'coord' option. The horizon height (in radians). 2. Computes one or more raster maps of the horizon height in a single direction. The input for this is the angle (in degrees), which is measured counterclockwise with east=0, north=90 etc. The output is the horizon height in radians.</help>
+              <keywords>raster,solar,sun position</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Transform features</label>
+          <items>
+            <menuitem>
+              <label>Clump</label>
+              <command>r.clump</command>
+              <help>Recategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.</help>
+              <keywords>raster,statistics,reclass,clumps</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Grow</label>
+              <command>r.grow</command>
+              <help>Generates a raster map layer with contiguous areas grown by one cell.</help>
+              <keywords>raster,distance,proximity</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Thin</label>
+              <command>r.thin</command>
+              <help>Thins non-null cells that denote linear features in a raster map layer.</help>
+              <keywords>raster,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Hydrologic modeling</label>
+          <items>
+            <menuitem>
+              <label>Carve stream channels</label>
+              <command>r.carve</command>
+              <help>Generates stream channels. Takes vector stream data, transforms it to raster and subtracts depth from the output DEM.</help>
+              <keywords>raster,hydrology</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Fill lake</label>
+              <command>r.lake</command>
+              <help>Fills lake at given point to given level.</help>
+              <keywords>raster,hydrology,hazard,flood</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Depressionless map and flowlines</label>
+              <command>r.fill.dir</command>
+              <help>Filters and generates a depressionless elevation map and a flow direction map from a given elevation raster map.</help>
+              <keywords>raster,hydrology,sink,fill sinks,depressions</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Flow accumulation</label>
+              <command>r.terraflow</command>
+              <help>Performs flow computation for massive grids.</help>
+              <keywords>raster,hydrology,flow,accumulation,sink</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Flow lines</label>
+              <command>r.flow</command>
+              <help>Constructs flowlines. Computes flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a elevation raster map.</help>
+              <keywords>raster,hydrology</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Watershed analysis</label>
+              <command>r.watershed</command>
+              <help>Calculates hydrological parameters and RUSLE factors.</help>
+              <keywords>raster,hydrology,watershed,accumulation,drainage,stream network,stream power index,topographic index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Watershed subbasins</label>
+              <command>r.basins.fill</command>
+              <help>Generates watershed subbasins raster map.</help>
+              <keywords>raster,hydrology,watershed</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Watershed basin creation</label>
+              <command>r.water.outlet</command>
+              <help>Creates watershed basins from a drainage direction map.</help>
+              <keywords>raster,hydrology,watershed</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Extraction of stream networks</label>
+              <command>r.stream.extract</command>
+              <help>Performs stream network extraction.</help>
+              <keywords>raster,hydrology,stream network</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>SIMWE Overland flow modeling</label>
+              <command>r.sim.water</command>
+              <help>Overland flow hydrologic simulation using path sampling method (SIMWE).</help>
+              <keywords>raster,hydrology,soil,flow,overland flow,model</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>SIMWE Sediment flux modeling</label>
+              <command>r.sim.sediment</command>
+              <help>Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).</help>
+              <keywords>raster,hydrology,soil,sediment flow,erosion,deposition,model</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Topographic index map</label>
+              <command>r.topidx</command>
+              <help>Creates a topographic index (wetness index) raster map from an elevation raster map.</help>
+              <keywords>raster,hydrology,wetness,topographic index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>TOPMODEL simulation</label>
+              <command>r.topmodel</command>
+              <help>Simulates TOPMODEL which is a physically based hydrologic model.</help>
+              <keywords>raster,hydrology,model</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>USLE K-factor</label>
+              <command>r.uslek</command>
+              <help>Computes USLE Soil Erodibility Factor (K).</help>
+              <keywords>raster,hydrology,soil,erosion</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>USLE R-factor</label>
+              <command>r.usler</command>
+              <help>Computes USLE R factor, Rainfall erosivity index.</help>
+              <keywords>raster,hydrology,rainfall,soil,erosion</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Groundwater modeling</label>
+          <items>
+            <menuitem>
+              <label>Groundwater flow</label>
+              <command>r.gwflow</command>
+              <help>Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.</help>
+              <keywords>raster,groundwater flow,hydrology</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Groundwater solute transport</label>
+              <command>r.solute.transport</command>
+              <help>Numerical calculation program for transient, confined and unconfined solute transport in two dimensions</help>
+              <keywords>raster,hydrology,solute transport</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Landscape patch analysis</label>
+          <items>
+            <menuitem>
+              <label>Set up sampling and analysis framework</label>
+              <handler>OnRLiSetup</handler>
+              <help>Configuration editor for r.li.'index'</help>
+              <keywords>raster,landscape structure analysis</keywords>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Edge density</label>
+              <command>r.li.edgedensity</command>
+              <help>Calculates edge density index on a raster map, using a 4 neighbour algorithm</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Contrast weighted edge density</label>
+              <command>r.li.cwed</command>
+              <help>Calculates contrast weighted edge density index on a raster map</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Patch area mean</label>
+              <command>r.li.mps</command>
+              <help>Calculates mean patch size index on a raster map, using a 4 neighbour algorithm</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch area range</label>
+              <command>r.li.padrange</command>
+              <help>Calculates range of patch area size on a raster map</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch area Std Dev</label>
+              <command>r.li.padsd</command>
+              <help>Calculates standard deviation of patch area a raster map</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch area Coeff Var</label>
+              <command>r.li.padcv</command>
+              <help>Calculates coefficient of variation of patch area on a raster map</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch density</label>
+              <command>r.li.patchdensity</command>
+              <help>Calculates patch density index on a raster map, using a 4 neighbour algorithm</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch number</label>
+              <command>r.li.patchnum</command>
+              <help>Calculates patch number index on a raster map, using a 4 neighbour algorithm.</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Dominance's diversity</label>
+              <command>r.li.dominance</command>
+              <help>Calculates dominance's diversity index on a raster map</help>
+              <keywords>raster,landscape structure analysis,diversity index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shannon's diversity</label>
+              <command>r.li.shannon</command>
+              <help>Calculates Shannon's diversity index on a raster map</help>
+              <keywords>raster,landscape structure analysis,diversity index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Simpson's diversity</label>
+              <command>r.li.simpson</command>
+              <help>Calculates Simpson's diversity index on a raster map</help>
+              <keywords>raster,landscape structure analysis,diversity index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Richness</label>
+              <command>r.li.richness</command>
+              <help>Calculates richness index on a raster map</help>
+              <keywords>raster,landscape structure analysis,diversity index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shape index</label>
+              <command>r.li.shape</command>
+              <help>Calculates shape index on a raster map</help>
+              <keywords>raster,landscape structure analysis,patch index</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Wildfire modeling</label>
+          <items>
+            <menuitem>
+              <label>Rate of spread</label>
+              <command>r.ros</command>
+              <help>Generates rate of spread raster maps. Generates three, or four raster map layers showing the base (perpendicular) rate of spread (ROS), the maximum (forward) ROS, the direction of the maximum ROS, and optionally the maximum potential spotting distance for fire spread simulation.</help>
+              <keywords>raster,fire,spread,rate of spread,hazard,model</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Least-cost spread paths</label>
+              <command>r.spreadpath</command>
+              <help>Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.</help>
+              <keywords>raster,fire,cumulative costs</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Anisotropic spread simulation</label>
+              <command>r.spread</command>
+              <help>Simulates elliptically anisotropic spread. Generates a raster map of the cumulative time of spread, given raster maps containing the rates of spread (ROS), the ROS directions and the spread origins. It optionally produces raster maps to contain backlink UTM coordinates for tracing spread paths. Usable for fire spread simulations.</help>
+              <keywords>raster,fire,spread,hazard,model</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Change category values and labels</label>
+          <items>
+            <menuitem>
+              <label>Manage category information</label>
+              <command>r.category</command>
+              <help>Manages category values and labels associated with user-specified raster map layers.</help>
+              <keywords>raster,category</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Interactively edit category values</label>
+              <command>d.rast.edit</command>
+              <help>Edits cell values in a raster map.</help>
+              <keywords>display,editing,raster</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reclassify by size</label>
+              <command>r.reclass.area</command>
+              <help>Reclasses a raster map greater or less than user specified area size (in hectares).</help>
+              <keywords>raster,statistics,aggregation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Reclassify</label>
+              <command>r.reclass</command>
+              <help>Reclassify raster map based on category values. Creates a new raster map whose category values are based upon a reclassification of the categories in an existing raster map.</help>
+              <keywords>raster,reclassification</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Recode</label>
+              <command>r.recode</command>
+              <help>Recodes categorical raster maps.</help>
+              <keywords>raster,recode categories,reclassification</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Rescale</label>
+              <command>r.rescale</command>
+              <help>Rescales the range of category values in a raster map layer.</help>
+              <keywords>raster,rescale</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Rescale with histogram</label>
+              <command>r.rescale.eq</command>
+              <help>Rescales histogram equalized the range of category values in a raster map layer.</help>
+              <keywords>raster,rescale</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Generate random cells</label>
+          <items>
+            <menuitem>
+              <label>Random cells</label>
+              <command>r.random.cells</command>
+              <help>Generates random cell values with spatial dependence.</help>
+              <keywords>raster,sampling,random,autocorrelation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Random cells and vector points</label>
+              <command>r.random</command>
+              <help>Creates a raster map layer and vector point map containing randomly located points.</help>
+              <keywords>raster,sampling,vector,random,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Generate surfaces</label>
+          <items>
+            <menuitem>
+              <label>Fractal surface</label>
+              <command>r.surf.fractal</command>
+              <help>Creates a fractal surface of a given fractal dimension.</help>
+              <keywords>raster,surface,fractal</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Gaussian kernel density surface</label>
+              <command>v.kernel</command>
+              <help>Generates a raster density map from vector points map. Density is computed using a moving kernel. Optionally generates a vector density map on a vector network.</help>
+              <keywords>vector,kernel density,point density,heatmap,hotspot</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Gaussian deviates surface</label>
+              <command>r.surf.gauss</command>
+              <help>Generates a raster map using gaussian random number generator. Mean and standard deviation of gaussian deviates can be expressed by the user.</help>
+              <keywords>raster,surface,random</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Plane</label>
+              <command>r.plane</command>
+              <help>Creates raster plane map given dip (inclination), aspect (azimuth) and one point.</help>
+              <keywords>raster,elevation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Random deviates surface</label>
+              <command>r.surf.random</command>
+              <help>Produces a raster surface map of uniform random deviates with defined range.</help>
+              <keywords>raster,surface,random</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Random surface with spatial dependence</label>
+              <command>r.random.surface</command>
+              <help>Generates random surface(s) with spatial dependence.</help>
+              <keywords>raster,surface,random</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Interpolate surfaces</label>
+          <items>
+            <menuitem>
+              <label>Bilinear and bicubic from vector points</label>
+              <command>v.surf.bspline</command>
+              <help>Performs bicubic or bilinear spline interpolation with Tykhonov regularization.</help>
+              <keywords>vector,surface,interpolation,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>IDW from raster points</label>
+              <command>r.surf.idw</command>
+              <help>Provides surface interpolation from raster point data by Inverse Distance Squared Weighting.</help>
+              <keywords>raster,surface,interpolation,IDW</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>IDW from vector points</label>
+              <command>v.surf.idw</command>
+              <help>Provides surface interpolation from vector point data by Inverse Distance Squared Weighting.</help>
+              <keywords>vector,surface,interpolation,IDW</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Raster contours</label>
+              <command>r.surf.contour</command>
+              <help>Generates surface raster map from rasterized contours.</help>
+              <keywords>raster,surface,interpolation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Regularized spline tension</label>
+              <command>v.surf.rst</command>
+              <help>Performs surface interpolation from vector points map by splines. Spatial approximation and topographic analysis from given point or isoline data in vector format to floating point raster format using regularized spline with tension.</help>
+              <keywords>vector,surface,interpolation,splines,RST,3D,no-data filling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Raster series interpolation</label>
+              <command>r.series.interp</command>
+              <help>Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.</help>
+              <keywords>raster,series,interpolation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Fill NULL cells</label>
+              <command>r.fillnulls</command>
+              <help>Fills no-data areas in raster maps using spline interpolation.</help>
+              <keywords>raster,surface,elevation,interpolation,splines,no-data filling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Reports and statistics</label>
+          <items>
+            <menuitem>
+              <label>Basic raster metadata</label>
+              <command>r.info</command>
+              <help>Outputs basic information about a raster map.</help>
+              <keywords>raster,metadata,extent,history</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Manage category information</label>
+              <command>r.category</command>
+              <help>Manages category values and labels associated with user-specified raster map layers.</help>
+              <keywords>raster,category</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>General statistics</label>
+              <command>r.stats</command>
+              <help>Generates area statistics for raster map.</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Quantiles for large data sets</label>
+              <command>r.quantile</command>
+              <help>Compute quantiles using two passes.</help>
+              <keywords>raster,algebra,statistics,percentile,quantile</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Range of category values</label>
+              <command>r.describe</command>
+              <help>Prints terse list of category values found in a raster map layer.</help>
+              <keywords>raster,metadata</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sum area by raster map and category</label>
+              <command>r.report</command>
+              <help>Reports statistics for raster maps.</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Statistics for clumped cells</label>
+              <command>r.volume</command>
+              <help>Calculates the volume of data "clumps". Optionally produces a GRASS vector points map containing the calculated centroids of these clumps.</help>
+              <keywords>raster,volume,clumps</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Total corrected area</label>
+              <command>r.surf.area</command>
+              <help>Prints estimation of surface area for raster map.</help>
+              <keywords>raster,surface,statistics,area estimation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Univariate raster statistics</label>
+              <command>r.univar</command>
+              <help>Calculates univariate statistics from the non-null cells of a raster map. Statistics include number of cells counted, minimum and maximum cell values, range, arithmetic mean, population variance, standard deviation, coefficient of variation, and sum.</help>
+              <keywords>raster,statistics,univariate statistics,zonal statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Sample transects</label>
+              <command>r.profile</command>
+              <help>Outputs the raster map layer values lying on user-defined line(s).</help>
+              <keywords>raster,profile,transect</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sample transects (bearing/distance)</label>
+              <command>r.transect</command>
+              <help>Outputs raster map layer values lying along user defined transect line(s).</help>
+              <keywords>raster,profile,transect</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Covariance/correlation</label>
+              <command>r.covar</command>
+              <help>Outputs a covariance/correlation matrix for user-specified raster map layer(s).</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Linear regression</label>
+              <command>r.regression.line</command>
+              <help>Calculates linear regression from two raster maps: y = a + b*x.</help>
+              <keywords>raster,statistics,regression</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Multiple regression</label>
+              <command>r.regression.multi</command>
+              <help>Calculates multiple linear regression from raster maps.</help>
+              <keywords>raster,statistics,regression</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Mutual category occurrences</label>
+              <command>r.coin</command>
+              <help>Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.</help>
+              <keywords>raster,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>&amp;Vector</label>
+      <items>
+        <menu>
+          <label>Develop vector map</label>
+          <items>
+            <menuitem>
+              <label>Create new vector map</label>
+              <handler>OnNewVector</handler>
+              <help>Create new empty vector map</help>
+            </menuitem>
+            <menuitem>
+              <label>Edit vector map (non-interactively)</label>
+              <command>v.edit</command>
+              <help>Edits a vector map, allows adding, deleting and modifying selected vector features.</help>
+              <keywords>vector,geometry,editing,line,node,point,vertex,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Convert object types</label>
+              <command>v.type</command>
+              <help>Changes type of vector features.</help>
+              <keywords>vector,geometry,editing,area,line,point</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Parallel lines</label>
+              <command>v.parallel</command>
+              <help>Creates parallel line to input vector lines.</help>
+              <keywords>vector,geometry,buffer,line</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Dissolve boundaries</label>
+              <command>v.dissolve</command>
+              <help>Dissolves boundaries between adjacent areas sharing a common category number or attribute.</help>
+              <keywords>vector,dissolve,area,line</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Create 3D vector over raster</label>
+              <command>v.drape</command>
+              <help>Converts 2D vector features to 3D by sampling of elevation raster map.</help>
+              <keywords>vector,geometry,sampling,3D,surface information</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Extrude 3D vector map</label>
+              <command>v.extrude</command>
+              <help>Extrudes flat vector features to 3D vector features with defined height. Optionally the height can be derived from sampling of elevation raster map.</help>
+              <keywords>vector,geometry,sampling,3D</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Create labels</label>
+              <command>v.label</command>
+              <help>Creates paint labels for a vector map from attached attributes.</help>
+              <keywords>vector,paint labels</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reposition vector map</label>
+              <command>v.transform</command>
+              <help>Performs an affine transformation (shift, scale and rotate) on vector map.</help>
+              <keywords>vector,transformation,geometry,GCP</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Rectify vector map</label>
+              <command>v.rectify</command>
+              <help>Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.</help>
+              <keywords>vector,rectify,level1,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Reproject vector map from different GRASS location</label>
+              <command>v.proj</command>
+              <help>Re-projects a vector map from one location to the current location.</help>
+              <keywords>vector,projection,transformation,import</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Support file maintenance</label>
+              <command>v.support</command>
+              <help>Updates vector map metadata.</help>
+              <keywords>vector,metadata</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Topology maintenance</label>
+          <items>
+            <menuitem>
+              <label>Create or rebuild topology</label>
+              <command>v.build</command>
+              <help>Creates topology for vector map. Optionally also checks for topological errors.</help>
+              <keywords>vector,topology,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Rebuild topology on all vector maps</label>
+              <command>v.build.all</command>
+              <help>Rebuilds topology on all vector maps in the current mapset.</help>
+              <keywords>vector,topology</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Build polylines</label>
+              <command>v.build.polylines</command>
+              <help>Builds polylines from lines or boundaries.</help>
+              <keywords>vector,topology,geometry,line,node,vertex</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Split lines</label>
+              <command>v.split</command>
+              <help>Splits vector lines to shorter segments.</help>
+              <keywords>vector,geometry,densification,node,segment,vertex</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Split polylines</label>
+              <command>v.segment</command>
+              <help>Creates points/segments from input vector lines and positions.</help>
+              <keywords>vector,geometry,node,point,segment,vertex</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Clean vector map</label>
+              <handler>OnVectorCleaning</handler>
+              <command>v.clean</command>
+              <help>Toolset for cleaning topology of vector map.</help>
+              <keywords>vector,topology,geometry</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Smooth or simplify</label>
+              <command>v.generalize</command>
+              <help>Performs vector based generalization.</help>
+              <keywords>vector,generalization,simplification,smoothing,displacement,network generalization,topology,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Add centroids</label>
+              <command>v.centroids</command>
+              <help>Adds missing centroids to closed boundaries.</help>
+              <keywords>vector,centroid,area</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Manage colors</label>
+          <items>
+            <menuitem>
+              <label>Color tables</label>
+              <command>v.colors</command>
+              <help>Creates/modifies the color table associated with a vector map.</help>
+              <keywords>vector,color table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Manage color rules interactively</label>
+              <handler>OnVectorRules</handler>
+              <help>Interactive management of vector color tables.</help>
+              <keywords>vector,color table</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Export color table</label>
+              <command>v.colors.out</command>
+              <help>Exports the color table associated with a vector map.</help>
+              <keywords>vector,color table,export</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Query vector map</label>
+          <items>
+            <menuitem>
+              <label>Query with coordinate(s)</label>
+              <command>v.what</command>
+              <help>Queries a vector map at given locations.</help>
+              <keywords>vector,querying,position</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Query vector attribute data</label>
+              <command>v.db.select</command>
+              <help>Prints vector map attributes.</help>
+              <keywords>vector,attribute table,database,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Feature selection</label>
+          <items>
+            <menuitem>
+              <label>Select by attributes</label>
+              <command>v.extract</command>
+              <help>Selects vector features from an existing vector map and creates a new vector map containing only the selected features.</help>
+              <keywords>vector,extract,select,dissolve,random</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Select by another map</label>
+              <command>v.select</command>
+              <help>Selects features from vector map (A) by features from other vector map (B).</help>
+              <keywords>vector,geometry,spatial query</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Map type conversions</label>
+          <items>
+            <menuitem>
+              <label>Vector to raster</label>
+              <command>v.to.rast</command>
+              <help>Converts (rasterize) a vector map into a raster map.</help>
+              <keywords>vector,conversion,raster,rasterization</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Vector to 3D raster</label>
+              <command>v.to.rast3</command>
+              <help>Converts a vector map (only points) into a 3D raster map.</help>
+              <keywords>vector,conversion,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>2D vector to 3D vector</label>
+              <command>v.to.3d</command>
+              <help>Performs transformation of 2D vector features to 3D.</help>
+              <keywords>vector,geometry,3D</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menuitem>
+          <label>Buffer vectors</label>
+          <command>v.buffer</command>
+          <help>Creates a buffer around vector features of given type.</help>
+          <keywords>vector,buffer,area,circle,geometry,line,grow,shrink</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Point analysis</label>
+          <items>
+            <menuitem>
+              <label>Identify and remove outliers</label>
+              <command>v.outlier</command>
+              <help>Removes outliers from vector point data.</help>
+              <keywords>vector,statistics,extract,select,filter,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Identify point clusters</label>
+              <command>v.cluster</command>
+              <help>Performs cluster identification.</help>
+              <keywords>vector,point cloud,cluster,clump,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Indices for quadrat counts of vector point lists</label>
+              <command>v.qcount</command>
+              <help>Indices for quadrat counts of vector point lists.</help>
+              <keywords>vector,statistics,point pattern</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Perturb points</label>
+              <command>v.perturb</command>
+              <help>Random location perturbations of vector points.</help>
+              <keywords>vector,geometry,statistics,random,point pattern,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Test/training point sets</label>
+              <command>v.kcv</command>
+              <help>Randomly partition points into test/train sets.</help>
+              <keywords>vector,statistics,points,point pattern,sampling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Tests for normality for vector points</label>
+              <command>v.normal</command>
+              <help>Tests for normality for vector points.</help>
+              <keywords>vector,statistics,points,point pattern</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Lidar analysis</label>
+          <items>
+            <menuitem>
+              <label>Identify and remove outliers</label>
+              <command>v.outlier</command>
+              <help>Removes outliers from vector point data.</help>
+              <keywords>vector,statistics,extract,select,filter,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Detect edges</label>
+              <command>v.lidar.edgedetection</command>
+              <help>Detects the object's edges from a LIDAR data set.</help>
+              <keywords>vector,LIDAR,edges</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Detect interiors</label>
+              <command>v.lidar.growing</command>
+              <help>Building contour determination and Region Growing algorithm for determining the building inside</help>
+              <keywords>vector,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Correct and reclassify objects</label>
+              <command>v.lidar.correction</command>
+              <help>Corrects the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.</help>
+              <keywords>vector,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Linear referencing</label>
+          <items>
+            <menuitem>
+              <label>Create LRS</label>
+              <command>v.lrs.create</command>
+              <help>Creates a linear reference system.</help>
+              <keywords>vector,linear reference system,network</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Create stationing</label>
+              <command>v.lrs.label</command>
+              <help>Creates stationing from input lines, and linear reference system.</help>
+              <keywords>vector,linear reference system,network</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Create points/segments</label>
+              <command>v.lrs.segment</command>
+              <help>Creates points/segments from input lines, linear reference system and positions read from stdin or a file.</help>
+              <keywords>vector,linear reference system,network</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Find line id and offset</label>
+              <command>v.lrs.where</command>
+              <help>Finds line id and real km+offset for given points in vector map using linear reference system.</help>
+              <keywords>vector,linear reference system,network</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menuitem>
+          <label>Nearest features</label>
+          <command>v.distance</command>
+          <help>Finds the nearest element in vector map 'to' for elements in vector map 'from'.</help>
+          <keywords>vector,distance,database,attribute table</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Network analysis</label>
+          <items>
+            <menuitem>
+              <label>Vector network analysis tool</label>
+              <handler>OnVNet</handler>
+              <help>Tool for interactive vector network analysis.</help>
+              <keywords>gui,vector,network</keywords>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Network preparation</label>
+              <command>v.net</command>
+              <help>Performs network maintenance.</help>
+              <keywords>vector,network,network maintenance</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Allocate subnets</label>
+              <command>v.net.alloc</command>
+              <help>Allocates subnets for nearest centers. Center node must be opened (costs &gt;= 0). Costs of center node are used in calculation.</help>
+              <keywords>vector,network,cost allocation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Split net</label>
+              <command>v.net.iso</command>
+              <help>Splits subnets for nearest centers by cost isolines. Splits net to bands between cost isolines (direction from center). Center node must be opened (costs &gt;= 0). Costs of center node are used in calculation.</help>
+              <keywords>vector,network,cost allocation,isolines</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Shortest path</label>
+              <command>v.net.path</command>
+              <help>Finds shortest path on vector network.</help>
+              <keywords>vector,network,shortest path</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shortest path for sets of features</label>
+              <command>v.net.distance</command>
+              <help>Computes shortest distance via the network between the given sets of features. Finds the shortest paths from each 'from' point to the nearest 'to' feature and various information about this relation are uploaded to the attribute table.</help>
+              <keywords>vector,network,shortest path</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shortest path using timetables</label>
+              <command>v.net.timetable</command>
+              <help>Finds shortest path using timetables.</help>
+              <keywords>vector,network,shortest path</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Shortest path for all pairs</label>
+              <command>v.net.allpairs</command>
+              <help>Computes the shortest path between all pairs of nodes in the network.</help>
+              <keywords>vector,network,shortest path</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Visibility network</label>
+              <command>v.net.visibility</command>
+              <help>Performs visibility graph construction.</help>
+              <keywords>vector,network,shortest path,visibility</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Bridges and articulation points</label>
+              <command>v.net.bridge</command>
+              <help>Computes bridges and articulation points in the network.</help>
+              <keywords>vector,network,articulation points</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Maximum flow</label>
+              <command>v.net.flow</command>
+              <help>Computes the maximum flow between two sets of nodes in the network.</help>
+              <keywords>vector,network,flow</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Vertex connectivity</label>
+              <command>v.net.connectivity</command>
+              <help>Computes vertex connectivity between two sets of nodes in the network.</help>
+              <keywords>vector,network,connectivity</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Components</label>
+              <command>v.net.components</command>
+              <help>Computes strongly and weakly connected components in the network.</help>
+              <keywords>vector,network,components</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Centrality</label>
+              <command>v.net.centrality</command>
+              <help>Computes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.</help>
+              <keywords>vector,network,centrality measures</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Steiner tree</label>
+              <command>v.net.steiner</command>
+              <help>Creates Steiner tree for the network and given terminals. Note that 'Minimum Steiner Tree' problem is NP-hard and heuristic algorithm is used in this module so the result may be sub optimal.</help>
+              <keywords>vector,network,steiner tree</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Minimum spanning tree</label>
+              <command>v.net.spanningtree</command>
+              <help>Computes minimum spanning tree for the network.</help>
+              <keywords>vector,network,spanning tree</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Traveling salesman analysis</label>
+              <command>v.net.salesman</command>
+              <help>Creates a cycle connecting given nodes (Traveling salesman problem). Note that TSP is NP-hard, heuristic algorithm is used by this module and created cycle may be sub optimal</help>
+              <keywords>vector,network,salesman</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Overlay vector maps</label>
+          <items>
+            <menuitem>
+              <label>Clip vector maps</label>
+              <command>v.clip</command>
+              <help>Extracts features of input map which overlay features of clip map.</help>
+              <keywords>vector,clip,area</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Overlay vector maps</label>
+              <command>v.overlay</command>
+              <help>Overlays two vector maps offering clip, intersection, difference, symmetrical difference, union operators.</help>
+              <keywords>vector,geometry,spatial query,clip,difference,intersection,union</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Patch vector maps</label>
+              <command>v.patch</command>
+              <help>Creates a new vector map by combining other vector maps.</help>
+              <keywords>vector,geometry,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Manage categories</label>
+          <items>
+            <menuitem>
+              <label>Change or report categories</label>
+              <command>v.category</command>
+              <help>Attaches, deletes or reports vector categories to/from/of map geometry.</help>
+              <keywords>vector,category,layer</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Reclassify</label>
+              <command>v.reclass</command>
+              <help>Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.</help>
+              <keywords>vector,reclassification,attributes</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Update attributes</label>
+          <items>
+            <menuitem>
+              <label>Update area attributes from raster</label>
+              <command>v.rast.stats</command>
+              <help>Calculates univariate statistics from a raster map based on a vector map and uploads statistics to new attribute columns.</help>
+              <keywords>vector,statistics,raster,univariate statistics,zonal statistics,sampling,querying</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Update area attributes from vector</label>
+              <command>v.vect.stats</command>
+              <help>Count points in areas, calculate statistics from point attributes.</help>
+              <keywords>vector,attribute table,database,univariate statistics,zonal statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Update point attributes from areas</label>
+              <command>v.what.vect</command>
+              <help>Uploads vector values at positions of vector points to the table.</help>
+              <keywords>vector,sampling,database,position,querying,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Update database values from vector</label>
+              <command>v.to.db</command>
+              <help>Populates attribute values from vector features.</help>
+              <keywords>vector,attribute table,database,area,azimuth,bounding box,category,compactness,coordinates,fractal,geometry,length,perimeter,sides,sinuous,slope</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Sample raster maps at point locations</label>
+              <command>v.what.rast</command>
+              <help>Uploads raster values at positions of vector points to the table.</help>
+              <keywords>vector,sampling,raster,position,querying,attribute table,surface information</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sample raster neighborhood around points</label>
+              <command>v.sample</command>
+              <help>Samples a raster map at vector point locations.</help>
+              <keywords>vector,sampling,raster</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menuitem>
+          <label>Generate area for current region</label>
+          <command>v.in.region</command>
+          <help>Creates a vector polygon from the current region extent.</help>
+          <keywords>vector,geometry</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Generate areas from points</label>
+          <items>
+            <menuitem>
+              <label>Convex hull</label>
+              <command>v.hull</command>
+              <help>Produces a 2D/3D convex hull for a given vector map.</help>
+              <keywords>vector,geometry,3D</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Delaunay triangles</label>
+              <command>v.delaunay</command>
+              <help>Creates a Delaunay triangulation from an input vector map containing points or centroids.</help>
+              <keywords>vector,geometry,triangulation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Voronoi diagram/Thiessen polygons</label>
+              <command>v.voronoi</command>
+              <help>Creates a Voronoi diagram constrained to the extents of the current region from an input vector map containing points or centroids.</help>
+              <keywords>vector,geometry,triangulation,skeleton</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menuitem>
+          <label>Generate grid</label>
+          <command>v.mkgrid</command>
+          <help>Creates a vector map of a user-defined grid.</help>
+          <keywords>vector,geometry,grid,point pattern,hexagon</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Generate points</label>
+          <items>
+            <menuitem>
+              <label>Generate from database</label>
+              <command>v.in.db</command>
+              <help>Creates new vector (points) map from database table containing coordinates.</help>
+              <keywords>vector,import,database,points</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Generate points along lines</label>
+              <command>v.to.points</command>
+              <help>Creates points along input lines in new vector map with 2 layers.</help>
+              <keywords>vector,geometry,3D,line,node,vertex,point</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Generate random points</label>
+              <command>v.random</command>
+              <help>Generates random 2D/3D vector points.</help>
+              <keywords>vector,sampling,statistics,random,point pattern,stratified random sampling,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Perturb points</label>
+              <command>v.perturb</command>
+              <help>Random location perturbations of vector points.</help>
+              <keywords>vector,geometry,statistics,random,point pattern,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Remove outliers in point sets</label>
+              <command>v.outlier</command>
+              <help>Removes outliers from vector point data.</help>
+              <keywords>vector,statistics,extract,select,filter,LIDAR</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Test/training point sets</label>
+              <command>v.kcv</command>
+              <help>Randomly partition points into test/train sets.</help>
+              <keywords>vector,statistics,points,point pattern,sampling</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Reports and statistics</label>
+          <items>
+            <menuitem>
+              <label>Basic vector metadata</label>
+              <command>v.info</command>
+              <help>Outputs basic information about a vector map.</help>
+              <keywords>vector,metadata,topology,extent,history,attribute columns,level1</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Classify attribute data</label>
+              <command>v.class</command>
+              <help>Classifies attribute data, e.g. for thematic mapping</help>
+              <keywords>vector,classification,attribute table,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Report topology by category</label>
+              <command>v.report</command>
+              <help>Reports geometry statistics for vector maps.</help>
+              <keywords>vector,geometry,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Univariate attribute statistics for points</label>
+              <command>v.univar</command>
+              <help>Calculates univariate statistics of vector map features. Variance and standard deviation is calculated only for points if specified.</help>
+              <keywords>vector,statistics,univariate statistics,attribute table,geometry</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Univariate statistics for attribute columns</label>
+              <command>v.db.univar</command>
+              <help>Calculates univariate statistics on selected table column for a GRASS vector map.</help>
+              <keywords>vector,statistics,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Sample transects</label>
+              <command>v.profile</command>
+              <help>Vector map profiling tool</help>
+              <keywords>vector,profile,transect</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Quadrat indices</label>
+              <command>v.qcount</command>
+              <help>Indices for quadrat counts of vector point lists.</help>
+              <keywords>vector,statistics,point pattern</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Test normality</label>
+              <command>v.normal</command>
+              <help>Tests for normality for vector points.</help>
+              <keywords>vector,statistics,points,point pattern</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>&amp;Imagery</label>
+      <items>
+        <menu>
+          <label>Develop images and groups</label>
+          <items>
+            <menuitem>
+              <label>Create/edit group</label>
+              <handler>OnEditImageryGroups</handler>
+              <command>i.group</command>
+              <help>Creates, edits, and lists groups of imagery files.</help>
+              <keywords>imagery,map management</keywords>
+            </menuitem>
+            <menuitem>
+              <label>Target group</label>
+              <command>i.target</command>
+              <help>Targets an imagery group to a GRASS location and mapset.</help>
+              <keywords>imagery,map management</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Mosaic images</label>
+              <command>i.image.mosaic</command>
+              <help>Mosaics several images and extends colormap.</help>
+              <keywords>imagery,geometry,mosaicking</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Manage image colors</label>
+          <items>
+            <menuitem>
+              <label>Color balance for RGB</label>
+              <command>i.colors.enhance</command>
+              <help>Performs auto-balancing of colors for RGB images.</help>
+              <keywords>imagery,RGB,satellite,colors</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>HIS to RGB</label>
+              <command>i.his.rgb</command>
+              <help>Transforms raster maps from HIS (Hue-Intensity-Saturation) color space to RGB (Red-Green-Blue) color space.</help>
+              <keywords>imagery,color transformation,RGB,HIS,IHS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>RGB to HIS</label>
+              <command>i.rgb.his</command>
+              <help>Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.</help>
+              <keywords>imagery,color transformation,RGB,HIS,IHS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menuitem>
+          <label>Rectify image or raster</label>
+          <command>i.rectify</command>
+          <help>Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points.</help>
+          <keywords>imagery,rectify,geometry</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Histogram</label>
+          <handler>OnHistogram</handler>
+          <help>Generate histogram of image</help>
+        </menuitem>
+        <menuitem>
+          <label>Spectral response</label>
+          <command>i.spectral</command>
+          <help>Displays spectral response at user specified locations in group or images.</help>
+          <keywords>imagery,querying,raster,multispectral</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menuitem>
+          <label>Pan sharpening</label>
+          <command>i.pansharpen</command>
+          <help>Image fusion algorithms to sharpen multispectral with high-res panchromatic channels</help>
+          <keywords>imagery,fusion,sharpen,Brovey,IHS,HIS,PCA</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Classify image</label>
+          <items>
+            <menuitem>
+              <label>Clustering input for unsupervised classification</label>
+              <command>i.cluster</command>
+              <help>Generates spectral signatures for land cover types in an image using a clustering algorithm. The resulting signature file is used as input for i.maxlik, to generate an unsupervised image classification.</help>
+              <keywords>imagery,classification,signatures</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Input for supervised MLC</label>
+              <command>i.gensig</command>
+              <help>Generates statistics for i.maxlik from raster map.</help>
+              <keywords>imagery,classification,supervised classification,Maximum Likelihood Classification,MLC,signatures</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Maximum likelihood classification (MLC)</label>
+              <command>i.maxlik</command>
+              <help>Classifies the cell spectral reflectances in imagery data. Classification is based on the spectral signature information generated by either i.cluster, g.gui.iclass, or i.gensig.</help>
+              <keywords>imagery,classification,Maximum Likelihood Classification,MLC</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Interactive input for supervised classification</label>
+          <handler>OnIClass</handler>
+          <command>g.gui.iclass</command>
+          <help>Generates spectral signatures by allowing the user to outline training areas.</help>
+          <keywords>general,gui,imagery,classification,signatures</keywords>
+        </menuitem>
+            <separator />
+            <menuitem>
+              <label>Input for supervised SMAP</label>
+              <command>i.gensigset</command>
+              <help>Generates statistics for i.smap from raster map.</help>
+              <keywords>imagery,classification,supervised classification,SMAP,signatures</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sequential maximum a posteriori classification (SMAP)</label>
+              <command>i.smap</command>
+              <help>Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.</help>
+              <keywords>imagery,classification,supervised classification,segmentation,SMAP</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Object segmentation</label>
+              <command>i.segment</command>
+              <help>Identifies segments (objects) from imagery data.</help>
+              <keywords>imagery,segmentation,classification,object recognition</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Filter image</label>
+          <items>
+            <menuitem>
+              <label>Edge detection</label>
+              <command>i.zc</command>
+              <help>Zero-crossing "edge detection" raster function for image processing.</help>
+              <keywords>imagery,edges</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Matrix/convolving filter</label>
+              <command>r.mfilter</command>
+              <help>Performs raster map matrix filter.</help>
+              <keywords>raster,algebra,statistics,filter</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Transform image</label>
+          <items>
+            <menuitem>
+              <label>Canonical correlation</label>
+              <command>i.cca</command>
+              <help>Canonical components analysis (CCA) program for image processing.</help>
+              <keywords>imagery,statistics,CCA,canonical components analysis</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Principal components</label>
+              <command>i.pca</command>
+              <help>Principal components analysis (PCA) for image processing.</help>
+              <keywords>imagery,transformation,PCA,principal components analysis</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Fast Fourier</label>
+              <command>i.fft</command>
+              <help>Fast Fourier Transform (FFT) for image processing.</help>
+              <keywords>imagery,transformation,Fast Fourier Transform</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Inverse Fast Fourier</label>
+              <command>i.ifft</command>
+              <help>Inverse Fast Fourier Transform (IFFT) for image processing.</help>
+              <keywords>imagery,transformation,Fast Fourier Transform</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Satellite images tools</label>
+          <items>
+            <menuitem>
+              <label>Aster DN to radiance/reflectance</label>
+              <command>i.aster.toar</command>
+              <help>Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.</help>
+              <keywords>imagery,radiometric conversion,radiance,reflectance,brightness temperature,satellite,ASTER</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Landsat DN to radiance/reflectance</label>
+              <command>i.landsat.toar</command>
+              <help>Calculates top-of-atmosphere radiance or reflectance and temperature for Landsat MSS/TM/ETM+/OLI</help>
+              <keywords>imagery,radiometric conversion,radiance,reflectance,brightness temperature,atmospheric correction,satellite,Landsat</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Landsat cloud cover assessment</label>
+              <command>i.landsat.acca</command>
+              <help>Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).</help>
+              <keywords>imagery,ACCA,cloud detection,satellite,Landsat</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Modis quality control</label>
+              <command>i.modis.qc</command>
+              <help>Extracts quality control parameters from MODIS QC layers.</help>
+              <keywords>imagery,imagery quality assessment,reflectance,land surface temperature,vegetation,satellite,MODIS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Atmospheric correction</label>
+              <command>i.atcorr</command>
+              <help>Performs atmospheric correction using the 6S algorithm. 6S - Second Simulation of Satellite Signal in the Solar Spectrum.</help>
+              <keywords>imagery,atmospheric correction,radiometric conversion,radiance,reflectance,satellite</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Topographic correction</label>
+              <command>i.topo.corr</command>
+              <help>Computes topographic correction of reflectance.</help>
+              <keywords>imagery,terrain,topographic correction</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Orthophoto tools</label>
+          <items>
+            <menuitem>
+              <label>Manage GCPs for 3D correction</label>
+              <command>g.gui.image2target</command>
+              <help>Georectifies a map and allows managing GCP for 3D correction.</help>
+              <keywords>general,gui,imagery,GCP,georectification,orthophoto</keywords>
+              <handler>RunMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Corrects scanning distortions</label>
+              <command>g.gui.photo2image</command>
+              <help>Corrects scanning distortions of a scanned aerial photo.</help>
+              <keywords>general,gui,imagery,georectification,orthophoto</keywords>
+              <handler>RunMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Satellite images products</label>
+          <items>
+            <menuitem>
+              <label>Vegetation indices</label>
+              <command>i.vi</command>
+              <help>Calculates different types of vegetation indices. Uses red and nir bands mostly, and some indices require additional bands.</help>
+              <keywords>imagery,vegetation index,biophysical parameters,NDVI</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Tasseled cap vegetation index</label>
+              <command>i.tasscap</command>
+              <help>Performs Tasseled Cap (Kauth Thomas) transformation.</help>
+              <keywords>imagery,transformation,Landsat,MODIS,Worldview,Sentinel,Tasseled Cap transformation</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Albedo</label>
+              <command>i.albedo</command>
+              <help>Computes broad band albedo from surface reflectance.</help>
+              <keywords>imagery,albedo,reflectance,satellite,Landsat,ASTER,AVHRR,MODIS</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Emissivity</label>
+              <command>i.emissivity</command>
+              <help>Computes emissivity from NDVI, generic method for sparse land.</help>
+              <keywords>imagery,emissivity,land flux,energy balance</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Biomass growth</label>
+              <command>i.biomass</command>
+              <help>Computes biomass growth, precursor of crop yield calculation.</help>
+              <keywords>imagery,biomass,FPAR,yield</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Evapotranspiration calculation</label>
+          <items>
+            <menuitem>
+              <label>Instantaneaous Net Radiation</label>
+              <command>i.eb.netrad</command>
+              <help>Net radiation approximation (Bastiaanssen, 1995).</help>
+              <keywords>imagery,energy balance,net radiation,SEBAL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Soil heat flux</label>
+              <command>i.eb.soilheatflux</command>
+              <help>Soil heat flux approximation (Bastiaanssen, 1995).</help>
+              <keywords>imagery,energy balance,soil heat flux,SEBAL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Sensible heat flux</label>
+              <command>i.eb.hsebal01</command>
+              <help>Computes sensible heat flux iteration SEBAL 01.</help>
+              <keywords>imagery,energy balance,soil moisture,evaporative fraction,SEBAL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Evaporative fraction</label>
+              <command>i.eb.evapfr</command>
+              <help>Computes evaporative fraction and root zone soil moisture.</help>
+              <keywords>imagery,energy balance,soil moisture,evaporative fraction,SEBAL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Actual Evapotranspiration</label>
+              <command>i.eb.eta</command>
+              <help>Actual evapotranspiration for diurnal period (Bastiaanssen, 1995).</help>
+              <keywords>imagery,energy balance,actual evapotranspiration,SEBAL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Temporal integration of ETa</label>
+              <command>i.evapo.time</command>
+              <help>Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).</help>
+              <keywords>imagery,evapotranspiration</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Hargreaves methods Evapotranspiration</label>
+              <command>i.evapo.mh</command>
+              <help>Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.</help>
+              <keywords>imagery,evapotranspiration</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Penman-Monteith Evapotranspiration</label>
+              <command>i.evapo.pm</command>
+              <help>Computes potential evapotranspiration calculation with hourly Penman-Monteith.</help>
+              <keywords>imagery,evapotranspiration</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Priestley-Taylor Evapotranspiration</label>
+              <command>i.evapo.pt</command>
+              <help>Computes evapotranspiration calculation Priestley and Taylor formulation, 1972.</help>
+              <keywords>imagery,evapotranspiration</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Reports and statistics</label>
+          <items>
+            <menuitem>
+              <label>Kappa analysis</label>
+              <command>r.kappa</command>
+              <help>Calculates error matrix and kappa parameter for accuracy assessment of classification result.</help>
+              <keywords>raster,statistics,classification</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>OIF for LandSat TM</label>
+              <command>i.oif</command>
+              <help>Calculates Optimum-Index-Factor table for spectral bands</help>
+              <keywords>imagery,multispectral,statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>3D r&amp;aster</label>
+      <items>
+        <menu>
+          <label>Develop 3D raster map</label>
+          <items>
+            <menuitem>
+              <label>Manage 3D NULL values</label>
+              <command>r3.null</command>
+              <help>Explicitly create the 3D NULL-value bitmap file.</help>
+              <keywords>raster3d,null data,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Manage timestamp</label>
+              <command>r3.timestamp</command>
+              <help>Modifies a timestamp for a 3D raster map. Print/add/remove a timestamp for a 3D raster map.</help>
+              <keywords>raster3d,metadata,timestamp,time,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Map type conversions</label>
+          <items>
+            <menuitem>
+              <label>3D rasters to raster series</label>
+              <command>r3.to.rast</command>
+              <help>Converts 3D raster maps to 2D raster maps</help>
+              <keywords>raster3d,conversion,raster,voxel</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menuitem>
+          <label>3D color tables</label>
+          <command>r3.colors</command>
+          <help>Creates/modifies the color table associated with a 3D raster map.</help>
+          <keywords>raster3d,color table</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Export 3D color table</label>
+          <command>r3.colors.out</command>
+          <help>Exports the color table associated with a 3D raster map.</help>
+          <keywords>raster3d,color table,export</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menuitem>
+          <label>3D mask</label>
+          <command>r3.mask</command>
+          <help>Establishes the current working 3D raster mask.</help>
+          <keywords>raster3d,mask,voxel</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>3D raster map calculator</label>
+          <handler>OnMapCalculator</handler>
+          <command>r3.mapcalc</command>
+          <help>3D raster map calculator</help>
+          <keywords>raster,algebra</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Cross section</label>
+          <command>r3.cross.rast</command>
+          <help>Creates cross section 2D raster map from 3D raster map based on 2D elevation map</help>
+          <keywords>raster3d,profile,raster,voxel</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Groundwater modeling</label>
+          <command>r3.gwflow</command>
+          <help>Numerical calculation program for transient, confined groundwater flow in three dimensions.</help>
+          <keywords>raster3d,groundwater flow,voxel,hydrology</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Interpolate 3D raster from points</label>
+          <command>v.vol.rst</command>
+          <help>Interpolates point data to a 3D raster map using regularized spline with tension (RST) algorithm.</help>
+          <keywords>vector,voxel,surface,interpolation,RST,3D,no-data filling</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menu>
+          <label>Reports and statistics</label>
+          <items>
+            <menuitem>
+              <label>Basic 3D raster metadata</label>
+              <command>r3.info</command>
+              <help>Outputs basic information about a user-specified 3D raster map layer.</help>
+              <keywords>raster3d,metadata,voxel,extent</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>3D raster statistics</label>
+              <command>r3.stats</command>
+              <help>Generates volume statistics for 3D raster maps.</help>
+              <keywords>raster3d,statistics,voxel,volume</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Univariate statistics for 3D rasters</label>
+              <command>r3.univar</command>
+              <help>Calculates univariate statistics from the non-null cells of a 3D raster map. Statistics include number of cells counted, minimum and maximum cell values, range, arithmetic mean, population variance, standard deviation, coefficient of variation, and sum.</help>
+              <keywords>raster3d,statistics,univariate statistics</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>&amp;Database</label>
+      <items>
+        <menu>
+          <label>Database information</label>
+          <items>
+            <menuitem>
+              <label>List databases</label>
+              <command>db.databases</command>
+              <help>Lists all databases for a given driver and location.</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>List drivers</label>
+              <command>db.drivers</command>
+              <help>Lists all database drivers.</help>
+              <keywords>database,connection settings</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>List tables</label>
+              <command>db.tables</command>
+              <help>Lists all tables for a given database.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Describe table</label>
+              <command>db.describe</command>
+              <help>Describes a table in detail.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>List columns</label>
+              <command>db.columns</command>
+              <help>List all columns for a given table.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Manage databases</label>
+          <items>
+            <menuitem>
+              <label>Connect</label>
+              <command>db.connect</command>
+              <help>Prints/sets general DB connection for current mapset.</help>
+              <keywords>database,attribute table,connection settings</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Login</label>
+              <command>db.login</command>
+              <help>Sets user/password for DB driver/database.</help>
+              <keywords>database,connection settings</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Create database</label>
+              <command>db.createdb</command>
+              <help>Creates an empty database.</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Drop database</label>
+              <command>db.dropdb</command>
+              <help>Removes an existing database.</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Drop table</label>
+              <command>db.droptable</command>
+              <help>Drops an attribute table.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Copy table</label>
+              <command>db.copy</command>
+              <help>Copy a table. Either 'from_table' (optionally with 'where') can be used or 'select' option, but not 'from_table' and 'select' at the same time.</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Drop column</label>
+              <command>db.dropcolumn</command>
+              <help>Drops a column from selected attribute table.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Test</label>
+              <command>db.test</command>
+              <help>Test database driver, database must exist and set by db.connect.</help>
+              <keywords>database,attribute table</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Query</label>
+          <items>
+            <menuitem>
+              <label>Query any table</label>
+              <command>db.select</command>
+              <help>Selects data from attribute table. Performs SQL query statement(s).</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Query vector attribute data</label>
+              <command>v.db.select</command>
+              <help>Prints vector map attributes.</help>
+              <keywords>vector,attribute table,database,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>SQL statement</label>
+              <command>db.execute</command>
+              <help>Executes any SQL statement. For SELECT statements use 'db.select'.</help>
+              <keywords>database,attribute table,SQL</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Vector database connections</label>
+          <items>
+            <menuitem>
+              <label>New table</label>
+              <command>v.db.addtable</command>
+              <help>Creates and connects a new attribute table to a given layer of an existing vector map.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Remove table</label>
+              <command>v.db.droptable</command>
+              <help>Removes existing attribute table of a vector map.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Join table</label>
+              <command>v.db.join</command>
+              <help>Joins a database table to a vector map table.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Add columns</label>
+              <command>v.db.addcolumn</command>
+              <help>Adds one or more columns to the attribute table connected to a given vector map.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Drop column</label>
+              <command>v.db.dropcolumn</command>
+              <help>Drops a column from the attribute table connected to a given vector map.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Rename column</label>
+              <command>v.db.renamecolumn</command>
+              <help>Renames a column in the attribute table connected to a given vector map.</help>
+              <keywords>vector,attribute table,database,rename</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Change values</label>
+              <command>v.db.update</command>
+              <help>Updates a column in the attribute table connected to a vector map.</help>
+              <keywords>vector,attribute table,database,attribute update,type casting</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Drop row</label>
+              <command>v.db.droprow</command>
+              <help>Removes a vector feature from a vector map through attribute selection.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Reconnect vectors to database</label>
+              <command>v.db.reconnect.all</command>
+              <help>Reconnects attribute tables for all vector maps from the current mapset to a new database.</help>
+              <keywords>vector,attribute table,database</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Set vector map - database connection</label>
+              <command>v.db.connect</command>
+              <help>Prints/sets DB connection for a vector map to attribute table.</help>
+              <keywords>vector,attribute table,database,layer</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>&amp;Temporal</label>
+      <items>
+        <menu>
+          <label>Manage datasets</label>
+          <items>
+            <menuitem>
+              <label>Connect temporal database</label>
+              <command>t.connect</command>
+              <help>Prints/sets general temporal GIS database connection for current mapset.</help>
+              <keywords>temporal,settings,metadata</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Create</label>
+              <command>t.create</command>
+              <help>Creates a space time dataset.</help>
+              <keywords>temporal,map management,create,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Rename</label>
+              <command>t.rename</command>
+              <help>Renames a space time dataset</help>
+              <keywords>temporal,map management,rename,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Remove</label>
+              <command>t.remove</command>
+              <help>Removes space time datasets from temporal database.</help>
+              <keywords>temporal,map management,remove,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Update metadata</label>
+              <command>t.support</command>
+              <help>Modifies the metadata of a space time dataset.</help>
+              <keywords>temporal,metadata,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Merge</label>
+              <command>t.merge</command>
+              <help>Merges several space time datasets into a single space time dataset.</help>
+              <keywords>temporal,time management,merge,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Temporally shift</label>
+              <command>t.shift</command>
+              <help>Shifts temporally the maps of a space time dataset.</help>
+              <keywords>temporal,time management,shift,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Snap maps of dataset</label>
+              <command>t.snap</command>
+              <help>Snaps temporally the maps of a space time dataset.</help>
+              <keywords>temporal,time management,snapping,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>List</label>
+              <command>t.list</command>
+              <help>Lists space time datasets and maps registered in the temporal database.</help>
+              <keywords>temporal,map management,list,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Manage maps in datasets</label>
+          <items>
+            <menuitem>
+              <label>Register maps in datasets</label>
+              <command>t.register</command>
+              <help>Assigns timestamps and registers raster, vector and raster3d maps in a space time dataset.</help>
+              <keywords>temporal,map management,register,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Unregister maps from datasets</label>
+              <command>t.unregister</command>
+              <help>Unregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset.</help>
+              <keywords>temporal,map management,unregister,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>List raster dataset maps</label>
+              <command>t.rast.list</command>
+              <help>Lists registered maps of a space time raster dataset.</help>
+              <keywords>temporal,map management,raster,list,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>List vector dataset maps</label>
+              <command>t.vect.list</command>
+              <help>Lists registered maps of a space time vector dataset.</help>
+              <keywords>temporal,map management,vector,list,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>List 3D raster dataset maps</label>
+              <command>t.rast3d.list</command>
+              <help>Lists registered maps of a space time raster3d dataset.</help>
+              <keywords>temporal,map management,list,raster3d,voxel,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <separator />
+        <menu>
+          <label>Import</label>
+          <items>
+            <menuitem>
+              <label>Import raster dataset</label>
+              <command>t.rast.import</command>
+              <help>Imports space time raster dataset.</help>
+              <keywords>temporal,import,raster,time,create location</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Import vector dataset</label>
+              <command>t.vect.import</command>
+              <help>Imports a space time vector dataset from a GRASS GIS specific archive file.</help>
+              <keywords>temporal,import,vector,time,create location</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Export</label>
+          <items>
+            <menuitem>
+              <label>Export raster dataset</label>
+              <command>t.rast.export</command>
+              <help>Exports space time raster dataset.</help>
+              <keywords>temporal,export,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Export raster dataset as VTK time series</label>
+              <command>t.rast.out.vtk</command>
+              <help>Exports space time raster dataset as VTK time series.</help>
+              <keywords>temporal,export,output,raster,VTK,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Export vector dataset</label>
+              <command>t.vect.export</command>
+              <help>Exports a space time vector dataset as GRASS GIS specific archive file.</help>
+              <keywords>temporal,export,vector,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menuitem>
+          <label>Convert raster dataset to 3D raster</label>
+          <command>t.rast.to.rast3</command>
+          <help>Converts a space time raster dataset into a 3D raster map.</help>
+          <keywords>temporal,conversion,raster,raster3d,voxel,time</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menu>
+          <label>Extraction</label>
+          <items>
+            <menuitem>
+              <label>Extract subset of raster dataset</label>
+              <command>t.rast.extract</command>
+              <help>Extracts a subset of a space time raster datasets.</help>
+              <keywords>temporal,extract,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Extract subset of vector dataset</label>
+              <command>t.vect.extract</command>
+              <help>Extracts a subset of a space time vector dataset.</help>
+              <keywords>temporal,extract,vector,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Extract subset of 3D raster dataset</label>
+              <command>t.rast3d.extract</command>
+              <help>Extracts a subset of a space time 3D raster dataset.</help>
+              <keywords>temporal,extract,raster3d,voxel,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menuitem>
+          <label>Query vector dataset attribute data</label>
+          <command>t.vect.db.select</command>
+          <help>Prints attributes of vector maps registered in a space time vector dataset.</help>
+          <keywords>temporal,attribute table,vector,database,select,time</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menuitem>
+          <label>Raster dataset color table</label>
+          <command>t.rast.colors</command>
+          <help>Creates/modifies the color table associated with each raster map of the space time raster dataset.</help>
+          <keywords>temporal,color table,raster,time</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menuitem>
+          <label>Raster calculations</label>
+          <command>t.rast.mapcalc</command>
+          <help>Performs spatio-temporal mapcalc expressions on temporally sampled maps of space time raster datasets.</help>
+          <keywords>temporal,algebra,raster,time</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>3D raster calculations</label>
+          <command>t.rast3d.mapcalc</command>
+          <help>Performs r3.mapcalc expressions on maps of sampled space time 3D raster datasets.</help>
+          <keywords>temporal,algebra,raster3d,voxel,time</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <separator />
+        <menuitem>
+          <label>Interpolate gaps in raster datasets</label>
+          <command>t.rast.gapfill</command>
+          <help>Replaces gaps in a space time raster dataset with interpolated raster maps.</help>
+          <keywords>temporal,interpolation,raster,time,no-data filling</keywords>
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menu>
+          <label>Aggregation</label>
+          <items>
+            <menuitem>
+              <label>Neighborhood analysis in raster dataset</label>
+              <command>t.rast.neighbors</command>
+              <help>Performs a neighborhood analysis for each map in a space time raster dataset.</help>
+              <keywords>temporal,aggregation,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Aggregation in raster datasets</label>
+              <command>t.rast.series</command>
+              <help>Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset.</help>
+              <keywords>temporal,aggregation,series,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Temporal aggregation</label>
+              <command>t.rast.aggregate</command>
+              <help>Aggregates temporally the maps of a space time raster dataset by a user defined granularity.</help>
+              <keywords>temporal,aggregation,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Temporal aggregation by dataset</label>
+              <command>t.rast.aggregate.ds</command>
+              <help>Aggregates data of an existing space time raster dataset using the time intervals of a second space time dataset.</help>
+              <keywords>temporal,aggregation,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Sampling</label>
+          <items>
+            <menuitem>
+              <label>Sample a space time raster dataset at point coordinates</label>
+              <command>t.rast.what</command>
+              <help>Sample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts</help>
+              <keywords>temporal,sampling,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Query raster dataset by vector points dataset</label>
+              <command>t.vect.what.strds</command>
+              <help>Stores raster map values at spatial and temporal positions of vector points as vector attributes.</help>
+              <keywords>temporal,sampling,vector,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Observe specific locations in raster dataset</label>
+              <command>t.vect.observe.strds</command>
+              <help>Observes specific locations in a space time raster dataset over a period of time using vector points.</help>
+              <keywords>temporal,sampling,vector,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Temporal sampling</label>
+              <command>t.sample</command>
+              <help>Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout.</help>
+              <keywords>temporal,sampling,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>Reports and statistics</label>
+          <items>
+            <menuitem>
+              <label>Space time datasets metadata</label>
+              <command>t.info</command>
+              <help>Lists information about space time datasets and maps.</help>
+              <keywords>temporal,metadata,extent,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Univariate raster dataset statistics</label>
+              <command>t.rast.univar</command>
+              <help>Calculates univariate statistics from the non-null cells for each registered raster map of a space time raster dataset.</help>
+              <keywords>temporal,statistics,raster,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Univariate vector dataset statistics</label>
+              <command>t.vect.univar</command>
+              <help>Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset</help>
+              <keywords>temporal,statistics,vector,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <menuitem>
+              <label>Univariate 3D raster dataset statistics</label>
+              <command>t.rast3d.univar</command>
+              <help>Calculates univariate statistics from the non-null cells for each registered 3D raster map of a space time 3D raster dataset.</help>
+              <keywords>temporal,statistics,raster3d,voxel,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+            <separator />
+            <menuitem>
+              <label>Report temporal topology</label>
+              <command>t.topology</command>
+              <help>Lists temporal topology of a space time dataset.</help>
+              <keywords>temporal,topology,time</keywords>
+              <handler>OnMenuCmd</handler>
+            </menuitem>
+          </items>
+        </menu>
+        <menu>
+          <label>GUI tools</label>
+          <items>
+            <menuitem>
+              <label>Animation tool</label>
+          <handler>OnAnimationTool</handler>
+          <command>g.gui.animation</command>
+          <help>Launch animation tool.</help>
+          <keywords>general,gui,display</keywords>
+        </menuitem>
+            <menuitem>
+              <label>Timeline tool</label>
+          <handler>OnTimelineTool</handler>
+          <command>g.gui.timeline</command>
+          <help>Plot temporal extents.</help>
+          <keywords>general,gui,temporal</keywords>
+        </menuitem>
+            <menuitem>
+              <label>Temporal plot tool</label>
+          <handler>OnTplotTool</handler>
+          <command>g.gui.tplot</command>
+          <help>Plot temporal values.</help>
+          <keywords>general,gui,temporal</keywords>
+        </menuitem>
+          </items>
+        </menu>
+      </items>
+    </menu>
+    <menu>
+      <label>GUI tools</label>
+      <items>
+        <menuitem>
+          <label>Animation tool</label>
+          <handler>OnAnimationTool</handler>
+          <command>g.gui.animation</command>
+          <help>Launch animation tool.</help>
+          <keywords>general,gui,display</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Attribute table manager</label>
+          <command>g.gui.dbmgr</command>
+          <help />
+          <keywords />
+          <handler>OnMenuCmd</handler>
+        </menuitem>
+        <menuitem>
+          <label>Cartographic Composer</label>
+          <handler>OnPsMap</handler>
+          <command>g.gui.psmap</command>
+          <help>Launch Cartographic Composer</help>
+          <keywords>postscript,printing</keywords>
+          <icon>print-compose</icon>
+        </menuitem>
+        <menuitem>
+          <label>Georectify</label>
+          <handler>OnGCPManager</handler>
+          <command>g.gui.gcp</command>
+          <help>Manage Ground Control Points for Georectification</help>
+          <icon>georectify</icon>
+        </menuitem>
+        <menuitem>
+          <label>Graphical modeler</label>
+          <handler>OnGModeler</handler>
+          <command>g.gui.gmodeler</command>
+          <help>Launch Graphical modeler</help>
+          <keywords>general,gui,graphical modeler,workflow</keywords>
+          <icon>modeler-main</icon>
+        </menuitem>
+        <menuitem>
+          <label>Interactive input for supervised classification</label>
+          <handler>OnIClass</handler>
+          <command>g.gui.iclass</command>
+          <help>Generates spectral signatures by allowing the user to outline training areas.</help>
+          <keywords>general,gui,imagery,classification,signatures</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Map Swipe</label>
+          <handler>OnMapSwipe</handler>
+          <command>g.gui.mapswipe</command>
+          <help>Launch Map Swipe</help>
+          <keywords>general,gui,display</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Temporal plot tool</label>
+          <handler>OnTplotTool</handler>
+          <command>g.gui.tplot</command>
+          <help>Plot temporal values.</help>
+          <keywords>general,gui,temporal</keywords>
+        </menuitem>
+        <menuitem>
+          <label>Timeline tool</label>
+          <handler>OnTimelineTool</handler>
+          <command>g.gui.timeline</command>
+          <help>Plot temporal extents.</help>
+          <keywords>general,gui,temporal</keywords>
+        </menuitem>
+      </items>
+    </menu>
+    <addons />
+  </menubar>
+</menudata>

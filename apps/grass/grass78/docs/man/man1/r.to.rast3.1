@@ -1,0 +1,110 @@
+.TH r.to.rast3 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.to.rast3\fR\fR  \- Converts 2D raster map slices to one 3D raster volume map.
+.SH KEYWORDS
+raster, conversion, voxel
+.SH SYNOPSIS
+\fBr.to.rast3\fR
+.br
+\fBr.to.rast3 \-\-help\fR
+.br
+\fBr.to.rast3\fR [\-\fBm\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...] \fBoutput\fR=\fIname\fR  [\fBtilesize\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with output map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+2D raster maps which represent the slices
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBtilesize\fR=\fIinteger\fR" 4m
+.br
+The maximum tile size in kilo bytes. Default is 32KB.
+.br
+Default: \fI32\fR
+.SH DESCRIPTION
+Converts 2D raster map(s) into one raster3D map. It is important to
+properly set the 3D region settings, especially number or layers and
+depth of layers. If the 2D and 3D region settings are different,
+the 2D resolution will be adjusted to the 3D resolution.
+.br
+.TS
+expand;
+lw60.
+T{
+\fIHow r.to.rast3 works\fR
+T}
+.sp 1
+.TE
+.SH NOTES
+Every 2D raster map is copied as one slice to the raster3D map. Slices
+are counted from bottom to the top, so the bottom slice has to be number 1.
+.br
+.br
+If less number of 2D raster maps are provided than defined depths, the
+last given 2D map is used to fill up the remaining raster3D slices to
+the top.
+.SH EXAMPLES
+.SS EXAMPLE 1
+This example shows how to convert 6 maps into one 3D map with 6 layers.
+.br
+.br
+.nf
+\fC
+# Mapset data in Location slovakia3d
+g.region raster=prec_1,prec_2,prec_3,prec_4,prec_5,prec_6 \-p
+g.region b=0 t=600 tbres=100 res3=100 \-p3
+r.to.rast3 input=prec_1,prec_2,prec_3,prec_4,prec_5,prec_6 output=new_3dmap
+\fR
+.fi
+.SS EXAMPLE 2
+This example shows how to convert 3 maps into one 3D map with 6 layers.
+.br
+.br
+.nf
+\fC
+# Mapset data in Location slovakia3d
+g.region b=0 t=600 tbres=100 res3=100 \-p3
+r.to.rast3 input=prec_1,prec_2,prec_3 output=new_3dmap
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r3.to.rast,
+r.to.rast3elev
+\fR
+.SH AUTHOR
+Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r.to.rast3 source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.transect - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.transect</b></em>  - Outputs raster map layer values lying along user defined transect line(s).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_profile.html">profile</a>, <a href="keywords.html#transect">transect</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.transect</b><br></div>
+<b>r.transect --help</b><br>
+<div id="synopsis"><b>r.transect</b> [-<b>g</b>] <b>map</b>=<em>name</em> <b>line</b>=<em>east,north,azimuth,distance</em>[,<i>east,north,azimuth,distance</i>,...]  [<b>null_value</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Output easting and northing in first two columns of four column output</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Raster map to be queried</dd>
+
+<dt><b>line</b>=<em>east,north,azimuth,distance[,<i>east,north,azimuth,distance</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Transect definition</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>*</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This program outputs, in ASCII, the values in a raster map
+which lie along one or more user-defined transect lines.
+The transects are described by their starting coordinates,
+azimuth, and distance. 
+
+<!-- The transects may be single-cell
+ wide lines, or multiple-cell wide lines.  The output, for
+ each transect, may be the values at each of the cells, or a
+ single aggregate value (e.g., average or median value). -->
+<p>
+The <b>line</b> parameter is a definition of (each) transect line,
+specified by the geographic coordinates of its starting point (<em>easting,
+northing</em>), the angle and direction of its travel (<em>azimuth</em>),
+and its distance (<em>distance</em>).
+
+<p>The <em>azimuth</em> is an angle, in degrees, measured to
+the east of north.  The <em>distance</em> is in map units
+(meters for a metered database, like UTM).
+<p>The <b>null</b> parameter can optionally be set to change the character
+string representing null values.
+
+<h2><a name="notes">NOTES</a></h2>
+
+This program is a front-end to the <em>
+<a href="r.profile.html">r.profile</a></em> program.  It simply converts the
+azimuth and distance to an ending coordinate and then runs <em>
+<a href="r.profile.html">r.profile</a></em>.
+
+There once were <b>width=</b> and <b>result=</b><em>raw|median|average</em>
+ options which are not currently implemented.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="r.profile.html">r.profile</a></em>,
+<em><a href="wxGUI.html">wxGUI profile tool</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.transect">r.transect source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.transect">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,755 @@
+.TH r.in.lidar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.in.lidar\fR\fR  \- Creates a raster map from LAS LiDAR points using univariate statistics.
+.SH KEYWORDS
+raster, import, LIDAR, statistics, conversion, aggregation, binning
+.SH SYNOPSIS
+\fBr.in.lidar\fR
+.br
+\fBr.in.lidar \-\-help\fR
+.br
+\fBr.in.lidar\fR [\-\fBpenosgijdv\fR]  [\fBinput\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\fBfile\fR=\fIname\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR]   [\fBbase_raster\fR=\fIname\fR]   [\fBzrange\fR=\fImin,max\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBintensity_range\fR=\fImin,max\fR]   [\fBintensity_scale\fR=\fIfloat\fR]   [\fBpercent\fR=\fIinteger\fR]   [\fBpth\fR=\fIinteger\fR]   [\fBtrim\fR=\fIfloat\fR]   [\fBresolution\fR=\fIfloat\fR]   [\fBreturn_filter\fR=\fIstring\fR]   [\fBclass_filter\fR=\fIinteger\fR[,\fIinteger\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print LAS file info and exit
+.IP "\fB\-e\fR" 4m
+.br
+Use the extent of the input for the raster extent
+.br
+Set internally computational region extents based on the point cloud
+.IP "\fB\-n\fR" 4m
+.br
+Set computation region to match the new raster map
+.br
+Set computation region to match the 2D extent and resolution of the newly created new raster map
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has same projection as the current location
+.IP "\fB\-s\fR" 4m
+.br
+Scan data file for extent then exit
+.IP "\fB\-g\fR" 4m
+.br
+In scan mode, print using shell script style
+.IP "\fB\-i\fR" 4m
+.br
+Use intensity values rather than Z values
+.br
+Uses intensity values everywhere as if they would be Z coordinates
+.IP "\fB\-j\fR" 4m
+.br
+Use Z values for filtering, but intensity values for statistics
+.IP "\fB\-d\fR" 4m
+.br
+Use base raster resolution instead of computational region
+.br
+For getting values from base raster, use its actual resolution instead of computational region resolution
+.IP "\fB\-v\fR" 4m
+.br
+Use only valid points
+.br
+Points invalid according to APSRS LAS specification will be filtered out
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+LAS input file
+.br
+LiDAR input files in LAS format (*.las or *.laz)
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+File containing names of LAS input files
+.br
+LiDAR input files in LAS format (*.las or *.laz)
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Statistic to use for raster values
+.br
+Options: \fIn, min, max, range, sum, mean, stddev, variance, coeff_var, median, percentile, skewness, trimmean\fR
+.br
+Default: \fImean\fR
+.br
+\fBn\fR: Number of points in cell
+.br
+\fBmin\fR: Minimum value of point values in cell
+.br
+\fBmax\fR: Maximum value of point values in cell
+.br
+\fBrange\fR: Range of point values in cell
+.br
+\fBsum\fR: Sum of point values in cell
+.br
+\fBmean\fR: Mean (average) value of point values in cell
+.br
+\fBstddev\fR: Standard deviation of point values in cell
+.br
+\fBvariance\fR: Variance of point values in cell
+.br
+\fBcoeff_var\fR: Coefficient of variance of point values in cell
+.br
+\fBmedian\fR: Median value of point values in cell
+.br
+\fBpercentile\fR: pth (nth) percentile of point values in cell
+.br
+\fBskewness\fR: Skewness of point values in cell
+.br
+\fBtrimmean\fR: Trimmed mean of point values in cell
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Type of raster map to be created
+.br
+Storage type for resultant raster map
+.br
+Options: \fICELL, FCELL, DCELL\fR
+.br
+Default: \fIFCELL\fR
+.br
+\fBCELL\fR: Integer
+.br
+\fBFCELL\fR: Single precision floating point
+.br
+\fBDCELL\fR: Double precision floating point
+.IP "\fBbase_raster\fR=\fIname\fR" 4m
+.br
+Subtract raster values from the Z coordinates
+.br
+The scale for Z is applied beforehand, the range filter for Z afterwards
+.IP "\fBzrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for Z data (min,max)
+.br
+Applied after base_raster transformation step
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to Z data
+.br
+Default: \fI1.0\fR
+.IP "\fBintensity_range\fR=\fImin,max\fR" 4m
+.br
+Filter range for intensity values (min,max)
+.IP "\fBintensity_scale\fR=\fIfloat\fR" 4m
+.br
+Scale to apply to intensity values
+.br
+Default: \fI1.0\fR
+.IP "\fBpercent\fR=\fIinteger\fR" 4m
+.br
+Percent of map to keep in memory
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI100\fR
+.IP "\fBpth\fR=\fIinteger\fR" 4m
+.br
+pth percentile of the values
+.br
+Options: \fI1\-100\fR
+.IP "\fBtrim\fR=\fIfloat\fR" 4m
+.br
+Discard given percentage of the smallest and largest values
+.br
+Discard <trim> percent of the smallest and <trim> percent of the largest observations
+.br
+Options: \fI0\-50\fR
+.IP "\fBresolution\fR=\fIfloat\fR" 4m
+.br
+Output raster resolution
+.IP "\fBreturn_filter\fR=\fIstring\fR" 4m
+.br
+Only import points of selected return type
+.br
+If not specified, all points are imported
+.br
+Options: \fIfirst, last, mid\fR
+.IP "\fBclass_filter\fR=\fIinteger[,\fIinteger\fR,...]\fR" 4m
+.br
+Only import points of selected class(es)
+.br
+Input is comma separated integers. If not specified, all points are imported.
+.SH DESCRIPTION
+The \fIr.in.lidar\fR module loads LAS LiDAR point clouds into a new
+raster map using binning. The user may choose from a variety of
+statistical methods which will be used for binning when creating
+the new raster.
+.PP
+Since a new raster map is created during the binning, the binning of
+points depends on the current computational region settings
+(extent and resolution) by default (see more about binning below).
+When using the \fB\-e\fR flag, the binning will be done in the extent
+of the point cloud, so the resulting raster will have extent based on
+the input point cloud.
+When the \fIresolution=value\fR parameter is used,
+the binning is done using the provided resolution and the resulting
+raster will have that resolution (see more below for more information
+about extent and resolution management).
+.PP
+\fIr.in.lidar\fR is designed for processing massive point cloud
+datasets, for example raw LiDAR or sidescan sonar swath data. It has
+been tested with large datasets (see below for memory management
+notes).
+.SS Binning
+The main difference between \fIr.in.lidar\fR and
+\fIv.in.lidar\fR is that
+\fIr.in.lidar\fR creates a raster instead of just importing the
+points into GRASS GIS. However, \fIr.in.lidar\fR does not merely
+rasterizes the points from the point cloud. \fIr.in.lidar\fR
+uses binning to derive values for individual raster cells,
+so the value of a cell is typically an aggregation of values
+of individual points falling into one cell.
+In general binning is the conversion of points into a regular grid.
+The binning of points with X and Y coordinates starts with the overlay
+of a grid of bins over the points.
+.PP
+In the basic case, binning is a method which counts the number of
+points which fall into one raster cell, i.e. bin. The number of points
+per cell (bin) indicates the density of points in the point cloud.
+The cell (bin) is always square or rectangular in case of
+\fIr.in.lidar\fR because the result is GRASS GIS 2D raster.
+The result of binning where the number of point per cell is counted
+is sometimes called 2D (two dimensional) histogram because
+a histogram is used in univariate statistics (in one dimension)
+to count the number samples falling into a given bin.
+.PP
+\fI
+Figure: The binning on left was used to count number of points per
+(sometimes also called 2D histogram). The numbers in cells are
+examples of counts, the rest is represented by the color.
+The binning on right was used with mean to create a surface
+based on the values associated with the points. The numbers
+show examples of cell values. Note also the cells without any points
+which were assigned the NULL value.
+\fR
+The basic concept of binning is extended when the points have another
+value associated with them. For LiDAR data this value can be the Z
+coordinate or intensity. The value for a given cell (bin) is computed
+using univariate statistics from the values of all points in the cell.
+For example, computing the mean value of Z coordinates can yield
+a raster representing the digital elevation model. Another example is
+the range of Z coordinates which can be used as a rough estimate of
+vegetation height.
+.SS Statistics
+Available statistics for populating the output raster map are:
+.IP "n" 4m
+.br
+This computes the number (count) of points per cell. The result
+is a indicator of spatially variable density of points in the given
+area.
+.IP "min" 4m
+.br
+This finds the minimum of point values in each cell.
+It can be useful when finding topography in a forested or urban
+environment and there is a lot of points per one cells (terrain is
+oversampled considering the desired resolution).
+It can also create surfaces independent on the noise from premature
+hits as it will always select the lowest point.
+.IP "max" 4m
+.br
+This finds the maximum of point values in each cell.
+In connection with \fBbase_raster\fR it can yield maximum vegetation
+of feature height per cell.
+For this purpose, it is usually much more appropriate than \fImean\fR
+which would yield heights mostly influenced by the vertical
+distribution of points.
+.IP "range" 4m
+.br
+This computes the range of point values in each cell.
+The range of Z coordinates per cell can be used as a rough estimate of
+vegetation height when the cells are small enough, slopes low
+and the area is mostly vegetated.
+However, for more profound analysis, the base raster together with
+different statistics is recommended.
+.IP "sum" 4m
+.br
+This computes the sum of point values per cell.
+This is useful especially when intensity is used as a value
+(flags \fB\-i\fR and \fB\-j\fR).
+.IP "mean" 4m
+.br
+This is a mean (average) value of point values in cell.
+When used with Z coordinates (the default) and points from the ground
+class, the resulting raster is a digital elevation model.
+When intensity is used as a point value, the resulting raster contains
+mean intensity per cell.
+Note that \fImean\fR gives heights influenced by the vertical
+distribution of points
+.IP "stddev" 4m
+.br
+This computes the standard deviation of point values for each
+cell.
+.IP "variance" 4m
+.br
+This computes the variance of point values for each cell.
+Variance and derivatives use the biased estimator (n)
+[note that this might be subject to change].
+.IP "coeff_var" 4m
+.br
+This computes the coefficient of variance of point values for each
+cell. Coefficient of variance is given in percentage and defined as
+(stddev/mean)*100.
+.IP "median" 4m
+.br
+This computes the median of point values for each cell
+.IP "percentile" 4m
+.br
+p\u\fIth\fR\d (nth) percentile of points in cell
+.IP "skewness" 4m
+.br
+This is a skewness of point values in cell
+.IP "trimmean" 4m
+.br
+This is a trimmed mean of point values in cell.
+Trimmed mean also know as truncated mean is a mean
+computed after discarding values at the low end and at the high end.
+How many values to discard is given by the \fBtrim\fR option
+in percent. In statistics the usual percentage of trimmed values ranges
+from 5 to 25 percent.
+Note that different statistics have different memory requirements
+(see below for details).
+.SS Filtering
+Points falling outside the current computational region will be skipped.
+This includes points falling \fIexactly\fR on the southern region
+bound. To capture those adjust the region with:
+.br
+.nf
+\fC
+g.region s=s\-0.000001
+\fR
+.fi
+See \fIg.region\fR for details about
+computation region handling in GRASS GIS.
+.PP
+The \fBzrange\fR parameter may be used for filtering the input data by
+vertical extent. Example uses include
+filtering out extreme outliers and outliers on relatively flat terrain.
+This parameter can be also used for cutting the point cloud into
+vertical sections preparing it for further processing
+by separate sections, together as if it would be an imagery group
+(see \fIi.group\fR), or combined into
+a 3D raster using \fIr.to.rast3\fR.
+In for these last examples, it might actually be more advantageous
+to use \fIr3.in.lidar\fR module.
+The \fBzrange\fR parameter is especially powerful when used
+together with the \fBbase_raster\fR parameter. The \fBzrange\fR
+is applied to Z values after the \fBbase_raster\fR reduction.
+.PP
+\fI
+Figure: This is the principle of zrange filter. Points with the
+Z coordinate value below the lower value in the range (here 180)
+are filtered out (blue points) and same applies for points above
+higher value in the range (here 250). All other points are preserved
+(green points).
+\fR
+.PP
+A LiDAR pulse can have multiple returns. The first return values can be
+used to obtain a digital surface model (DSM) where e.g. canopy cover is
+represented. The last return values can be used to obtain a digital
+terrain model (DTM) where e.g. the forest floor instead of canopy
+cover is represented. The \fBreturn_filter\fR option allows selecting
+one of first, mid, or last returns. Return number and number of returns
+in the pulse associated with each point are compared to determine
+if the point is first, mid, or last return.
+.PP
+LiDAR points often come as already classified into standardized classes.
+For example, class number 2 represents ground. For other classes see
+LAS format specification in references. The \fBclass_filter\fR option
+allows selecting one or more classes using numbers (integers) separated
+by comma.
+.PP
+In varied terrain the user may find that \fImin\fR maps make for a good
+noise filter as most LIDAR noise is from premature hits. The \fImin\fR map
+may also be useful to find the underlying topography in a forested or urban
+environment if the cells are oversampled.
+.PP
+The user can use a combination of \fIr.in.lidar\fR \fBoutput\fR maps
+to create custom raster\-based filters, for examplee, use
+\fIr.mapcalc\fR to create
+a mean\-(2*stddev) map. (In this example the user may want to
+include a lower bound filter in \fIr.mapcalc\fR to remove highly
+variable points (small \fIn\fR) or run \fIr.neighbors\fR to
+smooth the stddev map before further use.)
+.PP
+Note that proper filtering of the input points in not only critical for
+the analysis itself but it can also speed up the processing.
+.SS Reduction to a base raster
+For analysis of features on the terrain surface, especially vegetation
+it is advantageous to remove the influence of the terrain on heights
+because the height above the terrain is important (e.g. height of
+a tree) rather than height of the top of the tree above the see level.
+In this case, the base raster would be digital elevation model
+which can be one derived from the point cloud, or obtained in
+some other way. LiDAR data often come with precomputed DEMs
+(quality should be checked in this case) and there is often a DEM
+available for a given area (fit with the point cloud, especially
+vertical, and resolution should be checked).
+.PP
+\fI
+Figure: This is a profile of base raster (in orange) representing
+digital elevation model and selected points, e.g. first return,
+from point cloud (green dots). By default the points would create
+a digital surface model (thin brown line) but after reducing the
+Z coordinates using the base raster, the created surface is a
+derived from the height of points relative to the base raster.
+\fR
+The usage of base raster is not limited to digital elevation model.
+The base raster can be any surface which has some relation to the
+point values, for example digital surface model representing
+top of the canopy.
+.SS Setting extent and resolution
+.PP
+Since the creation of raster maps depends on the computational
+region settings (extent and resolution), as default the current
+region extents and resolution are used for the import. When using
+the \fI\-e\fR flag along with the \fIresolution=value\fR
+parameter, the region used for the new raster will be based
+the point cloud extent and the provided resolution. It is therefore
+recommended to first use the \fI\-s\fR flag to get the extents of the
+LiDAR point cloud to be imported, then adjust the current region extent
+and resolution accordingly, and only then proceed with the actual import.
+Another option is to automatically set the region extents based on the
+LAS dataset itself (\fI\-e\fR flag) along with the desired raster
+resolution. The best option is to know the point cloud extent ahead,
+e.g. from tiling scheme, and use it. See below for details.
+.PP
+Since the \fIr.in.lidar\fR generates a raster map through binning
+from the original LiDAR points, the target computational region
+extent and resolution have to be determined. A typical workflow
+would involve the examination of the LAS data\(cqs associated
+documentation or the scan of the LAS data file with
+\fIr.in.lidar\fR\(cqs \fB\-s\fR (or \fB\-g\fR) flag to find the input
+data\(cqs bounds.
+.PP
+Another option is to automatically set the region extents based on the
+LAS dataset extent (\fB\-e\fR flag) along with the desired raster
+resolution using the \fIresolution\fR parameter.
+.PP
+Using the \fB\-s\fR scan flag, the extent of the input data (and thus
+point density) is printed. To check this is recommended before performing
+the full import. The \fB\-g\fR shell style flag prints the extent suitable
+as command line parameters for \fIg.region\fR.
+.PP
+A simpler option is to automatically set the region extents based on the
+LAS dataset (\fB\-e\fR flag) along with the target raster resolution using
+the \fIresolution\fR parameter. Also here it is recommended to verify
+and optimize the resulting region settings with \fIg.region\fR prior
+to importing the dataset.
+.SH NOTES
+.SS Format and projection support
+The typical file extensions for the LAS format are .las and .laz
+(compressed). The compressed LAS (.laz) format can be imported only if
+libLAS has been compiled with LASzip support. It is also recommended to
+compile libLAS with GDAL which is used to test if the LAS projection
+matches that of the GRASS location.
+.SS LAS file import preparations
+Note that the scanning (\fB\-s\fR or \fB\-g\fR flags) needs to iterate
+over the whole point cloud. This will take a long time for large
+datasets, so if the user knows the approximate extent of the dataset,
+for example because it dataset for one county or tiling scheme is
+available as vector polygons, it is much more advantageous to provide
+the extent information instead of retrieving it from the dataset.
+The same applies to the \fB\-e\fR flag which also needs to perform
+scanning before the binning begins.
+.PP
+Also note that the scanning does not apply any filters, so the
+extent determined by scanning can be theoretically bigger than
+the extent actively used during the binning.
+This behavior ensures that the newly created raster has always
+the same extent regardless the filters used.
+However, for most cases (considering the point cloud and the resolution
+used) there is no difference between the extent without filters applied
+and the extent if the filters would be applied.
+.SS Memory consumption
+.PP
+While the \fBinput\fR file can be arbitrarily large, \fIr.in.lidar\fR
+will use a large amount of system memory (RAM) for large raster regions
+(> 10000x10000 pixels).
+If the module refuses to start complaining that there isn\(cqt enough memory,
+use the \fBpercent\fR parameter to run the module in several passes.
+In addition using a less precise map format (CELL [integer] or
+FCELL [floating point]) will use less memory than a DCELL
+[double precision floating point] \fBoutput\fR map.
+For \fBmethod\fR=\fIn\fR, the CELL format is used
+automatically.
+.PP
+The \fImean\fR and \fIrange\fR methods will use average amount
+of memory (comparing to other methods).
+Methods such as \fIn, min, max\fR, and \fIsum\fR will use
+less memory,
+while \fIstddev, variance\fR, and \fIcoeff_var\fR will use more.
+.PP
+The memory usage for regular statistics mentioned above is based solely
+on region (raster) size.
+However, the aggregate functions \fImedian, percentile, skewness\fR
+and \fItrimmean\fR will use more memory and may not be
+appropriate for use with arbitrarily large input files without
+a small value for the \fBpercent\fR option because unlike
+the other statistics memory use for these also depends on
+the number of data points.
+.PP
+The default map \fBtype\fR=FCELL is intended as compromise between
+preserving data precision and limiting system resource consumption.
+.SS Trim option
+.PP
+Trim option value is used only when calculating trimmed mean values.
+Attempt to use it with other statistical methods will result in an error.
+.SH EXAMPLES
+Simple example of binning of point from a LAS file into a newly created
+raster map in an existing location/mapset (using metric units):
+.br
+.nf
+\fC
+# set the computational region automatically, resol. for binning is 5m
+r.in.lidar \-e \-o input=points.las resolution=5 output=lidar_dem_mean
+g.region raster=lidar_dem_mean \-p
+r.univar lidar_dem_mean
+\fR
+.fi
+.SS Finding suitable extent and resolution
+Using the \fB\-s\fR scan flag, the extent of the input data (and thus
+point density) is printed. To check this is recommended before performing
+the full import. The \fB\-g\fR shell style flag prints the extent suitable
+as command line parameters for \fIg.region\fR.
+.PP
+A simpler option is to automatically set the region extents based on the
+LAS dataset (\fB\-e\fR flag) along with the target raster resolution using
+the \fIresolution\fR parameter. Also here it is recommended to verify
+and optimize the resulting region settings with \fIg.region\fR prior
+to importing the dataset.
+.PP
+For the output raster map, a \fBsuitable resolution\fR can be found by
+dividing the number of input points by the area covered (this requires
+an iterative approach as outlined here):
+.br
+.nf
+\fC
+# print LAS metadata (Number of Points)
+r.in.lidar \-p input=points.las
+#   Number of Point Records: 1287775
+# scan for LAS points cloud extent
+r.in.lidar \-sg input=points.las output=dummy \-o
+# n=2193507.740000 s=2190053.450000 e=6070237.920000 w=6066629.860000 b=\-3.600000 t=906.000000
+# set computation region to this extent
+g.region n=2193507.740000 s=2190053.450000 e=6070237.920000 w=6066629.860000 \-p
+# print resulting extent
+g.region \-p
+#  rows:       3454
+#  cols:       3608
+# points_per_cell = n_points / (rows * cols)
+# Here: 1287775 / (3454 * 3608) = 0.1033359 LiDAR points/raster cell
+# As this is too low, we need to select a lower raster resolution
+g.region res=5 \-ap
+#  rows:       692
+#  cols:       723
+#  Now: 1287775 / (692 * 723) = 2.573923 LiDAR points/raster cell
+# import as mean
+r.in.lidar input=points.las output=lidar_dem_mean method=mean \-o
+# import as max
+r.in.lidar input=points.las output=lidar_dem_max method=max \-o
+# import as p\(cqth percentile of the values
+r.in.lidar input=points.las output=lidar_dem_percentile_95 \(rs
+           method=percentile pth=95 \-o
+\fR
+.fi
+.br
+\fIMean value DEM in perspective view, imported from LAS file\fR
+.PP
+Further hints: how to calculate number of LiDAR points/square meter:
+.br
+.nf
+\fC
+g.region \-e
+  # Metric location:
+  # points_per_sq_m = n_points / (ns_extent * ew_extent)
+  # Lat/Lon location:
+  # points_per_sq_m = n_points / (ns_extent * ew_extent*cos(lat) * (1852*60)^2)
+\fR
+.fi
+.SS Serpent Mound dataset
+This example is analogous to the example used in the GRASS wiki page for
+importing LAS as raster DEM.
+.PP
+The sample LAS data are in the file \(dqSerpent Mound Model LAS Data.las\(dq,
+available at
+appliedimagery.com:
+.br
+.nf
+\fC
+# print LAS file info
+r.in.lidar \-p input=\(dqSerpent Mound Model LAS Data.las\(dq
+# using v.in.lidar to create a new location
+# create location with projection information of the LAS data
+v.in.lidar \-i input=\(dqSerpent Mound Model LAS Data.las\(dq location=Serpent_Mound
+# quit and restart GRASS in the newly created location \(dqSerpent_Mound\(dq
+# scan the extents of the LAS data
+r.in.lidar \-sg input=\(dqSerpent Mound Model LAS Data.las\(dq
+# set the region to the extents of the LAS data, align to resolution
+g.region n=4323641.57 s=4320942.61 w=289020.90 e=290106.02 res=1 \-ap
+# import as raster DEM
+r.in.lidar input=\(dqSerpent Mound Model LAS Data.las\(dq \(rs
+           output=Serpent_Mound_Model_LAS_Data method=mean
+\fR
+.fi
+.PP
+\fIFigure: Elevation for the whole area of Serpent Mound dataset\fR
+.SS Height above ground
+The mean height above ground of the points can be computed for each
+raster cell (the ground elevation is given by the raster map
+elevation):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.in.lidar input=points.las output=mean_height_above_ground base_raster=elevation method=mean
+\fR
+.fi
+In this type of computation, it might be advantageous to change the resolution
+to match the precision of the points rather than deriving it from the base raster.
+.SS Multiple file input
+The file option requres a file that contains a list of file names with the full
+path. For example, a list of files in the directory /home/user/data:
+.br
+.nf
+\fC
+points1.laz
+points2.laz
+points3.laz
+\fR
+.fi
+would be lised in the file as:
+.br
+.nf
+\fC
+/home/user/data/points1.laz
+/home/user/data/points2.laz
+/home/user/data/points3.laz
+\fR
+.fi
+On Linux and OSX, this file can be automatically generated with the command:
+.br
+.nf
+\fC
+ls /home/user/data/*.laz > /home/user/data/filelist.txt
+\fR
+.fi
+On Windows:
+.br
+.nf
+\fC
+dir /b c:\(rsusers\(rsuser\(rsdata\(rs*.laz > c:\(rsusers\(rsuser\(rsdata\(rsfilelist.txt
+\fR
+.fi
+The mean height above ground example above would then be:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.in.lidar file=/home/user/data/filelist.txt output=mean_height_above_ground base_raster=elevation method=mean
+\fR
+.fi
+In Python, the list of files can be created using the \fIglob\fR
+Python module:
+.br
+.nf
+\fC
+import glob
+import gscript
+file_list_name = \(cq/home/user/data/filelist.txt\(cq
+with open(, mode=\(cqw\(cq) as file_list:
+    for path in glob.iglob(\(cq/home/user/data/lidar/*.las\(cq):
+        file_list.write(path + \(dq\(rsn\(dq)
+gscript.run_command(\(cqr.in.lidar\(cq, file=file_list_name,
+                    output=\(cqmean_height_above_ground\(cq,
+                    base_raster=\(cqelevation\(cq method=\(cqmean\(cq)
+\fR
+.fi
+.SH KNOWN ISSUES
+.RS 4n
+.IP \(bu 4n
+The \(dqnan\(dq value (as defined in C language) can leak into
+\fIcoeff_var\fR raster maps. Cause is unknown. Possible
+work\-around is: r.null setnull=nan or
+r.mapcalc \(cqno_nan = if(map == map, map, null())\(cq.
+.IP \(bu 4n
+Only one method can be applied for a single run and multiple map
+output from a single run
+(e.g. method=string[,string,...] output=name[,name,...]
+or n=string mean=string) is no supported.
+.RE
+If you encounter any problems (or solutions!) please contact the GRASS
+Development Team.
+.SH SEE ALSO
+\fI
+g.region,
+r.in.xyz,
+r.mapcalc,
+r.univar,
+v.in.lidar,
+r3.in.lidar,
+v.vect.stats
+.br
+v.lidar.correction,
+v.lidar.edgedetection,
+v.lidar.growing,
+v.outlier,
+v.surf.bspline
+\fR
+.br
+Trimmed mean
+(Truncated mean, Wikipedia article),
+OpenTopography
+(LiDAR point cloud repository)
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+V. Petras, A. Petrasova, J. Jeziorska, H. Mitasova (2016):
+\fIProcessing UAV and lidar point clouds in GRASS GIS\fR.
+XXIII ISPRS Congress 2016 [ISPRS Archives, ResearchGate]
+.IP \(bu 4n
+ASPRS LAS format
+.IP \(bu 4n
+LAS library
+.IP \(bu 4n
+LAS library C API documentation
+.RE
+.SH AUTHORS
+Markus Metz
+.br
+Vaclav Petras,
+NCSU GeoForAll Lab
+(base_raster option, documentation)
+.br
+based on \fIr.in.xyz\fR by Hamish Bowman and Volker Wichmann
+.br
+.SH SOURCE CODE
+.PP
+Available at: r.in.lidar source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

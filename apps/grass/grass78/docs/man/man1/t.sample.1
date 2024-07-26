@@ -1,0 +1,215 @@
+.TH t.sample 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.sample.py\fR\fR  \- Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout.
+.SH KEYWORDS
+temporal, sampling, time
+.SH SYNOPSIS
+\fBt.sample.py\fR
+.br
+\fBt.sample.py \-\-help\fR
+.br
+\fBt.sample.py\fR [\-\fBcs\fR] \fBinputs\fR=\fIname\fR[,\fIname\fR,...] \fBsample\fR=\fIname\fR  [\fBintype\fR=\fIname\fR]   [\fBsamtype\fR=\fIname\fR]   [\fBmethod\fR=\fIname\fR[,\fIname\fR,...]]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Print the column names as first row
+.IP "\fB\-s\fR" 4m
+.br
+Check for spatial topological overlap
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of the input space time datasets
+.IP "\fBsample\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the sample space time dataset
+.IP "\fBintype\fR=\fIname\fR" 4m
+.br
+Type of the input space time dataset
+.br
+Options: \fIstrds, stvds, str3ds\fR
+.br
+Default: \fIstrds\fR
+.IP "\fBsamtype\fR=\fIname\fR" 4m
+.br
+Type of the sample space time dataset
+.br
+Options: \fIstrds, stvds, str3ds\fR
+.br
+Default: \fIstrds\fR
+.IP "\fBmethod\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+The method to be used for sampling the input dataset
+.br
+Options: \fIstart, during, overlap, contain, equal, follows, precedes\fR
+.br
+Default: \fIduring,overlap,contain,equal\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Do not use \(dq,\(dq as this char is reserved to list several map ids in a sample granule
+.br
+Field separator between output columns, default is tabular \(dq | \(dq
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+The purpose of this module is to compute and to show spatio\-temporal
+relations between space time datasets of different type. Several input
+space time datasets are sampled by a \fIsample\fR space time dataset
+using temporal topological relations. The types of the input space time
+datasets and the type of the sample space time dataset can be
+different.
+.PP
+This module is useful to analyze temporal relationships between space
+time datasets using temporal topology. The flag \fI\-s\fR enables a
+spatio\-temporal topology, so that only spatio\-temporal related map
+layers of space time datasets are considered in the analysis.
+.SH NOTES
+The temporal relation \fIstart\fR means that the start time of an
+input map layer is temporally located in an interval of a sample map
+layer.
+.PP
+The textual output at the command line shows the names of the maps,
+start and end time as well as the \fIinterval length\fR in days and
+the temporal \fIdistance from begin\fR in days.
+.PP
+The default \fIseparator\fR is the pipe symbol.
+.PP
+Temporal gaps, if present, in the input and sampling space time
+datasets will be used in the sampling process. Gaps have no map name,
+instead \fINone\fR is printed.
+.SH EXAMPLE
+In the examples below we create a space time raster dataset \fIA\fR
+and a space time vector dataset \fIP\fR that have different temporal
+layouts and number of map layers. The space time vector dataset
+contains a gap, that will be used in the sampling process.
+.PP
+We use \fIt.sample\fR to inspect the topological relations between the
+time stamped map layers in \fIA\fR and \fIP\fR.
+.PP
+.br
+.nf
+\fC
+# Set an appropriate region
+g.region s=0 n=80 w=0 e=120 b=0 t=50 res=10 res3=10 \-p3
+# Generate the raster map layer
+r.mapcalc expression=\(dqa1 = rand(0, 550)\(dq \-s
+r.mapcalc expression=\(dqa2 = rand(0, 450)\(dq \-s
+r.mapcalc expression=\(dqa3 = rand(0, 320)\(dq \-s
+r.mapcalc expression=\(dqa4 = rand(0, 510)\(dq \-s
+r.mapcalc expression=\(dqa5 = rand(0, 300)\(dq \-s
+r.mapcalc expression=\(dqa6 = rand(0, 650)\(dq \-s
+# Generate the vector map layer
+v.random \-z output=pnts1 n=20 zmin=0 zmax=100 column=height
+v.random \-z output=pnts2 n=20 zmin=0 zmax=100 column=height
+n1=\(gag.tempfile pid=1 \-d\(ga
+n2=\(gag.tempfile pid=2 \-d\(ga
+cat > \(dq${n1}\(dq << EOF
+a1
+a2
+a3
+a4
+a5
+a6
+EOF
+cat > \(dq${n2}\(dq << EOF
+pnts1|2001\-01\-01|2001\-03\-01
+pnts2|2001\-05\-01|2001\-07\-01
+EOF
+# Register the maps in new space time datasets
+t.create type=strds temporaltype=absolute output=A \(rs
+    title=\(dqA test with raster input files\(dq descr=\(dqA test with raster input files\(dq
+t.create type=stvds temporaltype=absolute output=P \(rs
+    title=\(dqA test with vector input files\(dq descr=\(dqA test with vector input files\(dq
+t.register type=raster \-i input=A file=\(dq${n1}\(dq start=\(dq2001\-01\-01\(dq increment=\(dq1 months\(dq
+# Raster map layer in A
+t.rast.list A
+name|mapset|start_time|end_time
+a1|PERMANENT|2001\-01\-01 00:00:00|2001\-02\-01 00:00:00
+a2|PERMANENT|2001\-02\-01 00:00:00|2001\-03\-01 00:00:00
+a3|PERMANENT|2001\-03\-01 00:00:00|2001\-04\-01 00:00:00
+a4|PERMANENT|2001\-04\-01 00:00:00|2001\-05\-01 00:00:00
+a5|PERMANENT|2001\-05\-01 00:00:00|2001\-06\-01 00:00:00
+a6|PERMANENT|2001\-06\-01 00:00:00|2001\-07\-01 00:00:00
+t.register type=vector input=P file=\(dq${n2}\(dq
+# Vector map layer in P
+t.vect.list P
+name|layer|mapset|start_time|end_time
+pnts1|None|PERMANENT|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00
+pnts2|None|PERMANENT|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00
+# Start time of maps in A located in maps in P
+t.sample method=start input=A samtype=stvds sample=P \-c
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a1@PERMANENT,a2@PERMANENT|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|a3@PERMANENT,a4@PERMANENT|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a5@PERMANENT,a6@PERMANENT|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+# P contains A
+t.sample method=contain input=A samtype=stvds sample=P \-c
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a1@PERMANENT,a2@PERMANENT|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|a3@PERMANENT,a4@PERMANENT|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a5@PERMANENT,a6@PERMANENT|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+# A during P
+t.sample method=during intype=stvds input=P samtype=strds sample=A \-c
+A@PERMANENT|P@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+a1@PERMANENT|pnts1@PERMANENT|2001\-01\-01 00:00:00|2001\-02\-01 00:00:00|31.0|0.0
+a2@PERMANENT|pnts1@PERMANENT|2001\-02\-01 00:00:00|2001\-03\-01 00:00:00|28.0|31.0
+a3@PERMANENT|None|2001\-03\-01 00:00:00|2001\-04\-01 00:00:00|31.0|59.0
+a4@PERMANENT|None|2001\-04\-01 00:00:00|2001\-05\-01 00:00:00|30.0|90.0
+a5@PERMANENT|pnts2@PERMANENT|2001\-05\-01 00:00:00|2001\-06\-01 00:00:00|31.0|120.0
+a6@PERMANENT|pnts2@PERMANENT|2001\-06\-01 00:00:00|2001\-07\-01 00:00:00|30.0|151.0
+# No Overlapping
+t.sample method=overlap input=A samtype=stvds sample=P \-cs
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|None|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|None|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|None|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+t.sample method=precedes input=A samtype=stvds sample=P \-c
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a3@PERMANENT|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|a5@PERMANENT|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|None|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+t.sample method=follows  input=A samtype=stvds sample=P \-c
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|None|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|a2@PERMANENT|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a4@PERMANENT|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+t.sample method=precedes,follows input=A samtype=stvds sample=P \-c
+P@PERMANENT|A@PERMANENT|start_time|end_time|interval_length|distance_from_begin
+pnts1@PERMANENT|a3@PERMANENT|2001\-01\-01 00:00:00|2001\-03\-01 00:00:00|59.0|0.0
+None|a5@PERMANENT,a2@PERMANENT|2001\-03\-01 00:00:00|2001\-05\-01 00:00:00|61.0|59.0
+pnts2@PERMANENT|a4@PERMANENT|2001\-05\-01 00:00:00|2001\-07\-01 00:00:00|61.0|120.0
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.sample source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

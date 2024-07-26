@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.colortable - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.colortable</b></em>  - Displays the color table associated with a raster map layer.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_raster.html">raster</a>, <a href="keywords.html#color table">color table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.colortable</b><br></div>
+<b>d.colortable --help</b><br>
+<div id="synopsis"><b>d.colortable</b> [-<b>n</b>] <b>map</b>=<em>name</em>  [<b>color</b>=<em>name</em>]   [<b>lines</b>=<em>integer</em>]   [<b>columns</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Do not draw a collar showing the NULL color in FP maps</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map whose color table is to be displayed</dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Color of lines separating the colors of the color table</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>lines</b>=<em>integer</em></dt>
+<dd>Number of lines to appear in the color table</dd>
+<dd>Options: <em>1-1000</em></dd>
+
+<dt><b>columns</b>=<em>integer</em></dt>
+<dd>Number of columns to appear in the color table</dd>
+<dd>Options: <em>1-1000</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.colortable</em> is used to display the color table associated
+with a raster map in the active frame on the graphics
+monitor. The <b>map</b> name should be an available raster map in the
+user's current mapset search path and location.
+
+<p>If the <em>values</em> of both <b>lines</b> and <b>columns</b> are
+not specified by the user, <em>d.colortable</em> divides the active
+frame equally among the number of categories present in the named
+raster map. If one option is specified, the other is automatically set
+to accommodate all categories.  If both are specified, as many
+categories as possible are displayed.
+
+<p>If the user specifies the name of a map on the command line but does not 
+specify the values of other parameters, parameter default values will be used. 
+Alternately, if the user types simply <em>d.colortable</em> on the command line 
+without any program arguments, the program will prompt the user for parameter 
+settings using the standard GRASS parser interface.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The user running the command: 
+
+<div class="code"><pre>
+d.colortable map=soils color=red lines=1 columns=3
+</pre></div>
+
+would see the active graphics frame divided into three columns
+extending the full frame height. The lines dividing the color table
+associated with the <em>soils</em> map would be displayed in red. The
+user would see, at most, only three of the colors from
+the <em>soils</em> color table displayed in the active frame (because
+the user requested that this frame be divided into three sections).
+
+<h2><a name="notes">NOTES</a></h2>
+
+If the user wishes to display the entire color table associated with 
+a map, the user should either stipulate a number of lines (rows) and 
+columns (cols) sufficient to accommodate the number of categories 
+in the map's color table, or fail to assign values to one or both of 
+<b>lines</b> and/or <b>columns</b>.
+If the user runs <em>d.colortable</em> using the default number of 
+lines and columns (the full graphics frame), all categories from the 
+map's color table will be displayed. However, if the user requests 
+that the color table associated with a map which has 10 data categories 
+be displayed in a graphics frame with only 3 lines (rows) and 2 columns 
+(a total of six cells), 
+only six of the ten map categories will be displayed. 
+
+<p>The user should run <em><a href="d.erase.html">d.erase</a></em>
+between runs of <em>d.colortable</em> to avoid confusion.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.erase.html">d.erase</a>,
+<a href="d.legend.html">d.legend</a>,
+<a href="d.rast.html">d.rast</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+James Westervelt, U.S. Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.colortable">d.colortable source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.colortable">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

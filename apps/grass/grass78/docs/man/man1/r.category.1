@@ -1,0 +1,253 @@
+.TH r.category 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.category\fR\fR  \- Manages category values and labels associated with user\-specified raster map layers.
+.SH KEYWORDS
+raster, category
+.SH SYNOPSIS
+\fBr.category\fR
+.br
+\fBr.category \-\-help\fR
+.br
+\fBr.category\fR \fBmap\fR=\fIname\fR  [\fBcats\fR=\fIrange\fR[,\fIrange\fR,...]]   [\fBvalues\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBseparator\fR=\fIcharacter\fR]   [\fBraster\fR=\fIname\fR]   [\fBrules\fR=\fIname\fR]   [\fBformat\fR=\fIstring\fR]   [\fBcoefficients\fR=\fImult1,offset1,mult2,offset2\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map
+.IP "\fBcats\fR=\fIrange[,\fIrange\fR,...]\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBvalues\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Comma separated value list
+.br
+Example: 1.4,3.8,13
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fItab\fR
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Raster map from which to copy category table
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+File containing category label rules (or \(dq\-\(dq to read from stdin)
+.IP "\fBformat\fR=\fIstring\fR" 4m
+.br
+Default label or format string for dynamic labeling
+.br
+Used when no explicit label exists for the category
+.IP "\fBcoefficients\fR=\fImult1,offset1,mult2,offset2\fR" 4m
+.br
+Dynamic label coefficients
+.br
+Two pairs of category multiplier and offsets, for $1 and $2
+.SH DESCRIPTION
+\fIr.category\fR prints the category values and labels for the raster map
+layer specified by \fBmap=\fR\fIname\fR to standard output. You can also
+use it to set category labels for a raster map.
+.PP
+The user can specify all needed parameters on the command line, and run the
+program non\-interactively. If the user does not specify any categories
+(e.g., using the optional \fBcats=\fR\fIrange\fR[,\fIrange\fR,...]
+argument), then all the category values and labels for the named raster map
+layer that occur in the map are printed.  The entire \fImap\fR is read
+using \fIr.describe\fR, to determine which
+categories occur in the \fImap\fR. If a listing of categories is
+specified, then the labels for those categories only are printed. The
+\fIcats\fR may be specified as single category values, or as ranges of
+values. The user may also (optionally) specify that a field separator other
+than a space or tab be used to separate the category value from its
+corresponding category label in the output, by using the
+\fBseparator=\fR\fIcharacter\fR|\fIspace\fR|\fItab\fR option (see example
+below). If no field separator is specified by the user, a tab is used to
+separate these fields in the output, by default.
+.PP
+The output is sent to standard output in the form of one category per line,
+with the category value first on the line, then an ASCII TAB character (or
+whatever single character or space is specified using the \fBseparator\fR
+parameter), then the label for the category.
+.SH NOTES
+Any ASCII TAB characters which may be in the label are replaced by spaces.
+.PP
+The output from \fIr.category\fR can be redirected into a file, or piped into
+another program.
+.SS Input from a file
+The \fBrules\fR option allows the user to assign category labels from values
+found in a file (without header). The label can refer to a single category, range of
+categories, floating point value, or a range of floating point values.
+The format is given as follows (when separator is set to colon; no white space
+must be used after the separator):
+.br
+.nf
+\fC
+cat:Label
+val1:val2:Label
+\fR
+.fi
+If the filename is given as \(dq\-\(dq, the category labels are read from stdin
+.SS Default and dynamic category labels
+Default and dynamic category labels can be created for categories that
+are not explicitly labeled.
+The coefficient line can be followed by explicit category labels
+which override the format label generation.
+.br
+.nf
+\fC
+   0:no data
+   2:	.
+   5:	.		      ## explicit category labels
+   7:	.
+\fR
+.fi
+explicit labels can be also of the form:
+.br
+.nf
+\fC
+   5.5:5:9 label description
+   or
+   15:30  label description
+\fR
+.fi
+.PP
+In the format line
+.RS 4n
+.IP \(bu 4n
+$1 refers to the value num*5.0+1000 (ie, using the first 2 coefficients)
+.IP \(bu 4n
+$2 refers to the value num*5.0+1005 (ie, using the last 2 coefficients)
+.RE
+$1.2 will print $1 with 2 decimal places.
+.PP
+Also, the form $?xxx$yyy$ translates into yyy if the category is 1, xxx
+otherwise. The $yyy$ is optional. Thus
+.PP
+$1 meter$?s
+.PP
+will become:
+.br
+1 meter (for category 1)
+.br
+2 meters (for category 2), etc.
+.PP
+format=\(cqElevation: $1.2 to $2.2 feet\(cq   ## Format Statement
+.br
+coefficients=\(dq5.0,1000,5.0,1005\(dq	## Coefficients
+.PP
+The format and coefficients above would be used to generate the
+following statement in creation of the format appropriate category
+string for category \(dqnum\(dq:
+.PP
+sprintf(buff,\(dqElevation: %.2f to %.2f feet\(dq, num*5.0+1000, num*5.0*1005)
+.PP
+Note: while both the format and coefficient lines must be present
+a blank line for the format string will effectively suppress
+automatic label generation.
+.PP
+To use a \(dq$\(dq in the label without triggering the plural test,
+put \(dq$$\(dq in the format string.
+.PP
+Use \(cqsingle quotes\(cq when using a \(dq$\(dq on the command line to
+avoid unwanted shell substitution.
+.SH EXAMPLES
+North Carolina sample dataset:
+.SS Printing categories
+.br
+.nf
+\fC
+r.category map=landclass96
+1	developed
+2	agriculture
+3	herbaceous
+4	shrubland
+5	forest
+6	water
+7	sediment
+\fR
+.fi
+prints the values and labels associated with all of the categories in the
+\fIlandclass96\fR raster map layer.
+.PP
+.br
+.nf
+\fC
+r.category map=landclass96 cats=2,5\-7
+2	agriculture
+5	forest
+6	water
+7	sediment
+\fR
+.fi
+prints only the category values and labels for \fIlandclass96\fR map layer
+categories 2 and 5 through 7.
+.PP
+.br
+.nf
+\fC
+r.category map=landclass96 cats=3,4 separator=comma
+3,herbaceous
+4,shrubland
+\fR
+.fi
+prints the values and labels for \fIlandclass96\fR map layer categories
+3 and 4, but uses \(dq,\(dq (instead of a tab)
+as the character separating the category values from the category
+values in the output.
+.SS Adding categories
+Example for defining new category labels, using a colon as separator:
+.br
+.nf
+\fC
+r.category diseasemap separator=\(dq:\(dq rules=\- << EOF
+1:potential absence
+2:potential presence
+EOF
+\fR
+.fi
+This sets the categoy values 1 and 2 to respective text labels.
+Alternatively, the rules can be stored in an ASCII text file and loaded
+via the \fIrules\fR parameter.
+.SH SEE ALSO
+UNIX Manual entries for \fIawk\fR and \fIsort\fR
+.PP
+\fI
+d.what.rast,
+r.coin,
+r.describe,
+r.support
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+Hamish Bowman, University of Otago, New Zealand (label creation options)
+.SH SOURCE CODE
+.PP
+Available at: r.category source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

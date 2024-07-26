@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.pca - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.pca</b></em>  - Principal components analysis (PCA) for image processing.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_transformation.html">transformation</a>, <a href="keywords.html#PCA">PCA</a>, <a href="keywords.html#principal components analysis">principal components analysis</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.pca</b><br></div>
+<b>i.pca --help</b><br>
+<div id="synopsis"><b>i.pca</b> [-<b>nf</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>basename</em>  [<b>rescale</b>=<em>min,max</em>]   [<b>percent</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Normalize (center and scale) input maps</dd>
+<dd>Default: center only</dd>
+
+<dt><b>-f</b></dt>
+<dd>Output will be filtered input bands</dd>
+<dd>Apply inverse PCA after PCA</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of two or more input raster maps or imagery group</dd>
+
+<dt><b>output</b>=<em>basename</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output basename raster map(s)</dd>
+<dd>A numerical suffix will be added for each component map</dd>
+
+<dt><b>rescale</b>=<em>min,max</em></dt>
+<dd>Rescaling range for output maps</dd>
+<dd>For no rescaling use 0,0</dd>
+<dd>Default: <em>0,255</em></dd>
+
+<dt><b>percent</b>=<em>integer</em></dt>
+<dd>Cumulative percent importance for filtering</dd>
+<dd>Options: <em>50-99</em></dd>
+<dd>Default: <em>99</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.pca</em> is an image processing program based on the
+algorithm provided by Vali (1990), that processes n
+(n&nbsp;&gt;=&nbsp;2) input raster map layers and produces n output
+raster map layers containing the principal components of
+the input data in decreasing order of variance
+("contrast").  The output raster map layers are assigned
+names with .1, .2, ... .n suffixes. The numbers used as suffix 
+correspond to percent importance with .1 being the scores of the 
+principal component with the highest importance.
+
+<p>
+The current geographic region definition and MASK settings are 
+respected when reading the input raster map layers. When the rescale
+option is used, the output files are rescaled to fit the min,max range.
+
+<p>
+The order of the input bands does not matter for the output maps 
+(PC scores), but does matter for the vectors (loadings), since each 
+loading refers to a specific input band.
+
+<p>
+If the output is not rescaled (<em>rescale=0,0</em>, the output raster 
+maps will be of type DCELL, otherwise the output raster maps will be of 
+type CELL.
+
+<p>By default, the values of the input raster maps are centered for each 
+map separately with <em>x - mean</em>. With <em>-n</em>, the input raster 
+maps are normalized for each map separately with <em>(x - mean) / stddev</em>. 
+Normalizing is highly recommended when the input raster maps have different
+units, e.g. represent different environmental parameters. 
+
+<p>The <em>-f</em> flag, together with the <em>percent</em> option, can 
+be used to remove noise from input bands. Input bands will be 
+recalculated from a subset of the principal components (inverse PCA). 
+The subset is selected by using only the most important (highest 
+eigenvalue) principal components which explain together <em>percent</em> 
+percent variance observed in the input bands.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Richards (1986) gives a good example of the application of principal
+components analysis (PCA) to a time series of LANDSAT images of a burned
+region in Australia.
+<p>
+Eigenvalue and eigenvector information is stored in the output maps'
+history files. View with <em>r.info</em>.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+PCA calculation using Landsat7 imagery in the North Carolina sample dataset:
+
+<div class="code"><pre>
+g.region raster=lsat7_2002_10 -p
+i.pca in=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \
+    out=lsat7_2002_pca
+
+r.info -h lsat7_2002_pca.1
+   Eigen values, (vectors), and [percent importance]:
+   PC1   4334.35 ( 0.2824, 0.3342, 0.5092,-0.0087, 0.5264, 0.5217) [83.04%]
+   PC2    588.31 ( 0.2541, 0.1885, 0.2923,-0.7428,-0.5110,-0.0403) [11.27%]
+   PC3    239.22 ( 0.3801, 0.3819, 0.2681, 0.6238,-0.4000,-0.2980) [ 4.58%]
+   PC4     32.85 ( 0.1752,-0.0191,-0.4053, 0.1593,-0.4435, 0.7632) [ 0.63%]
+   PC5     20.73 (-0.6170,-0.2514, 0.6059, 0.1734,-0.3235, 0.2330) [ 0.40%]
+   PC6      4.08 (-0.5475, 0.8021,-0.2282,-0.0607,-0.0208, 0.0252) [ 0.08%]
+
+d.mon wx0
+d.rast lsat7_2002_pca.1
+# ...
+d.rast lsat7_2002_pca.6
+</pre></div>
+
+In this example, the first two PCAs (PCA1 and PCA2) already explain 94.31% of
+the variance in the six input channels.
+
+<p>
+<center>
+<img src="i_pca_result.png" alt="PCA result"><br>
+Resulting PCA maps calculated from the Landsat7 imagery (NC, USA)
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+Richards, John A.,
+<b>Remote Sensing Digital Image Analysis</b>,
+Springer-Verlag, 1986.
+
+<p>
+Vali, Ali R., Personal communication,
+Space Research Center, University of Texas, Austin, 1990.
+
+<p>
+<em>
+<a href="i.cca.html">i.cca</a>,
+<a href="g.gui.iclass.html">g.gui.iclass</a>,
+<a href="i.fft.html">i.fft</a>,
+<a href="i.ifft.html">i.ifft</a>,
+<a href="m.eigensystem.html">m.eigensystem</a>,
+<a href="r.covar.html">r.covar</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>
+<p>
+<em>
+<a href="https://grasswiki.osgeo.org/wiki/Principal_Components_Analysis">Principal Components Analysis article</a>
+(GRASS Wiki)
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+David Satnik, GIS Laboratory
+<p>Major modifications for GRASS 4.1 were made by <br>
+Olga Waupotitsch and
+Michael Shapiro,
+U.S.Army Construction Engineering 
+Research Laboratory
+<p>Rewritten for GRASS 6.x and major modifications by <br>
+Brad Douglas
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.pca">i.pca source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.pca">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

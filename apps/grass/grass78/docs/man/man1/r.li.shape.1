@@ -1,0 +1,129 @@
+.TH r.li.shape 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.li.shape\fR\fR  \- Calculates shape index on a raster map
+.SH KEYWORDS
+raster, landscape structure analysis, patch index
+.SH SYNOPSIS
+\fBr.li.shape\fR
+.br
+\fBr.li.shape \-\-help\fR
+.br
+\fBr.li.shape\fR \fBinput\fR=\fIname\fR \fBconfig\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBconfig\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Configuration file
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIr.li.shape\fR calculates the landscape shape index as:
+.br
+.nf
+\fC
+LSI = 0.25 * E / sqrt(A)
+\fR
+.fi
+with:
+.RS 4n
+.IP \(bu 4n
+\fBE\fR: sum of all edges
+.IP \(bu 4n
+\fBA\fR: sum of all patch areas
+.RE
+.SH NOTES
+Do not use absolute path names for the \fBconfig\fR and \fBoutput\fR
+file/map parameters.
+If the \(dqmoving window\(dq method was selected in \fBg.gui.rlisetup\fR, then the
+output will be a raster map, otherwise an ASCII file will be generated in
+the folder C:\(rsUsers\(rsuserxy\(rsAppData\(rsRoaming\(rsGRASS7\(rsr.li\(rsoutput\(rs
+(MS\-Windows) or $HOME/.grass7/r.li/output/ (GNU/Linux).
+.PP
+If the input raster map contains only NULL values then \fIr.li.shape\fR
+returns NULL.
+.SH EXAMPLES
+To calculate the shape index on map \fImy_map\fR, using
+\fImy_conf\fR configuration file (previously defined with
+\fIg.gui.rlisetup\fR) and saving results in \fImy_out\fR, run:
+.br
+.nf
+\fC
+r.li.shape input=my_map conf=my_conf output=my_out
+\fR
+.fi
+.PP
+Forest map (Spearfish sample dataset) example:
+.br
+.nf
+\fC
+g.region raster=landcover.30m \-p
+r.mapcalc \(dqforests = if(landcover.30m >= 41 && landcover.30m <= 43,1,null())\(dq
+r.li.shape input=forests conf=movwindow7 out=forests_shape_mov7
+r.univar forests_shape_mov7
+\fR
+.fi
+.PP
+Forest map (North Carolina sample dataset) example:
+.br
+.nf
+\fC
+g.region raster=landclass96 \-p
+r.mapcalc \(dqforests = if(landclass96 == 5, 1, null() )\(dq
+r.li.shape input=forests conf=movwindow7 out=forests_shape_mov7
+# verify
+r.univar forests_shape_mov7
+r.to.vect input=forests output=forests type=area
+d.mon wx0
+d.rast forests_shape_mov7
+d.vect forests type=boundary
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.li \- package overview
+.br
+g.gui.rlisetup
+\fR
+.SH REFERENCES
+McGarigal, K., and B. J. Marks. 1995. FRAGSTATS: spatial pattern
+analysis program for quantifying landscape structure. USDA For. Serv.
+Gen. Tech. Rep. PNW\-351. (PDF)
+.SH AUTHORS
+Claudio Porta and Lucio Davide Spano, students of Computer Science
+University of Pisa (Italy).
+.br
+Commission from Faunalia Pontedera (PI) (www.faunalia.it)
+.br
+.SH SOURCE CODE
+.PP
+Available at: r.li.shape source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

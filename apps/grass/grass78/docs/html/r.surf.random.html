@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.surf.random - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.surf.random</b></em>  - Produces a raster surface map of uniform random deviates with defined range.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#random">random</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.surf.random</b><br></div>
+<b>r.surf.random --help</b><br>
+<div id="synopsis"><b>r.surf.random</b> [-<b>i</b>] <b>output</b>=<em>name</em>  [<b>min</b>=<em>integer</em>]   [<b>max</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Create an integer raster map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>min</b>=<em>integer</em></dt>
+<dd>Minimum random value</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>max</b>=<em>integer</em></dt>
+<dd>Maximum random value</dd>
+<dd>Default: <em>100</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<b>r.surf.random</b> produces a raster map layer of uniform random deviates
+whose range can be expressed by the user. It is essentially the same as
+<em>r.surf.gauss</em>, but uses a linear random number generator instead.
+It uses the random number generator drand48() or rand()<!-- cite? -->,
+depending on the user's platform.
+
+<p><center>
+<img src="r_surf_random_hist.png" alt="r.surf.random map histogram"><br>
+<i>Histogram of map generated with r.surf.random</i>
+</center>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<div class="code"><pre>
+g.region -p n=228500 s=215000 w=630000 e=645000 res=10
+r.surf.random out=random min=0 max=100
+
+# check result
+r.univar random
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.random.surface.html">r.random.surface</a>, 
+<a href="r.surf.contour.html">r.surf.contour</a>,
+<a href="r.surf.fractal.html">r.surf.fractal</a>,
+<a href="r.surf.gauss.html">r.surf.gauss</a>,
+<a href="r.surf.idw.html">r.surf.idw</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Jo Wood<br>
+Midlands Regional Research Laboratory (ASSIST)<br>
+University of Leicester<br>
+<i>October 1991</i>
+<br>
+
+<!-- almost certainly no longer valid
+<address>jwo at le.ac.uk</address>
+
+<br><a href="http://www.geog.le.ac.uk/assist/index.html">ASSIST's home</a>
+-->
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.surf.random">r.surf.random source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.surf.random">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

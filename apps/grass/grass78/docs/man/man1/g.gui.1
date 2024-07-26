@@ -1,0 +1,129 @@
+.TH g.gui 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gui\fR\fR  \- Launches a GRASS graphical user interface (GUI) session.
+.br
+Optionally updates default user interface settings.
+.SH KEYWORDS
+general, GUI, user interface
+.SH SYNOPSIS
+\fBg.gui\fR
+.br
+\fBg.gui \-\-help\fR
+.br
+\fBg.gui\fR [\-\fBfdn\fR]  [\fBui\fR=\fIstring\fR]   [\fBworkspace\fR=\fIname.gxw\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Start GUI in the foreground
+.br
+By default the GUI starts in the background and control is immediately returned to the caller. When GUI runs in foregreound, it blocks the command line
+.IP "\fB\-d\fR" 4m
+.br
+Update default user interface settings
+.IP "\fB\-n\fR" 4m
+.br
+Do not launch GUI after updating the default user interface settings
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBui\fR=\fIstring\fR" 4m
+.br
+User interface
+.br
+Options: \fIwxpython, text, gtext\fR
+.br
+Default: \fIwxpython\fR
+.br
+\fBwxpython\fR: wxPython based GUI (wxGUI)
+.br
+\fBtext\fR: command line interface only
+.br
+\fBgtext\fR: command line interface with GUI startup screen
+.IP "\fBworkspace\fR=\fIname.gxw\fR" 4m
+.br
+Name of workspace file to load on start\-up
+.br
+This is valid only for wxGUI (wxpython)
+.SH DESCRIPTION
+The \fIg.gui\fR module allows user to start the Graphical User
+Interface (GUI) from the command line prompt or to change the
+default User Interface (UI) settings.
+.PP
+GRASS GIS 7 comes with both a wxPython\-based GUI
+aka \fIwxGUI\fR (\fBui=wxpython\fR) and
+command line text\-based UI (\fBui=text\fR).
+.SH NOTES
+If the \fB\-d\fR update flag is given or the GRASS_GUI
+environmental variable is unset, then
+the GRASS internal variable GUI is permanently changed and
+the selected \fBui\fR will be used as the default UI from then on.
+.PP
+All GRASS internal variables (see \fIg.gisenv\fR)
+are stored in the user\(cqs home directory in a hidden file called
+$HOME/.grass7/rc on Unix\-based operating systems
+and %APPDATA%\(rsGRASS7\(rsrc on MS Windows. Note that these GRASS
+internal variables are not the shell environment variables and the
+rc file is not a classic UNIX run command file, it just
+contains persistent GRASS variables.
+.SH EXAMPLES
+Set default user interface setting to command line, text\-based UI:
+.br
+.nf
+\fC
+g.gui \-d ui=text
+\fR
+.fi
+.PP
+Set default user interface setting to the graphical user interface
+(GUI) and \fIlaunch\fR the GUI:
+.br
+.nf
+\fC
+g.gui \-d ui=wxpython
+\fR
+.fi
+.PP
+Set default user interface setting to the graphical user interface
+(GUI) but \fIdo not launch\fR the GUI:
+.br
+.nf
+\fC
+g.gui \-dn ui=wxpython
+\fR
+.fi
+.SH SEE ALSO
+\fI
+wxGUI,
+g.gisenv,
+GRASS variables
+\fR
+.PP
+wxGUI wiki page
+.SH AUTHORS
+Martin Landa, FBK\-irst, Trento, Italy
+.br
+Hamish Bowman, Otago University, Dunedin, New Zealand (fine tuning)
+.SH SOURCE CODE
+.PP
+Available at: g.gui source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

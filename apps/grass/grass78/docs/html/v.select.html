@@ -1,0 +1,474 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.select - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.select</b></em>  - Selects features from vector map (A) by features from other vector map (B).
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#spatial query">spatial query</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.select</b><br></div>
+<b>v.select --help</b><br>
+<div id="synopsis"><b>v.select</b> [-<b>tcr</b>] <b>ainput</b>=<em>name</em>  [<b>alayer</b>=<em>string</em>]   [<b>atype</b>=<em>string</em>[,<i>string</i>,...]]  <b>binput</b>=<em>name</em>  [<b>blayer</b>=<em>string</em>]   [<b>btype</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em> <b>operator</b>=<em>string</em>  [<b>relate</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Do not create attribute table</dd>
+
+<dt><b>-c</b></dt>
+<dd>Do not skip features without category</dd>
+
+<dt><b>-r</b></dt>
+<dd>Reverse selection</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>ainput</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Input vector map from which to select features (A)</dd>
+
+<dt><b>alayer</b>=<em>string</em></dt>
+<dd>Layer number (vector map A)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>atype</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Feature type (vector map A)</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area</em></dd>
+<dd>Default: <em>point,line,area</em></dd>
+
+<dt><b>binput</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Query vector map (B)</dd>
+
+<dt><b>blayer</b>=<em>string</em></dt>
+<dd>Layer number (vector map B)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>btype</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Feature type (vector map B)</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid, area</em></dd>
+<dd>Default: <em>point,line,area</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>operator</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Operator defines required relation between features</dd>
+<dd>A feature is written to output if the result of operation 'ainput operator binput' is true. An input feature is considered to be true, if category of given layer is defined.</dd>
+<dd>Options: <em>overlap, equals, disjoint, intersects, touches, crosses, within, contains, overlaps, relate</em></dd>
+<dd>Default: <em>overlap</em></dd>
+<dd><b>overlap</b>: features partially or completely overlap</dd>
+<dd><b>equals</b>: features are spatially equals (using GEOS)</dd>
+<dd><b>disjoint</b>: features do not spatially intersect (using GEOS)</dd>
+<dd><b>intersects</b>: features spatially intersect (using GEOS)</dd>
+<dd><b>touches</b>: features spatially touches (using GEOS)</dd>
+<dd><b>crosses</b>: features spatially crosses (using GEOS)</dd>
+<dd><b>within</b>: feature A is completely inside feature B (using GEOS)</dd>
+<dd><b>contains</b>: feature B is completely inside feature A (using GEOS)</dd>
+<dd><b>overlaps</b>: features spatially overlap (using GEOS)</dd>
+<dd><b>relate</b>: feature A is spatially related to feature B (using GEOS, requires 'relate' option)</dd>
+
+<dt><b>relate</b>=<em>string</em></dt>
+<dd>Intersection Matrix Pattern used for 'relate' operator</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#overlap:-features-partially-or-completely-overlap-(using-grass)" class="toc">OVERLAP: features partially or completely overlap (using GRASS)</a></li>
+        <li class="toc"><a href="#overlaps-features-spatially-overlap-(using-geos)" class="toc">OVERLAPS features spatially overlap (using GEOS)</a></li>
+        <li class="toc"><a href="#disjoint:-features-do-not-spatially-intersect-(using-geos)" class="toc">DISJOINT: features do not spatially intersect (using GEOS)</a></li>
+        <li class="toc"><a href="#equals:-features-are-spatially-equals-(using-geos)" class="toc">EQUALS: features are spatially equals (using GEOS)</a></li>
+        <li class="toc"><a href="#intersects:-features-spatially-intersect-(using-geos)" class="toc">INTERSECTS: features spatially intersect (using GEOS)</a></li>
+        <li class="toc"><a href="#touches:-features-spatially-touches-(using-geos)" class="toc">TOUCHES: features spatially touches (using GEOS)</a></li>
+        <li class="toc"><a href="#crosses:-features-spatially-crosses-(using-geos)" class="toc">CROSSES: features spatially crosses (using GEOS)</a></li>
+        <li class="toc"><a href="#within-feature-a-is-completely-inside-feature-b-(using-geos)" class="toc">WITHIN feature A is completely inside feature B (using GEOS)</a></li>
+        <li class="toc"><a href="#contains-feature-b-is-completely-inside-feature-a-(using-geos)" class="toc">CONTAINS feature B is completely inside feature A (using GEOS)</a></li>
+        <li class="toc"><a href="#relate-feature-a-is-spatially-related-to-feature-b-(using-geos)" class="toc">RELATE feature A is spatially related to feature B (using GEOS)</a></li>
+        <li class="toc"><a href="#extraction-of-points-falling-into-a-polygon" class="toc">Extraction of points falling into a polygon</a></li>
+        <li class="toc"><a href="#extraction-of-lines-overlapping-with-a-polygon" class="toc">Extraction of lines overlapping with a polygon</a></li>
+        <li class="toc"><a href="#extraction-of-areas-overlapping-with-a-line" class="toc">Extraction of areas overlapping with a line</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.select</em> allows the user to select features from a vector 
+map by features from another one.
+
+<p>Supported operators (without GEOS; using GRASS' own algorithm):
+<ul>
+  <li><b>overlap</b> - features partially or completely overlap (GEOS equivalent: intersects)
+</ul>
+
+Supported operators (internally using
+<a href="https://trac.osgeo.org/geos/">GEOS</a> - Geometry Engine, Open Source):
+<ul>
+  <li><b>equals</b> - features are spatially equals</li>
+  <li><b>disjoint</b> - features do not spatially intersect</li>
+  <li><b>intersects</b> - features spatially intersect (equivalent to native 'overlap')</li>
+  <li><b>touches</b> - features spatially touches</li>
+  <li><b>crosses</b> - features spatially crosses</li>
+  <li><b>within</b> - feature A is completely inside feature B</li>
+  <li><b>contains</b> - feature B is completely inside feature A</li>
+  <li><b>overlaps</b> - features spatially overlap</li>
+  <li><b>relate</b> - feature A is spatially related to feature B</li>
+</ul>
+
+<h2><a name="notes">NOTES</a></h2>
+
+Only features with category numbers will be considered. If required
+the <em><a href="v.category.html">v.category</a></em> module can be
+used to add them. Typically boundaries do not need to be given a
+category number, as an area's attributes are inherited from the
+centroid. Typically points, lines, and centroids will always want to
+have a cat number. E.g. take a road which separates two farms. It is
+ambiguous as to which farm an attribute that is attached to the road
+belongs to. The boundary only needs a cat number if it will hold its
+own attributes, such as road name or pavement form. A centroid in each
+paddock holds the information with respect to ownership, area, etc.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Preparation of example data (North Carolina sample dataset):
+
+<div class="code"><pre>
+# Create an grid for overlaying to ZIP code vector map
+v.mkgrid map=boxgrid grid=10,10 position=coor \
+         coordinates=583600,201500 box=5000,5000
+
+# set region to ZIP codes and boxgrid vector maps
+g.region vector=zipcodes_wake,boxgrid -p res=100 -a
+# enlarge region a bit for "white border" around map in monitor
+g.region n=n+1000 s=s-1000 w=w-1000 e=e+1000 -p
+d.mon wx0
+</pre></div>
+
+
+<h3><a name="overlap:-features-partially-or-completely-overlap-(using-grass)">OVERLAP: features partially or completely overlap (using GRASS)</a></h3>
+
+Select grid boxes (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=boxgrid fill_color=85:130:176
+v.select ainput=boxgrid binput=zipcodes_wake output=v_select_OVERLAP operator=overlap
+d.vect map=v_select_OVERLAP
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+</pre></div>
+
+<center>
+<img src="v_select_op_overlap.png" alt="v.select with OVERLAP operator"><br>
+v.select with OVERLAP operator: selected grid boxes shown in yellow (using GRASS method)
+</center>
+
+<h3><a name="overlaps-features-spatially-overlap-(using-geos)">OVERLAPS features spatially overlap (using GEOS)</a></h3>
+
+Select grid boxes (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=boxgrid fill_color=85:130:176
+v.select ainput=boxgrid binput=zipcodes_wake output=v_select_OVERLAPS operator=overlaps
+d.vect map=v_select_OVERLAPS
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+</pre></div>
+<center>
+<img src="v_select_op_overlaps.png" alt="v.select with OVERLAPS operator"><br>
+v.select with OVERLAPS operator: selected grid boxes shown in yellow (using GEOS method)
+</center>
+
+
+<h3><a name="disjoint:-features-do-not-spatially-intersect-(using-geos)">DISJOINT: features do not spatially intersect (using GEOS)</a></h3>
+
+Select grid boxes (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=boxgrid fill_color=85:130:176
+v.select ainput=boxgrid binput=zipcodes_wake output=v_select_DISJOINT operator=disjoint
+d.vect map=v_select_DISJOINT
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+</pre></div>
+
+<center>
+<img src="v_select_op_disjoint.png" alt="v.select with DISJOINT operator"><br>
+v.select with DISJOINT operator: selected grid boxes shown in yellow
+</center>
+
+
+<h3><a name="equals:-features-are-spatially-equals-(using-geos)">EQUALS: features are spatially equals (using GEOS)</a></h3>
+
+Select zipcode polygon (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+v.extract input=zipcodes_wake where=ZIPCODE_ID=35 output=zipcodeID35
+v.select ainput=zipcodes_wake binput=zipcodeID35 output=v_select_EQUALS operator=equals
+d.vect map=v_select_EQUALS
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+</pre></div>
+
+<center>
+<img src="v_select_op_equals.png" alt="v.select with EQUALS operator"><br>
+v.select with EQUALS operator: selected grid boxes shown in yellow
+</center>
+
+
+<h3><a name="intersects:-features-spatially-intersect-(using-geos)">INTERSECTS: features spatially intersect (using GEOS)</a></h3>
+
+Select zipcode polygons (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=boxgrid fill_color=85:130:176
+v.select ainput=zipcodes_wake binput=boxgrid output=v_select_INTERSECTS operator=intersects
+d.vect map=v_select_INTERSECTS
+d.vect map=boxgrid type=boundary color=255:255:50
+</pre></div>
+
+<center>
+<img src="v_select_op_intersects.png" alt="v.select with INTERSECTS operator"><br>
+v.select with INTERSECTS operator: selected grid boxes shown in yellow
+</center>
+
+
+<h3><a name="touches:-features-spatially-touches-(using-geos)">TOUCHES: features spatially touches (using GEOS)</a></h3>
+
+Select polygons (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=zipcodeID35 fill_color=85:130:176
+v.select ainput=zipcodes_wake binput=zipcodeID35 output=v_select_TOUCHES operator=touches
+d.vect map=v_select_TOUCHES
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+</pre></div>
+
+<center>
+<img src="v_select_op_touches.png" alt="v.select with TOUCHES operator"><br>
+v.select with TOUCHES operator: selected polygons shown in yellow (blue: input polygon)
+</center>
+
+
+<h3><a name="crosses:-features-spatially-crosses-(using-geos)">CROSSES: features spatially crosses (using GEOS)</a></h3>
+
+Select zipcode polygons by lines (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=busroute1 color=200:27:27 width=3
+v.select ainput=zipcodes_wake binput=busroute1 output=v_select_CROSSES operator=crosses
+d.vect map=v_select_CROSSES
+d.vect map=zipcodes_wake type=boundary color=255:255:50
+d.vect map=busroute1 color=200:27:27 width=3
+</pre></div>
+
+<center>
+<img src="v_select_op_crosses.png" alt="v.select with CROSSES operator"><br>
+v.select with CROSSES operator: selected polygons shown in yellow (red: input lines)
+</center>
+
+
+<h3><a name="within-feature-a-is-completely-inside-feature-b-(using-geos)">WITHIN feature A is completely inside feature B (using GEOS)</a></h3>
+
+Select zipcode polygons (North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=boundary_county fill_color=85:130:176
+v.select ainput=zipcodes_wake binput=boundary_county output=v_select_WITHIN operator=within
+d.vect map=v_select_WITHIN
+</pre></div>
+
+<center>
+<img src="v_select_op_within.png" alt="v.select with WITHIN operator"><br>
+v.select with WITHIN operator: selected polygons shown in yellow (blue: input polygons)
+</center>
+
+
+<h3><a name="contains-feature-b-is-completely-inside-feature-a-(using-geos)">CONTAINS feature B is completely inside feature A (using GEOS)</a></h3>
+
+Select zipcode polygon (North Carolina sample dataset):
+
+<h4>CONTAINS with polygons</h4>
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=zipcodeID35 fill_color=85:130:176
+v.select ainput=zipcodes_wake binput=zipcodeID35 \
+         output=v_select_CONTAINS_pol operator=contains
+d.vect map=v_select_CONTAINS
+</pre></div>
+
+<center>
+<img src="v_select_op_contains_pol.png" alt="v.select with CONTAINS operator"><br>
+v.select with CONTAINS operator: selected polygon shown in yellow (blue: input polygon, not visible)
+</center>
+
+<h4>CONTAINS with points</h4>
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=hospitals fill_color=195:31:31 icon=basic/cross3 size=10
+v.select ainput=zipcodes_wake binput=hospitals \
+         output=v_select_CONTAINS_pnts operator=contains
+d.vect map=v_select_CONTAINS_pnts
+d.vect map=hospitals fill_color=195:31:31 icon=basic/cross3 size=10
+</pre></div>
+
+<center>
+<img src="v_select_op_contains_pnts.png" alt="v.select with CONTAINS operator"><br>
+v.select with CONTAINS operator: selected polygons shown in yellow (red: input points)
+</center>
+
+
+<h3><a name="relate-feature-a-is-spatially-related-to-feature-b-(using-geos)">RELATE feature A is spatially related to feature B (using GEOS)</a></h3>
+
+This operator additionally requires the <b>relate</b> parameter (in other
+GIS called 'ST_Relate').
+
+This operator allows calculating the
+<a href="https://en.wikipedia.org/wiki/DE-9IM">Dimensionally Extended nine-Intersection Model (DE-9IM)</a>.
+
+In the following one example: Select polygon with 'TOUCHES' operator
+(North Carolina sample dataset):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=zipcodeID35 fill_color=85:130:176
+v.select ainput=zipcodeID35 binput=zipcodes_wake \
+         output=v_select_TOUCHES_relate operator=relate relate='T********'
+d.vect map=v_select_TOUCHES
+</pre></div>
+
+The result of <tt>relate='T********'</tt> is the same as seen
+above in the example 'TOUCHES'.
+
+See the <a href="https://en.wikipedia.org/wiki/DE-9IM">DE-9IM</a> page
+for related operators and their definition.
+
+
+<h3><a name="extraction-of-points-falling-into-a-polygon">Extraction of points falling into a polygon</a></h3>
+
+Extract fire stations (points) falling into urban area (polygon) - North Carolina
+data set (point in polygon test):
+
+<div class="code"><pre>
+v.select ainput=firestations binput=urbanarea output=urban_firestations \
+         operator=overlap
+</pre></div>
+
+<h3><a name="extraction-of-lines-overlapping-with-a-polygon">Extraction of lines overlapping with a polygon</a></h3>
+
+Extract railroad lines from zip code map overlapping with the urban area
+(line in polygon test):
+
+<div class="code"><pre>
+v.select ainput=railroads binput=urbanarea \
+         output=railroads_in_urbanarea operator=overlap
+</pre></div>
+
+<h3><a name="extraction-of-areas-overlapping-with-a-line">Extraction of areas overlapping with a line</a></h3>
+
+Extract those areas from zip code map which overlap with railroads
+(polygon on line test):
+
+<div class="code"><pre>
+# first add a tiny buffer around railroad lines:
+v.buffer input=railroads output=railroads_buf20m \
+  distance=20
+
+v.select ainput=zipcodes_wake binput=railroads_buf20m \
+  output=zipcodes_wake_railroads operator=overlap
+</pre></div>
+
+<!-- 2015: still an issue?
+<h2><a name="todo">TODO</a></h2>
+ 
+Processing areas with GEOS is currently incredibly slow. Significant
+speed-up is desired.
+-->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.category.html">v.category</a>,
+<a href="v.clip.html">v.clip</a>,
+<a href="v.overlay.html">v.overlay</a>,
+<a href="v.extract.html">v.extract</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a><br>
+<a href="https://trac.osgeo.org/geos/">GEOS</a> - Geometry Engine, Open Source
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek<br>
+
+GEOS support by Martin Landa, Czech Technical University in Prague, Czech Republic<br>
+
+ZIP code examples by Carol X. Garzon-Lopez, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.select">v.select source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.select">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

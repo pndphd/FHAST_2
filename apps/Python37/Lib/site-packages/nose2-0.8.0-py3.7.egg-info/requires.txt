@@ -1,0 +1,32 @@
+six>=1.7
+coverage>=4.4.1
+
+[:python_version == "2.7"]
+mock
+
+[:python_version == "3.2"]
+mock
+
+[:python_version == "3.4"]
+
+[:python_version == "3.5"]
+
+[:python_version == "3.6"]
+
+[:python_version == "3.7"]
+
+[:python_version == "pypy2.7"]
+mock
+
+[:python_version == "pypy3.2"]
+mock
+
+[:python_version == "pypy3.5"]
+
+[coverage_plugin]
+coverage>=4.4.1
+
+[doc]
+Sphinx>=1.6.5
+sphinx_rtd_theme
+mock

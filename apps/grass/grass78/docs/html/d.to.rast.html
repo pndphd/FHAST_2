@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.to.rast.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.to.rast.py</b></em>  - Saves the contents of the active display monitor to a raster map.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#raster">raster</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.to.rast.py</b><br></div>
+<b>d.to.rast.py --help</b><br>
+<div id="synopsis"><b>d.to.rast.py</b> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.to.rast</em> saves the content of the currently selected
+monitor into a raster map. The active monitor can be selected
+with <em>d.mon</em>. <em>d.to.rast</em> can be run from GUI
+Console tab, too. This module is not sensitive to computational region settings.
+
+<h2><a name="example">EXAMPLE</a></h2>
+We combine different raster and vector map layers to create a composite layer
+which can be draped over elevation in 3D view.
+First, we add a couple of maps to layer manager:
+
+<div class="code"><pre>
+g.region raster=elevation
+d.rast map=elevation
+d.rast map=lakes
+d.vect map=roadsmajor width=4
+d.vect map=roadsmajor width=2 color=yellow
+
+# create a raster map from the display
+d.to.rast output=composite
+</pre></div>
+
+<p>
+Then uncheck all layers except for elevation and switch to 3D view.
+In Data tab, set color map to the newly created composite map.
+
+<p>
+<center>
+<img src="d_to_rast_3D_example.jpg">
+<p>
+Figure: Raster map created by <em>d.to.rast</em> draped over digital elevation model.
+</center>
+
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+ 
+<em>
+  <a href="d.out.file.html">d.out.file</a>,
+  <a href="d.erase.html">d.erase</a>,
+  <a href="d.rast.html">d.rast</a>,
+  <a href="d.vect.html">d.vect</a>,
+  <a href="d.mon.html">d.mon</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Anna Petrasova, <a href="http://gis.ncsu.edu/osgeorel/">NCSU OSGeoREL</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/d.to.rast">d.to.rast source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/d.to.rast">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

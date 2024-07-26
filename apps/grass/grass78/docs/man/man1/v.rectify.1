@@ -1,0 +1,196 @@
+.TH v.rectify 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.rectify\fR\fR  \- Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.
+.SH KEYWORDS
+vector, rectify, level1, geometry
+.SH SYNOPSIS
+\fBv.rectify\fR
+.br
+\fBv.rectify \-\-help\fR
+.br
+\fBv.rectify\fR [\-\fB3orb\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBgroup\fR=\fIname\fR]   [\fBpoints\fR=\fIname\fR]   [\fBrmsfile\fR=\fIname\fR]   [\fBorder\fR=\fIinteger\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-3\fR" 4m
+.br
+Perform 3D transformation
+.IP "\fB\-o\fR" 4m
+.br
+Perform orthogonal 3D transformation
+.IP "\fB\-r\fR" 4m
+.br
+Print RMS errors
+.br
+Print RMS errors and exit without rectifying the input map
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBgroup\fR=\fIname\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBpoints\fR=\fIname\fR" 4m
+.br
+Name of input file with control points
+.IP "\fBrmsfile\fR=\fIname\fR" 4m
+.br
+Name of output file with RMS errors (if omitted or \(cq\-\(cq output to stdout
+.IP "\fBorder\fR=\fIinteger\fR" 4m
+.br
+Rectification polynomial order (1\-3)
+.br
+Options: \fI1\-3\fR
+.br
+Default: \fI1\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator for RMS report
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIv.rectify\fR uses control points to calculate a 2D or 3D
+transformation matrix based on a first, second, or third order
+polynomial and then converts x,y(, z) coordinates to standard map
+coordinates for each object in the vector map. The result is a vector
+map with a transformed coordinate system (i.e., a different coordinate
+system than before it was rectified).
+.PP
+The \fI\-o\fR flag enforces orthogonal rotation (currently for 3D only)
+where the axes remain orthogonal to each other, e.g. a cube with right
+angles remains a cube with right angles after transformation. This is not
+guaranteed even with affine (1\ust\d order) 3D transformation.
+.PP
+Great care should be taken with the placement of Ground Control Points.
+For 2D transformation, the control points must not lie on a line, instead
+3 of the control points must form a triangle. For 3D transformation, the
+control points must not lie on a plane, instead 4 of the control points
+must form a triangular pyramid. It is recommended to investigate RMS
+errors and deviations of the Ground Control Points prior to transformation.
+.PP
+2D Ground Control Points can be identified in
+\fIg.gui.gcp\fR.
+.PP
+3D Ground Control Points must be provided in a text file with the
+\fBpoints\fR option. The 3D format is equivalent to the format for 2D
+ground control points with an additional third coordinate:
+.br
+.nf
+\fC
+ x y z east north height status
+\fR
+.fi
+where \fIx, y, z\fR are source coordinates, \fIeast, north, height\fR
+are target coordinates and status (0 or 1) indicates whether a given
+point should be used. Numbers must be separated by space and must use a
+point (.) as decimal separator.
+.PP
+If no \fBgroup\fR is given, the rectified vector will be written to
+the current mapset. If a \fBgroup\fR is given and a target has been
+set for this group with \fIi.target\fR,
+the rectified vector will be written to the target location and mapset.
+.SS Coordinate transformation and RMSE
+.PP
+The desired order of transformation (1, 2, or 3) is selected with the
+\fBorder\fR option.
+\fIv.rectify\fR will calculate the RMSE if the \fB\-r\fR flag is
+given and print out statistcs in tabular format. The last row gives a
+summary with the first column holding the number of active points,
+followed by average deviations for each dimension and both forward and
+backward transformation and finally forward and backward overall RMSE.
+.SS 2D linear affine transformation (1st order transformation)
+.br
+x\(cq = a1 + b1 * x + c1 * y
+.br
+y\(cq = a2 + b2 * x + c2 * y
+.SS 3D linear affine transformation (1st order transformation)
+.br
+x\(cq = a1 + b1 * x + c1 * y + d1 * z
+.br
+y\(cq = a2 + b2 * x + c2 * y + d2 * z
+.br
+z\(cq = a3 + b3 * x + c3 * y + d3 * z
+The a,b,c,d coefficients are determined by least squares regression
+based on the control points entered.  This transformation
+applies scaling, translation and rotation. It is NOT a
+general purpose rubber\-sheeting, nor is it ortho\-photo
+rectification using a DEM, not second order polynomial,
+etc. It can be used if (1) you have geometrically correct
+data, and (2) the terrain or camera distortion effect can
+be ignored.
+.SS Polynomial Transformation Matrix (2nd, 3d order transformation)
+\fIv.rectify\fR uses a first, second, or third order transformation
+matrix to calculate the registration coefficients. The minimum number
+of control points required for a 2D transformation of the selected order
+(represented by n) is
+.br
+((n + 1) * (n + 2) / 2)
+or 3, 6, and 10 respectively. For a 3D transformation of first, second,
+or third order, the minimum number of required control points is 4, 10,
+and 20, respectively. It is strongly recommended that more than the
+minimum number of points be identified to allow for an overly\-determined
+transformation calculation which will generate the Root Mean Square (RMS)
+error values for each included point. The polynomial equations are
+determined using a modified Gaussian elimination method.
+.SH SEE ALSO
+The GRASS 4 \fI
+Image
+Processing manual\fR
+.PP
+\fI
+g.gui.gcp,
+i.group,
+i.rectify,
+i.target,
+m.transform,
+r.proj,
+v.proj,
+v.transform,
+\fR
+.br
+\fI
+Manage Ground Control Points
+\fR
+.SH AUTHOR
+Markus Metz
+.PP
+based on i.rectify
+.SH SOURCE CODE
+.PP
+Available at: v.rectify source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

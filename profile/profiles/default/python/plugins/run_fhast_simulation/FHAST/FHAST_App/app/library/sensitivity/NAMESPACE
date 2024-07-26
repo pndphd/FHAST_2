@@ -1,0 +1,297 @@
+useDynLib(sensitivity,.registration=TRUE)
+
+import(numbers)
+import(boot)
+import(foreach)
+import(ggplot2)
+importFrom(Rcpp, evalCpp)
+importFrom("methods", "is")
+
+importFrom("dtwclust", "gak")
+
+importFrom("grDevices", "dev.interactive", "dev.new", "devAskNewPage")
+importFrom("graphics", "abline", "axis", "barplot", "box", "legend",
+           "lines", "par", "plot", "points", "polygon", "segments",
+           "text", "title", "arrows", "matplot", "grid")
+importFrom("stats", "coefficients", "cor", "cor.test", "cov", "dist",
+           "dnorm", "dunif", "fft", "fitted", "formula", "lm",
+           "median", "model.matrix", "nlm", "optimize", "pnorm", "predict",
+           "qnorm", "quantile", "rnorm", "runif", "sd", "update", 
+           "var", "dbeta", "dexp", "dgamma", "dlnorm", "dweibull",
+           "integrate", "smooth.spline", "ecdf", "pgamma", 
+           "pbeta", "pexp", "pweibull", "approxfun", "glm", "glm.control",
+           "setNames", "prcomp", "na.omit","complete.cases")
+importFrom("utils", "combn", "methods", "head") 
+
+#importFrom("ggplot2","ggplot", "position_dodge","aes","geom_point",
+#           "geom_errorbar","scale_shape_manual","coord_cartesian","labs",
+#           "scale_x_discrete","theme_bw","theme","element_text",
+#           "scale_x_continuous", "geom_line")
+
+export(ask,tell,extract)
+
+export(plotFG)
+export(scatterplot)
+export(plotMultOut)
+export(parameterSets)
+export(template.replace)
+
+export(dnorm.trunc,pnorm.trunc,qnorm.trunc,rnorm.trunc)
+export(dgumbel.trunc,pgumbel.trunc,qgumbel.trunc,rgumbel.trunc)
+
+export(sobol.fun, ishigami.fun, morris.fun, atantemp.fun, campbell1D.fun, 
+       linkletter.fun, heterdisc.fun, friedman.fun, matyas.fun)
+
+export(squaredIntEstim, PoincareChaosSqCoef)
+
+export(weightTSA)
+
+export(correlRatio)
+
+export(src)
+S3method(print, src)
+S3method(plot, src)
+S3method(ggplot, src)
+
+export(pcc)
+S3method(print, pcc)
+S3method(plot, pcc)
+S3method(ggplot, pcc)
+
+export(lmg)
+S3method(print, lmg)
+S3method(plot, lmg)
+
+export(pmvd)
+S3method(print, pmvd)
+S3method(plot, pmvd)
+
+export(pme_knn)
+S3method(print, pme_knn)
+S3method(plot, pme_knn)
+S3method(tell, pme_knn)
+S3method(ggplot, pme_knn)
+
+export(morris)
+S3method(tell, morris)
+S3method(print, morris)
+S3method(plot, morris)
+export(plot3d.morris)
+
+export(morrisMultOut)
+S3method(tell, morrisMultOut)
+
+export(sobol)
+S3method(tell, sobol)
+S3method(print, sobol)
+S3method(plot, sobol)
+S3method(plotMultOut, sobol)
+S3method(ggplot, sobol)
+
+export(sobolEff)
+S3method(tell, sobolEff)
+S3method(print, sobolEff)
+S3method(plot, sobolEff)
+S3method(ggplot, sobolEff)
+
+export(sobol2002)
+S3method(tell, sobol2002)
+S3method(print, sobol2002)
+S3method(plot, sobol2002)
+S3method(plotMultOut, sobol2002)
+S3method(ggplot, sobol2002)
+
+export(sobol2007)
+S3method(tell, sobol2007)
+S3method(print, sobol2007)
+S3method(plot, sobol2007)
+S3method(plotMultOut, sobol2007)
+S3method(ggplot, sobol2007)
+
+export(soboljansen)
+S3method(tell, soboljansen)
+S3method(print, soboljansen)
+S3method(plot, soboljansen)
+S3method(plotMultOut, soboljansen)
+S3method(ggplot, soboljansen)
+
+export(sobolmartinez)
+S3method(tell, sobolmartinez)
+S3method(print, sobolmartinez)
+S3method(plot, sobolmartinez)
+S3method(ggplot, sobolmartinez)
+
+export(soboltouati)
+S3method(tell, soboltouati)
+S3method(print, soboltouati)
+S3method(plot, soboltouati)
+S3method(ggplot, soboltouati)
+
+export(sobolmara)
+S3method(tell, sobolmara)
+S3method(print, sobolmara)
+S3method(plot, sobolmara)
+S3method(plotMultOut, sobolmara)
+S3method(ggplot, sobolmara)
+
+export(addelman_const)
+export(discrepancyCriteria_cplus)
+export(maximin_cplus)
+
+export(sobolrec)
+S3method(ask, sobolrec)
+S3method(tell, sobolrec)
+S3method(print, sobolrec)
+S3method(plot, sobolrec)
+
+export(sobolrep)
+S3method(tell, sobolrep)
+S3method(print, sobolrep)
+S3method(plot, sobolrep)
+
+export(sobolroalhs)
+S3method(tell, sobolroalhs)
+S3method(print, sobolroalhs)
+S3method(plot, sobolroalhs)
+S3method(ggplot, sobolroalhs)
+
+export(sobolowen)
+S3method(tell, sobolowen)
+S3method(print, sobolowen)
+S3method(plot, sobolowen)
+S3method(ggplot, sobolowen)
+
+export(sobolGP)
+S3method(ask, sobolGP)
+S3method(tell, sobolGP)
+S3method(print, sobolGP)
+S3method(plot, sobolGP)
+
+export(sobolTIIlo)
+S3method(tell, sobolTIIlo)
+S3method(print, sobolTIIlo)
+S3method(plot, sobolTIIlo)
+S3method(ggplot, sobolTIIlo)
+S3method(plotFG, sobolTIIlo)
+
+export(sobolTIIpf)
+S3method(tell, sobolTIIpf)
+S3method(print, sobolTIIpf)
+S3method(plot, sobolTIIpf)
+S3method(ggplot, sobolTIIpf)
+S3method(plotFG, sobolTIIpf)
+
+export(fast99)
+S3method(tell, fast99)
+S3method(print, fast99)
+S3method(plot, fast99)
+
+export(sobolMultOut)
+S3method(print, sobolMultOut)
+S3method(plot, sobolMultOut)
+S3method(plotMultOut, sobolMultOut)
+S3method(ggplot, sobolMultOut)
+
+export(sb)
+S3method(ask, sb)
+S3method(tell, sb)
+S3method(print, sb)
+S3method(plot, sb)
+
+export(delsa)
+S3method(tell, delsa)
+S3method(print, delsa)
+S3method(plot, delsa)
+
+export(PLI)
+export(PLIquantile)
+export(PLIsuperquantile)
+export(PLIquantile_multivar)
+export(PLIsuperquantile_multivar)
+
+export(PoincareConstant)
+export(PoincareOptimal)
+
+export(support)
+S3method(plot, support)
+S3method(scatterplot, support)
+
+export(sensiFdiv)
+S3method(tell, sensiFdiv)
+S3method(print, sensiFdiv)
+S3method(plot, sensiFdiv)
+S3method(ggplot, sensiFdiv)
+
+export(sensiHSIC)
+S3method(tell,sensiHSIC)
+S3method(print,sensiHSIC)
+S3method(plot,sensiHSIC)
+
+export(testHSIC)
+S3method(print,testHSIC)
+S3method(plot,testHSIC)
+
+export(sobolSalt)
+S3method(tell, sobolSalt)
+S3method(print, sobolSalt)
+S3method(plot, sobolSalt)
+S3method(ggplot, sobolSalt)
+
+export(sobolroauc)
+S3method(tell, sobolroauc)
+S3method(print, sobolroauc)
+S3method(plot, sobolroauc)
+S3method(ggplot, sobolroauc)
+
+export(shapleyPermEx)
+S3method(tell, shapleyPermEx)
+S3method(print, shapleyPermEx)
+S3method(plot, shapleyPermEx)
+S3method(ggplot, shapleyPermEx)
+
+export(shapleyPermRand)
+S3method(tell, shapleyPermRand)
+S3method(print, shapleyPermRand)
+S3method(plot, shapleyPermRand)
+S3method(ggplot, shapleyPermRand)
+
+export(shapleyLinearGaussian)
+
+export(shapleyBlockEstimationS)
+export(shapleyBlockEstimationX)
+
+export(shapleySubsetMc)
+S3method(plot, shapleySubsetMc)
+
+export(sobolshap_knn)
+S3method(tell, sobolshap_knn)
+S3method(extract, sobolshap_knn)
+S3method(print, sobolshap_knn)
+S3method(plot, sobolshap_knn)
+S3method(ggplot, sobolshap_knn)
+
+export(shapleysobol_knn)
+S3method(tell, shapleysobol_knn)
+S3method(extract, shapleysobol_knn)
+S3method(print, shapleysobol_knn)
+S3method(plot, shapleysobol_knn)
+S3method(print, sobol_knn)
+S3method(plot, sobol_knn)
+S3method(ggplot, shapleysobol_knn)
+S3method(ggplot, sobol_knn)
+
+export(sobolrank)
+S3method(tell, sobolrank)
+S3method(print, sobolrank)
+S3method(plot, sobolrank)
+S3method(ggplot, sobolrank)
+
+export(sobolSmthSpl)
+S3method(print, sobolSmthSpl)
+S3method(plot, sobolSmthSpl)
+
+export(qosa)
+S3method(tell, qosa)
+S3method(print, qosa)
+S3method(plot, qosa)
+S3method(ggplot, qosa)

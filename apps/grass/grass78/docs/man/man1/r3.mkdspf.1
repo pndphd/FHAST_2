@@ -1,0 +1,134 @@
+.TH r3.mkdspf 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.mkdspf\fR\fR  \- Creates a display file from an existing 3D raster map according to specified threshold levels.
+.SH KEYWORDS
+raster3d, display, voxel
+.SH SYNOPSIS
+\fBr3.mkdspf\fR
+.br
+\fBr3.mkdspf \-\-help\fR
+.br
+\fBr3.mkdspf\fR [\-\fBqf\fR] \fBinput\fR=\fIstring\fR \fBdspf\fR=\fIname\fR  [\fBlevels\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBmin\fR=\fIfloat\fR]   [\fBmax\fR=\fIfloat\fR]   [\fBstep\fR=\fIfloat\fR]   [\fBtnum\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-q\fR" 4m
+.br
+Suppress progress report & min/max information
+.IP "\fB\-f\fR" 4m
+.br
+Use flat shading rather than gradient
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an existing 3D raster map
+.IP "\fBdspf\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output display file
+.IP "\fBlevels\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+List of thresholds for isosurfaces
+.IP "\fBmin\fR=\fIfloat\fR" 4m
+.br
+Minimum isosurface level
+.IP "\fBmax\fR=\fIfloat\fR" 4m
+.br
+Maximum isosurface level
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Positive increment between isosurface levels
+.IP "\fBtnum\fR=\fIinteger\fR" 4m
+.br
+Number of isosurface threshold levels
+.br
+Default: \fI7\fR
+.SH DESCRIPTION
+Creates a display file from an existing grid3 file according to
+specified threshold levels.  The display file is a display list
+of polygons that represent isosurfaces of the data volume.  If
+specific \fIlevels\fR are given, additional optional parameters
+are ignored.  \fIMin\fR or \fImax\fR may be used alone or together
+to specify a sub\-range of the data.  The \fIstep\fR
+parameter is given precedence over \fItnum\fR.
+.SS Flags:
+.IP "\fB\-q\fR " 4m
+.br
+Suppress progress report & min/max information
+.IP "\fB\-f\fR " 4m
+.br
+Use flat shading rather than gradient
+.SS Parameters:
+.IP "\fBgrid3\fR " 4m
+.br
+Name of an existing 3D raster map
+.IP "\fBdspf\fR " 4m
+.br
+Name of output display file
+.IP "\fBlevels\fR " 4m
+.br
+List of thresholds for isosurfaces
+.IP "\fBmin\fR " 4m
+.br
+Minimum isosurface level
+.IP "\fBmax\fR " 4m
+.br
+Maximum isosurface level
+.IP "\fBstep\fR " 4m
+.br
+Positive increment between isosurface levels
+.IP "\fBtnum\fR " 4m
+.br
+Number of isosurface threshold levels
+.br
+Default: 7
+.SH Example:
+With grid3 data (\fIphdata\fR) in the range 3\-7,
+we only want to see isosurface values for the range 4\-6.
+Any of these commands will produce the same results:
+.br
+.br
+.nf
+\fC
+r3.mkdspf phdata dspf=iso min=4.0 max=6.0 tnum=5
+r3.mkdspf phdata dspf=iso levels=4.0,4.5,5.0,5.5,6.0
+r3.mkdspf phdata dspf=iso min=4.0 max=6.0 step=0.5
+\fR
+.fi
+.SH NOTE
+Currently the grid3 file must be in the user\(cqs mapset since the
+display files being created are specific to particular grid3
+files and are contained in directories under them.
+We should create a mechanism where users
+may make display files from others\(cq grid3 files without having to
+copy them to their mapset.
+.SH AUTHOR
+.PP
+Bill Brown,
+bbrown@gis.uiuc.edu
+.SH SOURCE CODE
+.PP
+Available at: r3.mkdspf source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

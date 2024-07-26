@@ -1,0 +1,332 @@
+.TH g.list 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.list\fR\fR  \- Lists available GRASS data base files of the user\-specified data type optionally using the search pattern.
+.SH KEYWORDS
+general, map management, list, search
+.SH SYNOPSIS
+\fBg.list\fR
+.br
+\fBg.list \-\-help\fR
+.br
+\fBg.list\fR [\-\fBiretmpf\fR] \fBtype\fR=\fIdatatype\fR[,\fIdatatype\fR,...]  [\fBpattern\fR=\fIstring\fR]   [\fBexclude\fR=\fIstring\fR]   [\fBmapset\fR=\fIname\fR[,\fIname\fR,...]]   [\fBseparator\fR=\fIcharacter\fR]   [\fBregion\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Ignore case
+.IP "\fB\-r\fR" 4m
+.br
+Use basic regular expressions instead of wildcards
+.IP "\fB\-e\fR" 4m
+.br
+Use extended regular expressions instead of wildcards
+.IP "\fB\-t\fR" 4m
+.br
+Print data types
+.IP "\fB\-m\fR" 4m
+.br
+Print fully\-qualified map names (including mapsets)
+.IP "\fB\-p\fR" 4m
+.br
+Pretty printing in human readable format
+.IP "\fB\-f\fR" 4m
+.br
+Verbose listing (also list map titles)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtype\fR=\fIdatatype[,\fIdatatype\fR,...]\fR \fB[required]\fR" 4m
+.br
+Data type(s)
+.br
+Options: \fIraster, raster_3d, vector, label, region, group, all\fR
+.br
+\fBraster\fR: raster map(s)
+.br
+\fBraster_3d\fR: 3D raster map(s)
+.br
+\fBvector\fR: vector map(s)
+.br
+\fBlabel\fR: paint label file(s)
+.br
+\fBregion\fR: region definition(s)
+.br
+\fBgroup\fR: imagery group(s)
+.br
+\fBall\fR: all types
+.IP "\fBpattern\fR=\fIstring\fR" 4m
+.br
+Map name search pattern (default: all)
+.IP "\fBexclude\fR=\fIstring\fR" 4m
+.br
+Map name exclusion pattern (default: none)
+.IP "\fBmapset\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of mapset to list (default: current search path)
+.br
+\(cq.\(cq for current mapset; \(cq*\(cq for all mapsets in location
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fInewline\fR
+.IP "\fBregion\fR=\fIname\fR" 4m
+.br
+Name of saved region for map search (default: not restricted)
+.br
+\(cq.\(cq for current region; \(cq*\(cq for default region
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file
+.br
+If not given or \(cq\-\(cq then standard output
+.SH DESCRIPTION
+\fIg.list\fR searches for data files matching a pattern given by
+wildcards or POSIX Extended Regular Expressions.
+.SH NOTES
+The output of \fIg.list\fR may be useful for other programs\(cq parameter
+input (e.g. time series for \fIr.series\fR)
+when used with \fIseparator=comma\fR.
+.SH EXAMPLES
+List all raster maps as continuous, sorted list:
+.br
+.nf
+\fC
+g.list type=rast
+\fR
+.fi
+List all vector maps as continuous, sorted list with MAPSET info (i.e.
+fully\-qualified map names):
+.br
+.nf
+\fC
+g.list type=vector \-m
+\fR
+.fi
+List all raster and vector maps ordered by mapset:
+.br
+.nf
+\fC
+g.list type=raster \-p
+\fR
+.fi
+List all raster and vector maps as continuous, sorted list:
+.br
+.nf
+\fC
+g.list type=rast,vect
+\fR
+.fi
+List all available GRASS data base files:
+.br
+.nf
+\fC
+g.list type=all
+\fR
+.fi
+.SS Mapset search path
+If \fBmapset\fR is not specified, then \fIg.list\fR searches for
+data files in the mapsets that are included in the search path
+(defined by \fIg.mapsets\fR).
+See g.mapsets \-p.
+.br
+.nf
+\fC
+g.list rast \-p
+raster map(s) available in mapset <user1>:
+dmt
+\&...
+raster map(s) available in mapset <PERMANENT>:
+aspect
+\&...
+\fR
+.fi
+Option \fBmapset\fR=. (one dot) lists only data files from
+the current mapset:
+.br
+.nf
+\fC
+g.list rast mapset=.
+\&...
+\fR
+.fi
+Similarly, \fBmapset\fR=* (one asterisk) prints data files from all
+available mapsets also including those that are not listed in the
+current search path (see g.mapsets \-l).
+.br
+.nf
+\fC
+g.list rast mapset=* \-p
+raster map(s) available in mapset <landsat>:
+lsat5_1987_10
+\&...
+raster map(s) available in mapset <user1>:
+dmt
+\&...
+raster map(s) available in mapset <PERMANENT>:
+aspect
+\&...
+\fR
+.fi
+.SS Wildcards
+List all vector maps starting with letter \(dqr\(dq:
+.br
+.nf
+\fC
+g.list type=vector pattern=\(dqr*\(dq
+\fR
+.fi
+List all vector maps starting with letter \(dqr\(dq or \(dqa\(dq:
+.br
+.nf
+\fC
+g.list type=vector pattern=\(dq[ra]*\(dq
+\fR
+.fi
+List all raster maps starting with \(dqsoil_\(dq or \(dqlanduse_\(dq:
+.br
+.nf
+\fC
+g.list type=raster pattern=\(dq{soil,landuse}_*\(dq
+\fR
+.fi
+List certain raster maps with one variable character/number:
+.br
+.nf
+\fC
+g.list type=raster pattern=\(dqN45E00?.meters\(dq
+\fR
+.fi
+Use of \fBexclude\fR parameter:
+.br
+.nf
+\fC
+# without exclude:
+  g.list rast pat=\(dqr*\(dq mapset=PERMANENT
+  railroads
+  roads
+  rstrct.areas
+  rushmore
+# exclude only complete word(s):
+  g.list rast pat=\(dqr*\(dq exclude=roads mapset=PERMANENT
+  railroads
+  rstrct.areas
+  rushmore
+# exclude with wildcard:
+  g.list rast pat=\(dqr*\(dq exclude=\(dq*roads*\(dq mapset=PERMANENT
+  rstrct.areas
+  rushmore
+\fR
+.fi
+.SS Regular expressions
+List all soil maps starting with \(dqsoils\(dq in their name:
+.br
+.nf
+\fC
+g.list \-r type=raster pattern=\(cq^soils\(cq
+\fR
+.fi
+List \(dqtmp\(dq if \(dqtmp\(dq raster map exists:
+.br
+.nf
+\fC
+g.list \-r type=raster pattern=\(cq^tmp$\(cq
+\fR
+.fi
+List \(dqtmp0\(dq ...\(dqtmp9\(dq if corresponding vector map exists
+(each map name linewise):
+.br
+.nf
+\fC
+g.list \-r type=vector pattern=\(cq^tmp[0\-9]$\(cq
+\fR
+.fi
+List \(dqtmp0\(dq...\(dqtmp9\(dq if corresponding vector map exists
+(each map name comma separated):
+.br
+.nf
+\fC
+g.list \-r type=vector separator=comma pattern=\(cq^tmp[0\-9]$\(cq
+\fR
+.fi
+.SS Extended regular expressions
+List all precipitation maps for the years 1997\-2012, comma separated:
+.br
+.nf
+\fC
+g.list \-e type=raster separator=comma pattern=\(dqprecip_total.(199[7\-9]|200[0\-9]|201[0\-2]).sum\(dq
+\fR
+.fi
+.SS Maps whose region overlaps with a saved region
+List all raster maps starting with \(dqtmp_\(dq whose region overlaps with
+the region of \(dqtest\(dq raster map:
+.br
+.nf
+\fC
+g.region raster=test save=test_region
+g.list type=raster pattern=\(cqtmp_*\(cq region=test_region
+\fR
+.fi
+List \(dqtmp0\(dq...\(dqtmp9\(dq vector maps whose region overlaps with
+the current region:
+.br
+.nf
+\fC
+g.list \-r type=vector pattern=\(cq^tmp[0\-9]$\(cq region=.
+\fR
+.fi
+List all raster and vector maps whose region overlaps with the default region
+of the PERMANENT mapset in the current location (DEFAULT_WIND):
+.br
+.nf
+\fC
+g.list type=rast,vect region=*
+\fR
+.fi
+Note that, without region=*, g.list type=rast,vect simply
+lists all available raster and vector maps from the current search path
+regardless of their region.
+.SH SEE ALSO
+\fI
+r.series,
+t.list,
+t.rast.list,
+t.vect.list
+\fR
+.PP
+Regular expressions
+(aka regex) \- from Wikipedia, the free encyclopedia
+.SH AUTHOR
+Huidae Cho
+.br
+grass4u@gmail.com
+.br
+based on general/manage/cmd/list.c by Michael Shapiro
+.SH SOURCE CODE
+.PP
+Available at: g.list source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

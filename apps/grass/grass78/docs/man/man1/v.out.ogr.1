@@ -1,0 +1,351 @@
+.TH v.out.ogr 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.ogr\fR\fR  \- Exports a vector map layer to any of the supported OGR vector formats.
+.br
+By default a vector map layer is exported to OGC GeoPackage format.
+.SH KEYWORDS
+vector, export, output, OGR, output
+.SH SYNOPSIS
+\fBv.out.ogr\fR
+.br
+\fBv.out.ogr \-\-help\fR
+.br
+\fBv.out.ogr\fR [\-\fBuasce2mnl\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR \fBformat\fR=\fIstring\fR  [\fBoutput_layer\fR=\fIstring\fR]   [\fBoutput_type\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBdsco\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBlco\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-u\fR" 4m
+.br
+Open an existing OGR datasource for update
+.IP "\fB\-a\fR" 4m
+.br
+Append to existing layer
+.br
+A new OGR layer is created if it does not exist
+.IP "\fB\-s\fR" 4m
+.br
+Skip export of GRASS category ID (\(cqcat\(cq) attribute
+.IP "\fB\-c\fR" 4m
+.br
+Also export features without category (not labeled). Otherwise only features with category are exported.
+.IP "\fB\-e\fR" 4m
+.br
+Use ESRI\-style .prj file format (applies to Shapefile output only)
+.IP "\fB\-2\fR" 4m
+.br
+Force 2D output even if input is 3D (applies to Shapefile output only)
+.br
+Useful if input is 3D but all z coordinates are identical
+.IP "\fB\-m\fR" 4m
+.br
+Export vector data as multi\-features
+.IP "\fB\-n\fR" 4m
+.br
+Create a new empty layer in defined OGR datasource and exit. Nothing is read from input.
+.IP "\fB\-l\fR" 4m
+.br
+List supported output formats and exit
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map to export
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type(s)
+.br
+Combination of types is not supported by all output formats. Default is to use first type found in input vector map.
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel, auto\fR
+.br
+Default: \fIauto\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of output OGR datasource
+.br
+For example: ESRI Shapefile: filename or directory for storage
+.br
+            PostGIS database: connection string
+.IP "\fBformat\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Data format to write
+.br
+Options: \fIAmigoCloud, BNA, CSV, Carto, Cloudant, CouchDB, DB2ODBC, DGN, DXF, ESRI_Shapefile, Elasticsearch, FlatGeobuf, GML, GMLAS, GPKG, GPSBabel, GPSTrackMaker, GPX, GeoJSON, GeoJSONSeq, GeoRSS, Geoconcept, Interlis_1, Interlis_2, JML, JP2OpenJPEG, KML, LIBKML, MBTiles, MSSQLSpatial, MVT, MapInfo_File, MapML, Memory, MySQL, NGW, ODBC, ODS, OGR_GMT, PCIDSK, PDF, PDS4, PGDUMP, PostgreSQL, S57, SQLite, Selafin, TIGER, VDV, VICAR, WAsP, XLSX, netCDF\fR
+.br
+Default: \fIGPKG\fR
+.IP "\fBoutput_layer\fR=\fIstring\fR" 4m
+.br
+Name for output OGR layer. If not specified, input name is used
+.br
+For example: ESRI Shapefile: shapefile name
+.br
+            PostGIS database: table name
+.IP "\fBoutput_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Optionally change default output type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fI\fR
+.br
+\fBline\fR: export area boundaries as linestrings
+.br
+\fBboundary\fR: export lines as polygons
+.IP "\fBdsco\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+OGR dataset creation option (format specific, NAME=VALUE)
+.br
+Default: \fI\fR
+.IP "\fBlco\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+OGR layer creation option (format specific, NAME=VALUE)
+.br
+Default: \fI\fR
+.SH DESCRIPTION
+\fIv.out.ogr\fR converts GRASS vector map layer to any of the
+supported OGR vector formats
+(including OGC GeoPackage, ESRI Shapefile, SpatiaLite or GML).
+.PP
+OGR (Simple Features Library) is part of the
+GDAL library, so you need to
+install this library to use \fIv.out.ogr\fR.
+.PP
+The OGR library supports many various formats including:
+.RS 4n
+.IP \(bu 4n
+OGC GeoPackage
+.IP \(bu 4n
+ESRI Shapefile
+.IP \(bu 4n
+PostGIS
+.IP \(bu 4n
+SpatiaLite
+.IP \(bu 4n
+CSV
+.IP \(bu 4n
+GML
+.IP \(bu 4n
+KML
+.IP \(bu 4n
+Mapinfo File
+.IP \(bu 4n
+TIGER
+.IP \(bu 4n
+\&... and many others
+.RE
+The list of supported formats is printed with the \fI\-l\fR flag.
+.PP
+For further available other supported formats go
+here.
+.SH NOTES
+By default, islands will appear as holes inside surrounding areas. To
+export polygons with holes into, e.g., a Esri Shapefile, and make the
+holes appear as filled areas, the flag \fB\-c\fR has to be used.
+.PP
+\fIv.out.ogr\fR exports 3D vector data as 2.5D simple features if
+possible (not supported by all formats). For exporting 3D vector data
+as 2D simple features, use \fB\-2\fR flag.
+.PP
+By default, \fIv.out.ogr\fR converts GRASS vector data to single
+simple features. If GRASS feature has more categories defined in the
+given \fBlayer\fR, then this feature is exported multiple
+times. GRASS features without category are skipped by default. To
+export features also without category, the \fB\-c\fR flag must be
+given.
+.PP
+When \fB\-m\fR flag is given, \fIv.out.ogr\fR export GRASS vector
+data as multi\-features. Multi\-feature is formed by GRASS features with
+the same category. When \fB\-c\fR flag is given, the module also
+export GRASS features without category as one multi\-feature. Note that
+multi\-features are not supported by all formats.
+.PP
+ESRI Shapefile export: note that due to the DBF table specifications
+column names may not be longer than 10 characters.
+.PP
+Performance: export to SQLite based formats including OGC GeoPackage may
+become faster with the environmental variable OGR_SQLITE_CACHE=1024
+being set (value depends on available RAM, see
+OGR ConfigOptions).
+.SH EXAMPLES
+.SS Export to OGC GeoPackage
+Export lines from a GRASS vector map to OGC GeoPackage format:
+.br
+.nf
+\fC
+v.out.ogr input=roadsmajor type=line output=roadsmajor.gpkg
+\fR
+.fi
+.PP
+Export areas from GRASS vector map to OGC GeoPackage format, converting
+islands (holes) to filled polygons:
+.br
+.nf
+\fC
+v.out.ogr \-c input=areas_islands type=area output=areas_islands.gpkg
+\fR
+.fi
+.PP
+Export mixed geometry type GRASS vector map to OGC GeoPackage format:
+.br
+.nf
+\fC
+v.out.ogr input=generic_vector output=mixed_geometry.gpkg
+\fR
+.fi
+.SS Export to ESRI Shapefile
+Export lines from GRASS vector map to Shapefile format:
+.br
+.nf
+\fC
+v.out.ogr input=roadsmajor type=line format=ESRI_Shapefile output=lines.shp
+\fR
+.fi
+.PP
+Export areas from GRASS vector map to Shapefile format, converting
+islands (holes) to filled polygons:
+.br
+.nf
+\fC
+v.out.ogr \-c input=areas_islands type=area format=ESRI_Shapefile output=areas_islands.shp
+\fR
+.fi
+.PP
+Export 3D lines from GRASS vector map to Shapefile format:
+.br
+.nf
+\fC
+v.out.ogr input=lines_3d type=line format=ESRI_Shapefile output=lines_3d.shp lco=\(dqSHPT=ARCZ\(dq
+\fR
+.fi
+.PP
+Export 3D points (e.g., Lidar points) from GRASS vector map to Shapefile format
+.br
+.nf
+\fC
+v.out.ogr points_3d type=point format=ESRI_Shapefile output=points_3d.shp lco=\(dqSHPT=POINTZ\(dq
+\fR
+.fi
+.PP
+Export 3D faces from GRASS vector map to Shapefile format:
+.br
+.nf
+\fC
+v.out.ogr input=objects_3d type=face format=ESRI_Shapefile output=faces_3d.shp lco=\(dqSHPT=POLYGONZ\(dq
+\fR
+.fi
+.PP
+Export 3D faces from GRASS vector map to Shapefile format, automatic 3D setting:
+.br
+.nf
+\fC
+v.out.ogr input=objects_3d type=face format=ESRI_Shapefile output=faces_3d.shp\(dq
+\fR
+.fi
+.SS Export to GML
+Export lines from GRASS vector map to GML format
+(generates \(cq/tmp/testogr.gml\(cq file with layer \(cqtestogr\(cq):
+.br
+.nf
+\fC
+v.out.ogr input=multi type=line output=/tmp/testogr.gml output_layer=testogr format=GML
+\fR
+.fi
+.SS Export to PostgreSQL/PostGIS
+Export areas from GRASS vector map to PostGIS database:
+.br
+.nf
+\fC
+v.out.ogr input=polygons type=area output=\(dqPG:host=localhost dbname=postgis user=postgres\(dq output_layer=polymap format=PostgreSQL
+\fR
+.fi
+\fINote:\fR For exporting GRASS vector data to PostGIS database can
+be also used \fIv.out.postgis\fR
+module. This module is not based on OGR library and supports beside
+simple features also topological format (PostGIS Topology).
+.SS Export to KML (Google Earth)
+.PP
+Export faces (3D vectors) from GRASS vector map to KML format for Google Earth:
+.br
+.nf
+\fC
+v.out.ogr input=buildings_3d output=buildings_3d.kml output_layer=buildings_3d format=KML type=face
+\fR
+.fi
+.PP
+Generate and export GRASS vector \(dqasteroid\(dq map (faces, 3D vectors) to
+KML format for Google Earth:
+.br
+.nf
+\fC
+# near Raleigh (NC, USA)
+g.region n=35.73952587 s=35.73279182 w=\-78.68263928 e=\-78.67499517
+# two layers of random points
+v.random \-z output=random3d_a n=10 zmin=0 zmax=200
+v.random \-z output=random3d_b n=15 zmin=400 zmax=600
+# merge into one 3D points map
+v.patch input=random3d_a,random3d_b output=random3d
+# generate 3D convex hull
+v.hull input=random3d output=\(dqrandom3d_hull\(dq
+# export to KML 3D
+v.out.ogr input=random3d_hull output=random3d_hull.kml format=KML type=face dsco=\(dqAltitudeMode=absolute\(dq
+# now open KML file \(cqrandom3d_hull.kml\(cq in Google Earth or NASA WorldWind or ...
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+OGR vector library
+.IP \(bu 4n
+OGR vector library C API
+documentation
+.RE
+.SH SEE ALSO
+\fI
+v.out.postgis,
+db.out.ogr,
+v.external,
+v.external.out,
+v.in.ogr,
+v.pack
+\fR
+.SH AUTHORS
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Some contributions: Markus Neteler
+.br
+Multi\-feature support by Martin Landa, Czech Technical University in Prague, 2013
+.SH SOURCE CODE
+.PP
+Available at: v.out.ogr source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

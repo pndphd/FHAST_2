@@ -1,0 +1,190 @@
+.TH i.topo.corr 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.topo.corr\fR\fR  \- Computes topographic correction of reflectance.
+.SH KEYWORDS
+imagery, terrain, topographic correction
+.SH SYNOPSIS
+\fBi.topo.corr\fR
+.br
+\fBi.topo.corr \-\-help\fR
+.br
+\fBi.topo.corr\fR [\-\fBis\fR]  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]  \fBoutput\fR=\fIname\fR \fBbasemap\fR=\fIname\fR \fBzenith\fR=\fIfloat\fR  [\fBazimuth\fR=\fIfloat\fR]   [\fBmethod\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Output sun illumination terrain model
+.IP "\fB\-s\fR" 4m
+.br
+Scale output to input and copy color rules
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of reflectance raster maps to be corrected topographically
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name (flag \-i) or prefix for output raster maps
+.IP "\fBbasemap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input base raster map (elevation or illumination)
+.IP "\fBzenith\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Solar zenith in degrees
+.IP "\fBazimuth\fR=\fIfloat\fR" 4m
+.br
+Solar azimuth in degrees (only if flag \-i)
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Topographic correction method
+.br
+Options: \fIcosine, minnaert, c\-factor, percent\fR
+.br
+Default: \fIc\-factor\fR
+.SH DESCRIPTION
+\fIi.topo.corr\fR is used to topographically correct reflectance
+from imagery files, e.g. obtained with \fIi.landsat.toar\fR, using a
+sun illumination terrain model. This illumination model represents the
+cosine of the incident angle \fIi\fR, i.e. the  angle between the normal to the
+ground and the sun rays.
+.PP
+Note: If needed, the sun position can be calculated for a given date with
+\fIr.sunmask\fR.
+.br
+Figure showing terrain and solar angles
+.PP
+Using the \fB\-i\fR flag and given an elevation basemap (metric),
+\fIi.topo.corr\fR creates a simple illumination model using the formula:
+.RS 4n
+.IP \(bu 4n
+cos_i = cos(s) * cos(z) + sin(s) * sin(z) * cos(a \- o)
+.RE
+where,
+\fIi\fR is the incident angle to be calculated,
+\fIs\fR is the terrain slope angle,
+\fIz\fR is the solar zenith angle,
+\fIa\fR the solar azimuth angle,
+\fIo\fR the terrain aspect angle.
+.PP
+For each band file, the corrected reflectance (ref_c) is calculate from
+the original reflectance (ref_o) using one of the four offered methods
+(one lambertian and two non\-lambertian).
+.SS Method: cosine
+.RS 4n
+.IP \(bu 4n
+ref_c = ref_o * cos_z / cos_i
+.RE
+.SS Method: minnaert
+.RS 4n
+.IP \(bu 4n
+ref_c = ref_o * (cos_z / cos_i) ^k
+.RE
+where,
+\fIk\fR is obtained by linear regression of
+.br
+ln(ref_o) = ln(ref_c) \- k ln(cos_i/cos_z)
+.SS Method: c\-factor
+.RS 4n
+.IP \(bu 4n
+ref_c = ref_o * (cos_z + c)/ (cos_i + c)
+.RE
+where,
+\fIc\fR is a/m from ref_o = a + m * cos_i
+.SS Method: percent
+We can use cos_i to estimate the percent of solar incidence on the surface,
+then the transformation (cos_i + 1)/2 varied from 0
+(surface in the side in opposition to the sun: infinite correction) to 1
+(direct exhibition to the sun: no correction) and the corrected reflectance can
+be calculated as
+.RS 4n
+.IP \(bu 4n
+ref_c = ref_o * 2 / (cos_i + 1)
+.RE
+.SH NOTES
+.IP
+.IP \fB1\fR
+The illumination model (cos_i) with flag \-i uses the actual region
+as limits and the resolution of the elevation map.
+.IP \fB2\fR
+The topographic correction use the full reflectance file (null remain
+null) and its resolution.
+.IP \fB3\fR
+The elevation map to calculate the illumination model should be metric.
+.PP
+.SH EXAMPLES
+First, make a illumination model from the elevation map (here, SRTM). Then
+make perform the topographic correction of e.g. the bands toar.5, toar.4 and toar.3
+with output as tcor.toar.5, tcor.toar.4, and tcor.toar.3 using c\-factor (= c\-correction)
+method:
+.PP
+.br
+.nf
+\fC
+# first pass: create illumination model
+i.topo.corr \-i base=SRTM zenith=33.3631 azimuth=59.8897 output=SRTM.illumination
+# second pass: apply illumination model
+i.topo.corr base=SRTM.illumination input=toar.5,toar.4,toar.3 output=tcor \(rs
+  zenith=33.3631 method=c\-factor
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Law K.H. and Nichol J, 2004. Topographic Correction For Differential
+Illumination Effects On Ikonos Satellite Imagery. International Archives of
+Photogrammetry Remote Sensing and Spatial Information, pp. 641\-646.
+.IP \(bu 4n
+Meyer, P. and Itten, K.I. and Kellenberger, KJ and Sandmeier, S. and
+Sandmeier, R., 1993. Radiometric corrections of topographically induced
+effects on Landsat TM data in alpine terrain. Photogrammetric Engineering
+and Remote Sensing 48(17).
+.IP \(bu 4n
+Riaño, D. and Chuvieco, E. and Salas, J. and Aguado, I., 2003.
+Assessment of Different Topographic Corrections in Landsat\-TM
+Data for Mapping Vegetation Types. IEEE Transactions On Geoscience
+And Remote Sensing, Vol. 41, No. 5
+.IP \(bu 4n
+Twele A. and Erasmi S, 2005. Evaluating topographic correction algorithms
+for improved land cover discrimination in mountainous areas of
+Central Sulawesi. Göttinger Geographische Abhandlungen, vol. 113.
+.RE
+.SH SEE ALSO
+\fI
+i.landsat.toar,
+r.mapcalc,
+r.sun
+r.sunmask
+\fR
+.SH AUTHOR
+E. Jorge Tizado  (ej.tizado unileon es)
+.br
+Dept. Biodiversity and Environmental Management, University of León, Spain
+.PP
+Figure derived from Neteler & Mitasova, 2008.
+.SH SOURCE CODE
+.PP
+Available at: i.topo.corr source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

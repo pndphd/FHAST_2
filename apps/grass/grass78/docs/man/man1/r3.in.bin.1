@@ -1,0 +1,146 @@
+.TH r3.in.bin 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.in.bin\fR\fR  \- Imports a binary raster file into a GRASS 3D raster map.
+.SH KEYWORDS
+raster3d, import, voxel
+.SH SYNOPSIS
+\fBr3.in.bin\fR
+.br
+\fBr3.in.bin \-\-help\fR
+.br
+\fBr3.in.bin\fR [\-\fBrdis\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBbytes\fR=\fIinteger\fR  [\fBorder\fR=\fIstring\fR]  \fBnorth\fR=\fIfloat\fR \fBsouth\fR=\fIfloat\fR \fBeast\fR=\fIfloat\fR \fBwest\fR=\fIfloat\fR \fBbottom\fR=\fIfloat\fR \fBtop\fR=\fIfloat\fR \fBrows\fR=\fIinteger\fR \fBcols\fR=\fIinteger\fR \fBdepths\fR=\fIinteger\fR  [\fBnull\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Switch the row order in output from north\->south to south\->north
+.IP "\fB\-d\fR" 4m
+.br
+Switch the depth order in output from bottom\->top to top\->bottom
+.IP "\fB\-i\fR" 4m
+.br
+Binary data is of type integer
+.IP "\fB\-s\fR" 4m
+.br
+Signed data (two\(cqs complement)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of binary 3D raster file to be imported
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBbytes\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of bytes per cell in binary file
+.br
+Options: \fI1, 2, 4, 8\fR
+.IP "\fBorder\fR=\fIstring\fR" 4m
+.br
+Byte order in binary file
+.br
+Options: \fIbig, little, native, swap\fR
+.br
+Default: \fInative\fR
+.IP "\fBnorth\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Northern limit of geographic region (outer edge)
+.IP "\fBsouth\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Southern limit of geographic region (outer edge)
+.IP "\fBeast\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Eastern limit of geographic region (outer edge)
+.IP "\fBwest\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Western limit of geographic region (outer edge)
+.IP "\fBbottom\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Bottom limit of geographic region (outer edge)
+.IP "\fBtop\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Top limit of geographic region (outer edge)
+.IP "\fBrows\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of rows
+.IP "\fBcols\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of columns
+.IP "\fBdepths\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of depths
+.IP "\fBnull\fR=\fIfloat\fR" 4m
+.br
+Set Value to NULL
+.SH DESCRIPTION
+\fIr3.in.bin\fR allows a user to create a GRASS 3D raster map
+from a variety of binary 3D raster data formats.
+.PP
+The top, bottom, north, south, east, and west field values entered
+are the coordinates of the edges of the geographic region.
+The depths, rows and cols field values entered describe the dimensions
+of the matrix of data to follow.
+If the bytes field is entered incorrectly an error will be generated
+suggesting a closer bytes value.
+.SH NOTES
+The write order of the rows (north\->south to south\->north) and
+the write order of the depths (bottom\->top to top\->bottom) can be switched.
+.PP
+Have a look at r3.out.ascii to manual page that
+describes the internal layout of the 3D raster maps and the supported
+row and depth switch options.
+.PP
+Import of little and big endian byte order as well as signed and
+unsigned integer data types is supported.
+.SH Example
+First we create a specific region and a 3D raster map that we will export with
+r3.out.bin and import again.
+.br
+.nf
+\fC
+g.region w=0 e=180 s=0 n=90 b=0 t=100 res3=10
+r3.mapcalc expr=\(dqtest_out_bin_float = float(if(row() == 2, null(), row()))\(dq
+r3.out.bin input=test_out_bin_float byte=4 null=\-9999 \(rs
+    output=test_out_bin_float_native_b4.bin order=native
+r3.in.bin output=test_in_bin_float byte=4 null=\-9999 \(rs
+    input=test_out_bin_float_native_b4.bin order=native \(rs
+    bottom=0 top=100 west=0 east=180 south=0 north=90 \(rs
+    cols=18 rows=9 depths=10
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r3.out.bin,
+r3.in.ascii,
+r3.out.ascii
+\fR
+.SH AUTHORS
+Soren Gebbert, based on r.in.bin from Jacques Bouchard and Bob Covill
+.SH SOURCE CODE
+.PP
+Available at: r3.in.bin source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

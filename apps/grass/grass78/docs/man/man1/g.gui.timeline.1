@@ -1,0 +1,75 @@
+.TH g.gui.timeline 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.gui.timeline\fR\fR  \- Allows comparing temporal datasets by displaying their temporal extents in a plot.
+.SH KEYWORDS
+general, GUI, temporal, plot
+.SH SYNOPSIS
+\fBg.gui.timeline\fR
+.br
+\fBg.gui.timeline \-\-help\fR
+.br
+\fBg.gui.timeline\fR [\-\fB3\fR]  [\fBinputs\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-3\fR" 4m
+.br
+Show also 3D plot of spatio\-temporal extents
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinputs\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of the input space time datasets
+.SH DESCRIPTION
+The \fBTimeline Tool\fR is a \fIwxGUI\fR component
+which allows the user to compare the extents of temporal datasets (strds, stvds,
+str3ds) in a plot.
+.PP
+Supported features:
+.RS 4n
+.IP \(bu 4n
+temporal datasets with interval/point and absolute/relative time
+.IP \(bu 4n
+2D plots \- temporal extent
+.IP \(bu 4n
+3D plots \- spatio\-temporal extent (matplotlib >= 1.0.0)
+.IP \(bu 4n
+pop\-up annotations with basic metadata
+.RE
+.SH NOTES
+\fIg.gui.timeline\fR requires the Python plotting library
+Matplotlib.
+.SH SEE ALSO
+\fI
+Temporal data processing
+.br
+wxGUI
+.br
+wxGUI components
+\fR
+.SH AUTHOR
+Anna Kratochvilova,
+Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: wxGUI Timeline Tool source code (history)
+.PP
+Main index |
+GUI index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

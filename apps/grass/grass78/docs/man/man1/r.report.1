@@ -1,0 +1,258 @@
+.TH r.report 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.report\fR\fR  \- Reports statistics for raster maps.
+.SH KEYWORDS
+raster, statistics
+.SH SYNOPSIS
+\fBr.report\fR
+.br
+\fBr.report \-\-help\fR
+.br
+\fBr.report\fR [\-\fBhfenaci\fR] \fBmap\fR=\fIname\fR[,\fIname\fR,...]  [\fBunits\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBpage_length\fR=\fIinteger\fR]   [\fBpage_width\fR=\fIinteger\fR]   [\fBnsteps\fR=\fIinteger\fR]   [\fBsort\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Suppress page headers
+.IP "\fB\-f\fR" 4m
+.br
+Use formfeeds between pages
+.IP "\fB\-e\fR" 4m
+.br
+Scientific format
+.IP "\fB\-n\fR" 4m
+.br
+Do not report no data value
+.IP "\fB\-a\fR" 4m
+.br
+Do not report cells where all maps have no data
+.IP "\fB\-c\fR" 4m
+.br
+Report for cats floating\-point ranges (floating\-point maps only)
+.IP "\fB\-i\fR" 4m
+.br
+Read floating\-point map as integer (use map\(cqs quant rules)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of raster map(s) to report on
+.IP "\fBunits\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Units to report
+.br
+Options: \fImi, me, k, a, h, c, p\fR
+.br
+\fBmi\fR: area in square miles
+.br
+\fBme\fR: area in square meters
+.br
+\fBk\fR: area in square kilometers
+.br
+\fBa\fR: area in acres
+.br
+\fBh\fR: area in hectares
+.br
+\fBc\fR: number of cells
+.br
+\fBp\fR: percent cover
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file to hold the report
+.br
+If no output file given report is printed to standard output
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.IP "\fBpage_length\fR=\fIinteger\fR" 4m
+.br
+Page length
+.br
+Default: \fI0\fR
+.IP "\fBpage_width\fR=\fIinteger\fR" 4m
+.br
+Page width
+.br
+Default: \fI79\fR
+.IP "\fBnsteps\fR=\fIinteger\fR" 4m
+.br
+Number of floating\-point subranges to collect stats from
+.br
+Default: \fI255\fR
+.IP "\fBsort\fR=\fIstring\fR" 4m
+.br
+Sort output statistics by cell counts
+.br
+Default: sorted by categories or intervals
+.br
+Options: \fIasc, desc\fR
+.br
+\fBasc\fR: Sort by cell counts in ascending order
+.br
+\fBdesc\fR: Sort by cell counts in descending order
+.SH DESCRIPTION
+\fIr.report\fR allows the user to set up a series of report
+parameters to be applied to a raster map, and creates a report. The
+report will print out to the standard output if \fBoutput\fR
+parameter is not given.
+.PP
+The report itself consists of two parts, a header section and the main
+body of the report.
+.PP
+The header section of the report identifies the raster map(s) (by map
+name and title), location, mapset, report date, and the region of
+interest. The area of interest is described in two parts: the user\(cqs
+current geographic region is presented, and the mask is presented (if
+any is used).
+.PP
+The main body of the report consists of from one to three tables which
+present the statistics for each category and the totals for each unit
+column. Note that the statistics is always computed in the current
+geographical region.
+.PP
+When multiple (typically two) raster maps are specified, cross\-tabulation
+table for each combination of categories in the raster maps will be computed
+and formatted in a human\-readable way (see example).
+.SH NOTES
+Note that, unlike \fIr.stats\fR,
+\fIr.report\fR allows the user to select the specific units of
+measure in which statistics will be reported. To output
+computer\-friendly data suitable for importing into a spreadsheet use
+the \fIr.stats\fR module. In
+fact \fIr.report\fR is running
+\fIr.stats\fR in the background and
+reformatting the results to be more human\-friendly.
+.SH EXAMPLE
+Report sorted areas in square miles and acres for each
+category. No\-data are not reported (see \fB\-n\fR flag).
+.br
+.nf
+\fC
+r.report \-n map=geology_30m units=mi,a sort=desc
+\fR
+.fi
+.br
+.nf
+\fC
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+|                         RASTER MAP CATEGORY REPORT                          |
+|LOCATION: nc_spm_08_grass7                           Fri Dec  6 17:00:21 2013|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|          north: 279073.97546639    east: 798143.31179672                    |
+|REGION    south: 113673.97546639    west: 595143.31179672                    |
+|          res:               200    res:              200                    |
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|MASK: none                                                                   |
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|MAP: South\-West Wake county: geology derived from vector map (geology_30m in |
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|                 Category Information                  |    square|          |
+|  #|description                                        |     miles|     acres|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|217|CZfg . . . . . . . . . . . . . . . . . . . . . . . | 27.783911|17,781.703|
+|270|CZig . . . . . . . . . . . . . . . . . . . . . . . | 26.162282|16,743.861|
+|405|CZbg . . . . . . . . . . . . . . . . . . . . . . . |  9.698886|  6207.287|
+|262|CZlg . . . . . . . . . . . . . . . . . . . . . . . |  7.629379|  4882.802|
+|862|CZam . . . . . . . . . . . . . . . . . . . . . . . |  2.532830|  1621.011|
+|910|CZbg . . . . . . . . . . . . . . . . . . . . . . . |  1.683405|  1077.379|
+|583|CZve . . . . . . . . . . . . . . . . . . . . . . . |  0.972977|   622.706|
+|921|Km . . . . . . . . . . . . . . . . . . . . . . . . |  0.463323|   296.526|
+|766|CZg. . . . . . . . . . . . . . . . . . . . . . . . |  0.324326|   207.569|
+|720|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.185329|   118.611|
+|946|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.138997|    88.958|
+|948|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.030888|    19.768|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|TOTAL                                                  | 77.606534|49,668.182|
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+Report areas for each category of land use for each zipcode (included only part of the table):
+.br
+.nf
+\fC
+r.report map=zipcodes@PERMANENT,landclass96@PERMANENT units=h,p
+\fR
+.fi
+.br
+.nf
+\fC
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+|                         RASTER MAP CATEGORY REPORT                          |
+|LOCATION: nc_spm_08_latest                           Tue Feb 11 10:10:46 2014|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|          north: 228527.25    east: 644971                                   |
+|REGION    south: 215018.25    west: 629980                                   |
+|          res:        28.5    res:    28.5                                   |
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|MASK: none                                                                   |
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|MAPS: South West Wake: Zipcode areas derived from vector map (zipcodes@PERMAN|
+|        South\-West Wake county: Simplified landuse classes (landclass96@PERMA|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|                   Category Information                    |          |   %  |
+|    #|description                                          |  hectares| cover|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|27511|CARY                                                 |  1053.813|  5.20|
+|     |\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-|
+|     |1|developed. . . . . . . . . . . . . . . . . . . . . |   197.214| 18.71|
+|     |3|herbaceous . . . . . . . . . . . . . . . . . . . . |    25.017|  2.37|
+|     |4|shrubland. . . . . . . . . . . . . . . . . . . . . |    58.563|  5.56|
+|     |5|forest . . . . . . . . . . . . . . . . . . . . . . |   771.313| 73.19|
+|     |6|water. . . . . . . . . . . . . . . . . . . . . . . |     1.625|  0.15|
+|     |*|no data. . . . . . . . . . . . . . . . . . . . . . |     0.081|  0.01|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-|
+|27513|CARY                                                 |   204.525|  1.01|
+|     |\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-|
+|     |1|developed. . . . . . . . . . . . . . . . . . . . . |    32.571| 15.93|
+|     |3|herbaceous . . . . . . . . . . . . . . . . . . . . |     6.011|  2.94|
+|     |4|shrubland. . . . . . . . . . . . . . . . . . . . . |    51.659| 25.26|
+|     |5|forest . . . . . . . . . . . . . . . . . . . . . . |   114.284| 55.88|
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-\-\-\-\-|\-\-\-\-\-\-|
+\&...
+|\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+|TOTAL                                                      |22,968.900|100.00|
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.stats,
+g.region,
+r.coin,
+r.describe,
+r.info,
+r.univar
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+Sort option by Martin Landa, Czech Technical University in Prague, 2013
+.SH SOURCE CODE
+.PP
+Available at: r.report source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

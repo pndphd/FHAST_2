@@ -1,0 +1,126 @@
+.TH t.rast.contour 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.contour.py\fR\fR  \- Produces a space time vector dataset of specified contours from a space time raster dataset.
+.SH KEYWORDS
+temporal, contour, raster, vector, time
+.SH SYNOPSIS
+\fBt.rast.contour.py\fR
+.br
+\fBt.rast.contour.py \-\-help\fR
+.br
+\fBt.rast.contour.py\fR [\-\fBnt\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBwhere\fR=\fIsql_query\fR]  \fBbasename\fR=\fIstring\fR  [\fBsuffix\fR=\fIstring\fR]   [\fBstep\fR=\fIfloat\fR]   [\fBlevels\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBminlevel\fR=\fIfloat\fR]   [\fBmaxlevel\fR=\fIfloat\fR]   [\fBcut\fR=\fIinteger\fR]   [\fBnprocs\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Register empty vector maps
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute tables
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time vector dataset
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBbasename\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBsuffix\fR=\fIstring\fR" 4m
+.br
+Suffix to add at basename: set \(cqgran\(cq for granularity, \(cqtime\(cq for the full time format, \(cqnum\(cq for numerical suffix with a specific number of digits (default %05)
+.br
+Default: \fIgran\fR
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Increment between contour levels
+.IP "\fBlevels\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+List of contour levels
+.IP "\fBminlevel\fR=\fIfloat\fR" 4m
+.br
+Minimum contour level
+.IP "\fBmaxlevel\fR=\fIfloat\fR" 4m
+.br
+Maximum contour level
+.IP "\fBcut\fR=\fIinteger\fR" 4m
+.br
+Minimum number of points for a contour line (0 \-> no limit)
+.br
+Default: \fI0\fR
+.IP "\fBnprocs\fR=\fIinteger\fR" 4m
+.br
+Number of r.contour processes to run in parallel, more than 1 process works only in conjunction with flag \-t
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIt.rast.contour\fR is designed to produce a space time vector dataset of
+specified contours from a space time raster dataset. This module works as a front\-end to
+r.contour and therefore supports all parameter
+of this module. Hence, all raster map layers in a space time raster dataset
+are successively passed to r.contour that computes
+the contour lines.
+Please refer to the r.contour documentation
+for a detailed description.
+The new generated vector contour map
+layers will be registered in the output space time vector dataset, using
+the same time stamps as their raster map layer origins.
+.PP
+This module supports the parallel processing of r.contour
+module instances. The number of parallel processes
+can be set with the \fInprocs\fR option.
+However, this will only work in conjunction with the \fI\-t\fR
+flag, that avoids the creation of attribute tables.
+The parallel creation of attribute tables is not supported.
+.PP
+The \fIwhere\fR option allows selecting subsets of the input space time raster
+dataset.
+.PP
+The flag \fI\-n\fR can be used to force the registration of empty
+vector map layers. Empty vector maps may occur in case that empty
+raster map layers should be converted into vector map layers, or in case the
+chosen steps or contour levels are not present in the raster map layers.
+.SH SEE ALSO
+\fI
+r.contour,
+t.rast.db.select,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Geoinformatikbüro Dassau
+.SH SOURCE CODE
+.PP
+Available at: t.rast.contour source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

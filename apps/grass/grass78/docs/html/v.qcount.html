@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.qcount - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.qcount</b></em>  - Indices for quadrat counts of vector point lists.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#point pattern">point pattern</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.qcount</b><br></div>
+<b>v.qcount --help</b><br>
+<div id="synopsis"><b>v.qcount</b> [-<b>g</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>output</b>=<em>name</em>]  <b>nquadrats</b>=<em>integer</em> <b>radius</b>=<em>float</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print results in shell script style</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output quadrat centers map (number of points is written as category)</dd>
+
+<dt><b>nquadrats</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of quadrats</dd>
+
+<dt><b>radius</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Quadrat radius</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.qcount</em> computes six different quadrat count statistics that provide
+a measure of how much an user defined point pattern departs from a complete
+spatial random point pattern.
+
+<p>Points are distributed following a complete spatial randomness (CSR) pattern
+if events are equally likely to occur anywhere within an area. There are two
+types departure from a CSR: regularity and clustering. Figure 1 gives an example
+of a complete random, regular and a clustered pattern.
+
+<!-- source of figures:
+     https://github.com/OSGeo/grass-legacy/tree/releasebranch_5_4/src/sites/s.qcount/tutorial
+-->
+
+<div align="center" style="margin: 10px">
+<img src="v_qcount_1.png">
+<img src="v_qcount_2.png">
+<img src="v_qcount_3.png">
+<br>
+<i>Figure 1: Realization of two-dimensional Poisson processes of 50 points on
+the unit square exhibiting (a) complete spatial randomness, (b) regularity, and
+(c) clustering.</i>
+</div>
+
+<p>Various indices and statistics measure departure from CSR. The
+<em>v.qcount</em> function implements six different <i>quadrat count</i>
+indices that are described in Cressie (1991; p. 590-591)[1] and in Ripley (1981;
+p. 102-106)[2] and summarized in Table 1.
+
+<div align="center" style="margin: 10px">
+<img src="v_qcount_5.png">
+<br>
+<i>Table 1: Indices for Quadrat Count Data. Adapted from
+Cressie [1], this table shows the statistics computed for the
+quadrats in Figure 2.</i>
+</div>
+
+<p>These indices are computed as follows: <em>v.qcount</em> chooses
+<b>nquadrads</b> circular quadrats of radius <b>radius</b> such that they are
+completely within the bounds of the current region and no two quadrats overlap.
+The number of points falling within each quadrat are counted and indices are
+calculated to estimate the departure of point locations from complete spatial
+randomness. This is illustrated in Figure 2.
+
+<div align="center" style="margin: 10px">
+<img src="v_qcount_4.png">
+<br>
+<i>Figure 2: Randomly placed quadrats (n = 100) with 584 sample points.</i>
+</div>
+
+<p>The number of points is written as category to the <b>output</b> map (and not
+to an attribute table).
+
+<h2><a name="notes">NOTES</a></h2>
+
+This program may not work properly with lat-long data. It uses
+<em>hypot()</em> in two files: <em>count.c</em> and
+<em>findquads.c</em>.
+
+<!-- TODO: add example -->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.random.html">v.random</a>,
+<a href="v.distance.html">v.distance</a>,
+<a href="v.neighbors.html">v.neighbors</a>,
+<a href="v.perturb.html">v.perturb</a>
+</em>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<b>General references include:</b>
+
+<p>[1] Noel A. C. Cressie. <em>Statistics for Spatial Data</em>.
+Wiley Series in Probability and Mathematical Statistics. John Wiley
+&amp; Sons, New York, NY, 1st edition, 1991.
+<p>[2] Brian D. Ripley. <em>Spatial Statistics</em>.
+John Wiley \&amp; Sons, New York, NY, 1981.
+
+
+<p>
+<b>References to the indices include:</b>
+
+<p>[3] R. A. Fisher, H. G. Thornton, and W. A. Mackenzie.
+The accuracy of the plating method of estimating the density of
+bacterial populations.
+<em>Annals of Applied Biology</em>, 9:325-359, 1922.
+
+<p>[4] F. N. David and P. G. Moore. Notes on contagious distributions in
+plant populations. <em>Annals of Botany</em>, 18:47-53, 1954.
+
+<p>[5] J. B. Douglas.  Clustering and aggregation.
+<em>Sankhya B</em>, 37:398-417, 1975.
+
+<p>[6] M. Lloyd. Mean crowding.
+<em>Journal of Animal Ecology</em>, 36:1-30, 1967.
+
+<p>[7] M. Morista. Measuring the dispersion and analysis of distribution
+patterns. <em>Memoires of the Faculty of Science, Kyushu University, Series E.
+Biology</em>, 2:215-235, 1959.
+
+<p>
+<b>A more detailed background is given in the tutorial:</b>
+
+<!-- source of tutorial:
+     https://github.com/OSGeo/grass-legacy/tree/releasebranch_5_4/src/sites/s.qcount/tutorial
+-->
+
+<p>[8] James Darrell McCauley 1993. Complete Spatial Randomness and Quadrat Methods - 
+<a href="https://grass.osgeo.org/history_docs/v_qcount_tutorial.pdf">GRASS Tutorial on v.qcount</a>
+
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+Timestamp not working for header part of counts output. (2000-10-28)
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+<a href="http://mccauley-usa.com/">James Darrell McCauley</a>
+<br>when he was at:
+<a href="http://ABE.www.ecn.purdue.edu/ABE/">Agricultural Engineering</a>
+<a href="http://www.purdue.edu/">Purdue University</a>
+
+<p>Modified for GRASS 5.0 by Eric G. Miller (2000-10-28)
+<br>
+Modified for GRASS 5.7 by R. Blazek (2004-10-14)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.qcount">v.qcount source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.qcount">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

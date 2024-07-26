@@ -1,0 +1,19 @@
+type,distribution
+flow distribution,type
+flow mean,-9999
+flow SD,-9999
+flow autocorrelation,-9999
+flow change,-9999
+flow min,-9999
+temperature distribution,type
+temperature mean,-9999
+temperature SD,-9999
+temperature autocorrelation,-9999
+temperature change,-9999
+turbidity distribution,type
+turbidity mean,-9999
+turbidity SD,-9999
+turbidity autocorrelation,-9999
+turbidity change,-9999
+start date,1/1/1900
+end date,1/1/1901

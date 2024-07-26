@@ -1,0 +1,188 @@
+.TH d.northarrow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.northarrow\fR\fR  \- Displays a north arrow on the graphics monitor.
+.SH KEYWORDS
+display, cartography, map annotations, arrow
+.SH SYNOPSIS
+\fBd.northarrow\fR
+.br
+\fBd.northarrow \-\-help\fR
+.br
+\fBd.northarrow\fR [\-\fBtwr\fR]  [\fBstyle\fR=\fIstring\fR]   [\fBat\fR=\fIx,y\fR]   [\fBrotation\fR=\fIfloat\fR]   [\fBlabel\fR=\fIstring\fR]   [\fBcolor\fR=\fIname\fR]   [\fBfill_color\fR=\fIname\fR]   [\fBtext_color\fR=\fIname\fR]   [\fBwidth\fR=\fIfloat\fR]   [\fBfont\fR=\fIstring\fR]   [\fBfontsize\fR=\fIfloat\fR]   [\fBpath\fR=\fIname\fR]   [\fBcharset\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Draw the symbol without text
+.IP "\fB\-w\fR" 4m
+.br
+Do not rotate text with symbol
+.IP "\fB\-r\fR" 4m
+.br
+Use radians instead of degrees for rotation
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBstyle\fR=\fIstring\fR" 4m
+.br
+North arrow style
+.br
+Options: \fI1a, 1b, 2, 3, 4, 5, 6, 7a, 7b, 8a, 8b, 9, fancy_compass, basic_compass, arrow1, arrow2, arrow3, star\fR
+.br
+Default: \fI1a\fR
+.br
+\fB 1a\fR: Two color arrowhead
+.br
+\fB 1b\fR: Two color arrowhead with circle
+.br
+\fB 2\fR: Narrow with blending N
+.br
+\fB 3\fR: Long with small arrowhead
+.br
+\fB 4\fR: Inverted narrow inside a circle
+.br
+\fB 5\fR: Triangle and N inside a circle
+.br
+\fB 6\fR: Arrowhead and N inside a circle
+.br
+\fB 7a\fR: Tall half convex arrowhead
+.br
+\fB 7b\fR: Tall half concave arrowhead
+.br
+\fB 8a\fR: Thin arrow in a circle
+.br
+\fB 8b\fR: Fat arrow in a circle
+.br
+\fB 9\fR: One color arrowhead
+.br
+\fB fancy_compass\fR: Fancy compass
+.br
+\fB basic_compass\fR: Basic compass
+.br
+\fB arrow1\fR: Simple arrow
+.br
+\fB arrow2\fR: Thin arrow
+.br
+\fB arrow3\fR: Fat arrow
+.br
+\fB star\fR: 4\-point star
+.IP "\fBat\fR=\fIx,y\fR" 4m
+.br
+Screen coordinates of the rectangle\(cqs top\-left corner
+.br
+(0,0) is lower\-left of the display frame
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI85.0,15.0\fR
+.IP "\fBrotation\fR=\fIfloat\fR" 4m
+.br
+Rotation angle in degrees (counter\-clockwise)
+.br
+Default: \fI0\fR
+.IP "\fBlabel\fR=\fIstring\fR" 4m
+.br
+Displayed letter on the top of arrow
+.br
+Default: \fIN\fR
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Line color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBfill_color\fR=\fIname\fR" 4m
+.br
+Fill color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBtext_color\fR=\fIname\fR" 4m
+.br
+Text color
+.br
+Either a standard color name or R:G:B triplet
+.IP "\fBwidth\fR=\fIfloat\fR" 4m
+.br
+Line width
+.br
+Default: \fI0\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font name
+.IP "\fBfontsize\fR=\fIfloat\fR" 4m
+.br
+Font size
+.br
+Options: \fI1\-360\fR
+.br
+Default: \fI14\fR
+.IP "\fBpath\fR=\fIname\fR" 4m
+.br
+Path to font file
+.IP "\fBcharset\fR=\fIstring\fR" 4m
+.br
+Text encoding (only applicable to TrueType fonts)
+.SH DESCRIPTION
+\fId.northarrow\fR displays a north arrow symbol at
+the given screen coordinates. If no coordinates are given it will draw the
+north arrow in the bottom right of the display. It can draw the north arrow
+in a number of styles (see the
+wiki
+page for details).
+With certain styles of north arrow label \(cqN\(cq is displayed by default,
+and can be changed with option \fBlabel\fR, for example for different languages.
+The label can be hidden with \fB\-t\fR flag.
+.PP
+North arrow can be rotated, for example to align with true north, not grid north.
+The angle in degrees counter\-clockwise (or radians with \fB\-r\fR flag)
+can be specified with option \fBrotation\fR. Label is rotated together with the
+arrow, unless flag \fB\-w\fR is specified.
+.SH EXAMPLES
+Display a north arrow symbol as a basic compas with label NORTH,
+rotated by 8 degrees with label, with black line and gray fill:
+.br
+.br
+.nf
+\fC
+d.mon wx0
+d.northarrow style=basic_compas rotation=8 label=NORTH \-w color=black fill_color=gray
+d.mon \-r
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.barscale,
+d.graph,
+d.grid,
+d.legend
+\fR
+.SH AUTHOR
+Hamish Bowman, \fIDepartment of Geology, University of Otago, New Zealand\fR
+.br
+Improvements as part of GSoC 2016 by Adam Laza, \fICTU in Prague\fR
+.SH SOURCE CODE
+.PP
+Available at: d.northarrow source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

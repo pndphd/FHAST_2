@@ -1,0 +1,157 @@
+.TH r.kappa 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.kappa\fR\fR  \- Calculates error matrix and kappa parameter for accuracy assessment of classification result.
+.SH KEYWORDS
+raster, statistics, classification
+.SH SYNOPSIS
+\fBr.kappa\fR
+.br
+\fBr.kappa \-\-help\fR
+.br
+\fBr.kappa\fR [\-\fBwhm\fR] \fBclassification\fR=\fIname\fR \fBreference\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBtitle\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-w\fR" 4m
+.br
+Wide report
+.br
+132 columns (default: 80)
+.IP "\fB\-h\fR" 4m
+.br
+No header in the report
+.IP "\fB\-m\fR" 4m
+.br
+Print Matrix only
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBclassification\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map containing classification result
+.IP "\fBreference\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map containing reference classes
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file containing error matrix and kappa
+.br
+If not given write to standard output
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title for error matrix and kappa
+.br
+Default: \fIACCURACY ASSESSMENT\fR
+.SH DESCRIPTION
+\fIr.kappa\fR tabulates the error matrix of classification result by
+crossing classified map layer with respect to reference map layer.  Both
+overall \fIkappa\fR (accompanied by its \fIvariance\fR) and
+conditional \fIkappa\fR values are calculated.  This analysis program
+respects the current geographic region and mask settings.
+.PP
+\fIr.kappa\fR calculates the error matrix of the
+two map layers and prepares the table from which the report
+is to be created.  \fIkappa\fR values for overall and
+each classes are computed along with their variances. Also
+percent of comission and omission error, total correct
+classified result by pixel counts, total area in pixel
+counts and percentage of overall correctly classified
+pixels are tabulated.
+.PP
+The report will be write to an output file which is in
+plain text format and named by user at prompt of running
+the program.
+.PP
+The body of the report is arranged in panels.  The
+classified result map layer categories is arranged along
+the vertical axis of the table, while the reference map
+layer categories along the horizontal axis.  Each panel has
+a maximum of 5 categories (9 if wide format) across the
+top.  In addition, the last column of the last panel
+reflects a cross total of each column for each row.  All of
+the categories of the map layer arranged along the vertical
+axis, i.e., the reference map layer,  are included in each
+panel.  There is a total at the bottom of each column
+representing the sum of all the rows in that column.
+.SH NOTES
+It is recommended to reclassify categories of classified
+result map layer into a more manageable number before
+running \fIr.kappa\fR on the classified raster map
+layer. Because \fIr.kappa\fR calculates and then reports
+information for each and every category.
+.PP
+\fINA\fR\(cqs in output file mean non\-applicable in case
+\fIMASK\fR exists.
+.PP
+The \fBEstimated kappa value\fR in \fIr.kappa\fR is the value
+only for one class, i.e. the observed agreement between the
+classifications for those observations that have been classified by
+classifier 1 into the class i. In other words, here the choice of
+reference is important.
+.PP
+It is calculated as:
+.PP
+kpp[i] = (pii[i] \- pi[i] * pj[i]) / (pi[i] \- pi[i] * pj[i]);
+.PP
+where=
+.RS 4n
+.IP \(bu 4n
+pii[i] is the probability of agreement (i.e. number of pixels for which there is agreement divided by total number of assessed pixels)
+.IP \(bu 4n
+Pi[i] is the probability of classification i having classified the point as i
+.IP \(bu 4n
+Pj[i] is the probability of classification j having classified the point as i.
+.RE
+.SH EXAMPLE
+Example for North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region raster=landclass96 \-p
+r.kappa \-w classification=landuse96_28m reference=landclass96
+# export Kappa matrix as CSV file \(dqkappa.csv\(dq
+r.kappa classification=landuse96_28m reference=landclass96 output=kappa.csv \-m \-h
+\fR
+.fi
+.PP
+Verification of classified LANDSAT scene against training areas:
+.br
+.nf
+\fC
+r.kappa \-w classification=lsat7_2002_classes reference=training
+\fR
+.fi
+.SH SEE ALSO
+\fIg.region\fR,
+\fIr.category\fR,
+\fIr.mask\fR,
+\fIr.reclass\fR,
+\fIr.report\fR,
+\fIr.stats\fR
+.SH AUTHOR
+Tao Wen, University of Illinois at Urbana\-Champaign, Illinois
+.SH SOURCE CODE
+.PP
+Available at: r.kappa source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

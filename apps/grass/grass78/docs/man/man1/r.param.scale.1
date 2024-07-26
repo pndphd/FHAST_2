@@ -1,0 +1,176 @@
+.TH r.param.scale 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.param.scale\fR\fR  \- Extracts terrain parameters from a DEM.
+.br
+Uses a multi\-scale approach by taking fitting quadratic parameters to any size window (via least squares).
+.SH KEYWORDS
+raster, geomorphology, terrain, elevation, landform
+.SH SYNOPSIS
+\fBr.param.scale\fR
+.br
+\fBr.param.scale \-\-help\fR
+.br
+\fBr.param.scale\fR [\-\fBc\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBslope_tolerance\fR=\fIfloat\fR]   [\fBcurvature_tolerance\fR=\fIfloat\fR]   [\fBsize\fR=\fIinteger\fR]   [\fBmethod\fR=\fIstring\fR]   [\fBexponent\fR=\fIfloat\fR]   [\fBzscale\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Constrain model through central window cell
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map containing morphometric parameter
+.IP "\fBslope_tolerance\fR=\fIfloat\fR" 4m
+.br
+Slope tolerance that defines a \(cqflat\(cq surface (degrees)
+.br
+Default: \fI1.0\fR
+.IP "\fBcurvature_tolerance\fR=\fIfloat\fR" 4m
+.br
+Curvature tolerance that defines \(cqplanar\(cq surface
+.br
+Default: \fI0.0001\fR
+.IP "\fBsize\fR=\fIinteger\fR" 4m
+.br
+Size of processing window (odd number only)
+.br
+Options: \fI3\-499\fR
+.br
+Default: \fI3\fR
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Morphometric parameter in \(cqsize\(cq window to calculate
+.br
+Options: \fIelev, slope, aspect, profc, planc, longc, crosc, minic, maxic, feature\fR
+.br
+Default: \fIelev\fR
+.IP "\fBexponent\fR=\fIfloat\fR" 4m
+.br
+Exponent for distance weighting (0.0\-4.0)
+.br
+Default: \fI0.0\fR
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Vertical scaling factor
+.br
+Default: \fI1.0\fR
+.SH DESCRIPTION
+\fIr.param.scale\fR extracts terrain parameters from a digital elevation model. Uses a
+multi\-scale approach by fitting a bivariate quadratic polynomial to a given
+window size using least squares.
+.PP
+The module calculates the following parameters (terminology is from Wood,
+1996 with related terminology used in other GRASS modules listed in
+brackets):
+.RS 4n
+.IP \(bu 4n
+\fIelev\fR: Generalised elevation value (for resampling purposes at different
+scale)
+.IP \(bu 4n
+\fIslope\fR: Magnitude of maximum gradient (steepest slope angle)
+.IP \(bu 4n
+\fIaspect\fR: Direction of maximum gradient (steepest slope direction=flow direction)
+.IP \(bu 4n
+\fIprofc\fR: profile curvature (curvature intersecting with the plane
+defined by \fIZ\fR axis and maximum gradient direction). Positive values
+describe convex profile curvature, negative values concave profile
+curvature.
+.IP \(bu 4n
+\fIplanc\fR: plan curvature (horizontal curvature, intersecting with
+the \fIXY\fR plane)
+.IP \(bu 4n
+\fIlongc\fR: longitudinal curvature (profile curvature intersecting
+with the plane defined by the surface normal and maximum gradient direction)
+.IP \(bu 4n
+\fIcrosc\fR: cross\-sectional curvature (tangential curvature intersecting
+with the plane defined by the surface normal and a tangent to the contour
+\- perpendicular to maximum gradient direction)
+.IP \(bu 4n
+\fImaxic\fR: maximum curvature (can be in any direction)
+.IP \(bu 4n
+\fIminic\fR: minimum curvature (in direction perpendicular to the direction
+of of maximum curvature)
+.IP \(bu 4n
+\fIfeature\fR: Morphometric features: peaks, ridges, passes, channels, pits and planes
+.RE
+.SH NOTES
+In \fIr.param.scale\fR the direction of maximum gradient (considered
+downslope) is stored as (West is 0 degree, East is +/\- 180 degree):
+.RS 4n
+.IP \(bu 4n
+0..+180 degree from West to North to East
+.IP \(bu 4n
+0..\-180 degree from West to South to East
+.RE
+Note that the aspect map is calculated differently from
+\fIr.slope.aspect\fR.
+.SH EXAMPLE
+The next commands will create a geomorphological map of the Spearfish sample
+dataset region:
+.br
+.nf
+\fC
+g.region raster=elevation.10m \-p
+r.param.scale in=elevation.10m output=morphology method=feature size=9
+\fR
+.fi
+.br
+\fIFigure: Geomorphological map of a subregion in the Spearfish (SD) area\fR
+.SH TODO
+Fix bug when \(gaconstrain through central cell\(cq option selected. Create color
+tables for all output files (presently only on features).
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Wood, J. (1996): The Geomorphological characterisation of
+Digital Elevation Models. Diss., Department of Geography, University
+of Leicester, U.K
+.br
+online at:
+http://hdl.handle.net/2381/34503
+.IP \(bu 4n
+Java Code in
+LandSerf
+that implements the same procedure
+.RE
+.SH SEE ALSO
+\fI
+r.geomorphon,
+r.slope.aspect
+\fR
+.SH AUTHORS
+jwo@le.ac.uk
+\- ASSIST\(cqs home
+.PP
+Update to FP 3/2002: L. Potrich, M. Neteler, S. Menegon (ITC\-irst)
+.SH SOURCE CODE
+.PP
+Available at: r.param.scale source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

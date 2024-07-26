@@ -1,0 +1,1232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+ <title>GRASS GIS 7.8.5 Reference Manual: Parser standard options index</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <meta name="Author" content="GRASS Development Team">
+
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+<link rel="stylesheet" href="parser_standard_options.css" type="text/css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="jquery.fixedheadertable.min.js"></script>
+<script type="text/javascript" src="parser_standard_options.js"></script>
+</head>
+<body style="width: 99%">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+<h2>Parser standard options</h2>
+<ul>
+<table id="opts_table" class="scroolTable">
+  <thead>
+  <tr>
+    <th>option</th>
+    <th>answer</th>
+    <th>description</th>
+    <th>descriptions</th>
+    <th>gisprompt</th>
+    <th>key</th>
+    <th>key_desc</th>
+    <th>label</th>
+    <th>multiple</th>
+    <th>options</th>
+    <th>required</th>
+    <th>type</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>G_OPT_DB_SQL</td>
+    <td></td>
+    <td>Example: select * from towns where population > 10000</td>
+    <td></td>
+    <td></td>
+    <td>sql</td>
+    <td>sql_query</td>
+    <td>SQL SELECT statement</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_WHERE</td>
+    <td></td>
+    <td>Example: income < 1000 and population >= 10000</td>
+    <td></td>
+    <td>old,sql_query,sql_query</td>
+    <td>where</td>
+    <td>sql_query</td>
+    <td>WHERE conditions of SQL statement without 'where' keyword</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_TABLE</td>
+    <td></td>
+    <td>Name of attribute table</td>
+    <td></td>
+    <td>old,dbtable,dbtable</td>
+    <td>table</td>
+    <td>name</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_DRIVER</td>
+    <td></td>
+    <td>Name of database driver</td>
+    <td></td>
+    <td>old,dbdriver,dbdriver</td>
+    <td>driver</td>
+    <td>name</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_DATABASE</td>
+    <td></td>
+    <td>Name of database</td>
+    <td></td>
+    <td>old,dbname,dbname</td>
+    <td>database</td>
+    <td>name</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_SCHEMA</td>
+    <td></td>
+    <td>Do not use this option if schemas  are not supported by driver/database server</td>
+    <td></td>
+    <td></td>
+    <td>schema</td>
+    <td>name</td>
+    <td>Database schema</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_COLUMN</td>
+    <td></td>
+    <td>Name of attribute column</td>
+    <td></td>
+    <td>old,dbcolumn,dbcolumn</td>
+    <td>column</td>
+    <td>name</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_COLUMNS</td>
+    <td></td>
+    <td>Name of attribute column(s</td>
+    <td></td>
+    <td>old,dbcolumn,dbcolumn</td>
+    <td>columns</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_DB_KEYCOLUMN</td>
+    <td>GV_KEY_COLUMN</td>
+    <td>Must refer to an integer column</td>
+    <td></td>
+    <td></td>
+    <td>key</td>
+    <td>name</td>
+    <td>Name of key column</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_I_GROUP</td>
+    <td></td>
+    <td>Name of input imagery group</td>
+    <td></td>
+    <td>old,group,group</td>
+    <td>group</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_I_SUBGROUP</td>
+    <td></td>
+    <td>Name of input imagery subgroup</td>
+    <td></td>
+    <td>old,subgroup,subgroup</td>
+    <td>subgroup</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_MEMORYMB</td>
+    <td>300</td>
+    <td>Cache size for raster rows</td>
+    <td></td>
+    <td></td>
+    <td>memory</td>
+    <td>memory in MB</td>
+    <td>Maximum memory to be used (in MB</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_INTEGER</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_INPUT</td>
+    <td></td>
+    <td>Name of input raster map</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_INPUTS</td>
+    <td></td>
+    <td>Name of input raster map(s</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_OUTPUT</td>
+    <td></td>
+    <td>Name for output raster map</td>
+    <td></td>
+    <td>new,cell,raster</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_OUTPUTS</td>
+    <td></td>
+    <td>Name for output raster map(s</td>
+    <td></td>
+    <td>new,cell,raster</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_MAP</td>
+    <td></td>
+    <td>Name of raster map</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_MAPS</td>
+    <td></td>
+    <td>Name of raster map(s</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_BASE</td>
+    <td></td>
+    <td>Name of base raster map</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>base</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_COVER</td>
+    <td></td>
+    <td>Name of cover raster map</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>cover</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_ELEV</td>
+    <td></td>
+    <td>Name of input elevation raster map</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>elevation</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_ELEVS</td>
+    <td></td>
+    <td>Name of input elevation raster map(s</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>elevation</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_TYPE</td>
+    <td></td>
+    <td>Storage type for resultant raster map</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td></td>
+    <td>Type of raster map to be created</td>
+    <td>NO</td>
+    <td>CELL,FCELL,DCELL</td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_INTERP_TYPE</td>
+    <td></td>
+    <td>Sampling interpolation method</td>
+    <td></td>
+    <td></td>
+    <td>method</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>nearest,bilinear,bicubic</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_BASENAME_INPUT</td>
+    <td></td>
+    <td>Name of input basename raster map(s</td>
+    <td></td>
+    <td>old,cell,raster</td>
+    <td>input</td>
+    <td>basename</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R_BASENAME_OUTPUT</td>
+    <td></td>
+    <td>Name for output basename raster map(s</td>
+    <td></td>
+    <td>new,cell,raster</td>
+    <td>output</td>
+    <td>basename</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_INPUT</td>
+    <td></td>
+    <td>Name of input 3D raster map</td>
+    <td></td>
+    <td>old,grid3,raster_3d</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_INPUTS</td>
+    <td></td>
+    <td>Name of input 3D raster map(s</td>
+    <td></td>
+    <td>old,grid3,raster_3d</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_OUTPUT</td>
+    <td></td>
+    <td>Name for output 3D raster map</td>
+    <td></td>
+    <td>new,grid3,raster_3d</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_MAP</td>
+    <td></td>
+    <td>Name of 3D raster map</td>
+    <td></td>
+    <td>old,grid3,raster_3d</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_MAPS</td>
+    <td></td>
+    <td>Name of 3D raster map(s</td>
+    <td></td>
+    <td>old,grid3,raster_3d</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_TYPE</td>
+    <td>default</td>
+    <td>Data type used in the output raster3d map</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>default,double,float</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_PRECISION</td>
+    <td>default</td>
+    <td>Number of digits used as mantissa in the internal map storage, 0 -23 for float, 0 - 52 for double, max or default</td>
+    <td></td>
+    <td></td>
+    <td>precision</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_COMPRESSION</td>
+    <td>default</td>
+    <td>The compression method used in the output raster3d map</td>
+    <td></td>
+    <td></td>
+    <td>compression</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>default,zip,none</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_R3_TILE_DIMENSION</td>
+    <td>default</td>
+    <td>The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8</td>
+    <td></td>
+    <td></td>
+    <td>tiledimension</td>
+    <td>XxYxZ</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_INPUT</td>
+    <td></td>
+    <td>Or data source for direct OGR access</td>
+    <td></td>
+    <td>old,vector,vector</td>
+    <td>input</td>
+    <td>name</td>
+    <td>Name of input vector map</td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_INPUTS</td>
+    <td></td>
+    <td>Or data source(s) for direct OGR access</td>
+    <td></td>
+    <td>old,vector,vector</td>
+    <td>input</td>
+    <td>name</td>
+    <td>Name of input vector map(s</td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_OUTPUT</td>
+    <td></td>
+    <td>Name for output vector map</td>
+    <td></td>
+    <td>new,vector,vector</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_MAP</td>
+    <td></td>
+    <td>Or data source for direct OGR access</td>
+    <td></td>
+    <td>old,vector,vector</td>
+    <td>map</td>
+    <td>name</td>
+    <td>Name of vector map</td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_MAPS</td>
+    <td></td>
+    <td>Name of vector map(s</td>
+    <td></td>
+    <td>old,vector,vector</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_TYPE</td>
+    <td>point,line,boundary,centroid,area</td>
+    <td>Input feature type</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>point,line,boundary,centroid,area</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V3_TYPE</td>
+    <td>point,line,boundary,centroid,area,face,kernel</td>
+    <td>Input feature type</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>point,line,boundary,centroid,area,face,kernel</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_FIELD</td>
+    <td>1</td>
+    <td>Vector features can have category values in different layers.  This number determines which layer to use.  When used with direct OGR access this is the layer name.</td>
+    <td></td>
+    <td>old,layer,layer</td>
+    <td>layer</td>
+    <td></td>
+    <td>Layer number or name</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_FIELD_ALL</td>
+    <td>-1</td>
+    <td>A single vector map can be connected to multiple database  tables. This number determines which table to use.  When used with direct OGR access this is the layer name.</td>
+    <td></td>
+    <td>old,layer_all,layer</td>
+    <td>layer</td>
+    <td></td>
+    <td>Layer number or name ('-1' for all layers</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_CAT</td>
+    <td></td>
+    <td>Category value</td>
+    <td></td>
+    <td>old,cat,cats</td>
+    <td>cat</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_INTEGER</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_CATS</td>
+    <td></td>
+    <td>Example: 1,3,7-9,13</td>
+    <td></td>
+    <td>old,cats,cats</td>
+    <td>cats</td>
+    <td>range</td>
+    <td>Category values</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_ID</td>
+    <td></td>
+    <td>Feature id</td>
+    <td></td>
+    <td></td>
+    <td>id</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_INTEGER</td>
+  </tr>
+  <tr>
+    <td>G_OPT_V_IDS</td>
+    <td></td>
+    <td>Example: 1,3,7-9,13</td>
+    <td></td>
+    <td></td>
+    <td>ids</td>
+    <td>range</td>
+    <td>Feature ids</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_F_INPUT</td>
+    <td></td>
+    <td>Name of input file</td>
+    <td></td>
+    <td>old,file,file</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_F_BIN_INPUT</td>
+    <td></td>
+    <td>Name of input file</td>
+    <td></td>
+    <td>old,bin,file</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_F_OUTPUT</td>
+    <td></td>
+    <td>Name for output file</td>
+    <td></td>
+    <td>new,file,file</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_F_SEP</td>
+    <td>pipe</td>
+    <td>Special characters: pipe, comma, space, tab, newline</td>
+    <td></td>
+    <td>old,separator,separator</td>
+    <td>separator</td>
+    <td>character</td>
+    <td>Field separator</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_C</td>
+    <td>DEFAULT_FG_COLOR</td>
+    <td>Either a standard color name or R:G:B triplet</td>
+    <td></td>
+    <td>old,color,color</td>
+    <td>color</td>
+    <td>name</td>
+    <td>Color</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_CN</td>
+    <td>DEFAULT_FG_COLOR</td>
+    <td>Either a standard color name, R:G:B triplet, or \none\</td>
+    <td></td>
+    <td>old,color_none,color</td>
+    <td>color</td>
+    <td>name</td>
+    <td>Color</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_DIR</td>
+    <td></td>
+    <td>Name of input directory</td>
+    <td></td>
+    <td>old,dir,dir</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_UNITS</td>
+    <td></td>
+    <td>Units</td>
+    <td></td>
+    <td></td>
+    <td>units</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>miles,feet,meters,kilometers,acres,hectares</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_DATATYPE</td>
+    <td></td>
+    <td>Data type(s</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td>datatype</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_MAPSET</td>
+    <td></td>
+    <td>'.' for current mapset</td>
+    <td></td>
+    <td>old,mapset,mapset</td>
+    <td>mapset</td>
+    <td>name</td>
+    <td>Name of mapset (default: current search path</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_LOCATION</td>
+    <td></td>
+    <td>Location name (not location path</td>
+    <td></td>
+    <td>old,location,location</td>
+    <td>location</td>
+    <td>name</td>
+    <td>Location name</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_DBASE</td>
+    <td></td>
+    <td>Default: path to the current GRASS GIS database</td>
+    <td></td>
+    <td>old,dbase,dbase</td>
+    <td>dbase</td>
+    <td>path</td>
+    <td>GRASS GIS database directory</td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_COORDS</td>
+    <td></td>
+    <td>Coordinates</td>
+    <td></td>
+    <td>old,coords,coords</td>
+    <td>coordinates</td>
+    <td>east,north</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_DOUBLE</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_COLR</td>
+    <td></td>
+    <td>Name of color table</td>
+    <td>G_color_rules_description_type(</td>
+    <td>old,colortable,colortable</td>
+    <td>color</td>
+    <td>style</td>
+    <td></td>
+    <td></td>
+    <td>G_color_rules_options(</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_NULL_VALUE</td>
+    <td></td>
+    <td>String representing NULL value</td>
+    <td></td>
+    <td></td>
+    <td>null_value</td>
+    <td>string</td>
+    <td></td>
+    <td>NO</td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_M_REGION</td>
+    <td></td>
+    <td>Name of saved region</td>
+    <td></td>
+    <td>old,windows,region</td>
+    <td>region</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STDS_INPUT</td>
+    <td></td>
+    <td>Name of the input space time dataset</td>
+    <td></td>
+    <td>old,stds,stds</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STDS_INPUTS</td>
+    <td></td>
+    <td>Name of the input space time datasets</td>
+    <td></td>
+    <td>old,stds,stds</td>
+    <td>inputs</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STDS_OUTPUT</td>
+    <td></td>
+    <td>Name of the output space time dataset</td>
+    <td></td>
+    <td>new,stds,stds</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STRDS_INPUT</td>
+    <td></td>
+    <td>Name of the input space time raster dataset</td>
+    <td></td>
+    <td>old,strds,strds</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STRDS_INPUTS</td>
+    <td></td>
+    <td>Name of the input space time raster datasets</td>
+    <td></td>
+    <td>old,strds,strds</td>
+    <td>inputs</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STRDS_OUTPUT</td>
+    <td></td>
+    <td>Name of the output space time raster dataset</td>
+    <td></td>
+    <td>new,strds,strds</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STRDS_OUTPUTS</td>
+    <td></td>
+    <td>Name of the output space time raster datasets</td>
+    <td></td>
+    <td>new,strds,strds</td>
+    <td>outputs</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STVDS_INPUT</td>
+    <td></td>
+    <td>Name of the input space time vector dataset</td>
+    <td></td>
+    <td>old,stvds,stvds</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STVDS_INPUTS</td>
+    <td></td>
+    <td>Name of the input space time vector datasets</td>
+    <td></td>
+    <td>old,stvds,stvds</td>
+    <td>inputs</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STVDS_OUTPUT</td>
+    <td></td>
+    <td>Name of the output space time vector dataset</td>
+    <td></td>
+    <td>new,stvds,stvds</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STR3DS_INPUT</td>
+    <td></td>
+    <td>Name of the input space time raster3d dataset</td>
+    <td></td>
+    <td>old,str3ds,str3ds</td>
+    <td>input</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STR3DS_INPUTS</td>
+    <td></td>
+    <td>Name of the input space time raster3d datasets</td>
+    <td></td>
+    <td>old,str3ds,str3ds</td>
+    <td>inputs</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STR3DS_OUTPUT</td>
+    <td></td>
+    <td>Name of the output space time raster3d dataset</td>
+    <td></td>
+    <td>new,str3ds,str3ds</td>
+    <td>output</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_STDS_TYPE</td>
+    <td>strds</td>
+    <td>Type of the input space time dataset</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td>strds,stvds,str3ds</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_MAP_INPUT</td>
+    <td></td>
+    <td>Name of the input map</td>
+    <td></td>
+    <td>old,map,map</td>
+    <td>map</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_MAP_INPUTS</td>
+    <td></td>
+    <td>Name of the input maps</td>
+    <td></td>
+    <td>old,map,map</td>
+    <td>maps</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td></td>
+    <td>YES</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_MAP_TYPE</td>
+    <td>raster</td>
+    <td>Type of the input map</td>
+    <td></td>
+    <td></td>
+    <td>type</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td>raster,vector,raster_3d</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_T_TYPE</td>
+    <td>absolute</td>
+    <td>The temporal type of the space time dataset</td>
+    <td></td>
+    <td></td>
+    <td>temporaltype</td>
+    <td>name</td>
+    <td></td>
+    <td></td>
+    <td>absolute,relative</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_T_WHERE</td>
+    <td></td>
+    <td>Example: start_time > '2001-01-01 12:30:00'</td>
+    <td></td>
+    <td></td>
+    <td>where</td>
+    <td>sql_query</td>
+    <td>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</td>
+    <td></td>
+    <td></td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  <tr>
+    <td>G_OPT_T_SAMPLE</td>
+    <td>start</td>
+    <td>The method to be used for sampling the input dataset</td>
+    <td></td>
+    <td></td>
+    <td>sampling</td>
+    <td>name</td>
+    <td></td>
+    <td>YES</td>
+    <td>start,during,overlap,contain,equal,follows,precedes</td>
+    <td>NO</td>
+    <td>TYPE_STRING</td>
+  </tr>
+  </tbody>
+</table><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="https://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

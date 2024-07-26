@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.statistics - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.statistics</b></em>  - Calculates category or object oriented statistics.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#zonal statistics">zonal statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.statistics</b><br></div>
+<b>r.statistics --help</b><br>
+<div id="synopsis"><b>r.statistics</b> [-<b>c</b>] <b>base</b>=<em>name</em> <b>cover</b>=<em>name</em> <b>method</b>=<em>string</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Cover values extracted from the category labels of the cover map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>base</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of base raster map</dd>
+
+<dt><b>cover</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of cover raster map</dd>
+
+<dt><b>method</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Method of object-based statistic</dd>
+<dd>Options: <em>diversity, average, mode, median, avedev, stddev, variance, skewness, kurtosis, min, max, sum</em></dd>
+<dd><b>diversity</b>: Diversity of values in specified objects in %%</dd>
+<dd><b>average</b>: Average of values in specified objects</dd>
+<dd><b>mode</b>: Mode of values in specified objects</dd>
+<dd><b>median</b>: Median of values in specified objects</dd>
+<dd><b>avedev</b>: Average deviation of values in specified objects</dd>
+<dd><b>stddev</b>: Standard deviation of values in specified objects</dd>
+<dd><b>variance</b>: Variance of values in specified objects</dd>
+<dd><b>skewness</b>: Skewnes of values in specified objects</dd>
+<dd><b>kurtosis</b>: Kurtosis of values in specified objects</dd>
+<dd><b>min</b>: Minimum of values in specified objects</dd>
+<dd><b>max</b>: Maximum of values in specified objects</dd>
+<dd><b>sum</b>: Sum of values in specified objects</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Resultant raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.statistics</em> is a tool to analyse exploratory statistics of a categorical
+"cover layer" according to how it intersects with objects in a "base layer".  A
+variety of standard statistical measures are possible (called "zonal statistics"
+in some GIS). 
+
+All cells in the base layer are considered one object for the analysis.  For 
+some applications, one will first want to prepare the input data so that
+all areas of contiguous cell category values in the base layer are uniquely
+identified, which can be done with <em>r.clump</em>.
+<br>
+
+The available methods are the following:
+<ul>
+<li>average deviation</li>
+<li>average</li>
+<li>diversity</li>
+<li>kurtosis</li>
+<li>maximum</li>
+<li>median</li>
+<li>minimum</li>
+<li>mode</li>
+<li>skewness</li>
+<li>standard deviation</li>
+<li>sum</li>
+<li>variance</li>
+</ul>
+
+The calculations will be performed on each area of data of the
+cover layers which fall within each unique value, or category, of the base layer.
+<p>Setting the <em>-c</em> flag the category labels of the covering raster
+layer will be used.  This is nice to avoid the GRASS limitation to integer
+in raster maps because using category values floating point numbers can be
+stored.
+
+<p>All calculations create an output layer.  The output 
+layer is a reclassified version of the base layer with identical
+category values, but modified category labels - the results of the calculations
+are stored in the category labels of the output layer.
+
+<h2><a name="notes">NOTES</a></h2>
+
+For floating-point cover map support, see the alternative
+<em><a href="r.stats.zonal.html">r.stats.zonal</a></em>.
+
+For quantile calculations with support for floating-point cover maps, see the
+alternative <em><a href="r.stats.quantile.html">r.stats.quantile</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Calculation of average elevation of each field in the Spearfish region:
+
+<div class="code"><pre>
+r.statistics base=fields cover=elevation.dem out=elevstats method=average
+r.category elevstats
+r.mapcalc "fieldelev = @elevstats"
+r.univar fieldelev
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="r.category.html">r.category</a>,
+<a href="r.clump.html">r.clump</a>,
+<a href="r.mode.html">r.mode</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.neighbors.html">r.neighbors</a>,
+<a href="r.stats.quantile.html">r.stats.quantile</a>,
+<a href="r.stats.zonal.html">r.stats.zonal</a>,
+<a href="r.univar.html">r.univar</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Martin Schroeder, Geographisches Institut Heidelberg, Germany
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.statistics">r.statistics source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.statistics">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.gui - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.gui</b></em>  - Launches a GRASS graphical user interface (GUI) session.<BR>
+Optionally updates default user interface settings.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_GUI.html">GUI</a>, <a href="keywords.html#user interface">user interface</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.gui</b><br></div>
+<b>g.gui --help</b><br>
+<div id="synopsis"><b>g.gui</b> [-<b>fdn</b>]  [<b>ui</b>=<em>string</em>]   [<b>workspace</b>=<em>name.gxw</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-f</b></dt>
+<dd>Start GUI in the foreground</dd>
+<dd>By default the GUI starts in the background and control is immediately returned to the caller. When GUI runs in foregreound, it blocks the command line</dd>
+
+<dt><b>-d</b></dt>
+<dd>Update default user interface settings</dd>
+
+<dt><b>-n</b></dt>
+<dd>Do not launch GUI after updating the default user interface settings</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>ui</b>=<em>string</em></dt>
+<dd>User interface</dd>
+<dd>Options: <em>wxpython, text, gtext</em></dd>
+<dd>Default: <em>wxpython</em></dd>
+<dd><b>wxpython</b>: wxPython based GUI (wxGUI)</dd>
+<dd><b>text</b>: command line interface only</dd>
+<dd><b>gtext</b>: command line interface with GUI startup screen</dd>
+
+<dt><b>workspace</b>=<em>name.gxw</em></dt>
+<dd>Name of workspace file to load on start-up</dd>
+<dd>This is valid only for wxGUI (wxpython)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>g.gui</em> module allows user to start the Graphical User 
+Interface (GUI) from the command line prompt or to change the 
+default User Interface (UI) settings.
+
+<p>
+GRASS GIS 7 comes with both a wxPython-based GUI
+aka <em><a href="wxGUI.html">wxGUI</a></em> (<b>ui=wxpython</b>) and
+command line text-based UI (<b>ui=text</b>).
+
+<h2><a name="notes">NOTES</a></h2>
+
+If the <b>-d</b> update flag is given or the <tt>GRASS_GUI</tt> 
+environmental <a href="variables.html">variable</a> is unset, then 
+the GRASS internal variable <tt>GUI</tt> is permanently changed and 
+the selected <b>ui</b> will be used as the default UI from then on.
+
+<p>
+All GRASS internal variables (see <em><a href="g.gisenv.html">g.gisenv</a></em>)
+are stored in the user's home directory in a hidden file called
+<tt>$HOME/.grass7/rc</tt> on Unix-based operating systems
+and <tt>%APPDATA%\GRASS7\rc</tt> on MS Windows. Note that these GRASS
+internal variables are not the shell environment variables and the
+<tt>rc</tt> file is not a classic UNIX run command file, it just
+contains persistent GRASS variables.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Set default user interface setting to command line, text-based UI:
+<div class="code"><pre>
+g.gui -d ui=text
+</pre></div>
+
+<p>
+Set default user interface setting to the graphical user interface
+(GUI) and <i>launch</i> the GUI:
+<div class="code"><pre>
+g.gui -d ui=wxpython
+</pre></div>
+
+<p>
+Set default user interface setting to the graphical user interface
+(GUI) but <i>do not launch</i> the GUI:
+<div class="code"><pre>
+g.gui -dn ui=wxpython
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="wxGUI.html">wxGUI</a>,
+<a href="g.gisenv.html">g.gisenv</a>,
+<a href="variables.html">GRASS variables</a>
+</em>
+
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/WxPython-based_GUI_for_GRASS">wxGUI wiki page</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Martin Landa, FBK-irst, Trento, Italy<br>
+Hamish Bowman, Otago University, Dunedin, New Zealand (fine tuning)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.gui">g.gui source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.gui">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

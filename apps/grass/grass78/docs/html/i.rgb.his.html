@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.rgb.his - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.rgb.his</b></em>  - Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_color_transformation.html">color transformation</a>, <a href="keywords.html#RGB">RGB</a>, <a href="keywords.html#HIS">HIS</a>, <a href="keywords.html#IHS">IHS</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.rgb.his</b><br></div>
+<b>i.rgb.his --help</b><br>
+<div id="synopsis"><b>i.rgb.his</b> <b>red</b>=<em>name</em> <b>green</b>=<em>name</em> <b>blue</b>=<em>name</em> <b>hue</b>=<em>name</em> <b>intensity</b>=<em>name</em> <b>saturation</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>red</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map (red)</dd>
+
+<dt><b>green</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map (green)</dd>
+
+<dt><b>blue</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map (blue)</dd>
+
+<dt><b>hue</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map (hue)</dd>
+
+<dt><b>intensity</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map (intensity)</dd>
+
+<dt><b>saturation</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map (saturation)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.rgb.his</em> is an image processing program that
+processes three input raster map layers as red, green, and
+blue components and produces three output raster map layers
+representing the hue, intensity, and saturation of the
+data.  The output raster map layers are created by a
+standard red-green-blue (RGB) to hue-intensity-saturation
+(HIS) color transformation.  Each output raster map layer
+is given a linear gray scale color table.  The current
+geographic region definition and mask settings are
+respected.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="i.his.rgb.html">i.his.rgb</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+David Satnik, GIS Laboratory, 
+Central Washington University, 
+<br>
+with acknowledgements to Ali Vali, Space Research
+Center, for the core routine. 
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.rgb.his">i.rgb.his source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.rgb.his">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

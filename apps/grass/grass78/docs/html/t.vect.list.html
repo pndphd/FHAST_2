@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.vect.list.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.vect.list.py</b></em>  - Lists registered maps of a space time vector dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_map_management.html">map management</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#list">list</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.vect.list.py</b><br></div>
+<b>t.vect.list.py --help</b><br>
+<div id="synopsis"><b>t.vect.list.py</b> [-<b>u</b>] <b>input</b>=<em>name</em>  [<b>order</b>=<em>string</em>[,<i>string</i>,...]]   [<b>columns</b>=<em>string</em>[,<i>string</i>,...]]   [<b>where</b>=<em>sql_query</em>]   [<b>method</b>=<em>string</em>]   [<b>separator</b>=<em>character</em>]   [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-u</b></dt>
+<dd>Suppress printing of column names</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time vector dataset</dd>
+
+<dt><b>order</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Sort the space time dataset by category</dd>
+<dd>Options: <em>id, name, layer, creator, mapset, temporal_type, creation_time, start_time, end_time, north, south, west, east, points, lines, boundaries, centroids, faces, kernels, primitives, nodes, areas, islands, holes, volumes</em></dd>
+<dd>Default: <em>start_time</em></dd>
+
+<dt><b>columns</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Columns to be printed to stdout</dd>
+<dd>Options: <em>id, name, layer, creator, mapset, temporal_type, creation_time, start_time, end_time, north, south, west, east, points, lines, boundaries, centroids, faces, kernels, primitives, nodes, areas, islands, holes, volumes</em></dd>
+<dd>Default: <em>name,layer,mapset,start_time,end_time</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Method used for data listing</dd>
+<dd>Options: <em>cols, comma, delta, deltagaps, gran</em></dd>
+<dd>Default: <em>cols</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator character between the output columns</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#default-query" class="toc">Default query</a></li>
+        <li class="toc"><a href="#using-method-option" class="toc">Using method option</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<!-- this needs to be expanded -->
+
+This module provides the same functionality as
+<a href="t.rast.list.html">t.rast.list</a>, the only difference is the
+vector map layer metadata.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="default-query">Default query</a></h3>
+
+This example show a relative space time vector dataset with the first
+three maps with a range of years, instead the last five are valid only
+for one year:
+
+<div class="code"><pre>
+t.vect.list shoreline@shoreline
+name|layer|mapset|start_time|end_time
+shoreline_1849_1873|None|shoreline|1849|1873
+shoreline_1925_1946|None|shoreline|1925|1946
+shoreline_1970_1988|None|shoreline|1970|1988
+shoreline_1997|None|shoreline|1997|None
+shoreline_1998|None|shoreline|1998|None
+shoreline_2003|None|shoreline|2003|None
+shoreline_2004|None|shoreline|2004|None
+shoreline_2009|None|shoreline|2009|None
+</pre></div>
+
+<h3><a name="using-method-option">Using method option</a></h3>
+
+Method option is able to show vector in different way. By default <em>cols</em>
+value is used, the value <em>deltagaps</em> will print the delta between
+maps and also the gaps if they exist (like in this example).
+
+<div class="code"><pre>
+t.vect.list method=deltagaps input=shoreline
+id|name|layer|mapset|start_time|end_time|interval_length|distance_from_begin
+shoreline_1849_1873@shoreline|shoreline_1849_1873|None|shoreline|1849|1873|24|0
+None|None|None|None|1873|1925|52|24
+shoreline_1925_1946@shoreline|shoreline_1925_1946|None|shoreline|1925|1946|21|76
+None|None|None|None|1946|1970|24|97
+shoreline_1970_1988@shoreline|shoreline_1970_1988|None|shoreline|1970|1988|18|121
+None|None|None|None|1988|1997|9|139
+shoreline_1997@shoreline|shoreline_1997|None|shoreline|1997|None|None|148
+None|None|None|None|1997|1998|1|148
+shoreline_1998@shoreline|shoreline_1998|None|shoreline|1998|None|None|149
+None|None|None|None|1998|2003|5|149
+shoreline_2003@shoreline|shoreline_2003|None|shoreline|2003|None|None|154
+None|None|None|None|2003|2004|1|154
+shoreline_2004@shoreline|shoreline_2004|None|shoreline|2004|None|None|155
+None|None|None|None|2004|2009|5|155
+shoreline_2009@shoreline|shoreline_2009|None|shoreline|2009|None|None|160
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.list.html">g.list</a>,
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>,
+<a href="t.list.html">t.list</a>,
+<a href="t.rast.list.html">t.rast.list</a>,
+<a href="t.rast3d.list.html">t.rast3d.list</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.vect.list">t.vect.list source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.vect.list">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

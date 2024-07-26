@@ -1,0 +1,183 @@
+.TH r.random.cells 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.random.cells\fR\fR  \- Generates random cell values with spatial dependence.
+.SH KEYWORDS
+raster, sampling, random, autocorrelation
+.SH SYNOPSIS
+\fBr.random.cells\fR
+.br
+\fBr.random.cells \-\-help\fR
+.br
+\fBr.random.cells\fR \fBoutput\fR=\fIname\fR \fBdistance\fR=\fIfloat\fR  [\fBncells\fR=\fIinteger\fR]   [\fBseed\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBdistance\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+Maximum distance of spatial correlation (value >= 0.0)
+.IP "\fBncells\fR=\fIinteger\fR" 4m
+.br
+Maximum number of cells to be created
+.br
+Options: \fI1\-\fR
+.IP "\fBseed\fR=\fIinteger\fR" 4m
+.br
+Random seed, default [random]
+.SH DESCRIPTION
+\fIr.random.cells\fR generates a random sets of raster cells that are
+at least \fBdistance\fR apart. The cells are numbered from 1 to the
+numbers of cells generated, all other cells are NULL (no data). Random
+cells will not be generated in areas masked off.
+.SS Detailed parameter description
+.IP "\fBoutput\fR" 4m
+.br
+Random cells. Each random cell has a unique non\-zero cell value
+ranging from 1 to the number of cells generated. The heuristic for
+this algorithm is to randomly pick cells until there are no cells
+outside of the chosen cell\(cqs buffer of radius \fBdistance\fR.
+.IP "\fBdistance\fR" 4m
+.br
+Determines the minimum distance the centers of the random cells
+will be apart.
+.IP "\fBseed\fR" 4m
+.br
+Specifies the random seed that
+\fIr.random.cells\fR will use to generate the cells. If the random seed
+is not given,\fI r.random.cells\fR will get a seed from the process ID
+number.
+.SH NOTES
+The original purpose for this program was to generate independent
+random samples of cells in a study area. The \fBdistance\fR value is
+the amount of spatial autocorrelation for the map being studied.
+.SH EXAMPLE
+.SS Random cells in given distances
+North Carolina sample dataset example:
+.br
+.nf
+\fC
+g.region n=228500 s=215000 w=630000 e=645000 res=100 \-p
+r.random.cells output=random_500m distance=500
+\fR
+.fi
+.SS Limited number of random points
+Here is another example where we will create given number of vector points
+with the given minimal distances.
+Let\(cqs star with setting the region (we use large cells here):
+.br
+.nf
+\fC
+g.region raster=elevation
+g.region rows=20 cols=20 \-p
+\fR
+.fi
+Then we generate random cells and we limit their count to 20:
+.br
+.nf
+\fC
+r.random.cells output=random_cells distance=1500 ncells=20 seed=200
+\fR
+.fi
+Finally, we convert the raster cells to points using
+\fIr.to.vect\fR module:
+.br
+.nf
+\fC
+r.to.vect input=random_cells output=random_points type=point
+\fR
+.fi
+An example of the result is at the Figure below on the left
+in comparison with the result without the cell limit on the right.
+.PP
+Additionally, we can use \fIv.perturb\fR module
+to add random spatial deviation to their position so that they are not
+perfectly aligned with the grid. We cannot perturb the points too much,
+otherwise we might seriously break the minimal distance we set earlier.
+.br
+.nf
+\fC
+v.perturb input=random_points output=random_points_moved parameters=50 seed=200
+\fR
+.fi
+In the above examples, we were using fixed seed. This is advantageous when
+we want to generate (pseudo) random data, but we want to get reproducible
+results at the same time.
+.PP
+\fI
+Figure: Generated cells with limited number of cells (upper left),
+derived vector points (lower left), cells without a count limit
+(upper right) and corresponding vector points (lower right)
+\fR
+.SH REFERENCES
+Random Field Software for GRASS GIS by Chuck Ehlschlaeger
+.PP
+As part of my dissertation, I put together several programs that help
+GRASS (4.1 and beyond) develop uncertainty models of spatial data. I hope
+you find it useful and dependable. The following papers might clarify their
+use:
+.RS 4n
+.IP \(bu 4n
+Ehlschlaeger, C.R., Shortridge, A.M., Goodchild, M.F., 1997.
+Visualizing spatial data uncertainty using animation.
+Computers & Geosciences 23, 387\-395. doi:10.1016/S0098\-3004(97)00005\-8
+.IP \(bu 4n
+Modeling
+Uncertainty in Elevation Data for Geographical Analysis, by
+Charles R. Ehlschlaeger, and Ashton M.  Shortridge. Proceedings of the
+7th International Symposium on Spatial Data Handling, Delft,
+Netherlands, August 1996.
+.IP \(bu 4n
+Dealing
+with Uncertainty in Categorical Coverage Maps: Defining, Visualizing,
+and Managing Data Errors, by Charles Ehlschlaeger and Michael
+Goodchild.  Proceedings, Workshop on Geographic Information Systems at
+the Conference on Information and Knowledge Management, Gaithersburg
+MD, 1994.
+.IP \(bu 4n
+Uncertainty
+in Spatial Data: Defining, Visualizing, and Managing Data
+Errors, by Charles Ehlschlaeger and Michael
+Goodchild. Proceedings, GIS/LIS\(cq94, pp. 246\-253, Phoenix AZ,
+1994.
+.RE
+.SH SEE ALSO
+\fI
+r.random.surface,
+r.random,
+v.random,
+r.to.vect,
+v.perturb
+\fR
+.SH AUTHOR
+Charles Ehlschlaeger; National Center for Geographic Information and
+Analysis, University of California, Santa Barbara.
+.SH SOURCE CODE
+.PP
+Available at: r.random.cells source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

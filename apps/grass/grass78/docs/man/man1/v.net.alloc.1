@@ -1,0 +1,322 @@
+.TH v.net.alloc 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.alloc\fR\fR  \- Allocates subnets for nearest centers.
+.br
+Center node must be opened (costs >= 0). Costs of center node are used in calculation.
+.SH KEYWORDS
+vector, network, cost allocation
+.SH SYNOPSIS
+\fBv.net.alloc\fR
+.br
+\fBv.net.alloc \-\-help\fR
+.br
+\fBv.net.alloc\fR [\-\fBtgu\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBmethod\fR=\fIstring\fR]  \fBcenter_cats\fR=\fIrange\fR \fBarc_layer\fR=\fIstring\fR \fBarc_type\fR=\fIstring\fR[,\fIstring\fR,...] \fBnode_layer\fR=\fIstring\fR  [\fBarc_column\fR=\fIname\fR]   [\fBarc_backward_column\fR=\fIname\fR]   [\fBnode_column\fR=\fIname\fR]   [\fBturn_layer\fR=\fIstring\fR]   [\fBturn_cat_layer\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Use turntable
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-u\fR" 4m
+.br
+Create unique categories and attribute table
+.br
+Default: same category like nearest center
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBmethod\fR=\fIstring\fR" 4m
+.br
+Use costs from centers or costs to centers
+.br
+Options: \fIfrom, to\fR
+.br
+Default: \fIfrom\fR
+.IP "\fBcenter_cats\fR=\fIrange\fR \fB[required]\fR" 4m
+.br
+Category values
+.br
+Categories of centers (points on nodes) to which net will be allocated, layer for this categories is given by nlayer option
+.IP "\fBarc_layer\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBarc_type\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Arc type
+.br
+Input feature type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.IP "\fBnode_layer\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBarc_column\fR=\fIname\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIname\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIname\fR" 4m
+.br
+Node cost column (number)
+.IP "\fBturn_layer\fR=\fIstring\fR" 4m
+.br
+Layer with turntable
+.br
+Relevant only with \-t flag
+.br
+Default: \fI3\fR
+.IP "\fBturn_cat_layer\fR=\fIstring\fR" 4m
+.br
+Layer with unique categories used in turntable
+.br
+Relevant only with \-t flag
+.br
+Default: \fI4\fR
+.SH DESCRIPTION
+\fIv.net.alloc\fR allocates subnets for nearest centers. Center
+nodes must be opened (costs >= 0). Costs of center nodes are used in
+the calculation.
+.PP
+Costs may be either line lengths, or attributes saved in a
+database table. These attribute values are taken as costs of whole
+segments, not as costs to traverse a length unit (e.g. meter) of the
+segment. For example, if the speed limit is 100 km / h, the cost to
+traverse a 10 km long road segment must be calculated as
+.br
+length / speed = 10 km / (100 km/h) = 0.1 h.
+.br
+Supported are cost assignments for both arcs and nodes,
+and also different costs for both directions of a vector line.
+For areas, costs will be calculated along boundary lines.
+.PP
+The input vector needs to be prepared with \fIv.net operation=connect\fR
+in order to connect points representing center nodes to the network.
+.PP
+The nearest center can be determined using either costs from the
+nearest center or costs to the nearest center with option
+\fBmethod\fR. See example below.
+.PP
+By default, the category value of the nearest center is used as
+category value for output lines. With the \fB\-u\fR flag, output lines
+become unique categories and an attribute table is created with the
+fields \fIcat, ocat, center\fR. The \fIocat\fR field holds the
+original line category in \fBarc_layer\fR and the \fIcenter\fR
+field holds the center category in \fBnode_layer\fR. Additionally,
+original line categories are copied from the input \fBarc_layer\fR to
+layer 2 in the output, together with any attribute table.
+.PP
+Application of flag \fB\-t\fR enables a turntable support. This flag
+requires additional parameters \fBturn_layer\fR and
+\fBturn_cat_layer\fR that are otherwise ignored. The turntable allows
+to model e.g. traffic code, where some turns may be prohibited. This
+means that the input layer is expanded by turntable with costs of every
+possible turn on any possible node (intersection) in both directions.
+Turntable can be created by the \fIv.net\fR
+module. For more information about turns in the vector network analyses
+see
+wiki page.
+.SH NOTES
+Nodes and arcs can be closed using cost = \-1.
+.PP
+Center nodes can also be assigned to vector nodes using
+\fIwxGUI vector digitizer\fR.
+.SH EXAMPLES
+.PP
+1. Subnetwork allocation using distance:
+.PP
+.br
+.PP
+2. Subnetwork allocation using traveling time:
+.PP
+.br
+.PP
+Example 1: \fICalculating subnets for 3 center nodes using distances\fR
+.br
+.nf
+\fC
+# Spearfish
+# center nodes:
+echo \(dq591235.5|4926306.62|1
+596591.8|4917042.5|2
+602722.9|4923544.2|3\(dq | v.in.ascii in=\- out=centernodes
+g.copy vect=roads,myroads
+# connect points to network
+v.net myroads points=centernodes out=myroads_net op=connect thresh=200
+# allocate, specifying range of center cats (easier to catch all):
+v.net.alloc myroads_net out=myroads_net_alloc center_cats=1\-100000 node_layer=2
+# report categories
+v.category myroads_net_alloc option=report
+\fR
+.fi
+To display the result, run for example:
+.br
+.nf
+\fC
+# show result
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net layer=1
+# the result has to be selected by category number of the relevant node:
+d.vect myroads_net_alloc cat=1 col=red layer=1
+d.vect myroads_net_alloc cat=2 col=green layer=1
+d.vect myroads_net_alloc cat=3 col=yellow layer=1
+# center nodes
+d.vect myroads_net col=red icon=basic/triangle fcol=green size=12 layer=2
+\fR
+.fi
+.PP
+Example 2: \fICalculating subnets for 3 center nodes using traveling time\fR
+.br
+.br
+.nf
+\fC
+# Spearfish
+# center nodes:
+echo \(dq591235.5|4926306.62|1
+596591.8|4917042.5|2
+602722.9|4923544.2|3\(dq | v.in.ascii in=\- out=centernodes
+g.copy vect=roads,myroads
+# create lines map connecting points to network
+v.net myroads points=centernodes out=myroads_net op=connect thresh=500 arc_layer=1 node_layer=2
+# set up costs
+# create unique categories for each road in layer 3
+v.category in=myroads_net out=myroads_net_time opt=add cat=1 layer=3 type=line
+# add new table for layer 3
+v.db.addtable myroads_net_time layer=3 col=\(dqcat integer,label varchar(43),length double precision,speed double precision,cost double precision,bcost double precision\(dq
+# copy road type to layer 3
+v.to.db myroads_net_time layer=3 qlayer=1 opt=query qcolumn=label columns=label
+# upload road length in miles
+v.to.db myroads_net_time layer=3 type=line option=length col=length unit=miles
+# set speed limits in miles / hour
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqinterstate\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqprimary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq50.0\(dq where=\(dqlabel=\(cqsecondary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq25.0\(dq where=\(dqlabel=\(cqlight\-duty road, improved surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq where=\(dqlabel=\(cqunimproved road\(cq\(dq
+# define traveling costs as traveling time in minutes:
+# set forward costs
+v.db.update myroads_net_time layer=3 col=cost val=\(dqlength / speed * 60\(dq
+# set backward costs
+v.db.update myroads_net_time layer=3 col=bcost val=\(dqlength / speed * 60\(dq
+# subnetwork allocation with fastest paths
+v.net.alloc in=myroads_net_time arc_layer=3 node_layer=2 arc_column=cost arc_backward_column=bcost out=myroads_net_alloc_time center_cats=1\-3
+\fR
+.fi
+To display the result, run for example:
+.br
+.nf
+\fC
+# show result
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net type=line layer=1
+# the result has to be selected by category number of the relevant node:
+d.vect myroads_net_alloc_time cat=1 col=red layer=1
+d.vect myroads_net_alloc_time cat=2 col=green layer=1
+d.vect myroads_net_alloc_time cat=3 col=yellow layer=1
+# center nodes
+d.vect myroads_net_time col=red icon=basic/triangle fcol=green size=12 type=point layer=2
+\fR
+.fi
+.PP
+Example 3: \fIDifferences between costs from centers and costs to centers\fR
+.br
+Each lane of the two\-lane road is a one\-way road.
+.PP
+1. Subnetwork allocation from centers:
+.PP
+.br
+A center reaches any point following the one\-way lanes.
+.PP
+2. Subnetwork allocation to centers:
+.PP
+.br
+Any node reaches reaches the nearest center following the one\-way lanes.
+.PP
+In case of an accident, the ambulance should come from the nearest
+\(cqfrom\(cq hospital and go to the nearest \(cqto\(cq hospital.
+.br
+.nf
+\fC
+# North Carolina
+# center nodes are hospitals:
+# connect hospitals to streets as layer 2
+v.net input=streets_wake points=hospitals output=streets_hospitals operation=connect thresh=400 arc_layer=1 node_layer=2
+v.to.db map=streets_hospitals layer=1 type=line option=cat columns=cat
+# close oneway roads
+v.db.update map=streets_hospitals column=TF_COST value=\-1 where=\(dqONE_WAY = \(cqFT\(cq\(dq
+v.db.update map=streets_hospitals column=FT_COST value=\-1 where=\(dqONE_WAY = \(cqTF\(cq\(dq
+# add costs to newly created lines
+v.db.update map=streets_hospitals column=TF_COST value=0 where=\(dqcat > 49746\(dq
+v.db.update map=streets_hospitals column=FT_COST value=0 where=\(dqcat > 49746\(dq
+# from centers
+v.net.alloc in=streets_hospitals out=streets_hospitals_alloc_from center_cats=1\-10000 arc_column=FT_COST arc_backward_column=TF_COST
+# to centers
+v.net.alloc in=streets_hospitals out=streets_hospitals_alloc_to method=to center_cats=1\-10000 arc_column=FT_COST arc_backward_column=TF_COST
+\fR
+.fi
+.SH SEE ALSO
+\fId.path\fR,
+\fIv.net\fR,
+\fIv.net.iso\fR,
+\fIv.net.path\fR,
+\fIv.net.steiner\fR,
+\fIv.net.salesman\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Documentation: Markus Neteler, Markus Metz
+.SS TURNS SUPPORT
+The turns support was implemnented as part of GRASS GIS turns cost project at Czech Technical University in Prague, Czech Republic.
+Eliska Kyzlikova, Stepan Turek, Lukas Bocan and Viera Bejdova participated at the project.
+Implementation: Stepan Turek
+Documentation: Lukas Bocan
+Mentor: Martin Landa
+.SH SOURCE CODE
+.PP
+Available at: v.net.alloc source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

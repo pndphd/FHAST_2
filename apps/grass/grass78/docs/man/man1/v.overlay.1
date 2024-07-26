@@ -1,0 +1,328 @@
+.TH v.overlay 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.overlay\fR\fR  \- Overlays two vector maps offering clip, intersection, difference, symmetrical difference, union operators.
+.SH KEYWORDS
+vector, geometry, spatial query, clip, difference, intersection, union
+.SH SYNOPSIS
+\fBv.overlay\fR
+.br
+\fBv.overlay \-\-help\fR
+.br
+\fBv.overlay\fR [\-\fBt\fR] \fBainput\fR=\fIname\fR  [\fBalayer\fR=\fIstring\fR]   [\fBatype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBbinput\fR=\fIname\fR  [\fBblayer\fR=\fIstring\fR]   [\fBbtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoperator\fR=\fIstring\fR \fBoutput\fR=\fIname\fR  [\fBolayer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBsnap\fR=\fIfloat\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBainput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map (A)
+.br
+Or data source for direct OGR access
+.IP "\fBalayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (vector map A)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBatype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type (vector map A)
+.br
+Input feature type
+.br
+Options: \fIline, area, auto\fR
+.br
+Default: \fIauto\fR
+.IP "\fBbinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map (B)
+.br
+Or data source for direct OGR access
+.IP "\fBblayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (vector map B)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBbtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type (vector map B)
+.br
+Input feature type
+.br
+Options: \fIarea\fR
+.br
+Default: \fIarea\fR
+.IP "\fBoperator\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Operator defines features written to output vector map
+.br
+Feature is written to output if the result of operation \(cqainput operator binput\(cq is true. Input feature is considered to be true, if category of given layer is defined.
+.br
+Options: \fIand, or, not, xor\fR
+.br
+\fBand\fR: also known as \(cqintersection\(cq in GIS
+.br
+\fBor\fR: also known as \(cqunion\(cq in GIS (only for atype=area)
+.br
+\fBnot\fR: also known as \(cqdifference\(cq (features from ainput not overlaid by features from binput)
+.br
+\fBxor\fR: also known as \(cqsymmetrical difference\(cq (features from either ainput or binput but not those from ainput overlaid by binput (only for atype=area)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBolayer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Output layer for new category, ainput and binput
+.br
+If 0 or not given, the category is not written
+.br
+Default: \fI1,0,0\fR
+.IP "\fBsnap\fR=\fIfloat\fR" 4m
+.br
+Snapping threshold for boundaries
+.br
+Disable snapping with snap <= 0
+.br
+Default: \fI1e\-8\fR
+.SH DESCRIPTION
+\fIv.overlay\fR allows the user to overlay two vector maps. Features
+in \fBainput\fR can be lines or areas and are cut with areas in
+\fBbinput\fR. Simple \fIclipping\fR can be performed with the \fBand\fR
+operator.
+.PP
+If areas in \fBainput\fR are overlaid with areas in \fBbinput\fR,
+it is sometimes necessary to snap areas of \fBbinput\fR to those of
+\fBainput\fR, otherwise areas can go missing or many sliver areas
+can be created. Snapping is enabled by default and can be disabled by
+setting the \fBsnap\fR option to a negative value. Recommended values
+are between 0.00000001 and 0.0001. Using larger values for snapping can
+have undesired side\-effects, but may sometimes be necessary to get a
+clean output (see example below). In general, it is recommended to start
+with a small snapping threshold, gradually increasing the threshold until
+the result is reasonably clean. Snapping modifies only boundaries in
+binput, which are snapped to boundaries in ainput. Boundaries in \fBainput\fR
+are not modified.
+.SH NOTES
+Currently only areas in \fBainput\fR are supported for the operators
+\fIor\fR and \fIxor\fR! See also \fIv.select\fR.
+The operator defines what kind of operation will be done. Features are
+written to output, if the result of an operation \fBainput\fR operator \fBbinput\fR
+is true.
+.PP
+If the \fIfirst\fR number of the \fBolayer\fR option is greater than 0, then the
+resulting output map has a merged attribute table in the given layer
+number. The original column names have a prefix (\fIa_\fR and
+\fIb_\fR) corresponding to \fBainput\fR and \fBbinput\fR map.
+.PP
+If the \fIsecond\fR number of the \fBolayer\fR option is greater than 0, then the
+categories of \fBainput\fR in layer \fBalayer\fR are transferred to
+the output layer with the second number.
+.PP
+If the \fIthird\fR number of the \fBolayer\fR option is greater than 0, then the
+categories of \fBbinput\fR in layer \fIblayer\fR are transferred to
+the output layer with the third number.
+.PP
+If \fBatype\fR=auto is given than \fIv.overlay\fR determines
+feature type for \fBainput\fR from the first found feature.
+.SH EXAMPLES
+Preparation of example data (North Carolina sample dataset):
+.br
+.nf
+\fC
+# Create an empty box for overlaying to ZIP code vector map
+v.mkgrid map=box grid=1,1 position=coor coordinates=584037,201970 box=50000,50000
+# set region to ZIP codes and box vector maps
+g.region vector=zipcodes_wake,box \-p res=100 \-a
+# enlarge region a bit for \(dqwhite border\(dq around map in monitor
+g.region n=n+1000 s=s\-1000 w=w\-1000 e=e+1000 \-p
+d.mon wx0
+\fR
+.fi
+.SS AND operator
+Clipping example (no attribute table is generated here):
+.br
+.nf
+\fC
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay \-t ainput=box binput=zipcodes_wake operator=and output=v_overlay_AND
+d.vect map=v_overlay_AND
+\fR
+.fi
+.br
+\fIFigure: v.overlay with AND operator (selected polygons in grey color)\fR
+.SS OR operator
+Union example of areas:
+.br
+.nf
+\fC
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay \-t ainput=box binput=zipcodes_wake operator=or output=v_overlay_OR
+d.vect map=v_overlay_OR
+\fR
+.fi
+.br
+\fIFigure: v.overlay with OR operator (selected polygons in grey color)\fR
+.SS XOR operator
+Symmetrical difference example:
+.br
+.nf
+\fC
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay \-t ainput=box binput=zipcodes_wake operator=xor output=v_overlay_XOR
+d.vect map=v_overlay_XOR
+\fR
+.fi
+.br
+\fIFigure: v.overlay with XOR operator (selected polygons in grey color)\fR
+.SS NOT operator
+Difference example:
+.br
+.nf
+\fC
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay \-t ainput=box binput=zipcodes_wake operator=not output=v_overlay_NOT
+d.vect map=v_overlay_NOT
+\fR
+.fi
+.br
+\fIFigure: v.overlay with NOT operator (selected polygon in grey color)\fR
+.SS Overlay operations: AND, OR, NOT, XOR
+ZIP code examples, based on North Carolina sample dataset:
+.br
+.nf
+\fC
+# creation of simple dataset
+v.extract input=zipcodes_wake output=poly1 where=\(dqcat = 42\(dq
+v.extract input=urbanarea output=poly2 where=\(dqcat = 55\(dq
+v.overlay ainput=poly1 binput=poly2 operator=and output=poly_1_2_and
+v.overlay ainput=poly1 binput=poly2 operator=or  output=poly_1_2_or
+v.overlay ainput=poly1 binput=poly2 operator=not output=poly_1_2_not
+v.overlay ainput=poly1 binput=poly2 operator=xor output=poly_1_2_xor
+\fR
+.fi
+.br
+\fIFigure: v.overlay operations: original input polygons\fR
+.PP
+.br
+\fIFigure: v.overlay results of AND, OR, NOT, XOR operations\fR
+.SS Polygons overlaid with polygons
+.br
+.nf
+\fC
+v.overlay ainput=lake binput=province output=lakeXprovince operator=or
+\fR
+.fi
+Polygon union of urban area and Census 2000 areas (North Carolina dataset):
+.br
+.nf
+\fC
+# input maps
+d.vect urbanarea
+d.vect census_wake2000
+# union
+v.overlay ain=census_wake2000 bin=urbanarea out=urban_census2000 operator=or
+# show result, graphically zooming a subset
+g.region n=230400 s=223800 w=655800 e=662400
+d.erase
+d.vect urban_census2000
+# show merged attribute table
+v.db.select urban_census2000 where=\(dqcat=108\(dq \-v
+cat|108
+a_cat|98
+a_AREA|231001264
+a_PERIMETE|67804.305
+a_TRACT_|98
+a_TRACT_ID|98
+a_RINGS_OK|1
+a_RINGS_NO|0
+a_ID|98
+a_FIPSSTCO|37183
+a_TRT2000|054108
+a_STFID|37183054108
+a_TRACTID|541.08
+a_TRACT|541.08
+b_cat|55
+b_OBJECTID|55
+b_UA|73261
+b_NAME|Raleigh
+b_UA_TYPE|UA
+\fR
+.fi
+.br
+\fIFigure: v.overlay: Polygon union (right) of urban area (left) and Census 2000 (middle) areas (North Carolina dataset)\fR
+.PP
+As can be seen by the resulting large number of centroids on boundaries,
+the urban areas do not match exactly the Census 2000 areas. In this case
+a clean result can be obtained by snapping with a threshold of 0.1 m.
+.SS Lines overlaid with polygons
+Using the North Carolina sample dataset, we clip the roads map to the area
+of city of Raleigh, preserving road attributes in layer 1:
+.br
+.nf
+\fC
+g.region vector=zipcodes_wake
+# extract Raleigh city:
+v.extract in=zipcodes_wake out=raleigh where=\(dqZIPNAME = \(cqRALEIGH\(cq\(dq
+# clip road network to city polygon:
+v.overlay ainput=roadsmajor atype=line binput=raleigh out=roadsmajor_raleigh operator=and olayer=0,1,0
+\fR
+.fi
+.br
+.TS
+expand;
+lw60.
+T{
+\fIFigure: v.overlay: Line to polygon clipping\fR
+T}
+.sp 1
+.TE
+.SH SEE ALSO
+\fI
+v.clip,
+v.db.connect,
+v.select,
+g.copy
+\fR
+.SH AUTHORS
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Markus Metz
+.br
+Speedup for large, complex input areas sponsored by mundialis
+.SH SOURCE CODE
+.PP
+Available at: v.overlay source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.in.dxf - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.in.dxf</b></em>  - Converts file in DXF format to GRASS vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#DXF">DXF</a>, <a href="keywords.html#level1">level1</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.in.dxf</b><br></div>
+<b>v.in.dxf --help</b><br>
+<div id="synopsis"><b>v.in.dxf</b> [-<b>etbfli1</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>layers</b>=<em>string</em>[,<i>string</i>,...]]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Ignore the map extent of DXF file</dd>
+
+<dt><b>-t</b></dt>
+<dd>Do not create attribute table</dd>
+
+<dt><b>-b</b></dt>
+<dd>Do not build topology</dd>
+<dd>Advantageous when handling a large number of points</dd>
+
+<dt><b>-f</b></dt>
+<dd>Import polyface meshes as 3D wire frame</dd>
+
+<dt><b>-l</b></dt>
+<dd>List available DXF layers and exit</dd>
+
+<dt><b>-i</b></dt>
+<dd>Invert selection by DXF layers (don't import layers in list)</dd>
+
+<dt><b>-1</b></dt>
+<dd>Import all objects into one layer</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Path to input DXF file</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>layers</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>List of DXF layers to import (default: all)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.in.dxf</em> converts DXF format CAD files to GRASS vector
+format. The following graphical objects (DXF entities) are supported:
+
+<ul>
+  <li>point
+    <ul>
+      <li><b>DXF POINT</b></li>
+    </ul>
+  </li>
+  <li>line
+    <ul>
+      <li><b>DXF LINE</b></li>
+      <li><b>DXF POLYLINE</b></li>
+      <li><b>DXF LWPOLYLINE</b></li>
+      <li><b>DXF ARC</b></li>
+      <li><b>DXF CIRCLE</b></li>
+      <li><b>DXF TEXT</b></li>
+    </ul>
+  </li>
+  <li>face
+    <ul>
+      <li><b>DXF POLYFACE MESHES</b></li>
+      <li><b>DXF 3DFACE</b></li>
+  </ul>
+  </li>
+</ul>
+
+Table and column names are changed to lowercase characters for easier
+SQL usage (lowercase table/column names avoid the need to quote them
+if the attribute table is stored in a SQL DBMS such as PostgreSQL).
+
+<p>The "layer" column will contain the name(s) of the DXF input
+layer(s). The DXF entity type string will be stored in the "entity"
+column as uppercase.
+
+<p>The "handle" column can be used to store small bits of data associated
+with any entity in the DXF file (i.e., entity handle or unique object
+identifiers in the layer). The entity handle is a "text string of up
+to 16 hexadecimal digits", which is a 64-bit integer (currently not
+supported by GRASS database drivers).  For text type entities, the
+text value will be stored in the "label" column of the GRASS vector
+output map. Neither the "handle" nor "label" column is mandatory.
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<a href="http://en.wikipedia.org/wiki/AutoCAD_DXF">AutoCad DXF</a> (from Wikipedia, the free encyclopedia)<br>
+<a href="http://usa.autodesk.com/adsk/servlet/item?siteID=123112&id=12272454&linkID=10809853">DXF References</a> (Autodesk-supplied documentation)
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="v.out.dxf.html">v.out.dxf</a>,
+  <a href="v.in.ogr.html">v.in.ogr</a>,
+  <a href="v.out.ogr.html">v.out.ogr</a>
+</em>
+
+<p><em>
+  <a href="https://grasswiki.osgeo.org/wiki/Import_DXF">How-to import DXF files in wxGUI</a> (from GRASS User Wiki)
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Original written by Chuck Ehlschlaeger, 6/1989<br>
+Revised by Dave Gerdes, 12/1989<br>
+US Army Construction Engineering Research Lab
+
+<p>Updated for GRASS 6 and 3D support. Huidae Cho, 3/2006<br>
+With minor additions by Benjamin Ducke (Oxford Archaeology), 4/2009
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.in.dxf">v.in.dxf source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.in.dxf">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

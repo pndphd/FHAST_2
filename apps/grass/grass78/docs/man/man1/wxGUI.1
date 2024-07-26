@@ -1,0 +1,651 @@
+.TH wxGUI 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH wxGUI
+.SH DESCRIPTION
+\fBwxGUI\fR is a native \fIGraphical User Interface\fR (GUI) for
+GRASS GIS. Its main features include displaying geographical data
+in 2D and 3D, calling GRASS GIS modules, and interacting with data.
+.SS Overview
+The GUI is composed of \fIthree\fR main components:
+.RS 4n
+.IP \(bu 4n
+The \fBLayer Manager\fR includes map layer management, integrated
+command\-line prompt, and command output window tab.
+.IP \(bu 4n
+The \fBMap Display Window\fR integrates basic tools for
+zooming, panning, data querying, and map elements (north arrows,
+barscale, etc.). Each display window is associated with its own
+set of map layers in the layer manager. The user may start multiple map
+displays during a session. The map layers for each display are grouped
+under different tabs in the Layer Manager.
+.IP \(bu 4n
+Module dialogs enable running GRASS modules.
+.RE
+.SS Layer Manager
+The \fILayer Manager\fR provides an interactive graphical interface for
+creating and managing GRASS displays. There is a toolbar to manage displayed
+map layers, a layer tree frame in which map layers for display are organized,
+a command output window tab, and interactive command line prompt. On Linux
+and Windows platforms, the layer manager also has a menu bar with a set of
+pull\-down menus for all GRASS GIS functions (analysis, file I/O, GIS
+configuration and management); on a Mac, the GRASS functions menu is at the
+top of the screen.
+.br
+.br
+.br
+Figure: Layer Manager screenshot on Ubuntu
+.PP
+The top left button of the toolbar opens a new \fIMap Display
+Window\fR. Each map display has a unique set of layers to display
+and region settings. Other toolbar buttons add layers of different
+types for display in the selected map display window. There are
+additional buttons for saving or opening workspace file, and others.
+.PP
+Map layers are listed in the window frame below the toolbar. Layers can
+include raster and vector maps, vector labels, and commands (where any
+GRASS command can be written). Layers are displayed as arranged in the layer
+tree: the bottom layer is displayed first and the top layer is displayed
+last, as if the layers were a series of stacked overlays.
+.PP
+The check box to the left of each layer makes it active or inactive
+for display. Only active layers are displayed/redisplayed when the
+display button is pressed. Layers can be organized into groups; entire
+groups can be activated or deactivated for display. Layer tree
+composition can be saved to a workspace file and opened in subsequent
+sessions, restoring all layers and their display options.
+.PP
+A right mouse click on a layer or left clicking the button to the right of
+the layer opens a dropdown menu with options to remove or rename the layer
+(not the actual map), change its display properties (d.rast and d.vect
+options such as color, symbol, etc.), show its metadata (r.info, v.info) or
+attributes, if applicable.
+.PP
+A left mouse double click on a layer opens GUI for its display options
+These options are those for the d.* command for each layer type (d.rast,
+d.vect, or d.grid, for example).
+.SS Layer Manager Toolbar
+.IP "      \fIStart new map display\fR" 4m
+.br
+Opens a new map display and creates empty layer tree tab in Layer Manager.
+.IP "      \fICreate new workspace\fR" 4m
+.br
+Removes all layers from the layer tree and creates a new, empty tree
+where new layers can be added.
+.IP "      \fIOpen existing workspace file\fR" 4m
+.br
+Opens an previously saved workspace file, containing a set of display
+layers and their option settings.
+.IP "      \fISave current workspace to file\fR" 4m
+.br
+Saves current set of layers and their options to a workspace
+file.
+.IP "      \fILoad map layers into workspace\fR" 4m
+.br
+Loads selected raster or vector maps into current layer tree.
+.IP "      \fIAdd raster map layer\fR" 4m
+.br
+Adds raster map to layer tree, see \fId.rast\fR.
+.IP "      \fIAdd various raster map layers (RGB, HIS, shaded relief...)\fR" 4m
+.br
+Opens a dropdown menu that allows user to select to:
+.IP "  	\fIAdd 3D raster map layer\fR" 4m
+.br
+Adds 3D raster map to layer tree.
+.IP "  	\fIAdd RGB raster layer\fR" 4m
+.br
+Combines and displays three raster maps defined as red, green,
+and blue channels to create an RGB color map,
+see \fId.rgb\fR.
+.IP "  	\fIAdd HIS raster layer\fR" 4m
+.br
+Combines and displays two or three raster maps defined as hue,
+intensity, and (optionally) saturation channels to create a color map,
+see \fId.his\fR.
+.IP "  	\fIAdd shaded relief raster map layer \fR" 4m
+.br
+Adds shaded relief raster map layer,
+see \fIr.relief\fR and
+\fId.shade\fR.
+.IP "  	\fIAdd raster arrows layer\fR" 4m
+.br
+Adds map of raster cells with directional arrows drawn. Arrow
+direction and length are determined by separate aspect/directional map
+and (optional) slope/intensity map,
+see \fId.rast.arrow\fR.
+.IP "  	\fIAdd raster numbers layer\fR" 4m
+.br
+Adds map of raster cells with numbers representing the cell values,
+see \fId.rast.num\fR.
+.IP "      \fIAdd vector map layer\fR" 4m
+.br
+Adds a vector map layer,
+see \fId.vect\fR.
+.IP "      \fIAdd various vector map layers (thematic, chart...)\fR" 4m
+.br
+Opens a dropdown menu that allows user to select to:
+.IP "  	\fIAdd thematic area (choropleth) map layer 	  (for all vector types)\fR" 4m
+.br
+Adds layer for thematic display values from a numeric attribute
+column associated with a vector map. Options include: thematic display
+type (graduated colors or point sizes), methods for creating display
+intervals, SQL query of attribute column to limit vector objects to
+display, control of point icon types and sizes, control of thematic
+color schemes, creation of legend for thematic map, and saving the
+results of thematic mapping to a ps.map instructions file for later
+printing,
+see \fId.vect.thematic\fR.
+.IP "  	\fIAdd thematic chart layer (for vector points)\fR" 4m
+.br
+Adds layer in which pie or bar charts can be automatically created
+at vector point locations. Charts display values from selected columns
+in the associated attribute table. Options include: chart type, layer
+and attributes to chart, chart colors, and chart size (fixed or based
+on attribute column),
+see \fId.vect.chart\fR.
+.IP "      \fIAdd group\fR" 4m
+.br
+Adds an empty group. Layers can then be added to the group.
+.IP "      \fIAdd grid or vector labels overlay\fR" 4m
+.br
+Opens a dropdown menu that allows user to select to:
+.IP "  	\fIAdd overlay grids and lines\fR" 4m
+.br
+Adds layer to display regular grid (for all locations)
+see \fId.grid\fR
+.IP "  	\fIAdd labels layer for vector objects (from existing labels file)\fR" 4m
+.br
+Add a layer of text from a labels file for vector objects
+created with the \fIv.label\fR module.
+A labels file can also be created with a text editor,
+see \fId.labels\fR.
+.IP "  	\fIAdd geodesic line layer\fR" 4m
+.br
+Add layer to display geodesic line for latitude/longitude locations only,
+see \fId.geodesic\fR
+.IP "  	\fIAdd rhumbline layer\fR 	" 4m
+.br
+Add layer to display rhumblines (for latitude/longitude locations only),
+see \fId.rhumbline\fR.
+.IP "  	\fIAdd command layer\fR" 4m
+.br
+Adds a layer in which a GRASS GIS command or command list can be entered.
+For a command list use the semi\-colon (\(dq;\(dq) symbol as a separator.
+For example:
+.br
+.nf
+\fC
+d.rast soils;d.rast \-o roads;d.vect streams col=blue
+\fR
+.fi
+Note that when an option of the command contains spaces, you need to
+\(dqescape\(dq them with the backslash (\(cq\(rs\(cq) character, for example:
+.br
+.nf
+\fC
+d.text text=Population\(rs density
+\fR
+.fi
+.IP "      \fIDelete selected layer\fR" 4m
+.br
+Removes selected map layer or map layer group from layer tree.
+.IP "      \fIEdit vector maps\fR" 4m
+.br
+Opens \fIvector digitizer\fR to allow editing selected vector map.
+.IP "      \fIShow attribute table\fR" 4m
+.br
+Opens \fIattribute table manager\fR for selected vector map.
+.IP "      \fIImport raster or vector data\fR" 4m
+.br
+.IP "  	\fIImport raster data\fR" 4m
+.br
+Import selected raster data into GRASS
+using \fIr.in.gdal\fR and load
+them into current layer tree.
+.IP "  	\fILink external raster data\fR" 4m
+.br
+Link selected external raster data as GRASS raster maps
+(using \fIr.external\fR) and
+load them into current layer tree.
+.IP "  	\fISet raster output format\fR" 4m
+.br
+Define external format for newly created raster maps
+(see \fIr.external.out\fR
+for details)
+.IP "  	\fIImport vector data\fR" 4m
+.br
+Import selected vector data into GRASS
+using \fIv.in.ogr\fR and load
+them into current layer tree.
+.IP "  	\fILink external vector data\fR" 4m
+.br
+Link selected external vector data as GRASS vector maps
+(using \fIv.external\fR) and
+load them into current layer tree.
+.IP "  	\fISet vector output format\fR" 4m
+.br
+Define external format for newly created vector maps
+(see \fIv.external.out\fR
+for details)
+.IP "      \fIRaster Map Calculator\fR" 4m
+.br
+Launches Raster Calculator GUI front\-end
+for \fIr.mapcalc\fR.
+.IP "      \fIGraphical Modeler\fR" 4m
+.br
+Launches \fIgraphical
+modeler\fR to create models and run them.
+.IP "      \fIGeorectifier Tool\fR" 4m
+.br
+Launches \fIGCP
+Manager\fR to create, edit, and manage Ground Control
+Points.
+.IP "      \fICartographic Composer\fR" 4m
+.br
+Launches \fICartographic
+Composer\fR to create interactively hardcopy map
+outputs.
+.IP "      \fIShow GUI settings\fR" 4m
+.br
+Opens dialog to change GUI settings.
+.IP "      \fIShow help\fR" 4m
+.br
+Opens GRASS manual.
+.SS Map Display Window
+The map display window includes toolbar that can be docked and undocked from
+the window, a map canvas where a map composition of one or more layers is
+displayed, and a statusbar with information about the geographic region of
+the maps displayed.
+.br
+.br
+.br
+Figure: Map Display screenshot on Ubuntu
+.PP
+Each Map Display Window has a unique layer tree (in the layer manager)
+and geographic \fIregion\fR setting. At the top of the window is a
+toolbar with buttons to manage the map in the display (render, erase, zoom
+and pan), for query and and analysis (distance measurement, profile,
+and histogram creation), to overlay map elements onto the display (scale,
+north arrow, legend, and custom text), and to export or print the display.
+.PP
+In the statusbar, the user can choose to display the geographic coordinates
+under the cursor, current geographical region extent, computational region
+(including graphical visualization in map display), map display geometry
+(number of rows, columns, resolution) and map scale. Checking the
+\fIrender\fR button in the statusbar will cause the map display to update
+automatically any time a map is added to, removed from, or changed in its
+layer tree.
+.PP
+It is important to note that zooming in any display will
+have \fIno\fR effect on the \(cqcomputational region\(cq setting (set
+with \fIg.region\fR). Only by selecting
+the \(cqSet current region to match display\(cq item in the zoom menu (in
+the map display toolbar) will the current display extents be copied to
+the computational region extents.
+.SS Map Display Toolbar
+.IP "      \fIRe\-render display\fR" 4m
+.br
+Re\-renders all active map layers regardless of whether they have changed
+or not, see \fId.redraw\fR.
+.IP "      \fIErase display\fR" 4m
+.br
+Erases the currently selected map display to a white background,
+see \fId.erase\fR.
+.IP "      \fIPointer\fR" 4m
+.br
+Select arrow cursor for map display.
+.IP "      \fISelect features from vector map\fR" 4m
+.br
+Interactively select features from given vector map. Selection
+can be stored to a new vector map,
+see \fIv.what\fR
+and \fIv.extract\fR.
+.IP "      \fIQuery raster/vector maps\fR" 4m
+.br
+Query selected raster, RGB raster (all three map channels will be
+queried), or vector map(s) using the mouse. Map(s) must be selected
+before query.  Vector charts and thematic vector maps cannot be
+queried. The results of the query will be displayed in a dialog.
+See \fIr.what, v.what\fR.
+.IP "      \fIPan\fR" 4m
+.br
+Interactive selection of a new center of view in the active
+display monitor. Drag the pan cursor while pressing the left mouse
+button to pan.  Panning changes the location of the region displayed
+but not the size of the area displayed or the resolution. Panning
+does \fInot\fR affect the computational region for other GIS
+processes, see \fIg.region\fR.
+.IP "      \fIZoom in\fR" 4m
+.br
+Interactive zooming with the mouse in the active display monitor.
+Drawing a box or just click with the mouse (left button) and zoom\-in
+cursor causes the display to zoom in so that the area defined by the
+box fills the display. The map resolution is not changed. Clicking
+with the zoom\-in cursor causes the display to zoom in by 30%, centered
+on the point where the mouse is clicked. Zooming resets the display
+region extents (both size and location of area displayed). It
+does \fInot\fR affect the computational region for other GIS
+processes, see \fIg.region\fR.
+.IP "      \fIZoom out\fR" 4m
+.br
+Interactive zooming with the mouse in the active display monitor.
+Drawing a box or just click with the mouse (left button) and zoom\-out
+cursor causes the display to zoom in so that the area displayed
+shrinks to fill the area defined by the box. The map resolution is not
+changed. Clicking with the zoom\-out cursor causes the display to zoom
+out by 30%, centered on the point where the mouse is clicked. Zooming
+resets the display region extents (both size and location of area
+displayed). It does \fInot\fR affect the computational region for
+other GIS processes,
+see \fIg.region\fR.
+.IP "      \fIZoom to selected map(s)\fR" 4m
+.br
+Set zoom extent based on selected raster or vector maps. Zooming
+resets the display region extents (both size and location of area
+displayed). It does \fInot\fR affect the computational region
+for other GIS processes,
+see \fIg.region\fR.
+.IP "      \fIZoom to computational region extent\fR" 4m
+.br
+Set zoom extent based on the current computational region extent,
+see \fIg.region\fR.
+.IP "      \fIReturn to previous zoom\fR" 4m
+.br
+Returns to the previous zoom extent. Up to 10 levels of zoom back are
+maintained, see \fIg.region\fR.
+.IP "      \fIVarious zoom options\fR" 4m
+.br
+Opens a dropdown menu that allows user to:
+.RS 4n
+.IP \(bu 4n
+\fIZoom to default region\fR
+.IP \(bu 4n
+\fIZoom to saved region\fR. Zooms to previously
+saved named region.
+.IP \(bu 4n
+\fISet computational region extent from display.\fR
+The computational region (the mapset\(cqs WIND file)
+is set to match the current display extent (does not change
+the resolution), see \fIg.region\fR.
+.IP \(bu 4n
+\fISet computational region extent interactively.\fR
+The computational region is set simply by drawing a box with
+the left mouse button on Map Display.
+.IP \(bu 4n
+\fISet computational region from named region\fR.
+This option doesn\(cqt affect display zoom.
+.IP \(bu 4n
+\fISave display geometry to named region\fR
+.IP \(bu 4n
+\fISave computational region to named region\fR
+.RE
+.IP "      \fIAnalyze menu\fR" 4m
+.br
+Opens a dropdown menu with:
+.IP "          \fIMeasure distance\fR" 4m
+.br
+Interactive measurement of lengths defined with the mouse. The
+length of each segment and the cumulative length of all segments
+measuered is displayed in the command output window frame. Lengths are
+measured in the current measurement unit. Double\-click to switch off measuring.
+.IP "          \fIMeasure area\fR" 4m
+.br
+Interactive measurement of area defined with the mouse. Area is
+measured in the current measurement unit. Double\-click to switch off measuring.
+.IP "          \fIProfile surface map\fR" 4m
+.br
+Interactively create profile of a raster map. Profile transect is
+drawn with the mouse in map display. The profile may be of the
+displayed map or a different map. Up to three maps can be profiled
+simultaneously.
+.IP "          \fICreate bivariate scatterplot of raster maps\fR" 4m
+.br
+Interactively create bivariate scatterplot of raster
+maps.
+.IP "          \fICreate histogram of raster map\fR" 4m
+.br
+Displays histogram of selected raster map or image in new
+window.
+.IP "          \fICreate histogram with d.histogram\fR" 4m
+.br
+Displays histogram of selected raster map or image in new
+window,
+see \fId.histogram\fR.
+.IP "          \fIVector network analysis tool\fR" 4m
+.br
+See tool\(cqs manual page.
+.IP "      \fIAdd overlay\fR" 4m
+.br
+opens a dropdown menu that allows user to
+.IP "        \fIAdd raster map legend\fR" 4m
+.br
+Adds layer to display with legend of selected raster map,
+see \fId.legend\fR.
+.IP "        \fIAdd scalebar\fR" 4m
+.br
+Adds layer to display a scalebar. Options
+include scalebar placement (using screen coordinates or a mouse),
+scalebar format, and scalebar colors,
+see \fId.barscale\fR.
+.IP "        \fIAdd north arrow\fR" 4m
+.br
+Adds layer to display a north arrow. Options
+include north arrow placement (using screen coordinates or a mouse),
+north arrow style and color,
+see \fId.northarrow\fR.
+.IP "        \fIAdd text layer\fR" 4m
+.br
+Adds layer to display a line of text using default GRASS font
+(selected with \fId.font\fR).  Options
+include: text placement (screen coordinates); and text size, bolding,
+and color, see \fId.text\fR.
+.IP "      \fISave display to graphic file\fR" 4m
+.br
+Save the visible image in map display to different raster graphic formats.
+.IP "      \fIPrint map\fR" 4m
+.br
+Prints map on system native printer or PostScript device;
+saves visible map display (including PostScript text and labels) to PDF
+or EPS file.
+.IP "\fIMap display mode\fR" 4m
+.br
+Opens a dropdown menu for selecting different display mode
+.IP "\fI2D view\fR" 4m
+.br
+Normal GIS display. All active layers are composited and displayed
+in 2D mode.
+.IP "\fI3D view\fR" 4m
+.br
+Experimental replacement for NVIZ. Displays all active layers in
+3D perspective using OpenGL. A new control panel opens to manage the
+3D view. 3D view can be zoomed, panned, rotated, and tilted. The
+vertical exaggeration of rasters and 3D vectors can be set. Various
+color and lighten settings are possible. Not yet functional for
+Windows platforms
+.IP "\fIVector digitizer\fR" 4m
+.br
+Puts display into vector digitizing mode and opens a new digitizing
+toolbar. The user can digitize a new vector map or edit an existing
+map.
+.IP "\fIRaster digitizer\fR" 4m
+.br
+Puts display into raster digitizing mode and opens a new digitizing
+toolbar. The user can digitize a new raster map or edit an existing
+map.
+.SS Keyboard short\-cuts
+.SS Layer Manager
+.IP "Ctrl+Tab" 4m
+.br
+Switch \(cqLayers\(cq and \(cqConsole\(cq tab
+.IP "Ctrl+Q" 4m
+.br
+Quit
+.IP "Ctrl+R" 4m
+.br
+Render map in all map displays
+\fBWorkspace\fR
+.IP "Ctrl+N" 4m
+.br
+Create new workspace
+.IP "Ctrl+O" 4m
+.br
+Load workspace from file
+.IP "Ctrl+S" 4m
+.br
+Close workspace
+\fBLayers\fR
+.IP "Ctrl+Shift+L" 4m
+.br
+Add multiple raster or vector map layers to current map display
+.IP "Ctrl+Shift+R" 4m
+.br
+Add raster map layer to current map display
+.IP "Ctrl+Shift+V" 4m
+.br
+Add vector map layer to current map display
+.IP "Ctrl+W" 4m
+.br
+Close current map display
+\fBConsole\fR
+.IP "Tab" 4m
+.br
+Show command tooltips
+.IP "Esc" 4m
+.br
+Hide command tooltips
+.IP "Ctrl+Space" 4m
+.br
+Show auto\-complete suggestions
+.IP "Up/Down" 4m
+.br
+List command history
+.IP "Enter" 4m
+.br
+Run command
+.IP "Ctrl++" 4m
+.br
+Increase font size (numerical keyboard plus key)
+.IP "Ctrl+\-" 4m
+.br
+Decrease font size (numerical keyboard minus key)
+.IP "Ctrl+mouse wheel" 4m
+.br
+Increase or decrease font size
+.SS Map Display
+.IP "F11" 4m
+.br
+Fullscreen mode (toggle on/off)
+.IP "Ctrl+W" 4m
+.br
+Close map display
+.IP "Ctrl+R" 4m
+.br
+Render map (re\-renders map)
+.IP "F5" 4m
+.br
+Render map (re\-renders map)
+.SS Starting the graphical user interface
+If the wxGUI is not the default user interface, it can defined as default by
+typing at the GRASS GIS command line prompt:
+.br
+.nf
+\fC
+g.gui \-u wxpython
+\fR
+.fi
+Alternatively it may be defined in GISRC file
+($HOME/.grass7/rc on GNU/Linux, $APPDATA\(rsGRASS7\(rsrc
+on MS Windows) by GUI variable
+.br
+.nf
+\fC
+GUI: wxpython
+\fR
+.fi
+or by the environmental variable GRASS_GUI.
+.PP
+The GUI can be quit by selecting the \(cqFile \-> Exit GUI\(cq menu item.
+On MS Windows when GRASS is launched without an interactive command line
+this will end the entire GRASS session. In other cases the terminal
+window will remain running; type exit at the command prompt
+to end the GRASS session.
+.PP
+The GUI can be restarted from the GRASS command line prompt by typing
+.br
+.nf
+\fC
+g.gui
+\fR
+.fi
+or
+.br
+.nf
+\fC
+g.gui wxpython
+\fR
+.fi
+To restart with previously saved workspace file:
+.br
+.nf
+\fC
+g.gui wxpython workspace=file.gxw
+\fR
+.fi
+.PP
+The user can also start GRASS from the shell command line with the wxGUI
+specifying the \-\-gui switch:
+.br
+.nf
+\fC
+grass78 \-\-gui
+\fR
+.fi
+.SS Background information
+\fBwxGUI\fR is a native \fIGraphical User Interface\fR (GUI) for
+GRASS GIS written in Python
+using wxPython library.
+.SH SEE ALSO
+\fI
+wxGUI components
+.br
+wxGUI module dialogs
+wxGUI toolboxes (menu customization)
+\fR
+.PP
+See also wxGUI wiki
+page
+(especially various video
+tutorials),
+and Quick
+wxGUI Tutorial.
+.SH AUTHORS
+Martin Landa, FBK\-irst (2007\-2008), Trento, Italy, and Czech Technical University in Prague, Czech Republic
+.br
+Michael Barton, Arizona State University, USA
+.br
+Daniel Calvelo Aros
+.br
+Jachym Cepicky
+.br
+Markus Metz, Germany
+.br
+Anna Kratochvilova, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.br
+Vaclav Petras, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.br
+Stepan Turek, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.br
+Tereza Fiedlerova, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.br
+Matej Krejci, OSGeoREL, Czech Technical University in Prague, Czech Republic
+.br
+.br
+Icons created by Robert Szczepanek, Poland (Git repository)
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

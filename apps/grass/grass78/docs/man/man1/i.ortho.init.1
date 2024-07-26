@@ -1,0 +1,179 @@
+.TH i.ortho.init 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.ortho.init\fR\fR  \- Interactively creates or modifies entries in a camera initial exposure station file for imagery group referenced by a sub\-block.
+.SH KEYWORDS
+imagery, orthorectify
+.SH SYNOPSIS
+\fBi.ortho.init\fR
+.br
+\fBi.ortho.init \-\-help\fR
+.br
+\fBi.ortho.init\fR [\-\fBrp\fR] \fBgroup\fR=\fIname\fR  [\fBxc\fR=\fIfloat\fR]   [\fByc\fR=\fIfloat\fR]   [\fBzc\fR=\fIfloat\fR]   [\fBxc_sd\fR=\fIfloat\fR]   [\fByc_sd\fR=\fIfloat\fR]   [\fBzc_sd\fR=\fIfloat\fR]   [\fBomega\fR=\fIfloat\fR]   [\fBphi\fR=\fIfloat\fR]   [\fBkappa\fR=\fIfloat\fR]   [\fBomega_sd\fR=\fIfloat\fR]   [\fBphi_sd\fR=\fIfloat\fR]   [\fBkappa_sd\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Use initial values at run time
+.IP "\fB\-p\fR" 4m
+.br
+Print initial values
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of imagery group for ortho\-rectification
+.IP "\fBxc\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Exposure X\-coordinate
+.IP "\fByc\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Exposure Y\-coordinate
+.IP "\fBzc\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Exposure Z\-coordinate
+.IP "\fBxc_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori X\-coordinate standard deviation
+.IP "\fByc_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori Y\-coordinate standard deviation
+.IP "\fBzc_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori Z\-coordinate standard deviation
+.IP "\fBomega\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Omega (roll) degrees
+.IP "\fBphi\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Phi (pitch) degrees
+.IP "\fBkappa\fR=\fIfloat\fR" 4m
+.br
+Initial Camera Kappa (yaw) degrees
+.IP "\fBomega_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori Omega (roll) standard deviation
+.IP "\fBphi_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori Phi (pitch) standard deviation
+.IP "\fBkappa_sd\fR=\fIfloat\fR" 4m
+.br
+Apriori Kappa (yaw) standard deviation
+.SH DESCRIPTION
+Aerial photographs may be either vertical or oblique. Vertical photographs
+can be truly vertical (nadir), or slightly tilted (less than 3 degree
+from the vertical). Usually aerial photos are tilted to some degree. We
+refer to the term \fIvertical photograph\fR up to a tilt of 3 degree.
+.br
+Oblique aerial photographs are purposely taken with an
+angle between 3 and 90 degree from the nadir direction.
+.PP
+\fBThe use of \fIi.ortho.init\fR (menu 6) is only required when rectifying a
+tilted or oblique aerial photo.\fR
+.PP
+\fIi.ortho.init\fR creates or modifies entries in a camera initial exposure
+station file for imagery group referenced by a sub\-block.  These entries
+include: the (XC,YC,ZC) standard (e.g. UTM) approximate coordinates of the camera exposure
+station; initial roll, pitch, and yaw angles (in degrees) of the cameras
+attitude; and the \fIa priori\fR standard deviations for these
+parameters. During the imagery program, \fIi.photo.rectify\fR, the initial camera
+exposure station file is used for computation of the ortho\-rectification
+parameters.  If no initial camera exposure station file exist, the default
+values are computed from the control points file created in \fIi.photo.2target\fR.
+.PP
+The following menu is displayed:
+.br
+.nf
+\fC
+        Please provide the following information
+	INITIAL XC: Meters                __________
+	INITIAL YC: Meters                __________
+	INITIAL ZC: Meters                __________
+	INITIAL omega (roll) degrees:     __________
+	INITIAL phi  (pitch) degrees:     __________
+	INITIAL kappa  (yaw) degrees:     __________
+	Standard Deviation XC: Meters     __________
+	Standard Deviation YC: Meters     __________
+	Standard Deviation ZC: Meters     __________
+	Std. Dev. omega (roll) degrees:   __________
+	Std. Dev. phi  (pitch) degrees:   __________
+	Std. Dev. kappa  (yaw) degrees:   __________
+        Use these values at run time? (1=yes, 0=no)
+     AFTER COMPLETING ALL ANSWERS, HIT <ESC> TO CONTINUE
+                  (OR <Ctrl\-C> TO CANCEL)
+\fR
+.fi
+.PP
+The INITIAL values for (XC,YC,ZC) are expressed in standard (e.g. UTM) coordinates, and
+represent an approximation for the location of the camera at the time of
+exposure.
+.RS 4n
+.IP \(bu 4n
+X: East aircraft position;
+.IP \(bu 4n
+Y: North aircraft position;
+.IP \(bu 4n
+Z: Flight altitude above sea level
+.RE
+.PP
+The INITIAL values for (omega,phi,kappa) are expressed in degrees, and
+represent an approximation for the cameras attitude  at the time of
+exposure.
+.RS 4n
+.IP \(bu 4n
+Omega (roll): Raising or lowering of the wings (turning around the
+aircraft\(cqs axis);
+.IP \(bu 4n
+Phi (pitch): Raising or lowering of the aircraft\(cqs front (turning
+around the wings\(cq axis);
+.IP \(bu 4n
+Kappa (yaw): Rotation needed to align the aerial photo to true north:
+needs to be denoted as +90 degree for clockwise turn and \-90 degree for
+a counterclockwise turn.
+.RE
+.PP
+The standard deviations for (XC,YC,ZC) are expressed in meters, and
+are used as \fIa priori\fR values for the standard deviations used in
+computation of the ortho rectification parameters.
+.PP
+The standard deviations for (omega,phi,kappa) are expressed in degrees, and
+are used as \fIa priori\fR values for the standard deviations used in
+computation of the ortho rectification parameters.
+.PP
+If \fIUse these values at run time? (1=yes, 0=no)\fR is set to 0, the
+values in this menu are not used.
+.SH SEE ALSO
+\fI
+i.ortho.photo,
+i.photo.2image,
+i.photo.2target,
+i.ortho.elev,
+i.ortho.camera,
+i.ortho.transform,
+i.photo.rectify
+\fR
+.SH AUTHOR
+Mike Baba,  DBA Systems, Inc.
+.SH SOURCE CODE
+.PP
+Available at: i.ortho.init source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

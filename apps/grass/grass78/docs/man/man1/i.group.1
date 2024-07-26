@@ -1,0 +1,110 @@
+.TH i.group 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.group\fR\fR  \- Creates, edits, and lists groups of imagery data.
+.SH KEYWORDS
+imagery, map management
+.SH SYNOPSIS
+\fBi.group\fR
+.br
+\fBi.group \-\-help\fR
+.br
+\fBi.group\fR [\-\fBrlsg\fR] \fBgroup\fR=\fIname\fR  [\fBsubgroup\fR=\fIname\fR]   [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBfile\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Remove selected files from specified group or subgroup
+.IP "\fB\-l\fR" 4m
+.br
+List files from specified (sub)group
+.IP "\fB\-s\fR" 4m
+.br
+List subgroups from specified group
+.IP "\fB\-g\fR" 4m
+.br
+Print in shell script style
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of imagery group
+.IP "\fBsubgroup\fR=\fIname\fR" 4m
+.br
+Name of imagery subgroup
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of raster map(s) to include in group
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with one raster map name per line
+.SH DESCRIPTION
+\fIi.group\fR allows the user to collect raster map layers in an imagery
+group by assigning them to user\-named subgroups or other groups. This
+enables the user to run analyses on any combination of the raster map layers
+in a group.  The user creates the groups and subgroups and selects the
+raster map layers that are to reside in them. Imagery analysis programs like
+\fIg.gui.gcp\fR,
+\fIi.rectify\fR,
+\fIi.ortho.photo\fR and
+others ask the user for the name of an imagery group whose data are to be
+analyzed. Imagery analysis programs like
+\fIi.cluster\fR and
+\fIi.maxlik\fR ask the user for the imagery group
+and imagery subgroup whose data are to be analyzed.
+.SH NOTES
+The \fIi.group\fR options are only available for
+imagery map layers in the current LOCATION_NAME.
+.PP
+Subgroup names may not contain more than 12 characters.
+.SS EXAMPLE
+This example runs in the \(dqlandsat\(dq mapset of the North Carolina sample
+dataset. The following command creates a group and subgroup containing
+only the visible light bands of Landsat\-7:
+.br
+.nf
+\fC
+i.group group=vis_bands subgroup=vis_bands input=lsat7_2000_10,lsat7_2000_20,lsat7_2000_30
+\fR
+.fi
+.SH SEE ALSO
+The GRASS 4 \fI
+Image
+Processing manual\fR
+.PP
+\fI
+g.gui.gcp,
+i.cluster,
+i.maxlik,
+i.rectify,
+i.ortho.photo
+\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering
+Research Laboratory
+.br
+Parser support: Bob Covill (Tekmap, Canada)
+.SH SOURCE CODE
+.PP
+Available at: i.group source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

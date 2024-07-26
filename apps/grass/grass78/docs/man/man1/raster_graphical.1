@@ -1,0 +1,426 @@
+.TH raster_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+Go to raster introduction | topics
+.PP
+.SS Raster modules:
+.RS 4n
+.IP \(bu 4n
+\fCr.basins.fill\fR \fCGenerates watershed subbasins raster map.\fR
+.IP \(bu 4n
+\fCr.blend\fR \fCBlends color components of two raster maps by a given ratio.\fR
+.IP \(bu 4n
+\fCr.buffer\fR \fCCreates a raster map showing buffer zones surrounding cells that contain non\-NULL category values.\fR
+.IP \(bu 4n
+\fCr.buffer.lowmem\fR \fCCreates a raster map showing buffer zones surrounding cells that contain non\-NULL category values.
+.br
+\fR
+.IP \(bu 4n
+\fCr.buildvrt\fR \fCBuild a VRT (Virtual Raster) from the list of input raster maps.\fR
+.IP \(bu 4n
+\fCr.carve\fR \fCGenerates stream channels.
+.br
+\fR
+.IP \(bu 4n
+\fCr.category\fR \fCManages category values and labels associated with user\-specified raster map layers.\fR
+.IP \(bu 4n
+\fCr.circle\fR \fCCreates a raster map containing concentric rings around a given point.\fR
+.IP \(bu 4n
+\fCr.clump\fR \fCRecategorizes data in a raster map by grouping cells that form physically discrete areas into unique categories.\fR
+.IP \(bu 4n
+\fCr.coin\fR \fCTabulates the mutual occurrence (coincidence) of categories for two raster map layers.\fR
+.IP \(bu 4n
+\fCr.colors\fR \fCCreates/modifies the color table associated with a raster map.\fR
+.IP \(bu 4n
+\fCr.colors.out\fR \fCExports the color table associated with a raster map.\fR
+.IP \(bu 4n
+\fCr.colors.stddev\fR \fCSets color rules based on stddev from a raster map\(cqs mean value.\fR
+.IP \(bu 4n
+\fCr.composite\fR \fCCombines red, green and blue raster maps into a single composite raster map.\fR
+.IP \(bu 4n
+\fCr.compress\fR \fCCompresses and decompresses raster maps.\fR
+.IP \(bu 4n
+\fCr.contour\fR \fCProduces a vector map of specified contours from a raster map.\fR
+.IP \(bu 4n
+\fCr.cost\fR \fCCreates a raster map showing the cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.\fR
+.IP \(bu 4n
+\fCr.covar\fR \fCOutputs a covariance/correlation matrix for user\-specified raster map layer(s).\fR
+.IP \(bu 4n
+\fCr.cross\fR \fCCreates a cross product of the category values from multiple raster map layers.\fR
+.IP \(bu 4n
+\fCr.describe\fR \fCPrints terse list of category values found in a raster map layer.\fR
+.IP \(bu 4n
+\fCr.distance\fR \fCLocates the closest points between objects in two raster maps.\fR
+.IP \(bu 4n
+\fCr.drain\fR \fCTraces a flow through an elevation model or cost surface on a raster map.\fR
+.IP \(bu 4n
+\fCr.external\fR \fCLinks GDAL supported raster data as a pseudo GRASS raster map.\fR
+.IP \(bu 4n
+\fCr.external.out\fR \fCRedirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.\fR
+.IP \(bu 4n
+\fCr.fill.dir\fR \fCFilters and generates a depressionless elevation map and a flow direction map from a given elevation raster map.\fR
+.IP \(bu 4n
+\fCr.fill.stats\fR \fCRapidly fills \(cqno data\(cq cells (NULLs) of a raster map with interpolated values (IDW).\fR
+.IP \(bu 4n
+\fCr.fillnulls\fR \fCFills no\-data areas in raster maps using spline interpolation.\fR
+.IP \(bu 4n
+\fCr.flow\fR \fCConstructs flowlines.
+.br
+\fR
+.IP \(bu 4n
+\fCr.geomorphon\fR \fCCalculates geomorphons (terrain forms) and associated geometry using machine vision approach.\fR
+.IP \(bu 4n
+\fCr.grow.distance\fR \fCGenerates a raster map containing distances to nearest raster features and/or the value of the nearest non\-null cell.\fR
+.IP \(bu 4n
+\fCr.grow\fR \fCGenerates a raster map layer with contiguous areas grown by one cell.\fR
+.IP \(bu 4n
+\fCr.gwflow\fR \fCNumerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.\fR
+.IP \(bu 4n
+\fCr.his\fR \fCGenerates red, green and blue (RGB) raster map layers combining hue, intensity and saturation (HIS) values from user\-specified input raster map layers.\fR
+.IP \(bu 4n
+\fCr.horizon\fR \fCComputes horizon angle height from a digital elevation model.
+.br
+\fR
+.IP \(bu 4n
+\fCr.import\fR \fCImports raster data into a GRASS raster map using GDAL library and reprojects on the fly.\fR
+.IP \(bu 4n
+\fCr.in.ascii\fR \fCConverts a GRASS ASCII raster file to binary raster map.\fR
+.IP \(bu 4n
+\fCr.in.aster\fR \fCGeoreference, rectify, and import Terra\-ASTER imagery and relative DEMs using gdalwarp.\fR
+.IP \(bu 4n
+\fCr.in.bin\fR \fCImport a binary raster file into a GRASS raster map layer.\fR
+.IP \(bu 4n
+\fCr.in.gdal\fR \fCImports raster data into a GRASS raster map using GDAL library.\fR
+.IP \(bu 4n
+\fCr.in.gridatb\fR \fCImports GRIDATB.FOR map file (TOPMODEL) into a GRASS raster map.\fR
+.IP \(bu 4n
+\fCr.in.lidar\fR \fCCreates a raster map from LAS LiDAR points using univariate statistics.\fR
+.IP \(bu 4n
+\fCr.in.mat\fR \fCImports a binary MAT\-File(v4) to a GRASS raster.\fR
+.IP \(bu 4n
+\fCr.in.png\fR \fCImports non\-georeferenced PNG format image.\fR
+.IP \(bu 4n
+\fCr.in.poly\fR \fCCreates raster maps from ASCII polygon/line/point data files.\fR
+.IP \(bu 4n
+\fCr.in.srtm\fR \fCImports SRTM HGT files into raster map.\fR
+.IP \(bu 4n
+\fCr.in.wms\fR \fCDownloads and imports data from OGC WMS and OGC WMTS web mapping servers.\fR
+.IP \(bu 4n
+\fCr.in.xyz\fR \fCCreates a raster map from an assemblage of many coordinates using univariate statistics.\fR
+.IP \(bu 4n
+\fCr.info\fR \fCOutputs basic information about a raster map.\fR
+.IP \(bu 4n
+\fCr.kappa\fR \fCCalculates error matrix and kappa parameter for accuracy assessment of classification result.\fR
+.IP \(bu 4n
+\fCr.lake\fR \fCFills lake at given point to given level.\fR
+.IP \(bu 4n
+\fCr.latlong\fR \fCCreates a latitude/longitude raster map.\fR
+.IP \(bu 4n
+\fCr.li.cwed\fR \fCCalculates contrast weighted edge density index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.daemon\fR \fCSupport module for r.li landscape index calculations.\fR
+.IP \(bu 4n
+\fCr.li.dominance\fR \fCCalculates dominance\(cqs diversity index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.edgedensity\fR \fCCalculates edge density index on a raster map, using a 4 neighbour algorithm\fR
+.IP \(bu 4n
+\fCr.li\fR \fCToolset for multiscale analysis of landscape structure\fR
+.IP \(bu 4n
+\fCr.li.mpa\fR \fCCalculates mean pixel attribute index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.mps\fR \fCCalculates mean patch size index on a raster map, using a 4 neighbour algorithm\fR
+.IP \(bu 4n
+\fCr.li.padcv\fR \fCCalculates coefficient of variation of patch area on a raster map\fR
+.IP \(bu 4n
+\fCr.li.padrange\fR \fCCalculates range of patch area size on a raster map\fR
+.IP \(bu 4n
+\fCr.li.padsd\fR \fCCalculates standard deviation of patch area a raster map\fR
+.IP \(bu 4n
+\fCr.li.patchdensity\fR \fCCalculates patch density index on a raster map, using a 4 neighbour algorithm\fR
+.IP \(bu 4n
+\fCr.li.patchnum\fR \fCCalculates patch number index on a raster map, using a 4 neighbour algorithm.\fR
+.IP \(bu 4n
+\fCr.li.pielou\fR \fCCalculates Pielou\(cqs diversity index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.renyi\fR \fCCalculates Renyi\(cqs diversity index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.richness\fR \fCCalculates richness index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.shannon\fR \fCCalculates Shannon\(cqs diversity index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.shape\fR \fCCalculates shape index on a raster map\fR
+.IP \(bu 4n
+\fCr.li.simpson\fR \fCCalculates Simpson\(cqs diversity index on a raster map\fR
+.IP \(bu 4n
+\fCr.mapcalc\fR \fCRaster map calculator.\fR
+.IP \(bu 4n
+\fCr.mapcalc.simple\fR \fCCalculates a new raster map from a simple r.mapcalc expression.\fR
+.IP \(bu 4n
+\fCr.mask\fR \fCCreates a MASK for limiting raster operation.\fR
+.IP \(bu 4n
+\fCr.mfilter\fR \fCPerforms raster map matrix filter.\fR
+.IP \(bu 4n
+\fCr.mode\fR \fCFinds the mode of values in a cover map within areas assigned the same category value in a user\-specified base map.\fR
+.IP \(bu 4n
+\fCr.neighbors\fR \fCMakes each cell category value a function of the category values assigned to the cells around it, and stores new cell values in an output raster map layer.\fR
+.IP \(bu 4n
+\fCr.null\fR \fCManages NULL\-values of given raster map.\fR
+.IP \(bu 4n
+\fCr.out.ascii\fR \fCConverts a raster map layer into a GRASS ASCII text file.\fR
+.IP \(bu 4n
+\fCr.out.bin\fR \fCExports a GRASS raster to a binary array.\fR
+.IP \(bu 4n
+\fCr.out.gdal\fR \fCExports GRASS raster maps into GDAL supported formats.\fR
+.IP \(bu 4n
+\fCr.out.gridatb\fR \fCExports GRASS raster map to GRIDATB.FOR map file (TOPMODEL).\fR
+.IP \(bu 4n
+\fCr.out.mat\fR \fCExports a GRASS raster to a binary MAT\-File.\fR
+.IP \(bu 4n
+\fCr.out.mpeg\fR \fCConverts raster map series to MPEG movie.\fR
+.IP \(bu 4n
+\fCr.out.png\fR \fCExport a GRASS raster map as a non\-georeferenced PNG image.\fR
+.IP \(bu 4n
+\fCr.out.pov\fR \fCConverts a raster map layer into a height\-field file for POV\-Ray.\fR
+.IP \(bu 4n
+\fCr.out.ppm\fR \fCConverts a GRASS raster map to a PPM image file.\fR
+.IP \(bu 4n
+\fCr.out.ppm3\fR \fCConverts 3 GRASS raster layers (R,G,B) to a PPM image file.\fR
+.IP \(bu 4n
+\fCr.out.vrml\fR \fCExports a raster map to the Virtual Reality Modeling Language (VRML).\fR
+.IP \(bu 4n
+\fCr.out.vtk\fR \fCConverts raster maps into the VTK\-ASCII format.\fR
+.IP \(bu 4n
+\fCr.out.xyz\fR \fCExports a raster map to a text file as x,y,z values based on cell centers.\fR
+.IP \(bu 4n
+\fCr.pack\fR \fCExports a raster map as GRASS GIS specific archive file\fR
+.IP \(bu 4n
+\fCr.param.scale\fR \fCExtracts terrain parameters from a DEM.
+.br
+\fR
+.IP \(bu 4n
+\fCr.patch\fR \fCCreates a composite raster map layer by using known category values from one (or more) map layer(s) to fill in areas of \(dqno data\(dq in another map layer.\fR
+.IP \(bu 4n
+\fCr.path\fR \fCTraces paths from starting points following input directions.\fR
+.IP \(bu 4n
+\fCr.plane\fR \fCCreates raster plane map given dip (inclination), aspect (azimuth) and one point.\fR
+.IP \(bu 4n
+\fCr.profile\fR \fCOutputs the raster map layer values lying on user\-defined line(s).\fR
+.IP \(bu 4n
+\fCr.proj\fR \fCRe\-projects a raster map from given location to the current location.\fR
+.IP \(bu 4n
+\fCr.quant\fR \fCProduces the quantization file for a floating\-point map.\fR
+.IP \(bu 4n
+\fCr.quantile\fR \fCCompute quantiles using two passes.\fR
+.IP \(bu 4n
+\fCr.random.cells\fR \fCGenerates random cell values with spatial dependence.\fR
+.IP \(bu 4n
+\fCr.random\fR \fCCreates a raster map layer and vector point map containing randomly located points.\fR
+.IP \(bu 4n
+\fCr.random.surface\fR \fCGenerates random surface(s) with spatial dependence.\fR
+.IP \(bu 4n
+\fCr.reclass.area\fR \fCReclasses a raster map greater or less than user specified area size (in hectares).\fR
+.IP \(bu 4n
+\fCr.reclass\fR \fCReclassify raster map based on category values.
+.br
+\fR
+.IP \(bu 4n
+\fCr.recode\fR \fCRecodes categorical raster maps.\fR
+.IP \(bu 4n
+\fCr.region\fR \fCSets the boundary definitions for a raster map.\fR
+.IP \(bu 4n
+\fCr.regression.line\fR \fCCalculates linear regression from two raster maps: y = a + b*x.\fR
+.IP \(bu 4n
+\fCr.regression.multi\fR \fCCalculates multiple linear regression from raster maps.\fR
+.IP \(bu 4n
+\fCr.relief\fR \fCCreates shaded relief map from an elevation map (DEM).
+.br
+\fR
+.IP \(bu 4n
+\fCr.report\fR \fCReports statistics for raster maps.\fR
+.IP \(bu 4n
+\fCr.resamp.bspline\fR \fCPerforms bilinear or bicubic spline interpolation with Tykhonov regularization.\fR
+.IP \(bu 4n
+\fCr.resamp.filter\fR \fCResamples raster map layers using an analytic kernel.\fR
+.IP \(bu 4n
+\fCr.resamp.interp\fR \fCResamples raster map to a finer grid using interpolation.\fR
+.IP \(bu 4n
+\fCr.resamp.rst\fR \fCReinterpolates and optionally computes topographic analysis from input raster map to a new raster map (possibly with different resolution) using regularized spline with tension and smoothing.\fR
+.IP \(bu 4n
+\fCr.resamp.stats\fR \fCResamples raster map layers to a coarser grid using aggregation.\fR
+.IP \(bu 4n
+\fCr.resample\fR \fCGRASS raster map layer data resampling capability.\fR
+.IP \(bu 4n
+\fCr.rescale.eq\fR \fCRescales histogram equalized the range of category values in a raster map layer.\fR
+.IP \(bu 4n
+\fCr.rescale\fR \fCRescales the range of category values in a raster map layer.\fR
+.IP \(bu 4n
+\fCr.rgb\fR \fCSplits a raster map into red, green and blue maps.\fR
+.IP \(bu 4n
+\fCr.ros\fR \fCGenerates rate of spread raster maps.
+.br
+\fR
+.IP \(bu 4n
+\fCr.series.accumulate\fR \fCMakes each output cell value a accumulationfunction of the values assigned to the corresponding cells in the input raster map layers.\fR
+.IP \(bu 4n
+\fCr.series\fR \fCMakes each output cell value a function of the values assigned to the corresponding cells in the input raster map layers.\fR
+.IP \(bu 4n
+\fCr.series.interp\fR \fCInterpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.\fR
+.IP \(bu 4n
+\fCr.shade\fR \fCDrapes a color raster over an shaded relief or aspect map.\fR
+.IP \(bu 4n
+\fCr.sim.sediment\fR \fCSediment transport and erosion/deposition simulation using path sampling method (SIMWE).\fR
+.IP \(bu 4n
+\fCr.sim.water\fR \fCOverland flow hydrologic simulation using path sampling method (SIMWE).\fR
+.IP \(bu 4n
+\fCr.slope.aspect\fR \fCGenerates raster maps of slope, aspect, curvatures and partial derivatives from an elevation raster map.
+.br
+\fR
+.IP \(bu 4n
+\fCr.solute.transport\fR \fCNumerical calculation program for transient, confined and unconfined solute transport in two dimensions\fR
+.IP \(bu 4n
+\fCr.spread\fR \fCSimulates elliptically anisotropic spread.
+.br
+\fR
+.IP \(bu 4n
+\fCr.spreadpath\fR \fCRecursively traces the least cost path backwards to cells from which the cumulative cost was determined.\fR
+.IP \(bu 4n
+\fCr.statistics\fR \fCCalculates category or object oriented statistics.\fR
+.IP \(bu 4n
+\fCr.stats\fR \fCGenerates area statistics for raster map.\fR
+.IP \(bu 4n
+\fCr.stats.quantile\fR \fCCompute category quantiles using two passes.\fR
+.IP \(bu 4n
+\fCr.stats.zonal\fR \fCCalculates category or object oriented statistics (accumulator\-based statistics).\fR
+.IP \(bu 4n
+\fCr.stream.extract\fR \fCPerforms stream network extraction.\fR
+.IP \(bu 4n
+\fCr.sun\fR \fCSolar irradiance and irradiation model.
+.br
+\fR
+.IP \(bu 4n
+\fCr.sunhours\fR \fCCalculates solar elevation, solar azimuth, and sun hours.
+.br
+\fR
+.IP \(bu 4n
+\fCr.sunmask\fR \fCCalculates cast shadow areas from sun position and elevation raster map.
+.br
+\fR
+.IP \(bu 4n
+\fCr.support\fR \fCAllows creation and/or modification of raster map layer support files.\fR
+.IP \(bu 4n
+\fCr.support.stats\fR \fCUpdate raster map statistics\fR
+.IP \(bu 4n
+\fCr.surf.area\fR \fCPrints estimation of surface area for raster map.\fR
+.IP \(bu 4n
+\fCr.surf.contour\fR \fCGenerates surface raster map from rasterized contours.\fR
+.IP \(bu 4n
+\fCr.surf.fractal\fR \fCCreates a fractal surface of a given fractal dimension.\fR
+.IP \(bu 4n
+\fCr.surf.gauss\fR \fCGenerates a raster map using gaussian random number generator.
+.br
+\fR
+.IP \(bu 4n
+\fCr.surf.idw\fR \fCProvides surface interpolation from raster point data by Inverse Distance Squared Weighting.\fR
+.IP \(bu 4n
+\fCr.surf.random\fR \fCProduces a raster surface map of uniform random deviates with defined range.\fR
+.IP \(bu 4n
+\fCr.terraflow\fR \fCPerforms flow computation for massive grids.\fR
+.IP \(bu 4n
+\fCr.texture\fR \fCGenerate images with textural features from a raster map.\fR
+.IP \(bu 4n
+\fCr.thin\fR \fCThins non\-null cells that denote linear features in a raster map layer.\fR
+.IP \(bu 4n
+\fCr.tile\fR \fCSplits a raster map into tiles.\fR
+.IP \(bu 4n
+\fCr.tileset\fR \fCProduces tilings of the source projection for use in the destination region and projection.\fR
+.IP \(bu 4n
+\fCr.timestamp\fR \fCModifies a timestamp for a raster map.
+.br
+\fR
+.IP \(bu 4n
+\fCr.to.rast3\fR \fCConverts 2D raster map slices to one 3D raster volume map.\fR
+.IP \(bu 4n
+\fCr.to.rast3elev\fR \fCCreates a 3D volume map based on 2D elevation and value raster maps.\fR
+.IP \(bu 4n
+\fCr.to.vect\fR \fCConverts a raster map into a vector map.\fR
+.IP \(bu 4n
+\fCr.topidx\fR \fCCreates a topographic index (wetness index) raster map from an elevation raster map.\fR
+.IP \(bu 4n
+\fCr.topmodel\fR \fCSimulates TOPMODEL which is a physically based hydrologic model.\fR
+.IP \(bu 4n
+\fCr.transect\fR \fCOutputs raster map layer values lying along user defined transect line(s).\fR
+.IP \(bu 4n
+\fCr.univar\fR \fCCalculates univariate statistics from the non\-null cells of a raster map.
+.br
+\fR
+.IP \(bu 4n
+\fCr.unpack\fR \fCImports a GRASS GIS specific raster archive file (packed with r.pack) as a raster map\fR
+.IP \(bu 4n
+\fCr.uslek\fR \fCComputes USLE Soil Erodibility Factor (K).\fR
+.IP \(bu 4n
+\fCr.usler\fR \fCComputes USLE R factor, Rainfall erosivity index.\fR
+.IP \(bu 4n
+\fCr.viewshed\fR \fCComputes the viewshed of a point on an elevation raster map.
+.br
+\fR
+.IP \(bu 4n
+\fCr.volume\fR \fCCalculates the volume of data \(dqclumps\(dq.
+.br
+\fR
+.IP \(bu 4n
+\fCr.walk\fR \fCCreates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.\fR
+.IP \(bu 4n
+\fCr.water.outlet\fR \fCCreates watershed basins from a drainage direction map.\fR
+.IP \(bu 4n
+\fCr.watershed\fR \fCCalculates hydrological parameters and RUSLE factors.\fR
+.IP \(bu 4n
+\fCr.what.color\fR \fCQueries colors for a raster map layer.\fR
+.IP \(bu 4n
+\fCr.what\fR \fCQueries raster maps on their category values and category labels.\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

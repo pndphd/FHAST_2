@@ -1,0 +1,161 @@
+QgsProjectiface
+QgsProject.instance().layerTreeRoot()
+QgsProject.instance().layerTreeRoot().findGroups()
+QgsProject.instance().layerTreeRoot().findGroups().name()
+root = QgsProject.instance().layerTreeRoot().findGroups()
+root
+root.names()
+root[1].name()
+list = []
+list.append(root[1].name())
+list
+self.iface.mainWindow().findChild(QMenu)
+iface.mainWindow().findChild(QMenu)
+iface.mainWindow().findChild(QMenu).name()
+iface.mainWindow().findChild( QMenu, '&My tools' )
+iface.mainWindow().findChild( QMenu)
+test =  iface.mainWindow().findChild(QMenu)
+test
+test.name()
+test.title()
+test =  iface.mainWindow().findChild(QToolBar)
+test.title()
+test.windowTitle
+test.windowTitle()
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+enubar.removeAction(menu.menuAction())
+menubar.removeAction(menu.menuAction())
+menubar.addAction(menu.menuAction())
+menubar
+menubar.name()
+menubar.title()
+self.iface.mainWindow().menuBar()
+iface.mainWindow().menuBar()
+iface.mainWindow().menuBar().actions()
+iface.mainWindow().menuBar()
+main_window = iface.mainWindow()
+print([i.windowTitle() for i in main_window.findChildren(QDockWidget)])
+print([i.windowTitle() for i in main_window.findChildren(QToolBar)])
+print([i.parent() for i in main_window.findChildren(QMenu) if i.title() in ['Panels', 'Toolbars']])
+vm = iface.viewMenu()
+panels = [i for i in vm.actions() if i.title() == 'Panels'][0]
+toolbars = [i for i in vm.actions() if i.title() == 'Toolbars'][0]
+print([i.title() for i in main_window.findChildren(QMenu) if i.title() in ['Panels', 'Toolbars']])
+menubar.removeAction(menu.menuAction())
+menubar.addAction(menu.menuAction())
+menubar
+menubar.name()(
+menubar.name()
+menubar.name()00)
+menubar.name()
+menubar.findChild()
+print([i.windowTitle() for i in main_window.findChildren(QMenu)])
+print([i for i in main_window.findChildren(QMenu)])
+print([i.name() for i in main_window.findChildren(QMenu)])
+iface.mainWindow().findChild(QMenu)
+for x in iface.mainWindow().findChildren(QMenuBar): 
+    print x.objectName()
+for x in iface.mainWindow().findChildren(QMenuBar): 
+    print x.objectName()
+test = iface.mainWindow().findChildren(QMenuBar)[1]
+test = iface.mainWindow().findChildren(QMenuBar)
+test[1]
+test[0]
+test[0].objectName()
+test = iface.mainWindow().findChildren(QMenu)
+test[0].objectName()
+iface.mainWindow().menuBar().setVisible(False)
+iface.mainWindow().menuBar().findChildern()
+iface.mainWindow().menuBar()
+iface.mainWindow().findChild(QMenuBar, '&My tools' )
+test = iface.mainWindow().findChild(QMenuBar, '&My tools' )
+test
+test = iface.mainWindow().findChild(QMenuBar)
+test
+test.objectName()
+test.title()
+test.names()
+for x in selectionToolbar.actions():
+    print(x.objectName())
+iface.mainWindow().findChild(QMenuBar, '&My tools' )
+test = iface.mainWindow().findChild(QMenuBar, '&My tools' )
+test
+iface.mainWindow().findChild(QMenu, '&My tools' )
+iface.mainWindow().menuBar().setVisible(True)
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+iface.mainWindow().menuBar().setVisible(True)
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+menubar.removeAction(menu.menuAction())
+# and add again
+menubar.addAction(menu.menuAction())
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+menubar.addAction(menu.menuAction())
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+menubar.removeAction(menu.menuAction())
+# and add again
+menubar.addAction(menu.menuAction())
+mainWindow().menuBar().actions()
+iface.mainWindow().menuBar().actions()
+iface.mainWindow().menuBar().actions()[1]
+iface.mainWindow().menuBar().actions()[1].name()
+iface.mainWindow().menuBar().actions()[1].title()
+iface.mainWindow().menuBar().actions()
+iface.mainWindow().menuBar().actions().help()
+iface.mainWindow().menuBar().actions()[2]
+iface.mainWindow().menuBar().actions()[2].name()
+iface.mainWindow().menuBar().actions()[2]
+test = iface.mainWindow().menuBar().actions()
+test = iface.mainWindow().menuBar()
+test.names()
+iface.mainWindow().menuBar().actions()[2].name()
+menu = iface.helpMenu()
+menubar = menu.parentWidget()
+menubar.addAction(menu.menuAction())
+iface.mainWindow().findChild(QMenu, '&My tools' )
+test = iface.mainWindow().findChild(QMenu, '&My tools' )
+test
+print(test)
+test = iface.mainWindow().findChild(QMenu, '&Help' )
+print(test)
+test = iface.mainWindow().menuBar().actions()
+tesdt
+test
+test[1]
+test[1].attributes()
+test.attributes()
+test.attribute()
+test
+test[1].text()
+iface.mainWindow().findChild(QMenu, '&My tools' )
+test = iface.mainWindow().findChild(QMenu, '&My tools' )
+test
+print(test)
+test = iface.mainWindow().findChild(QMenu, '&FHAST' )
+print(test)
+pyrcc5 -o resources.py resources.qrc 
+int_param_file
+print(int_param_file)
+string = "kkkkkkkk/ggggg"
+sub_str = string[0:string.rindex('/')
+]
+sub_str
+string = "kkkkkkkk\ggggg"
+sub_str = string[0:string.rindex('/')]
+  from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings
+QSettings().remove('UI/recentProjects')
+pyrcc5 -o resources.py resources.qrc
+qgis
+@qgis
+from qgis.core import QGis
+QGis.QGIS_VERSION
+try:
+    from qgis.core import Qgis
+except ImportError:
+    from qgis.core import QGis as Qgis
+Qgis.QGIS_VERSION

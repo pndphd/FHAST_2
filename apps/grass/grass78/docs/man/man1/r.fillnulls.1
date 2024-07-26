@@ -1,0 +1,219 @@
+.TH r.fillnulls 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.fillnulls.py\fR\fR  \- Fills no\-data areas in raster maps using spline interpolation.
+.SH KEYWORDS
+raster, surface, elevation, interpolation, splines, no\-data filling
+.SH SYNOPSIS
+\fBr.fillnulls.py\fR
+.br
+\fBr.fillnulls.py \-\-help\fR
+.br
+\fBr.fillnulls.py\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBmethod\fR=\fIstring\fR  [\fBtension\fR=\fIfloat\fR]   [\fBsmooth\fR=\fIfloat\fR]   [\fBedge\fR=\fIinteger\fR]   [\fBnpmin\fR=\fIinteger\fR]   [\fBsegmax\fR=\fIinteger\fR]   [\fBlambda\fR=\fIfloat\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Interpolation method to use
+.br
+Options: \fIbilinear, bicubic, rst\fR
+.br
+Default: \fIrst\fR
+.IP "\fBtension\fR=\fIfloat\fR" 4m
+.br
+Spline tension parameter
+.br
+Default: \fI40.\fR
+.IP "\fBsmooth\fR=\fIfloat\fR" 4m
+.br
+Spline smoothing parameter
+.br
+Default: \fI0.1\fR
+.IP "\fBedge\fR=\fIinteger\fR" 4m
+.br
+Width of hole edge used for interpolation (in cells)
+.br
+Options: \fI2\-100\fR
+.br
+Default: \fI3\fR
+.IP "\fBnpmin\fR=\fIinteger\fR" 4m
+.br
+Minimum number of points for approximation in a segment (>segmax)
+.br
+Options: \fI2\-10000\fR
+.br
+Default: \fI600\fR
+.IP "\fBsegmax\fR=\fIinteger\fR" 4m
+.br
+Maximum number of points in a segment
+.br
+Options: \fI2\-10000\fR
+.br
+Default: \fI300\fR
+.IP "\fBlambda\fR=\fIfloat\fR" 4m
+.br
+Tykhonov regularization parameter (affects smoothing)
+.br
+Used in bilinear and bicubic spline interpolation
+.br
+Default: \fI0.01\fR
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIr.fillnulls\fR fills NULL pixels (no data areas) in input raster
+map and stores filled data to a new output raster map. The fill areas
+are interpolated from the no data area boundaries buffer
+using \fIv.surf.rst\fR regularized
+spline interpolation with tension (\fBmethod=rst\fR) or
+\fIr.resamp.bspline\fR cubic or
+linear spline interpolation with Tykhonov regularization.
+.SH NOTES
+Each area boundary buffer is set to three times the map resolution to get nominally
+three points around the edge. This way the algorithm interpolates into the hole with
+a trained slope and curvature at the edges, in order to avoid that such a flat plane
+is generated in a hole. The width of edge area can be adjusted by
+changing the edge parameter.
+.PP
+During the interpolation following warning may occur when using the RST method:
+.PP
+Warning: strip exists with insufficient data
+.br
+Warning: taking too long to find points for interpolation\-\-please change
+the region to area where your points are
+.PP
+This warning is generated if large data holes exist within the surface.
+As the idea of \fIr.fillnulls\fR is to fill such holes, the user may
+ignore the warning. The interpolation will be continued. However, the user
+may pay attention to below notes.
+.PP
+If interpolation fails, temporary raster and vector maps are left in place to allow
+unfilled map hole (NULL area) identification and manual repair.
+.PP
+When using the default RST method, the algorithm is based
+on \fIv.surf.rst\fR regularized
+splines with tension interpolation module which interpolates the
+raster cell values for NULL data areas from the boundary values of the
+NULL data area. An eventual raster MASK is respected during the NULL
+data area(s) filling. The interpolated values are patched into the
+NULL data area(s) of the input map and saved into a new raster map.
+Otherwise, either the linear or cubic spline interpolation with
+Tykhonov regularization can be selected (based on
+\fIr.resamp.bspline\fR).
+.SH WARNING
+Depending on the shape of the NULL data area(s) problems may occur due to an
+insufficient number of input cell values for the interpolation process. Most
+problems will occur if a NULL data area reaches a large amount of the map
+boundary. The user will have to carefully check the result using
+\fIr.mapcalc\fR (generating a
+difference map to the input map and applying the
+\(dqdifferences\(dq color table
+with \fIr.colors\fR) and/or to query
+individual cell values.
+.PP
+RST method stores temporary maps on hard disk. It will require at least as much
+free space as one extra input raster map takes.
+.SH EXAMPLE
+In this example, the SRTM elevation map in the
+North Carolina sample dataset location is filtered for outlier
+elevation values; missing pixels are then re\-interpolated to obtain
+a complete elevation map:
+.br
+.nf
+\fC
+g.region raster=elev_srtm_30m \-p
+d.mon wx0
+d.histogram elev_srtm_30m
+# remove SRTM outliers, i.e. SRTM below 50m (esp. lakes), leading to no data areas
+r.mapcalc \(dqelev_srtm_30m_filt = if(elev_srtm_30m < 50.0, null(), elev_srtm_30m)\(dq
+d.histogram elev_srtm_30m_filt
+d.rast elev_srtm_30m_filt
+# using the default RST method to fill these holes in DEM
+r.fillnulls input=elev_srtm_30m_filt output=elev_srtm_30m_rst tension=20
+# using the bilinear method to fill these holes in DEM
+r.fillnulls input=elev_srtm_30m_filt output=elev_srtm_30m_bilin method=bilinear
+d.histogram elev_srtm_30m_rst
+d.rast elev_srtm_30m_rst
+d.erase
+d.histogram elev_srtm_30m_bilin
+d.rast elev_srtm_30m_bilin
+r.mapcalc \(dqdiff_rst_bilin = elev_srtm_30m_rst \- elev_srtm_30m_bilin\(dq
+r.colors diff_rst_bilin color=differences
+r.univar \-e diff_rst_bilin
+d.erase
+d.rast diff_rst_bilin
+d.legend diff_rst_bilin
+\fR
+.fi
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Mitas, L., Mitasova, H., 1999, Spatial Interpolation. In: P.Longley,
+M.F. Goodchild, D.J. Maguire, D.W.Rhind (Eds.), Geographical Information
+Systems: Principles, Techniques, Management and Applications, Wiley,
+pp.481\-492
+.IP \(bu 4n
+Mitasova H., Mitas L.,  Brown W.M.,  D.P. Gerdes, I.
+Kosinovsky, Baker, T.1995, Modeling spatially and temporally distributed
+phenomena: New methods and tools for GRASS GIS. \fIInternational Journal of
+GIS\fR, 9 (4), special issue on Integrating GIS and Environmental modeling,
+433\-446.
+.IP \(bu 4n
+Mitasova H.
+and Mitas L. 1993: Interpolation by Regularized Spline with Tension: I.
+Theory and Implementation, \fIMathematical Geology\fR 25, 641\-655.
+.IP \(bu 4n
+Mitasova H.
+and Hofierka L. 1993: Interpolation by Regularized Spline with Tension:
+II. Application to Terrain Modeling and Surface Geometry Analysis,
+\fIMathematical Geology\fR 25, 657\-667.
+.RE
+.SH SEE ALSO
+\fI
+r.fill.dir,
+r.mapcalc,
+r.resamp.bspline,
+v.surf.rst
+\fR
+.SH AUTHORS
+Markus Neteler, University of Hannover  and Fondazione Edmund Mach
+.br
+Improvement by Hamish Bowman, NZ
+.SH SOURCE CODE
+.PP
+Available at: r.fillnulls source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

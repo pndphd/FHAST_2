@@ -1,0 +1,369 @@
+.TH v.distance 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.distance\fR\fR  \- Finds the nearest element in vector map \(cqto\(cq for elements in vector map \(cqfrom\(cq.
+.SH KEYWORDS
+vector, distance, database, attribute table
+.SH SYNOPSIS
+\fBv.distance\fR
+.br
+\fBv.distance \-\-help\fR
+.br
+\fBv.distance\fR [\-\fBpa\fR] \fBfrom\fR=\fIname\fR  [\fBfrom_layer\fR=\fIstring\fR]   [\fBfrom_type\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBto\fR=\fIname\fR  [\fBto_layer\fR=\fIstring\fR]   [\fBto_type\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBdmax\fR=\fIfloat\fR]   [\fBdmin\fR=\fIfloat\fR]   [\fBupload\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcolumn\fR=\fIname\fR[,\fIname\fR,...]]   [\fBto_column\fR=\fIname\fR]   [\fBtable\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print output to stdout, don\(cqt update attribute table
+.br
+First column is always category of \(cqfrom\(cq feature called from_cat
+.IP "\fB\-a\fR" 4m
+.br
+Calculate distances to all features within the threshold
+.br
+Output may be written to stdout using the \(cq\-p\(cq flag or uploaded to a new table created by the \(cqtable\(cq option; multiple \(cqupload\(cq options may be used.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBfrom\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing vector map (from)
+.br
+Or data source for direct OGR access
+.IP "\fBfrom_layer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (from)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBfrom_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type (from)
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint,line,area\fR
+.IP "\fBto\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of existing vector map (to)
+.br
+Or data source for direct OGR access
+.IP "\fBto_layer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (to)
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBto_type\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Feature type (to)
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint,line,area\fR
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map containing lines connecting nearest elements
+.IP "\fBdmax\fR=\fIfloat\fR" 4m
+.br
+Maximum distance or \-1 for no limit
+.br
+Map units, meters for ll
+.br
+Default: \fI\-1\fR
+.IP "\fBdmin\fR=\fIfloat\fR" 4m
+.br
+Minimum distance or \-1 for no limit
+.br
+Map units, meters for ll
+.br
+Default: \fI\-1\fR
+.IP "\fBupload\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Values describing the relation between two nearest features
+.br
+Options: \fIcat, dist, to_x, to_y, to_along, to_angle, to_attr\fR
+.br
+\fBcat\fR: category of the nearest feature
+.br
+\fBdist\fR: minimum distance to nearest feature
+.br
+\fBto_x\fR: x coordinate of the nearest point on the \(cqto\(cq feature
+.br
+\fBto_y\fR: y coordinate of the nearest point on the \(cqto\(cq feature
+.br
+\fBto_along\fR: distance to the nearest point on the \(cqto\(cq feature along that linear feature
+.br
+\fBto_angle\fR: angle along the nearest linear feature in the \(cqto\(cq map, measured CCW from the +x axis, in radians, between \-Pi and Pi inclusive
+.br
+\fBto_attr\fR: attribute of nearest feature given by to_column option
+.IP "\fBcolumn\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Column name(s) where values specified by \(cqupload\(cq option will be uploaded
+.IP "\fBto_column\fR=\fIname\fR" 4m
+.br
+Column name of nearest feature (used with upload=to_attr)
+.IP "\fBtable\fR=\fIname\fR" 4m
+.br
+Name for new attribute table
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator for printing output to stdout
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+\fIv.distance\fR finds the nearest element in vector map (\fBto\fR)
+for elements in vector map (\fBfrom\fR). Various information about
+the vectors\(cq relationships (distance, category, etc.) may be uploaded to
+the attribute table attached to the first vector map, or printed to
+\(cqstdout\(cq. A new vector map may be created where lines connecting
+nearest points on features are written. \fBdmin\fR and/or
+\fBdmax\fR can be used to limit the search radius (in lat\-long locations
+to be given in meters since they are calculated as geodesic distances on
+a sphere).
+.PP
+For lines to lines, say line A to line B, \fIv.distance\fR calculates
+the shortest distance of each vertex in A with each segment (not vertex)
+in B. The module then calculates the shortest distance of each vertex in
+B to each segment in A. The overall shortest distance of A points to B
+segments and B points to A segments is used. Additionally,
+\fIv.distance\fR checks for intersections. In case of intersections,
+the first intersection found is used and the distance set to zero.
+.PP
+For lines to areas, the distance is set to zero if a line is (partially)
+inside an area. The first point of the line that is inside the area is
+used as common point. The distance is also set to zero if the line
+intersects with the outer ring or any of the inner rings (isles), in
+which case the fist intersection is used as common point.
+.PP
+For areas to areas, the module checks first for overlap or if one area
+is (partially) inside the other area. This is computationally quite
+intensive. If the outer rings of the two areas do not overlap, the
+distance is calculated as above for lines to lines, treating the outer
+rings as two lines. Again, the first point encountered falling into an
+area is used as common point, or the first intersection point.
+.PP
+For anything else than points to lines, there can be several common
+locations with zero distance, and the common location would then be the
+result of an overlay consisting of several points, lines, or areas.
+\fIv.distance\fR selects in these cases a single point, and does
+not create an overlay
+like \fIv.overlay\fR. In this
+implementation, any shared point is as good as any other. Calculating
+an intersection is costlier than to check if a vertex is inside a
+polygon. For example, if a vertex of the boundary of the \(cqto\(cq area is
+inside the \(cqfrom\(cq area, it is a common location. For speed reasons,
+the distance is then set to zero and no further tests are done.
+.SH NOTES
+If a nearest feature does not have a category, the attribute column is
+updated to NULL.
+.PP
+The upload \fBcolumn\fR(s) must already exist. Create one with
+\fIv.db.addcolumn\fR.
+.PP
+In lat\-long locations \fIv.distance\fR gives distances
+(\fIdist\fR, \fIfrom_along\fR, and \fIto_along\fR) not in
+degrees but in meters calculated as geodesic distances on a sphere.
+.PP
+If one or both of the input vector maps are 3D, the user is notified
+accordingly.
+.SH EXAMPLES
+.SS Find nearest lines
+Find \fInearest lines\fR in vector map \(dqln\(dq for points from
+vector map \(dqpnt\(dq within the given threshold and write related
+line categories to column \(dqlinecat\(dq in an attribute table attached
+to vector map \(dqpnt\(dq:
+.br
+.nf
+\fC
+v.distance from=pnt to=ln upload=cat column=linecat
+\fR
+.fi
+.SS Find nearest area
+For each point from vector map \(dqpnt\(dq, find the \fInearest area\fR
+from map \(dqar\(dq within the given threshold and write the related
+area categories to column \(dqareacat\(dq in an attribute table attached
+to vector map \(dqpnt\(dq (in the case that a point falls into an area,
+the distance is zero):
+.br
+.nf
+\fC
+v.distance from=pnt to=ar upload=cat column=areacat
+\fR
+.fi
+.SS Create a new vector map
+Create a new vector map which contains \fIlines connecting nearest
+features\fR of maps \(dqpnt\(dq and map \(dqln\(dq. The resulting
+vector map can be used for example to connect points to a network as
+needed for network analysis:
+.br
+.nf
+\fC
+v.distance from=pnt to=ln out=connections upload=dist column=dist
+\fR
+.fi
+.SS Create a new vector map with from and to categories in the attribute table
+Create a new vector map that contains \fIlines connecting nearest
+features\fR of maps \(dqpnt\(dq and map \(dqln\(dq, and a new
+attribute table that contains distances, from and to categories from the
+input maps:
+.br
+.nf
+\fC
+v.distance from=pnt to=ln out=connections upload=cat,dist column=to_cat,dist table=connections
+\fR
+.fi
+.SS Query information
+Query information from selected point(s). \fIv.distance\fR takes
+points from a vector map as input instead of stdin. A new vector map
+with query points has to be created before the map can be analysed.
+.PP
+Create query map (if not present):
+.br
+.nf
+\fC
+echo \(dq123456|654321|1\(dq | v.in.ascii output=pnt
+\fR
+.fi
+Find nearest features:
+.br
+.nf
+\fC
+v.distance \-p from=pnt to=map_to_query upload=cat
+\fR
+.fi
+.SS Point\-in\-polygon
+The option \fBdmax=0\fR is here important because otherwise for
+points not falling into any area, the category of the nearest area is
+recorded.
+.br
+For each point from vector map \(dqpnt\(dq, find the \fIarea\fR from
+vector map \(dqar\(dq in which the individual point falls, and
+write the related area categories to column \(dqareacat\(dq into
+the attribute table attached to vector map \(dqpnt\(dq:
+.br
+.nf
+\fC
+v.distance from=pnt to=ar dmax=0 upload=cat column=areacat
+\fR
+.fi
+.SS Univariate statistics on results
+Create a vector map containing connecting lines and investigate mean
+distance to targets. An alternative solution is to use
+the v.distance upload=dist option to upload distances into
+the \fIbugs\fR vector directly, then run v.univar on that. Also note
+you can upload two columns at a time, e.g. v.distance
+upload=cat,dist column=nearest_id,dist_to_nr.
+.br
+.nf
+\fC
+# create working copy
+g.copy vect=bugsites,bugs
+# add new attribute column to hold nearest archsite category number
+v.db.addcolumn map=bugs column=\(dqnrst_arch INTEGER\(dq
+v.distance from=bugs to=archsites to_type=point upload=to_attr \(rs
+  to_column=cat column=nrst_arch out=vdistance_vectors_raw
+# we need to give the lines category numbers, create a table, and create
+#  a column in that table to hold the distance data.
+v.category vdistance_vectors_raw out=vdistance_vectors type=line op=add
+g.remove \-f type=vector name=vdistance_vectors_raw
+v.db.addtable map=vdistance_vectors column=\(dqlength DOUBLE\(dq
+v.to.db map=vdistance_vectors option=length column=length
+# calculate statistics
+v.univar vdistance_vectors column=length
+\fR
+.fi
+.SS Print distance between points
+Example for a Latitude\-longitude location (EPSG 4326):
+.br
+.nf
+\fC
+# points along the equator
+echo \(dq0|\-61|1\(dq | v.in.ascii output=pnt1 input=\-
+echo \(dq0|\-58|1\(dq | v.in.ascii output=pnt2 input=\-
+# here, distances are in degree units
+v.distance \-p \-\-q from=pnt1 to=pnt2 upload=dist
+from_cat|distance
+1|3
+\fR
+.fi
+.SS Print distance matrix
+Note: Matrix\-style output is enabled only for flag \fI\-a\fR and one
+given upload option.
+.PP
+Spearfish sample data location:
+.br
+.nf
+\fC
+v.distance \-pa from=archsites to=archsites upload=dist
+\fR
+.fi
+.PP
+North Carolina sample data location:
+.br
+.nf
+\fC
+v.distance \-pa from=hospitals to=hospitals upload=dist separator=tab
+from_cat to_cat       dist
+              1          2          3          4          5 ...
+1             0    7489.10  339112.17   70900.39   70406.23 ...
+2       7489.10          0  345749.12   76025.46   75538.87 ...
+3     339112.17  345749.12          0  274153.19  274558.98 ...
+4      70900.39   76025.46  274153.19          0     501.11 ...
+5      70406.23   75538.87  274558.98     501.11          0 ...
+\&...
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.distance,
+v.db.addcolumn,
+v.what.vect
+\fR
+.SH AUTHORS
+Janne Soimasuo 1994, University of Joensuu, Faculty of Forestry, Finland
+.br
+Cmd line coordinates support: Markus Neteler, ITC\-irst, Trento, Italy
+.br
+Updated for 5.1: Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Matrix\-like output by Martin Landa, FBK\-irst, Trento, Italy
+.br
+Improved processing speed: Markus Metz
+.br
+Distance from any feature to any feature: Markus Metz
+.br
+New table without the \-p flag: Huidae Cho
+.SH SOURCE CODE
+.PP
+Available at: v.distance source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,81 @@
+.TH r.out.ppm3 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.ppm3\fR\fR  \- Converts 3 GRASS raster layers (R,G,B) to a PPM image file.
+.SH KEYWORDS
+raster, export, output
+.SH SYNOPSIS
+\fBr.out.ppm3\fR
+.br
+\fBr.out.ppm3 \-\-help\fR
+.br
+\fBr.out.ppm3\fR [\-\fBc\fR] \fBred\fR=\fIstring\fR \fBgreen\fR=\fIstring\fR \fBblue\fR=\fIstring\fR \fBoutput\fR=\fIstring\fR  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Add comments to describe the region
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBred\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <red>
+.IP "\fBgreen\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <green>
+.IP "\fBblue\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of raster map to be used for <blue>
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name for new PPM file. (use \(cq\-\(cq for stdout)
+.SH DESCRIPTION
+\fBr.out.ppm3\fR converts 3 GRASS raster layers (R,G,B) to a PPM
+image file, using the current region.
+.PP
+This program converts a GRASS raster map to a PPM image file
+using the the current region settings.
+.PP
+To get the full area and resolutin of the raster map, run:
+.br
+.nf
+\fC
+g.region raster=[mapname]
+\fR
+.fi
+.PP
+before running \fIr.out.ppm3\fR.
+.SH NOTES
+One pixel is written for each cell value, so if ew_res and ns_res
+differ, the aspect ratio of the resulting image will be off.
+.SH SEE ALSO
+\fIr.out.ppm,\fR
+\fIr.in.gdal,\fR
+\fId.rgb\fR
+.SH AUTHOR
+Glynn Clements
+.br
+Based upon \fIr.out.ppm\fR and \fId.rgb\fR.
+.SH SOURCE CODE
+.PP
+Available at: r.out.ppm3 source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

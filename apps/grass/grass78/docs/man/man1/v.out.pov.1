@@ -1,0 +1,101 @@
+.TH v.out.pov 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.out.pov\fR\fR  \- Converts GRASS x,y,z points to POV\-Ray x,z,y format.
+.SH KEYWORDS
+vector, export, output
+.SH SYNOPSIS
+\fBv.out.pov\fR
+.br
+\fBv.out.pov \-\-help\fR
+.br
+\fBv.out.pov\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBsize\fR=\fIstring\fR]   [\fBzmod\fR=\fIstring\fR]   [\fBobjmod\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel\fR
+.br
+Default: \fIpoint,line,area,face\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output POV file
+.IP "\fBsize\fR=\fIstring\fR" 4m
+.br
+Radius of sphere for points and tube for lines
+.br
+May be also variable, e.g. grass_r.
+.br
+Default: \fI10\fR
+.IP "\fBzmod\fR=\fIstring\fR" 4m
+.br
+This string is appended to each z coordinate. Examples: \(cq*10\(cq, \(cq+1000\(cq, \(cq*10+100\(cq, \(cq*exaggeration\(cq
+.IP "\fBobjmod\fR=\fIstring\fR" 4m
+.br
+Object modifier (OBJECT_MODIFIER in POV\-Ray documentation)
+.br
+Example: \(dqpigment { color red 0 green 1 blue 0 }\(dq
+.SH DESCRIPTION
+\fIv.out.pov\fR converts GRASS vector data to POV\-Ray format (www.povray.com)
+.SH EXAMPLE
+.br
+.nf
+\fC
+v.out.pov input=vector3d output=vector3d.pov objmod=\(dqpigment { color red 0 green 1 blue 0 }\(dq
+\fR
+.fi
+The generated file can be included in an existing .pov file with the following statement:
+.br
+.nf
+\fC
+#include \(dqvector3d.pov\(dq
+\fR
+.fi
+.SH REFERENCES
+POV\-Ray
+.SH SEE ALSO
+\fIr.out.pov\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.out.pov source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

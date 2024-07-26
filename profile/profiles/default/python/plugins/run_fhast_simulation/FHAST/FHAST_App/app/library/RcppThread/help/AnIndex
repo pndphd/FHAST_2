@@ -1,0 +1,3 @@
+detectCores	detectCores
+LdFlags	LdFlags
+RcppThread	RcppThread

@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.sunhours - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.sunhours</b></em>  - Calculates solar elevation, solar azimuth, and sun hours.<BR>
+Solar elevation: the angle between the direction of the geometric center of the sun's apparent disk and the (idealized) horizon. Solar azimuth: the angle from due north in clockwise direction.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_solar.html">solar</a>, <a href="keywords.html#sun energy">sun energy</a>, <a href="keywords.html#sun position">sun position</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.sunhours</b><br></div>
+<b>r.sunhours --help</b><br>
+<div id="synopsis"><b>r.sunhours</b> [-<b>ts</b>]  [<b>elevation</b>=<em>name</em>]   [<b>azimuth</b>=<em>name</em>]   [<b>sunhour</b>=<em>name</em>]  <b>year</b>=<em>integer</em>  [<b>month</b>=<em>integer</em>]  <b>day</b>=<em>integer</em>  [<b>hour</b>=<em>integer</em>]   [<b>minute</b>=<em>integer</em>]   [<b>second</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Time is local sidereal time, not Greenwich standard time</dd>
+
+<dt><b>-s</b></dt>
+<dd>Do not use SOLPOS algorithm of NREL</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>elevation</b>=<em>name</em></dt>
+<dd>Output raster map with solar elevation angle</dd>
+<dd>Name for output raster map</dd>
+
+<dt><b>azimuth</b>=<em>name</em></dt>
+<dd>Output raster map with solar azimuth angle</dd>
+<dd>Name for output raster map</dd>
+
+<dt><b>sunhour</b>=<em>name</em></dt>
+<dd>Output raster map with sunshine hours</dd>
+<dd>Sunshine hours require SOLPOS use and Greenwich standard time</dd>
+
+<dt><b>year</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Year</dd>
+<dd>Options: <em>1950-2050</em></dd>
+
+<dt><b>month</b>=<em>integer</em></dt>
+<dd>Month</dd>
+<dd>If not given, day is interpreted as day of the year</dd>
+<dd>Options: <em>1-12</em></dd>
+
+<dt><b>day</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Day</dd>
+<dd>Options: <em>1-366</em></dd>
+
+<dt><b>hour</b>=<em>integer</em></dt>
+<dd>Hour</dd>
+<dd>Options: <em>0-24</em></dd>
+<dd>Default: <em>12</em></dd>
+
+<dt><b>minute</b>=<em>integer</em></dt>
+<dd>Minutes</dd>
+<dd>Options: <em>0-60</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>second</b>=<em>integer</em></dt>
+<dd>Seconds</dd>
+<dd>Options: <em>0-60</em></dd>
+<dd>Default: <em>0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#calculating-a-sun-elevation-angle-map" class="toc">Calculating a sun elevation angle map</a></li>
+        <li class="toc"><a href="#calculate-map-of-photoperiod-(insolation-time)" class="toc">Calculate map of photoperiod (insolation time)</a></li>
+    </ul></li>
+    <li class="toc"><a href="#acknowledgements" class="toc">Acknowledgements</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.sunhours</em> calculates sun elevation and sun azimuth angles for
+the given time of day and each grid cell in the current region. 
+Additionally, the photoperiod (sunshine hours on flat terrain) can be
+calculated.
+
+<p>
+Sun elevation, height, height angle, or solar altitude angle is the
+angle in degrees between the horizon and a line that points from the
+site towards the centre of the sun.
+<p>
+The sun azimuth angle is here defined as the azimuth angle in degrees
+of the sun from due north in a clockwise direction.
+<p>
+The time used here is defined such that 12:00 (high noon) is the time
+when the sun has reached its highest point in the sky at the current site,
+unless the <em>-t</em> flag is used in which case time is interpreted as 
+Greenwich standard time.
+<p>
+If a <em>sunhour</em> output map is specified, the module calculates 
+sunshine hours for the given day. This option requires both Greenwhich 
+standard time and the use of the SOLPOS algorithm by NREL.
+
+<h2><a name="notes">NOTES</a></h2>
+
+To consider also cast shadow effects of the terrain, <em>r.sun</em> has
+to be used.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="calculating-a-sun-elevation-angle-map">Calculating a sun elevation angle map</a></h3>
+
+Calculate the sun elevation angle map for 2010-10-11 at 14:00h solar time:
+
+<div class="code"><pre>
+# set computational region to North Carolina state extent
+g.region n=318500 s=-16000 w=124000 e=963000 res=500 -p
+r.sunhours elevation=sun_elev year=2010 month=10 day=11 hour=14 minute=00
+
+# visualize
+d.mon wx0
+d.rast sun_elev 
+d.vect nc_state type=boundary
+d.legend sun_elev -s 
+</pre></div>
+<p>
+<center>
+<img src="r_sunhours.png" alt="Sun angle map (in degree) of NC, USA"><br>
+<i>Sun angle map (in degree) of North Carolina for the 2010-10-11 at 14:00h solar time</i>
+</center>
+
+<h3><a name="calculate-map-of-photoperiod-(insolation-time)">Calculate map of photoperiod (insolation time)</a></h3>
+
+Calculate photoperiod of day-of-year 001 (1st January) of 2012 for
+the current computational region, ignoring cast shadow effects of the
+terrain:
+
+<div class="code"><pre>
+g.region -p
+r.sunhours sunhour=photoperiod_doy_001 year=2012 day=1
+</pre></div>
+
+<h2><a name="acknowledgements">Acknowledgements</a></h2>
+Acknowledgements: National Renewable Energy Laboratory for their
+<a href="http://rredc.nrel.gov/solar/codesandalgorithms/solpos/">SOLPOS 2.0</a> sun position
+algorithm.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r.sun.html">r.sun</a>,
+<a href="r.sunmask.html">r.sunmask</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.sunhours">r.sunhours source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.sunhours">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

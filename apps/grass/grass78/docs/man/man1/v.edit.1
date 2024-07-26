@@ -1,0 +1,665 @@
+.TH v.edit 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.edit\fR\fR  \- Edits a vector map, allows adding, deleting and modifying selected vector features.
+.SH KEYWORDS
+vector, geometry, editing, line, node, point, vertex, level1
+.SH SYNOPSIS
+\fBv.edit\fR
+.br
+\fBv.edit \-\-help\fR
+.br
+\fBv.edit\fR [\-\fBrcnb1p\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]  \fBtool\fR=\fIstring\fR  [\fBinput\fR=\fIname\fR]   [\fBmove\fR=\fIx,y,z\fR]   [\fBthreshold\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBids\fR=\fIrange\fR]   [\fBcats\fR=\fIrange\fR]   [\fBcoords\fR=\fIx,y\fR[,\fIx,y\fR,...]]   [\fBbbox\fR=\fIx1,y1,x2,y2\fR]   [\fBpolygon\fR=\fIx,y\fR[,\fIx,y\fR,...]]   [\fBwhere\fR=\fIsql_query\fR]   [\fBquery\fR=\fIstring\fR]   [\fBbgmap\fR=\fIname\fR[,\fIname\fR,...]]   [\fBsnap\fR=\fIstring\fR]   [\fBzbulk\fR=\fIvalue,step\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Reverse selection
+.IP "\fB\-c\fR" 4m
+.br
+Close added boundaries (using threshold distance)
+.IP "\fB\-n\fR" 4m
+.br
+Do not expect header of input data
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-1\fR" 4m
+.br
+Modify only first found feature in bounding box
+.IP "\fB\-p\fR" 4m
+.br
+Connect parallel lines (using extend tools and threshold distance)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map to edit
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid\fR
+.br
+Default: \fIpoint,line,boundary,centroid\fR
+.IP "\fBtool\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Tool
+.br
+Options: \fIcreate, add, delete, copy, move, flip, catadd, catdel, merge, break, snap, connect, extend, extendstart, extendend, chtype, vertexadd, vertexdel, vertexmove, areadel, zbulk, select\fR
+.br
+\fBcreate\fR: Create new (empty) vector map
+.br
+\fBadd\fR: Add new features to existing vector map
+.br
+\fBdelete\fR: Delete selected features from vector map
+.br
+\fBcopy\fR: Copy selected features
+.br
+\fBmove\fR: Move selected features in vector map
+.br
+\fBflip\fR: Flip direction of selected vector lines
+.br
+\fBcatadd\fR: Set new categories to selected vector features for defined layer
+.br
+\fBcatdel\fR: Delete categories from selected vector features for defined layer
+.br
+\fBmerge\fR: Merge selected vector lines
+.br
+\fBbreak\fR: Break/split vector lines
+.br
+\fBsnap\fR: Snap vector features in given threshold
+.br
+\fBconnect\fR: Connect two lines
+.br
+\fBextend\fR: Extend lines
+.br
+\fBextendstart\fR: Extend start nodes
+.br
+\fBextendend\fR: Extend end nodes
+.br
+\fBchtype\fR: Change feature type (point<\->centroid, line<\->boundary)
+.br
+\fBvertexadd\fR: Add new vertex to selected vector lines
+.br
+\fBvertexdel\fR: Remove vertex from selected vector lines
+.br
+\fBvertexmove\fR: Move vertex of selected vector lines
+.br
+\fBareadel\fR: Delete selected areas from vector map (based on selected centroids)
+.br
+\fBzbulk\fR: Z bulk\-labeling (automated assignment of z coordinate to vector lines)
+.br
+\fBselect\fR: Select lines and print their ID\(cqs
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of file containing data in GRASS ASCII vector format
+.br
+\(cq\-\(cq for standard input
+.IP "\fBmove\fR=\fIx,y,z\fR" 4m
+.br
+Difference in x,y,z direction for moving feature or vertex
+.IP "\fBthreshold\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Threshold distance (coords,snap,query)
+.br
+\(cq\-1\(cq for threshold based on the current resolution settings
+.br
+Default: \fI\-1,0,0\fR
+.IP "\fBids\fR=\fIrange\fR" 4m
+.br
+Feature ids
+.br
+Example: 1,3,7\-9,13
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBcoords\fR=\fIx,y[,\fIx,y\fR,...]\fR" 4m
+.br
+List of point coordinates
+.IP "\fBbbox\fR=\fIx1,y1,x2,y2\fR" 4m
+.br
+Bounding box for selecting features
+.IP "\fBpolygon\fR=\fIx,y[,\fIx,y\fR,...]\fR" 4m
+.br
+Polygon for selecting features
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBquery\fR=\fIstring\fR" 4m
+.br
+Query tool
+.br
+For \(cqshorter\(cq use negative threshold value, positive value for \(cqlonger\(cq
+.br
+Options: \fIlength, dangle\fR
+.br
+\fBlength\fR: Select only lines or boundaries shorter/longer than threshold distance
+.br
+\fBdangle\fR: Select dangles shorter/longer than threshold distance
+.IP "\fBbgmap\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of background vector map(s)
+.IP "\fBsnap\fR=\fIstring\fR" 4m
+.br
+Snap added or modified features in the given threshold to the nearest existing feature
+.br
+Options: \fIno, node, vertex\fR
+.br
+Default: \fIno\fR
+.br
+\fBno\fR: Not apply snapping
+.br
+\fBnode\fR: Snap only to node
+.br
+\fBvertex\fR: Allow snapping also to vertex
+.IP "\fBzbulk\fR=\fIvalue,step\fR" 4m
+.br
+Starting value and step for z bulk\-labeling
+.br
+Pair: value,step (e.g. 1100,10)
+.SH DESCRIPTION
+The module \fIv.edit\fR allows the user to edit a vector map
+via command line interface.
+.PP
+\fIv.edit\fR supports only \(dqsimple\(dq vector features: points,
+centroids, lines and boundaries. Currently, only 2D vector features
+(except of \fBtool=zbulk\fR) are supported.
+.PP
+Provides editing features\(cq geometry. Attribute data connected to the
+vector map are not modified at all.
+.PP
+Vector features can be selected either by internal \fBid\fR, category
+number \fBcats\fR, coordinates \fBcoords\fR, bounding
+box \fBbbox\fR, \fBpolygon\fR, \fBwhere\fR statement (attribute
+data) or by \fBquery\fR. Selecting features by coordinates is
+affected by the current 2D resolution or by the threshold distance
+given by \fBthreshold\fR. The options are \fIorthogonal\fR, i.e. can
+be used in various combinations. For example:
+.br
+.nf
+\fC
+v.edit map=roads tool=select \(rs
+  coord=599505,4921010,603389.0625,4918292.1875 \(rs
+  threshold=10000 where=\(dqlabel=\(cqinterstate\(cq\(dq
+\fR
+.fi
+selects all features (and prints their id\(cqs to standard output)
+covered by two bounding boxes (center at 599505,4921010 and
+603389.0625,4918292.1875, size 2*10000) with attribute
+label=\(cqinterstate\(cq.
+.SH NOTES
+If no vector features are selected or the flag \fB\-b\fR is
+used, topology is not build at the end.
+.SH USAGE
+.SS Feature selection
+Vector features can be selected in several ways:
+.RS 4n
+.IP \(bu 4n
+\fBids\fR \- using internal (unique) feature id\(cqs
+.IP \(bu 4n
+\fBcats\fR \- using category numbers
+.IP \(bu 4n
+\fBcoords\fR \- using x,y coordinate pairs (center of bounding
+box, size defined by \fBthreshold\fR)
+.IP \(bu 4n
+\fBbbox\fR \- using bounding box
+.IP \(bu 4n
+\fBpolygon\fR \- using polygon (at least 3 coordinate pairs have to be set)
+.IP \(bu 4n
+\fBwhere\fR \- using where statement (attribute data)
+.IP \(bu 4n
+\fBquery\fR \- special query (e.g. minimal vector line length)
+.RE
+Additional parameters for vector feature specification are:
+.RS 4n
+.IP \(bu 4n
+\fBlayer\fR \- layer number (currently used only
+with \fBcats\fR or \fBwhere\fR option)
+.IP \(bu 4n
+\fBthreshold\fR \- threshold distance used for selecting vector
+features by coordinates
+.RE
+.SS Tool description
+.RS 4n
+.IP \(bu 4n
+\fBcreate\fR \- Create new (empty) vector map (see
+also \fIv.in.ascii\fR). Optionally
+vector features (in GRASS ASCII vector
+format) can be read from standard input (\fBinput=\-\fR) or
+from the text file given by the \fBinput\fR option.
+.IP \(bu 4n
+\fBadd\fR \- Add new vector features (defined
+in GRASS ASCII vector format) to
+existing vector map. Features can be read from standard input or
+from the given text file (\fBinput\fR option). If no header is
+given, the \fB\-n\fR flag must be used. Added features can be
+snapped (defined by \fBsnap\fR parameter) to nodes or vertices
+based on threshold distance \fBthreshold\fR.
+.IP \(bu 4n
+\fBdelete\fR \- Delete selected vector features from existing
+vector map.
+.IP \(bu 4n
+\fBcopy\fR \- Make identical copy of selected vector
+features. If background map \fBbgmap\fR is given copy features
+from background map, not from currently modified vector map.
+.IP \(bu 4n
+\fBmove\fR \- Move selected features of existing vector map
+relatively to their current location. This tool requires
+\fBmove\fR option. The option defines coordinates of the movement
+direction. Moved features can be snapped (defined by \fBsnap\fR
+parameter) to nodes or vertices based on threshold
+distance \fBthreshold\fR.
+.IP \(bu 4n
+\fBflip\fR \- Flip direction of selected vector lines
+(lines or boundaries).
+.IP \(bu 4n
+\fBcatadd\fR \- Add new layer category(ies) to selected vector
+feature(s). Category can be later used for new database
+entry.
+.IP \(bu 4n
+\fBcatdel\fR \- Delete layer category(ies) of selected vector
+feature(s).
+.IP \(bu 4n
+\fBmerge\fR \- Merge (at least two) selected vector lines or
+boundaries. The geometry of the merged vector lines can be
+changed. If the second line from two selected lines is in opposite
+direction to the first, it will be flipped. See also
+module \fIv.build.polylines\fR.
+.IP \(bu 4n
+\fBbreak\fR \- Split given vector line or boundary into two
+lines on location given by \fBcoords\fR. If \fBcoords\fR not
+given, breaks all selected lines at each intersection (based
+on \fIv.clean\fR, tool=break).
+.IP \(bu 4n
+\fBsnap\fR \- Snap vector features in given threshold. See
+also module \fIv.clean\fR. Note that this
+tool supports only snapping to nodes. Parameters \fBsnap\fR and
+\fBbgmap\fR are ignored.
+.IP \(bu 4n
+\fBconnect\fR \- Connect selected lines or boundaries, the
+first given line is connected to the second one. The second line
+is broken if necessary. The lines are connected only if distance
+between them is not greater than snapping threshold
+distance \fBthreshold\fR.
+.IP \(bu 4n
+\fBextend\fR \- Extend selected lines or boundaries without changing
+the current shape. Similar to \fBconnect\fR, but the first and second
+lines are both extended until they intersect. The second line is broken if
+necessary. The lines are extended only if distance between them is not
+greater than snapping threshold distance \fBthreshold\fR. If the first and
+second lines are parallel and do not intersect, no lines are extended. Use
+the \fB\-p\fR flag to extend the first line across the parallel gap.
+.IP \(bu 4n
+\fBextendstart\fR \- Similar to \fBextend\fR, but extend at start
+nodes only. Start nodes are used to select the second line and the end node
+of that line can also be extended if it is within the snapping threshold
+distance given by \fBthreshold\fR.
+.IP \(bu 4n
+\fBextendend\fR \- Similar to \fBextend\fR, but extend at end nodes
+only.
+.IP \(bu 4n
+\fBchtype\fR \- Change feature type of selected geometry
+objects. Points are converted to centroids, centroids to points,
+lines to boundaries and boundaries to lines.
+.IP \(bu 4n
+\fBvertexadd\fR \- Add vertex(ces) to the given vector lines
+or boundaries. Location of the new vertex is given by \fBcoord\fR
+option. If \-1 is given only first found line or boundary in bounding
+box is modified.
+.IP \(bu 4n
+\fBvertexdel\fR \- Remove vertex(ces) specified by
+\fBcoords\fR option. If \-1 is given only first found line or
+boundary in bounding box is modified.
+.IP \(bu 4n
+\fBvertexmove\fR \- Move vertex(ces) specified
+by \fBcoords\fR option. Direction of the movement is specified by
+the \fBmove\fR option. If \-1 is given only first found
+line or boundary in bounding box is modified. Moved vertex can be
+snapped (defined \fBsnap\fR) to nodes or vertices based on
+threshold distance \fBthreshold\fR.
+.IP \(bu 4n
+\fBzbulk\fR \- Assign z coordinate to 3D vector lines in given
+bounding box. The first found line will get z coordinate based on
+value given by \fBzbulk\fR parameter. Z coordinate of other
+selected lines will be increased by step given by \fBzbulk\fR
+parameter. This tool strictly requires \fBbbox\fR
+and \fBzbulk\fR parameter. Also input vector map must be 3D.
+.IP \(bu 4n
+\fBselect\fR \- Print comma separated list of selected line
+id\(cqs. No editing is done.
+.RE
+.SH EXAMPLES
+.SS Create new vector map
+Create new (empty) vector map:
+.br
+.nf
+\fC
+v.edit tool=create map=vectmap
+\fR
+.fi
+Create new vector map and read data from file \(cqroads.txt\(cq:
+.br
+.nf
+\fC
+v.out.ascii in=roads format=standard > roads.txt;
+v.edit tool=create map=vectmap input=roads.txt
+\fR
+.fi
+or alternatively
+.br
+.nf
+\fC
+cat roads.txt | v.edit tool=create map=vectmap input=\-
+\fR
+.fi
+.SS Add new features to existing vector map
+Add a new point to the vector map (without header):
+.br
+.nf
+\fC
+echo \(dqP 1 1
+ 640794 214874
+ 1 1\(dq | v.edit \-n tool=add map=vectmap input=\-
+# insert new row for each category in attribute table if doesn\(cqt exist yet
+v.to.db map=vectmap option=cat
+\fR
+.fi
+The input must be in GRASS ASCII vector
+format.
+.PP
+Add new features read from standard input:
+.br
+.nf
+\fC
+v.out.ascii in=railroads format=standard | v.edit tool=add map=vectmap input=\-
+\fR
+.fi
+.SS Delete selected features from vector map layer
+Remove all vector features with category number 1 or 2:
+.br
+.nf
+\fC
+v.edit tool=delete map=roads cats=1,2
+\fR
+.fi
+Remove all vector features except of those with category number 1 or 2
+(reverse selection):
+.br
+.nf
+\fC
+v.edit \-r tool=delete map=roads cats=1,2
+\fR
+.fi
+Remove features with category 1 or 2 located on coordinates
+600952.625,4926107 (bounding box based on the current 2D resolution):
+.br
+.nf
+\fC
+g.region \-d;
+v.edit tool=delete map=roads cats=1,2 coords=600952.625,4926107
+\fR
+.fi
+Remove all features with category 1 and 2 covered by two bounding boxes
+(center coordinates 592542.892,4924766.996 and 603389.062,4918292.187,
+size 1000 map units):
+.br
+.nf
+\fC
+v.edit map=roads tool=delete \(rs
+  coord=592542.892,4924766.996,603389.062,4918292.187 \(rs
+  threshold=1000 cat=1,2
+\fR
+.fi
+.SS Copy selected features from background map
+Copy all features with category number 1 from background map:
+.br
+.nf
+\fC
+v.edit map=roads tool=copy bgmap=archsites cat=1
+\fR
+.fi
+.SS Move features
+Move feature (vector point) located on coordinates 602580,4918480 to
+coordinates 603580,4919480:
+.br
+.nf
+\fC
+v.edit tool=move map=archsites coord=602580,4918480 th=1e\-2 move=1000,1000
+\fR
+.fi
+Move all features with category 1 1000 map units to the west and 1000
+map units to the south. Moved features snap to nodes in threshold
+distance 10 map units:
+.br
+.nf
+\fC
+v.edit tool=move map=roads cat=1 move=1000,\-1000 snap=node threshold=\-1,10
+\fR
+.fi
+Move all features defined by bounding box
+601530,4921560,602520,4922310 (W,S,E,N) 1000 map units to the
+east and 1000 map units to the north:
+.br
+.nf
+\fC
+v.edit tool=move map=roads bbox=601530,4921560,602520,4922310 move=\-1000,1000
+\fR
+.fi
+.SS Flip direction of vector lines
+Flip direction of all vector lines:
+.br
+.nf
+\fC
+v.edit tool=flip map=streams cats=1\-9999 type=line
+\fR
+.fi
+.SS Add / delete layer category number
+Add new layer/category 2/1, 2/3, 2/4, 2/5 to features covered by given polygon:
+.br
+.nf
+\fC
+v.edit tool=catadd map=roads \(rs
+  polygon=599877.75,4925088.375,597164.812,4922524.5,601338.562,4920914.625 \(rs
+  layer=2 cat=1,3\-5
+\fR
+.fi
+Delete layer/category 1/1, line id 1:
+.br
+.nf
+\fC
+v.edit tool=catdel map=roads id=1 cats=5
+\fR
+.fi
+.SS Merge lines
+Merge two lines with given category number:
+.br
+.nf
+\fC
+v.edit map=roads tool=merge cat=4
+\fR
+.fi
+.SS Split line on given point
+Split line id 810 on coordinates 604268,4923570 in threshold 50 map units:
+.br
+.nf
+\fC
+v.edit map=roads tool=break coords=604268,4923570 id=810 threshold=50
+\fR
+.fi
+.SS Break selected lines at each intersection
+Break selected lines (with category number 1) at each intersection:
+.br
+.nf
+\fC
+v.edit map=roads tool=break cat=1
+\fR
+.fi
+.SS Snap lines
+Snap all lines using threshold distance 20 map units:
+.br
+.nf
+\fC
+v.edit map=roads id=1\-9999 tool=snap threshold=\-1,20 type=line
+\fR
+.fi
+.SS Connect lines
+Connect line id 48 to line id 565:
+.br
+.nf
+\fC
+v.edit map=roads tool=connect id=48,565
+\fR
+.fi
+Connect line id 48 to line id 565; line id 60 to line id
+50. Maximum threshold distance is 700 map units:
+.br
+.nf
+\fC
+v.edit map=roads tool=connect id=48,565,60,50 threshold=\-1,700
+\fR
+.fi
+.SS Add vertex
+Add new vertex to the line located at 600952,4926107, threshold is
+set to 1 map unit:
+.br
+.nf
+\fC
+v.edit tool=vertexadd map=roads coords=600952,4926107 threshold=1
+\fR
+.fi
+.SS Delete vertices
+Delete vertex located at 593191.608,4925684.849 (threshold set to 0.1 map units).
+Modify only lines with category 1:
+.br
+.nf
+\fC
+v.edit tool=vertexdel map=roads coord=593191.608,4925684.849 \(rs
+  threshold=1\-e1 cats=1
+\fR
+.fi
+.SS Move vertices
+Move vertices located at 604441,4921088 (threshold set to 100 map units).
+Modify only lines with categories 1\-10:
+.br
+.nf
+\fC
+v.edit tool=vertexmove map=roads cats=1\-10 coord=604441,4921088 \(rs
+  threshold=100 move=1000,1000
+\fR
+.fi
+.SS Select features and print their id\(cqs
+Print id\(cqs of selected features, e.g.:
+.br
+.nf
+\fC
+v.edit map=soils@PERMANENT tool=select \(rs
+  bbox=595733.8125,4919781.75,598536.1875,4917396.75 \-\-q
+\fR
+.fi
+Example with \fId.vect\fR:
+.br
+.nf
+\fC
+d.erase;
+d.vect roads;
+d.vect \-i map=roads cats=\(gav.edit map=roads tool=select \(rs
+  coord=592542.89243878,4924766.99622811,603389.0625,4918292.1875 \(rs
+  threshold=1000 \-\-q\(ga col=red
+\fR
+.fi
+Select all lines shorter (or equal) than 10 map units:
+.br
+.nf
+\fC
+v.edit map=roads tool=select query=length threshold=\-1,0,\-10
+\fR
+.fi
+Select from given bounding box all lines longer then 200 map units:
+.br
+.nf
+\fC
+v.edit map=roads tool=select bbox=598260,4919730,605100,4926240 query=length threshold=\-1,0,200
+\fR
+.fi
+.SS Fix height of contours
+Input vector map contains 2D lines representing contours. Height can
+be assign to the contours using \fBtool=zbulk\fR. First of all 2D
+lines need to be converted to 3D lines:
+.br
+.nf
+\fC
+v.extrude input=line2 output=line3 height=0 type=line
+\fR
+.fi
+All lines which intersect with the line given by coordinates will be
+modified. First found line will get height 1000 map units, height of
+other selected lines will be increased by 10 map units.
+.br
+.nf
+\fC
+v.edit a2 tool=zbulk bbox=586121.25049368,4911970.21547109,603092.60466035,4927071.25713776 \(rs
+   zbulk=1000,10
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.in.ascii,
+v.info,
+v.build,
+v.build.polylines,
+v.clean,
+v.extrude,
+v.split
+\fR
+.PP
+See also \fIwxGUI vector digitizer\fR.
+.SH AUTHORS
+Original author: Wolf Bergenheim \- independent developer
+.br
+Initial updates: Jachym Cepicky, Mendel University of Agriculture and Forestry in Brno, Czech Republic
+.br
+Major update by Martin Landa, FBK\-irst (formerly ITC\-irst), Trento, Italy
+.br
+Extend tools by Huidae Cho
+.SH SOURCE CODE
+.PP
+Available at: v.edit source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

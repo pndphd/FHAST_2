@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.what.rast3 - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.what.rast3</b></em>  - Uploads 3D raster values at positions of vector points to the table.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#position">position</a>, <a href="keywords.html#querying">querying</a>, <a href="keywords.html#attribute table">attribute table</a>, <a href="keywords.html#surface information">surface information</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.what.rast3</b><br></div>
+<b>v.what.rast3 --help</b><br>
+<div id="synopsis"><b>v.what.rast3</b> <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>raster_3d</b>=<em>name</em> <b>column</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector points map for which to edit attributes</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>raster_3d</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of existing 3D raster map to be queried</dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column to be updated with the query result</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.what.rast3</em> reads 3D raster value for each point in the vector and updates <b>col</b> 
+column in vector attribute table by this value. The column should be type double. This module is based on 
+<a href="v.what.rast.html">v.what.rast</a>.
+<br>
+If more points have the same category, attribute value is set to NULL.
+If 3D raster values is NULL, attribute value is set to NULL.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+A) Reading values from 3D raster map at position of vector points, writing these values
+   into a column of the attribute table connected to the vector map:
+<br>
+<div class="code"><pre>
+v.what.rast3 map=pnts raster3d=plume column=concentration
+</pre></div>
+
+<p>
+B) In case of a vector map without attached attribute table, first add
+a new attribute table. This table is then populated with values
+queried from the raster map:
+<br>
+<div class="code"><pre>
+# create new random 3d vector points map
+v.random -z output=pnts npoints=100 zmin=0  zmax=50
+
+# add new table, link to map
+v.db.addtable map=pnts column="concentration double precision"
+
+# query raster map and upload values to vector table into specified column
+g.region raster3d=plume -p
+v.what.rast3 map=pnts raster3d=plume column=concentration
+
+# verify new attribute table:
+v.db.select map=pnts
+
+# verify statistics of uploaded values:
+v.univar map=pnts column=concentration type=point
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.db.addtable.html">v.db.addtable</a>,
+<a href="v.db.select.html">v.db.select</a>,
+<a href="v.what.rast.html">v.what.rast</a>,
+<a href="v.what.vect.html">v.what.vect</a>,
+<a href="v.univar.html">v.univar</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Soeren Gebbert, heavily based on v.what.rast by Radim Blazek
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.what.rast3">v.what.rast3 source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.what.rast3">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

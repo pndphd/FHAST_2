@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+ <title>GRASS GIS 7.8.5 Reference Manual: Topic export</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+ <meta name="Author" content="GRASS Development Team">
+
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>Topic: export</h2>
+
+<table>
+<tr><td valign="top"><a href="d.out.file.html">d.out.file</a></td> <td>Saves the contents of the active display monitor to a graphics file.</td></tr>
+<tr><td valign="top"><a href="d.to.rast.html">d.to.rast</a></td> <td>Saves the contents of the active display monitor to a raster map.</td></tr>
+<tr><td valign="top"><a href="db.out.ogr.html">db.out.ogr</a></td> <td>Exports attribute tables into various formats.</td></tr>
+<tr><td valign="top"><a href="r.external.out.html">r.external.out</a></td> <td>Redirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.</td></tr>
+<tr><td valign="top"><a href="r.out.ascii.html">r.out.ascii</a></td> <td>Converts a raster map layer into a GRASS ASCII text file.</td></tr>
+<tr><td valign="top"><a href="r.out.bin.html">r.out.bin</a></td> <td>Exports a GRASS raster to a binary array.</td></tr>
+<tr><td valign="top"><a href="r.out.gdal.html">r.out.gdal</a></td> <td>Exports GRASS raster maps into GDAL supported formats.</td></tr>
+<tr><td valign="top"><a href="r.out.gridatb.html">r.out.gridatb</a></td> <td>Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL).</td></tr>
+<tr><td valign="top"><a href="r.out.mat.html">r.out.mat</a></td> <td>Exports a GRASS raster to a binary MAT-File.</td></tr>
+<tr><td valign="top"><a href="r.out.mpeg.html">r.out.mpeg</a></td> <td>Converts raster map series to MPEG movie.</td></tr>
+<tr><td valign="top"><a href="r.out.png.html">r.out.png</a></td> <td>Export a GRASS raster map as a non-georeferenced PNG image.</td></tr>
+<tr><td valign="top"><a href="r.out.pov.html">r.out.pov</a></td> <td>Converts a raster map layer into a height-field file for POV-Ray.</td></tr>
+<tr><td valign="top"><a href="r.out.ppm.html">r.out.ppm</a></td> <td>Converts a GRASS raster map to a PPM image file.</td></tr>
+<tr><td valign="top"><a href="r.out.ppm3.html">r.out.ppm3</a></td> <td>Converts 3 GRASS raster layers (R,G,B) to a PPM image file.</td></tr>
+<tr><td valign="top"><a href="r.out.vrml.html">r.out.vrml</a></td> <td>Exports a raster map to the Virtual Reality Modeling Language (VRML).</td></tr>
+<tr><td valign="top"><a href="r.out.vtk.html">r.out.vtk</a></td> <td>Converts raster maps into the VTK-ASCII format.</td></tr>
+<tr><td valign="top"><a href="r.out.xyz.html">r.out.xyz</a></td> <td>Exports a raster map to a text file as x,y,z values based on cell centers.</td></tr>
+<tr><td valign="top"><a href="r.pack.html">r.pack</a></td> <td>Exports a raster map as GRASS GIS specific archive file</td></tr>
+<tr><td valign="top"><a href="r3.out.ascii.html">r3.out.ascii</a></td> <td>Converts a 3D raster map layer into a ASCII text file.</td></tr>
+<tr><td valign="top"><a href="r3.out.bin.html">r3.out.bin</a></td> <td>Exports a GRASS 3D raster map to a binary array.</td></tr>
+<tr><td valign="top"><a href="r3.out.v5d.html">r3.out.v5d</a></td> <td>Exports GRASS 3D raster map to 3-dimensional Vis5D file.</td></tr>
+<tr><td valign="top"><a href="r3.out.vtk.html">r3.out.vtk</a></td> <td>Converts 3D raster maps into the VTK-ASCII format.</td></tr>
+<tr><td valign="top"><a href="t.rast.export.html">t.rast.export</a></td> <td>Exports space time raster dataset.</td></tr>
+<tr><td valign="top"><a href="t.rast.out.vtk.html">t.rast.out.vtk</a></td> <td>Exports space time raster dataset as VTK time series.</td></tr>
+<tr><td valign="top"><a href="t.vect.export.html">t.vect.export</a></td> <td>Exports a space time vector dataset as GRASS GIS specific archive file.</td></tr>
+<tr><td valign="top"><a href="v.external.out.html">v.external.out</a></td> <td>Defines vector output format.</td></tr>
+<tr><td valign="top"><a href="v.out.ascii.html">v.out.ascii</a></td> <td>Exports a vector map to a GRASS ASCII vector representation.<BR></td></tr>
+<tr><td valign="top"><a href="v.out.dxf.html">v.out.dxf</a></td> <td>Exports vector map to DXF file format.</td></tr>
+<tr><td valign="top"><a href="v.out.lidar.html">v.out.lidar</a></td> <td>Exports vector points as LAS point cloud<BR></td></tr>
+<tr><td valign="top"><a href="v.out.ogr.html">v.out.ogr</a></td> <td>Exports a vector map layer to any of the supported OGR vector formats.<BR></td></tr>
+<tr><td valign="top"><a href="v.out.postgis.html">v.out.postgis</a></td> <td>Exports a vector map layer to PostGIS feature table.</td></tr>
+<tr><td valign="top"><a href="v.out.pov.html">v.out.pov</a></td> <td>Converts GRASS x,y,z points to POV-Ray x,z,y format.</td></tr>
+<tr><td valign="top"><a href="v.out.svg.html">v.out.svg</a></td> <td>Exports a vector map to SVG file.</td></tr>
+<tr><td valign="top"><a href="v.out.vtk.html">v.out.vtk</a></td> <td>Converts a vector map to VTK ASCII output.</td></tr>
+<tr><td valign="top"><a href="v.pack.html">v.pack</a></td> <td>Exports a vector map as GRASS GIS specific archive file</td></tr>
+</table>
+<p><em>See also the corresponding keyword <a href="keywords.html#export">export</a> for additional references.</em><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="https://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

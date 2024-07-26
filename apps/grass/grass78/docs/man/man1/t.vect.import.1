@@ -1,0 +1,131 @@
+.TH t.vect.import 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.vect.import.py\fR\fR  \- Imports a space time vector dataset from a GRASS GIS specific archive file.
+.SH KEYWORDS
+temporal, import, vector, time, create location
+.SH SYNOPSIS
+\fBt.vect.import.py\fR
+.br
+\fBt.vect.import.py \-\-help\fR
+.br
+\fBt.vect.import.py\fR [\-\fBeoc\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBbasename\fR=\fIstring\fR]  \fBdirectory\fR=\fIname\fR  [\fBtitle\fR=\fIstring\fR]   [\fBdescription\fR=\fIstring\fR]   [\fBlocation\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Extend location extents based on new dataset
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has same projection as the current location
+.IP "\fB\-c\fR" 4m
+.br
+Create the location specified by the \(dqlocation\(dq parameter and exit. Do not import the space time vector datasets.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the output space time vector dataset
+.IP "\fBbasename\fR=\fIstring\fR" 4m
+.br
+Basename of the new generated output maps
+.br
+A numerical suffix separated by an underscore will be attached to create a unique identifier
+.IP "\fBdirectory\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Path to the extraction directory
+.IP "\fBtitle\fR=\fIstring\fR" 4m
+.br
+Title of the new space time dataset
+.IP "\fBdescription\fR=\fIstring\fR" 4m
+.br
+Description of the new space time dataset
+.IP "\fBlocation\fR=\fIstring\fR" 4m
+.br
+Create a new location and import the data into it. Do not run this module in parallel or interrupt it when a new location should be created
+.SH DESCRIPTION
+\fIt.vect.import\fR imports a space time vector dataset archive that
+was exported with t.vect.export.
+.SH NOTES
+Optionally a base map name can be provided to avoid that existing
+vector maps are overwritten by the map names that are used in the STRDS
+archive.
+.PP
+The \fBdirectory\fR is used as work directory in case of import but
+can also be used as a data directory when using GML for the data
+exchange.
+.SH EXAMPLE
+In this example, five vector maps are created and registered in a single space time
+vector dataset named \fIrandom_locations\fR. Each vector map represents
+random locations within the boundary of the state taken at 1 month intervals.
+The space time dataset is then exported and re\-imported.
+.br
+.nf
+\fC
+db.connect \-d
+for i in \(gaseq 1 5\(ga ; do
+    v.random output=map_$i n=500 restrict=boundary_state@PERMANENT
+    echo map_$i >> map_list.txt
+done
+t.create type=stvds temporaltype=absolute \(rs
+         output=random_locations \(rs
+         title=\(dqRandom locations\(dq \(rs
+         description=\(dqVector test dataset with random locations\(dq
+t.register \-i type=vector input=random_locations \(rs
+           file=map_list.txt start=\(dq2012\-01\-01\(dq increment=\(dq1 months\(dq
+t.vect.list random_locations
+t.vect.export input=random_locations output=random_locations.tar.gz \(rs
+              compression=gzip
+t.vect.import input=random_locations.tar.gz output=new_random_locations \(rs
+              basename=new_map directory=/tmp
+t.vect.list new_random_locations
+id|name|layer|mapset|start_time|end_time
+new_map_1@user1|new_map_1|None|user1|2012\-01\-01 00:00:00|2012\-02\-01 00:00:00
+new_map_2@user1|new_map_2|None|user1|2012\-02\-01 00:00:00|2012\-03\-01 00:00:00
+new_map_3@user1|new_map_3|None|user1|2012\-03\-01 00:00:00|2012\-04\-01 00:00:00
+new_map_4@user1|new_map_4|None|user1|2012\-04\-01 00:00:00|2012\-05\-01 00:00:00
+new_map_5@user1|new_map_5|None|user1|2012\-05\-01 00:00:00|2012\-06\-01 00:00:00
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.vect.export,
+t.create,
+t.info,
+v.in.ogr,
+v.pack,
+t.rast.import
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.vect.import source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

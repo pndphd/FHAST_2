@@ -1,0 +1,152 @@
+.TH i.evapo.pm 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.evapo.pm\fR\fR  \- Computes potential evapotranspiration calculation with hourly Penman\-Monteith.
+.SH KEYWORDS
+imagery, evapotranspiration
+.SH SYNOPSIS
+\fBi.evapo.pm\fR
+.br
+\fBi.evapo.pm \-\-help\fR
+.br
+\fBi.evapo.pm\fR [\-\fBzn\fR] \fBelevation\fR=\fIname\fR \fBtemperature\fR=\fIname\fR \fBrelativehumidity\fR=\fIname\fR \fBwindspeed\fR=\fIname\fR \fBnetradiation\fR=\fIname\fR \fBcropheight\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Set negative evapotranspiration to zero
+.IP "\fB\-n\fR" 4m
+.br
+Use Night\-time
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map [m a.s.l.]
+.IP "\fBtemperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input temperature raster map [C]
+.IP "\fBrelativehumidity\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input relative humidity raster map [%]
+.IP "\fBwindspeed\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input wind speed raster map [m/s]
+.IP "\fBnetradiation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input net solar radiation raster map [MJ/m2/h]
+.IP "\fBcropheight\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input crop height raster map [m]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+.PP
+\fIi.evapo.pm\fR, given the vegetation height (hc), humidity (RU),
+wind speed at two meters height (WS), temperature (T), digital terrain model (DEM),
+and net radiation (NSR) raster input maps,
+calculates the potential evapotranspiration map (EPo).
+.PP
+Optionally the user can activate a flag (\-z)
+that allows him setting to zero all of the negative evapotranspiration cells;
+in fact these negative values motivated by the condensation of the air water
+vapour content, are sometime undesired because they can produce  computational
+problems. The usage of the flag \-n detect that the module is run in night hours
+and the appropriate soil heat flux is calculated.
+.PP
+The algorithm implements well known approaches: the hourly
+Penman\-Monteith method as presented in Allen et al. (1998) for land
+surfaces and the Penman method (Penman, 1948) for water surfaces.
+.PP
+Land and water surfaces are idenfyied by Vh:
+.RS 4n
+.IP \(bu 4n
+where Vh gt 0 vegetation is present and evapotranspiration is calculated;
+.IP \(bu 4n
+where Vh = 0 bare ground is present and evapotranspiration is calculated;
+.IP \(bu 4n
+where Vh lt 0 water surface is present and evaporation is calculated.
+.RE
+.PP
+For more details on the algorithms see [1,2,3].
+.SH NOTES
+.PP
+Net solar radiation map in MJ/(m2*h) can be computed from the combination of the r.sun ,
+run in mode 1, and the \fIr.mapcalc\fR commands.
+.PP
+The sum of the three radiation components outputted by r.sun (beam, diffuse, and reflected)
+multiplied by the Wh to Mj conversion factor (0.0036) and optionally by a
+clear sky factor [0\-1] allows the generation of a map to be used as
+an NSR input for the \fIi.evapo.PM\fR command.
+.PP
+Example:
+.br
+.nf
+\fC
+r.sun \-s elevin=dem aspin=aspect slopein=slope lin=2 albedo=alb_Mar \(rs
+      incidout=out beam_rad=beam diff_rad=diffuse refl_rad=reflected \(rs
+      day=73 time=13:00 dist=100;
+r.mapcalc \(dqNSR = 0.0036 * (beam + diffuse + reflected)\(dq
+\fR
+.fi
+.SH SEE ALSO
+The HydroFOSS
+project at IST\-SUPSI (Institute of Earth Sciences \- University school of
+applied science for the Southern Switzerland)
+.br
+\fI
+i.evapo.mh,
+i.evapo.time,
+r.sun,
+r.mapcalc
+\fR
+.SH AUTHORS
+.PP
+Original version of program: The HydroFOSS project, 2006, IST\-SUPSI. (http://istgis.ist.supsi.ch:8001/geomatica/index.php?id=1)
+\fI
+.br
+Massimiliano Cannata, Scuola Universitaria Professionale della Svizzera Italiana \- Istituto Scienze della Terra
+.br
+Maria A. Brovelli, Politecnico di Milano \- Polo regionale di Como
+\fR
+.PP
+Contact: Massimiliano Cannata
+.SH REFERENCES
+.PP
+[1] Cannata M., 2006.
+GIS embedded approach for Free & Open Source Hydrological Modelling. PhD thesis, Department of Geodesy and Geomatics, Polytechnic of Milan, Italy.
+.PP
+[2] Allen, R.G., L.S. Pereira, D. Raes, and M. Smith. 1998.
+Crop Evapotranspiration: Guidelines for computing crop water requirements.
+Irrigation and Drainage Paper 56, Food and Agriculture Organization of the
+United Nations, Rome, pp. 300
+.PP
+[3] Penman, H. L. 1948. Natural evaporation from open water,
+bare soil and grass. Proc. Roy. Soc. London, A193, pp. 120\-146.
+.SH SOURCE CODE
+.PP
+Available at: i.evapo.pm source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

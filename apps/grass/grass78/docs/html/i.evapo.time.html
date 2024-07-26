@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.evapo.time - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.evapo.time</b></em>  - Computes temporal integration of satellite ET actual (ETa) following the daily ET reference (ETo) from meteorological station(s).
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_evapotranspiration.html">evapotranspiration</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.evapo.time</b><br></div>
+<b>i.evapo.time --help</b><br>
+<div id="synopsis"><b>i.evapo.time</b> <b>eta</b>=<em>name</em>[,<i>name</i>,...] <b>eta_doy</b>=<em>name</em>[,<i>name</i>,...] <b>eto</b>=<em>name</em>[,<i>name</i>,...] <b>eto_doy_min</b>=<em>float</em> <b>start_period</b>=<em>float</em> <b>end_period</b>=<em>float</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>eta</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Names of satellite ETa raster maps [mm/d or cm/d]</dd>
+
+<dt><b>eta_doy</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Names of satellite ETa Day of Year (DOY) raster maps [0-400] [-]</dd>
+
+<dt><b>eto</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Names of meteorological station ETo raster maps [0-400] [mm/d or cm/d]</dd>
+
+<dt><b>eto_doy_min</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Value of DOY for ETo first day</dd>
+
+<dt><b>start_period</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Value of DOY for the first day of the period studied</dd>
+
+<dt><b>end_period</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Value of DOY for the last day of the period studied</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.evapo.time</em> (i.evapo.time_integration) integrates ETa in time following a
+reference ET (typically) from a set of meteorological stations dataset.
+
+Inputs:
+<ul>
+<li> ETa images
+<li> ETa images DOY (Day of Year)
+<li> ETo images
+<li> ETo DOYmin as a single value 
+</ul>
+
+Method:
+<ol>
+<li> each ETa pixel is divided by the same day ETo and become ETrF
+<li> each ETrF pixel is multiplied by the ETo sum for the representative days
+<li> Sum all n temporal [ETrF*ETo_sum] pixels to make a summed(ET) in [DOYmin;DOYmax]
+</ol>
+
+representative days calculation:
+let assume i belongs to range [DOYmin;DOYmax]
+
+<div class="code"><pre>
+DOYbeforeETa[i] = ( DOYofETa[i] - DOYofETa[i-1] ) / 2
+DOYafterETa[i] = ( DOYofETa[i+1] - DOYofETa[i] ) / 2
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+ETo images preparation:
+If you only have one meteorological station data set, the easiest way is:
+
+<div class="code"><pre>
+n=0
+for ETo_val in Eto[1] Eto[2] ...
+do
+	r.mapcalc "eto$n = $ETo_val" 
+	`expr n = n + 1`
+done
+</pre></div>
+
+with Eto[1], Eto[2], etc being a simple copy and paste from your data file
+of all ETo values separated by an empty space from each other.
+<p>
+If you have several meteorological stations data, then you need to grid
+them by generating Thiessen polygons or using different interpolation methods
+for each day.
+<p>
+For multi-year calculations, just continue incrementing DOY values above
+366, it will continue working, up to maximum input of 400 satellite images.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.eb.eta.html">i.eb.eta</a>,
+<a href="i.evapo.mh.html">i.evapo.mh</a>,
+<a href="i.evapo.pt.html">i.evapo.pt</a>,
+<a href="i.evapo.pm.html">i.evapo.pm</a>,
+<a href="r.sun.html">r.sun</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+Yann Chemin, International Rice Research Institute, The Philippines
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.evapo.time">i.evapo.time source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.evapo.time">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,223 @@
+.TH r.sunmask 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.sunmask\fR\fR  \- Calculates cast shadow areas from sun position and elevation raster map.
+.br
+Either exact sun position (A) is specified, or date/time to calculate the sun position (B) by r.sunmask itself.
+.SH KEYWORDS
+raster, solar, sun position, shadow
+.SH SYNOPSIS
+\fBr.sunmask\fR
+.br
+\fBr.sunmask \-\-help\fR
+.br
+\fBr.sunmask\fR [\-\fBzsg\fR] \fBelevation\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBaltitude\fR=\fIfloat\fR]   [\fBazimuth\fR=\fIfloat\fR]   [\fByear\fR=\fIinteger\fR]   [\fBmonth\fR=\fIinteger\fR]   [\fBday\fR=\fIinteger\fR]   [\fBhour\fR=\fIinteger\fR]   [\fBminute\fR=\fIinteger\fR]   [\fBsecond\fR=\fIinteger\fR]   [\fBtimezone\fR=\fIinteger\fR]   [\fBeast\fR=\fIvalue\fR]   [\fBnorth\fR=\fIvalue\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Do not ignore zero elevation
+.IP "\fB\-s\fR" 4m
+.br
+Calculate sun position only and exit
+.IP "\fB\-g\fR" 4m
+.br
+Print the sun position output in shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBaltitude\fR=\fIfloat\fR" 4m
+.br
+Altitude of the sun in degrees above the horizon (A)
+.br
+Options: \fI0\-89.999\fR
+.IP "\fBazimuth\fR=\fIfloat\fR" 4m
+.br
+Azimuth of the sun in degrees from north (A)
+.br
+Options: \fI0\-360\fR
+.IP "\fByear\fR=\fIinteger\fR" 4m
+.br
+Year (B)
+.br
+Options: \fI1950\-2050\fR
+.IP "\fBmonth\fR=\fIinteger\fR" 4m
+.br
+Month (B)
+.br
+Options: \fI0\-12\fR
+.IP "\fBday\fR=\fIinteger\fR" 4m
+.br
+Day (B)
+.br
+Options: \fI0\-31\fR
+.IP "\fBhour\fR=\fIinteger\fR" 4m
+.br
+Hour (B)
+.br
+Options: \fI0\-24\fR
+.IP "\fBminute\fR=\fIinteger\fR" 4m
+.br
+Minutes (B)
+.br
+Options: \fI0\-60\fR
+.IP "\fBsecond\fR=\fIinteger\fR" 4m
+.br
+Seconds (B)
+.br
+Options: \fI0\-60\fR
+.br
+Default: \fI0\fR
+.IP "\fBtimezone\fR=\fIinteger\fR" 4m
+.br
+Timezone
+.br
+East positive, offset from GMT, also use to adjust daylight savings
+.IP "\fBeast\fR=\fIvalue\fR" 4m
+.br
+Easting coordinate (point of interest)
+.br
+Default: map center
+.IP "\fBnorth\fR=\fIvalue\fR" 4m
+.br
+Northing coordinate (point of interest)
+.br
+Default: map center
+.SH DESCRIPTION
+\fIr.sunmask\fR creates an output map layer based on an input elevation
+raster map layer and the sun position. The output map layer contains the
+cast shadow areas arising from sun shine and elevations. The user can define
+the sun position either directly or the module calculates it from given
+location and date/time parameters using the
+NREL sun position algorithm. So either
+\(dqA:\(dq\-parameters to specify the exact known sun position or \(dqB:\-parameters\(dq
+to specify date/time for sun position calculation by \fIr.sunmask\fR itself
+have to be used.
+.PP
+The module performs sunset/sunrise checks and refraction correction for sun
+position calculation. Local coordinate systems are internally transformed to
+latitude/longitude for the SOLPOS algorithm. The elevation is not considered
+in the sunset/sunrise calculations.
+.SH NOTES
+\fIr.sunmask\fR and daylight savings: Rather than converting the
+local time to GMT, the SOLPOS algorithm uses what is called Local
+Standard Time, which is generally politically defined as an offset
+from GMT.  So the key is the offset from GMT, which the solpos Time
+Zone parameter. If the user specifies clock time (different for
+winter and summer), s/he would have to change the Time Zone
+parameter seasonally in \fIr.sunmask\fR (timezone parameter). See also
+Daylight saving time by region and country.
+.PP
+Note: In latitude/longitude locations the position coordinates pair
+(east/west) has to be specified in decimal degree (not D:M:S). If
+not specified, the map center\(cqs coordinates will be used.
+Also \fIg.region \-l\fR displays the map center\(cqs coordinates in
+latitude/longitude (or \fIg.region \-c\fR in the actual coordinate
+system).
+.PP
+Note for module usage with the \fI\-g\fR flag, when performing calculations
+close to sunset/sunrise:
+.br
+.nf
+\fC
+ [...]
+ sunangleabovehorizont=0.434240
+ sunrise=07:59:19
+ sunset=16:25:17
+ Time (07:59:02) is before sunrise (07:59:19)!
+ WARNING: Nothing to calculate. Please verify settings.
+ No map calculation requested. Finished.
+\fR
+.fi
+In above calculation it appears to be a mistake as
+the program indicates that we are before sunrise while
+the \fIsun angle above horizon\fR is already positive.
+The reason is that \fIsun angle above horizon\fR is
+calculated with correction for atmosphere refraction while
+\fIsunrise\fR and \fIsunset\fR are calculated \fBwithout\fR
+correction for atmosphere refraction. The output without
+\fI\-g\fR flag contains related indications.
+.SH EXAMPLE
+Example for North Carolina sample data set for the calculation
+of sun position angles and more:
+.br
+.nf
+\fC
+# set the region to a place near Raleigh (NC)
+g.region raster=elev_lid792_1m \-p
+# compute only sun position and no output map
+r.sunmask \-s elev_lid792_1m year=2012 month=2 \(rs
+          day=22 hour=10 minute=30 timezone=\-5
+Using map center coordinates: 638650.000000 220375.000000
+Calculating sun position... (using solpos (V. 11 April 2001) from NREL)
+2012/02/22, daynum: 53, time: 10:30:00 (decimal time: 10.500000)
+long: \-78.678856, lat: 35.736160, timezone: \-5.000000
+Solar position: sun azimuth: 143.006409, sun angle above horz. (refraction corrected): 36.233879
+Sunrise time (without refraction): 06:58:11
+Sunset time  (without refraction): 17:58:47
+# with \-g flag, useful for eval() shell function
+r.sunmask \-s \-g elev_lid792_1m  year=2012 month=2 \(rs
+          day=22 hour=10 minute=30 timezone=\-5
+Using map center coordinates: 638650.000000 220375.000000
+Calculating sun position... (using solpos (V. 11 April 2001) from NREL)
+date=2012/02/22
+daynum=53
+time=10:30:00
+decimaltime=10.500000
+longitudine=\-78.678856
+latitude=35.736160
+timezone=\-5.000000
+sunazimuth=143.006409
+sunangleabovehorizon=36.233879
+sunrise=06:58:11
+sunset=17:58:47
+\fR
+.fi
+.SH Acknowledgements
+Acknowledgements: National Renewable Energy Laboratory for their
+SOLPOS 2.0 sun position
+algorithm.
+.SH SEE ALSO
+\fI
+g.region,
+r.sun,
+r.sunhours,
+r.slope.aspect
+\fR
+.SH AUTHOR
+Janne Soimasuo, Finland 1994
+.br
+update to FP by Huidae Cho 2001
+.br
+added solpos algorithm feature by Markus Neteler 2001
+.SH SOURCE CODE
+.PP
+Available at: r.sunmask source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

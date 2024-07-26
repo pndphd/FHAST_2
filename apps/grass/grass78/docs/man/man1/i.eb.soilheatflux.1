@@ -1,0 +1,121 @@
+.TH i.eb.soilheatflux 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.eb.soilheatflux\fR\fR  \- Soil heat flux approximation (Bastiaanssen, 1995).
+.SH KEYWORDS
+imagery, energy balance, soil heat flux, SEBAL
+.SH SYNOPSIS
+\fBi.eb.soilheatflux\fR
+.br
+\fBi.eb.soilheatflux \-\-help\fR
+.br
+\fBi.eb.soilheatflux\fR [\-\fBr\fR] \fBalbedo\fR=\fIname\fR \fBndvi\fR=\fIname\fR \fBtemperature\fR=\fIname\fR \fBnetradiation\fR=\fIname\fR \fBlocalutctime\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+HAPEX\-Sahel empirical correction (Roerink, 1995)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBalbedo\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of albedo raster map [0.0;1.0]
+.IP "\fBndvi\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of NDVI raster map [\-1.0;+1.0]
+.IP "\fBtemperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of Surface temperature raster map [K]
+.IP "\fBnetradiation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of Net Radiation raster map [W/m2]
+.IP "\fBlocalutctime\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of time of satellite overpass raster map [local time in UTC]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.SH DESCRIPTION
+\fIi.eb.soilheatflux\fR calculates the soil heat flux approximation (g0)
+after Bastiaanssen (1995). The main reference for implementation is Alexandridis, 2009.
+It takes input of Albedo, NDVI, Surface Skin temperature, Net Radiation (see
+\fIr.sun\fR), time of satellite overpass, and a flag for the Roerink empirical modification from the HAPEX\-Sahel experiment.
+The \(dqtime of satellite overpass\(dq map can be obtained as follows:
+.RS 4n
+.IP \(bu 4n
+MODIS: a related sub dataset is included in each HDF file, and simply
+to be imported as a raster map;
+.IP \(bu 4n
+Landsat: to be generated as map from the overpass time stored in
+the metadata file (given in Greenwich Mean Time \- GMT), see below.
+.RE
+For Landsat, the overpass map can be computed by using a two\-step method:
+.br
+.nf
+\fC
+# 1) extract the overpass time in GMT from metadata file
+i.landsat.toar \-p input=dummy output=dummy2 \(rs
+   metfile=LC81250452013338LGN00_MTL.txt lsatmet=time
+# ... in this example approx. 03:12am GMT
+# 2) create map for computational region of Landsat scene
+g.region rast=LC81250452013338LGN00_B4 \-p
+r.mapcalc \(dqoverpasstime = 3.211328\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.sun,
+i.albedo,
+i.emissivity,
+i.eb.hsebal01,
+i.eb.evapfr
+i.landsat.toar
+\fR
+.SH REFERENCES
+.PP
+Bastiaanssen, W.G.M., 1995.
+Estimation of Land surface parameters by remote sensing under clear\-sky
+conditions. PhD thesis, Wageningen University, Wageningen, The Netherlands.
+(PDF)
+.PP
+Chemin Y., Alexandridis T.A., 2001. Improving spatial resolution of ET seasonal
+for irrigated rice in Zhanghe, China. Asian Journal of Geoinformatics. 5(1):3\-11,2004.
+.PP
+Alexandridis T.K., Cherif I., Chemin Y., Silleos N.G., Stavrinos E.,
+Zalidis G.C. Integrated methodology for estimating water use in Mediterranean
+agricultural areas. Remote Sensing. 2009, 1, 445\-465.
+(PDF)
+.PP
+Chemin, Y., 2012.
+A Distributed Benchmarking Framework for Actual ET Models,
+in: Irmak, A. (Ed.), Evapotranspiration \- Remote Sensing and Modeling. InTech.
+(PDF)
+.SH AUTHOR
+Yann Chemin, Asian Institute of Technology, Thailand
+.br
+.SH SOURCE CODE
+.PP
+Available at: i.eb.soilheatflux source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

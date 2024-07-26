@@ -1,0 +1,79 @@
+.TH i.rgb.his 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.rgb.his\fR\fR  \- Transforms raster maps from RGB (Red\-Green\-Blue) color space to HIS (Hue\-Intensity\-Saturation) color space.
+.SH KEYWORDS
+imagery, color transformation, RGB, HIS, IHS
+.SH SYNOPSIS
+\fBi.rgb.his\fR
+.br
+\fBi.rgb.his \-\-help\fR
+.br
+\fBi.rgb.his\fR \fBred\fR=\fIname\fR \fBgreen\fR=\fIname\fR \fBblue\fR=\fIname\fR \fBhue\fR=\fIname\fR \fBintensity\fR=\fIname\fR \fBsaturation\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBred\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (red)
+.IP "\fBgreen\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (green)
+.IP "\fBblue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (blue)
+.IP "\fBhue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (hue)
+.IP "\fBintensity\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (intensity)
+.IP "\fBsaturation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (saturation)
+.SH DESCRIPTION
+\fIi.rgb.his\fR is an image processing program that
+processes three input raster map layers as red, green, and
+blue components and produces three output raster map layers
+representing the hue, intensity, and saturation of the
+data.  The output raster map layers are created by a
+standard red\-green\-blue (RGB) to hue\-intensity\-saturation
+(HIS) color transformation.  Each output raster map layer
+is given a linear gray scale color table.  The current
+geographic region definition and mask settings are
+respected.
+.SH SEE ALSO
+\fIi.his.rgb\fR
+.SH AUTHOR
+David Satnik, GIS Laboratory,
+Central Washington University,
+.br
+with acknowledgements to Ali Vali, Space Research
+Center, for the core routine.
+.SH SOURCE CODE
+.PP
+Available at: i.rgb.his source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

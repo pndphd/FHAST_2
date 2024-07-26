@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.copy - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.copy</b></em>  - Copies available data files in the current mapset search path to the user's current mapset.
+<h2>KEYWORDS</h2>
+<a href="general.html">general</a>, <a href="topic_map_management.html">map management</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.copy</b><br></div>
+<b>g.copy --help</b><br>
+<div id="synopsis"><b>g.copy</b>  [<b>raster</b>=<em>from,to</em>]   [<b>raster_3d</b>=<em>from,to</em>]   [<b>vector</b>=<em>from,to</em>]   [<b>label</b>=<em>from,to</em>]   [<b>region</b>=<em>from,to</em>]   [<b>group</b>=<em>from,to</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>raster</b>=<em>from,to</em></dt>
+<dd>raster map(s) to be copied</dd>
+
+<dt><b>raster_3d</b>=<em>from,to</em></dt>
+<dd>3D raster map(s) to be copied</dd>
+
+<dt><b>vector</b>=<em>from,to</em></dt>
+<dd>vector map(s) to be copied</dd>
+
+<dt><b>label</b>=<em>from,to</em></dt>
+<dd>paint label file(s) to be copied</dd>
+
+<dt><b>region</b>=<em>from,to</em></dt>
+<dd>region definition(s) to be copied</dd>
+
+<dt><b>group</b>=<em>from,to</em></dt>
+<dd>imagery group(s) to be copied</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+A user may access data stored under the other mapsets listed in their
+mapset search path. However, the user may only modify data stored
+under their own current mapset. <em>g.copy</em> allows the user to copy
+existing data files <b>from</b> other mapsets <b>to</b> the user's
+current mapset ($MAPSET). The files to be copied must exist in the
+user's current mapset search path and location; output is sent to the
+relevant data element directory(ies) under the user's current mapset.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+If the user wished to copy the existing raster
+file <em>soils</em> to a file called <em>soils.ph</em> and
+to copy an existing vector map <em>roads</em> to a file
+called <em>rds.old</em>, the user could type:
+
+<div class="code"><pre>
+g.copy raster=soils,soils.ph
+g.copy vector=roads,rds.old
+
+# or even combined:
+g.copy raster=soils,soils.ph vector=roads,rds.old
+</pre></div>
+
+<p>
+Data files can also be specified by their mapsets.  For
+example, the below command copies the raster map named
+<em>soils</em> from the mapset <em>wilson</em> to a new
+file called <em>soils</em> to be placed under the user's
+current mapset:
+
+<div class="code"><pre>
+g.copy raster=soils@wilson,soils
+</pre></div>
+
+If no mapset name is specified, <em>g.copy</em> searches for the
+named <b>from</b> map in each of the mapset directories listed in the
+user's current mapset search path in the order in which mapsets are
+listed there (see <em><a href="g.mapsets.html">g.mapsets</a></em>).
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.access.html">g.access</a>,
+<a href="g.list.html">g.list</a>,
+<a href="g.mapsets.html">g.mapsets</a>,
+<a href="g.remove.html">g.remove</a>,
+<a href="g.rename.html">g.rename</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S. Army Construction Engineering 
+Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/general/g.copy">g.copy source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/general/g.copy">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="general.html">General index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

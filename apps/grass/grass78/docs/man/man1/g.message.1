@@ -1,0 +1,233 @@
+.TH g.message 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.message\fR\fR  \- Prints a message, warning, progress info, or fatal error in the GRASS way.
+.br
+This module should be used in scripts for messages served to user.
+.SH KEYWORDS
+general, support, scripts
+.SH SYNOPSIS
+\fBg.message\fR
+.br
+\fBg.message \-\-help\fR
+.br
+\fBg.message\fR [\-\fBwedpiv\fR] \fBmessage\fR=\fIstring\fR  [\fBdebug\fR=\fIinteger\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-w\fR" 4m
+.br
+Print message as warning
+.IP "\fB\-e\fR" 4m
+.br
+Print message as fatal error
+.IP "\fB\-d\fR" 4m
+.br
+Print message as debug message
+.IP "\fB\-p\fR" 4m
+.br
+Print message as progress info
+.IP "\fB\-i\fR" 4m
+.br
+Print message in all modes except of quiet mode
+.br
+Message is printed on GRASS_VERBOSE>=1
+.IP "\fB\-v\fR" 4m
+.br
+Print message only in verbose mode
+.br
+Message is printed only on GRASS_VERBOSE>=3
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmessage\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Text of the message to be printed
+.br
+Message is printed on GRASS_VERBOSE>=2
+.IP "\fBdebug\fR=\fIinteger\fR" 4m
+.br
+Level to use for debug messages
+.br
+Options: \fI0\-5\fR
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+.PP
+This program is to be used in Shell/Perl/Python scripts, so the author does not
+need to use the echo program. The advantage of \fIg.message\fR is
+that it formats messages just like other GRASS modules do and that its
+functionality is influenced by the GRASS_VERBOSE and
+GRASS_MESSAGE_FORMAT environment variables.
+.PP
+The program can be used for standard informative messages as well as warnings
+(\fB\-w\fR flag) and fatal errors (\fB\-e\fR flag). For debugging
+purposes, the \fB\-d\fR flag will cause \fIg.message\fR to print a debugging
+message at the given level.
+.SH NOTES
+Messages containing \(dq=\(dq must use the full \fBmessage=\fR syntax so
+the parser doesn\(cqt get confused.
+.PP
+If you want a long message (multi\-line) to be dealt with as a single
+paragraph, use a single call to \fIg.message\fR with text split in the
+script using the backslash as the last character. (In shell scripts don\(cqt
+close the \(dqquote\(dq)
+.PP
+A blank line may be obtained with
+.br
+.nf
+\fC
+g.message message=\(dq\(dq
+\fR
+.fi
+.PP
+Redundant whitespace will be stripped away.
+.PP
+It\(cqs advisable to single quote the messages that are to be printed literally.
+It prevents a number of characters (most notably, space and the dollar sign
+\(cq$\(cq) from being treated specifically by the shell.
+.PP
+When it is necessary to include, for example, a variable\(cqs value as part of
+the message, the double quotes may be used, which do not deprive the
+dollar sign of its special variable\-expansion powers.
+.PP
+While it is known that the interactive Bash instances may treat the
+exclamation mark \(cq!\(cq character specifically (making single quoting
+of it necessary), it shouldn\(cqt be the case for the non\-interactive
+instances of Bash. Nonetheless, to avoid context\-based confusion later on
+you are encouraged to single\-quote messages that do not require
+$VARIABLE expansion.
+.SS Usage in Python scripts
+GRASS
+Python Scripting Library defines special wrappers
+for \fIg.message\fR.
+.RS 4n
+.IP \(bu 4n
+debug() for g.message \-d
+.IP \(bu 4n
+error() for g.message \-e
+.IP \(bu 4n
+fatal() for g.message \-e + exit()
+.IP \(bu 4n
+info() for g.message \-i
+.IP \(bu 4n
+message() for g.message
+.IP \(bu 4n
+verbose() for g.message \-v
+.IP \(bu 4n
+warning() for g.message \-w
+.RE
+.PP
+Note: The Python tab in the \fIwxGUI\fR can be used for entering the
+following sample code:
+.PP
+.br
+.nf
+\fC
+import grass.script as gcore
+gcore.warning(\(dqThis is a warning\(dq)
+\fR
+.fi
+is identical with
+.br
+.nf
+\fC
+g.message \-w message=\(dqThis is a warning\(dq
+\fR
+.fi
+.SS VERBOSITY LEVELS
+Controlled by the \(dqGRASS_VERBOSE\(dq environment variable. Typically this
+is set using the \fB\-\-quiet\fR or \fB\-\-verbose\fR command line options.
+.RS 4n
+.IP \(bu 4n
+0 \- only errors and warnings are printed
+.IP \(bu 4n
+1 \- progress messages are printed
+.IP \(bu 4n
+2 \- all module messages are printed
+.IP \(bu 4n
+3 \- additional verbose messages are printed
+.RE
+.SS DEBUG LEVELS
+Controlled by the \(dqDEBUG\(dq GRASS \fIgisenv\fR variable (set with
+\fIg.gisenv\fR).
+.br
+Recommended levels:
+.RS 4n
+.IP \(bu 4n
+1 \- message is printed once or few times per module
+.IP \(bu 4n
+3 \- each row (raster) or line (vector)
+.IP \(bu 4n
+5 \- each cell (raster) or point (vector)
+.RE
+.SH EXAMPLES
+This basic example prints the message \(dqhello\(dq in the console:
+.br
+.nf
+\fC
+g.message message=\(dqhello\(dq
+\fR
+.fi
+.PP
+To print a message as an error message use the \fB\-e\fR flag:
+.br
+.nf
+\fC
+g.message \-e message=\(dqmy error\(dq
+\fR
+.fi
+.PP
+To print a message highlighted as a debug message (\(dqD0/0: debug\(dq) in the
+console, use the \fB\-d\fR flag. Optionally the debug level can be defined (see
+also g.gisenv for details):
+.br
+.nf
+\fC
+# Levels: (recommended levels)
+#   0 \- silence
+#   1 \- message is printed once or few times per module
+#   3 \- each row (raster) or line (vector)
+#   5 \- each cell (raster) or point (vector)
+g.message \-d message=\(dqdebug\(dq debug=0
+\fR
+.fi
+.PP
+To print a message highlighted as a warning message (\(dqWARNING: my warning\(dq)
+in the console, use the \fB\-w\fR flag:
+.br
+.nf
+\fC
+g.message \-w message=\(dqmy warning\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+GRASS variables and environment variables
+.br
+g.gisenv,
+g.parser
+\fR
+.SH AUTHOR
+Jachym Cepicky
+.SH SOURCE CODE
+.PP
+Available at: g.message source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

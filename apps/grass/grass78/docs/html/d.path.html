@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.path - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.path</b></em>  - Finds shortest path for selected starting and ending node.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#shortest path">shortest path</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.path</b><br></div>
+<b>d.path --help</b><br>
+<div id="synopsis"><b>d.path</b> [-<b>gb</b>] <b>map</b>=<em>name</em>  [<b>arc_type</b>=<em>string</em>[,<i>string</i>,...]]  <b>coordinates</b>=<em>x1,y1,x2,y2</em>  [<b>arc_layer</b>=<em>string</em>]   [<b>node_layer</b>=<em>string</em>]   [<b>arc_column</b>=<em>string</em>]   [<b>arc_backward_column</b>=<em>string</em>]   [<b>node_column</b>=<em>string</em>]   [<b>color</b>=<em>string</em>]   [<b>highlight_color</b>=<em>string</em>]   [<b>bgcolor</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Use geodesic calculation for longitude-latitude locations</dd>
+
+<dt><b>-b</b></dt>
+<dd>Render bold lines</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>arc_type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Arc type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em>line,boundary</em></dd>
+
+<dt><b>coordinates</b>=<em>x1,y1,x2,y2</em>&nbsp;<b>[required]</b></dt>
+<dd>Starting and ending coordinates</dd>
+
+<dt><b>arc_layer</b>=<em>string</em></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>arc_column</b>=<em>string</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>arc_backward_column</b>=<em>string</em></dt>
+<dd>Arc backward direction cost column (number)</dd>
+
+<dt><b>node_column</b>=<em>string</em></dt>
+<dd>Node cost column</dd>
+
+<dt><b>color</b>=<em>string</em></dt>
+<dd>Original line color</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>highlight_color</b>=<em>string</em></dt>
+<dd>Highlight color</dd>
+<dd>Default: <em>red</em></dd>
+
+<dt><b>bgcolor</b>=<em>string</em></dt>
+<dd>Background color</dd>
+<dd>Default: <em>white</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.path</em> enables shortest path vector networking.
+Costs may be either line lengths, or attributes saved in a database table.
+Supported are cost assignments for both arcs and nodes, and also different
+in both directions of a vector line. For areas cost will be calculated along
+boundary lines. 
+
+<h2><a name="note">NOTE</a></h2>
+
+<!-- TODO: apparently d.path does not render into wxGUI? -->
+The user needs to display a vector map before using d.path. If no graphics monitor
+is open, a file <tt>map.png</tt> is generated in the current directory.
+
+<p>
+The 'from' and 'to' points are entered by mouse into the map displayed in the GRASS monitor,
+or if the <b>coordinates</b> option is used they can be specified non-interactively.
+The actions bound to the mouse buttons are described in the terminal
+window when running the command.
+<p>To calculate shortest path non-interactively and save the path to a new vector
+map, use the <em>v.net.path</em> module.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Interactive shortest path routing on road network (North Carolina sample dataset):
+<div class="code"><pre>
+g.region vector=roadsmajor -p
+d.vect roadsmajor
+d.path roadsmajor coordinates=668646.15,224447.16,668348.83,235894.02
+</pre></div>
+
+<p>
+Non-interactive shortest path routing on road network (North Carolina sample dataset):
+<div class="code"><pre>
+d.path -b roadsmajor coordinates=668646.15,224447.16,668348.83,235894.02 
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.net.path.html">v.net.path</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.path">d.path source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.path">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

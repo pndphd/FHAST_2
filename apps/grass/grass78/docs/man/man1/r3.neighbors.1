@@ -1,0 +1,154 @@
+.TH r3.neighbors 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.neighbors\fR\fR  \- Makes each voxel value a function of the values assigned to the voxels around it, and stores new voxel values in an output 3D raster map
+.SH KEYWORDS
+raster3d, algebra, voxel, statistics, aggregation, neighbor, focal statistics, filter
+.SH SYNOPSIS
+\fBr3.neighbors\fR
+.br
+\fBr3.neighbors \-\-help\fR
+.br
+\fBr3.neighbors\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBmethod\fR=\fIstring\fR  [\fBquantile\fR=\fIfloat\fR]  \fBwindow\fR=\fIx,y,z\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input 3D raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Aggregate operation
+.br
+Options: \fIaverage, median, mode, minimum, maximum, range, stddev, sum, count, variance, diversity, interspersion, quart1, quart3, perc90, quantile\fR
+.IP "\fBquantile\fR=\fIfloat\fR" 4m
+.br
+Quantile to calculate for method=quantile
+.br
+Options: \fI0.0\-1.0\fR
+.IP "\fBwindow\fR=\fIx,y,z\fR \fB[required]\fR" 4m
+.br
+The size of the window in x, y and z direction, values must be odd integer numbers, eg: 3,3,3
+.SH DESCRIPTION
+\fI\fBr3.neighbors\fR\fR looks at each voxel in a 3D raster input
+map layer, and examines the values assigned to the
+voxel in a user\-defined \(dqneighborhood\(dq around it.  It
+outputs a new 3D raster map in which each voxel is
+assigned a value that is a (user\-specified)
+function of the values in that voxel\(cqs neighborhood.  For
+example, each voxel in the output map might be assigned a
+value equal to the average of the values
+appearing in its 3 x 3 x 3 voxel \(dqneighborhood\(dq in the input
+map layer.
+.SS OPTIONS
+The user must specify the names of the 3D raster map layers to
+be used for \fBinput\fR and \fBoutput\fR, the
+\fBmethod\fR used to analyze neighborhood
+values (i.e., the neighborhood function or operation to be
+performed), and the moving \fBwindow\fR of the neighborhood.
+.PP
+\fINeighborhood Operation Methods:\fR
+The \fBneighborhood\fR operators determine what new
+value a center voxel in a neighborhood will have after examining
+values inside its neighboring voxels.
+Each voxel in a 3D raster map layer becomes the center voxel of a neighborhood
+as the neighborhood window moves from voxel to voxel throughout the map layer.
+\fI\fBr3.neighbors\fR\fR can perform the following operations:
+.PP
+.IP "\fBaverage\fR   " 4m
+.br
+The average value within the neighborhood.
+.IP "\fBmedian\fR   " 4m
+.br
+The value found half\-way through a list of the
+neighborhood\(cqs values,
+when these are ranged in numerical order.
+.IP "\fBmode\fR   " 4m
+.br
+The most frequently occurring value in the neighborhood.
+.IP "\fBminimum\fR   " 4m
+.br
+The minimum value within the neighborhood.
+.IP "\fBmaximum\fR   " 4m
+.br
+The maximum value within the neighborhood.
+.IP "\fBrange\fR  " 4m
+.br
+The range value within the neighborhood.
+.IP "\fBstddev\fR   " 4m
+.br
+The statistical standard deviation of values
+within the neighborhood.
+.IP "\fBsum\fR   " 4m
+.br
+The sum of values within the neighborhood.
+.IP "\fBvariance\fR   " 4m
+.br
+The statistical variance of values
+within the neighborhood.
+.IP "\fBdiversity\fR   " 4m
+.br
+The number of different values within the neighborhood.
+.IP "\fBinterspersion\fR   " 4m
+.br
+The percentage of voxels containing values which differ from the values
+assigned to the center voxel in the neighborhood, plus 1.
+.PP
+.br
+\fINeighborhood Size:\fR
+The neighborhood moving \fBwindow\fR specifies which voxel surrounding any given
+voxel fall into the neighborhood for that voxel.
+The \fBwindow\fR must be three comma separated odd integers. The dimension order is: x,y,z.
+For example: the parameter window=3,3,3 specifies a moving window (a cube) with 27 voxel.
+.PP
+.SH NOTES
+The \fI\fBr3.neighbors\fR\fR program works in the current geographic region.
+It is recommended, but not required,
+that the 3D resolution of the geographic region be the same as that
+of the 3D raster map layer.
+.PP
+\fI\fBr3.neighbors\fR\fR doesn\(cqt propagate NULLs, but computes the
+aggregation over the non\-NULL voxels in the neighborhood.
+.PP
+.SH SEE ALSO
+\fIg.region\fR
+.br
+\fIr.neighbors\fR
+.br
+\fIr3.mapcalc\fR
+.br
+\fIr3.stats\fR
+.br
+\fIr3.support\fR
+.SH AUTHOR
+Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.neighbors source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

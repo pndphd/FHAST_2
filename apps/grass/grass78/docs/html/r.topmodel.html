@@ -1,0 +1,291 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.topmodel - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.topmodel</b></em>  - Simulates TOPMODEL which is a physically based hydrologic model.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_hydrology.html">hydrology</a>, <a href="keywords.html#model">model</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.topmodel</b><br></div>
+<b>r.topmodel --help</b><br>
+<div id="synopsis"><b>r.topmodel</b> [-<b>p</b>] <b>parameters</b>=<em>name</em> <b>topidxstats</b>=<em>name</em> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>timestep</b>=<em>integer</em>]   [<b>topidxclass</b>=<em>integer</em>]   [<b>topidx</b>=<em>name</em>]   [<b>ntopidxclasses</b>=<em>integer</em>]   [<b>outtopidxstats</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Preprocess only and stop after generating outtopidxstats</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>parameters</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input TOPMODEL parameters file</dd>
+
+<dt><b>topidxstats</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input topographic index statistics file</dd>
+
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input rainfall and potential evapotranspiration data file</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output file</dd>
+
+<dt><b>timestep</b>=<em>integer</em></dt>
+<dd>Time step</dd>
+<dd>Generate output for this time step</dd>
+
+<dt><b>topidxclass</b>=<em>integer</em></dt>
+<dd>Topographic index class</dd>
+<dd>Generate output for this topographic index class</dd>
+
+<dt><b>topidx</b>=<em>name</em></dt>
+<dd>Name of input topographic index raster map</dd>
+<dd>Must be clipped to the catchment boundary. Used for generating outtopidxstats</dd>
+
+<dt><b>ntopidxclasses</b>=<em>integer</em></dt>
+<dd>Number of topographic index classes</dd>
+<dd>Used for generating outtopidxstats</dd>
+<dd>Default: <em>30</em></dd>
+
+<dt><b>outtopidxstats</b>=<em>name</em></dt>
+<dd>Name for output topographic index statistics file</dd>
+<dd>Requires topidx and ntopidxclasses</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#parameters-description" class="toc">Parameters description</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.topmodel</em> simulates TOPMODEL which is a physically based
+hydrologic model.
+
+<h3><a name="parameters-description">Parameters description</a></h3>
+
+<dl>
+<dt><b>parameters</b></dt>
+<dd>
+This file contains TOPMODEL parameters that describe the study area. Any lines
+starting with a # sign or empty lines are ignored.
+<div class="code"><pre>
+# Subcatchment name
+Subcatchment 1
+
+################################################################################
+# A [m^2]: Total subcatchment area
+3.31697E+07
+
+################################################################################
+# qs0 [m/h]: Initial subsurface flow per unit area
+#		"The first streamflow input is assumed to represent
+#		 only the subsurface flow contribution in the watershed."
+#								- Liaw (1988)
+0.000075
+
+# lnTe [ln(m^2/h)]: Areal average of the soil surface transmissivity
+4.
+
+# m [m]: Parameter controlling the decline rate of transmissivity
+# See Beven and Kirkby (1979)
+0.0125
+
+# Sr0 [m]: Initial root zone storage deficit
+0.0025
+
+# Srmax [m]: Maximum root zone storage deficit
+0.041
+
+# td [h]: Unsaturated zone time delay per unit storage deficit if greater than 0
+#  OR
+# -alpha: Effective vertical hydraulic gradient if not greater than 0.
+#
+# For example, -10 means alpha=10.
+60.
+
+# vch [m/h]: Main channel routing velocity
+20000.
+
+# vr [m/h]: Internal subcatchment routing velocity
+10000.
+
+################################################################################
+# infex: Calculate infiltration excess if not zero (integer)
+0
+
+# K0 [m/h]: Surface hydraulic conductivity
+2.
+
+# psi [m]: Wetting front suction
+0.1
+
+# dtheta: Water content change across the wetting front
+0.1
+
+################################################################################
+# d [m]: Distance from the catchment outlet
+#		The first value should be the mainstream distance from
+#		the subcatchment outlet to the catchment outlet.
+# Ad_r:  Cumulative area ratio of subcatchment (0.0 to 1.0)
+#		The first and last values should be 0 and 1, respectively.
+
+#   d  Ad_r
+    0   0.0
+ 1000   0.2
+ 2000   0.4
+ 3000   0.6
+ 4000   0.8
+ 5000   1.0
+</pre></div>
+</dd>
+
+<dt><b>input</b><dt>
+<dd>
+This file contains observed weather data.
+<div class="code"><pre>
+# dt [h]: Time step
+24
+
+################################################################################
+# R [m/dt]:  Rainfall
+# Ep [m/dt]: Potential evapotranspiration
+
+# R             Ep
+0.000033        0.000000
+0.000053        0.011938
+0.004821        0.000000
+.
+.
+.
+</pre></div>
+</dd>
+
+<dt><b>timestep</b></dt>
+<dd>
+If a time step is specified, output will be generated for the specific time
+step in addition to the summary and total flows at the outlet. This parameter
+can be combined with <b>topidxclass</b> to specify a time step and topographic index
+class at the same time. If no <b>topidxclass</b> is given, output will be generated
+for all the topographic index classes.
+</dd>
+
+<dt><b>toptopidxclass</b></dt>
+<dd>
+If a topographic index class is specified, output will be generated for the
+given topographic index class. This parameter can be combined with <b>timestep</b>. If
+no <b>timestep</b> is given, output will be generated for all the time steps.
+</dd>
+
+<dt><b>topidx</b>, <b>ntoptopidxclasses</b>, <b>outtoptopidxstats</b></dt>
+<dd>
+The <b>topidx</b> map can optionally be used for creating a new topographic
+index statistics file. This map has to be already clipped to the catchment
+boundary. The entire range of topographic index values will be divided into
+<b>ntoptopidxclasses</b> and the area ratio of each class will be reported in the
+<b>outtoptopidxstats</b> file. These three parameters can be omitted unless a new
+<b>topidxstats</b> file needs to be created.
+</dd>
+</dl>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+  <li>Beven, K. J., 1984. Infiltration into a class of vertically non-uniform
+  soils. Hydrological Sciences Journal 29 (4), 425-434.
+
+  <li>Beven, K. J., Kirkby, M. J., 1979. A physically based, variable
+  contributing area model of basin hydrology. Hydrological Sciences Bulletin 24
+  (1), 43-69.
+
+  <li>Beven K. J., R. Lamb, P. Quinn, R. Romanowicz, and J. Freer, 1995.
+  TOPMODEL, in V.P. Singh (Ed.). Computer Models of Watershed Hydrology. Water
+  Resources Publications.
+
+  <li>Cho, H., 2000. GIS Hydrological Modeling System by Using Programming
+  Interface of GRASS. Master's Thesis, Department of Civil Engineering,
+  Kyungpook National University, Korea.
+
+  <li>Liaw, S. C., 1988. Streamflow Simulation Using a Physically Based
+  Hydrologic Model in Humid Forested Watersheds. Dissertation, Colorado State
+  University, CO. p163.
+
+  <li>Morel-Seytoux, H. J., Khanji, J., 1974. Derivation of an equation of
+  infiltration. Water Resources Research 10 (4), 795-800.
+</ul>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="r.fill.dir.html">r.fill.dir</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.topidx.html">r.topidx</a>
+</em>
+<br>
+<a href="http://idea.isnew.info/r.topmodel.html">How to run r.topmodel</a>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+<a href="mailto:grass4u@gmail com">Huidae Cho</a>,
+Hydro Laboratory, Kyungpook National University, South Korea
+<p>
+Based on TMOD9502.FOR by Keith Beven.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.topmodel">r.topmodel source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.topmodel">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

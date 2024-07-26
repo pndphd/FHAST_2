@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.class - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.class</b></em>  - Classifies attribute data, e.g. for thematic mapping
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_classification.html">classification</a>, <a href="keywords.html#attribute table">attribute table</a>, <a href="keywords.html#statistics">statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.class</b><br></div>
+<b>v.class --help</b><br>
+<div id="synopsis"><b>v.class</b> [-<b>g</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>column</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]  <b>algorithm</b>=<em>string</em> <b>nbclasses</b>=<em>integer</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-g</b></dt>
+<dd>Print only class breaks (without min and max)</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Column name or expression</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>algorithm</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Algorithm to use for classification</dd>
+<dd>Options: <em>int, std, qua, equ, dis</em></dd>
+<dd><b>int</b>: simple intervals</dd>
+<dd><b>std</b>: standard deviations</dd>
+<dd><b>qua</b>: quantiles</dd>
+<dd><b>equ</b>: equiprobable (normal distribution)</dd>
+
+<dt><b>nbclasses</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Number of classes to define</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.class</em> classifies vector attribute data into classes, for 
+example for thematic mapping. Classification can be on a column or on an
+expression including several columns, all in the table linked to the
+vector map. The user indicates the number of classes desired and the
+algorithm to use for classification.
+
+Several algorithms are implemented for classification: equal interval,
+standard deviation, quantiles, equal probabilities, and a discontinuities
+algorithm developed by Jean-Pierre Grimmeau at the Free University of
+Brussels (ULB).
+
+It can be used to pipe class breaks into thematic mapping modules such
+as <em>d.vect.thematic</em> (see example below);
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>The <em>equal interval</em> algorithm simply divides the range max-min
+by the number of breaks to determine the interval between class breaks.
+
+<p>The <em>quantiles</em> algorithm creates classes which all contain
+approximately the same number of observations.
+
+<p>The <em>standard deviations</em> algorithm creates class breaks which
+are a combination of the mean +/- the standard deviation. It calculates
+a scale factor (&lt;1) by which to multiply the standard deviation in
+order for all of the class breaks to fall into the range min-max of the
+data values.
+
+<p>The <em>equiprobabilites</em> algorithm creates classes that would be
+equiprobable if the distribution was normal. If some of the class breaks
+fall outside the range min-max of the data values, the algorithm prints
+a warning and reduces the number of breaks, but the probabilities used
+are those of the number of breaks asked for.
+
+<p>The <em>discont</em> algorithm systematically searches discontinuities
+in the slope of the cumulated frequencies curve, by approximating this
+curve through straight line segments whose vertices define the class
+breaks. The first approximation is a straight line which links the two
+end nodes of the curve. This line is then replaced by a two-segmented
+polyline whose central node is the point on the curve which is farthest
+from the preceding straight line. The point on the curve furthest from
+this new polyline is then chosen as a new node to create break up one of
+the two preceding segments, and so forth. The problem of the difference
+in terms of units between the two axes is solved by rescaling both
+amplitudes to an interval between 0 and 1. In the original algorithm,
+the process is stopped when the difference between the slopes of the two
+new segments is no longer significant (alpha = 0.05). As the slope is
+the ratio between the frequency and the amplitude of the corresponding 
+interval, i.e. its density, this effectively tests whether the frequencies
+of the two newly proposed classes are different from those obtained by
+simply distributing the sum of their frequencies amongst them in proportion
+to the class amplitudes. In the GRASS implementation, the algorithm
+continues, but a warning is printed.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Classify column pop of map communes into 5 classes using quantiles:
+
+<div class="code"><pre>
+v.class map=communes column=pop algo=qua nbclasses=5
+</pre></div>
+
+This example uses population and area to calculate a population density
+and to determine the density classes:
+
+<div class="code"><pre>
+v.class map=communes column=pop/area algo=std nbclasses=5
+</pre></div>
+
+
+The following example uses the output of d.class and feeds it directly
+into <em>d.vect.thematic</em>:
+<div class="code"><pre>
+d.vect.thematic -l map=communes2 column=pop/area \
+    breaks=`v.class -g map=communes2 column=pop/area algo=std nbcla=5` \
+    colors=0:0:255,50:100:255,255:100:50,255:0:0,156:0:0
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.univar.html">v.univar</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Moritz Lennert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.class">v.class source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.class">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

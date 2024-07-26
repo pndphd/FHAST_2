@@ -1,0 +1,90 @@
+.TH r.pack 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.pack.py\fR\fR  \- Exports a raster map as GRASS GIS specific archive file
+.SH KEYWORDS
+raster, export, copying
+.SH SYNOPSIS
+\fBr.pack.py\fR
+.br
+\fBr.pack.py \-\-help\fR
+.br
+\fBr.pack.py\fR [\-\fBc\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Switch the compression off
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of raster map to pack up
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (default is <input>.pack)
+.SH DESCRIPTION
+\fIr.pack\fR collects raster map elements and support files and
+compressed them using \fIgzip\fR algorithm for copying. The resulting
+packed file can be afterwards unpacked within a GRASS GIS session
+by \fIr.unpack\fR.
+Since the selected raster map is not exported but natively stored, the
+current region is not respected. Hence \fIr.pack\fR stores the entire
+raster map.
+.SH NOTES
+By default, the name of the pack file is determined from the \fBinput\fR
+parameter. Optionally a different name can be given by \fBoutput\fR parameter.
+Currently only 2D raster maps are supported.
+.SH EXAMPLE
+Pack up the entire raster map \fIaspect\fR into \fIaspect.pack\fR file:
+.br
+.nf
+\fC
+r.pack input=aspect
+\fR
+.fi
+The packed raster map file  \fIaspect.pack\fR can afterwards be unpacked by
+.br
+.nf
+\fC
+r.unpack input=aspect.pack
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.unpack,
+r.in.gdal,
+g.copy,
+r.proj,
+v.unpack
+\fR
+.SH AUTHORS
+Original Bash script written by Hamish Bowman, Otago University, New Zealand
+.br
+Converted to Python and updated for GRASS 7 by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: r.pack source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

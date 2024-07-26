@@ -1,0 +1,14 @@
+species,pred_species
+gape_a,-9999
+gape_b,-9999
+pred_glm_int,-9999
+pred_glm_shade,-9999
+pred_glm_veg,-9999
+pred_glm_wood,-9999
+pred_glm_depth,-9999
+pred_glm_velocity,-9999
+pred_glm_substrate,-9999
+pred_length_mean,-9999
+pred_length_sd,-9999
+area_pred_10,-9999
+area_pred_90,-9999

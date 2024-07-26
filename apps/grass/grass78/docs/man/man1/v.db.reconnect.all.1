@@ -1,0 +1,175 @@
+.TH v.db.reconnect.all 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.reconnect.all.py\fR\fR  \- Reconnects attribute tables for all vector maps from the current mapset to a new database.
+.SH KEYWORDS
+vector, attribute table, database
+.SH SYNOPSIS
+\fBv.db.reconnect.all.py\fR
+.br
+\fBv.db.reconnect.all.py \-\-help\fR
+.br
+\fBv.db.reconnect.all.py\fR [\-\fBcd\fR]  [\fBold_database\fR=\fIname\fR]   [\fBold_schema\fR=\fIname\fR]   [\fBnew_driver\fR=\fIstring\fR]   [\fBnew_database\fR=\fIname\fR]   [\fBnew_schema\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Copy attribute tables to the target database if not exist
+.IP "\fB\-d\fR" 4m
+.br
+Delete attribute tables from the source database
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBold_database\fR=\fIname\fR" 4m
+.br
+Name of source database
+.IP "\fBold_schema\fR=\fIname\fR" 4m
+.br
+Name of source database schema
+.br
+Do not use this option if schemas are not supported by driver/database server
+.IP "\fBnew_driver\fR=\fIstring\fR" 4m
+.br
+Name for target driver
+.IP "\fBnew_database\fR=\fIname\fR" 4m
+.br
+Name for target database
+.IP "\fBnew_schema\fR=\fIname\fR" 4m
+.br
+Name for target database schema
+.br
+Do not use this option if schemas are not supported by driver/database server
+.SH DESCRIPTION
+\fIv.db.reconnect.all\fR changes database connection of all layers
+of all vector maps in the current mapset from the source
+(\fBold_database\fR) to the target (\fBnew_database\fR) database. If
+a link does not match the \fBold_database\fR it is left untouched.
+.PP
+If no new database is given, the default datase of the mapset is used as
+printed by db.connect \-g. If no old database is given, all
+layers without a link in the new database will be liniked to the new
+database. If an old database is given, only links in the old database
+will be changed.
+.PP
+Optionally attribute tables in \fBnew_database\fR can be created if
+not exist by \fB\-c\fR flag. In this case \fIv.db.reconnect.all\fR
+also tries to create an index on key column (usually \(dqcat\(dq
+column).
+.SH NOTES
+The value of the \fBold_database\fR option needs to be the exact
+string which appears as the fourth field printed by
+v.db.connect \-g.
+.br
+.nf
+\fC
+v.db.connect \-g map=census
+1/census|census|cat|/home/user/grassdata/nc_spm_base/PERMANENT/dbf/|dbf
+\fR
+.fi
+\fIv.db.reconnect.all\fR respect also variables to be
+substituted. In the example above,
+database /home/user/grassdata/nc_spm_base/PERMANENT/dbf/ can
+be also defined as \(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq
+(see examples).
+.PP
+Attribute tables from \fBold_database\fR are after reconnecting left
+untouched. \fIv.db.reconnect.all\fR deletes those tables
+automatically only when \fB\-d\fR flag is given.
+.PP
+Also note that \fIv.db.reconnect.all\fR doesn\(cqt change default
+database driver or database (db.connect \-p). Default database
+connection settings for newly created attribute data can be defined
+by \fIdb.connect\fR.
+.SH EXAMPLES
+In the examples below are assumed, that attribute tables are linked to
+the vector maps through DBF database
+driver.
+.SS Reconnect DBF attribute tables to SQLite database
+Reconnect DBF attribute tables linked to
+the vector maps in the current mapset
+to SQLite database:
+.br
+.nf
+\fC
+v.db.reconnect.all old_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq \(rs
+ new_driver=sqlite new_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+\fR
+.fi
+If attribute table doesn\(cqt exist in the target database
+(\fBnew_database\fR) then the module prints an error message.
+.SS Convert DBF attribute tables to SQLite database
+For coping DBF tables to SQLite database and reconnecting them for all
+vector maps in the current mapset must be defined also \fB\-c\fR flag.
+.br
+.nf
+\fC
+v.db.reconnect.all \-c old_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq \(rs
+ new_driver=sqlite new_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+\fR
+.fi
+or alternatively
+.br
+.nf
+\fC
+# set default connection (sqlite)
+db.connect \-d
+# verify default connection
+db.connect \-g
+# reconnect
+v.db.reconnect.all \-c old_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq
+\fR
+.fi
+To automatically remove original DBF attribute tables after
+reconnecting the vector maps use \fB\-d\fR flag. Note that attribute
+tables will be deleted \fIpermanently\fR from the source
+database. This option should be used very carefully!
+.SS Convert GRASS 6 vector map to GRASS 7 including attribute transfer from DBF to SQLite
+To become usable in GRASS 7, all vector maps in a mapset need to be updated:
+.br
+.nf
+\fC
+# first rebuild topology for all vector maps
+v.build.all
+# set new default db connection (to SQLite default)
+db.connect \-d
+# copy attribute tables from old DB to new SQLite DB, delete old tables in DBF format
+v.db.reconnect.all \-cd
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.db.connect,
+db.connect,
+db.copy,
+db.createdb,
+db.droptable
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHORS
+Radim Blazek
+.br
+Major update by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.db.reconnect.all source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

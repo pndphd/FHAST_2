@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.text - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.text</b></em>  - Draws text in the active display frame on the graphics monitor using the current font.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.text</b><br></div>
+<b>d.text --help</b><br>
+<div id="synopsis"><b>d.text</b> [-<b>pgbrs</b>]  [<b>text</b>=<em>string</em>]   [<b>input</b>=<em>name</em>]   [<b>color</b>=<em>string</em>]   [<b>bgcolor</b>=<em>string</em>]   [<b>rotation</b>=<em>float</em>]   [<b>linespacing</b>=<em>float</em>]   [<b>at</b>=<em>x,y</em>]   [<b>line</b>=<em>integer</em>]   [<b>align</b>=<em>string</em>]   [<b>font</b>=<em>string</em>]   [<b>size</b>=<em>float</em>]   [<b>path</b>=<em>name</em>]   [<b>charset</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Screen position in pixels ([0,0] is top left)</dd>
+
+<dt><b>-g</b></dt>
+<dd>Screen position in geographic coordinates</dd>
+
+<dt><b>-b</b></dt>
+<dd>Use bold text</dd>
+
+<dt><b>-r</b></dt>
+<dd>Use radians instead of degrees for rotation</dd>
+
+<dt><b>-s</b></dt>
+<dd>Font size is height in pixels</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>text</b>=<em>string</em></dt>
+<dd>Text to display</dd>
+
+<dt><b>input</b>=<em>name</em></dt>
+<dd>Input file</dd>
+
+<dt><b>color</b>=<em>string</em></dt>
+<dd>Text color, either a standard GRASS color or R:G:B triplet</dd>
+<dd>Default: <em>gray</em></dd>
+
+<dt><b>bgcolor</b>=<em>string</em></dt>
+<dd>Text background color, either a standard GRASS color or R:G:B triplet</dd>
+
+<dt><b>rotation</b>=<em>float</em></dt>
+<dd>Rotation angle in degrees (counter-clockwise)</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>linespacing</b>=<em>float</em></dt>
+<dd>Line spacing</dd>
+<dd>Default: <em>1.25</em></dd>
+
+<dt><b>at</b>=<em>x,y</em></dt>
+<dd>Screen position at which text will begin to be drawn (percentage, [0,0] is lower left)</dd>
+
+<dt><b>line</b>=<em>integer</em></dt>
+<dd>The screen line number on which text will begin to be drawn</dd>
+<dd>Options: <em>1-1000</em></dd>
+
+<dt><b>align</b>=<em>string</em></dt>
+<dd>Text alignment</dd>
+<dd>Options: <em>ll, lc, lr, cl, cc, cr, ul, uc, ur</em></dd>
+<dd>Default: <em>ll</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>size</b>=<em>float</em></dt>
+<dd>Height of letters in percentage of available frame height</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>5</em></dd>
+
+<dt><b>path</b>=<em>name</em></dt>
+<dd>Path to font file</dd>
+
+<dt><b>charset</b>=<em>string</em></dt>
+<dd>Text encoding (only applicable to TrueType fonts)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#commands:" class="toc">Commands:</a></li>
+    </ul></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.text</em> draws text in the active display frame on
+the graphics monitor.  Text can be provided through
+standard input or redirected from a file (using the UNIX
+redirection mechanism).
+
+In addition to the options provided on the command line,
+colors, text size, font type, rotation angle, and boldness can be adjusted
+with commands in the standard input (i.e., if the user
+invokes <em>d.text</em> without options on the command
+line, and then assigns values to these options on lines
+within the standard input).
+
+<h3><a name="commands:">Commands:</a></h3>
+
+<dl>
+
+<dt><b>.C</b> <em>color</em> 
+<dd>
+(where <em>color</em> is one of the available colors) causes text appearing on 
+subsequent lines to be drawn in that color. 
+
+
+<dt><b>.G</b> <em>color</em>
+<dd>
+(where <em>color</em> is one of the available colors) causes the background of text
+appearing on subsequent lines to be drawn in that color.
+
+<dt><b>.S </b> <em>size</em>
+<dd>
+(where <em>size</em> is a percentage within the range 0 to
+100) adjusts text size.  Note that a size of 10 would allow
+10 lines to be drawn in the active display frame, 5 would
+allow the drawing of 20 lines, and 50 would allow the
+drawing of 2 lines.
+
+<p><dt><b>.F</b> <em>font</em>
+<dd>
+(where <em>font</em> is one of the fonts known by the GRASS program 
+<em><a href="d.font.html">d.font</a></em>) manipulates
+the font type. Available fonts are listed in the GRASS manual entry for 
+<em><a href="d.font.html">d.font</a></em>. 
+The default font type used (if unspecified by the user) 
+is <em>romans</em>.
+<!-- Run the GRASS macro 
+<em><A  HREF="show.fonts.sh.html">show.fonts.sh</a></em> 
+to see what these fonts look like. -->
+
+<dt><b>.R </b> <em>rotation</em>
+<dd>
+(where <em>rotation</em> is an angle in degrees, counter-clockwise)
+to rotate the text.
+
+<dt><b>.B 1</b>
+<dd>stipulates that following text be printed in <b>bold</b>.
+This command means <em>bold on</em>.
+
+<dt><b>.B 0</b>
+<dd> turns <em>bold off</em> of all text appearing on lines beneath 
+     it. (<em>Bold off</em> is used by default, if unspecified by the user.) 
+
+</dl>
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The following command will print the short phrase "This is
+a test of d.text" in the active display frame using the
+color yellow, in bold, and using 4/100'ths (4%) of the
+active frame's vertical space per line:
+<p>
+
+<!--
+<div class="code"><pre>
+<b>d.text</b> &lt;&lt; EOF
+.C yellow
+.G grey
+.S 4 
+.B 1
+This is a test of d.text
+EOF
+</pre></div>
+The user presses <em>control-d</em> 
+(the "Ctrl" and "d" keys) to end input to <em>d.text</em> (equal to EOF).
+-->
+
+<div class="code"><pre>
+d.text text="This is a test of d.text" color=yellow bgcolor=gray size=4
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<img src='d_text.png' width="600" border="1">
+<br>
+<i>Displayed Text</i>
+</div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+Note that the GRASS command 
+<em><a href="d.title.html">d.title</a></em> creates map TITLEs in a format 
+suitable for input to <em>d.text</em>.
+
+<p>
+<em>d.text</em> needs escape sequences that can be used
+within lines to change colors, boldness, and perhaps size.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="d.font.html">d.font</a></em><br>
+<em><a href="d.title.html">d.title</a></em><br>
+<!-- <em><a href="show.fonts.sh.html">show.fonts.sh</a></em><br> -->
+<em><a href="d.labels.html">d.labels</a></em><br>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+James Westervelt, 
+U.S. Army Construction Engineering 
+Research Laboratory
+<p>Updates by Huidae Cho
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.text">d.text source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.text">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

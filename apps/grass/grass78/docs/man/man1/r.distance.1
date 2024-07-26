@@ -1,0 +1,140 @@
+.TH r.distance 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.distance\fR\fR  \- Locates the closest points between objects in two raster maps.
+.SH KEYWORDS
+raster, distance
+.SH SYNOPSIS
+\fBr.distance\fR
+.br
+\fBr.distance \-\-help\fR
+.br
+\fBr.distance\fR [\-\fBlon\fR] \fBmap\fR=\fIname1,name2\fR[,\fIname1,name2\fR,...]  [\fBseparator\fR=\fIcharacter\fR]   [\fBsort\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-l\fR" 4m
+.br
+Include category labels in the output
+.IP "\fB\-o\fR" 4m
+.br
+Report zero distance if rasters are overlapping
+.IP "\fB\-n\fR" 4m
+.br
+Report null objects as *
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname1,name2[,\fIname1,name2\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of two input raster maps for computing inter\-class distances
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fI:\fR
+.IP "\fBsort\fR=\fIstring\fR" 4m
+.br
+Sort output by distance
+.br
+Default: sorted by categories
+.br
+Options: \fIasc, desc\fR
+.br
+\fBasc\fR: Sort by distance in ascending order
+.br
+\fBdesc\fR: Sort by distance in descending order
+.SH DESCRIPTION
+\fIr.distance\fR locates the closest points between \(dqobjects\(dq in two raster maps.  An
+\(dqobject\(dq is defined as all the grid cells that have the same category
+number, and closest means having the shortest \(dqstraight\-line\(dq distance.
+The cell centers are considered for the distance calculation (two
+adjacent grid cells have the distance between their cell centers).
+.PP
+The output is an ascii list, one line per pair of objects, in the following form:
+.br
+.nf
+\fC
+cat1:cat2:distance:east1:north1:east2:north2
+\fR
+.fi
+.IP "\fBcat1\fR " 4m
+.br
+Category number from map1
+.IP "\fBcat2\fR " 4m
+.br
+Category number from map2
+.IP "\fBdistance\fR " 4m
+.br
+The distance in meters between \(dqcat1\(dq and \(dqcat2\(dq
+.IP "\fBeast1,north1\fR " 4m
+.br
+The coordinates of the grid cell \(dqcat1\(dq which is closest to \(dqcat2\(dq
+.IP "\fBeast2,north2\fR " 4m
+.br
+The coordinates of the grid cell \(dqcat2\(dq which is closest to \(dqcat1\(dq
+.SS Flags
+\fB\-l\fR
+The \-l flag outputs the category labels of the matched raster objects at the
+beginning of the line, if they exist.
+.PP
+\fB\-o\fR
+The \-o flag reports zero distance if the input rasters are overlapping.
+.PP
+.SH NOTES
+The output format lends itself to filtering.  For example, to \(dqsee\(dq lines
+connecting each of the category pairs in two maps, filter the output using
+awk and then into \fId.graph\fR:
+.PP
+.br
+.nf
+\fC
+r.distance map=map1,map2 | \(rs
+  awk \-F: \(cq{print \(dqmove\(dq,$4,$5,\(dq\(rsndraw\(dq,$6,$7}\(cq | d.graph \-m
+\fR
+.fi
+.PP
+To create a vector map of all the \(dqmap1\(dq coordinates, filter the output into
+awk and then into \fIv.in.ascii\fR:
+.PP
+.br
+.nf
+\fC
+r.distance map=map1,map2 | \(rs
+  awk \-F: \(cq{print $4,$5}\(cq | v.in.ascii format=point output=name separator=space
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.buffer,
+r.cost,
+r.drain,
+r.grow,
+r.grow.distance,
+v.distance
+\fR
+.SH AUTHOR
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.distance source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

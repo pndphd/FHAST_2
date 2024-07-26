@@ -1,0 +1,280 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.resamp.bspline - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.resamp.bspline</b></em>  - Performs bilinear or bicubic spline interpolation with Tykhonov regularization.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#resample">resample</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#splines">splines</a>, <a href="keywords.html#bilinear">bilinear</a>, <a href="keywords.html#bicubic">bicubic</a>, <a href="keywords.html#no-data filling">no-data filling</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.resamp.bspline</b><br></div>
+<b>r.resamp.bspline --help</b><br>
+<div id="synopsis"><b>r.resamp.bspline</b> [-<b>nc</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>grid</b>=<em>name</em>]   [<b>mask</b>=<em>name</em>]   [<b>ew_step</b>=<em>float</em>]   [<b>ns_step</b>=<em>float</em>]   [<b>method</b>=<em>string</em>]   [<b>lambda</b>=<em>float</em>]   [<b>memory</b>=<em>memory in MB</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-n</b></dt>
+<dd>Only interpolate null cells in input raster map</dd>
+
+<dt><b>-c</b></dt>
+<dd>Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>grid</b>=<em>name</em></dt>
+<dd>Name for output vector map with interpolation grid</dd>
+
+<dt><b>mask</b>=<em>name</em></dt>
+<dd>Name of raster map to use for masking</dd>
+<dd>Only cells that are not NULL and not zero are interpolated</dd>
+
+<dt><b>ew_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the east-west direction. Default: 1.5 * ewres.</dd>
+
+<dt><b>ns_step</b>=<em>float</em></dt>
+<dd>Length of each spline step in the north-south direction. Default: 1.5 * nsres.</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Spline interpolation algorithm</dd>
+<dd>Options: <em>bilinear, bicubic</em></dd>
+<dd>Default: <em>bicubic</em></dd>
+<dd><b>bilinear</b>: Bilinear interpolation</dd>
+<dd><b>bicubic</b>: Bicubic interpolation</dd>
+
+<dt><b>lambda</b>=<em>float</em></dt>
+<dd>Tykhonov regularization parameter (affects smoothing)</dd>
+<dd>Default: <em>0.01</em></dd>
+
+<dt><b>memory</b>=<em>memory in MB</em></dt>
+<dd>Maximum memory to be used (in MB)</dd>
+<dd>Cache size for raster rows</dd>
+<dd>Default: <em>300</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-interpolation" class="toc">Basic interpolation</a></li>
+        <li class="toc"><a href="#interpolation-of-null-cells-and-patching" class="toc">Interpolation of NULL cells and patching</a></li>
+        <li class="toc"><a href="#interpolation-of-null-cells-and-patching-(nc-data)" class="toc">Interpolation of NULL cells and patching (NC data)</a></li>
+        <li class="toc"><a href="#estimation-of-lambda-parameter-with-a-cross-validation-process" class="toc">Estimation of <b>lambda</b> parameter with a cross validation process</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.resamp.bspline</em> performs a bilinear/bicubic spline interpolation with
+Tykhonov regularization. The input is a raster surface map, e.g. elevation,
+temperature, precipitation etc. Output is a raster map. Optionally, only
+input NULL cells are interpolated, useful to fill NULL cells, an alternative
+to <em><a href="r.fillnulls.html">r.fillnulls</a></em>. Using the <b>-n</b> flag to only
+interpolate NULL cells will considerably speed up the module.
+<p>
+The input raster map is read at its native resolution, the output raster
+map will be produced for the current computational region set with
+<em><a href="g.region.html">g.region</a></em>. Any MASK will be respected, masked
+values will be treated as NULL cells in both the input and the output map.
+<p>Spline step values <b>ew_step</b> for the east-west direction and
+<b>ns_step</b> for the north-south direction should not be smaller than
+the east-west and north-south resolutions of the input map. For a raster
+map without NULL cells, 1 * resolution can be used, but check for
+undershoots and overshoots. For very large areas with missing values
+(NULL cells), larger spline step values may be required, but most of the
+time the defaults (1.5 x resolution) should be fine.
+<p>
+The Tykhonov regularization parameter (<b>lambda</b>) acts to
+smooth the interpolation. With a small <b>lambda</b>, the
+interpolated surface closely follows observation points; a larger value
+will produce a smoother interpolation. Reasonable values are 0.0001,
+0.001, 0.005, 0.01, 0.02, 0.05, 0.1 (needs more testing). For seamless
+NULL cell interpolation, a small value is required. The default <b>lambda</b>
+value is set to 0.01.
+<p>
+From a theoretical perspective, the interpolating procedure takes place in two
+parts: the first is an estimate of the linear coefficients of a spline function;
+these are derived from the observation points using a least squares regression; the
+second is the computation of the interpolated surface (or interpolated vector
+points). As used here, the splines are 2D piece-wise non-zero polynomial
+functions calculated within a limited 2D area. The length of each spline step
+is defined by <b>ew_step</b> for the east-west direction and
+<b>ns_step</b> for the north-south direction. For optimal performance, the
+spline step values should be no less than the east-west and north-south
+resolutions of the input map. Each non-NULL cell observation is modeled as a
+linear function of the non-zero splines in the area around the observation.
+The least squares regression predicts the the coefficients of these linear functions.
+Regularization avoids the need to have one one observation and one coefficient
+for each spline (in order to avoid instability). 
+
+<p>A cross validation "leave-one-out" analysis is available to help to determine
+the optimal <b>lambda</b> value that produces an interpolation that
+best fits the original observation data. The more points used for
+cross-validation, the longer the time needed for computation. Empirical testing
+indicates a threshold of a maximum of 100 points is recommended. Note that cross
+validation can run very slowly if more than 100 observations are used. The
+cross-validation output reports <i>mean</i> and <i>rms</i> of the residuals from
+the true point value and the estimated from the interpolation for a fixed series
+of <b>lambda</b> values. No vector nor raster output will be created
+when cross-validation is selected. 
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="basic-interpolation">Basic interpolation</a></h3>
+
+<div class="code"><pre>
+r.resamp.bspline input=raster_surface output=interpolated_surface method=bicubic
+</pre></div>
+
+A bicubic spline interpolation will be done and a raster map with estimated
+(i.e., interpolated) values will be created. 
+
+<h3><a name="interpolation-of-null-cells-and-patching">Interpolation of NULL cells and patching</a></h3>
+
+General procedure:
+<div class="code"><pre>
+# set region to area with NULL cells, align region to input map
+g.region n=north s=south e=east w=west align=input -p
+# interpolate NULL cells
+r.resamp.bspline -n input=input_raster output=interpolated_nulls method=bicubic
+# set region to area with NULL cells, align region to input map
+g.region raster=input -p
+# patch original map and interpolated NULLs
+r.patch input=input_raster,interpolated_nulls output=input_raster_gapfilled
+</pre></div>
+
+<h3><a name="interpolation-of-null-cells-and-patching-(nc-data)">Interpolation of NULL cells and patching (NC data)</a></h3>
+
+In this example, the SRTM elevation map in the
+North Carolina sample dataset location is filtered for outlier
+elevation values; missing pixels are then re-interpolated to obtain
+a complete elevation map:
+
+<div class="code"><pre>
+g.region raster=elev_srtm_30m -p
+d.mon wx0
+d.histogram elev_srtm_30m
+
+r.univar -e elev_srtm_30m
+
+# remove too low elevations (esp. lakes)
+# Threshold: thresh = Q1 - 1.5 * (Q3 - Q1)
+r.mapcalc "elev_srtm_30m_filt = if(elev_srtm_30m &lt; 50.0, null(), elev_srtm_30m)"
+
+# verify
+d.histogram elev_srtm_30m_filt
+d.erase
+d.rast elev_srtm_30m_filt
+
+r.resamp.bspline -n input=elev_srtm_30m_filt output=elev_srtm_30m_complete \
+  method=bicubic
+
+d.histogram elev_srtm_30m_complete
+d.rast elev_srtm_30m_complete
+</pre></div>
+
+<h3><a name="estimation-of-lambda-parameter-with-a-cross-validation-process">Estimation of <b>lambda</b> parameter with a cross validation process</a></h3>
+
+A random sample of points should be generated first with
+<em><a href="r.random.html">r.random</a></em>, and the current region should not
+include more than 100 non-NULL random cells. 
+
+<div class="code"><pre>
+r.resamp.bspline -c input=input_raster 
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>Brovelli M. A., Cannata M., and Longoni U.M., 2004, LIDAR Data
+Filtering and DTM Interpolation Within GRASS, Transactions in GIS,
+April 2004, vol. 8, iss. 2, pp. 155-174(20), Blackwell Publishing Ltd</li>
+<li>Brovelli M. A. and Cannata M., 2004, Digital Terrain model
+reconstruction in urban areas from airborne laser scanning data: the
+method and an example for Pavia (Northern Italy). Computers and
+Geosciences 30, pp.325-331</li>
+<li>Brovelli M. A e Longoni U.M., 2003, Software per il filtraggio di
+dati LIDAR, Rivista dell'Agenzia del Territorio, n. 3-2003, pp. 11-22
+(ISSN 1593-2192)</li>
+<li>Antolin R. and Brovelli M.A., 2007, LiDAR data Filtering with GRASS GIS for the Determination of Digital Terrain Models. Proceedings of Jornadas de SIG Libre,
+Girona, Espa&ntilde;a. CD ISBN: 978-84-690-3886-9</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.fillnulls.html">r.fillnulls</a>,
+<a href="r.resamp.rst.html">r.resamp.rst</a>,
+<a href="r.resamp.interp.html">r.resamp.interp</a>,
+<a href="v.surf.bspline.html">v.surf.bspline</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="authors">AUTHORS</a></h2>
+Markus Metz<br>
+<br>
+based on <em><a href="v.surf.bspline.html">v.surf.bspline</a></em> by
+<br>
+Maria Antonia Brovelli, Massimiliano Cannata, Ulisse Longoni, Mirko Reguzzoni, Roberto Antolin
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.resamp.bspline">r.resamp.bspline source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.resamp.bspline">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

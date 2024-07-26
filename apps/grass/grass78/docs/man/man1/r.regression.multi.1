@@ -1,0 +1,151 @@
+.TH r.regression.multi 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.regression.multi\fR\fR  \- Calculates multiple linear regression from raster maps.
+.SH KEYWORDS
+raster, statistics, regression
+.SH SYNOPSIS
+\fBr.regression.multi\fR
+.br
+\fBr.regression.multi \-\-help\fR
+.br
+\fBr.regression.multi\fR [\-\fBg\fR] \fBmapx\fR=\fIname\fR[,\fIname\fR,...] \fBmapy\fR=\fIname\fR  [\fBresiduals\fR=\fIname\fR]   [\fBestimates\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Print in shell script style
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmapx\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Map for x coefficient
+.IP "\fBmapy\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Map for y coefficient
+.IP "\fBresiduals\fR=\fIname\fR" 4m
+.br
+Map to store residuals
+.IP "\fBestimates\fR=\fIname\fR" 4m
+.br
+Map to store estimates
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+ASCII file for storing regression coefficients (output to screen if file not specified).
+.SH DESCRIPTION
+\fIr.regression.multi\fR calculates a multiple linear regression from
+raster maps, according to the formula
+.br
+.nf
+\fC
+Y = b0 + sum(bi*Xi) + E
+\fR
+.fi
+where
+.br
+.nf
+\fC
+X = {X1, X2, ..., Xm}
+m = number of explaining variables
+Y = {y1, y2, ..., yn}
+Xi = {xi1, xi2, ..., xin}
+E = {e1, e2, ..., en}
+n = number of observations (cases)
+\fR
+.fi
+In R notation:
+.br
+.nf
+\fC
+Y ~ sum(bi*Xi)
+b0 is the intercept, X0 is set to 1
+\fR
+.fi
+.PP
+\fIr.regression.multi\fR is designed for large datasets that can not
+be processed in R. A p value is therefore not provided, because even
+very small, meaningless effects will become significant with a large
+number of cells. Instead it is recommended to judge by the estimator b,
+the amount of variance explained (R squared for a given variable) and
+the gain in AIC (AIC without a given variable minus AIC global must be
+positive) whether the inclusion of a given explaining variable in the
+model is justified.
+.SS The global model
+The \fIb\fR coefficients (b0 is offset), R squared or coefficient of
+determination (Rsq) and F are identical to the ones obtained from
+R\-stats\(cqs lm() function and R\-stats\(cqs anova() function. The AIC value
+is identical to the one obtained from R\-stats\(cqs stepAIC() function
+(in case of backwards stepping, identical to the Start value). The
+AIC value corrected for the number of explaining variables and the BIC
+(Bayesian Information Criterion) value follow the logic of AIC.
+.SS The explaining variables
+R squared for each explaining variable represents the additional amount
+of explained variance when including this variable compared to when
+excluding this variable, that is, this amount of variance is explained
+by the current explaining variable after taking into consideration all
+the other explaining variables.
+.PP
+The F score for each explaining variable allows testing if the inclusion
+of this variable significantly increases the explaining power of the
+model, relative to the global model excluding this explaining variable.
+That means that the F value for a given explaining variable is only
+identical to the F value of the R\-function \fIsummary.aov\fR if the
+given explaining variable is the last variable in the R\-formula. While
+R successively includes one variable after another in the order
+specified by the formula and at each step calculates the F value
+expressing the gain by including the current variable in addition to the
+previous variables, \fIr.regression.multi\fR calculates the F\-value
+expressing the gain by including the current variable in addition to all
+other variables, not only the previous variables.
+.PP
+The AIC value is identical to the one obtained from the R\-function
+stepAIC() when excluding this variable from the full model. The AIC
+value corrected for the number of explaining variables and the BIC value
+(Bayesian Information Criterion) value follow the logic of AIC. BIC is
+identical to the R\-function stepAIC with k = log(n). AICc is not
+available through the R\-function stepAIC.
+.SH EXAMPLE
+Multiple regression with soil K\-factor and elevation, aspect, and slope
+(North Carolina dataset). Output maps are the residuals and estimates:
+.br
+.nf
+\fC
+g.region raster=soils_Kfactor \-p
+r.regression.multi mapx=elevation,aspect,slope mapy=soils_Kfactor \(rs
+  residuals=soils_Kfactor.resid estimates=soils_Kfactor.estim
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.correlate,
+r.regression.line,
+r.stats
+\fR
+.SH AUTHOR
+Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: r.regression.multi source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

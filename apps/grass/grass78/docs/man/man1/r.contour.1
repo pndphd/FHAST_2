@@ -1,0 +1,131 @@
+.TH r.contour 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.contour\fR\fR  \- Produces a vector map of specified contours from a raster map.
+.SH KEYWORDS
+raster, surface, contours, vector
+.SH SYNOPSIS
+\fBr.contour\fR
+.br
+\fBr.contour \-\-help\fR
+.br
+\fBr.contour\fR [\-\fBt\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBstep\fR=\fIfloat\fR]   [\fBlevels\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBminlevel\fR=\fIfloat\fR]   [\fBmaxlevel\fR=\fIfloat\fR]   [\fBcut\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBstep\fR=\fIfloat\fR" 4m
+.br
+Increment between contour levels
+.IP "\fBlevels\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+List of contour levels
+.IP "\fBminlevel\fR=\fIfloat\fR" 4m
+.br
+Minimum contour level
+.IP "\fBmaxlevel\fR=\fIfloat\fR" 4m
+.br
+Maximum contour level
+.IP "\fBcut\fR=\fIinteger\fR" 4m
+.br
+Minimum number of points for a contour line (0 \-> no limit)
+.br
+Default: \fI2\fR
+.SH DESCRIPTION
+\fIr.contour\fR produces a vector map of specified contours from input raster map.
+Contours can be produced using a comma\-separated list of values
+in \fBlevels\fR, or at some regular increment using the \fBstep\fR
+parameter, using \fBminlevel\fR and \fBmaxlevel\fR as minimum and
+maximum contour values, respectively. If no \fBminlevel\fR
+or \fBmaxlevel\fR is specified, the minimum and maximum cell values
+in the \fBinput\fR raster map will be used.
+.SH NOTES
+\fIr.contour\fR will either step through incremental contours or produce
+contours from a list of levels, not both. If both a list of levels and
+a step are specified, the list will be produced and the step will be ignored.
+.PP
+Zero is treated as a valid data value by \fIr.contour\fR.
+.PP
+If a contour level exactly matches a category value in the raster map,
+the contour line may backtrack on itself, causing illegal arcs to be produced
+in the output vector map.
+.PP
+The optional \fBcut\fR parameter allows the user to specify a minimum number of
+raster cells eligilble to be included in a contour line written to the \fBoutput\fR
+vector map. It acts like a filter, omitting spurs, single points, etc., making the output more generalized.
+.SH EXAMPLES
+In the Spearfish location, produce a vector contour map from input raster \fIelevation.dem\fR
+with contour levels from 1000m to 2000m, 100m contour step, and a minimum of 200 input raster
+points contributing to the contour line:
+.br
+.nf
+\fC
+r.contour input=elevation.dem output=elevation_dem_contours \(rs
+          minlevel=1000 maxlevel=2000 step=100 cut=200
+\fR
+.fi
+.PP
+For an example of using levels with \fIr.contour\fR this example uses
+the elevation map from the North Carolina database:
+.br
+.nf
+\fC
+g.region raster=elevation
+r.contour in=elevation out=contours levels=60,90,120,150 \-\-o
+d.mon wx0
+d.rast elevation_shade
+d.vect contours color=red
+\fR
+.fi
+.br
+\fIContour lines shown on shaded terrain map\fR
+.PP
+For an example of using steps with \fIr.contour\fR this example uses
+the LiDAR data derived elevation map from the North Carolina database:
+.br
+.nf
+\fC
+g.region raster=elev_lid792_1m \-p
+r.contour input=elev_lid792_1m output=elev_lid792_1m_contours \(rs
+          minlevel=100 maxlevel=150 step=10
+\fR
+.fi
+.SH AUTHORS
+Terry Baker, U.S. Army Construction Engineering Research Laboratory
+.br
+3/2001: cut parameter and fixes by Andrea Aime (aaime@libero.it)
+.SH SOURCE CODE
+.PP
+Available at: r.contour source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

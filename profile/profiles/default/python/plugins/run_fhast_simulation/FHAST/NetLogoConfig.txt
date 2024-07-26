@@ -1,0 +1,3 @@
+NetLogoPath, FHAST_App/dist/NetLogo 6.2.2
+#NetLogoPath, C:\Program Files\NetLogo 6.2.2
+Version, 6.2.2

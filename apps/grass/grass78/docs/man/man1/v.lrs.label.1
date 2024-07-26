@@ -1,0 +1,197 @@
+.TH v.lrs.label 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.lrs.label\fR\fR  \- Creates stationing from input lines, and linear reference system.
+.SH KEYWORDS
+vector, linear reference system, network
+.SH SYNOPSIS
+\fBv.lrs.label\fR
+.br
+\fBv.lrs.label \-\-help\fR
+.br
+\fBv.lrs.label\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBllayer\fR=\fIstring\fR]   [\fBrsdriver\fR=\fIstring\fR]   [\fBrsdatabase\fR=\fIstring\fR]  \fBrstable\fR=\fIstring\fR  [\fBlabels\fR=\fIstring\fR]   [\fBoffset\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBxoffset\fR=\fIfloat\fR]   [\fByoffset\fR=\fIfloat\fR]   [\fBreference\fR=\fIstring\fR]   [\fBfont\fR=\fIstring\fR]   [\fBsize\fR=\fIinteger\fR]   [\fBcolor\fR=\fIname\fR]   [\fBwidth\fR=\fIinteger\fR]   [\fBhighlight_color\fR=\fIname\fR]   [\fBhighlight_width\fR=\fIinteger\fR]   [\fBbgcolor\fR=\fIname\fR]   [\fBborder\fR=\fIname\fR]   [\fBopaque\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Input vector map containing lines
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output vector map where stationing will be written
+.IP "\fBllayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Line layer
+.br
+Default: \fI1\fR
+.IP "\fBrsdriver\fR=\fIstring\fR" 4m
+.br
+Driver name for reference system table
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBrsdatabase\fR=\fIstring\fR" 4m
+.br
+Database name for reference system table
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBrstable\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of the reference system table
+.IP "\fBlabels\fR=\fIstring\fR" 4m
+.br
+Label file
+.IP "\fBoffset\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+PM left, MP right, stationing left, stationing right offset
+.br
+Default: \fI50,100,25,25\fR
+.IP "\fBxoffset\fR=\fIfloat\fR" 4m
+.br
+Offset label in label x\-direction in map units
+.br
+Default: \fI25\fR
+.IP "\fByoffset\fR=\fIfloat\fR" 4m
+.br
+Offset label in label y\-direction in map units
+.br
+Default: \fI5\fR
+.IP "\fBreference\fR=\fIstring\fR" 4m
+.br
+Reference position
+.br
+Options: \fIcenter, left, right, upper, lower\fR
+.br
+Default: \fIcenter\fR
+.IP "\fBfont\fR=\fIstring\fR" 4m
+.br
+Font
+.br
+Default: \fIstandard\fR
+.IP "\fBsize\fR=\fIinteger\fR" 4m
+.br
+Label size (in map\-units)
+.br
+Options: \fI1\-1000\fR
+.br
+Default: \fI100\fR
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Text color
+.br
+Either a standard color name or R:G:B triplet
+.br
+Default: \fIblack\fR
+.IP "\fBwidth\fR=\fIinteger\fR" 4m
+.br
+Line width of text
+.br
+Only for d.label output
+.br
+Options: \fI1\-100\fR
+.br
+Default: \fI1\fR
+.IP "\fBhighlight_color\fR=\fIname\fR" 4m
+.br
+Highlight color for text
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fInone\fR
+.IP "\fBhighlight_width\fR=\fIinteger\fR" 4m
+.br
+Line width of highlight color
+.br
+Only for d.label output
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI0\fR
+.IP "\fBbgcolor\fR=\fIname\fR" 4m
+.br
+Background color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fInone\fR
+.IP "\fBborder\fR=\fIname\fR" 4m
+.br
+Border color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fInone\fR
+.IP "\fBopaque\fR=\fIstring\fR" 4m
+.br
+Opaque to vector
+.br
+Only relevant if background color is selected
+.br
+Options: \fIyes, no\fR
+.br
+Default: \fIyes\fR
+.SH DESCRIPTION
+\fIv.lrs.label\fR generates LRS labels for pretty\-printing of a LRS.
+This example is written for the Spearfish dataset (it continues the example
+from \fIv.lrs.create\fR).
+.PP
+.br
+.nf
+\fC
+v.lrs.label route_lrs rstable=route_lrs output=route_lrs_labels \(rs
+            labels=labels col=red size=50 xoffset=100
+g.region vector=route_lrs n=n+100 s=s\-100 \-p
+d.erase
+d.vect route_lrs
+d.vect route_lrs_labels col=grey type=line
+d.vect busstops disp=attr attr=cat size=10 bg=white lcol=green yref=bottom
+d.vect busstops icon=basic/circle fcol=green
+d.labels labels
+\fR
+.fi
+.SH SEE ALSO
+\fILRS tutorial\fR,
+.br
+\fIIntroducing the Linear Reference System in GRASS\fR,
+.br
+\fIv.lrs.create\fR,
+\fIv.lrs.segment\fR,
+\fIv.lrs.where\fR,
+\fId.labels\fR,
+\fIv.label\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst/MPA Solutions
+.br
+Documentation update (based on above journal article and available fragments): Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.lrs.label source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

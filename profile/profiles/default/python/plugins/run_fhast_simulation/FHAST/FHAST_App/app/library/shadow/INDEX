@@ -1,0 +1,36 @@
+SVF                     Sky View Factor (SVF) calculation
+beersheva_build         Polygonal layer of 376 buildings in Beer-Sheva
+beersheva_elev          DEM of Ramot neighborhood, Beer-Sheva
+boston_block            Polygonal layer of a building block in Boston
+boston_build            Polygonal layer of three buildings in Boston
+boston_park             Polygonal layer of a park in Boston
+boston_sidewalk         Polygonal layer of sidewalks in Boston
+build                   Polygonal layer of four buildings in Rishon
+classifyAz              Classify azimuth of line segments
+coefDirect              Coefficient of Direct Normal Irradiance
+                        reduction
+deg2rad                 Degrees to radians
+inShadow                Logical shadow calculation (is given point
+                        shaded?) for 3D points considering sun position
+                        and obstacles
+plotGrid                Interactive plot for 3D spatial points
+rad2deg                 Radians to degrees
+radiation               Estimation of Direct and Diffuse Radiation Load
+                        on Extruded Polygon Surfaces
+ray                     Line between two points
+shadow                  'shadow': R Package for Geometric Shade
+                        Calculations
+shadowFootprint         Shadow footprint on the ground
+shadowHeight            Shadow height calculation considering sun
+                        position and obstacles
+shiftAz                 Shift features by azimuth and distance
+solarpos2               Calculate solar position(s) for location and
+                        time
+surfaceGrid             Create grid of 3D points covering the 'facades'
+                        and 'roofs' of obstacles
+tmy                     Typical Meteorological Year (TMY) solar
+                        radiation in Tel-Aviv
+tmy2                    Typical Meteorological Year (TMY) solar
+                        radiation in Beer-Sheva
+toGMT                   Local time to GMT
+toSeg                   Split polygons or lines to segments

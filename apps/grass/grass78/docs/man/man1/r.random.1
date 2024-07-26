@@ -1,0 +1,198 @@
+.TH r.random 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.random\fR\fR  \- Creates a raster map layer and vector point map containing randomly located points.
+.SH KEYWORDS
+raster, sampling, vector, random, level1
+.SH SYNOPSIS
+\fBr.random\fR
+.br
+\fBr.random \-\-help\fR
+.br
+\fBr.random\fR [\-\fBzidb\fR] \fBinput\fR=\fIname\fR  [\fBcover\fR=\fIname\fR]  \fBnpoints\fR=\fInumber[%]\fR  [\fBraster\fR=\fIname\fR]   [\fBvector\fR=\fIname\fR]   [\fBseed\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Generate points also for NULL category
+.IP "\fB\-i\fR" 4m
+.br
+Report information about input raster and exit
+.IP "\fB\-d\fR" 4m
+.br
+Generate vector points as 3D points
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Do not build topology in points mode
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBcover\fR=\fIname\fR" 4m
+.br
+Name of cover raster map
+.IP "\fBnpoints\fR=\fInumber[%]\fR \fB[required]\fR" 4m
+.br
+The number of points to allocate
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Name for output raster map
+.IP "\fBvector\fR=\fIname\fR" 4m
+.br
+Name for output vector map
+.IP "\fBseed\fR=\fIinteger\fR" 4m
+.br
+Seed for rand() function
+.SH DESCRIPTION
+.PP
+The program \fIr.random\fR allows the user to create a
+raster map layer and/or a vector points map containing
+coordinates of points whose locations have been randomly
+determined.  The program locates these randomly generated
+vector points (sites) within the current geographic region and mask (if
+any), on non\-NULL category value data areas within a
+user\-specified raster map layer. If the user sets the
+\fB\-z\fR flag, points will be randomly generated across all
+cells (even those with NULL values).
+.PP
+The category values and
+corresponding category names already associated with the
+random point locations in the \fIinput\fR map layer are
+assigned to these points in the \fIraster_output\fR map
+layer. If the \fB\-z\fR is specified, then a unique entry
+is made for the value used where the \fIinput\fR was NULL.
+This value is at least 1 less than the smallest value in the
+\fIinput\fR raster and is given a medium gray color.
+.SH NOTES
+.PP
+If a \fIcover\fR raster map is specified and the \fIcover\fR map
+contains NULL (no data) values, these points are suppressed in the
+resulting \fIvector_output\fR or \fIraster_output\fR map.
+.PP
+The \fIvector_output\fR file created by \fIr.random\fR
+contains vector points that represent the \fIcenter points\fR of the
+randomly generated cells.  A \fIvalue\fR attribute contains the cell value
+of the \fIinput\fR raster (or the assigned value
+when \fB\-z\fR is used).
+.br
+If a \fIcover\fR map is additionally specified, a second
+column  \fIcovervalue\fR is populated with raster values from
+the \fIcover\fR map.
+.PP
+If the user sets the \fB\-b\fR flag, vector points are written without
+topology to minimize the required resources. This is suitable input
+to \fIv.surf.rst\fR and other vector modules.
+.PP
+The user may specify the quantity of random locations to be
+generated either as a \fIpositive integer\fR (e.g., 10),
+or as a \fIpercentage of the raster map layer\(cqs cells\fR
+(e.g., 10%, or 3.05%).  The number of cells considered for
+the percentage reflects whether or not the \fB\-z\fR flag
+was given. Options are 0\-100; percentages less than
+one percent may be stated as decimals.
+.PP
+Flag \fB\-i\fR prints the raster map\(cqs name and location,
+the total number of cells under the current region settings, and
+the number of NULL valued cells under the current region settings.
+Then module exits without doing anything.  Useful for deciding on the number
+of sites to have \fIr.random\fR create.
+\fBWARNING:\fR this feature may be removed in future. Use
+g.region and
+r.report
+instead.
+.br
+.nf
+\fC
+g.region \-p
+r.report map=inputmap units=c null=* nsteps=1
+\fR
+.fi
+.PP
+To create random vector point locations within some, but not all,
+non\-zero categories of the input raster map layer,
+the user must first create a reclassified raster map layer
+of the original raster map layer (e.g., using the GRASS
+program \fIr.reclass\fR)
+that contains only the desired categories,
+and then use the reclassed raster map layer as input to \fIr.random\fR.
+.SH EXAMPLES
+.PP
+Random vector elevation points sampled from elevation map in the
+Spearfish region, result stored in 2D vector map:
+.br
+.nf
+\fC
+g.region raster=elevation.10m \-p
+r.random elevation.10m vector=elevrand n=100
+v.db.select elevrand
+v.univar elevrand col=value type=point
+\fR
+.fi
+.PP
+Random vector elevation points sampled from elevation map in the
+Spearfish region with collocated values sampled from landuse map,
+result stored in 3D vector map:
+.br
+.nf
+\fC
+g.region raster=elevation.10m \-p
+r.random \-d elevation.10m cover=landcover.30m vector=luserand3d n=100
+# data output (value: elevation, covervalue: landuse class):
+v.db.select luserand3d
+cat|value|covervalue
+1|1151.406616|81
+2|1172.121216|71
+3|1183.219604|71
+\&...
+\fR
+.fi
+.SH KNOWN ISSUES
+It\(cqs not possible to use the \fB\-i\fR flag and not also specify the \fBn\fR
+parameter.
+.SH SEE ALSO
+\fI
+g.region
+.br
+r.reclass
+.br
+v.random
+.br
+v.surf.rst
+\fR
+.SH AUTHOR
+Dr. James Hinthorne,
+GIS Laboratory,
+Central Washington University
+.PP
+Modified for GRASS 5.0 by Eric G. Miller
+.PP
+Cover map support by Markus Neteler, 2007
+.SH SOURCE CODE
+.PP
+Available at: r.random source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

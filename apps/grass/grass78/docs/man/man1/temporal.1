@@ -1,0 +1,327 @@
+.TH temporal 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH GRASS GIS 7.8.5 Reference Manual
+.PP
+\fBGeographic Resources Analysis Support System\fR, commonly
+referred to as GRASS GIS, is a Geographic
+Information System (GIS) used for geospatial data management and
+analysis, image processing, graphics/maps production, spatial
+modeling, and visualization. GRASS is currently used in academic and
+commercial settings around the world, as well as by many governmental
+agencies and environmental consulting companies.
+.PP
+This reference manual details the use of modules distributed with
+Geographic Resources Analysis Support System (GRASS), an open source
+(GNU GPLed), image
+processing and geographic information system (GIS).
+Go to temporal introduction | topics
+.PP
+Go back to help overview
+.SS Temporal commands:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+t.connect
+T}	 	T{
+Prints/sets general temporal GIS database connection for current mapset.
+T}
+.sp 1
+T{
+t.create
+T}	 	T{
+Creates a space time dataset.
+T}
+.sp 1
+T{
+t.info
+T}	 	T{
+Lists information about space time datasets and maps.
+T}
+.sp 1
+T{
+t.list
+T}	 	T{
+Lists space time datasets and maps registered in the temporal database.
+T}
+.sp 1
+T{
+t.merge
+T}	 	T{
+Merges several space time datasets into a single space time dataset.
+T}
+.sp 1
+T{
+t.rast.accdetect
+T}	 	T{
+Detects accumulation patterns in temporally accumulated space time raster datasets created by t.rast.accumulate.
+T}
+.sp 1
+T{
+t.rast.accumulate
+T}	 	T{
+Computes cyclic accumulations of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.aggregate.ds
+T}	 	T{
+Aggregates data of an existing space time raster dataset using the time intervals of a second space time dataset.
+T}
+.sp 1
+T{
+t.rast.aggregate
+T}	 	T{
+Aggregates temporally the maps of a space time raster dataset by a user defined granularity.
+T}
+.sp 1
+T{
+t.rast.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time raster datasets using temporal raster algebra.
+T}
+.sp 1
+T{
+t.rast.colors
+T}	 	T{
+Creates/modifies the color table associated with each raster map of the space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.contour
+T}	 	T{
+Produces a space time vector dataset of specified contours from a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.export
+T}	 	T{
+Exports space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.extract
+T}	 	T{
+Extracts a subset of a space time raster datasets.
+T}
+.sp 1
+T{
+t.rast.gapfill
+T}	 	T{
+Replaces gaps in a space time raster dataset with interpolated raster maps.
+T}
+.sp 1
+T{
+t.rast.import
+T}	 	T{
+Imports space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.list
+T}	 	T{
+Lists registered maps of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.mapcalc
+T}	 	T{
+Performs spatio\-temporal mapcalc expressions on temporally sampled maps of space time raster datasets.
+T}
+.sp 1
+T{
+t.rast.neighbors
+T}	 	T{
+Performs a neighborhood analysis for each map in a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.out.vtk
+T}	 	T{
+Exports space time raster dataset as VTK time series.
+T}
+.sp 1
+T{
+t.rast.series
+T}	 	T{
+Performs different aggregation algorithms from r.series on all or a subset of raster maps in a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.to.rast3
+T}	 	T{
+Converts a space time raster dataset into a 3D raster map.
+T}
+.sp 1
+T{
+t.rast.to.vect
+T}	 	T{
+Converts a space time raster dataset into a space time vector dataset
+T}
+.sp 1
+T{
+t.rast.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells for each registered raster map of a space time raster dataset.
+T}
+.sp 1
+T{
+t.rast.what
+T}	 	T{
+Sample a space time raster dataset at specific vector point coordinates and write the output to stdout using different layouts
+T}
+.sp 1
+T{
+t.rast3d.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time 3D raster datasets using temporal 3D raster algebra.
+T}
+.sp 1
+T{
+t.rast3d.extract
+T}	 	T{
+Extracts a subset of a space time 3D raster dataset.
+T}
+.sp 1
+T{
+t.rast3d.list
+T}	 	T{
+Lists registered maps of a space time raster3d dataset.
+T}
+.sp 1
+T{
+t.rast3d.mapcalc
+T}	 	T{
+Performs r3.mapcalc expressions on maps of sampled space time 3D raster datasets.
+T}
+.sp 1
+T{
+t.rast3d.univar
+T}	 	T{
+Calculates univariate statistics from the non\-null cells for each registered 3D raster map of a space time 3D raster dataset.
+T}
+.sp 1
+T{
+t.register
+T}	 	T{
+Assigns timestamps and registers raster, vector and raster3d maps in a space time dataset.
+T}
+.sp 1
+T{
+t.remove
+T}	 	T{
+Removes space time datasets from temporal database.
+T}
+.sp 1
+T{
+t.rename
+T}	 	T{
+Renames a space time dataset
+T}
+.sp 1
+T{
+t.sample
+T}	 	T{
+Samples the input space time dataset(s) with a sample space time dataset and print the result to stdout.
+T}
+.sp 1
+T{
+t.select
+T}	 	T{
+Select maps from space time datasets by topological relationships to other space time datasets using temporal algebra.
+T}
+.sp 1
+T{
+t.shift
+T}	 	T{
+Shifts temporally the maps of a space time dataset.
+T}
+.sp 1
+T{
+t.snap
+T}	 	T{
+Snaps temporally the maps of a space time dataset.
+T}
+.sp 1
+T{
+t.support
+T}	 	T{
+Modifies the metadata of a space time dataset.
+T}
+.sp 1
+T{
+t.topology
+T}	 	T{
+Lists temporal topology of a space time dataset.
+T}
+.sp 1
+T{
+t.unregister
+T}	 	T{
+Unregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset.
+T}
+.sp 1
+T{
+t.vect.algebra
+T}	 	T{
+Apply temporal and spatial operations on space time vector datasets using temporal vector algebra.
+T}
+.sp 1
+T{
+t.vect.db.select
+T}	 	T{
+Prints attributes of vector maps registered in a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.export
+T}	 	T{
+Exports a space time vector dataset as GRASS GIS specific archive file.
+T}
+.sp 1
+T{
+t.vect.extract
+T}	 	T{
+Extracts a subset of a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.import
+T}	 	T{
+Imports a space time vector dataset from a GRASS GIS specific archive file.
+T}
+.sp 1
+T{
+t.vect.list
+T}	 	T{
+Lists registered maps of a space time vector dataset.
+T}
+.sp 1
+T{
+t.vect.observe.strds
+T}	 	T{
+Observes specific locations in a space time raster dataset over a period of time using vector points.
+T}
+.sp 1
+T{
+t.vect.univar
+T}	 	T{
+Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset
+T}
+.sp 1
+T{
+t.vect.what.strds
+T}	 	T{
+Stores raster map values at spatial and temporal positions of vector points as vector attributes.
+T}
+.sp 1
+.TE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

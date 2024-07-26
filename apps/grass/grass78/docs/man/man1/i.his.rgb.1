@@ -1,0 +1,91 @@
+.TH i.his.rgb 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.his.rgb\fR\fR  \- Transforms raster maps from HIS (Hue\-Intensity\-Saturation) color space to RGB (Red\-Green\-Blue) color space.
+.SH KEYWORDS
+imagery, color transformation, RGB, HIS, IHS
+.SH SYNOPSIS
+\fBi.his.rgb\fR
+.br
+\fBi.his.rgb \-\-help\fR
+.br
+\fBi.his.rgb\fR \fBhue\fR=\fIname\fR \fBintensity\fR=\fIname\fR \fBsaturation\fR=\fIname\fR \fBred\fR=\fIname\fR \fBgreen\fR=\fIname\fR \fBblue\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBhue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (hue)
+.IP "\fBintensity\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (intensity)
+.IP "\fBsaturation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map (saturation)
+.IP "\fBred\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (red)
+.IP "\fBgreen\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (green)
+.IP "\fBblue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map (blue)
+.SH DESCRIPTION
+\fIi.his.rgb\fR is an image processing program that
+processes three input raster map layers as hue, intensity
+and saturation components and produces three output raster
+map layers representing the red, green and blue components
+of this data.  The output raster map layers are created by
+a standard hue\-intensity\-saturation (HIS) to red\-green\-blue
+(RGB) color transformation.  Each output raster map layer
+is given a linear gray scale color table.  The current
+geographic region and mask settings are respected.
+.SH NOTES
+It is not possible to process three bands with
+\fIi.his.rgb\fR and then exactly recover the original
+bands with \fIi.rgb.his\fR.
+This is due to loss of precision because of integer
+computations and rounding.  Tests have shown that more than
+70% of the original cell values will be reproduced exactly
+after transformation in both directions and that 99% will
+be within plus or minus 1.  A few cell values may differ
+significantly from their original values.
+.SH SEE ALSO
+\fI
+i.rgb.his,
+r.colors
+\fR
+.SH AUTHOR
+David Satnik, GIS Laboratory,
+Central Washington University
+.PP
+with acknowledgements to Ali Vali, Univ. of Texas Space Research
+Center, for the core routine.
+.SH SOURCE CODE
+.PP
+Available at: i.his.rgb source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

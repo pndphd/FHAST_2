@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.where - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.where</b></em>  - Identifies the geographic coordinates associated with point locations given in display coordinates.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#position">position</a>, <a href="keywords.html#querying">querying</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.where</b><br></div>
+<b>d.where --help</b><br>
+<div id="synopsis"><b>d.where</b> [-<b>dlwf</b>]  [<b>at</b>=<em>x,y</em>[,<i>x,y</i>,...]]   [<b>input</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-d</b></dt>
+<dd>Output lat/long in decimal degree</dd>
+
+<dt><b>-l</b></dt>
+<dd>Output lat/long referenced to current ellipsoid</dd>
+
+<dt><b>-w</b></dt>
+<dd>Output lat/long referenced to WGS84 ellipsoid using datum transformation parameters defined in current location (if available)</dd>
+
+<dt><b>-f</b></dt>
+<dd>Output frame coordinates of current display monitor (percentage)</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>at</b>=<em>x,y[,<i>x,y</i>,...]</em></dt>
+<dd>Display coordinates to convert</dd>
+
+<dt><b>input</b>=<em>name</em></dt>
+<dd>File from which to read coordinates ("-" to read from stdin)</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.where</em> is an <em>interactive</em> program that
+allows the user, using the pointing device (mouse), to
+identify the geographic coordinates associated with point
+locations within the current geographic region in the
+active display frame on the graphics monitor.
+
+<p>Each mouse click will output the easting and northing of the point
+currently located beneath the mouse pointer. 
+A mouse-button menu is presented so the user knows which
+mouse buttons to use. The output is always printed to the
+terminal screen; if the output is redirected into a file,
+it will be written to the file as well.
+
+<p>Mouse buttons:
+
+<div class="code"><pre>
+     Left:   where am i
+     Middle: draw to/from here
+     Right:  quit this
+</pre></div>
+
+The left mouse button prints the coordinates at the selected point,
+the middle mouse button allows you to query two points (they are connected
+by a line for convenience). Use the right mouse button to exit the module.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+This program uses the current geographic region setting and active frame. 
+It is not necessary, although useful, to have displayed a map in the current 
+frame before running <em>d.where</em>. The <b>-d</b> flag allows the user to
+optionally output latitude/longitude coordinates pair(s) in decimal degree
+rather than DD:MM:SS format. The <b>-w</b> flag is only valid
+if a datum is defined for the current location.
+
+If the <b>-f</b> flag is given the x,y frame coordinates of the active display 
+monitor will be returned (as a percentage, 0,0 is bottom left).
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Query position in map (North Carolina sample dataset):
+<div class="code"><pre>
+d.rast elevation
+d.where
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.what.rast.html">d.what.rast</a>,
+<a href="d.what.vect.html">d.what.vect</a>,
+<a href="g.region.html">g.region</a>,
+<a href="v.what.rast.html">v.what.rast</a>,
+<a href="v.what.vect.html">v.what.vect</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+James Westervelt, <br>
+Michael Shapiro, <br>
+U.S. Army Construction Engineering 
+Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.where">d.where source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.where">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

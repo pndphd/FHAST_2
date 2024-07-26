@@ -1,0 +1,340 @@
+.TH i.cluster 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.cluster\fR\fR  \- Generates spectral signatures for land cover types in an image using a clustering algorithm.
+.br
+The resulting signature file is used as input for i.maxlik, to generate an unsupervised image classification.
+.SH KEYWORDS
+imagery, classification, signatures
+.SH SYNOPSIS
+\fBi.cluster\fR
+.br
+\fBi.cluster \-\-help\fR
+.br
+\fBi.cluster\fR \fBgroup\fR=\fIname\fR \fBsubgroup\fR=\fIname\fR \fBsignaturefile\fR=\fIname\fR \fBclasses\fR=\fIinteger\fR  [\fBseed\fR=\fIname\fR]   [\fBsample\fR=\fIrows,cols\fR]   [\fBiterations\fR=\fIinteger\fR]   [\fBconvergence\fR=\fIfloat\fR]   [\fBseparation\fR=\fIfloat\fR]   [\fBmin_size\fR=\fIinteger\fR]   [\fBreportfile\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery group
+.IP "\fBsubgroup\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input imagery subgroup
+.IP "\fBsignaturefile\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output file containing result signatures
+.IP "\fBclasses\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Initial number of classes
+.br
+Options: \fI1\-255\fR
+.IP "\fBseed\fR=\fIname\fR" 4m
+.br
+Name of file containing initial signatures
+.IP "\fBsample\fR=\fIrows,cols\fR" 4m
+.br
+Number of rows and columns over which a sample pixel is taken
+.IP "\fBiterations\fR=\fIinteger\fR" 4m
+.br
+Maximum number of iterations
+.br
+Default: \fI30\fR
+.IP "\fBconvergence\fR=\fIfloat\fR" 4m
+.br
+Percent convergence
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI98.0\fR
+.IP "\fBseparation\fR=\fIfloat\fR" 4m
+.br
+Cluster separation
+.br
+Default: \fI0.0\fR
+.IP "\fBmin_size\fR=\fIinteger\fR" 4m
+.br
+Minimum number of pixels in a class
+.br
+Default: \fI17\fR
+.IP "\fBreportfile\fR=\fIname\fR" 4m
+.br
+Name for output file containing final report
+.SH DESCRIPTION
+\fIi.cluster\fR performs the first pass in the two\-pass
+unsupervised classification of imagery, while the GRASS module \fI
+i.maxlik\fR executes the second pass.
+Both commands must be run to complete the unsupervised classification.
+.PP
+\fIi.cluster\fR is a clustering algorithm (a modification of the
+\fIk\fR\-means clustering algorithm) that reads through the (raster) imagery
+data and builds pixel clusters based on the spectral reflectances of the
+pixels (see Figure).
+The pixel clusters are imagery categories that can be related
+to land cover types on the ground. The spectral distributions of the
+clusters (e.g., land cover spectral signatures) are influenced by six
+parameters set by the user. A relevant parameter set by the user is the
+initial number of clusters to be discriminated.
+.PP
+.br
+.TS
+expand;
+lw60.
+T{
+\fIFig.: Land use/land cover clustering of LANDSAT scene (simplified)\fR
+T}
+.sp 1
+.TE
+.PP
+\fIi.cluster\fR starts by generating spectral signatures
+for this number of clusters and \(dqattempts\(dq to end up with
+this number of clusters during the clustering process.  The
+resulting number of clusters and their spectral
+distributions, however, are also influenced by the range of
+the spectral values (category values) in the image files
+and the other parameters set by the user.  These parameters
+are:  the minimum cluster size, minimum cluster separation,
+the percent convergence, the maximum number of iterations,
+and the row and column sampling intervals.
+.PP
+The cluster spectral signatures that result are composed of
+cluster means and covariance matrices.  These cluster means
+and covariance matrices are used in the second pass
+(\fIi.maxlik\fR) to
+classify the image.  The clusters or spectral classes
+result can be related to land cover types on the ground.
+The user has to specify the name of group file, the name of subgroup
+file, the name of a file to contain result signatures, the
+initial number of clusters to be discriminated, and
+optionally other parameters (see below)
+where the \fIgroup\fR should contain the imagery files
+that the user wishes to classify.  The \fIsubgroup\fR is
+a subset of this group.  The user must create a group and
+subgroup by running the GRASS program
+\fIi.group\fR
+before running \fIi.cluster\fR.  The subgroup should
+contain only the imagery band files that the user wishes to
+classify.  Note that this subgroup must contain more than
+one band file.  The purpose of the group and subgroup is to
+collect map layers for classification or analysis. The
+\fIsignaturefile\fR is the file to contain result signatures
+which can be used as input for
+\fIi.maxlik\fR.
+The classes value is the initial number of clusters to be
+discriminated; any parameter values left unspecified are
+set to their default values.
+.SS Parameters:
+.IP "\fBgroup=\fR\fIname\fR   " 4m
+.br
+The name of the group file which contains the imagery
+files that the user wishes to classify.
+.IP "\fBsubgroup=\fR\fIname\fR   " 4m
+.br
+The name of the subset of the group specified in group
+option, which must contain only imagery band files and more
+than one band file. The user must create a group and a
+subgroup by running the GRASS program
+\fIi.group\fR
+before
+running \fIi.cluster\fR.
+.IP "\fBsignaturefile=\fR\fIname\fR   " 4m
+.br
+The name assigned to output signature file which
+contains signatures of classes and can be used as the input
+file for the GRASS program
+\fIi.maxlik\fR
+for an unsupervised classification.
+.IP "\fBclasses=\fR\fIvalue\fR   " 4m
+.br
+The number of clusters that will initially be
+identified in the clustering process before the iterations
+begin.
+.IP "\fBseed=\fR\fIname\fR   " 4m
+.br
+The name of a seed signature file is optional. The seed
+signatures are signatures that contain cluster means and
+covariance matrices which were calculated prior to the
+current run of \fIi.cluster\fR. They may be acquired
+from a previously run of \fIi.cluster\fR or from a
+supervised classification signature training site section
+(e.g., using the signature file output by
+\fIg.gui.iclass\fR).
+The purpose of seed signatures is to optimize the cluster
+decision boundaries (means) for the number of clusters
+specified.
+.IP "\fBsample=\fR\fIrows,cols\fR   " 4m
+.br
+These numbers are optional with default values based on
+the size of the data set such that the total pixels to be
+processed is approximately 10,000 (consider round up). The
+smaller these numbers, the larger the sample size used to
+generate the signatures for the classes defined.
+.IP "\fBiterations=\fR\fIvalue\fR   " 4m
+.br
+This parameter determines the maximum number of
+iterations which is greater than the number of iterations
+predicted to achieve the optimum percent convergence. The
+default value is 30. If the number of iterations reaches
+the maximum designated by the user; the user may want to
+rerun \fIi.cluster\fR with a higher number of iterations
+(see \fIreportfile\fR).
+.br
+Default: 30
+.IP "\fBconvergence=\fR\fIvalue\fR  " 4m
+.br
+A high percent convergence is the point at which
+cluster means become stable during the iteration process.
+The default value is 98.0 percent.  When clusters are being
+created, their means constantly change as pixels are
+assigned to them and the means are recalculated to include
+the new pixel.  After all clusters have been created,
+\fIi.cluster\fR begins iterations that change cluster
+means by maximizing the distances between them.  As these
+means shift, a higher and higher convergence is
+approached.  Because means will never become totally
+static, a percent convergence and a maximum number of
+iterations are supplied to stop the iterative process.  The
+percent convergence should be reached before the maximum
+number of iterations. If the maximum number of iterations
+is reached, it is probable that the desired percent
+convergence was not reached. The number of iterations is
+reported in the cluster statistics in the report file
+(see \fIreportfile\fR).
+.br
+Default: 98.0
+.IP "\fBseparation=\fR\fIvalue\fR   " 4m
+.br
+This is the minimum separation below which clusters
+will be merged in the iteration process. The default value
+is 0.0. This is an image\-specific number (a \(dqmagic\(dq number)
+that depends on the image data being classified and the
+number of final clusters that are acceptable. Its
+determination requires experimentation. Note that as the
+minimum class (or cluster) separation is increased, the
+maximum number of iterations should also be increased to
+achieve this separation with a high percentage of
+convergence
+(see \fIconvergence\fR).
+.br
+Default: 0.0
+.IP "\fBmin_size=\fR\fIvalue\fR   " 4m
+.br
+This is the minimum number of pixels that will be used
+to define a cluster, and is therefore the minimum number of
+pixels for which means and covariance matrices will be
+calculated.
+.br
+Default: 17
+.IP "\fBreportfile=\fR\fIname\fR  " 4m
+.br
+The reportfile is an optional parameter which contains
+the result, i.e., the statistics for each cluster. Also
+included are the resulting percent convergence for the
+clusters, the number of iterations that was required to
+achieve the convergence, and the separability matrix.
+.SH NOTES
+.SS Sampling method
+\fIi.cluster\fR does not cluster all pixels, but only a sample (see
+parameter \fBsample\fR). The result of that clustering is not that all
+pixels are assigned to a given cluster; essentially, only signatures which are
+representative of a given cluster are generated. When running \fIi.cluster\fR
+on the same data asking for the same number of classes, but with different
+sample sizes, likely slightly different signatures for each cluster are
+obtained at each run.
+.SS Algorithm used for i.cluster
+The algorithm uses input parameters set by the user on the
+initial number of clusters, the minimum distance between clusters, and the
+correspondence between iterations which is desired, and minimum size for
+each cluster. It also asks if all pixels to be clustered, or every \(dqx\(dqth row
+and \(dqy\(dqth column (sampling), the correspondence between iterations
+desired, and the maximum number of iterations to be carried out.
+.PP
+In the 1st pass, initial cluster means for each band are defined by giving
+the first cluster a value equal to the band mean minus its standard
+deviation, and the last cluster a value equal to the band mean plus its
+standard deviation, with all other cluster means distributed equally
+spaced in between these. Each pixel is then assigned to the class which it
+is closest to, distance being measured as Euclidean distance. All clusters
+less than the user\-specified minimum distance are then merged. If a
+cluster has less than the user\-specified minimum number of pixels, all those
+pixels are again reassigned to the next nearest cluster. New cluster means
+are calculated for each band as the average of raster pixel values in that
+band for all pixels present in that cluster.
+.PP
+In the 2nd pass, pixels are then again reassigned to clusters based on new
+cluster means. The cluster means are then again recalculated.  This
+process is repeated until the correspondence between iterations reaches a
+user\-specified level, or till the maximum number of iterations specified is
+over, whichever comes first.
+.SH EXAMPLE
+Preparing the statistics for unsupervised classification of
+a LANDSAT subscene in North Carolina:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+# store VIZ, NIR, MIR into group/subgroup (leaving out TIR)
+i.group group=lsat7_2002 subgroup=lsat7_2002 \(rs
+  input=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70
+# generate signature file and report
+i.cluster group=lsat7_2002 subgroup=lsat7_2002 \(rs
+  signaturefile=sig_cluster_lsat2002 \(rs
+  classes=10 reportfile=rep_clust_lsat2002.txt
+\fR
+.fi
+To complete the unsupervised classification, \fIi.maxlik\fR is subsequently used.
+See example in its manual page.
+.SH SEE ALSO
+.RS 4n
+.IP \(bu 4n
+Image classification wiki page
+.IP \(bu 4n
+Historical reference also the GRASS GIS 4
+Image Processing manual (PDF)
+.IP \(bu 4n
+Wikipedia article on \fIk\fR\-means clustering
+(note that \fIi.cluster\fR uses a modification of the \fIk\fR\-means clustering algorithm)
+.RE
+.PP
+\fI
+g.gui.iclass,
+i.group,
+i.gensig,
+i.maxlik,
+i.segment,
+i.smap,
+r.kappa
+\fR
+.SH AUTHORS
+Michael Shapiro,
+U.S. Army Construction Engineering Research Laboratory
+.br
+Tao Wen,
+University of Illinois at Urbana\-Champaign, Illinois
+.SH SOURCE CODE
+.PP
+Available at: i.cluster source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

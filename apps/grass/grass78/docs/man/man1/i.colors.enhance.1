@@ -1,0 +1,126 @@
+.TH i.colors.enhance 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.colors.enhance.py\fR\fR  \- Performs auto\-balancing of colors for RGB images.
+.SH KEYWORDS
+imagery, RGB, satellite, colors
+.SH SYNOPSIS
+\fBi.colors.enhance.py\fR
+.br
+\fBi.colors.enhance.py \-\-help\fR
+.br
+\fBi.colors.enhance.py\fR [\-\fBfprs\fR] \fBred\fR=\fIname\fR \fBgreen\fR=\fIname\fR \fBblue\fR=\fIname\fR  [\fBstrength\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Extend colors to full range of data on each channel
+.IP "\fB\-p\fR" 4m
+.br
+Preserve relative colors, adjust brightness only
+.IP "\fB\-r\fR" 4m
+.br
+Reset to standard color range
+.IP "\fB\-s\fR" 4m
+.br
+Process bands serially (default: run in parallel)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBred\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of red channel
+.IP "\fBgreen\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of green channel
+.IP "\fBblue\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of blue channel
+.IP "\fBstrength\fR=\fIfloat\fR" 4m
+.br
+Cropping intensity (upper brightness level)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI98\fR
+.SH DESCRIPTION
+\fIi.colors.enhance\fR auto\-balances and enhances the color channels of a
+RGB image (e.g. from Landsat) to provide a more natural color mixture. Only
+the color table of each image band is modified, the base data remains untouched.
+.PP
+The module works by calculating a histogram for each color channel and
+removing an adjustable amount of outliers from either end before recalibrating
+the color scale with \fIr.colors\fR.
+.PP
+It will work with any 8\-bit RGB imagery set and the script is easily modified
+to work with other datasets of greater band\-depth.
+.SH NOTES
+Depending on the image, it may or may not be advantageous to use the \fB\-p\fR
+flag to preserve the relative color scaling. You will have to experiment
+with the different options to find a setting that works best for your
+particular imagery.
+.PP
+The \fBstrength\fR option should generally be set in the 90\-99 range. The
+lower the number, the more saturated the image becomes. It represents the
+percentage cut\-off for the top end of the color histogram curve. The lower
+end is fixed at 2% of the area under the curve.
+.PP
+For quicker execution of this module on large images you can achieve largely
+similar results by switching to a coarser resolution before the running of
+the module (using \fIg.region\fR) and then back to the original resolution
+afterwards.
+.SH EXAMPLE
+North Carolina sample dataset example with Landsat data:
+.br
+.nf
+\fC
+g.region raster=lsat7_2002_10 \-p
+d.rgb blue=lsat7_2002_10 green=lsat7_2002_20 red=lsat7_2002_30
+d.barscale at=55.3125,93.125 bcolor=white text_pos=over
+i.colors.enhance blue=lsat7_2002_10 green=lsat7_2002_20 red=lsat7_2002_30 strength=95
+d.rgb blue=lsat7_2002_10 green=lsat7_2002_20 red=lsat7_2002_30
+d.barscale at=55.3125,93.125 bcolor=white text_pos=over
+\fR
+.fi
+.br
+Uncorrected RGB composite of Landsat ETM channels B/G/R
+.PP
+.br
+Color corrected RGB composite of Landsat ETM channels B/G/R
+.SH TODO
+The \fBstrength\fR option requires further refinement.
+.SH SEE ALSO
+\fI
+d.rgb,
+g.region,
+i.oif,
+r.colors,
+r.composite,
+r.univar
+\fR
+.SH AUTHORS
+Markus Neteler, Trento, Italy
+.br
+M. Hamish Bowman, Dept. Marine Science, Otago University, New Zealand
+.SH SOURCE CODE
+.PP
+Available at: i.colors.enhance source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

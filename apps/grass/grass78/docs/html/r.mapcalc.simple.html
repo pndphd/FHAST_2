@@ -1,0 +1,242 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.mapcalc.simple.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.mapcalc.simple.py</b></em>  - Calculates a new raster map from a simple r.mapcalc expression.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_algebra.html">algebra</a>, <a href="keywords.html#simple">simple</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.mapcalc.simple.py</b><br></div>
+<b>r.mapcalc.simple.py --help</b><br>
+<div id="synopsis"><b>r.mapcalc.simple.py</b> [-<b>sqc</b>] <b>expression</b>=<em>string</em>  [<b>a</b>=<em>name</em>]   [<b>b</b>=<em>name</em>]   [<b>c</b>=<em>name</em>]   [<b>d</b>=<em>name</em>]   [<b>e</b>=<em>name</em>]   [<b>f</b>=<em>name</em>]  <b>output</b>=<em>name</em>  [<b>seed</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>Generate random seed (result is non-deterministic)</dd>
+
+<dt><b>-q</b></dt>
+<dd>Quote the map names</dd>
+
+<dt><b>-c</b></dt>
+<dd>Case sensitive variable names</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>expression</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Formula (e.g. A-B or A*C+B)</dd>
+
+<dt><b>a</b>=<em>name</em></dt>
+<dd>Name of input A raster map</dd>
+
+<dt><b>b</b>=<em>name</em></dt>
+<dd>Name of input B raster map</dd>
+
+<dt><b>c</b>=<em>name</em></dt>
+<dd>Name of input C raster map</dd>
+
+<dt><b>d</b>=<em>name</em></dt>
+<dd>Name of input D raster map</dd>
+
+<dt><b>e</b>=<em>name</em></dt>
+<dd>Name of input E raster map</dd>
+
+<dt><b>f</b>=<em>name</em></dt>
+<dd>Name of input F raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>seed</b>=<em>integer</em></dt>
+<dd>Seed for rand() function</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#basic-examples" class="toc">Basic examples</a></li>
+        <li class="toc"><a href="#example-expressions" class="toc">Example expressions</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.mapcalc.simple</em> provides a wrapper to <em>r.mapcalc</em>.
+Up to 6 maps can be combined using simple expressions.
+
+<p>
+The general syntax for the <b>expression</b> follows
+<em><a href="r.mapcalc.html">r.mapcalc</a></em> expression format,
+for example, <tt>A + B</tt> or <tt>exp(A + B)</tt> are valid.
+The variables A, B, ..., F represent raster maps which are provided
+as options <b>a</b>, <b>b</b>, ..., <b>f</b>.
+
+<p>
+The result name, i.e. the output raster map, is provided using the
+option <b>output</b> and, unlike <em>r.mapcalc</em> it is not part
+of the expression.
+
+<p>
+This module is meant for convenience (for users and programmers) while
+the <em>r.mapcalc</em> module is a better choice for more complex
+expressions and advanced usage.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Differences to <em>r.mapcalc</em> module:
+
+<ul>
+    <li>The input raster map names and the output map raster name are
+        separate from the expression (formula) which uses generic
+        variable names (A, B, C, ...).
+    <li>The output raster name is not included in the expression.
+    <li>The expression is expected to be a single short one liner
+        without the function <tt>eval()</tt>.
+</ul>
+
+Differences to <em>r.mapcalc.simple</em> module in GRASS GIS 5 and 6:
+
+<ul>
+    <li>The primary purpose is not being a GUI front end to
+        <em>r.mapcalc</em>, but a wrapper which allows easy building of
+        interfaces to <em>r.mapcalc</em> (including GUIs).
+    <li>Whitespace (most notably spaces) are allowed
+        (in the same way as for <em>r.mapcalc</em>).
+    <li>The variable names are case-insensitive to allow the original
+        uppercase as well as lowercase as in option names
+        (unless the <b>-c</b> flag is used).
+    <li>Option names for each map are just one letter (not amap, etc.).
+    <li>Output option name is <b>output</b> as for other modules
+        (not outfile).
+    <li>Raster map names can be optionally quoted (the <b>-q</b> flag).
+    <li>There is no expert mode
+        (which was just running <em>r.mapcalc</em>).
+    <li>The <b>expression</b> option is first, so it is possible to
+        omit its name in the command line
+        (just like with <em>r.mapcalc</em>).
+    <li>Overwriting of outputs is done in the same way as with other
+        modules, so there is no flag to not overwrite outputs.
+</ul>
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+
+<h3><a name="basic-examples">Basic examples</a></h3>
+
+<div class="code"><pre>
+r.mapcalc.simple expression="0" output=zeros
+r.mapcalc.simple expression="1" output=ones
+r.mapcalc.simple expression="2" output=twos
+</pre></div>
+
+<div class="code"><pre>
+r.mapcalc.simple expression="A + B + C" a=zeros b=ones c=twos output=result1
+</pre></div>
+
+<div class="code"><pre>
+r.mapcalc.simple expression="(A * B) / 2 + 3 * C" a=zeros b=ones c=twos output=result2
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<img src="r_mapcalc_simple.png" width="594px" height="495px"><br>
+<i>Figure: r.mapcalc.simple graphical user interface</i>
+</div>
+
+
+<h3><a name="example-expressions">Example expressions</a></h3>
+
+Addition:
+
+<div class="code"><pre>
+A + B
+</pre></div>
+
+No spaces around operators are not recommended for readability,
+but allowed in the expression:
+
+<div class="code"><pre>
+A+B
+</pre></div>
+
+More complex expression with a function:
+
+<p>
+<div class="code"><pre>
+exp(A+C)+(B-2)*7
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r3.mapcalc.html">r3.mapcalc</a>,
+<a href="t.rast.mapcalc.html">t.rast.mapcalc</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Vaclav Petras, <a href="https://geospatial.ncsu.edu/geoforall/">NCSU GeoForAll Lab</a><br>
+Michael Barton, Arizona State University (updated to GRASS 5.7)<br>
+R. Brunzema (original 5.0 Bash version)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.mapcalc.simple">r.mapcalc.simple source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.mapcalc.simple">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

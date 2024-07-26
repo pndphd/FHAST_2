@@ -1,0 +1,155 @@
+.TH db.copy 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.copy\fR\fR  \- Copy a table.
+.br
+Either \(cqfrom_table\(cq (optionally with \(cqwhere\(cq) can be used or \(cqselect\(cq option, but not \(cqfrom_table\(cq and \(cqselect\(cq at the same time.
+.SH KEYWORDS
+database, attribute table, SQL
+.SH SYNOPSIS
+\fBdb.copy\fR
+.br
+\fBdb.copy \-\-help\fR
+.br
+\fBdb.copy\fR  [\fBfrom_driver\fR=\fIname\fR]   [\fBfrom_database\fR=\fIname\fR]   [\fBfrom_table\fR=\fIname\fR]   [\fBto_driver\fR=\fIname\fR]   [\fBto_database\fR=\fIname\fR]  \fBto_table\fR=\fIname\fR  [\fBwhere\fR=\fIsql_query\fR]   [\fBselect\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBfrom_driver\fR=\fIname\fR" 4m
+.br
+Input driver name
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBfrom_database\fR=\fIname\fR" 4m
+.br
+Input database name
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBfrom_table\fR=\fIname\fR" 4m
+.br
+Input table name (only, if \(cqselect\(cq is not used)
+.IP "\fBto_driver\fR=\fIname\fR" 4m
+.br
+Output driver name
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBto_database\fR=\fIname\fR" 4m
+.br
+Output database name
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBto_table\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Output table name
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBselect\fR=\fIstring\fR" 4m
+.br
+Full select statement (only, if \(cqfrom_table\(cq and \(cqwhere\(cq is not used)
+.br
+E.g.: SELECT dedek FROM starobince WHERE obec = \(cqFrimburg\(cq
+.SH DESCRIPTION
+\fIdb.copy\fR allows the user to copy a table between two databases.
+Databases can be connected through different drivers (see examples below).
+.SH NOTES
+Attribute tables can be copied using \fIdb.copy\fR and, when to be
+associated to a vector map, assigned to the map with
+\fIv.db.connect\fR. Current connection
+settings are saved in the file \fI$LOCATION/vector_map/dbln\fR.
+.SH EXAMPLES
+.SS From DBF to PostgreSQL
+\fIStoring table \(cqgeonames.dbf\(cq (in current directory) into PostgreSQL
+through ODBC:\fR
+.br
+.br
+.nf
+\fC
+db.copy from_driver=dbf from_database=\(cq$GISDBASE/$LOCATION_NAME/PERMANENT/dbf\(cq \(rs
+  from_table=geonames to_driver=pg to_database=\(dqhost=pgserver,dbname=testdb\(dq \(rs
+  to_table=geonames
+\fR
+.fi
+.SS From PostgreSQL to DBF
+.br
+.nf
+\fC
+db.copy from_driver=pg  from_database=\(dqhost=pgserver.example.org,dbname=testdb\(dq \(rs
+  from_table=origtable to_driver=dbf \(rs
+  to_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf\(cq to_table=origtable
+\fR
+.fi
+.SS From PostgreSQL to PostgreSQL with condition
+.br
+.nf
+\fC
+db.copy from_driver=pg  from_database=\(dqhost=localhost,dbname=testdb\(dq \(rs
+  from_table=geonames to_driver=pg to_database=\(dqhost=localhost,dbname=testdb\(dq \(rs
+  to_table=selection where=\(dqcat < 500\(dq
+\fR
+.fi
+.SS From DBF to SQLite
+.br
+.nf
+\fC
+db.copy from_driver=dbf from_database=\(cq$GISDBASE/$LOCATION_NAME/PERMANENT/dbf\(cq \(rs
+   from_table=geonames_features to_driver=sqlite \(rs
+   to_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq to_table=geonames_features
+# convenient viewer:
+sqlitebrowser $HOME/grassdata/nc_spm_08/user1/sqlite/sqlite.db
+\fR
+.fi
+.SS From SQLite to DBF
+.br
+.nf
+\fC
+db.copy from_driver=sqlite from_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq \(rs
+   from_table=ammprv to_driver=dbf to_database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq \(rs
+   to_table=ammprv
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.drivers,
+db.login,
+v.db.connect,
+v.clean
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHOR
+Radim Blazek, ITC\-irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: db.copy source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

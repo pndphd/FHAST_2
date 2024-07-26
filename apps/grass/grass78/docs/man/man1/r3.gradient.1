@@ -1,0 +1,76 @@
+.TH r3.gradient 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.gradient\fR\fR  \- Computes gradient of a 3D raster map and outputs gradient components as three 3D raster maps.
+.SH KEYWORDS
+raster3d, gradient, voxel
+.SH SYNOPSIS
+\fBr3.gradient\fR
+.br
+\fBr3.gradient \-\-help\fR
+.br
+\fBr3.gradient\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIgrad_x,grad_y,grad_z\fR[,\fIgrad_x,grad_y,grad_z\fR,...]  [\fBblocksize\fR=\fIsize_x,size_y,size_z\fR[,\fIsize_x,size_y,size_z\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input 3D raster map
+.IP "\fBoutput\fR=\fIgrad_x,grad_y,grad_z[,\fIgrad_x,grad_y,grad_z\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map(s)
+.IP "\fBblocksize\fR=\fIsize_x,size_y,size_z[,\fIsize_x,size_y,size_z\fR,...]\fR" 4m
+.br
+Size of blocks
+.br
+Default: \fI30,30,20\fR
+.SH DESCRIPTION
+Module \fIr3.gradient\fR computes gradient from a 3D raster map.
+Results are three 3D raster maps describing the x, y, z components of
+the computed gradient field.
+.SH EXAMPLES
+.br
+.nf
+\fC
+# create a 3D raster
+g.region s=0 n=100 w=0 e=100 b=0 t=100 \-p
+r3.mapcalc \(dqtest_gradient = sqrt(row()*row() +col()*col()+ depth()*depth())\(dq
+# compute gradient
+r3.gradient input=test_gradient output=grad_x,grad_y,grad_z
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r3.flow,
+r.flow
+\fR
+.SH AUTHORS
+Anna Petrasova, NCSU OSGeoREL,
+developed during GSoC 2014.
+.SH SOURCE CODE
+.PP
+Available at: r3.gradient source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

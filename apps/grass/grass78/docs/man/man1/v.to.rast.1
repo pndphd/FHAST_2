@@ -1,0 +1,285 @@
+.TH v.to.rast 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.to.rast\fR\fR  \- Converts (rasterize) a vector map into a raster map.
+.SH KEYWORDS
+vector, conversion, raster, rasterization
+.SH SYNOPSIS
+\fBv.to.rast\fR
+.br
+\fBv.to.rast \-\-help\fR
+.br
+\fBv.to.rast\fR [\-\fBd\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]  \fBoutput\fR=\fIname\fR \fBuse\fR=\fIstring\fR  [\fBattribute_column\fR=\fIname\fR]   [\fBrgb_column\fR=\fIname\fR]   [\fBlabel_column\fR=\fIname\fR]   [\fBvalue\fR=\fIfloat\fR]   [\fBmemory\fR=\fImemory in MB\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Create densified lines (default: thin lines)
+.br
+All cells touched by the line will be set, not only those on the render path
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint,line,area\fR
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBuse\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Source of raster values
+.br
+Options: \fIattr, cat, val, z, dir\fR
+.br
+\fBattr\fR: read values from attribute table
+.br
+\fBcat\fR: use category values
+.br
+\fBval\fR: use value specified by value option
+.br
+\fBz\fR: use z coordinate (points or contours only)
+.br
+\fBdir\fR: line direction in degrees CCW from east (lines only)
+.IP "\fBattribute_column\fR=\fIname\fR" 4m
+.br
+Name of column for \(cqattr\(cq parameter (data type must be numeric)
+.IP "\fBrgb_column\fR=\fIname\fR" 4m
+.br
+Name of color definition column (with RRR:GGG:BBB entries)
+.IP "\fBlabel_column\fR=\fIname\fR" 4m
+.br
+Name of column used as raster category labels
+.IP "\fBvalue\fR=\fIfloat\fR" 4m
+.br
+Raster value (for use=val)
+.br
+Default: \fI1\fR
+.IP "\fBmemory\fR=\fImemory in MB\fR" 4m
+.br
+Maximum memory to be used (in MB)
+.br
+Cache size for raster rows
+.br
+Default: \fI300\fR
+.SH DESCRIPTION
+\fIv.to.rast\fR transforms GRASS vector map layers into GRASS raster map
+layer format. Optionally, attributes can be converted to raster category
+labels.
+.SH NOTES
+In order to avoid unexpected results, the type of vector features
+should always be specified. The default is to convert all vector
+features, but if only e.g. areas should be converted use
+\fItype=area\fR rather than \fItype=point,line,area\fR.
+.PP
+\fIv.to.rast\fR will only affect data in areas lying
+inside the boundaries of the current geographic region.
+A grid cell belongs to the area where the grid cell center falls into.
+.PP
+Before running \fIv.to.rast\fR, the user should
+therefore ensure that the current geographic region is
+correctly set and that the region resolution is at the
+desired level.
+.PP
+Either the \fI\fBcolumn\fR\fR parameter or the \fI\fBvalue\fR\fR
+parameter must be specified.  The \fI\fBuse\fR\fR option may be
+specified alone when using the \fIdir\fR option.
+.PP
+\fI\fBuse\fR\fR options are:
+.RS 4n
+.IP \(bu 4n
+\fIattr\fR \- read values from attribute table (default)
+.IP \(bu 4n
+\fIcat\fR  \- read values from category
+.IP \(bu 4n
+\fIval\fR  \- use value specified by \fI\fBvalue\fR\fR option
+.IP \(bu 4n
+\fIz\fR    \- use z coordinate (points or contours only)
+.IP \(bu 4n
+\fIdir\fR  \- line direction in degrees counterclockwise from east (lines only)
+.RE
+.PP
+The \fI\fBcolumn\fR\fR parameter uses an existing column from the vector map
+database table as the category value in the output raster map. Existing table
+columns can be shown by using \fIdb.describe\fR.
+.PP
+An empty raster map layer will be created if the vector map layer has not
+been assigned category/attribute labels (e.g., through use of
+v.category option=add).
+.PP
+Otherwise:
+.RS 4n
+.IP \(bu 4n
+Labeled areas and/or centroids will produce filled raster coverages with edges
+that straddle the original area boundary \fBas long as the boundary is NOT
+labeled\fR.
+.br
+(Use v.category option=del type=boundary to remove.)
+.IP \(bu 4n
+Labeled lines and boundaries will produce lines of raster cells which touch the
+original vector line. This tends to be more aggressive than area\-only conversions.
+.IP \(bu 4n
+Points and orphaned centroids will be converted into single cells on the
+resultant raster map.
+.RE
+.PP
+.PP
+\fBLine directions\fR are given in degrees counterclockwise from east.
+.PP
+.PP
+Raster category labels are supported for all of \fIuse=\fR except \fIuse=z\fR.
+.PP
+The \fB\-d\fR flag applies only to lines and boundaries, the default is
+to set only those cells on the render path (thin line).
+.PP
+Boundaries (usually without categories) can be rasterized with
+.br
+.nf
+\fC
+v.to.rast type=boundary layer=\-1 use=val
+\fR
+.fi
+.SH EXAMPLES
+.SS Convert a vector map and use column SPEED from attribute table
+.br
+.nf
+\fC
+db.describe \-c table=vect_map
+ncols:3
+Column 1: CAT
+Column 2: SPEED
+Column 3: WIDTH
+\fR
+.fi
+.br
+.nf
+\fC
+v.to.rast input=vect_map output=raster_map attribute_column=SPEED type=line
+\fR
+.fi
+.SS Calculate stream directions from a river vector map (Spearfish)
+.br
+.nf
+\fC
+v.to.rast input=streams output=streamsdir use=dir
+\fR
+.fi
+.SS Calculate slope along path
+Using slope and aspect maps, compute slope along a bus route (use full NC sample dataset):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.slope.aspect elevation=elevation slope=slope aspect=aspect
+# compute direction of the bus route
+v.to.rast input=busroute11 type=line output=busroute11_dir use=dir
+# extract steepest slope values and transform them into slope along path
+r.mapcalc \(dqroute_slope = if(busroute11, slope)\(dq
+r.mapcalc \(dqroute_slope_dir = abs(atan(tan(slope) * cos(aspect \- busroute11_dir)))\(dq
+\fR
+.fi
+.br
+Slope in degrees along bus route
+.SS Convert a vector polygon map to raster including descriptive labels
+In this example, the ZIP code vector map is rasterized (North Carolina
+sample dataset):
+.br
+.nf
+\fC
+# rasterize ZIP codes at 50m raster resolution
+g.region vector=zipcodes_wake res=50 \-ap
+# vector to raster conversion, with category labels
+v.to.rast input=zipcodes_wake output=myzipcodes use=attr attribute_column=\(dqZIPNUM\(dq label_column=\(dqNAME\(dq
+\fR
+.fi
+.SS Convert vector points to raster with raster cell binning
+In this example, the number of schools per raster cell are counted
+(North Carolina sample dataset):
+.br
+.nf
+\fC
+g.copy vector=schools_wake,myschools_wake
+# set computation region for raster binning
+g.region vector=myschools_wake res=5000 \-p \-a
+# add new column for counting
+v.db.addcolumn myschools_wake column=\(dqvalue integer\(dq
+v.db.update myschools_wake column=value value=1
+# verify attributes
+v.db.select myschools_wake column=cat,value
+v.out.ascii input=myschools_wake output=\- column=value
+# export and import on the fly, use 4th column (value) as input
+v.out.ascii input=myschools_wake output=\- column=value | r.in.xyz input=\- \(rs
+            z=4 output=schools_wake_aggreg method=sum
+d.mon wx0
+d.rast schools_wake_aggreg
+d.vect schools_wake
+d.grid 5000
+\fR
+.fi
+.br
+Number of schools per raster cell
+.SH SEE ALSO
+\fI
+db.describe,
+v.category
+\fR
+.SH AUTHORS
+Original code: Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+GRASS 6.0 updates: Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Stream directions: Jaro Hofierka and Helena Mitasova
+.br
+GRASS 6.3 code cleanup and label support: Brad Douglas
+.PP
+.SH SOURCE CODE
+.PP
+Available at: v.to.rast source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

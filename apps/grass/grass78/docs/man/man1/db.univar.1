@@ -1,0 +1,106 @@
+.TH db.univar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.univar.py\fR\fR  \- Calculates univariate statistics on selected table column.
+.SH KEYWORDS
+database, statistics, attribute table
+.SH SYNOPSIS
+\fBdb.univar.py\fR
+.br
+\fBdb.univar.py \-\-help\fR
+.br
+\fBdb.univar.py\fR [\-\fBeg\fR] \fBtable\fR=\fIname\fR \fBcolumn\fR=\fIname\fR  [\fBdatabase\fR=\fIname\fR]   [\fBdriver\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBpercentile\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Extended statistics (quartiles and 90th percentile)
+.IP "\fB\-g\fR" 4m
+.br
+Print stats in shell script style
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtable\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute table
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column on which to calculate statistics (must be numeric)
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, sqlite, pg\fR
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBpercentile\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Percentile to calculate (requires extended statistics flag)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI90\fR
+.SH DESCRIPTION
+\fIdb.univar\fR calculates basic univariate statistics for numeric
+attributes in a data table. It will calculate minimum, maximum, range, mean,
+standard deviation, variance, coefficient of variation, quartiles, median, and
+90th percentile.
+It uses \fIdb.select\fR to create list values for statistical calculations.
+\fINOTES\fR
+If the database and driver are not specified, the default values set in
+\fIdb.connect\fR will be used.
+.SH EXAMPLE
+In this example, random points are sampled from the elevation map
+(North Carolina sample dataset) and univariate statistics performed:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+v.random output=samples n=100
+v.db.addtable samples column=\(dqheights double precision\(dq
+v.what.rast samples raster=elevation column=heights
+v.db.select samples
+db.univar samples column=heights
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.db.univar,
+r.univar,
+v.univar,
+db.select,
+d.vect.thematic
+\fR
+.SH AUTHOR
+Michael Barton, Arizona State University
+.PP
+and authors of \fIr.univar.sh\fR
+.SH SOURCE CODE
+.PP
+Available at: db.univar source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

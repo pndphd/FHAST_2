@@ -1,0 +1,112 @@
+.TH r.out.vrml 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.vrml\fR\fR  \- Exports a raster map to the Virtual Reality Modeling Language (VRML).
+.SH KEYWORDS
+raster, export, output, VRML
+.SH SYNOPSIS
+\fBr.out.vrml\fR
+.br
+\fBr.out.vrml \-\-help\fR
+.br
+\fBr.out.vrml\fR \fBelevation\fR=\fIname\fR  [\fBcolor\fR=\fIname\fR]   [\fBexaggeration\fR=\fIfloat\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBelevation\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBcolor\fR=\fIname\fR" 4m
+.br
+Name of input color map
+.IP "\fBexaggeration\fR=\fIfloat\fR" 4m
+.br
+Vertical exaggeration
+.br
+Default: \fI1.0\fR
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output VRML file
+.SH DESCRIPTION
+This module exports a GRASS raster map to the Virtual Reality Modeling
+Language (VRML) format for 3D visualization.
+.PP
+This version only outputs raster maps in VRML 1.0 format.
+The newer VRML 2.0 format will be more efficient for geographic
+applications, as it introduces an \(dqElevationGrid\(dq node so that
+only the elevation points will have to be written instead
+of the whole geometry.  The vast majority of VRML viewers
+currently only support VRML 1.0.
+If the extension \(dqwrl\(dq (world) is not present in the he
+\fIoutput\fR parameter, it will be added.
+.SH WARNING
+VRML is not well suited for large geometrys which can result from even
+a small geographic region.  Most viewers seem to bog down with more
+than 12,000 polygons, depending on your hardware & specific
+viewer.  Each grid cell results in two polygons, so a reasonable size
+region would be something less than about 75x75.  For improved
+performance and smaller file size, leave off a color map.  Since VRML
+is ascii text, gzip works very well to significantly compress file
+size.
+.PP
+.SH NOTE
+This is a preliminary release of \(dq\fIr.out.vrml\fR\(dq.
+For further information about VRML and available viewers for various platforms, see:
+.PP
+VRML Virtual Reality Modeling Language
+.SH BUGS:
+Currently the region is transformed to a unit size, so real geographic
+location is lost.  Side effects when working in a lat\-lon location are
+that besides general distortion due to projection, a very small
+exaggeration factor (on order of .001) must be used to compensate for
+vertical units expected to be the same as map units.
+.SH TODO
+Update to the more modern GeoVRML format,
+or probably better the next generation
+X3D format.
+See also the Xj3D project.
+.PP
+Future plans for this module are to allow draping of sites objects and
+vector maps and using the new sites format available in floating
+point GRASS to embed WWW links into site objects. It will also be
+upgraded to support VRML 2.0 and will allow entering multiple preset
+\(dqviews\(dq using the existing GRASS 3d_view file format.
+.PP
+Other possible additions:
+.RS 4n
+.IP \(bu 4n
+Allow animation of elevation, color, or sites based on
+user interaction.
+.IP \(bu 4n
+Degradation of the raster to produce TINs for improved
+performance.
+.RE
+.SH AUTHOR
+Bill Brown, US Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.out.vrml source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

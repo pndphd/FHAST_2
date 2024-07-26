@@ -1,0 +1,287 @@
+.TH r.stats 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.stats\fR\fR  \- Generates area statistics for raster map.
+.SH KEYWORDS
+raster, statistics
+.SH SYNOPSIS
+\fBr.stats\fR
+.br
+\fBr.stats \-\-help\fR
+.br
+\fBr.stats\fR [\-\fBacpl1gxArnNCi\fR] \fBinput\fR=\fIname\fR[,\fIname\fR,...]  [\fBoutput\fR=\fIname\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBnsteps\fR=\fIinteger\fR]   [\fBsort\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Print area totals in square meters
+.IP "\fB\-c\fR" 4m
+.br
+Print cell counts (sortable)
+.IP "\fB\-p\fR" 4m
+.br
+Print approximate (total percent may not be 100%) percents
+.IP "\fB\-l\fR" 4m
+.br
+Print category labels
+.IP "\fB\-1\fR" 4m
+.br
+One cell (range) per line
+.IP "\fB\-g\fR" 4m
+.br
+Print grid coordinates (east and north)
+.IP "\fB\-x\fR" 4m
+.br
+Print x and y (column and row)
+.br
+Indexing starts with 1: first column and row are 1
+.IP "\fB\-A\fR" 4m
+.br
+Print averaged values instead of intervals (floating\-point maps only)
+.IP "\fB\-r\fR" 4m
+.br
+Print raw indexes of floating\-point ranges (floating\-point maps only)
+.IP "\fB\-n\fR" 4m
+.br
+Do not report no data value
+.IP "\fB\-N\fR" 4m
+.br
+Do not report cells where all maps have no data
+.IP "\fB\-C\fR" 4m
+.br
+Report for cats floating\-point ranges (floating\-point maps only)
+.IP "\fB\-i\fR" 4m
+.br
+Read floating\-point map as integer (use map\(cqs quant rules)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of raster map(s) to report on
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file (if omitted or \(dq\-\(dq output to stdout)
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIspace\fR
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.IP "\fBnsteps\fR=\fIinteger\fR" 4m
+.br
+Number of floating\-point subranges to collect stats from
+.br
+Default: \fI255\fR
+.IP "\fBsort\fR=\fIstring\fR" 4m
+.br
+Sort output statistics by cell counts
+.br
+Default: sorted by categories or intervals
+.br
+Options: \fIasc, desc\fR
+.br
+\fBasc\fR: Sort by cell counts in ascending order
+.br
+\fBdesc\fR: Sort by cell counts in descending order
+.SH DESCRIPTION
+\fIr.stats\fR calculates the area present in each of the categories
+or floating\-point intervals of user\-selected \fBinput\fR raster map. Area
+statistics are given in units of square meters and/or cell
+counts. This analysis uses the current geographic region
+(\fIg.region\fR) and mask settings
+(\fIr.mask\fR). The output statistics can
+be saved to a \fBoutput\fR file.
+.PP
+Area statistics is printed in square meters for each category
+when \fB\-a\fR is given. Similarly if \fB\-c\fR flag is chosen, areas
+will be stated also in number of cells.
+.SH NOTES
+If a single raster map is specified, a list of categories will be printed.
+The \fB\-x\fR flag will print x and y (column and row) starting with 1
+(both first row and first column are indexed with 1). If multiple raster maps
+are specified, a cross\-tabulation table for each combination of categories in
+the raster maps will be printed.
+.PP
+For example, if one raster map was specified, the output would look like:
+.br
+.nf
+\fC
+1 1350000.00
+2 4940000.00
+3 8870000.00
+\fR
+.fi
+If three raster maps were specified, the output would look like:
+.br
+.nf
+\fC
+0 0 0 8027500.00
+0 1 0 1152500.00
+1 0 0 164227500.00
+1 0 1 2177500.00
+1 1 0 140092500.00
+1 1 1 3355000.00
+2 0 0 31277500.00
+2 0 1 2490000.00
+2 1 0 24207500.00
+2 1 1 1752500.00
+3 0 0 17140000.00
+3 1 0 11270000.00
+3 1 1 2500.00
+\fR
+.fi
+Within each grouping, the first field represents the category value of
+first raster map, the second represents the category values associated
+with second raster map, the third represents category values for third
+raster map, and the last field gives the area in square meters for the
+particular combination of these three raster maps\(cq categories. For
+example, above, combination 3,1,1 covered 2500 square meters. Fields
+are separated by the \fBseparator\fR option.
+The output from \fIr.stats\fR is sorted by category or category
+intervals (for floating\-point raster maps).
+.PP
+Note that the user has only the option of printing out cell statistics
+in terms of cell counts and/or area totals. Users wishing to use
+different units than are available here should
+use \fIr.report\fR.
+.SH EXAMPLES
+.SS Report area for each category
+Report area for each category in the single raster map:
+.br
+.nf
+\fC
+g.region raster=geology_30m
+r.stats \-a in=geology_30m nv=no\-data sep=tab
+217     71960000.000000
+262     19760000.000000
+270     67760000.000000
+405     25120000.000000
+583     2520000.000000
+720     480000.000000
+766     840000.000000
+862     6560000.000000
+910     4360000.000000
+921     1200000.000000
+946     360000.000000
+948     80000.000000
+no\-data 33375200000.000004
+\fR
+.fi
+.SS Report sorted number of cells for each category
+Report sorted number of cells for each category in the single raster
+map (suppress NULL data):
+.br
+.nf
+\fC
+g.region raster=geology_30m
+r.stats \-cn input=geology_30m sort=desc
+217 1799
+270 1694
+405 628
+262 494
+862 164
+910 109
+583 63
+921 30
+766 21
+720 12
+946 9
+948 2
+\fR
+.fi
+.SS Report area, number of cells, and percents in multiple raster maps
+Report area, number of cells, and percents (separated by tabs) for
+each category in multiple raster maps (suppress NULL data):
+.br
+.nf
+\fC
+g.region raster=towns
+r.stats \-nacp input=towns,urban separator=tab
+1       55      23840000.000000 596     11.89%
+2       55      13680000.000000 342     6.82%
+3       55      1360000.000000  34      0.68%
+4       55      16040000.000000 401     8.00%
+5       55      98240000.000000 2456    48.98%
+6       55      19760000.000000 494     9.85%
+\fR
+.fi
+.SS Report sorted area intervals of floating\-point raster map
+Report sorted area for each interval of floating\-point input raster
+map. Number of intervals are given by \fBnsteps\fR option.
+.br
+.nf
+\fC
+g.region raster=elevation
+r.stats \-an input=elevation nsteps=10 sort=desc separator=tab
+95.879221\-105.954329    36440000.000000
+85.804114\-95.879221     30800000.000000
+105.954329\-116.029436   30080000.000000
+116.029436\-126.104543   27960000.000000
+126.104543\-136.17965    26440000.000000
+136.17965\-146.254757    20880000.000000
+75.729007\-85.804114     15880000.000000
+65.6539\-75.729007       6040000.000000
+146.254757\-156.329865   5720000.000000
+55.578793\-65.6539       760000.000000
+\fR
+.fi
+.SS Report raster cell counts in multiple raster maps
+Report raster cell counts of landuse and geological categories within
+zipcode areas:
+.br
+.nf
+\fC
+g.region raster=zipcodes
+# landuse/landcover and zipcodes
+r.stats \-c input=landclass96,zipcodes separator=comma
+# landuse/landcover, geology and zipcodes with category labels
+r.stats \-c input=landclass96,zipcodes,geology_30m separator=comma \-l
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.region,
+r.report,
+r.coin,
+r.describe,
+r.stats.quantile,
+r.stats.zonal,
+r.statistics,
+r.univar
+\fR
+.SH AUTHORS
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory
+.br
+Sort option by Martin Landa, Czech Technical University in Prague, 2013
+.SH SOURCE CODE
+.PP
+Available at: r.stats source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

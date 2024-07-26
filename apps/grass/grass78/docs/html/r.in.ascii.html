@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.in.ascii - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.in.ascii</b></em>  - Converts a GRASS ASCII raster file to binary raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_import.html">import</a>, <a href="keywords.html#conversion">conversion</a>, <a href="keywords.html#ASCII">ASCII</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.in.ascii</b><br></div>
+<b>r.in.ascii --help</b><br>
+<div id="synopsis"><b>r.in.ascii</b> [-<b>s</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>type</b>=<em>string</em>]   [<b>title</b>=<em>phrase</em>]   [<b>multiplier</b>=<em>float</em>]   [<b>null_value</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-s</b></dt>
+<dd>SURFER (Golden Software) ASCII file will be imported</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input file to be imported</dd>
+<dd>'-' for standard input</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>type</b>=<em>string</em></dt>
+<dd>Type of raster map to be created</dd>
+<dd>Default: CELL for integer values, DCELL for floating-point values</dd>
+<dd>Options: <em>CELL, FCELL, DCELL</em></dd>
+<dd><b>CELL</b>: Integer</dd>
+<dd><b>FCELL</b>: Single precision floating point</dd>
+<dd><b>DCELL</b>: Double precision floating point</dd>
+
+<dt><b>title</b>=<em>phrase</em></dt>
+<dd>Title for resultant raster map</dd>
+
+<dt><b>multiplier</b>=<em>float</em></dt>
+<dd>Multiplier for ASCII data</dd>
+<dd>Default: read from header</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value data cell</dd>
+<dd>Default: read from header</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.in.ascii</em> allows a user to create a (binary) GRASS raster map
+layer from an ASCII raster input file with (optional) TITLE.
+
+<p>
+The GRASS ASCII <b>input</b> file has a header section which describes
+the location and size of the data, followed by the data itself.
+
+<p>
+The header has 6 lines: 
+
+<div class="code"><pre>
+north:   xxxxxx.xx
+south:   xxxxxx.xx
+east:    xxxxxx.xx
+west:    xxxxxx.xx
+rows:    r 
+cols:    c 
+</pre></div>
+
+The north, south, east, and west field values entered 
+are the coordinates of the edges of the geographic region. 
+The rows and cols field values entered describe the dimensions 
+of the matrix of data to follow. 
+The data which follows is <em>r</em> rows of <em>c</em> integers. 
+
+<p>
+Optionally the following parameters can be defined in the header section:
+
+<div class="code"><pre>
+null: nn
+type: float
+multiplier: 2.
+</pre></div>
+
+<p>
+"null" defines a string or number to be converted to NULL value (no
+data).<br>
+"type" defines the data type (int, float double) and is not required.<br>
+"multiplier" is an optional parameter to multiply each cell value.
+
+<h2><a name="notes">NOTES</a></h2>
+
+The geographic coordinates north, south, east, and west
+describe the outer edges of the geographic region.  They
+run along the edges of the cells at the edge of the
+geographic region and <em>not</em> through the center of the cells
+at the edges.
+The NW value occurs at the beginning of the first line of data, and the
+SW value occurs at the beginning of the last line of data.
+
+<p>
+The data (which follows the header section) must contain
+<tt>r</tt> <em>x</em> <tt>c</tt> values, but it is not necessary 
+that all the data for a row be on one line. A row may be 
+split over many lines. 
+
+<p>
+The imported cell type can be forced using the <b>type</b> option, 
+default is auto-detection. 
+
+<p>
+The header information in ESRI Raster ASCII files differs from GRASS.  
+To convert an Arc/Info (ArcView) ASCII grid file into GRASS, see 
+<em><a href="r.in.gdal.html">r.in.gdal</a></em>.
+
+<p>
+SURFER (Golden Software) ASCII files may be imported by passing the <b>-s</b> flag.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The following is a sample <b>input</b> file to <em>r.in.ascii</em>: 
+
+<div class="code"><pre>
+north:                   4299000.00
+south:                   4247000.00
+east:                     528000.00
+west:                     500000.00
+rows:                         10   
+cols:                         15   
+null:                      -9999   
+
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.import.html">r.import</a>,
+<a href="r.out.ascii.html">r.out.ascii</a>,
+<a href="r.in.gdal.html">r.in.gdal</a>, 
+<a href="r.out.gdal.html">r.out.gdal</a>,
+<a href="r.in.bin.html">r.in.bin</a>,
+<a href="r3.in.ascii.html">r3.in.ascii</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory<br>
+Surfer support by Roger Miller
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.in.ascii">r.in.ascii source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.in.ascii">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,673 @@
+.TH variables 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH GRASS variables and environment variables
+There are two types of variables:
+.RS 4n
+.IP \(bu 4n
+shell
+environment variables,
+.IP \(bu 4n
+GRASS gisenv
+variables.
+.RE
+There are a number of \fIshell\fR environment variable groups:
+.RS 4n
+.IP \(bu 4n
+variables
+for rendering
+.IP \(bu 4n
+variables
+for internal use
+.RE
+\fINote:\fR Any setting which needs to be modifiable by a GRASS module
+(e.g. MONITOR by \fId.mon\fR) has to be a GRASS
+gisenv variable.
+.SH Setting shell environment variables
+Setting shell environment variables depends on the shell being used:
+.br
+.br
+Bash:
+.br
+.nf
+\fC
+export VARIABLE=value
+\fR
+.fi
+Csh:
+.br
+.nf
+\fC
+setenv VARIABLE value
+\fR
+.fi
+Cmd.exe (Windows):
+.br
+.nf
+\fC
+set VARIABLE=value
+\fR
+.fi
+To set up shell environment variables permanently:
+.RS 4n
+.IP \(bu 4n
+To get personal BASH shell definitions (aliases, color listing option, ...)
+into GRASS, store them in:
+.br
+$HOME/.grass7/bashrc
+.IP \(bu 4n
+To get personal CSH shell definitions (aliases, color listing option, ...)
+into GRASS, store them in:
+.br
+$HOME/.grass7/cshrc
+.RE
+.SH Setting GRASS gisenv variables
+Use \fIg.gisenv\fR within GRASS. This permanently
+predefines GRASS variables in the $HOME/.grass7/rc file after the
+current GRASS session is closed.
+.br
+.br
+Usage:
+.br
+.nf
+\fC
+g.gisenv set=\(dqVARIABLE=VALUE\(dq
+\fR
+.fi
+It looks unusual with two equals signs, but \fIg.gisenv\fR serves dual duty for
+getting and setting GRASS variables.
+.PP
+If the user just specifies a variable name, it defaults to \fBget\fR mode.
+For example:
+.br
+.nf
+\fC
+g.gisenv MAPSET
+PERMANENT
+\fR
+.fi
+.SH List of selected (GRASS related) shell environment variables
+[ To be set from the terminal shell or startup scripts ]
+.IP "GISBASE" 4m
+.br
+directory where GRASS lives. This is set automatically by the
+startup script.
+.IP "GISRC" 4m
+.br
+name of $HOME/.grass7/rc file. Defines the system wide value
+when starting a GRASS session. Within a GRASS session, a temporary copy
+of this file will be used.
+.IP "GRASS_ADDON_PATH" 4m
+.br
+[grass startup script, g.extension]
+.br
+specifies additional path(s) containing local and/or custom GRASS
+modules extra to the standard distribution.
+.IP "GRASS_ADDON_BASE" 4m
+.br
+[grass startup script]
+.br
+allows specifying additional GISBASE
+for local GRASS modules (normally installed as GRASS Addons
+by g.extension module) extra to standard
+distribution. The default on GNU/Linux
+is $HOME/.grass7/addons, on MS
+Windows $APPDATA\(rsGRASS7\(rsaddons.
+.IP "GRASS_ADDON_ETC" 4m
+.br
+[libgis, g.findetc]
+.br
+specify paths where support files (etc/) may be found external to
+standard distribution.
+.IP "GRASS_BATCH_JOB" 4m
+.br
+defines the name (path) of a shell script to be processed as
+batch job.
+.IP "GRASS_COMPRESSOR" 4m
+.br
+[libraster]
+.br
+the compression method for new raster maps can be set with the
+environment variable GRASS_COMPRESSOR. Supported methods are RLE,
+ZLIB, LZ4, BZIP2, and ZSTD. The default is ZSTD if available,
+otherwise ZLIB, which can be changed with e.g.
+GRASS_COMPRESSOR=ZSTD, granted that GRASS has been
+compiled with the requested compressor. Compressors that are always
+available are RLE, ZLIB, and LZ4. The compressors BZIP2 and ZSTD
+must be enabled when configuring GRASS for compilation.
+.IP "GRASS_DB_ENCODING" 4m
+.br
+[various modules, wxGUI]
+.br
+encoding for vector attribute data (utf\-8, ascii, iso8859\-1, koi8\-r)
+.IP "GIS_ERROR_LOG" 4m
+.br
+If set, GIS_ERROR_LOG should be the absolute path to the log
+file (a relative path will be interpreted relative to the process\(cq
+cwd, not the cwd at the point the user set the variable). If not
+set, $HOME/GIS_ERROR_LOG is used instead. The file will
+only be used if it already exists.
+.IP "GRASS_ERROR_MAIL" 4m
+.br
+set to any value to send user mail on an error or warning that
+happens while stderr is being redirected.
+.IP "GRASS_FONT" 4m
+.br
+[display drivers]
+.br
+specifies the font as either the name of a font from
+$GISBASE/etc/fontcap (or alternative fontcap file
+specified by GRASS_FONT_CAP), or alternatively the full path to a
+FreeType font file.
+.IP "GRASS_ENCODING" 4m
+.br
+[display drivers]
+.br
+the encoding to be assumed for text which is drawn using a
+freetype font; may be any encoding know to \fIiconv\fR.
+.IP "GRASS_FONT_CAP" 4m
+.br
+[g.mkfontcap, d.font, display drivers]
+.br
+specifies an alternative location (to $GISBASE/etc/fontcap) for
+the font configuration file.
+.IP "GRASS_FULL_OPTION_NAMES" 4m
+.br
+[parser]
+.br
+Generates a warning if GRASS_FULL_OPTION_NAMES is set (to anything) and
+a found string is not an exact match for the given string.
+.IP "GRASS_GUI" 4m
+.br
+either text (text user interface), gtext (text
+user interface with GUI welcome screen), or gui (graphical
+user interface) to define non\-/graphical startup. Can also specify
+the name of the GUI to use, e.g. wxpython
+(\fIwxGUI\fR). Also exists as a GRASS
+gisenv variable (see below). If this shell variable exists at GRASS
+startup, it will determine the GUI used. If it is not defined
+startup will default to the last GUI used.
+.IP "GRASS_HTML_BROWSER" 4m
+.br
+[init.sh, wxgui]
+.br
+defines name of HTML browser. For most
+platforms this should be an executable in your PATH, or the full
+path to an executable.
+.br
+Mac OS X runs applications differently
+from the CLI.  Therefore, GRASS_HTML_BROWSER should be the
+application\(cqs signature, which is a domain\-like name, just
+reversed, i.e. com.apple.Safari. To find an application\(cqs
+signature, type the following in a Terminal (fill in the path to
+the application you are interested in, for example:
+/Applications/Safari.app):
+.br
+    \fCgrep \-A 1
+\(dqCFBundleIdentifier\(dq\fR \fI/path/to/application.app\fR\fC/Contents/Info.plist\fR
+.br
+  The signature is the <string> following the
+<key>, without the bracketing <string> tags.
+.IP "GRASS_INT_ZLIB" 4m
+.br
+[libraster]
+.br
+if the environment variable GRASS_INT_ZLIB exists and has the value 0,
+new compressed \fIinteger\fR (CELL type) raster maps will be compressed
+using RLE compression.
+.br
+.br
+If the variable doesn\(cqt exist, or the value is non\-zero, zlib compression
+will be used instead. Such rasters will have a compressed
+value of 2 in the cellhd file.
+.br
+.br
+Obviously, decompression is controlled by the
+raster\(cqs compressed value, not the environment variable.
+.IP "GRASS_ZLIB_LEVEL" 4m
+.br
+[libgis]
+.br
+if the environment variable GRASS_ZLIB_LEVEL exists and its value can
+be parsed as an integer, it determines the compression level used when new compressed
+raster maps are compressed using zlib compression. This applies to all
+raster map types (CELL, FCELL, DCELL).
+.br
+.br
+Valid zlib compression levels are \-1 to 9. The GRASS_ZLIB_LEVEL=\-1 corresponds
+to the zlib default value (equivalent to GRASS_ZLIB_LEVEL=6). Often
+GRASS_ZLIB_LEVEL=1 gives the best compromise between speed and compression.
+.br
+.br
+If the variable doesn\(cqt exist, or the value cannot be parsed as an
+integer, zlib\(cqs default compression level 6 will be used.
+.IP "GRASS_MESSAGE_FORMAT" 4m
+.br
+[various modules, wxGUI]
+.br
+it may be set to either
+.RS 4n
+.IP \(bu 4n
+standard \- sets percentage output and message
+formatting style to standard formatting,
+.IP \(bu 4n
+gui \- sets percentage output and message formatting
+style to GUI formatting,
+.IP \(bu 4n
+silent \- disables percentage output and error
+messages,
+.IP \(bu 4n
+plain \- sets percentage output and message
+formatting style to ASCII output without rewinding control
+characters.
+.RE
+.IP "GRASS_MOUSE_BUTTON" 4m
+.br
+[various modules]
+.br
+swaps mouse buttons for two\-button or
+left\-handed mice. Its value has three digits 1, 2, and 3, which
+represent default left, middle, and right buttons
+respectively. Setting to 132 will swap middle and right
+buttons. Note that this variable should be set before a display
+driver is initialized (e.g.,
+d.mon x0).
+.IP "GRASS_PAGER" 4m
+.br
+[various modules]
+.br
+it may be set to either less, more, or cat.
+.IP "GRASS_PERL" 4m
+.br
+[used during install process for generating man pages]
+.br
+set Perl with path.
+.IP "GRASS_SKIP_MAPSET_OWNER_CHECK" 4m
+.br
+By default it is not possible to work with MAPSETs that are
+not owned by current user. Setting this variable to any non\-empty value
+allows the check to be skipped.
+.IP "GRASS_SH" 4m
+.br
+[shell scripts on Windows]
+.br
+path to bourne shell interpreter used to run shell scripts.
+.IP "GRASS_SIGSEGV_ON_ERROR" 4m
+.br
+Raise SIGSEGV if an error occurs]
+.br
+This variable can be set for debugging purpose. The call
+of G_fatal_error() will end in a segmentation violation. GDB can be used
+to trace the source of the error.
+.IP "GRASS_PYTHON" 4m
+.br
+[wxGUI, Python Ctypes]
+.br
+set to override Python executable.
+.br
+On Mac OS X this should be the pythonw executable for the
+wxGUI to work.
+.IP "GRASS_VECTOR_LOWMEM" 4m
+.br
+[vectorlib]
+.br
+If the environment variable GRASS_VECTOR_LOWMEM exists, memory
+consumption will be reduced when building vector topology
+support structures. Recommended for creating large vectors.
+.IP "GRASS_VECTOR_OGR" 4m
+.br
+[vectorlib, v.external.out]
+.br
+If the environment variable
+GRASS_VECTOR_OGR exists and vector output format defined
+by \fIv.external.out\fR is
+PostgreSQL, vector data is written by OGR data provider even
+the native PostGIS data provider is available.
+.IP "GRASS_VECTOR_EXTERNAL_IMMEDIATE" 4m
+.br
+[vectorlib, v.external.out]
+.br
+If the environment variable
+GRASS_VECTOR_EXTERNAL_IMMEDIATE exists and vector output format
+defined
+by \fIv.external.out\fR is
+non\-native, vector features are written to output external
+datasource immediately. By default, the vector library writes
+output data to a temporary vector map in native format and when
+closing the map, the features are transferred to output external
+datasource. Note: if output vector format is topological PostGIS
+format, then the vector library writes features immediately to output
+database (in this case GRASS_VECTOR_EXTERNAL_IMMEDIATE is ignored).
+.IP "GRASS_VECTOR_EXTERNAL_IGNORE" 4m
+.br
+[vectorlib]
+.br
+If the environment variable
+GRASS_VECTOR_EXTERNAL_IGNORE exists, output vector format defined
+by \fIv.external.out\fR is
+ignored. The format is always native.
+.IP "GRASS_VECTOR_TEMPORARY" 4m
+.br
+[vectorlib]
+.br
+If the environment variable
+GRASS_VECTOR_TEMPORARY exists, GRASS vector library will operate
+on temporary vector maps. New vector maps will be created in
+temporary directory (see GRASS_VECTOR_TMPDIR_MAPSET variable), existing
+vector maps will be read (if found) also from this directory. It
+may be set to either:
+.RS 4n
+.IP \(bu 4n
+keep \- the temporary vector map is not deleted when
+closing the map.
+.IP \(bu 4n
+move \- the temporary vector map is moved to the
+current mapset when closing the map.
+.IP \(bu 4n
+delete \- the temporary vector map is deleted when
+closing the map.
+.RE
+Default value is keep.
+Note that temporary vector maps are not visible to the user
+via \fIg.list\fR
+or \fIwxGUI\fR. They are used
+internally by the GRASS modules and deleted automatically when
+GRASS session is quited.
+.IP "GRASS_VECTOR_TMPDIR_MAPSET" 4m
+.br
+[vectorlib]
+.br
+By default GRASS temporary directory is located in
+$LOCATION/$MAPSET/.tmp/$HOSTNAME. If GRASS_VECTOR_TMPDIR_MAPSET is
+set to \(cq0\(cq, the temporary directory is located in TMPDIR
+(environmental variable defined by the user or GRASS initialization
+script if not given).
+.br
+Important note: This variable is currently used only in vector
+library. In other words the variable is ignored by raster or
+raster3d library.
+.IP "GRASS_VECTOR_TOPO_DEBUG" 4m
+.br
+[vectorlib, v.generalize]
+.br
+If the environment variable
+GRASS_VECTOR_TOPO_DEBUG
+exists, \fIv.generalize\fR runs
+in extremely slow debug mode.
+.IP "GRASS_WXBUNDLED" 4m
+.br
+[wxGUI]
+.br
+set to tell wxGUI that a bundled wxPython will be used.
+.br
+When set, the wxGUI will not check the wxPython version, as this
+function is incompatible with a bundled wxPython.  It is up to the
+packager to make sure that a compatible wxPython version is bundled.
+.IP "GRASS_WXVERSION" 4m
+.br
+[wxGUI]
+.br
+set to tell wxGUI which version of wxPython to use.
+.br
+When set, the wxGUI will select the given wxPython version. It\(cqs
+useful when multiple versions of wxPython are installed and the
+user wants to run wxGUI with non\-default wxPython version.
+.IP "GRASS_XTERM" 4m
+.br
+[lib/init/grass\-xterm\-wrapper, lib/init/grass\-xterm\-mac]
+.br
+set to any value (e.g. rxvt, aterm, gnome\-terminal, konsole) to
+substitute \(cqx\-terminal\-emulator\(cq or \(cqxterm\(cq. The Mac OS X app
+startup defaults to an internal \(cq$GISBASE/etc/grass\-xterm\-mac\(cq,
+which emulates the necessary xterm functionality in
+Terminal.app.
+.IP "GRASS_UI_TERM" 4m
+.br
+set to any value to use the terminal based parser.
+.IP "GRASS_VERSION" 4m
+.br
+reports the current version number (used by R\-stats interface etc);
+should not be changed by user.
+.IP "GRASS_NO_GLX_PBUFFERS" 4m
+.br
+[nviz]
+.br
+set to any value to disable the use of GLX Pbuffers.
+.IP "GRASS_NO_GLX_PIXMAPS" 4m
+.br
+[nviz]
+.br
+Set to any value to disable the use of GLX Pixmaps.
+.IP "OMP_NUM_THREADS" 4m
+.br
+[OpenMP]
+.br
+If OpenMP support is enabled this limits the number of threads.
+The default is set to the number of CPUs on the system.
+Setting to \(cq1\(cq effectively disables parallel processing.
+.IP "TMPDIR, TEMP, TMP" 4m
+.br
+[Various GRASS GIS commands and wxGUI]
+.br
+The default wxGUI temporary directory is chosen from a
+platform\-dependent list, but the user can control the selection of
+this directory by setting one of the TMPDIR, TEMP or TMP
+environment variables Hence the wxGUI uses $TMPDIR if it is set,
+then $TEMP, otherwise /tmp.
+.SS List of selected GRASS environment variables for rendering
+[ In addition to those which are understood by
+specific \fIGRASS display
+drivers\fR, the following variables affect rendering. ]
+.IP "GRASS_RENDER_IMMEDIATE" 4m
+.br
+tells the display library which driver to use; possible
+values: \fIcairo\fR, \fIpng\fR, \fIps\fR,
+\fIhtml\fR
+or \fIdefault\fR.
+.br
+Default display driver
+is \fIcairo\fR (if available)
+otherwise \fIpng\fR.
+.IP "GRASS_RENDER_WIDTH" 4m
+.br
+defines the width of output image (default is 640).
+.IP "GRASS_RENDER_HEIGHT" 4m
+.br
+defines the height of output image (default is 480).
+.IP "GRASS_RENDER_FILE" 4m
+.br
+the name of the resulting image file.
+.IP "GRASS_RENDER_FRAME" 4m
+.br
+contains 4 coordinates, \fItop,bottom,left,right\fR (pixel
+values) with respect to the top left corner of the output image,
+defining the initial frame.
+.IP "GRASS_RENDER_LINE_WIDTH" 4m
+.br
+defines default line width.
+.IP "GRASS_RENDER_TEXT_SIZE" 4m
+.br
+defines default text size.
+.IP "GRASS_RENDER_COMMAND" 4m
+.br
+external command called by display library to render data (see
+example in \fIdisplay
+drivers\fR page for details).
+.br
+Currently only Python scripts
+are supported.
+For specific driver\-related variables see:
+.RS 4n
+.IP \(bu 4n
+\fICairo display driver\fR
+.IP \(bu 4n
+\fIPNG display driver\fR
+.IP \(bu 4n
+\fIPS (Postscript) display driver\fR
+.IP \(bu 4n
+\fIHTML display driver\fR
+.RE
+.SS List of selected internal GRASS environment variables
+[ These variables are intended \fBfor internal use only\fR by the GRASS
+software to facilitate communication between the GIS engine, GRASS scripts,
+and the GUI.
+The user should not set these in a GRASS session. They are meant to be set
+locally for specific commands. ]
+.IP "GRASS_OVERWRITE" 4m
+.br
+[all modules]
+.br
+toggles map overwrite.
+.RS 4n
+.IP \(bu 4n
+0 \- maps are protected (default),
+.IP \(bu 4n
+1 \- maps with identical names will be overwritten.
+.RE
+This variable is automatically created
+by \fIg.parser\fR so that the
+\-\-overwrite option will
+be inherited by dependent modules as the script runs. Setting either the
+GRASS_OVERWRITE environment variable or the OVERWRITE gisenv variable detailed
+below will cause maps with identical names to be overwritten.
+.IP "GRASS_VERBOSE" 4m
+.br
+[all modules]
+.br
+toggles verbosity level
+.RS 4n
+.IP \(bu 4n
+\-1 \- complete silence (also errors and warnings are discarded)
+.IP \(bu 4n
+0 \- only errors and warnings are printed
+.IP \(bu 4n
+1 \- progress and important messages are printed (percent complete)
+.IP \(bu 4n
+2 \- all module messages are printed
+.IP \(bu 4n
+3 \- additional verbose messages are printed
+.RE
+This variable is automatically created by \fIg.parser\fR
+so that the \-\-verbose or \-\-quiet flags will be inherited
+by dependent modules as the script runs.
+.IP "GRASS_REGION" 4m
+.br
+[libgis]
+.br
+override region settings, separate parameters with a \(dq;\(dq. Format
+is the same as in the WIND region settings file. Otherwise use is the same as
+WIND_OVERRIDE.
+.IP "WIND_OVERRIDE" 4m
+.br
+[libgis]
+.br
+it causes programs to use the specified named region (created with
+e.g. g.region save=...) to be used as the current region, instead of
+the region from the WIND file.
+.br
+.br
+This allows programs such as the GUI to run external commands on an
+alternate region without having to modify the WIND file then change it
+back afterwards.
+.SH List of selected GRASS gisenv variables
+[ Use \fIg.gisenv\fR to get/set/unset/change them ]
+.IP "DEBUG" 4m
+.br
+[entire GRASS]
+.br
+sets level of debug message output (0: no debug messages)
+.br
+.nf
+\fC
+g.gisenv set=DEBUG=0
+\fR
+.fi
+.IP "WX_DEBUG" 4m
+.br
+[wxGUI]
+.br
+sets level of debug message output for \fIwxGUI\fR (0: no debug messages, 1\-5 debug levels)
+.IP "GISDBASE" 4m
+.br
+initial database
+.IP "GIS_LOCK" 4m
+.br
+lock ID to prevent parallel GRASS use,
+.br
+process id of the start\-up shell script
+.IP "GUI" 4m
+.br
+See GRASS_GUI environmental variable for details.
+.IP "LOCATION" 4m
+.br
+full path to location directory
+.IP "LOCATION_NAME" 4m
+.br
+initial location name
+.IP "MAPSET" 4m
+.br
+initial mapset
+.IP "MEMORYMB" 4m
+.br
+[entire GRASS with focus on raster related data processing]
+.br
+sets the maximum memory to be used (in MB), i.e. the cache size for raster rows
+.br
+.nf
+\fC
+# set to 6 GB (default: 300 MB)
+g.gisenv set=\(dqMEMORYMB=6000\(dq
+\fR
+.fi
+.IP "OVERWRITE" 4m
+.br
+[all modules]
+.br
+toggles map overwrite.
+.RS 4n
+.IP \(bu 4n
+0 \- maps are protected (default),
+.IP \(bu 4n
+1 \- maps with identical names will be overwritten.
+.RE
+This variable is automatically created
+by \fIg.parser\fR so that the
+\-\-overwrite option will
+be inherited by dependent modules as the script runs. Setting either the
+GRASS_OVERWRITE environment variable or the OVERWRITE gisenv variable detailed
+below will cause maps with identical names to be overwritten.
+.SH GRASS\-related Files
+.IP "$HOME/.grass7/rc" 4m
+.br
+stores the GRASS gisenv variables (not shell environment variables)
+.IP "$HOME/.grass7/bashrc" 4m
+.br
+stores the shell environment variables (Bash only)
+.IP "$HOME/.grass7/env.bat" 4m
+.br
+stores the shell environment variables (MS Windows only)
+.IP "$HOME/.grass7/login" 4m
+.br
+stores the DBMI passwords in this hidden file.
+Only the file owner can access this file.
+.IP "$HOME/GIS_ERROR_LOG" 4m
+.br
+if this file exists then all GRASS error and warning messages are
+logged here. Applies to current user. To generate the file, use:
+touch $HOME/GIS_ERROR_LOG
+.br
+See also GIS_ERROR_LOG variable.
+Note: On MS Windows the files are stored in %APPDATA%.
+.SH SEE ALSO
+\fI
+g.gisenv,
+g.parser
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

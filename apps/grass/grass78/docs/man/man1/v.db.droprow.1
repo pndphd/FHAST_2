@@ -1,0 +1,103 @@
+.TH v.db.droprow 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.droprow.py\fR\fR  \- Removes a vector feature from a vector map through attribute selection.
+.SH KEYWORDS
+vector, attribute table, database
+.SH SYNOPSIS
+\fBv.db.droprow.py\fR
+.br
+\fBv.db.droprow.py \-\-help\fR
+.br
+\fBv.db.droprow.py\fR \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBwhere\fR=\fIsql_query\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBwhere\fR=\fIsql_query\fR \fB[required]\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.SH DESCRIPTION
+\fIv.db.droprow\fR removes vector object(s) (point, line, area, face etc.)
+from a vector map through attribute selection in the table connected
+to the given vector map. It automatically checks the connection for the specified
+layer.
+.SH NOTES
+v.db.droprow is a front\-end to \fIv.extract\fR (reverse selection)
+to allow easier usage.
+The existing database connection(s) can be verified with \fIv.db.connect\fR.
+.SH EXAMPLES
+Dropping all vector points without elevation attribute (North Carolina data set):
+.br
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+v.random output=rand5k_elev n=5000
+v.db.addtable map=rand5k_elev column=\(dqelevation double precision\(dq
+v.what.rast vect=rand5k_elev rast=elevation column=elevation
+# verify absence of some elevation attributes (\(dqnumber of NULL attributes\(dq):
+v.univar rand5k_elev type=point column=elevation
+# Remove all vector points lacking elevation attribute
+v.db.droprow rand5k_elev output=rand5k_elev_filt where=\(dqelevation IS NULL\(dq
+# verify:
+v.univar rand5k_elev_filt type=point column=elevation
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.droptable,
+db.execute,
+v.db.addcolumn,
+v.db.addtable,
+v.db.connect,
+v.db.dropcolumn,
+v.db.droptable,
+v.db.select,
+v.db.update
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.db.droprow source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

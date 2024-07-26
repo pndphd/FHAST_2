@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.colors - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.colors</b></em>  - Creates/modifies the color table associated with a 3D raster map.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_color_table.html">color table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.colors</b><br></div>
+<b>r3.colors --help</b><br>
+<div id="synopsis"><b>r3.colors</b> [-<b>rwldngae</b>]  [<b>map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>file</b>=<em>name</em>]   [<b>color</b>=<em>style</em>]   [<b>raster</b>=<em>name</em>]   [<b>raster_3d</b>=<em>name</em>]   [<b>rules</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Remove existing color table</dd>
+
+<dt><b>-w</b></dt>
+<dd>Only write new color table if it does not already exist</dd>
+
+<dt><b>-l</b></dt>
+<dd>List available rules then exit</dd>
+
+<dt><b>-d</b></dt>
+<dd>List available rules with description then exit</dd>
+<dd>If a color rule is given, only this rule is listed</dd>
+
+<dt><b>-n</b></dt>
+<dd>Invert colors</dd>
+
+<dt><b>-g</b></dt>
+<dd>Logarithmic scaling</dd>
+
+<dt><b>-a</b></dt>
+<dd>Logarithmic-absolute scaling</dd>
+
+<dt><b>-e</b></dt>
+<dd>Histogram equalization</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of 3D raster map(s)</dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>Input file with one map name per line</dd>
+<dd>Input map names can be defined in an input file in case a large amount of maps must be specified. This option is mutual exclusive to the map option.</dd>
+
+<dt><b>color</b>=<em>style</em></dt>
+<dd>Name of color table</dd>
+<dd>Options: <em>aspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave</em></dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspect.png" alt="aspect"> aspect</b>: aspect oriented grey colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspectcolr.png" alt="aspectcolr"> aspectcolr</b>: aspect oriented rainbow colors [range: 0 to 360]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bcyr.png" alt="bcyr"> bcyr</b>: blue through cyan through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bgyr.png" alt="bgyr"> bgyr</b>: blue through green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/blues.png" alt="blues"> blues</b>: white to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byg.png" alt="byg"> byg</b>: blue through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byr.png" alt="byr"> byr</b>: blue through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/celsius.png" alt="celsius"> celsius</b>: blue to red for degree Celsius temperature [range: -80 to 80]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/corine.png" alt="corine"> corine</b>: EU Corine land cover colors [range: 111 to 995]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/curvature.png" alt="curvature"> curvature</b>: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/differences.png" alt="differences"> differences</b>: differences oriented colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/elevation.png" alt="elevation"> elevation</b>: maps relative ranges of raster values to elevation color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/etopo2.png" alt="etopo2"> etopo2</b>: colors for ETOPO2 worldwide bathymetry/topography [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/evi.png" alt="evi"> evi</b>: enhanced vegetative index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/fahrenheit.png" alt="fahrenheit"> fahrenheit</b>: blue to red for Fahrenheit temperature [range: -112 to 176]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/forest_cover.png" alt="forest_cover"> forest_cover</b>: percentage of forest cover [range: 0 to 100]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gdd.png" alt="gdd"> gdd</b>: accumulated growing degree days [range: 0 to 6000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grass.png" alt="grass"> grass</b>: GRASS GIS green (perceptually uniform) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/greens.png" alt="greens"> greens</b>: white to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.png" alt="grey"> grey</b>: grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.eq.png" alt="grey.eq"> grey.eq</b>: histogram-equalized grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.log.png" alt="grey.log"> grey.log</b>: histogram logarithmic transformed grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey1.0.png" alt="grey1.0"> grey1.0</b>: grey scale for raster values between 0.0-1.0 [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey255.png" alt="grey255"> grey255</b>: grey scale for raster values between 0-255 [range: 0 to 255]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gyr.png" alt="gyr"> gyr</b>: green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/haxby.png" alt="haxby"> haxby</b>: relative colors for bathymetry or topography [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/inferno.png" alt="inferno"> inferno</b>: perceptually uniform sequential color table inferno [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/kelvin.png" alt="kelvin"> kelvin</b>: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/magma.png" alt="magma"> magma</b>: perceptually uniform sequential color table magma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndvi.png" alt="ndvi"> ndvi</b>: Normalized Difference Vegetation Index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndwi.png" alt="ndwi"> ndwi</b>: Normalized Difference Water Index colors [range: -200 to 200]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/nlcd.png" alt="nlcd"> nlcd</b>: US National Land Cover Dataset colors [range: 0 to 95]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/oranges.png" alt="oranges"> oranges</b>: white to orange [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/plasma.png" alt="plasma"> plasma</b>: perceptually uniform sequential color table plasma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population.png" alt="population"> population</b>: color table covering human population classification breaks [range: 0 to 2e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population_dens.png" alt="population_dens"> population_dens</b>: color table covering human population density classification breaks [range: 0 to 1e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation.png" alt="precipitation"> precipitation</b>: precipitation color table (0..2000mm) [range: 0 to 7000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_daily.png" alt="precipitation_daily"> precipitation_daily</b>: precipitation color table (0..1000mm) [range: 0 to 10000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_monthly.png" alt="precipitation_monthly"> precipitation_monthly</b>: precipitation color table (0..1000mm) [range: 0 to 1000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rainbow.png" alt="rainbow"> rainbow</b>: rainbow color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ramp.png" alt="ramp"> ramp</b>: color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/random.png" alt="random"> random</b>: random color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/reds.png" alt="reds"> reds</b>: white to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/roygbiv.png" alt="roygbiv"> roygbiv</b>:  [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rstcurv.png" alt="rstcurv"> rstcurv</b>: terrain curvature (from r.resamp.rst) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryb.png" alt="ryb"> ryb</b>: red through yellow to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryg.png" alt="ryg"> ryg</b>: red through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/sepia.png" alt="sepia"> sepia</b>: yellowish-brown through to white [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/slope.png" alt="slope"> slope</b>: r.slope.aspect-type slope colors for raster values 0-90 [range: 0 to 90]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/soilmoisture.png" alt="soilmoisture"> soilmoisture</b>: soilmoisture color table (0.0-1.0) [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm.png" alt="srtm"> srtm</b>: color palette for Shuttle Radar Topography Mission elevation [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm_plus.png" alt="srtm_plus"> srtm_plus</b>: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/terrain.png" alt="terrain"> terrain</b>: global elevation color table covering -11000 to +8850m [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/viridis.png" alt="viridis"> viridis</b>: perceptually uniform sequential color table viridis [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/water.png" alt="water"> water</b>: water depth [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/wave.png" alt="wave"> wave</b>: color wave [range: map values]</dd>
+
+<dt><b>raster</b>=<em>name</em></dt>
+<dd>Raster map from which to copy color table</dd>
+
+<dt><b>raster_3d</b>=<em>name</em></dt>
+<dd>3D raster map from which to copy color table</dd>
+
+<dt><b>rules</b>=<em>name</em></dt>
+<dd>Path to rules file</dd>
+<dd>"-" to read rules from stdin</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.colors</em> has exactly the same functionality
+as <em>r.colors</em> but for 3D raster maps. Please refer
+to <em><a href="r.colors.html">r.colors</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<div class="code"><pre>
+r3.colors map=volume_1 color=gyr
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.colors.html">r.colors</a>,
+<a href="r.colors.out.html">r.colors.out</a>,
+<a href="r3.colors.out.html">r3.colors.out</a>,
+<a href="v.colors.html">v.colors</a>,
+<a href="v.colors.out.html">v.colors.out</a>
+</em>
+
+<p>See also wiki
+page <a href="https://grasswiki.osgeo.org/wiki/Color_tables">Color
+tables</a> (from GRASS User Wiki)
+
+<p><a href="http://colorbrewer.org">ColorBrewer</a> is an online tool designed to
+help people select good color schemes for maps and other graphics.
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro and David Johnson
+<br>
+Support for 3D rasters by Soeren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.colors">r3.colors source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.colors">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

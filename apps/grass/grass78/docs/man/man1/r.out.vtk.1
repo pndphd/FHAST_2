@@ -1,0 +1,213 @@
+.TH r.out.vtk 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.vtk\fR\fR  \- Converts raster maps into the VTK\-ASCII format.
+.SH KEYWORDS
+raster, export, output, VTK
+.SH SYNOPSIS
+\fBr.out.vtk\fR
+.br
+\fBr.out.vtk \-\-help\fR
+.br
+\fBr.out.vtk\fR [\-\fBpstvoc\fR]  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBelevation\fR=\fIname\fR]   [\fBnull\fR=\fIfloat\fR]   [\fBz\fR=\fIfloat\fR]   [\fBrgbmaps\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBvectormaps\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBzscale\fR=\fIfloat\fR]   [\fBprecision\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Create VTK point data instead of VTK cell data (if no elevation map is given)
+.IP "\fB\-s\fR" 4m
+.br
+Use structured grid for elevation (not recommended)
+.IP "\fB\-t\fR" 4m
+.br
+Use polydata\-trianglestrips for elevation grid creation
+.IP "\fB\-v\fR" 4m
+.br
+Use polydata\-vertices for elevation grid creation (to use with vtkDelauny2D)
+.IP "\fB\-o\fR" 4m
+.br
+Scale factor affects the origin (if no elevation map is given)
+.IP "\fB\-c\fR" 4m
+.br
+Correct the coordinates to match the VTK\-OpenGL precision
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Raster map(s) to be converted to VTK\-ASCII data format
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for VTK\-ASCII output file
+.IP "\fBelevation\fR=\fIname\fR" 4m
+.br
+Name of input elevation raster map
+.IP "\fBnull\fR=\fIfloat\fR" 4m
+.br
+Value to represent no data cell
+.br
+Default: \fI\-99999.99\fR
+.IP "\fBz\fR=\fIfloat\fR" 4m
+.br
+Constant elevation (if no elevation map is specified)
+.br
+Default: \fI0.0\fR
+.IP "\fBrgbmaps\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Three (r,g,b) raster maps to create RGB values [redmap,greenmap,bluemap]
+.IP "\fBvectormaps\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Three (x,y,z) raster maps to create vector values [xmap,ymap,zmap]
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for elevation
+.br
+Default: \fI1.0\fR
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of significant digits (floating point only)
+.br
+Options: \fI0\-20\fR
+.br
+Default: \fI12\fR
+.SH DESCRIPTION
+Outputs \fIraster\fR maps in \fIVTK\-ASCII\fR format. \fIMap\(cqs\fR are
+valid raster map\(cqs in the current mapset.  \fIoutput\fR is the name of
+an VTK\-ASCII file which will be written in the current working directory.
+If \fIoutput\fR is not specified then \fBstdout\fR is used.
+The module is sensitive to region settings (set with g.region).
+.PP
+Elevation, scaling, point/celldata, vector and RGB Data are supported.
+If the map is in LL projection, the elevation values will automatically scaled to
+degrees. It is supposed that the elevation values are provided in meters.
+If the elevation values are in a different unit than meters, use
+the scale parameter to convert the units.
+.PP
+If no elevation map is given, the user can set the height of the map by one value.
+Point or cell data are available. Also scaling is supported for this elevation value.
+The elevation value must be provided in meters.
+.PP
+The RGB input requires three raster maps: red, green, blue  \- in this order.
+The maps must have values between 0 and 255, otherwise you will get lots of warnings
+and the values are set to 0.
+More than one RGB dataset (3 maps) is not supported.
+.PP
+The vector input requires three raster maps: x, y, z \-\- defining the vector coordinates  \- in this order.
+More than one vector dataset (3 maps) is not supported.
+.SH NOTES
+This filter generates:
+.RS 4n
+.IP \(bu 4n
+\fIstructured points\fR with \fIcelldata\fR or \fIpointdata\fR if no elevationfile is given
+.IP \(bu 4n
+\fIstructured grid\fR (not recommendet) with \fIpointdata\fR if an elevationfile is given
+.IP \(bu 4n
+\fIpolydataset\fR with \fIpointdata\fR if an elevationfile is given (default)
+.RE
+and puts this in a simple VTK\-ASCII file. Nor XML or
+binary output are supported. It is possible to choose more then one raster map
+to be written to the VTK\-ASCII file. Each cell\-/pointdata is named like the raster map it represents.
+You can visualize this file with the
+\fIVTK Toolkit\fR,
+\fIParaview\fR and
+\fIMayaVi\fR which are based on VTK.
+If you have a raster map with partly no data, use the threshold filter in paraview to
+visualize the valid data. Just filter all data which is greater/lesser than the
+chosen null value in the VTK\-ASCII file.
+.br
+If elevation map is chosen, a polygonal grid is created with \fIquads\fR,
+but the user can choose also \fItriangle strips\fR or \fIvertices\fR.
+These dataformats a documented at \fIVTK Toolkit\fR.
+.PP
+If the \(dq\-c\(dq flag is used and the data should be visualised together with other data exported via *.out.vtk
+modules, be sure the \(dq\-c\(dq flag was also set in these modules.
+But this will only work with data from the SAME location
+(The reference point for the coordinates transformation is based on the center point of the default region).
+.SS Difference between point\- and celldata
+r.out.vtk can export raster cells with different representations.
+.RS 4n
+.IP \(bu 4n
+\fIpointdata\fR \-\- the cells/values are represented by the center of the cell.
+Instead of cells, points are created. Each point can hold different values,
+but the user can only visualize one value at a time. These points can
+be connected in different ways.
+.IP \(bu 4n
+\fIcelldata\fR \-\- is only provided if no elevation map is given.
+The cells are created with the same hight and width as in GRASS. Each cell
+can hold different values, but the user can only visualize one value at a time.
+.RE
+.SH EXAMPLE
+.SS Simple Spearfish example
+.br
+.nf
+\fC
+# set region
+g.region n=4926970 s=4914857 w=591583 e=607793 res=50 \-p
+# export the data
+r.out.vtk input=elevation.10m,slope,aspect elevation=elevation.10m output=/tmp/out.vtk
+# visualize in Paraview or other VTK viewer:
+paraview \-\-data=/tmp/out.vtk
+\fR
+.fi
+.SS Spearfish example with RGB data
+.br
+.nf
+\fC
+#set the region
+g.region n=4926990 s=4914840 w=591570 e=607800 res=30 \-p
+# using r.in.wms to create RGB data to get a satellite coverage
+r.in.wms layers=global_mosaic mapserver=http://wms.jpl.nasa.gov/wms.cgi \(rs
+         output=wms_global_mosaic
+# export the data to VTK
+r.out.vtk rgbmaps=wms_global_mosaic.red,wms_global_mosaic.green,wms_global_mosaic.blue \(rs
+          elevation=elevation.10m output=/tmp/out.vtk
+# visualize in Paraview or other VTK viewer:
+paraview \-\-data=/tmp/out.vtk
+\fR
+.fi
+\fBParaview RGB visualization notes\fR
+.br
+To achieve proper RGB overlay:
+.RS 4n
+.IP \(bu 4n
+In Paraview, click \(dqApply\(dq
+.IP \(bu 4n
+Select the \(dqDisplay\(dq tab and choose \(dqColor by\(dq to switch from input scalars to rgb scalars
+.IP \(bu 4n
+Disable the \(dqMap Scalars\(dq check button in the display tab to avoid the use of a lookup table
+.RE
+.SH SEE ALSO
+\fI
+r3.out.vtk,
+r.out.ascii,
+g.region
+\fR
+.br
+GRASS and Paraview Wiki page
+.SH AUTHOR
+Soeren Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r.out.vtk source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

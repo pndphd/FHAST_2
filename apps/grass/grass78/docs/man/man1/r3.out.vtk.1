@@ -1,0 +1,248 @@
+.TH r3.out.vtk 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.out.vtk\fR\fR  \- Converts 3D raster maps into the VTK\-ASCII format.
+.SH KEYWORDS
+raster3d, export, output, voxel, VTK
+.SH SYNOPSIS
+\fBr3.out.vtk\fR
+.br
+\fBr3.out.vtk \-\-help\fR
+.br
+\fBr3.out.vtk\fR [\-\fBpsmocl\fR]  [\fBinput\fR=\fIname\fR[,\fIname\fR,...]]   [\fBoutput\fR=\fIname\fR]   [\fBnull\fR=\fIfloat\fR]   [\fBtop\fR=\fIstring\fR]   [\fBbottom\fR=\fIstring\fR]   [\fBrgbmaps\fR=\fIname\fR[,\fIname\fR,...]]   [\fBvectormaps\fR=\fIname\fR[,\fIname\fR,...]]   [\fBzscale\fR=\fIfloat\fR]   [\fBprecision\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Create VTK pointdata instead of VTK celldata (celldata is default)
+.IP "\fB\-s\fR" 4m
+.br
+Create 3D elevation output with a top and a bottom surface, both raster maps are required.
+.IP "\fB\-m\fR" 4m
+.br
+Use 3D raster mask (if exists) with input maps
+.IP "\fB\-o\fR" 4m
+.br
+Scale factor affects the origin
+.IP "\fB\-c\fR" 4m
+.br
+Correct the coordinates to match the VTK\-OpenGL precision
+.IP "\fB\-l\fR" 4m
+.br
+Do not convert the top\-bottom resolution in case of lat long projection to meters
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+3D raster map(s) to be converted to VTK\-ASCII data format
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for VTK\-ASCII output file
+.IP "\fBnull\fR=\fIfloat\fR" 4m
+.br
+Float value to represent no data cell/points
+.br
+Default: \fI\-99999.99\fR
+.IP "\fBtop\fR=\fIstring\fR" 4m
+.br
+Top surface 2D raster map
+.IP "\fBbottom\fR=\fIstring\fR" 4m
+.br
+Bottom surface 2D raster map
+.IP "\fBrgbmaps\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Three (R,G,B) 3D raster maps to create RGB values [redmap,greenmap,bluemap]
+.IP "\fBvectormaps\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Three (x,y,z) 3D raster maps to create vector values [xmap,ymap,zmap]
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Scale factor for elevation
+.br
+Default: \fI1.0\fR
+.IP "\fBprecision\fR=\fIinteger\fR" 4m
+.br
+Number of significant digits (floating point only)
+.br
+Options: \fI0\-20\fR
+.br
+Default: \fI12\fR
+.SH DESCRIPTION
+The module \fIr3.out.vtk\fR outputs 3D raster maps into VTK\-ASCII format.
+Maps are valid 3D raster maps in the current mapset search path. The
+\fIoutput\fR parameter is the name of a VTK\-ASCII file which will be
+written in the current working directory. If \fIoutput\fR is not
+specified then standard output (stdout) is used. The module is sensitive
+to region settings (set with \fIg.region\fR).
+.SH NOTES
+This module generates \fIstructured points\fR with \fIcelldata\fR
+(default) or \fIpointdata\fR. If top and bottom surfaces are requested
+an \fIunstructured grid\fR with \fIcelldata\fR or a \fIstructured grid\fR
+with \fIpointdata\fR is generated.
+This data is put in a simple VTK\-ASCII file. Neither XML nor
+binary output are supported. It is possible to choose more then one 3D raster
+map
+to be written in the VTK\-ASCII file. Each \fIcelldata\fR is named as the
+3D raster map it represents. The user can visualize this file with the
+\fIVTK Toolkit\fR,
+\fIParaView\fR and
+\fIMayaVi\fR which are based on
+VTK. In case of 3D raster map with partially no data, the threshold filter in
+ParaView can be used to visualize the valid data. Just filter all data which is
+greater/lesser than the chosen null value in the VTK\-ASCII file.
+.PP
+The top and bottom region values are expected in meters.
+If a Latitude\-Longitude (LL) coordinates are used, the elevation value for each
+voxel will be converted into degrees.
+.PP
+The \fIinput\fR, \fIrgbmaps\fR and \fIvectormaps\fR parameters are
+optional, so only the geometry can be exported.
+.PP
+If the user defines \fItop\fR and \fIbottom\fR and the 2D and 3D region
+values differ, the 2D resolution will be adjusted to the 3D resolution. The
+elevation maps are expected in meters. If Lat/Long coordinates are used, the
+elevation will automatically converted into degree.
+If the surface and bottom maps are in a different unit than meters, use the
+scale parameter to convert them into meters.
+.PP
+The RGB voxel data can be created from 2D raster maps (Landsat TM images)
+with \fIr.to.rast3\fR. The values of the RGB maps
+must be within 0 and 255. If not, the values are automatically set
+to 0 and warnings will be printed to stderr.
+.PP
+The vector data is created from three 3D raster maps. Each map represents a vector component.
+So x, y and z components are required in this order. This data can be visualized with Glyph3d or
+StreamTracer filters within Paraview.
+.PP
+If the \fI\-c\fR flag is used and the data should be visualised together with
+other data exported via \fI*.out.vtk\fR modules, be sure the \fI\-c\fR flag
+was also set in these modules. But this will only work with data from the SAME
+location (the reference point for the coordinates transformation is based on the
+center point of the default region).
+.SS Difference between point\- and celldata
+\fIr3.out.vtk\fR can export 3D raster maps with different representations.
+.RS 4n
+.IP \(bu 4n
+\fIpointdata\fR \-\- the cells/values are represented by the center of the
+cell. Instead of cells, points are created. Each point can hold different
+values, but the user can only visualize one value at a time.
+.IP \(bu 4n
+\fIcelldata\fR The cells are created with the same hight, width and depth
+as in GRASS. Each cell can hold different values, but the user can only
+visualize one value at a time.
+.RE
+.SH EXAMPLE
+.SS Simple Spearfish example
+.br
+.nf
+\fC
+g.region \-d
+g.region res=150 res3=150 t=80 b=0 tbres=10
+r.mapcalc \(dqbottom = 1800. \- elevation.10m\(dq
+# synthetic data, could be geological structures:
+r3.mapcalc \(dqmap3d = row()+col()+depth()\(dq
+#export of volume to VTK:
+r3.out.vtk \-s input=map3d top=elevation.10m bottom=bottom output=/tmp/out.vtk
+# visualize in paraview or other VTK viewer:
+paraview \-\-data=/tmp/out.vtk
+\fR
+.fi
+.SS Spearfish example with RGB data
+.br
+.nf
+\fC
+#set the region
+g.region \-d
+g.region n=4926970 s=4914857 w=591583 e=607793 res=50 res3=50 t=80 b=0 tbres=10
+#create a bottom surface
+r.mapcalc \(dqbottom = 1800. \- elevation.10m\(dq
+# synthetic data, could be geological structures:
+r3.mapcalc \(dqmap3d = row()+col()+depth()\(dq
+#get some satellite images with r.in.onearth
+r.in.onearth \-l output=Sat tmband=Red
+r.in.onearth \-l output=Sat tmband=IR1
+r.in.onearth \-l output=Sat tmband=IR2
+#Convert the 2D maps to 3D raster maps with r.to.rast3
+r.to.rast3 input=SatLandsatTM_Red output=SatLandsatTM_Red
+r.to.rast3 input=SatLandsatTM_IR1 output=SatLandsatTM_IR1
+r.to.rast3 input=SatLandsatTM_IR2 output=SatLandsatTM_IR2
+#export of volume to VTK:
+r3.out.vtk \-s rgbmaps=SatLandsatTM_IR1,SatLandsatTM_IR2,SatLandsatTM_Red
+input=map3d top=elevation.10m bottom=bottom output=/tmp/out.vtk
+# visualize in paraview or other VTK viewer:
+paraview \-\-data=/tmp/out.vtk
+\fR
+.fi
+.SS Spearfish example with vector data
+.br
+.nf
+\fC
+# set the region
+g.region \-d
+g.region n=4926970 s=4914857 w=591583 e=607793 res=50 res3=50 t=80 b=0 tbres=10
+# create a bottom surface
+r.mapcalc \(dqbottom = 1800. \- elevation.10m\(dq
+# synthetic data, could be geological structures:
+r3.mapcalc \(dqmap3d = row()+col()+depth()\(dq
+# synthetic vector data, could be groundwater stream vectors
+r3.mapcalc \(dqx_part = sin(row())\(dq
+r3.mapcalc \(dqy_part = cos(col())\(dq
+r3.mapcalc \(dqz_part = sin(depth())\(dq
+# export the stuff data to VTK:
+r3.out.vtk \-s vectormaps=x_part,y_part,z_part input=map3d top=elevation.10m
+bottom=bottom output=/tmp/out.vtk
+# visualize in paraview or other VTK viewer:
+paraview \-\-data=/tmp/out.vtk
+# Now use the Glyph and Stream\-Trace Filter to get nice vectors and streamlines
+\fR
+.fi
+.SS Slovakia3d example
+.br
+.nf
+\fC
+#reduce resolution:
+g.region \-dp3 res=1000 res3=1000
+r.mapcalc \(dqbottom = 100\(dq
+#export of volume to VTK:
+r3.out.vtk \-s in=precip3d.500z50 top=dem500 bottom=bottom \(rs
+   output=/path/to/slovakia3d.vtk
+# visualize in paraview or other VTK viewer:
+paraview \-\-data=/path/to/slovakia3d.vtk
+# set Display style to \(cqsurface#
+# set Actor Control z to 10
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.out.vtk,
+r3.out.ascii,
+g.region
+\fR
+.SH AUTHOR
+Sören Gebbert
+.SH SOURCE CODE
+.PP
+Available at: r3.out.vtk source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

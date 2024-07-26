@@ -1,0 +1,239 @@
+.TH v.extract 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.extract\fR\fR  \- Selects vector features from an existing vector map and creates a new vector map containing only the selected features.
+.SH KEYWORDS
+vector, extract, select, dissolve, random
+.SH SYNOPSIS
+\fBv.extract\fR
+.br
+\fBv.extract \-\-help\fR
+.br
+\fBv.extract\fR [\-\fBdtr\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]  \fBoutput\fR=\fIname\fR  [\fBfile\fR=\fIname\fR]   [\fBrandom\fR=\fIinteger\fR]   [\fBnew\fR=\fIinteger\fR]   [\fBdissolve_column\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Dissolve common boundaries (default is no)
+.IP "\fB\-t\fR" 4m
+.br
+Do not copy attributes (see also \(cqnew\(cq parameter)
+.IP "\fB\-r\fR" 4m
+.br
+Reverse selection
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Types to be extracted
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face\fR
+.br
+Default: \fIpoint,line,boundary,centroid,area,face\fR
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input text file with category numbers/number ranges to be extracted
+.br
+If \(cq\-\(cq given reads from standard input
+.IP "\fBrandom\fR=\fIinteger\fR" 4m
+.br
+Number of random categories matching vector objects to extract
+.br
+Number must be smaller than unique cat count in layer
+.IP "\fBnew\fR=\fIinteger\fR" 4m
+.br
+Desired new category value (enter \-1 to keep original categories)
+.br
+If new >= 0, attributes is not copied
+.br
+Default: \fI\-1\fR
+.IP "\fBdissolve_column\fR=\fIname\fR" 4m
+.br
+Name of attribute column for dissolving areas
+.br
+Preserves category values
+.SH DESCRIPTION
+\fIv.extract\fR allows a user to select vector objects from an existing
+vector map and creates a new map containing only the selected objects.
+Database tables can be queried with SQL statements, if a connection is
+established.
+Dissolving (optional) is based on the output categories. If 2 adjacent
+areas have the same output category, the boundary is removed.
+.PP
+If \fBcats\fR, \fBfile\fR, \fBrandom\fR or \fBwhere\fR options are not
+specified, all features of given type and layer are
+extracted. Categories are not changed in that case.
+.SH NOTES
+Only features with a category number in the selected layer will be
+extracted. So if you want to extract boundaries (which are usually
+without category, as that information is normally held in the area\(cqs
+centroid) you must first use
+\fIv.category\fR to add them, or use
+\fBlayer=\-1\fR.
+.SH EXAMPLES
+The examples are intended for the North Carolina sample dataset:
+.SS Extract areas by category number with dissolving #1:
+.br
+.nf
+\fC
+v.extract \-d cats=1,2,3,4 input=soils_wake output=soil_groupa type=area new=0
+\fR
+.fi
+.PP
+produces a new vector \fBsoil_groupa\fR, containing those areas from vector
+\fBsoils\fR which have category numbers \fB1 thru 4\fR; any common boundaries are
+dissolved, and all areas in the new map will be assigned category number 0.
+.SS Extract areas by category number with dissolving #2:
+.br
+.nf
+\fC
+v.extract \-d cats=1\-4 input=soils_wake output=soil_groupa type=area new=\-1
+\fR
+.fi
+.PP
+produces a new vector map \fBsoil_groupa\fR containing the areas from vector
+\fBsoils\fR which have categories \fB1 thru 4\fR. Any common boundaries are
+dissolved, all areas in the new map will retain their original category
+numbers 1 thru 4, since \fBnew\fR was set to \-1.
+.SS Extract all areas and assign the same category to all:
+.br
+.nf
+\fC
+v.extract input=soils_wake output=soil_groupa type=area new=1
+\fR
+.fi
+.PP
+produces a new vector map \fBsoil_groupa\fR containing all areas from
+\fBsoils\fR. No common boundaries are dissolved, all areas of the new
+map will be assigned category number 1.
+.SS Extract vectors with SQL:
+.br
+.nf
+\fC
+v.extract input=markveggy.shp output=markveggy.1 new=13 \(rs
+  where=\(dq(VEGTYPE = \(cqWi\(cq) or (VEGTYPE = \(cqPS\(cq) or (PRIME_TYPE=\(cqWi\(cq)\(dq
+\fR
+.fi
+.PP
+produces a new vector map with category number 13 if the SQL statement is
+fulfilled.
+.SS Extract vector features which have the given field empty:
+.br
+.nf
+\fC
+v.extract input=lakes output=lakes_gaps where=\(dqFTYPE is NULL\(dq
+\fR
+.fi
+.SS Extract vector features which have the given field not empty:
+.br
+.nf
+\fC
+v.extract input=lakes output=lakes_ftype where=\(dqFTYPE not NULL\(dq
+\fR
+.fi
+.SS Reverse extracting (behaves like selective vector objects deleting):
+Remove meteorological stations from map which are located above 1000m:
+.br
+.nf
+\fC
+# check what to delete:
+v.db.select precip_30ynormals where=\(dqelev > 1000\(dq
+# perform reverse selection
+v.extract \-r input=precip_30ynormals output=precip_30ynormals_lowland \(rs
+  where=\(dqelev > 1000\(dq
+# verify
+v.db.select precip_30ynormals_lowland
+\fR
+.fi
+.SS Dissolving based on column attributes:
+.br
+.nf
+\fC
+# check column names:
+v.info \-c zipcodes_wake
+# reclass based on desired column:
+v.reclass input=zipcodes_wake output=zipcodes_wake_recl_nam column=ZIPNAME
+# verify:
+v.info \-c zipcodes_wake_recl_nam
+v.db.select zipcodes_wake_recl_nam
+# dissolve:
+v.extract \-d input=zipcodes_wake_recl_nam output=zipcodes_wake_regions
+\fR
+.fi
+.PP
+This produces a new vector map with common boundaries dissolved where the reclassed
+attributes of adjacent (left/right) areas are identical.
+.SS Extract 3 random areas from geology map
+.PP
+.br
+.nf
+\fC
+v.extract input=geology output=random_geology type=area random=3
+\fR
+.fi
+This creates a new map with three random categories matching areas.
+Note that there may be more than one feature with the same category.
+.SH SEE ALSO
+\fI
+v.category,
+v.dissolve,
+v.reclass,
+GRASS SQL interface
+\fR
+.SH AUTHORS
+R.L. Glenn, USDA, SCS, NHQ\-CGIS
+.br
+GRASS 6 port by Radim Blazek
+.SH SOURCE CODE
+.PP
+Available at: v.extract source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

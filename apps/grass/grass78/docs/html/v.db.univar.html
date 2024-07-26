@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.db.univar.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.db.univar.py</b></em>  - Calculates univariate statistics on selected table column for a GRASS vector map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#attribute table">attribute table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.db.univar.py</b><br></div>
+<b>v.db.univar.py --help</b><br>
+<div id="synopsis"><b>v.db.univar.py</b> [-<b>eg</b>] <b>map</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]  <b>column</b>=<em>name</em>  [<b>where</b>=<em>sql_query</em>]   [<b>percentile</b>=<em>float</em>[,<i>float</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Extended statistics (quartiles and 90th percentile)</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print stats in shell script style</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column on which to calculate statistics (must be numeric)</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>percentile</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Percentile to calculate (requires extended statistics flag)</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>90</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#univariate-statistics-on-attribute-table-column" class="toc">Univariate statistics on attribute table column</a></li>
+        <li class="toc"><a href="#univariate-statistics-on-randomly-sampled-data-points" class="toc">Univariate statistics on randomly sampled data points</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.db.univar</em> calculates basic univariate statistics for numeric
+attributes in a vector attribute table. It will calculate minimum, 
+maximum, range, mean, standard deviation, variance, coefficient of 
+variation, quartiles, median, and 90th percentile. 
+
+<p><em>v.db.univar</em> uses <em>db.univar</em> which in turn uses
+<em>db.select</em> to get the attribute values on which it calculates the
+statistics.  This means that statistics are calculated based on the entries in
+the attribute table, not based on the features in the map. One attribute value
+is read from each line in the attribute table, whether there are no, one or
+several features with the category value referenced by that line, or whether any
+features have more than one category value.  For feature-based, instead of
+attribute table-based, univariate statistics on attributes see <a
+href="v.univar.html">v.univar</a>.
+
+<em>NOTES</em>
+
+A database connection must be defined for the selected vector layer.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="univariate-statistics-on-attribute-table-column">Univariate statistics on attribute table column</a></h3>
+
+In this example, the 30 years precipitation data table is statistically
+analysed (North Carolina sample dataset) and univariate statistics performed:
+
+<div class="code"><pre>
+# show columns of attribute table connected to precipitation map
+v.info -c precip_30ynormals
+
+# univariate statistics on 30 years annual precipitation in NC
+v.db.univar precip_30ynormals column=annual
+ Number of values: 136
+ Minimum: 947.42
+ Maximum: 2329.18
+ Range: 1381.76
+ Mean: 1289.31147058823
+ [...]
+</pre></div>
+
+
+<h3><a name="univariate-statistics-on-randomly-sampled-data-points">Univariate statistics on randomly sampled data points</a></h3>
+
+In this example, random points are sampled from the elevation map
+(North Carolina sample dataset) and univariate statistics performed:
+<div class="code"><pre>
+g.region raster=elevation -p
+v.random output=samples n=100
+v.db.addtable samples column="heights double precision"
+v.what.rast samples raster=elevation column=heights
+v.db.select samples
+
+v.db.univar samples column=heights
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.univar.html">db.univar</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="v.univar.html">v.univar</a>,
+<a href="db.select.html">db.select</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>,
+<a href="v.random.html">v.random</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+ Michael Barton, Arizona State University
+<p>and authors of <em>r.univar.sh</em> (Markus Neteler et al.)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/v.db.univar">v.db.univar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/v.db.univar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

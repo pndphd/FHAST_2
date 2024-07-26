@@ -1,0 +1,344 @@
+.TH t.register 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.register.py\fR\fR  \- Assigns timestamps and registers raster, vector and raster3d maps in a space time dataset.
+.SH KEYWORDS
+temporal, map management, register, time
+.SH SYNOPSIS
+\fBt.register.py\fR
+.br
+\fBt.register.py \-\-help\fR
+.br
+\fBt.register.py\fR [\-\fBi\fR]  [\fBinput\fR=\fIname\fR]   [\fBmaps\fR=\fIname\fR[,\fIname\fR,...]]   [\fBtype\fR=\fIname\fR]   [\fBfile\fR=\fIname\fR]   [\fBstart\fR=\fIstring\fR]   [\fBend\fR=\fIstring\fR]   [\fBunit\fR=\fIstring\fR]   [\fBincrement\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Create an interval (start and end time) in case an increment and the start time are provided
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of the input space time dataset
+.IP "\fBmaps\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of the input maps
+.IP "\fBtype\fR=\fIname\fR" 4m
+.br
+Type of the input map
+.br
+Options: \fIraster, vector, raster_3d\fR
+.br
+Default: \fIraster\fR
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with map names, one per line
+.br
+Additionally the start time and the end time can be specified per line
+.IP "\fBstart\fR=\fIstring\fR" 4m
+.br
+Valid start date and time of the first map
+.br
+Format for absolute time: \(dqyyyy\-mm\-dd HH:MM:SS +HHMM\(dq, relative time is of type integer.
+.IP "\fBend\fR=\fIstring\fR" 4m
+.br
+Valid end date and time of all map
+.br
+Format for absolute time: \(dqyyyy\-mm\-dd HH:MM:SS +HHMM\(dq, relative time is of type integer.
+.IP "\fBunit\fR=\fIstring\fR" 4m
+.br
+Time stamp unit
+.br
+Unit must be set in case of relative timestamps
+.br
+Options: \fIyears, months, days, hours, minutes, seconds\fR
+.IP "\fBincrement\fR=\fIstring\fR" 4m
+.br
+Time increment, works only in conjunction with start option
+.br
+Time increment between maps for creation of valid time intervals (format for absolute time: NNN seconds, minutes, hours, days, weeks, months, years; format for relative time is of type integer: 5)
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator character of the input file
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+The module \fIt.register\fR has double functionality: it either only assigns
+timestamps to raster, 3D raster and vector maps in the temporal database
+(if \fIinput\fR option is not provided, see below) or additionally, it also registers
+them within input space time datasets (stds). The existing timestamp modules
+r.timestamp,
+r3.timestamp and
+v.timestamp do not register the maps in the
+temporal database of GRASS GIS. However, timestamps that have been created
+with these modules can be read and used by \fIt.register\fR. This
+works only for maps that are not already registered in the temporal
+database.
+.PP
+If the \fIinput\fR option is not used (i.e., no stds is provided), maps
+will be only registered in the temporal database with assigned
+timestamps. If, on the other hand, the \fIinput\fR option
+is used and a stds is provided, maps will be first registered in the temporal
+database (if not registered before) and then, in the stds specified. If the
+user wants to register maps that are already registered in the temporal
+database in a different stds, there is no need to pass information regarding
+start and end time, \fIt.register\fR will read timestamps from the temporal
+database (i.e., in this case only passing map names will be enough).
+.PP
+The module \fIt.register\fR supports absolute and relative time. The absolute temporal type
+refers to a fixed date while the relative temporal type refers to data
+without fixed timestamps (e.g., sequential maps used to calculate
+multi\-decadal averages).
+.PP
+Maps can be registered by command line argument (i.e., a list of comma separated map
+names) or using an input file. The start time, end time and a temporal
+increment can be provided through command line or in the input file. End time and
+increment are mutually exclusive. The user can register single maps or a
+list of maps at once. Maps can be registered in several space time
+datasets using the same timestamp. For the case of vector time series,
+the user can also register a single vector map connected to different
+layers representing time steps using the \fBmap:layer\fR notation (See
+example below).
+.PP
+The \fIincrement\fR option and the \fB\-i\fR flag (to create time intervals)
+work only in conjunction with the \fBstart\fR option.
+If an input file with timestamps (either start time or start time and end time)
+is used, then the \fIincrement\fR option and the \fB\-i\fR flag are not supported.
+.PP
+Start time and end time with absolute time must be provided using the
+format \fByyyy\-mm\-dd HH:MM:SS +HHMM\fR. It is also supported to specify
+only the date \fByyyy\-mm\-dd\fR. In case of relative time, the temporal
+unit (years, months, days, hours, minutes or seconds) must be provided.
+In this case, the relative start time, end time and increment are integers.
+.SH NOTES
+The timestamps of registered maps will be stored in the temporal
+database and in the metadata of the grass maps in the spatial database.
+This assures that timestamps can always be accessed with
+\fI(r|r3|v).timestamp\fR and the temporal modules. Timestamps should
+only be modified with \fIt.register\fR because the
+\fI(r|r3|v).timestamp\fR modules have no access to the temporal
+database.
+.SH INPUT FILE FORMAT
+There are several options to register maps by means of a file. The input file
+consists of a list of map names, optionally along with timestamps. Each map
+name (and timestaps if provided) should be stored in a new line in this file.
+.PP
+When only map names are provided, the \fIincrement\fR option and the \fB\-i\fR
+flag are supported. However, when along with map names any kind of timestamp is
+provided, as well, the \fIincrement\fR option and the \fB\-i\fR are no longer
+supported.
+.PP
+Specification of map names only (\fIincrement\fR option and \fB\-i\fR flag
+supported):
+.br
+.nf
+\fC
+terra_lst_day20020113
+terra_lst_day20020114
+terra_lst_day20020115
+terra_lst_day20020116
+terra_lst_day20020117
+\fR
+.fi
+.PP
+Specification of map names and absolute start time (date) of the time
+instances (no support for \fIincrement\fR option nor \fB\-i\fR flag):
+.br
+.nf
+\fC
+terra_lst_day20020113|2002\-01\-13
+terra_lst_day20020114|2002\-01\-14
+terra_lst_day20020115|2002\-01\-15
+terra_lst_day20020116|2002\-01\-16
+terra_lst_day20020117|2002\-01\-17
+\fR
+.fi
+.PP
+Specification of map names and absolute start time (datetime) of the time
+instances (no support for \fIincrement\fR option nor \fB\-i\fR flag):
+.br
+.nf
+\fC
+terra_lst_day20020113|2002\-01\-13 10:30
+terra_lst_day20020114|2002\-01\-14 10:30
+terra_lst_day20020115|2002\-01\-15 10:30
+terra_lst_day20020116|2002\-01\-16 10:30
+terra_lst_day20020117|2002\-01\-17 10:30
+\fR
+.fi
+.PP
+Specification of map names and absolute time interval with start and end time
+(no support for \fIincrement\fR option nor \fB\-i\fR flag):
+.br
+.nf
+\fC
+prec_1|2001\-01\-01|2001\-04\-01
+prec_2|2001\-04\-01|2001\-07\-01
+prec_3|2001\-07\-01|2001\-10\-01
+prec_4|2001\-10\-01|2002\-01\-01
+prec_5|2002\-01\-01|2002\-04\-01
+prec_6|2002\-04\-01|2002\-07\-01
+\fR
+.fi
+.SH EXAMPLE
+.SS North Carolina dataset
+.SS Using a text file
+Register maps in an absolute space time dataset, creating a time interval
+.br
+.nf
+\fC
+# first:  prepare a text file with a list of input maps (see above)
+# second: register maps
+t.register \-i type=raster input=precipitation_monthly \(rs
+    file=list_of_input_maps.txt start=\(dq2009\-01\-01\(dq \(rs
+    increment=\(dq1 months\(dq
+\fR
+.fi
+.SS Using \fIg.list\fR to generate the input
+Register maps in an absolute space time dataset, creating a time interval
+.br
+.nf
+\fC
+t.register \-i type=raster input=precipitation_monthly \(rs
+    maps=\(gag.list raster pattern=\(dq*precip*\(dq sep=comma\(ga start=\(dq2009\-01\-01\(dq \(rs
+    increment=\(dq1 months\(dq
+\fR
+.fi
+.SS Register a vector map with layers representing time steps
+Assume a vector map of points that represent meteorological stations and
+it is connected to different layers depicting daily time steps. In this
+example, only the fifth layer of the vector map will be registered.
+.br
+.nf
+\fC
+# the layer is specified behind the colon
+t.register type=vector input=meteo_stations_nc_daily \(rs
+    maps=meteo_stations_nc:5 start=\(dq2009\-01\-05\(dq
+\fR
+.fi
+.SS Synthetic maps
+In this example we create 6 raster maps that will be registered in a
+single space time raster dataset named precip_abs using a monthly
+temporal granularity. The \fB\-i\fR flag generates time intervals of the
+provided \fIincrement\fR. The generated timestamps will be inspected
+using \fIr.timestamp\fR and \fIt.rast.list\fR. We will register an
+additional map with a timestamp that was set with \fIr.timestamp\fR.
+.br
+.nf
+\fC
+r.mapcalc expression=\(dqprec_1 = 100\(dq
+r.mapcalc expression=\(dqprec_2 = 200\(dq
+r.mapcalc expression=\(dqprec_3 = 300\(dq
+r.mapcalc expression=\(dqprec_4 = 400\(dq
+r.mapcalc expression=\(dqprec_5 = 500\(dq
+r.mapcalc expression=\(dqprec_6 = 600\(dq
+t.create type=strds temporaltype=absolute \(rs
+    output=precip_abs title=\(dqExample\(dq \(rs
+    descr=\(dqExample\(dq
+t.register \-i type=raster input=precip_abs \(rs
+    maps=prec_1,prec_2,prec_3,prec_4,prec_5,prec_6 \(rs
+    start=\(dq2001\-01\-01\(dq increment=\(dq1 months\(dq
+r.timestamp prec_1
+1 Jan 2001 00:00:00 / 1 Feb 2001 00:00:00
+r.timestamp prec_2
+1 Feb 2001 00:00:00 / 1 Mar 2001 00:00:00
+t.rast.list input=precip_abs
+name|mapset|start_time|end_time
+prec_1|PERMANENT|2001\-01\-01 00:00:00|2001\-02\-01 00:00:00
+prec_2|PERMANENT|2001\-02\-01 00:00:00|2001\-03\-01 00:00:00
+prec_3|PERMANENT|2001\-03\-01 00:00:00|2001\-04\-01 00:00:00
+prec_4|PERMANENT|2001\-04\-01 00:00:00|2001\-05\-01 00:00:00
+prec_5|PERMANENT|2001\-05\-01 00:00:00|2001\-06\-01 00:00:00
+prec_6|PERMANENT|2001\-06\-01 00:00:00|2001\-07\-01 00:00:00
+r.mapcalc expression=\(dqprec_7 = 700\(dq
+r.timestamp map=prec_7 date=\(dq1 jul 2001 / 1 aug 2001\(dq
+t.register type=raster input=precip_abs maps=prec_7
+t.rast.list input=precip_abs
+name|mapset|start_time|end_time
+prec_1|PERMANENT|2001\-01\-01 00:00:00|2001\-02\-01 00:00:00
+prec_2|PERMANENT|2001\-02\-01 00:00:00|2001\-03\-01 00:00:00
+prec_3|PERMANENT|2001\-03\-01 00:00:00|2001\-04\-01 00:00:00
+prec_4|PERMANENT|2001\-04\-01 00:00:00|2001\-05\-01 00:00:00
+prec_5|PERMANENT|2001\-05\-01 00:00:00|2001\-06\-01 00:00:00
+prec_6|PERMANENT|2001\-06\-01 00:00:00|2001\-07\-01 00:00:00
+prec_7|PERMANENT|2001\-07\-01 00:00:00|2001\-08\-01 00:00:00
+\fR
+.fi
+.SS Importing and registering ECA&D climatic data
+The European Climate Assessment & Dataset (ECA&D) project
+offers the E\-OBS dataset which is a daily gridded observational
+dataset for precipitation, temperature and sea level pressure in
+Europe based on ECA&D information.
+Download and decompress mean temperature data from:
+here
+by accepting their
+Terms of use.
+.br
+.nf
+\fC
+# import E\-OBS V12 into a lat\-long location (alternatively, use r.external)
+r.in.gdal \-oe input=tg_0.25deg_reg_1950\-1964_v12.0.nc \(rs
+  output=temperature_mean offset=0
+r.in.gdal \-oe input=tg_0.25deg_reg_1965\-1979_v12.0.nc \(rs
+  output=temperature_mean offset=5479 \-\-o
+r.in.gdal \-oe input=tg_0.25deg_reg_1980\-1994_v12.0.nc \(rs
+  output=temperature_mean offset=10957 \-\-o
+r.in.gdal \-oe input=tg_0.25deg_reg_1995\-2015_v12.0.nc \(rs
+  output=temperature_mean offset=16436 \-\-o
+# create STRDS
+t.create type=strds output=temperature_mean_1950_2015_daily \(rs
+  temporaltype=absolute semantictype=mean \(rs
+  title=\(dqEuropean mean temperature 1950\-2015\(dq \(rs
+  description=\(dqThe European daily mean temperature from ECAD\(dq
+# create text file with all temperature_mean rasters, one per line,
+# a) using a shell script
+for i in \(gaseq 1 23922\(ga ; do
+    echo temperature_mean.$i >> map_list.txt
+done
+# b) using a Python script
+file = open(\(dqmap_list.txt\(dq, \(dqw\(dq)
+for i in range(23922):
+    file.write(\(dqtemperature_mean.%i\(rsn\(dq % (i + 1))
+file.close()
+# register daily maps using the file created above
+t.register \-i type=raster input=temperature_mean_1950_2015_daily \(rs
+              file=map_list.txt start=\(dq1950\-01\-01\(dq increment=\(dq1 days\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.PP
+Maps registration examples in Temporal data processing Wiki
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.register source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

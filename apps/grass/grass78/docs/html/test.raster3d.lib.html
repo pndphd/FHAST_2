@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>test.raster3d.lib - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>test.raster3d.lib</b></em>  - Performs unit and integration tests for the raster3d library
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_unit_test.html">unit test</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>test.raster3d.lib</b><br></div>
+<b>test.raster3d.lib --help</b><br>
+<div id="synopsis"><b>test.raster3d.lib</b> [-<b>ul</b>]  [<b>unit</b>=<em>string</em>]   [<b>depths</b>=<em>integer</em>]   [<b>rows</b>=<em>integer</em>]   [<b>cols</b>=<em>integer</em>]   [<b>tile_size</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-u</b></dt>
+<dd>Run all unit tests</dd>
+
+<dt><b>-l</b></dt>
+<dd>Switch zip compression on</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>unit</b>=<em>string</em></dt>
+<dd>Choose the unit tests to run</dd>
+<dd>Options: <em>coord, putget, large</em></dd>
+
+<dt><b>depths</b>=<em>integer</em></dt>
+<dd>The number of depths to be used for the large file put/get value test</dd>
+<dd>Default: <em>20</em></dd>
+
+<dt><b>rows</b>=<em>integer</em></dt>
+<dd>The number of rows to be used for the large file put/get value test</dd>
+<dd>Default: <em>5400</em></dd>
+
+<dt><b>cols</b>=<em>integer</em></dt>
+<dd>The number of columns to be used for the large file put/get value test</dd>
+<dd>Default: <em>10800</em></dd>
+
+<dt><b>tile_size</b>=<em>integer</em></dt>
+<dd>The tile size in kilo bytes to be used for the large file put/get value test. Set the tile size to 2048 and the number of row*cols*depths &gt; 130000 to reproduce the tile rle error.</dd>
+<dd>Default: <em>32</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>test.raster3d.lib</em> 
+is a module dedicated for testing the raster 3d library functionality and to perform benchmark runs.
+This module is used by the testing framework to perform library tests.
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

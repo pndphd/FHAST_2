@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.reclass - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.reclass</b></em>  - Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_reclassification.html">reclassification</a>, <a href="keywords.html#attributes">attributes</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.reclass</b><br></div>
+<b>v.reclass --help</b><br>
+<div id="synopsis"><b>v.reclass</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em>  [<b>column</b>=<em>name</em>]   [<b>rules</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid</em></dd>
+<dd>Default: <em>point,line,boundary,centroid</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>column</b>=<em>name</em></dt>
+<dd>The name of the column whose values are to be used as new categories</dd>
+<dd>The source for the new key column must be type integer or string</dd>
+
+<dt><b>rules</b>=<em>name</em></dt>
+<dd>Full path to the reclass rule file</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example-1:-reclass-by-rules" class="toc">Example 1: Reclass by rules</a></li>
+        <li class="toc"><a href="#example-2:-reclass-by-attribute-column" class="toc">Example 2: Reclass by attribute column</a></li>
+    </ul></li>
+    <li class="toc"><a href="#known-issues" class="toc">KNOWN ISSUES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.reclass</em> allows user to create a new vector map based on
+the reclassification of an existing vector map. It also allows the user
+to change the <i>key column</i> away from the default of "<b>cat</b>" with
+the <b>column</b> option.
+
+<p>Rules file may contain on each row either pair:
+<div class="code"><pre>
+keyword&nbsp;value
+</pre></div>
+(separated by space) or comment beginning with '#' (hash). 
+Definition of new category begins with keyword <I>cat</I> followed
+by the new category value.
+Keyword <I>where</I> specifies SQL where condition.
+
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+No table is created for the reclassed map if the <b>column</b> option is
+used and the column type is integer (as the result could contain ambiguities).
+
+If the <b>column</b> option is used and the column type is string, a new
+table is created containing the newly generated cat numbers and a single
+column containing the unique string column values, sorted in alphabetical
+order.
+
+<p>For dissolving common boundaries, see 
+<em><a href="v.dissolve.html">v.dissolve</a></em>.
+
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+
+<h3><a name="example-1:-reclass-by-rules">Example 1: Reclass by rules</a></h3>
+
+<div class="code"><pre>
+v.reclass input=land output=land_u type=boundary rules=land.rcl
+</pre></div>
+
+the rules file contains :
+
+<div class="code"><pre>
+# land reclass file
+cat 1
+where use = 'E13' and owner = 'Jara Cimrman'
+cat 2
+where use = 'E14'
+</pre></div>
+
+Produces a new vector area map <em>land_u</em> containing boundaries from
+<em>land</em> with area category values selected from database by SQL
+select statement:
+<br>
+<tt>select id from tland where use = 'E13' and owner = 'Jara Cimrman'</tt>
+changed to category 1;
+<br>
+values selected from database by SQL select statement: 
+<br>
+<tt>select id from tland where use = 'E14'</tt> changed to category 2.
+
+
+<h3><a name="example-2:-reclass-by-attribute-column">Example 2: Reclass by attribute column</a></h3>
+
+(North Carolina sample dataset)<br>
+
+<div class="code"><pre>
+v.reclass in=streams out=streams_by_type column=I_vs_P
+
+v.db.select streams_by_type
+cat|I_vs_P
+1|intermittent
+2|perennial
+</pre></div>
+
+
+<h2><a name="known-issues">KNOWN ISSUES</a></h2>
+
+No table is created for reclassed layer if <b>rules</b> option is used.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.dissolve.html">v.dissolve</a>,
+<a href="v.extract.html">v.extract</a>
+</em>
+<p><em><a href="sql.html">GRASS SQL interface</a></em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+R.L. Glenn, USDA, SCS, NHQ-CGIS<br>
+from v.reclass to v.db.reclass and later to v.reclass in 5.7 rewritten
+by Radim Blazek
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.reclass">v.reclass source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.reclass">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

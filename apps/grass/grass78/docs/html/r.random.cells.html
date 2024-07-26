@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.random.cells - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.random.cells</b></em>  - Generates random cell values with spatial dependence.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_sampling.html">sampling</a>, <a href="keywords.html#random">random</a>, <a href="keywords.html#autocorrelation">autocorrelation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.random.cells</b><br></div>
+<b>r.random.cells --help</b><br>
+<div id="synopsis"><b>r.random.cells</b> <b>output</b>=<em>name</em> <b>distance</b>=<em>float</em>  [<b>ncells</b>=<em>integer</em>]   [<b>seed</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>distance</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Maximum distance of spatial correlation (value &gt;= 0.0)</dd>
+
+<dt><b>ncells</b>=<em>integer</em></dt>
+<dd>Maximum number of cells to be created</dd>
+<dd>Options: <em>1-</em></dd>
+
+<dt><b>seed</b>=<em>integer</em></dt>
+<dd>Random seed, default [random]</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#detailed-parameter-description" class="toc">Detailed parameter description</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a>
+    <ul class="toc">
+        <li class="toc"><a href="#random-cells-in-given-distances" class="toc">Random cells in given distances</a></li>
+        <li class="toc"><a href="#limited-number-of-random-points" class="toc">Limited number of random points</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.random.cells</em> generates a random sets of raster cells that are
+at least <b>distance</b> apart. The cells are numbered from 1 to the
+numbers of cells generated, all other cells are NULL (no data). Random
+cells will not be generated in areas masked off.
+
+<h3><a name="detailed-parameter-description">Detailed parameter description</a></h3>
+
+<dl>
+<dt><b>output</b></dt>
+<dd>Random cells. Each random cell has a unique non-zero cell value
+ranging from 1 to the number of cells generated. The heuristic for
+this algorithm is to randomly pick cells until there are no cells
+outside of the chosen cell's buffer of radius <b>distance</b>.</dd>
+
+<dt><b>distance</b></dt>
+<dd>Determines the minimum distance the centers of the random cells
+will be apart.</dd>
+
+<dt><b>seed</b></dt>
+<dd>Specifies the random seed that
+<em>r.random.cells</em> will use to generate the cells. If the random seed
+is not given,<em> r.random.cells</em> will get a seed from the process ID
+number.</dd>
+
+</dl>
+
+<h2><a name="notes">NOTES</a></h2>
+
+The original purpose for this program was to generate independent
+random samples of cells in a study area. The <b>distance</b> value is
+the amount of spatial autocorrelation for the map being studied. 
+
+<!-- The amount of spatial autocorrelation can be determined by
+using <em>r.2Dcorrelogram</em> with
+<em>r.2Dto1D</em>, or <em>r.1Dcorrelogram</em>. With <b>distance</b> set to
+zero, the <b>output</b> map will number each non-masked cell from 1 to the
+number of non-masked cells in the study region. -->
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+<h3><a name="random-cells-in-given-distances">Random cells in given distances</a></h3>
+
+North Carolina sample dataset example:
+
+<div class="code"><pre>
+g.region n=228500 s=215000 w=630000 e=645000 res=100 -p
+r.random.cells output=random_500m distance=500
+</pre></div>
+
+<h3><a name="limited-number-of-random-points">Limited number of random points</a></h3>
+
+Here is another example where we will create given number of vector points
+with the given minimal distances.
+Let's star with setting the region (we use large cells here):
+
+<div class="code"><pre>
+g.region raster=elevation
+g.region rows=20 cols=20 -p
+</pre></div>
+
+Then we generate random cells and we limit their count to 20:
+
+<div class="code"><pre>
+r.random.cells output=random_cells distance=1500 ncells=20 seed=200
+</pre></div>
+
+Finally, we convert the raster cells to points using
+<em><a href="r.to.vect.html">r.to.vect</a></em> module:
+
+<div class="code"><pre>
+r.to.vect input=random_cells output=random_points type=point
+</pre></div>
+
+An example of the result is at the Figure below on the left
+in comparison with the result without the cell limit on the right.
+
+<p>
+Additionally, we can use <em><a href="v.perturb.html">v.perturb</a></em> module
+to add random spatial deviation to their position so that they are not
+perfectly aligned with the grid. We cannot perturb the points too much,
+otherwise we might seriously break the minimal distance we set earlier.
+
+<div class="code"><pre>
+v.perturb input=random_points output=random_points_moved parameters=50 seed=200
+</pre></div>
+
+In the above examples, we were using fixed seed. This is advantageous when
+we want to generate (pseudo) random data, but we want to get reproducible
+results at the same time.
+
+<center>
+<img src="r_random_cells.png" alt="Cells and points filling the space">
+<p><em>
+    Figure: Generated cells with limited number of cells (upper left),
+    derived vector points (lower left), cells without a count limit
+    (upper right) and corresponding vector points (lower right)
+</em></p>
+</center>
+
+<!--
+r.random.cells output=random_cells_all distance=1500 seed=200
+r.random.cells output=random_cells distance=1500 ncells=20 seed=200
+r.to.vect input=random_cells_all output=random_points_all type=point
+r.to.vect input=random_cells output=random_points type=point
+
+d.mon cairo out=r_random_cells.png
+d.frame frame=a at=50,100,0,50 -c
+d.rast random_cells
+d.frame frame=b at=50,100,50,100 -c
+d.rast random_cells_all
+d.frame frame=c at=0,50,0,50 -c
+d.vect random_points color=0:53:106 fill_color=30:144:255 width=1 icon=basic/point size=20
+d.frame frame=d at=0,50,50,100 -c
+d.vect random_points_all color=0:53:106 fill_color=30:144:255 width=1 icon=basic/point size=20
+d.mon stop=cairo
+mogrify -trim r_random_cells.png
+-->
+
+
+<h2><a name="references">REFERENCES</a></h2>
+Random Field Software for GRASS GIS by Chuck Ehlschlaeger
+
+<p>  As part of my dissertation, I put together several programs that help
+GRASS (4.1 and beyond) develop uncertainty models of spatial data. I hope
+you find it useful and dependable. The following papers might clarify their
+use:
+
+<ul>
+<li> Ehlschlaeger, C.R., Shortridge, A.M., Goodchild, M.F., 1997. 
+ Visualizing spatial data uncertainty using animation. 
+ Computers &amp; Geosciences 23, 387-395. doi:10.1016/S0098-3004(97)00005-8</li>
+
+<li><a href="http://www.geo.hunter.cuny.edu/~chuck/paper.html">Modeling
+Uncertainty in Elevation Data for Geographical Analysis</a>, by
+Charles R. Ehlschlaeger, and Ashton M.  Shortridge. Proceedings of the
+7th International Symposium on Spatial Data Handling, Delft,
+Netherlands, August 1996.</li>
+
+<li><a href="http://www.geo.hunter.cuny.edu/~chuck/acm/paper.html">Dealing
+with Uncertainty in Categorical Coverage Maps: Defining, Visualizing,
+and Managing Data Errors</a>, by Charles Ehlschlaeger and Michael
+Goodchild.  Proceedings, Workshop on Geographic Information Systems at
+the Conference on Information and Knowledge Management, Gaithersburg
+MD, 1994.</li>
+
+<li><a href="http://www.geo.hunter.cuny.edu/~chuck/gislis/gislis.html">Uncertainty
+in Spatial Data: Defining, Visualizing, and Managing Data
+Errors</a>, by Charles Ehlschlaeger and Michael
+Goodchild. Proceedings, GIS/LIS'94, pp. 246-253, Phoenix AZ,
+1994.</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<!--r.1Dcorrelogram, 
+r.2Dcorrelogram, 
+r.2Dto1D, -->
+<a href="r.random.surface.html">r.random.surface</a>,
+<a href="r.random.html">r.random</a>,
+<a href="v.random.html">v.random</a>,
+<a href="r.to.vect.html">r.to.vect</a>,
+<a href="v.perturb.html">v.perturb</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Charles Ehlschlaeger; National Center for Geographic Information and
+Analysis, University of California, Santa Barbara.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.random.cells">r.random.cells source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.random.cells">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

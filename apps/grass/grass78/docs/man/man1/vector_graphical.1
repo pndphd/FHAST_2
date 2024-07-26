@@ -1,0 +1,342 @@
+.TH vector_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+Go to vector introduction | topics
+.PP
+.SS Vector modules:
+.RS 4n
+.IP \(bu 4n
+\fCv.buffer\fR \fCCreates a buffer around vector features of given type.\fR
+.IP \(bu 4n
+\fCv.build.all\fR \fCRebuilds topology on all vector maps in the current mapset.\fR
+.IP \(bu 4n
+\fCv.build\fR \fCCreates topology for vector map.
+.br
+\fR
+.IP \(bu 4n
+\fCv.build.polylines\fR \fCBuilds polylines from lines or boundaries.\fR
+.IP \(bu 4n
+\fCv.category\fR \fCAttaches, deletes or reports vector categories to/from/of map geometry.\fR
+.IP \(bu 4n
+\fCv.centroids\fR \fCAdds missing centroids to closed boundaries.\fR
+.IP \(bu 4n
+\fCv.class\fR \fCClassifies attribute data, e.g. for thematic mapping\fR
+.IP \(bu 4n
+\fCv.clean\fR \fCToolset for cleaning topology of vector map.\fR
+.IP \(bu 4n
+\fCv.clip\fR \fCExtracts features of input map which overlay features of clip map.\fR
+.IP \(bu 4n
+\fCv.cluster\fR \fCPerforms cluster identification.\fR
+.IP \(bu 4n
+\fCv.colors\fR \fCCreates/modifies the color table associated with a vector map.\fR
+.IP \(bu 4n
+\fCv.colors.out\fR \fCExports the color table associated with a vector map.\fR
+.IP \(bu 4n
+\fCv.db.addcolumn\fR \fCAdds one or more columns to the attribute table connected to a given vector map.\fR
+.IP \(bu 4n
+\fCv.db.addtable\fR \fCCreates and connects a new attribute table to a given layer of an existing vector map.\fR
+.IP \(bu 4n
+\fCv.db.connect\fR \fCPrints/sets DB connection for a vector map to attribute table.\fR
+.IP \(bu 4n
+\fCv.db.dropcolumn\fR \fCDrops a column from the attribute table connected to a given vector map.\fR
+.IP \(bu 4n
+\fCv.db.droprow\fR \fCRemoves a vector feature from a vector map through attribute selection.\fR
+.IP \(bu 4n
+\fCv.db.droptable\fR \fCRemoves existing attribute table of a vector map.\fR
+.IP \(bu 4n
+\fCv.db.join\fR \fCJoins a database table to a vector map table.\fR
+.IP \(bu 4n
+\fCv.db.reconnect.all\fR \fCReconnects attribute tables for all vector maps from the current mapset to a new database.\fR
+.IP \(bu 4n
+\fCv.db.renamecolumn\fR \fCRenames a column in the attribute table connected to a given vector map.\fR
+.IP \(bu 4n
+\fCv.db.select\fR \fCPrints vector map attributes.\fR
+.IP \(bu 4n
+\fCv.db.univar\fR \fCCalculates univariate statistics on selected table column for a GRASS vector map.\fR
+.IP \(bu 4n
+\fCv.db.update\fR \fCUpdates a column in the attribute table connected to a vector map.\fR
+.IP \(bu 4n
+\fCv.decimate\fR \fCDecimates a point cloud
+.br
+\fR
+.IP \(bu 4n
+\fCv.delaunay\fR \fCCreates a Delaunay triangulation from an input vector map containing points or centroids.\fR
+.IP \(bu 4n
+\fCv.dissolve\fR \fCDissolves boundaries between adjacent areas sharing a common category number or attribute.\fR
+.IP \(bu 4n
+\fCv.distance\fR \fCFinds the nearest element in vector map \(cqto\(cq for elements in vector map \(cqfrom\(cq.\fR
+.IP \(bu 4n
+\fCv.drape\fR \fCConverts 2D vector features to 3D by sampling of elevation raster map.\fR
+.IP \(bu 4n
+\fCv.edit\fR \fCEdits a vector map, allows adding, deleting and modifying selected vector features.\fR
+.IP \(bu 4n
+\fCv.external\fR \fCCreates a new pseudo\-vector map as a link to an OGR\-supported layer or a PostGIS feature table.\fR
+.IP \(bu 4n
+\fCv.external.out\fR \fCDefines vector output format.\fR
+.IP \(bu 4n
+\fCv.extract\fR \fCSelects vector features from an existing vector map and creates a new vector map containing only the selected features.\fR
+.IP \(bu 4n
+\fCv.extrude\fR \fCExtrudes flat vector features to 3D vector features with defined height.
+.br
+\fR
+.IP \(bu 4n
+\fCv.generalize\fR \fCPerforms vector based generalization.\fR
+.IP \(bu 4n
+\fCv.hull\fR \fCProduces a 2D/3D convex hull for a given vector map.\fR
+.IP \(bu 4n
+\fCv.import\fR \fCImports vector data into a GRASS vector map using OGR library and reprojects on the fly.\fR
+.IP \(bu 4n
+\fCv.in.ascii\fR \fCCreates a vector map from an ASCII points file or ASCII vector file.\fR
+.IP \(bu 4n
+\fCv.in.db\fR \fCCreates new vector (points) map from database table containing coordinates.\fR
+.IP \(bu 4n
+\fCv.in.dxf\fR \fCConverts file in DXF format to GRASS vector map.\fR
+.IP \(bu 4n
+\fCv.in.e00\fR \fCImports E00 file into a vector map.\fR
+.IP \(bu 4n
+\fCv.in.geonames\fR \fCImports geonames.org country files into a vector points map.\fR
+.IP \(bu 4n
+\fCv.in.lidar\fR \fCConverts LAS LiDAR point clouds to a GRASS vector map with libLAS.\fR
+.IP \(bu 4n
+\fCv.in.lines\fR \fCImports ASCII x,y[,z] coordinates as a series of lines.\fR
+.IP \(bu 4n
+\fCv.in.mapgen\fR \fCImports Mapgen or Matlab\-ASCII vector maps into GRASS.\fR
+.IP \(bu 4n
+\fCv.in.ogr\fR \fCImports vector data into a GRASS vector map using OGR library.\fR
+.IP \(bu 4n
+\fCv.in.region\fR \fCCreates a vector polygon from the current region extent.\fR
+.IP \(bu 4n
+\fCv.in.wfs\fR \fCImports GetFeature from a WFS server.\fR
+.IP \(bu 4n
+\fCv.info\fR \fCOutputs basic information about a vector map.\fR
+.IP \(bu 4n
+\fCv.kcv\fR \fCRandomly partition points into test/train sets.\fR
+.IP \(bu 4n
+\fCv.kernel\fR \fCGenerates a raster density map from vector points map.
+.br
+\fR
+.IP \(bu 4n
+\fCv.label\fR \fCCreates paint labels for a vector map from attached attributes.\fR
+.IP \(bu 4n
+\fCv.label.sa\fR \fCCreate optimally placed labels for vector map(s)\fR
+.IP \(bu 4n
+\fCv.lidar.correction\fR \fCCorrects the v.lidar.growing output. It is the last of the three algorithms for LIDAR filtering.\fR
+.IP \(bu 4n
+\fCv.lidar.edgedetection\fR \fCDetects the object\(cqs edges from a LIDAR data set.\fR
+.IP \(bu 4n
+\fCv.lidar.growing\fR \fCBuilding contour determination and Region Growing algorithm for determining the building inside\fR
+.IP \(bu 4n
+\fCv.lrs.create\fR \fCCreates a linear reference system.\fR
+.IP \(bu 4n
+\fCv.lrs.label\fR \fCCreates stationing from input lines, and linear reference system.\fR
+.IP \(bu 4n
+\fCv.lrs.segment\fR \fCCreates points/segments from input lines, linear reference system and positions read from stdin or a file.\fR
+.IP \(bu 4n
+\fCv.lrs.where\fR \fCFinds line id and real km+offset for given points in vector map using linear reference system.\fR
+.IP \(bu 4n
+\fCv.mkgrid\fR \fCCreates a vector map of a user\-defined grid.\fR
+.IP \(bu 4n
+\fCv.neighbors\fR \fCNeighborhood analysis tool for vector point maps.
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.alloc\fR \fCAllocates subnets for nearest centers.
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.allpairs\fR \fCComputes the shortest path between all pairs of nodes in the network.\fR
+.IP \(bu 4n
+\fCv.net.bridge\fR \fCComputes bridges and articulation points in the network.\fR
+.IP \(bu 4n
+\fCv.net.centrality\fR \fCComputes degree, centrality, betweeness, closeness and eigenvector centrality measures in the network.\fR
+.IP \(bu 4n
+\fCv.net.components\fR \fCComputes strongly and weakly connected components in the network.\fR
+.IP \(bu 4n
+\fCv.net.connectivity\fR \fCComputes vertex connectivity between two sets of nodes in the network.\fR
+.IP \(bu 4n
+\fCv.net.distance\fR \fCComputes shortest distance via the network between the given sets of features.
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.flow\fR \fCComputes the maximum flow between two sets of nodes in the network.\fR
+.IP \(bu 4n
+\fCv.net\fR \fCPerforms network maintenance.\fR
+.IP \(bu 4n
+\fCv.net.iso\fR \fCSplits subnets for nearest centers by cost isolines.
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.path\fR \fCFinds shortest path on vector network.\fR
+.IP \(bu 4n
+\fCv.net.salesman\fR \fCCreates a cycle connecting given nodes (Traveling salesman problem).
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.spanningtree\fR \fCComputes minimum spanning tree for the network.\fR
+.IP \(bu 4n
+\fCv.net.steiner\fR \fCCreates Steiner tree for the network and given terminals.
+.br
+\fR
+.IP \(bu 4n
+\fCv.net.timetable\fR \fCFinds shortest path using timetables.\fR
+.IP \(bu 4n
+\fCv.net.visibility\fR \fCPerforms visibility graph construction.\fR
+.IP \(bu 4n
+\fCv.normal\fR \fCTests for normality for vector points.\fR
+.IP \(bu 4n
+\fCv.out.ascii\fR \fCExports a vector map to a GRASS ASCII vector representation.
+.br
+\fR
+.IP \(bu 4n
+\fCv.out.dxf\fR \fCExports vector map to DXF file format.\fR
+.IP \(bu 4n
+\fCv.out.lidar\fR \fCExports vector points as LAS point cloud
+.br
+\fR
+.IP \(bu 4n
+\fCv.out.ogr\fR \fCExports a vector map layer to any of the supported OGR vector formats.
+.br
+\fR
+.IP \(bu 4n
+\fCv.out.postgis\fR \fCExports a vector map layer to PostGIS feature table.\fR
+.IP \(bu 4n
+\fCv.out.pov\fR \fCConverts GRASS x,y,z points to POV\-Ray x,z,y format.\fR
+.IP \(bu 4n
+\fCv.out.svg\fR \fCExports a vector map to SVG file.\fR
+.IP \(bu 4n
+\fCv.out.vtk\fR \fCConverts a vector map to VTK ASCII output.\fR
+.IP \(bu 4n
+\fCv.outlier\fR \fCRemoves outliers from vector point data.\fR
+.IP \(bu 4n
+\fCv.overlay\fR \fCOverlays two vector maps offering clip, intersection, difference, symmetrical difference, union operators.\fR
+.IP \(bu 4n
+\fCv.pack\fR \fCExports a vector map as GRASS GIS specific archive file\fR
+.IP \(bu 4n
+\fCv.parallel\fR \fCCreates parallel line to input vector lines.\fR
+.IP \(bu 4n
+\fCv.patch\fR \fCCreates a new vector map by combining other vector maps.\fR
+.IP \(bu 4n
+\fCv.perturb\fR \fCRandom location perturbations of vector points.\fR
+.IP \(bu 4n
+\fCv.profile\fR \fCVector map profiling tool\fR
+.IP \(bu 4n
+\fCv.proj\fR \fCRe\-projects a vector map from one location to the current location.\fR
+.IP \(bu 4n
+\fCv.qcount\fR \fCIndices for quadrat counts of vector point lists.\fR
+.IP \(bu 4n
+\fCv.random\fR \fCGenerates random 2D/3D vector points.\fR
+.IP \(bu 4n
+\fCv.rast.stats\fR \fCCalculates univariate statistics from a raster map based on a vector map and uploads statistics to new attribute columns.\fR
+.IP \(bu 4n
+\fCv.reclass\fR \fCChanges vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.\fR
+.IP \(bu 4n
+\fCv.rectify\fR \fCRectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.\fR
+.IP \(bu 4n
+\fCv.report\fR \fCReports geometry statistics for vector maps.\fR
+.IP \(bu 4n
+\fCv.sample\fR \fCSamples a raster map at vector point locations.\fR
+.IP \(bu 4n
+\fCv.segment\fR \fCCreates points/segments from input vector lines and positions.\fR
+.IP \(bu 4n
+\fCv.select\fR \fCSelects features from vector map (A) by features from other vector map (B).\fR
+.IP \(bu 4n
+\fCv.split\fR \fCSplits vector lines to shorter segments.\fR
+.IP \(bu 4n
+\fCv.support\fR \fCUpdates vector map metadata.\fR
+.IP \(bu 4n
+\fCv.surf.bspline\fR \fCPerforms bicubic or bilinear spline interpolation with Tykhonov regularization.\fR
+.IP \(bu 4n
+\fCv.surf.idw\fR \fCProvides surface interpolation from vector point data by Inverse Distance Squared Weighting.\fR
+.IP \(bu 4n
+\fCv.surf.rst\fR \fCPerforms surface interpolation from vector points map by splines.
+.br
+\fR
+.IP \(bu 4n
+\fCv.timestamp\fR \fCModifies a timestamp for a vector map.
+.br
+\fR
+.IP \(bu 4n
+\fCv.to.3d\fR \fCPerforms transformation of 2D vector features to 3D.\fR
+.IP \(bu 4n
+\fCv.to.db\fR \fCPopulates attribute values from vector features.\fR
+.IP \(bu 4n
+\fCv.to.lines\fR \fCConverts vector polygons or points to lines.\fR
+.IP \(bu 4n
+\fCv.to.points\fR \fCCreates points along input lines in new vector map with 2 layers.\fR
+.IP \(bu 4n
+\fCv.to.rast\fR \fCConverts (rasterize) a vector map into a raster map.\fR
+.IP \(bu 4n
+\fCv.to.rast3\fR \fCConverts a vector map (only points) into a 3D raster map.\fR
+.IP \(bu 4n
+\fCv.transform\fR \fCPerforms an affine transformation (shift, scale and rotate) on vector map.\fR
+.IP \(bu 4n
+\fCv.type\fR \fCChanges type of vector features.\fR
+.IP \(bu 4n
+\fCv.univar\fR \fCCalculates univariate statistics of vector map features.
+.br
+\fR
+.IP \(bu 4n
+\fCv.unpack\fR \fCImports a GRASS GIS specific vector archive file (packed with v.pack) as a vector map\fR
+.IP \(bu 4n
+\fCv.vect.stats\fR \fCCount points in areas, calculate statistics from point attributes.\fR
+.IP \(bu 4n
+\fCv.vol.rst\fR \fCInterpolates point data to a 3D raster map using regularized spline with tension (RST) algorithm.\fR
+.IP \(bu 4n
+\fCv.voronoi\fR \fCCreates a Voronoi diagram constrained to the extents of the current region from an input vector map containing points or centroids.\fR
+.IP \(bu 4n
+\fCv.what\fR \fCQueries a vector map at given locations.\fR
+.IP \(bu 4n
+\fCv.what.rast\fR \fCUploads raster values at positions of vector points to the table.\fR
+.IP \(bu 4n
+\fCv.what.rast3\fR \fCUploads 3D raster values at positions of vector points to the table.\fR
+.IP \(bu 4n
+\fCv.what.strds\fR \fCUploads space time raster dataset values at positions of vector points to the table.\fR
+.IP \(bu 4n
+\fCv.what.vect\fR \fCUploads vector values at positions of vector points to the table.\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

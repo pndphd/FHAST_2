@@ -1,0 +1,419 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.overlay - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.overlay</b></em>  - Overlays two vector maps offering clip, intersection, difference, symmetrical difference, union operators.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#spatial query">spatial query</a>, <a href="keywords.html#clip">clip</a>, <a href="keywords.html#difference">difference</a>, <a href="keywords.html#intersection">intersection</a>, <a href="keywords.html#union">union</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.overlay</b><br></div>
+<b>v.overlay --help</b><br>
+<div id="synopsis"><b>v.overlay</b> [-<b>t</b>] <b>ainput</b>=<em>name</em>  [<b>alayer</b>=<em>string</em>]   [<b>atype</b>=<em>string</em>[,<i>string</i>,...]]  <b>binput</b>=<em>name</em>  [<b>blayer</b>=<em>string</em>]   [<b>btype</b>=<em>string</em>[,<i>string</i>,...]]  <b>operator</b>=<em>string</em> <b>output</b>=<em>name</em>  [<b>olayer</b>=<em>string</em>[,<i>string</i>,...]]   [<b>snap</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Do not create attribute table</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>ainput</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map (A)</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>alayer</b>=<em>string</em></dt>
+<dd>Layer number or name (vector map A)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>atype</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Feature type (vector map A)</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, area, auto</em></dd>
+<dd>Default: <em>auto</em></dd>
+
+<dt><b>binput</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map (B)</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>blayer</b>=<em>string</em></dt>
+<dd>Layer number or name (vector map B)</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>btype</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Feature type (vector map B)</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>area</em></dd>
+<dd>Default: <em>area</em></dd>
+
+<dt><b>operator</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Operator defines features written to output vector map</dd>
+<dd>Feature is written to output if the result of operation 'ainput operator binput' is true. Input feature is considered to be true, if category of given layer is defined.</dd>
+<dd>Options: <em>and, or, not, xor</em></dd>
+<dd><b>and</b>: also known as 'intersection' in GIS</dd>
+<dd><b>or</b>: also known as 'union' in GIS (only for atype=area)</dd>
+<dd><b>not</b>: also known as 'difference' (features from ainput not overlaid by features from binput)</dd>
+<dd><b>xor</b>: also known as 'symmetrical difference' (features from either ainput or binput but not those from ainput overlaid by binput (only for atype=area)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>olayer</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Output layer for new category, ainput and binput</dd>
+<dd>If 0 or not given, the category is not written</dd>
+<dd>Default: <em>1,0,0</em></dd>
+
+<dt><b>snap</b>=<em>float</em></dt>
+<dd>Snapping threshold for boundaries</dd>
+<dd>Disable snapping with snap &lt;= 0</dd>
+<dd>Default: <em>1e-8</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#and-operator" class="toc">AND operator</a></li>
+        <li class="toc"><a href="#or-operator" class="toc">OR operator</a></li>
+        <li class="toc"><a href="#xor-operator" class="toc">XOR operator</a></li>
+        <li class="toc"><a href="#not-operator" class="toc">NOT operator</a></li>
+        <li class="toc"><a href="#overlay-operations:-and,-or,-not,-xor" class="toc">Overlay operations: AND, OR, NOT, XOR</a></li>
+        <li class="toc"><a href="#polygons-overlaid-with-polygons" class="toc">Polygons overlaid with polygons</a></li>
+        <li class="toc"><a href="#lines-overlaid-with-polygons" class="toc">Lines overlaid with polygons</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.overlay</em> allows the user to overlay two vector maps. Features 
+in <b>ainput</b> can be lines or areas and are cut with areas in 
+<b>binput</b>. Simple <i>clipping</i> can be performed with the <b>and</b> 
+operator.
+<p>
+If areas in <b>ainput</b> are overlaid with areas in <b>binput</b>, 
+it is sometimes necessary to snap areas of <b>binput</b> to those of 
+<b>ainput</b>, otherwise areas can go missing or many sliver areas 
+can be created. Snapping is enabled by default and can be disabled by 
+setting the <b>snap</b> option to a negative value. Recommended values 
+are between 0.00000001 and 0.0001. Using larger values for snapping can 
+have undesired side-effects, but may sometimes be necessary to get a 
+clean output (see example below). In general, it is recommended to start 
+with a small snapping threshold, gradually increasing the threshold until 
+the result is reasonably clean. Snapping modifies only boundaries in 
+binput, which are snapped to boundaries in ainput. Boundaries in <b>ainput</b> 
+are not modified.
+<!-- This is outdated 
+There are 3 links attached to features in output map, 
+<ul>
+<li><b>field 1</b>: link to the new table, new table has 3 columns
+    <ul>
+        <li><b>cat</b> - key column linking rows to features
+        <li><b>cata</b> - category of <i>afield</i> from <i>ainput</i>
+        <li><b>catb</b> - category of <i>bfield</i> from <i>binput</i>
+    </ul>
+<li><b>field 2</b>: category of <i>afield</i> from <i>ainput</i>
+<li><b>field 3</b>: category of <i>bfield</i> from <i>binput</i>
+</ul>
+-->
+
+<h2><a name="notes">NOTES</a></h2>
+Currently only areas in <b>ainput</b> are supported for the operators 
+<em>or</em> and <em>xor</em>! See also <em><a href="v.select.html">v.select</a></em>.
+
+The operator defines what kind of operation will be done. Features are 
+written to output, if the result of an operation <b>ainput</b> operator <b>binput</b> 
+is true.
+
+<p>
+If the <i>first</i> number of the <b>olayer</b> option is greater than 0, then the 
+resulting output map has a merged attribute table in the given layer 
+number. The original column names have a prefix (<em>a_</em> and 
+<em>b_</em>) corresponding to <b>ainput</b> and <b>binput</b> map.
+<p>
+If the <i>second</i> number of the <b>olayer</b> option is greater than 0, then the 
+categories of <b>ainput</b> in layer <b>alayer</b> are transferred to
+the output layer with the second number.
+<p>
+If the <i>third</i> number of the <b>olayer</b> option is greater than 0, then the 
+categories of <b>binput</b> in layer <em>blayer</em> are transferred to
+the output layer with the third number.
+
+<p>
+If <b>atype</b>=auto is given than <em>v.overlay</em> determines
+feature type for <b>ainput</b> from the first found feature.
+
+<!-- This is outdated
+<p><div class="code"><pre>
+v.db.connect map=outputmap table=ainput.dbf field=2
+v.db.connect map=outputmap table=binput.dbf field=3
+
+</pre></div>
+
+<p><b>Attention:</b> Removing the output map will also delete all tables linked to
+it! Therefore it is advisable to copy tables from ainput and binput first and
+connect the copied tables to the output map.-->
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+
+Preparation of example data (North Carolina sample dataset):
+
+<div class="code"><pre>
+# Create an empty box for overlaying to ZIP code vector map
+v.mkgrid map=box grid=1,1 position=coor coordinates=584037,201970 box=50000,50000
+
+# set region to ZIP codes and box vector maps
+g.region vector=zipcodes_wake,box -p res=100 -a
+# enlarge region a bit for "white border" around map in monitor
+g.region n=n+1000 s=s-1000 w=w-1000 e=e+1000 -p
+d.mon wx0
+</pre></div>
+
+
+<h3><a name="and-operator">AND operator</a></h3>
+
+Clipping example (no attribute table is generated here):
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay -t ainput=box binput=zipcodes_wake operator=and output=v_overlay_AND
+d.vect map=v_overlay_AND
+</pre></div>
+
+<center>
+<img src="v_overlay_op_and.png" alt="v.overlay with AND operator"><br>
+<i>Figure: v.overlay with AND operator (selected polygons in grey color)</i>
+</center>
+
+
+<h3><a name="or-operator">OR operator</a></h3>
+
+Union example of areas:
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay -t ainput=box binput=zipcodes_wake operator=or output=v_overlay_OR
+d.vect map=v_overlay_OR
+</pre></div>
+
+<center>
+<img src="v_overlay_op_or.png" alt="v.overlay with OR operator"><br>
+<i>Figure: v.overlay with OR operator (selected polygons in grey color)</i>
+</center>
+
+
+<h3><a name="xor-operator">XOR operator</a></h3>
+
+Symmetrical difference example:
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay -t ainput=box binput=zipcodes_wake operator=xor output=v_overlay_XOR
+d.vect map=v_overlay_XOR
+</pre></div>
+
+<center>
+<img src="v_overlay_op_xor.png" alt="v.overlay with XOR operator"><br>
+<i>Figure: v.overlay with XOR operator (selected polygons in grey color)</i>
+</center>
+
+
+<h3><a name="not-operator">NOT operator</a></h3>
+
+Difference example:
+
+<div class="code"><pre>
+d.vect map=zipcodes_wake fill_color=0:128:0
+d.vect map=box fill_color=85:130:176
+v.overlay -t ainput=box binput=zipcodes_wake operator=not output=v_overlay_NOT
+d.vect map=v_overlay_NOT
+</pre></div>
+
+<center>
+<img src="v_overlay_op_not.png" alt="v.overlay with NOT operator"><br>
+<i>Figure: v.overlay with NOT operator (selected polygon in grey color)</i>
+</center>
+
+
+<h3><a name="overlay-operations:-and,-or,-not,-xor">Overlay operations: AND, OR, NOT, XOR</a></h3>
+
+ZIP code examples, based on North Carolina sample dataset:
+
+<div class="code"><pre>
+# creation of simple dataset
+v.extract input=zipcodes_wake output=poly1 where="cat = 42"
+v.extract input=urbanarea output=poly2 where="cat = 55"
+
+v.overlay ainput=poly1 binput=poly2 operator=and output=poly_1_2_and
+v.overlay ainput=poly1 binput=poly2 operator=or  output=poly_1_2_or
+v.overlay ainput=poly1 binput=poly2 operator=not output=poly_1_2_not
+v.overlay ainput=poly1 binput=poly2 operator=xor output=poly_1_2_xor
+</pre></div>
+
+<center>
+<img src="v_overlay_poly_1_2.png" alt="GRASS v.overlay: input polygons (1 and 2)" border=0>
+<br>
+<i>Figure: v.overlay operations: original input polygons</i>
+</center>
+<p>
+<center>
+<img src="v_overlay_poly_1_2_a_o_n_x.png" alt="GRASS v.overlay results: AND, OR, NOT, XOR operations" border=0>
+<br>
+<i>Figure: v.overlay results of AND, OR, NOT, XOR operations</i>
+</center>
+
+
+<h3><a name="polygons-overlaid-with-polygons">Polygons overlaid with polygons</a></h3>
+<div class="code"><pre>
+v.overlay ainput=lake binput=province output=lakeXprovince operator=or
+</pre></div>
+
+Polygon union of urban area and Census 2000 areas (North Carolina dataset):
+
+<div class="code"><pre>
+# input maps
+d.vect urbanarea
+d.vect census_wake2000
+
+# union
+v.overlay ain=census_wake2000 bin=urbanarea out=urban_census2000 operator=or
+
+# show result, graphically zooming a subset
+g.region n=230400 s=223800 w=655800 e=662400
+d.erase
+d.vect urban_census2000
+
+# show merged attribute table
+v.db.select urban_census2000 where="cat=108" -v
+cat|108
+a_cat|98
+a_AREA|231001264
+a_PERIMETE|67804.305
+a_TRACT_|98
+a_TRACT_ID|98
+a_RINGS_OK|1
+a_RINGS_NO|0
+a_ID|98
+a_FIPSSTCO|37183
+a_TRT2000|054108
+a_STFID|37183054108
+a_TRACTID|541.08
+a_TRACT|541.08
+b_cat|55
+b_OBJECTID|55
+b_UA|73261
+b_NAME|Raleigh
+b_UA_TYPE|UA
+</pre></div>
+
+<center>
+<img src="v_overlay_urbanarea.png" alt="GRASS v.overlay: polygon to polygon union (input 1)" border=1>
+<img src="v_overlay_census_wake2000.png" alt="GRASS v.overlay: polygon to polygon union (input 2)" border=1>
+<img src="v_overlay_urban_census2000.png" alt="GRASS v.overlay: polygon to polygon union (result)" border=1>
+<br>
+<i>Figure: v.overlay: Polygon union (right) of urban area (left) and Census 2000 (middle) areas (North Carolina dataset)</i>
+</center>
+
+<p>
+As can be seen by the resulting large number of centroids on boundaries, 
+the urban areas do not match exactly the Census 2000 areas. In this case 
+a clean result can be obtained by snapping with a threshold of 0.1 m.
+
+<h3><a name="lines-overlaid-with-polygons">Lines overlaid with polygons</a></h3>
+
+Using the North Carolina sample dataset, we clip the roads map to the area
+of city of Raleigh, preserving road attributes in layer 1:
+<div class="code"><pre>
+g.region vector=zipcodes_wake
+
+# extract Raleigh city:
+v.extract in=zipcodes_wake out=raleigh where="ZIPNAME = 'RALEIGH'"
+
+# clip road network to city polygon:
+v.overlay ainput=roadsmajor atype=line binput=raleigh out=roadsmajor_raleigh operator=and olayer=0,1,0
+</pre></div>
+
+<center>
+<img src="v_overlay_area_lines.png" alt="GRASS v.overlay: Line to polygon clipping"><br>
+<table border=0 width=590>
+<tr><td><center>
+<i>Figure: v.overlay: Line to polygon clipping</i>
+</center></td></tr>
+</table>
+</center>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.clip.html">v.clip</a>,
+<a href="v.db.connect.html">v.db.connect</a>,
+<a href="v.select.html">v.select</a>,
+<a href="g.copy.html">g.copy</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Markus Metz<br>
+Speedup for large, complex input areas sponsored by <a href="https://www.mundialis.de">mundialis</a>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.overlay">v.overlay source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.overlay">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.to.rast3 - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.to.rast3</b></em>  - Converts 2D raster map slices to one 3D raster volume map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_conversion.html">conversion</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.to.rast3</b><br></div>
+<b>r.to.rast3 --help</b><br>
+<div id="synopsis"><b>r.to.rast3</b> [-<b>m</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>name</em>  [<b>tilesize</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists) with output map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>2D raster maps which represent the slices</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>tilesize</b>=<em>integer</em></dt>
+<dd>The maximum tile size in kilo bytes. Default is 32KB.</dd>
+<dd>Default: <em>32</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example-1" class="toc">EXAMPLE 1</a></li>
+        <li class="toc"><a href="#example-2" class="toc">EXAMPLE 2</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Converts 2D raster map(s) into one raster3D map. It is important to
+properly set the 3D region settings, especially number or layers and
+depth of layers. If the 2D and 3D region settings are different,
+the 2D resolution will be adjusted to the 3D resolution.
+
+<center>
+<img src="r.to.rast3.png" border="0"><br>
+<table border="0" width="700">
+<tr><td><center>
+<i>How r.to.rast3 works</i>
+</center></td></tr>
+</table>
+</center>
+
+
+<h2><a name="notes">NOTES</a></h2>
+Every 2D raster map is copied as one slice to the raster3D map. Slices
+are counted from bottom to the top, so the bottom slice has to be number 1. 
+<br><br>
+If less number of 2D raster maps are provided than defined depths, the
+last given 2D map is used to fill up the remaining raster3D slices to
+the top.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="example-1">EXAMPLE 1</a></h3>
+
+This example shows how to convert 6 maps into one 3D map with 6 layers.
+<br>
+
+<div class="code"><pre>
+# Mapset data in Location slovakia3d
+g.region raster=prec_1,prec_2,prec_3,prec_4,prec_5,prec_6 -p
+g.region b=0 t=600 tbres=100 res3=100 -p3
+r.to.rast3 input=prec_1,prec_2,prec_3,prec_4,prec_5,prec_6 output=new_3dmap
+</pre></div>
+
+<h3><a name="example-2">EXAMPLE 2</a></h3>
+This example shows how to convert 3 maps into one 3D map with 6 layers.
+<br>
+
+<div class="code"><pre>
+# Mapset data in Location slovakia3d
+g.region b=0 t=600 tbres=100 res3=100 -p3
+r.to.rast3 input=prec_1,prec_2,prec_3 output=new_3dmap
+</pre></div>                                                                           
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r3.to.rast.html">r3.to.rast</a>,
+<a href="r.to.rast3elev.html">r.to.rast3elev</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Soeren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.to.rast3">r.to.rast3 source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.to.rast3">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.shade.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.shade.py</b></em>  - Drapes a color raster over an shaded relief or aspect map.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_elevation.html">elevation</a>, <a href="keywords.html#relief">relief</a>, <a href="keywords.html#hillshade">hillshade</a>, <a href="keywords.html#visualization">visualization</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.shade.py</b><br></div>
+<b>d.shade.py --help</b><br>
+<div id="synopsis"><b>d.shade.py</b> <b>shade</b>=<em>name</em> <b>color</b>=<em>name</em>  [<b>brighten</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>shade</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of shaded relief or aspect raster map</dd>
+
+<dt><b>color</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster to drape over relief raster map</dd>
+<dd>Typically, this raster is elevation or other colorful raster</dd>
+
+<dt><b>brighten</b>=<em>integer</em></dt>
+<dd>Percent to brighten</dd>
+<dd>Options: <em>-99-99</em></dd>
+<dd>Default: <em>0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.shade</em> will drape a color raster map over a shaded relief map.
+In place of shaded relief, any raster map can be used including aspect or slope.
+The color raster map is usually an elevation raster map with colorful color
+table (as opposed to gray scale color table). However, any raster map can be
+used including categorical raster maps.
+
+<p>
+The advantage of this module is that it allows visualizing the shaded map
+without a need to create a new raster which would combine both.
+Comparing to creating shaded relief as semi-transparent overlay on
+the color raster map, this module gives result with more saturated colors.
+
+<p>
+The input for this module can be created for example using
+<a href="r.slope.aspect.html">r.slope.aspect</a> or
+<a href="r.relief.html">r.relief</a><br>.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+Refer to the <em><a href="d.his.html">d.his</a></em> help page for more details;
+<em>d.shade</em> is simply a frontend to that module.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+In this example, the <tt>aspect</tt> map in the North Carolina sample
+dataset location is used to hillshade the <tt>elevation</tt> map:
+
+<div class="code"><pre>
+g.region raster=aspect -p
+d.mon wx0
+d.shade shade=aspect color=elevation
+</pre></div>
+
+<!--
+image generated using the example above
+display region: g.region -a n=227228 s=220895 w=631362 e=641170
+d.out.file dshade.png
+optipng -o5 dshade.png
+-->
+<center>
+<img src="dshade.png" alt="Elevation with aspect shades">
+<p>
+Figure: A detail of raster created by applying shading effect of aspect
+to elevation raster map from North Carolina dataset elevation map
+<!--
+TODO: perhaps add some explanation or thoughts about aspect versus shaded
+relief such as: in this case the shades created using aspect are much sharper
+comparing to what shaded relief would give and there are some extreme values
+in some areas
+-->
+</center>
+
+In this next example, a shaded relief raster map is created
+and used to create a colorized hillshade:
+
+<div class="code"><pre>
+g.region raster=elevation
+r.relief input=elevation output=elevation_shaded_relief
+
+d.mon wx1
+d.shade shade=elevation_shaded_relief color=elevation
+</pre></div>
+
+Interesting visualizations can be created using different color tables for
+elevation raster map, for example using <tt>haxby</tt> color table.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.his.html">d.his</a>,
+<a href="g.pnmcomp.html">g.pnmcomp</a>,
+<a href="r.shade.html">r.shade</a>,
+<a href="r.slope.aspect.html">r.slope.aspect</a>,
+<a href="r.relief.html">r.relief</a><br>
+<a href="wxGUI.nviz.html">wxGUI 3D viewer (NVIZ)</a>
+</em>
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Unknown; updated to GRASS 5.7 by Michael Barton
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/d.shade">d.shade source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/d.shade">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

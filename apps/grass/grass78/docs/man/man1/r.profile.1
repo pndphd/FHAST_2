@@ -1,0 +1,207 @@
+.TH r.profile 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.profile\fR\fR  \- Outputs the raster map layer values lying on user\-defined line(s).
+.SH KEYWORDS
+raster, profile, transect
+.SH SYNOPSIS
+\fBr.profile\fR
+.br
+\fBr.profile \-\-help\fR
+.br
+\fBr.profile\fR [\-\fBgc\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBcoordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBfile\fR=\fIname\fR]   [\fBresolution\fR=\fIfloat\fR]   [\fBnull_value\fR=\fIstring\fR]   [\fBunits\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Output easting and northing in first two columns of four column output
+.IP "\fB\-c\fR" 4m
+.br
+Output RRR:GGG:BBB color values for each profile point
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name of file for output (use output=\- for stdout)
+.br
+Default: \fI\-\fR
+.IP "\fBcoordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Profile coordinate pairs
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name of input file containing coordinate pairs
+.br
+Use instead of the \(cqcoordinates\(cq option. \(dq\-\(dq reads from stdin.
+.IP "\fBresolution\fR=\fIfloat\fR" 4m
+.br
+Resolution along profile (default = current region resolution)
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fI*\fR
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Units
+.br
+If units are not specified, current location units are used. Meters are used by default in geographic (latlon) locations.
+.br
+Options: \fImeters, kilometers, feet, miles\fR
+.SH DESCRIPTION
+This program outputs two or four column (with \fB\-g\fR) data to stdout or
+an ASCII file. The default two column output consists of cumulative profile
+length and raster value. The optional four column output consists
+of easting, northing, cumulative profile length, and raster value. Profile
+end or \(dqturning\(dq points can be set manually with the \fBcoordinates\fR
+argument. The profile resolution, or distance between profile
+points, is obtained from the current region resolution, or can be manually
+set with the \fBresolution\fR argument.
+.PP
+The \fBcoordinates\fR parameter can be set to comma separated geographic
+coordinates for profile line endpoints.
+Alternatively the coordinate pairs can be piped from the text file specified
+by \fBfile\fR option, or if set to \(dq\-\(dq, from stdin.
+In these cases the coordinate pairs should be given one comma separated pair
+per line.
+.PP
+The \fBresolution\fR parameter sets the distance between each profile point
+(resolution). The resolution must be provided in GRASS database units (i.e.
+decimal degrees for Lat Long databases and meters for UTM). By default
+\fIr.profile\fR uses the resolution of the current GRASS region.
+.PP
+The \fBnull\fR parameter can optionally be set to change the character
+string representing null values.
+.SH OUTPUT FORMAT
+The multi column output from \fIr.profile\fR is intended for easy use in
+other programs.  The output can be piped (|) directly into other programs or
+saved to a file for later use. Output with geographic coordinates (\fI\-g\fR)
+is compatible with \fIv.in.ascii\fR and can
+be piped direcly into this program.
+.br
+.nf
+\fC
+r.profile \-g input=elevation coordinates=... | v.in.ascii output=elevation_profile separator=space
+\fR
+.fi
+The 2 column output is compatible with most plotting programs.
+.PP
+The optional RGB output provides the associated GRASS colour value for
+each profile point.
+.PP
+Option \fBunits\fR enables to set units of the profile length output.
+If the units are not specified, current location units will be used.
+In case of geographic locations (latitude/longitude), meters are used as default unit.
+.SH NOTES
+The profile resolution is measured exactly from the supplied end or
+\(dqturning\(dq point along the profile. The end of a profile segment will be an
+exact multiple of the profile resolution and will therefore not always match
+the end point coordinates entered for the segmanet.
+.PP
+To extract the numbers in scripts, following parameters can be used:
+.br
+.nf
+\fC
+r.profile input=dgm12.5 coordinates=3570631,5763556 2>/dev/null
+\fR
+.fi
+This filters out the everything except the numbers.
+.SH EXAMPLES
+.SS Extraction of values along profile defined by coordinates (variant 1)
+Extract a profile with coordinates (wayoints) provided on the command line
+(North Carolina data set):
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+r.profile \-g input=elevation output=profile_points.csv \(rs
+          coordinates=641712,226095,641546,224138,641546,222048,641049,221186
+\fR
+.fi
+This will extract a profile along the track defined by the three coordinate
+pairs. The output file \(dqprofile_points.csv\(dq contains
+east,north,distance,value (here: elevation).
+.PP
+.br
+.SS Extraction of values along profile defined by coordinates (variant 2)
+Coordinate pairs can also being \(dqpiped\(dq into \fIr.profile\fR (variant 2a):
+.br
+.nf
+\fC
+r.profile elevation resolution=1000 file=\- << EOF
+641712,226095
+641546,224138
+641546,222048
+641049,221186
+EOF
+\fR
+.fi
+.PP
+Coordinate pairs can also being \(dqpiped\(dq into \fIr.profile\fR (variant 2b):
+.br
+.nf
+\fC
+echo \(dq641712,226095
+641546,224138
+641546,222048
+641049,221186\(dq > coors.txt
+cat coors.txt | r.profile elevation resolution=1000 file=\-
+\fR
+.fi
+The output is printed into the terminal (unless the \fIoutput\fR parameter
+is used) and looks as follows:
+.br
+.nf
+\fC
+Using resolution: 1000 [meters]
+Output columns:
+Along track dist. [meters], Elevation
+Approx. transect length: 1964.027749 [meters]
+ 0.000000 84.661507
+ 1000.000000 98.179062
+Approx. transect length: 2090.000000 [meters]
+ 1964.027749 83.638138
+ 2964.027749 89.141029
+ 3964.027749 78.497757
+Approx. transect length: 995.014070 [meters]
+ 4054.027749 73.988029
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.in.ascii,
+r.what,
+r.transect,
+wxGUI profile tool
+\fR
+.SH AUTHOR
+Bob Covill
+.SH SOURCE CODE
+.PP
+Available at: r.profile source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

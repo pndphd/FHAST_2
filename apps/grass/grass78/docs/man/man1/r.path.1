@@ -1,0 +1,282 @@
+.TH r.path 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.path\fR\fR  \- Traces paths from starting points following input directions.
+.SH KEYWORDS
+raster, hydrology, cost surface
+.SH SYNOPSIS
+\fBr.path\fR
+.br
+\fBr.path \-\-help\fR
+.br
+\fBr.path\fR [\-\fBcan\fR] \fBinput\fR=\fIname\fR \fBformat\fR=\fIstring\fR  [\fBvalues\fR=\fIname\fR]   [\fBraster_path\fR=\fIname\fR]   [\fBvector_path\fR=\fIname\fR]   [\fBstart_coordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]]   [\fBstart_points\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Copy input cell values on output
+.IP "\fB\-a\fR" 4m
+.br
+Accumulate input values along the path
+.IP "\fB\-n\fR" 4m
+.br
+Count cell numbers along the path
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input direction
+.br
+Direction in degrees CCW from east, or bitmask encoded
+.IP "\fBformat\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Format of the input direction map
+.br
+Options: \fIauto, degree, 45degree, bitmask\fR
+.br
+Default: \fIauto\fR
+.br
+\fBauto\fR: auto\-detect direction format
+.br
+\fBdegree\fR: degrees CCW from East
+.br
+\fB45degree\fR: degrees CCW from East divided by 45 (e.g. r.watershed directions)
+.br
+\fBbitmask\fR: bitmask encoded directions (e.g. r.cost \-b)
+.IP "\fBvalues\fR=\fIname\fR" 4m
+.br
+Name of input raster values to be used for output
+.br
+Name of input raster map
+.IP "\fBraster_path\fR=\fIname\fR" 4m
+.br
+Name for output raster path map
+.br
+Name for output raster map
+.IP "\fBvector_path\fR=\fIname\fR" 4m
+.br
+Name for output vector path map
+.br
+Name for output vector map
+.IP "\fBstart_coordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR" 4m
+.br
+Coordinates of starting point(s) (E,N)
+.IP "\fBstart_points\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of starting vector points map(s)
+.br
+Or data source(s) for direct OGR access
+.SH DESCRIPTION
+\fIr.path\fR traces a path from starting points following input
+directions. Such a movement direction map can be generated with
+\fIr.walk\fR,
+\fIr.cost\fR,
+\fIr.slope.aspect\fR,
+\fIr.watershed\fR, or
+\fIr.fill.dir\fR,
+provided that the direction is in degrees, measured counterclockwise
+from east.
+.PP
+Alternatively, bitmask\-encoded directions can be provided where each
+bit position corresponds to a specific neighbour. A path will continue
+to all neighbours with their bit set. This means a path can split and
+merge. Such bitmasked directions can be created with the \fB\-b\fR
+flag of \fIr.cost\fR and
+\fIr.walk\fR.
+.br
+.nf
+\fC
+Direction encoding for neighbors of x
+  135  90  45          7 8 1
+  180  x  360          6 x 2
+  225 270 315          5 4 3
+  degrees           bit positions
+  CCW from East
+\fR
+.fi
+A path stops when the direction is zero or negative, indicating a stop
+point or outlet.
+.PP
+The \fBoutput\fR raster map will show one or more least\-cost paths
+between each user\-provided location(s) and the target points (direction
+≤ 0). By default, the \fBoutput\fR will be an integer CELL map with
+the id of the start points along the least cost path, and null cells elsewhere.
+.PP
+With the \fB\-c\fR (\fIcopy\fR) flag, the values raster map cell values are
+copied verbatim along the path. With the \fB\-a\fR (\fIaccumulate\fR)
+flag, the accumulated cell value from the starting point up to the current
+cell is written on output. With either the \fB\-c\fR or the \fB\-a\fR flags, the
+\fBraster_path\fR map is created with the same cell type as
+the \fBvalues\fR raster map (integer, float or double).  With
+the \fB\-n\fR (\fInumber\fR) flag, the cells are numbered
+consecutively from the starting point to the final point.
+The \fB\-c\fR, \fB\-a\fR, and \fB\-n\fR flags are mutually
+incompatible.
+.PP
+The \fBstart_coordinates\fR parameter consists of map E and N grid
+coordinates of a starting point. Each x,y pair is the easting and
+northing (respectively) of a starting point from which a path will be
+traced following \fBinput\fR directions. The \fBstart_points\fR
+parameter can take multiple vector maps containing additional starting
+points.
+.SH NOTES
+The directions are recorded as degrees CCW from East, the Knight\(cqs move
+of r.cost and r.walk is considered:
+.br
+.nf
+\fC
+       112.5     67.5
+157.5  135   90  45   22.5
+       180   x   0
+202.5  225  270  315  337.5
+       247.5     292.5
+\fR
+.fi
+i.e. a cell with the value 135 means the next cell is to the North\-West,
+and a cell with the value 157.5 means that the next cell is to the
+West\-North\-West.
+.SH EXAMPLES
+.SS Hydrological path
+We are using the full North Carolina sample dataset.
+First we create the two points from a text file using
+\fIv.in.ascii\fR module
+(here the text file is CSV and we are using unix here\-file syntax
+with EOF, in GUI just enter the values directly for the parameter input):
+.br
+.nf
+\fC
+v.in.ascii input=\- output=start format=point separator=comma <<EOF
+638667.15686275,220610.29411765
+638610.78431373,220223.03921569
+EOF
+\fR
+.fi
+We need to supply a direction raster map to the \fIr.path\fR module.
+To get these directions, we use the
+\fIr.watershed\fR module:
+.br
+.nf
+\fC
+r.watershed elevation=elev_lid792_1m accumulation=accum drainage=drain_dir
+\fR
+.fi
+The directions are categorical and we convert them to degrees using
+raster algebra:
+.br
+.nf
+\fC
+r.mapcalc \(dqdrain_deg = if(drain_dir != 0, 45. * abs(drain_dir), null())\(dq
+\fR
+.fi
+Now we are ready to extract the drainage paths starting at the two points.
+.br
+.nf
+\fC
+r.path input=drain_deg raster_path=drain_path vector_path=drain_path start_points=start
+\fR
+.fi
+Before we visualize the result, we set a color table for the elevation
+we are using and create a shaded relief map:
+.br
+.nf
+\fC
+r.colors map=elev_lid792_1m color=elevation
+r.relief input=elev_lid792_1m output=relief
+\fR
+.fi
+We visualize the input and output data:
+.br
+.nf
+\fC
+d.shade shade=relief color=elev_lid792_1m
+d.vect map=drain_path color=0:0:61 width=4 legend_label=\(dqdrainage paths\(dq
+d.vect map=start color=none fill_color=224:0:0 icon=basic/circle size=15 legend_label=origins
+d.legend.vect \-b
+\fR
+.fi
+.br
+\fIFigure: Drainage paths from two points where directions from
+r.watershed were used\fR
+.SS Least\-cost path
+We compute bitmask encoded movement directions using \fIr.walk:\fR
+.br
+.nf
+\fC
+g.region swwake_30m \-p
+# create friction map based on land cover
+r.recode input=landclass96 output=friction rules=\- << EOF
+1:3:0.1:0.1
+4:5:10.:10.
+6:6:1000.0:1000.0
+7:7:0.3:0.3
+EOF
+# without Knight\(cqs move
+r.walk \-b elevation=elev_ned_30m friction=friction output=walkcost \(rs
+    outdir=walkdir start_coordinates=635576,216485
+r.path input=walkdir start_coordinates=640206,222795 \(rs
+    raster_path=walkpath vector_path=walkpath
+# with Knight\(cqs move
+r.walk \-b \-k elevation=elev_ned_30m friction=friction output=walkcost_k \(rs
+    outdir=walkdir_k start_coordinates=635576,216485
+r.path input=walkdir_k start_coordinates=640206,222795 \(rs
+    raster_path=walkpath_k vector_path=walkpath_k
+# without Knight\(cqs move and without bitmask encoding (single direction)
+r.walk elevation=elev_ned_30m friction=friction output=walkcost_s \(rs
+    outdir=walkdir_s start_coordinates=635576,216485
+r.path input=walkdir_s start_coordinates=640206,222795 \(rs
+    raster_path=walkpath_s vector_path=walkpath_s
+\fR
+.fi
+The extracted least\-cost path splits and merges on the way from
+the start point to the stop point (start point for r.walk). Note the
+gaps in the raster path when using the Knight\(cqs move.
+.br
+.nf
+\fC
+\fR
+.fi
+.br
+\fIFigure: Comparison of shortest paths using single directions and
+multiple bitmask encoded directions without and with Knight\(cqs move\fR
+.SH SEE ALSO
+\fI
+g.region,
+r.basins.fill,
+r.cost,
+r.fill.dir,
+r.mapcalc,
+r.recode,
+r.terraflow,
+r.walk,
+r.watershed
+\fR
+.SH AUTHORS
+Markus Metz
+.br
+Multiple path directions sponsored by mundialis
+.SH SOURCE CODE
+.PP
+Available at: r.path source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

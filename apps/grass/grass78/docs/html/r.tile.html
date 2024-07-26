@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.tile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.tile</b></em>  - Splits a raster map into tiles.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_tiling.html">tiling</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.tile</b><br></div>
+<b>r.tile --help</b><br>
+<div id="synopsis"><b>r.tile</b> <b>input</b>=<em>name</em> <b>output</b>=<em>string</em> <b>width</b>=<em>integer</em> <b>height</b>=<em>integer</em>  [<b>overlap</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Output base name</dd>
+
+<dt><b>width</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Width of tiles (columns)</dd>
+
+<dt><b>height</b>=<em>integer</em>&nbsp;<b>[required]</b></dt>
+<dd>Height of tiles (rows)</dd>
+
+<dt><b>overlap</b>=<em>integer</em></dt>
+<dd>Overlap of tiles</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.tile</em> retiles an existing raster map with user defined 
+x and y tile size.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.tile</em> generates a separate raster for each tile.
+This is equivalent to running <em>g.region</em> along with
+<em>r.resample</em> in a double loop.
+<p>
+The module can be used to split a large raster map into smaller
+tiles, e.g. for further parallelized analysis on a cluster computing
+system.
+<p>
+The overlap is defined in rows/columns.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Retiling example for the North Carolina DEM:
+
+<div class="code"><pre>
+g.region raster=elevation -p
+# rows:       1350
+# cols:       1500
+
+# generating 2 x 2 = 4 tiles (width=1500/2, height=rows/2)
+r.tile input=elevation output=elev_tile width=750 height=675
+</pre></div>
+
+creates 4 tiles with the prefix <em>elev_tile</em> (named:
+elev_tile-000-000, elev_tile-000-001, elev_tile-001-000, ...).
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r3.retile.html">r3.retile</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.tile">r.tile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.tile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

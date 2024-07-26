@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.mon - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.mon</b></em>  - Controls graphics display monitors from the command line.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_graphics.html">graphics</a>, <a href="keywords.html#monitors">monitors</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.mon</b><br></div>
+<b>d.mon --help</b><br>
+<div id="synopsis"><b>d.mon</b> [-<b>lpcgsrtux</b>]  [<b>start</b>=<em>string</em>]   [<b>stop</b>=<em>string</em>]   [<b>select</b>=<em>string</em>]   [<b>width</b>=<em>value</em>]   [<b>height</b>=<em>value</em>]   [<b>resolution</b>=<em>value</em>]   [<b>bgcolor</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>List running monitors and exit</dd>
+
+<dt><b>-p</b></dt>
+<dd>Print name of currently selected monitor and exit</dd>
+
+<dt><b>-c</b></dt>
+<dd>Print commands for currently selected monitor and exit</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print path to support files of currently selected monitor and exit</dd>
+
+<dt><b>-s</b></dt>
+<dd>Do not automatically select when starting</dd>
+
+<dt><b>-r</b></dt>
+<dd>Release and stop currently selected monitor and exit</dd>
+
+<dt><b>-t</b></dt>
+<dd>Disable true colors</dd>
+
+<dt><b>-u</b></dt>
+<dd>Open output file in update mode</dd>
+<dd>Requires --overwrite flag</dd>
+
+<dt><b>-x</b></dt>
+<dd>Launch light-weight wx monitor without toolbars and statusbar</dd>
+<dd>Requires 'start=wx0-7'</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>start</b>=<em>string</em></dt>
+<dd>Name of monitor to start</dd>
+<dd>Options: <em>wx0, wx1, wx2, wx3, wx4, wx5, wx6, wx7, png, ps, html, cairo</em></dd>
+
+<dt><b>stop</b>=<em>string</em></dt>
+<dd>Name of monitor to stop</dd>
+<dd>Options: <em>wx0, wx1, wx2, wx3, wx4, wx5, wx6, wx7, png, ps, html, cairo</em></dd>
+
+<dt><b>select</b>=<em>string</em></dt>
+<dd>Name of monitor to select</dd>
+<dd>Options: <em>wx0, wx1, wx2, wx3, wx4, wx5, wx6, wx7, png, ps, html, cairo</em></dd>
+
+<dt><b>width</b>=<em>value</em></dt>
+<dd>Width for display monitor if not set by GRASS_RENDER_WIDTH</dd>
+<dd>Default value: 720</dd>
+
+<dt><b>height</b>=<em>value</em></dt>
+<dd>Height for display monitor if not set by GRASS_RENDER_HEIGHT</dd>
+<dd>Default value: 480</dd>
+
+<dt><b>resolution</b>=<em>value</em></dt>
+<dd>Dimensions of display monitor versus current size</dd>
+<dd>Example: resolution=2 enlarge display monitor twice to 1280x960</dd>
+
+<dt><b>bgcolor</b>=<em>name</em></dt>
+<dd>Background color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file (when starting new monitor)</dd>
+<dd>Ignored for 'wx' monitors</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#starting-a-monitor" class="toc">Starting a monitor</a></li>
+        <li class="toc"><a href="#stopping-a-monitor" class="toc">Stopping a monitor</a></li>
+        <li class="toc"><a href="#selecting-a-monitor" class="toc">Selecting a monitor</a></li>
+        <li class="toc"><a href="#releasing-(unselecting)-a-monitor" class="toc">Releasing (unselecting) a monitor</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#wx0-monitor" class="toc">wx0 monitor</a></li>
+        <li class="toc"><a href="#cairo-file-renderer-monitor" class="toc">CAIRO file renderer monitor</a></li>
+        <li class="toc"><a href="#list-running-monitors" class="toc">List running monitors</a></li>
+        <li class="toc"><a href="#show-currently-selected-monitor" class="toc">Show currently selected monitor</a></li>
+        <li class="toc"><a href="#switching-between-monitors" class="toc">Switching between monitors</a></li>
+        <li class="toc"><a href="#stopping-a-monitor" class="toc">Stopping a monitor</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.mon</em> allows the user to start, select, list, release, and
+stop available graphics monitors.
+
+<h3><a name="starting-a-monitor">Starting a monitor</a></h3>
+
+In order to display on-screen GRASS graphics, the user must
+<b>start</b> and <b>select</b> a graphics monitor. By default,
+the <b>start</b> command actually runs two commands, to both start and
+select whatever monitor is named by the user. The user can get a list
+of running monitors by setting the <b>-l</b> flag on the command
+line. Note that some monitor <a href="displaydrivers.html">drivers</a> use environment
+<em><a href="variables.html">variables</a></em> or the specific
+<em><a href="variables.html#list-of-selected-grass-environment-variables-for-rendering">driver documentation</a></em>.
+
+<p>When a monitor is <em>started</em>, it is therefore also
+(automatically) <em>selected</em> for output, unless the
+<b>-s</b> flag is set by the user; the user can also
+explicitly <b>select</b> a monitor that has been started.
+
+<p>The desired monitor should be started once and need not be restarted
+unless it is stopped for some reason. A monitor may continue to run
+for any length of time, even when no GRASS session is being run.
+
+<h3><a name="stopping-a-monitor">Stopping a monitor</a></h3>
+
+A graphics monitor has two different types of status: monitor
+program <em>not running</em>, and monitor <em>running</em>. A monitor
+that has been started and/or selected will be listed as running; a
+monitor that has been stopped (or not started) will be listed as not
+running.  The <b>-l</b> flag will list all currently running monitors.
+
+<h3><a name="selecting-a-monitor">Selecting a monitor</a></h3>
+
+When the user <em>starts</em> a monitor, it is also
+(automatically) <em>selected</em> for graphics output unless the user
+sets the <b>-s</b> flag.  In order to use (direct graphics output to)
+a monitor, the user must <em>select</em> that monitor for use, either
+by simply starting the monitor without the <b>-s</b> flag or by
+explicitly selecting the monitor for output. Only running monitors can
+be selected for graphics output.
+
+<p>The user can run multiple graphics monitors by simply starting each of
+the graphics monitors the user wishes to direct output to.
+
+<h3><a name="releasing-(unselecting)-a-monitor">Releasing (unselecting) a monitor</a></h3>
+
+Currently <em>selected</em> a monitor can be released by <b>-r</b>
+flag.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>d.mon</em> is designed for interactive use. If non-interactive use
+is needed (e.g., in a script) set <tt>GRASS_RENDER_IMMEDIATE=png</tt>
+(or <tt>=cairo</tt>) and use the related environment
+<a href="variables.html">variables</a> to control output size etc.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="wx0-monitor">wx0 monitor</a></h3>
+
+To start the interactive <em><a href="wxGUI.html#map-display-window">wxGUI map
+display</a></em>, run
+
+<div class="code"><pre>
+d.mon start=wx0
+</pre></div>
+
+<div style="margin: 10px" align="center">
+<img src="d_mon_wx0.png" alt="Blank wx0 display" border="0">
+<br>
+<i>Figure: The initialization of display monitor wx0</i>
+</div>
+
+All subsequently displayed data will be rendered on monitor <tt>wx0</tt>.
+
+<div class="code"><pre>
+g.region raster=elevation -p
+d.rast map=elevation
+</pre></div>
+
+<div style="margin: 10px" align="center">
+<img src="d_mon_wx0_raster.png" alt="Display wx0 with raster map" border="0">
+<br>
+<i>Figure: The display wx0 showing an elevation raster map</i>
+</div>
+
+<h3><a name="cairo-file-renderer-monitor">CAIRO file renderer monitor</a></h3>
+
+A CAIRO monitor can be started (and selected) by
+
+<div class="code"><pre>
+d.mon start=cairo output=out.pdf
+</pre></div>
+
+From this moment on all displayed data will be rendered into
+file <tt>output.pdf</tt>. 
+
+<h3><a name="list-running-monitors">List running monitors</a></h3>
+
+To list the currently running monitors, use
+
+<div class="code"><pre>
+d.mon -l
+
+List of running monitors:
+wx0
+cairo
+</pre></div>
+
+<h3><a name="show-currently-selected-monitor">Show currently selected monitor</a></h3>
+
+To identify the currently selected monitor, use
+
+<div class="code"><pre>
+d.mon -p
+
+cairo
+</pre></div>
+
+<h3><a name="switching-between-monitors">Switching between monitors</a></h3>
+
+To switch back to interactive display mode, here to an earlier started and
+still running wxGUI monitor, use
+
+<div class="code"><pre>
+d.mon select=wx0
+</pre></div>
+
+<h3><a name="stopping-a-monitor">Stopping a monitor</a></h3>
+
+To close the wxGUI monitor, run
+
+<div class="code"><pre>
+d.mon stop=wx0
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.erase.html">d.erase</a>,
+<a href="d.redraw.html">d.redraw</a>,
+<a href="d.rast.html">d.rast</a>,
+<a href="d.vect.html">d.vect</a>,
+<a href="d.frame.html">d.frame</a>
+</em>
+
+<p>
+See also <a href="variables.html#list-of-selected-grass-environment-variables-for-rendering">list
+of variables for rendering</a>,
+<a href="displaydrivers.html">display drivers</a>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Martin Landa, OSGeoREL, Czech Technical University in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.mon">d.mon source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.mon">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

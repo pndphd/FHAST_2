@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.external.out - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.external.out</b></em>  - Redirects raster output to file utilizing GDAL library rather than storing in GRASS raster format.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#external">external</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.external.out</b><br></div>
+<b>r.external.out --help</b><br>
+<div id="synopsis"><b>r.external.out</b> [-<b>frp</b>] <b>directory</b>=<em>path</em>  [<b>extension</b>=<em>string</em>]  <b>format</b>=<em>string</em>  [<b>options</b>=<em>string</em>[,<i>string</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-f</b></dt>
+<dd>List supported formats and exit</dd>
+
+<dt><b>-r</b></dt>
+<dd>Cease using GDAL and revert to native output</dd>
+
+<dt><b>-p</b></dt>
+<dd>Print current status</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>directory</b>=<em>path</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of output directory</dd>
+
+<dt><b>extension</b>=<em>string</em></dt>
+<dd>Extension for output files</dd>
+
+<dt><b>format</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Format of output files</dd>
+<dd>Options: <em>VRT, GTiff, COG, NITF, HFA, ELAS, AAIGrid, DTED, PNG, JPEG, MEM, GIF, XPM, BMP, PCIDSK, PCRaster, ILWIS, SGI, SRTMHGT, Leveller, Terragen, GMT, netCDF, HDF4Image, ISIS3, ISIS2, PDS4, VICAR, ERS, JP2OpenJPEG, FIT, GRIB, RMF, WMS, RST, INGR, GSAG, GSBG, GS7BG, R, KMLSUPEROVERLAY, WEBP, PDF, Rasterlite, MBTiles, CALS, WMTS, MRF, PNM, PAux, MFF, MFF2, BT, LAN, IDA, LCP, GTX, NTv2, CTable2, KRO, ROI_PAC, RRASTER, BYN, ARG, USGSDEM, NWT_GRD, ADRG, BLX, PostGISRaster, SAGA, XYZ, HF2, ZMap, SIGDEM, DB2ODBC, GPKG, NGW, ENVI, EHdr, ISCE</em></dd>
+
+<dt><b>options</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Creation options</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#storing-results-from-raster-data-analysis-directly-as-geotiff" class="toc">Storing results from raster data analysis directly as GeoTIFF</a></li>
+        <li class="toc"><a href="#complete-workflow-using-only-external-geodata-while-processing-in-grass-gis" class="toc">Complete workflow using only external geodata while processing in GRASS GIS</a></li>
+    </ul></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.external.out</em> instructs GRASS GIS to write subsequently generated
+raster maps as data files (e.g. GeoTIFF) using GDAL instead of storing them
+in GRASS raster format in the current mapset.
+<p>
+Any new raster map is immediately written out through GDAL as a file.
+
+<h2><a name="notes">NOTES</a></h2>
+
+A relative directory path (parameter <em>directory</em>) is interpreted
+relative to the current mapset directory, not the current directory where
+the command was launched. An unspecified or empty directory (which will
+occur if the user passes a simple filename for <em>output</em>) results
+in the output file being placed in the "gdal/" subdirectory of the 
+current mapset directory.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="storing-results-from-raster-data-analysis-directly-as-geotiff">Storing results from raster data analysis directly as GeoTIFF</a></h3>
+
+The module <em>r.external.out</em> is used to write out processing results
+directly in GeoTIFF format (any GDAL supported format can be used here):
+
+<div class="code"><pre>
+# define output directory for files resulting from GRASS calculation(s)
+# and target format:
+mkdir $HOME/gisoutput/
+# hint: the create options are not mandatory
+r.external.out directory=$HOME/gisoutput/ format="GTiff" option="BIGTIFF=YES,COMPRESS=DEFLATE"
+# prepare sample analysis
+g.region raster=elevation -p
+
+# perform GRASS calculation (here: filter by height, write > 120m, NULL otherwise)
+# this will store the output map directly as GeoTIFF, so we use .tif extension:
+r.mapcalc "elev_filt.tif = if(elevation &gt; 120.0, elevation, null() )"
+
+# ...the "elev_filt.tif" is immediately written.
+
+# cease GDAL output connection and turn back to write out GRASS raster files:
+r.external.out -r
+
+# verify resulting file
+gdalinfo $HOME/gisoutput/elev_filt.tif
+</pre></div>
+
+<h3><a name="complete-workflow-using-only-external-geodata-while-processing-in-grass-gis">Complete workflow using only external geodata while processing in GRASS GIS</a></h3>
+
+The module <em>r.external.out</em> can be used along with
+<em>r.external</em> to process external geodata in GRASS
+while writing out the results directly in GeoTIFF:
+
+<div class="code"><pre>
+# register GeoTIFF file to be used in current mapset:
+r.external input=terra_lst1km20030314.LST_Day.tif output=modis_celsius
+
+# define output directory for files resulting from GRASS calculation:
+r.external.out directory=$HOME/gisoutput/ format="GTiff"
+
+# perform GRASS calculation (here: extract pixels &gt; 20 deg C)
+# this stores the output map directly as GeoTIFF:
+r.mapcalc "warm.tif = if(modis_celsius &gt; 20.0, modis_celsius, null() )"
+
+# cease GDAL output connection and turn back to write GRASS raster files:
+r.external.out -r
+
+# now use the resulting file elsewhere
+gdalinfo $HOME/gisoutput/warm.tif
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+
+GDAL Pages: <a href="http://www.gdal.org">http://www.gdal.org/</a><br>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.in.gdal.html">r.in.gdal</a>,
+<a href="r.out.gdal.html">r.out.gdal</a>,
+<a href="r.external.html">r.external</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.external.out">r.external.out source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.external.out">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

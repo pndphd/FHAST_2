@@ -1,0 +1,250 @@
+.TH v.category 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.category\fR\fR  \- Attaches, deletes or reports vector categories to/from/of map geometry.
+.SH KEYWORDS
+vector, category, layer
+.SH SYNOPSIS
+\fBv.category\fR
+.br
+\fBv.category \-\-help\fR
+.br
+\fBv.category\fR [\-\fBgt\fR] \fBinput\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBids\fR=\fIrange\fR]   [\fBoutput\fR=\fIname\fR]  \fBoption\fR=\fIstring\fR  [\fBcat\fR=\fIinteger\fR]   [\fBstep\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Shell script style, currently only for report
+.br
+Format: layer type count min max
+.IP "\fB\-t\fR" 4m
+.br
+Do not copy attribute table(s)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area, face, kernel\fR
+.br
+Default: \fIpoint,line,centroid,face\fR
+.IP "\fBids\fR=\fIrange\fR" 4m
+.br
+Feature ids (by default all features are processed)
+.br
+Example: 1,3,7\-9,13
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map
+.IP "\fBoption\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Action to be done
+.br
+Options: \fIadd, del, chlayer, sum, report, print, layers, transfer\fR
+.br
+\fBadd\fR: add a category to features without category in the given layer
+.br
+\fBdel\fR: delete category (cat=\-1 to delete all categories of given layer)
+.br
+\fBchlayer\fR: change layer number (e.g. layer=3,1 changes layer 3 to layer 1)
+.br
+\fBsum\fR: add the value specified by cat option to the current category value
+.br
+\fBreport\fR: print report (statistics), in shell style: layer type count min max
+.br
+\fBprint\fR: print category values, layers are separated by \(cq|\(cq, more cats in the same layer are separated by \(cq/\(cq
+.br
+\fBlayers\fR: print only layer numbers
+.br
+\fBtransfer\fR: copy values from one layer to another (e.g. layer=1,2,3 copies values from layer 1 to layer 2 and 3)
+.IP "\fBcat\fR=\fIinteger\fR" 4m
+.br
+Category value
+.br
+Default: \fI1\fR
+.IP "\fBstep\fR=\fIinteger\fR" 4m
+.br
+Category increment
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIv.category\fR attaches, copies, deletes or reports categories to/from/of
+vector geometry objects. Further on, \fIv.category\fR adds a number
+given by the \fIcat\fR option to categories of the selected layer.
+These categories (IDs) are used to assign IDs or to group geometry objects
+into categories (several different geometry objects share the same
+category). These categories are also used to link geometry
+object(s) to attribute records (from an attribute table linked to vector map).
+.SH NOTES
+Use \fIv.to.db\fR to upload related categories
+to a linked attribute table.
+.PP
+The \fBtype\fR parameter specifies the type of geometry objects to which
+the category is added; it is similar to an input filter \- only the
+geometry specified in \(cqtype\(cq is processed.
+.PP
+If the \fBtype\fR parameter is set to \fBcentroid\fR and
+the \fBoption\fR parameter set to \fBadd\fR, new categories will be
+added to existing centroids. Note however, that new centroids cannot
+be created this way.  To do so, they must be added manually
+using \fIwxGUI vector
+digitizer\fR or by running \fIv.category\fR with the type
+parameter set to area.
+.PP
+If categories are copied with \fIoption=transfer\fR, a warning is
+issued if categories already exit in the layer they are copied to. In
+this case the user must make sure beforehand that copying categories
+from one layer to another layer does not cause undesired grouping of
+different geometry objects into the same categories. This can be avoided
+by specifying only one \fIlayer\fR. The module will then find the
+next free layer number and copy categories to there. The new layer number
+is reported at the end.
+.PP
+Areas are a special case because it is impossible to attach a cat to
+an area without a centroid; in this case, the module places new
+centroids in areas automatically for \fBtype=area\fR.
+.PP
+The \fBcat\fR parameter is only used with \fBoption\fR=\fIadd\fR,
+\fBoption\fR=\fIsum\fR and \fBoption\fR=\fIdel\fR.
+.PP
+Categories can be deleted for the given layer with \fIoption=del\fR.
+If \fBcat\fR is set to \fI\-1\fR, all categories for the given layer
+are deleted. If \fBcat\fR is zero or positive, only this category value
+will be deleted. By default, \fBcat\fR is set to \fI1\fR which means
+that only categories of value \fI1\fR will be deleted.
+.PP
+With \fBoption=report\fR, the module reports for each layer and
+type the total number of categories, the minimum and the maximum
+category number. If there are e.g. two lines with line 1 having
+category 1 and line 1 having categories 1 and 2, then there are a total
+of three category values with minimum 1 and maximum 2.
+.PP
+The \fBids\fR parameter specifies the list of feature IDs to which the
+operation is performed; by default, all vector feature ids are processed.
+The \fIfeature ID\fR is an internal (unique) geometry ID that all vector
+primitives possess, and is separate from any category the feature may
+also possess.
+Use
+.br
+.nf
+\fC
+  \fIv.edit\fR map=inputname tool=select
+\fR
+.fi
+to find out the geometry ids of certain features.
+.SH EXAMPLES
+.SS Report vector categories
+.br
+.nf
+\fC
+v.category input=testmap option=report
+LAYER/TABLE 1/testmap:
+type       count        min        max
+point          0          0          0
+line        1379          1       1379
+boundary       0          0          0
+centroid       0          0          0
+area           0          0          0
+all         1379          1       1379
+\fR
+.fi
+.SS Delete all vector categories in layer 1
+.br
+.nf
+\fC
+v.category input=testmap output=outmap option=del cat=\-1
+\fR
+.fi
+.SS Add vector categories in layer 1 with step=2
+.br
+.nf
+\fC
+v.category input=outmap output=stepmap option=add step=2
+# report
+v.category input=stepmap option=report
+LAYER/TABLE 1/outmap:
+type       count        min        max
+point          0          0          0
+line        1379          1       2757
+boundary       0          0          0
+centroid       0          0          0
+area           0          0          0
+all         1379          1       2757
+\fR
+.fi
+.SS Add categories/centroids to a vector map without categories
+.br
+.nf
+\fC
+v.category input=wkt output=wktnew option=add
+\fR
+.fi
+Results can be tested
+using \fId.what.vect\fR.
+.SS Copy categories from layer 1 to layer 2,3,4,5,6,7 and 8
+Existing layer will be overwritten, non\-existing will be created.
+.br
+.nf
+\fC
+v.category input=observer output=observer_new option=transfer layer=1,2,3,4,5,6,7,8
+\fR
+.fi
+.SS Print vector categories of given layer
+Print vector categories from the first layer, only for feature ids 1\-50.
+.br
+.nf
+\fC
+v.category input=roads option=print layer=1 id=1\-50
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.centroids,
+v.db.connect,
+v.edit,
+v.to.db
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-irst, Trento, Italy
+.br
+Modified (the id parameter) by Martin Landa,
+FBK\-irst (formerly ITC\-irst), Trento, Italy, 2008/02
+.SH SOURCE CODE
+.PP
+Available at: v.category source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

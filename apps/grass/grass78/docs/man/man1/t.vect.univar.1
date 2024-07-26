@@ -1,0 +1,115 @@
+.TH t.vect.univar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.vect.univar.py\fR\fR  \- Calculates univariate statistics of attributes for each registered vector map of a space time vector dataset
+.SH KEYWORDS
+temporal, statistics, vector, time
+.SH SYNOPSIS
+\fBt.vect.univar.py\fR
+.br
+\fBt.vect.univar.py \-\-help\fR
+.br
+\fBt.vect.univar.py\fR [\-\fBeu\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR  [\fBtwhere\fR=\fIsql_query\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBtype\fR=\fIstring\fR]   [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Calculate extended statistics
+.IP "\fB\-u\fR" 4m
+.br
+Suppress printing of column names
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time vector dataset
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output file
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column
+.IP "\fBtwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword used in the temporal GIS framework
+.br
+Example: start_time > \(cq2001\-01\-01 12:30:00\(cq
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIpoint, line, boundary, centroid, area\fR
+.br
+Default: \fIpoint\fR
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator character between the output columns
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+The module \fIt.vect.univar\fR computes univariate statistics of a
+space time vector dataset based on a single attribute row.
+.SH EXAMPLE
+The example is based on the t.vect.observe.strds
+example; so create the \fBprecip_stations\fR space time vector dataset
+and after run the following command:
+.br
+.nf
+\fC
+t.vect.univar input=precip_stations col=month
+id|start|end|n|nmissing|nnull|min|max|range|mean|mean_abs|population_stddev|population_variance|population_coeff_variation|sample_stddev|sample_variance|kurtosis|skewness
+precip_stations_monthly@climate_2009_2012|2009\-01\-01 00:00:00|2009\-02\-01 00:00:00|132|0|4|\-2.31832|7.27494|9.59326|3.44624|3.5316|1.79322|3.21564|0.520341|1.80005|3.24019|0.484515|\-0.338519
+precip_stations_monthly@climate_2009_2012|2009\-02\-01 00:00:00|2009\-03\-01 00:00:00|132|0|4|\-0.654152|7.90613|8.56028|5.47853|5.48844|1.73697|3.01708|0.317051|1.74359|3.04011|0.875252|\-1.0632
+\&....
+precip_stations_monthly@climate_2009_2012|2012\-10\-01 00:00:00|2012\-11\-01 00:00:00|132|0|4|9.67596|18.4654|8.78945|14.945|14.945|1.90659|3.6351|0.127574|1.91386|3.66285|\-0.0848967|\-0.700833
+precip_stations_monthly@climate_2009_2012|2012\-11\-01 00:00:00|2012\-12\-01 00:00:00|132|0|4|3.56755|10.6211|7.05357|7.72153|7.72153|1.33684|1.78715|0.173132|1.34194|1.8008|0.90434|\-0.863935
+precip_stations_monthly@climate_2009_2012|2012\-12\-01 00:00:00|2013\-01\-01 00:00:00|132|0|4|3.04325|11.6368|8.5935|8.20147|8.20147|1.78122|3.17275|0.217183|1.78801|3.19697|\-0.177991|\-0.501295
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.vect.univar source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

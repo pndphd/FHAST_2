@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.report - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.report</b></em>  - Reports statistics for raster maps.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_statistics.html">statistics</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.report</b><br></div>
+<b>r.report --help</b><br>
+<div id="synopsis"><b>r.report</b> [-<b>hfenaci</b>] <b>map</b>=<em>name</em>[,<i>name</i>,...]  [<b>units</b>=<em>string</em>[,<i>string</i>,...]]   [<b>output</b>=<em>name</em>]   [<b>null_value</b>=<em>string</em>]   [<b>page_length</b>=<em>integer</em>]   [<b>page_width</b>=<em>integer</em>]   [<b>nsteps</b>=<em>integer</em>]   [<b>sort</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-h</b></dt>
+<dd>Suppress page headers</dd>
+
+<dt><b>-f</b></dt>
+<dd>Use formfeeds between pages</dd>
+
+<dt><b>-e</b></dt>
+<dd>Scientific format</dd>
+
+<dt><b>-n</b></dt>
+<dd>Do not report no data value</dd>
+
+<dt><b>-a</b></dt>
+<dd>Do not report cells where all maps have no data</dd>
+
+<dt><b>-c</b></dt>
+<dd>Report for cats floating-point ranges (floating-point maps only)</dd>
+
+<dt><b>-i</b></dt>
+<dd>Read floating-point map as integer (use map's quant rules)</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map(s) to report on</dd>
+
+<dt><b>units</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Units to report</dd>
+<dd>Options: <em>mi, me, k, a, h, c, p</em></dd>
+<dd><b>mi</b>: area in square miles</dd>
+<dd><b>me</b>: area in square meters</dd>
+<dd><b>k</b>: area in square kilometers</dd>
+<dd><b>a</b>: area in acres</dd>
+<dd><b>h</b>: area in hectares</dd>
+<dd><b>c</b>: number of cells</dd>
+<dd><b>p</b>: percent cover</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output file to hold the report</dd>
+<dd>If no output file given report is printed to standard output</dd>
+
+<dt><b>null_value</b>=<em>string</em></dt>
+<dd>String representing NULL value</dd>
+<dd>Default: <em>*</em></dd>
+
+<dt><b>page_length</b>=<em>integer</em></dt>
+<dd>Page length</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>page_width</b>=<em>integer</em></dt>
+<dd>Page width</dd>
+<dd>Default: <em>79</em></dd>
+
+<dt><b>nsteps</b>=<em>integer</em></dt>
+<dd>Number of floating-point subranges to collect stats from</dd>
+<dd>Default: <em>255</em></dd>
+
+<dt><b>sort</b>=<em>string</em></dt>
+<dd>Sort output statistics by cell counts</dd>
+<dd>Default: sorted by categories or intervals</dd>
+<dd>Options: <em>asc, desc</em></dd>
+<dd><b>asc</b>: Sort by cell counts in ascending order</dd>
+<dd><b>desc</b>: Sort by cell counts in descending order</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.report</em> allows the user to set up a series of report
+parameters to be applied to a raster map, and creates a report. The
+report will print out to the standard output if <b>output</b>
+parameter is not given.
+
+<p>
+The report itself consists of two parts, a header section and the main
+body of the report.
+
+<p>
+The header section of the report identifies the raster map(s) (by map
+name and title), location, mapset, report date, and the region of
+interest. The area of interest is described in two parts: the user's
+current geographic region is presented, and the mask is presented (if
+any is used).
+
+<p>
+The main body of the report consists of from one to three tables which
+present the statistics for each category and the totals for each unit
+column. Note that the statistics is always computed in the current
+geographical region.
+
+<p>
+When multiple (typically two) raster maps are specified, cross-tabulation
+table for each combination of categories in the raster maps will be computed
+and formatted in a human-readable way (see example).
+
+<h2><a name="notes">NOTES</a></h2>
+
+<!--
+If the user runs <em>r.report</em> interactively and saves the report output
+in a file, this file will be placed into the user's current working
+directory.
+
+If the user runs <em>r.report</em> non-interactively, report output can be
+saved by redirecting it to a file or a printer using the UNIX redirection
+mechanism.
+-->
+
+Note that, unlike <em><a href="r.stats.html">r.stats</a></em>,
+<em>r.report</em> allows the user to select the specific units of
+measure in which statistics will be reported. To output
+computer-friendly data suitable for importing into a spreadsheet use
+the <em><a href="r.stats.html">r.stats</a></em> module. In
+fact <em>r.report</em> is running
+<em><a href="r.stats.html">r.stats</a></em> in the background and
+reformatting the results to be more human-friendly.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Report sorted areas in square miles and acres for each
+category. No-data are not reported (see <b>-n</b> flag).
+
+<div class="code"><pre>
+r.report -n map=geology_30m units=mi,a sort=desc
+</pre></div>
+<div class="code"><pre>
++-----------------------------------------------------------------------------+
+|                         RASTER MAP CATEGORY REPORT                          |
+|LOCATION: nc_spm_08_grass7                           Fri Dec  6 17:00:21 2013|
+|-----------------------------------------------------------------------------|
+|          north: 279073.97546639    east: 798143.31179672                    |
+|REGION    south: 113673.97546639    west: 595143.31179672                    |
+|          res:               200    res:              200                    |
+|-----------------------------------------------------------------------------|
+|MASK: none                                                                   |
+|-----------------------------------------------------------------------------|
+|MAP: South-West Wake county: geology derived from vector map (geology_30m in |
+|-----------------------------------------------------------------------------|
+|                 Category Information                  |    square|          |
+|  #|description                                        |     miles|     acres|
+|-----------------------------------------------------------------------------|
+|217|CZfg . . . . . . . . . . . . . . . . . . . . . . . | 27.783911|17,781.703|
+|270|CZig . . . . . . . . . . . . . . . . . . . . . . . | 26.162282|16,743.861|
+|405|CZbg . . . . . . . . . . . . . . . . . . . . . . . |  9.698886|  6207.287|
+|262|CZlg . . . . . . . . . . . . . . . . . . . . . . . |  7.629379|  4882.802|
+|862|CZam . . . . . . . . . . . . . . . . . . . . . . . |  2.532830|  1621.011|
+|910|CZbg . . . . . . . . . . . . . . . . . . . . . . . |  1.683405|  1077.379|
+|583|CZve . . . . . . . . . . . . . . . . . . . . . . . |  0.972977|   622.706|
+|921|Km . . . . . . . . . . . . . . . . . . . . . . . . |  0.463323|   296.526|
+|766|CZg. . . . . . . . . . . . . . . . . . . . . . . . |  0.324326|   207.569|
+|720|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.185329|   118.611|
+|946|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.138997|    88.958|
+|948|CZam . . . . . . . . . . . . . . . . . . . . . . . |  0.030888|    19.768|
+|-----------------------------------------------------------------------------|
+|TOTAL                                                  | 77.606534|49,668.182|
++-----------------------------------------------------------------------------+
+</pre></div>
+Report areas for each category of land use for each zipcode (included only part of the table):
+
+<div class="code"><pre>
+r.report map=zipcodes@PERMANENT,landclass96@PERMANENT units=h,p
+</pre></div>
+<div class="code"><pre>
++-----------------------------------------------------------------------------+
+|                         RASTER MAP CATEGORY REPORT                          |
+|LOCATION: nc_spm_08_latest                           Tue Feb 11 10:10:46 2014|
+|-----------------------------------------------------------------------------|
+|          north: 228527.25    east: 644971                                   |
+|REGION    south: 215018.25    west: 629980                                   |
+|          res:        28.5    res:    28.5                                   |
+|-----------------------------------------------------------------------------|
+|MASK: none                                                                   |
+|-----------------------------------------------------------------------------|
+|MAPS: South West Wake: Zipcode areas derived from vector map (zipcodes@PERMAN|
+|        South-West Wake county: Simplified landuse classes (landclass96@PERMA|
+|-----------------------------------------------------------------------------|
+|                   Category Information                    |          |   %  |
+|    #|description                                          |  hectares| cover|
+|-----------------------------------------------------------------------------|
+|27511|CARY                                                 |  1053.813|  5.20|
+|     |-----------------------------------------------------|----------|------|
+|     |1|developed. . . . . . . . . . . . . . . . . . . . . |   197.214| 18.71|
+|     |3|herbaceous . . . . . . . . . . . . . . . . . . . . |    25.017|  2.37|
+|     |4|shrubland. . . . . . . . . . . . . . . . . . . . . |    58.563|  5.56|
+|     |5|forest . . . . . . . . . . . . . . . . . . . . . . |   771.313| 73.19|
+|     |6|water. . . . . . . . . . . . . . . . . . . . . . . |     1.625|  0.15|
+|     |*|no data. . . . . . . . . . . . . . . . . . . . . . |     0.081|  0.01|
+|-----------------------------------------------------------|----------|------|
+|27513|CARY                                                 |   204.525|  1.01|
+|     |-----------------------------------------------------|----------|------|
+|     |1|developed. . . . . . . . . . . . . . . . . . . . . |    32.571| 15.93|
+|     |3|herbaceous . . . . . . . . . . . . . . . . . . . . |     6.011|  2.94|
+|     |4|shrubland. . . . . . . . . . . . . . . . . . . . . |    51.659| 25.26|
+|     |5|forest . . . . . . . . . . . . . . . . . . . . . . |   114.284| 55.88|
+|-----------------------------------------------------------|----------|------|
+...
+|-----------------------------------------------------------------------------|
+|TOTAL                                                      |22,968.900|100.00|
++-----------------------------------------------------------------------------+
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.stats.html">r.stats</a>,
+<a href="g.region.html">g.region</a>,
+<a href="r.coin.html">r.coin</a>,
+<a href="r.describe.html">r.describe</a>,
+<a href="r.info.html">r.info</a>,
+<a href="r.univar.html">r.univar</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Michael Shapiro, U.S. Army Construction Engineering Research Laboratory<br>
+Sort option by Martin Landa, Czech Technical University in Prague, 2013
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.report">r.report source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.report">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

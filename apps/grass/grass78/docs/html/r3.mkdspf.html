@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.mkdspf - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.mkdspf</b></em>  - Creates a display file from an existing 3D raster map according to specified threshold levels.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_display.html">display</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.mkdspf</b><br></div>
+<b>r3.mkdspf --help</b><br>
+<div id="synopsis"><b>r3.mkdspf</b> [-<b>qf</b>] <b>input</b>=<em>string</em> <b>dspf</b>=<em>name</em>  [<b>levels</b>=<em>float</em>[,<i>float</i>,...]]   [<b>min</b>=<em>float</em>]   [<b>max</b>=<em>float</em>]   [<b>step</b>=<em>float</em>]   [<b>tnum</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-q</b></dt>
+<dd>Suppress progress report & min/max information</dd>
+
+<dt><b>-f</b></dt>
+<dd>Use flat shading rather than gradient</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of an existing 3D raster map</dd>
+
+<dt><b>dspf</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output display file</dd>
+
+<dt><b>levels</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>List of thresholds for isosurfaces</dd>
+
+<dt><b>min</b>=<em>float</em></dt>
+<dd>Minimum isosurface level</dd>
+
+<dt><b>max</b>=<em>float</em></dt>
+<dd>Maximum isosurface level</dd>
+
+<dt><b>step</b>=<em>float</em></dt>
+<dd>Positive increment between isosurface levels</dd>
+
+<dt><b>tnum</b>=<em>integer</em></dt>
+<dd>Number of isosurface threshold levels</dd>
+<dd>Default: <em>7</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#flags:" class="toc">Flags:</a></li>
+        <li class="toc"><a href="#parameters:" class="toc">Parameters:</a></li>
+    </ul></li>
+    <li class="toc"><a href="#example:" class="toc">Example:</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Creates a display file from an existing grid3 file according to
+specified threshold levels.  The display file is a display list
+of polygons that represent isosurfaces of the data volume.  If
+specific <I>levels</I> are given, additional optional parameters 
+are ignored.  <I>Min</I> or <I>max</I> may be used alone or together
+to specify a sub-range of the data.  The <I>step</I>
+parameter is given precedence over <I>tnum</I>.
+
+<h3><a name="flags:">Flags:</a></h3>
+<dl>
+<dt><b>-q</b>
+<dd>Suppress progress report &amp; min/max information
+
+<dt><b>-f</b>
+<dd>Use flat shading rather than gradient
+</dl>
+
+<h3><a name="parameters:">Parameters:</a></h3>
+<dl>
+<dt><b>grid3</b>
+<dd>Name of an existing 3D raster map
+
+<dt><b>dspf</b>
+<dd>Name of output display file
+
+<dt><b>levels</b>
+<dd>List of thresholds for isosurfaces
+
+<dt><b>min</b>
+<dd>Minimum isosurface level
+
+<dt><b>max</b>
+<dd>Maximum isosurface level
+
+<dt><b>step</b>
+<dd>Positive increment between isosurface levels
+
+<dt><b>tnum</b>
+<dd>Number of isosurface threshold levels
+<dd>Default: 7
+</dl>
+
+<h2><a name="example:">Example:</a></h2>
+With grid3 data (<I>phdata</I>) in the range 3-7, 
+we only want to see isosurface values for the range 4-6.  
+Any of these commands will produce the same results:<br>
+<div class="code"><pre>
+r3.mkdspf phdata dspf=iso min=4.0 max=6.0 tnum=5
+r3.mkdspf phdata dspf=iso levels=4.0,4.5,5.0,5.5,6.0
+r3.mkdspf phdata dspf=iso min=4.0 max=6.0 step=0.5
+</pre></div>
+
+<h2><a name="note">NOTE</a></h2>
+Currently the grid3 file must be in the user's mapset since the 
+display files being created are specific to particular grid3 
+files and are contained in directories under them.  
+We should create a mechanism where users 
+may make display files from others' grid3 files without having to
+copy them to their mapset.  
+
+<h2><a name="author">AUTHOR</a></h2>
+<p>Bill Brown,
+<a href="mailto:brown@gis.uiuc.edu">bbrown@gis.uiuc.edu</a>
+
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.mkdspf">r3.mkdspf source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.mkdspf">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

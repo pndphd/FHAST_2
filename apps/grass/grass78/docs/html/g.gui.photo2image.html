@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>g.gui.photo2image - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>g.gui.photo2image</b></em>  - Corrects scanning distortions of a paper photo.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_GUI.html">GUI</a>, <a href="keywords.html#aerial">aerial</a>, <a href="keywords.html#photo">photo</a>, <a href="keywords.html#georectification">georectification</a>, <a href="keywords.html#geometry">geometry</a>, <a href="keywords.html#GCP">GCP</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>g.gui.photo2image</b><br></div>
+<b>g.gui.photo2image --help</b><br>
+<div id="synopsis"><b>g.gui.photo2image</b> <b>group</b>=<em>name</em> <b>raster</b>=<em>name</em> <b>camera</b>=<em>string</em> <b>order</b>=<em>string</em> <b>extension</b>=<em>string</em>  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>raster</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>camera</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>The name of the camera (generated in i.ortho.camera)</dd>
+<dd>The name of the camera (generated in i.ortho.camera)</dd>
+
+<dt><b>order</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>The rectification order (no of Fiducial=4 -&gt; order=1, no of Fiducial=8 -&gt; order=2)</dd>
+<dd>The rectification order (no of Fiducial=4 -&gt; order=1, no of Fiducial=8 -&gt; order=2)</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>extension</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>The name of the output files extension (used in i.rectify)</dd>
+<dd>The name of the output files extension (used in i.rectify)</dd>
+<dd>Default: <em>_ip2i_out</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#screenshot-of-g.gui.photo2image" class="toc">Screenshot of g.gui.photo2image</a></li>
+    </ul></li>
+    <li class="toc"><a href="#for-a-detailed-operation-manual-please-read" class="toc">For a detailed operation manual please read</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<!-- meta page description: wxGUI GCP Manager for photo to image registration -->
+<!-- meta page index: topic_gui|GUI -->
+<h2><a name="description">DESCRIPTION</a></h2>
+This module is based on <b>g.gui.gcp</b>, the GCP manager of GRASS GIS.
+It is part of i.ortho.photo suite.
+
+<p>
+The aim of this module is to give absolute location values to the fiducial 
+points present (in number of 4 or 8) in a <i>scanned</i> aerial photo. 
+
+<p>
+This is necessary as (manual) scanning introduces distortions, rotations and also 
+may not be limited to scan the boundary of the photo itself. It is thus necessary
+to give to each fiducial the exact coordinates in mm as given by the aerial 
+photographic instrument design, which is unique per camera.
+
+<p>
+This module requires you to have made a group with your aerial photo <b>(i.group)</b>, a camera
+description file <b>(i.ortho.target)</b> and use them to launch the module. Additional requirements
+are the order of rectification (1 if no of Fiducials is 4, 2 if no of Fiducials is 8) and 
+an extension file (if not given, defaults to \$filename_ip2i_out)
+
+<p>
+An example for Location <b>imagery60</b>:
+
+<div class="code"><pre>
+g.gui.photo2image group=aerial@PERMANENT raster=gs13.1@PERMANENT camera=gscamera order=2 extension=try --o
+</pre></div>
+
+<h3><a name="screenshot-of-g.gui.photo2image">Screenshot of g.gui.photo2image</a></h3>
+
+<div align="center" style="margin: 10px">
+<a href="wxGUI_iphoto2image_frame.jpg">
+<img src="wxGUI_iphoto2image_frame.jpg" width="600" height="375" alt="Screenshot of g.gui.photo2image" border=0>
+</a><br>
+<i>Figure: Screenshot of g.gui.photo2image</i>
+</div>
+
+<h2><a name="for-a-detailed-operation-manual-please-read">For a detailed operation manual please read</a></h2>
+
+<em>
+<a href="wxGUI.html">wxGUI</a><br>
+<a href="wxGUI.components.html">wxGUI components</a>
+</em>
+
+<p>
+See also <a href="https://grasswiki.osgeo.org/wiki/WxGUI/Video_tutorials#Georectifier">video
+tutorials</a> on GRASS Wiki.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.ortho.photo.html">i.ortho.photo</a>,
+<a href="i.group.html">i.group</a>,
+<a href="i.ortho.camera.html">i.ortho.camera</a>,
+<a href="i.ortho.target.html">i.ortho.target</a>,
+<a href="i.rectify.html">i.rectify</a>,
+<a href="m.transform.html">m.transform</a>,
+<a href="v.rectify.html">v.rectify</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Markus Metz<br><br>
+<em>Based on the Georectifier (GRASS 6.4.0)</em> by Michael Barton<br>
+Martin Landa, Czech Technical University in Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/gui/wxpython/photo2image">wxGUI GCP Manager for photo to image registration source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/gui/wxpython/photo2image">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="topic_gui.html">GUI index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

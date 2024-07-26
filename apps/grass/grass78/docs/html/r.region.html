@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.region - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.region</b></em>  - Sets the boundary definitions for a raster map.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_metadata.html">metadata</a>, <a href="keywords.html#geometry">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.region</b><br></div>
+<b>r.region --help</b><br>
+<div id="synopsis"><b>r.region</b> [-<b>cda</b>] <b>map</b>=<em>name</em>  [<b>region</b>=<em>name</em>]   [<b>raster</b>=<em>name</em>]   [<b>vector</b>=<em>name</em>]   [<b>n</b>=<em>value</em>]   [<b>s</b>=<em>value</em>]   [<b>e</b>=<em>value</em>]   [<b>w</b>=<em>value</em>]   [<b>align</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Set from current region</dd>
+
+<dt><b>-d</b></dt>
+<dd>Set from default region</dd>
+
+<dt><b>-a</b></dt>
+<dd>Auto-adjustment for lat/lon</dd>
+<dd>Attempt to fix small precision errors in resolution and extents</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>map</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of raster map to change</dd>
+
+<dt><b>region</b>=<em>name</em></dt>
+<dd>Set region from named region</dd>
+
+<dt><b>raster</b>=<em>name</em></dt>
+<dd>Set region to match this raster map</dd>
+
+<dt><b>vector</b>=<em>name</em></dt>
+<dd>Name of vector map</dd>
+<dd>Set region to match this vector map</dd>
+
+<dt><b>n</b>=<em>value</em></dt>
+<dd>Value for the northern edge</dd>
+
+<dt><b>s</b>=<em>value</em></dt>
+<dd>Value for the southern edge</dd>
+
+<dt><b>e</b>=<em>value</em></dt>
+<dd>Value for the eastern edge</dd>
+
+<dt><b>w</b>=<em>value</em></dt>
+<dd>Value for the western edge</dd>
+
+<dt><b>align</b>=<em>name</em></dt>
+<dd>Raster map to align to</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The <em>r.region</em> program allows the user to manage the boundaries
+of a raster map. These boundaries can be set by the user directly
+and/or set from a region definition file (stored under the
+<kbd>windows</kbd> directory in the user's current mapset), a raster
+or vector map, or a 3dview file.
+<p>
+The <b>align</b> parameter sets the current resolution equal to
+that of the named raster map, and align the boundaries to a row and column
+edge in the named map.  Alignment only moves the existing boundaries outward
+to the edges of the next nearest cell in the named raster map -- not to the
+named map's edges.  To perform the latter function, use the
+<b>raster=</b><em>name</em> option.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+After all updates have been applied, the raster map's resolution
+settings are recomputed from the boundaries and the number of rows and
+columns in the raster map.
+
+<p>The n=<em>value</em> may also be specified as a
+function of its current value:  n=n+<em>value</em>
+increases the current northing, while n=n-<em>value</em>
+decreases it.  This is also true for s=<em>value</em>,
+e=<em>value</em>, and w=<em>value</em>.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<p>Assign absolute coordinates to map:
+<div class="code"><pre>
+r.region map=mymap n=220750 s=220000 w=638300 e=639000
+</pre></div>
+
+<p>Shift map (using offset, here by +100 map units in the NS direction, -50 in the EW direction):
+<div class="code"><pre>
+r.region map=mymap n=n+100 e=e-50 w=w-50 s=s+100
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.support.html">r.support</a>,
+<a href="g.region.html">g.region</a>,
+<a href="v.transform.html">v.transform</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<br>
+Based upon <em>g.region</em>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.region">r.region source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.region">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

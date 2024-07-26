@@ -1,0 +1,305 @@
+.TH r.solute.transport 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.solute.transport\fR\fR  \- Numerical calculation program for transient, confined and unconfined solute transport in two dimensions
+.SH KEYWORDS
+raster, hydrology, solute transport
+.SH SYNOPSIS
+\fBr.solute.transport\fR
+.br
+\fBr.solute.transport \-\-help\fR
+.br
+\fBr.solute.transport\fR [\-\fBfc\fR] \fBc\fR=\fIname\fR \fBphead\fR=\fIname\fR \fBhc_x\fR=\fIname\fR \fBhc_y\fR=\fIname\fR \fBstatus\fR=\fIname\fR \fBdiff_x\fR=\fIname\fR \fBdiff_y\fR=\fIname\fR  [\fBq\fR=\fIname\fR]   [\fBcin\fR=\fIname\fR]  \fBcs\fR=\fIname\fR \fBrd\fR=\fIname\fR \fBnf\fR=\fIname\fR \fBtop\fR=\fIname\fR \fBbottom\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBvx\fR=\fIname\fR]   [\fBvy\fR=\fIname\fR]  \fBdtime\fR=\fIfloat\fR  [\fBmaxit\fR=\fIinteger\fR]   [\fBerror\fR=\fIfloat\fR]   [\fBsolver\fR=\fIname\fR]   [\fBrelax\fR=\fIfloat\fR]   [\fBal\fR=\fIfloat\fR]   [\fBat\fR=\fIfloat\fR]   [\fBloops\fR=\fIfloat\fR]   [\fBstab\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Use a full filled quadratic linear equation system, default is a sparse linear equation system.
+.IP "\fB\-c\fR" 4m
+.br
+Use the Courant\-Friedrichs\-Lewy criteria for time step calculation
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBc\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The initial concentration in [kg/m^3]
+.IP "\fBphead\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The piezometric head in [m]
+.IP "\fBhc_x\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The x\-part of the hydraulic conductivity tensor in [m/s]
+.IP "\fBhc_y\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The y\-part of the hydraulic conductivity tensor in [m/s]
+.IP "\fBstatus\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The status for each cell, = 0 \- inactive cell, 1 \- active cell, 2 \- dirichlet\- and 3 \- transfer boundary condition
+.IP "\fBdiff_x\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The x\-part of the diffusion tensor in [m^2/s]
+.IP "\fBdiff_y\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The y\-part of the diffusion tensor in [m^2/s]
+.IP "\fBq\fR=\fIname\fR" 4m
+.br
+Groundwater sources and sinks in [m^3/s]
+.IP "\fBcin\fR=\fIname\fR" 4m
+.br
+Concentration sources and sinks bounded to a water source or sink in [kg/s]
+.IP "\fBcs\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Concentration of inner sources and inner sinks in [kg/s] (i.e. a chemical reaction)
+.IP "\fBrd\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Retardation factor [\-]
+.IP "\fBnf\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Effective porosity [\-]
+.IP "\fBtop\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Top surface of the aquifer in [m]
+.IP "\fBbottom\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Bottom surface of the aquifer in [m]
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+The resulting concentration of the numerical solute transport calculation will be written to this map. [kg/m^3]
+.IP "\fBvx\fR=\fIname\fR" 4m
+.br
+Calculate and store the groundwater filter velocity vector part in x direction [m/s]
+.br
+.IP "\fBvy\fR=\fIname\fR" 4m
+.br
+Calculate and store the groundwater filter velocity vector part in y direction [m/s]
+.br
+.IP "\fBdtime\fR=\fIfloat\fR \fB[required]\fR" 4m
+.br
+The calculation time in seconds
+.br
+Default: \fI86400\fR
+.IP "\fBmaxit\fR=\fIinteger\fR" 4m
+.br
+Maximum number of iteration used to solve the linear equation system
+.br
+Default: \fI10000\fR
+.IP "\fBerror\fR=\fIfloat\fR" 4m
+.br
+Error break criteria for iterative solver
+.br
+Default: \fI0.000001\fR
+.IP "\fBsolver\fR=\fIname\fR" 4m
+.br
+The type of solver which should solve the linear equation system
+.br
+Options: \fIgauss, lu, jacobi, sor, bicgstab\fR
+.br
+Default: \fIbicgstab\fR
+.IP "\fBrelax\fR=\fIfloat\fR" 4m
+.br
+The relaxation parameter used by the jacobi and sor solver for speedup or stabilizing
+.br
+Default: \fI1\fR
+.IP "\fBal\fR=\fIfloat\fR" 4m
+.br
+The longditudinal dispersivity length. [m]
+.br
+Default: \fI0.0\fR
+.IP "\fBat\fR=\fIfloat\fR" 4m
+.br
+The transversal dispersivity length. [m]
+.br
+Default: \fI0.0\fR
+.IP "\fBloops\fR=\fIfloat\fR" 4m
+.br
+Use this number of time loops if the CFL flag is off. The timestep will become dt/loops.
+.br
+Default: \fI1\fR
+.IP "\fBstab\fR=\fIstring\fR" 4m
+.br
+Set the flow stabilizing scheme (full or exponential upwinding).
+.br
+Options: \fIfull, exp\fR
+.br
+Default: \fIfull\fR
+.SH DESCRIPTION
+This numerical program calculates numerical implicit transient and steady state
+solute transport in porous media in the saturated zone of an aquifer. The computation is based on
+raster maps and the current region settings. All initial\- and boundary\-conditions must be provided as
+raster maps. The unit in the location must be meters.
+.br
+.PP
+This module is sensitive to mask settings. All cells which are outside the mask
+are ignored and handled as no flow boundaries.
+.br
+This module calculates the concentration of the solution and optional the
+velocity field, based on the hydraulic conductivity,
+the effective porosity and the initial piecometric heads.
+The vector components can be visualized with paraview if they are exported
+with r.out.vtk.
+.br
+.br
+Use r.gwflow to compute the piezometric heights
+of the aquifer. The piezometric heights and the hydraulic conductivity
+are used to compute the flow direction and the mean velocity of the groundwater.
+This is the base of the solute transport computation.
+.br
+.br
+The solute transport will always be calculated transient.
+For stady state computation set the timestep
+to a large number (billions of seconds).
+.br
+.br
+To reduce the numerical dispersion, which is a consequence of the convection term and
+the finite volume discretization, you can use small time steps and choose between full
+and exponential upwinding.
+.SH NOTES
+The solute transport calculation is based on a diffusion/convection partial differential equation and
+a numerical implicit finite volume discretization. Specific for this kind of differential
+equation is the combination of a diffusion/dispersion term and a convection term.
+The discretization results in an unsymmetric linear equation system in form of \fIAx = b\fR,
+which must be solved. The solute transport partial
+differential equation is of the following form:
+.PP
+(dc/dt)*R = div ( D grad c \- uc) + cs \-q/nf(c \- c_in)
+.RS 4n
+.IP \(bu 4n
+c \-\- the concentration [kg/m^3]
+.IP \(bu 4n
+u \-\- vector of mean groundwater flow velocity
+.IP \(bu 4n
+dt \-\- the time step for transient calculation in seconds [s]
+.IP \(bu 4n
+R \-\- the linear retardation coefficient [\-]
+.IP \(bu 4n
+D \-\- the diffusion and dispersion tensor [m^2/s]
+.IP \(bu 4n
+cs \-\- inner concentration sources/sinks [kg/m^3]
+.IP \(bu 4n
+c_in \-\- the solute concentration of influent water [kg/m^3]
+.IP \(bu 4n
+q \-\- inner well sources/sinks [m^3/s]
+.IP \(bu 4n
+nf \-\- the effective porosity [\-]
+.RE
+.br
+.br
+Three different boundary conditions are implemented,
+the Dirichlet, Transmission and Neumann conditions.
+The calculation and boundary status of single cells can be set with the status map.
+The following states are supportet:
+.RS 4n
+.IP \(bu 4n
+0 == inactive \- the cell with status 0 will not be calculated, active cells will have a no flow boundary to an inactive cell
+.IP \(bu 4n
+1 == active \- this cell is used for sloute transport calculation, inner sources can be defined for those cells
+.IP \(bu 4n
+2 == Dirichlet \- cells of this type will have a fixed concentration value which do not change over time
+.IP \(bu 4n
+3 == Transmission \- cells of this type should be placed on out\-flow boundaries to assure the flow of the solute stream out
+.RE
+.br
+.br
+Note that all required raster maps are read into main memory. Additionally the
+linear equation system will be allocated, so the memory consumption of this
+module rapidely grow with the size of the input maps.
+.br
+.br
+The resulting linear equation system \fIAx = b\fR can be solved with several solvers.
+Several iterative solvers with unsymmetric sparse and quadratic matrices support are implemented.
+The jacobi method, the Gauss\-Seidel method and the biconjugate gradients\-stabilized (bicgstab) method.
+Additionally a direct Gauss solver and LU solver are available. Those direct solvers
+only work with quadratic matrices, so be careful using them with large maps
+(maps of size 10.000 cells will need more than one gigabyte of ram).
+Always prefer a sparse matrix solver.
+.SH EXAMPLE
+Use this small python script to create a working
+groundwater flow / solute transport area and data.
+Make sure you are not in a lat/lon projection.
+.br
+.nf
+\fC
+#!/usr/bin/env python3
+# This is an example script how groundwater flow and solute transport are
+# computed within grass
+import sys
+import os
+import grass.script as grass
+# Overwrite existing maps
+grass.run_command(\(dqg.gisenv\(dq, set=\(dqOVERWRITE=1\(dq)
+grass.message(_(\(dqSet the region\(dq))
+# The area is 200m x 100m with a cell size of 1m x 1m
+grass.run_command(\(dqg.region\(dq, res=1, res3=1, t=10, b=0, n=100, s=0, w=0, e=200)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqphead = if(col() == 1 , 50, 40)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqphead = if(col() ==200  , 45 + row()/40, phead)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqstatus = if(col() == 1 || col() == 200 , 2, 1)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqwell = if((row() == 50 && col() == 175) || (row() == 10 && col() == 135) , \-0.001, 0)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqhydcond = 0.00005\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqrecharge = 0\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqtop_conf = 20\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqbottom = 0\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqporos = 0.17\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqsyield = 0.0001\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqnull = 0.0\(dq)
+grass.message(_(\(dqCompute a steady state groundwater flow\(dq))
+grass.run_command(\(dqr.gwflow\(dq, solver=\(dqcg\(dq, top=\(dqtop_conf\(dq, bottom=\(dqbottom\(dq, phead=\(dqphead\(dq,\(rs
+  status=\(dqstatus\(dq, hc_x=\(dqhydcond\(dq, hc_y=\(dqhydcond\(dq, q=\(dqwell\(dq, s=\(dqsyield\(dq,\(rs
+  recharge=\(dqrecharge\(dq, output=\(dqgwresult_conf\(dq, dt=8640000000000, type=\(dqconfined\(dq)
+grass.message(_(\(dqgenerate the transport data\(dq))
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqc = if(col() == 15 && row() == 75 , 500.0, 0.0)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqcs = if(col() == 15 && row() == 75 , 0.0, 0.0)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqtstatus = if(col() == 1 || col() == 200 , 3, 1)\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqdiff = 0.0000001\(dq)
+grass.run_command(\(dqr.mapcalc\(dq, expression=\(dqR = 1.0\(dq)
+# Compute the initial state
+grass.run_command(\(dqr.solute.transport\(dq, solver=\(dqbicgstab\(dq, top=\(dqtop_conf\(dq,\(rs
+  bottom=\(dqbottom\(dq, phead=\(dqgwresult_conf\(dq, status=\(dqtstatus\(dq, hc_x=\(dqhydcond\(dq, hc_y=\(dqhydcond\(dq,\(rs
+  rd=\(dqR\(dq, cs=\(dqcs\(dq, q=\(dqwell\(dq, nf=\(dqporos\(dq, output=\(dqstresult_conf_0\(dq, dt=3600, diff_x=\(dqdiff\(dq,\(rs
+  diff_y=\(dqdiff\(dq, c=\(dqc\(dq, al=0.1, at=0.01)
+# Compute the solute transport for 300 days in 10 day steps
+for dt in range(30):
+    grass.run_command(\(dqr.solute.transport\(dq, solver=\(dqbicgstab\(dq, top=\(dqtop_conf\(dq,\(rs
+    bottom=\(dqbottom\(dq, phead=\(dqgwresult_conf\(dq, status=\(dqtstatus\(dq, hc_x=\(dqhydcond\(dq, hc_y=\(dqhydcond\(dq,\(rs
+    rd=\(dqR\(dq, cs=\(dqcs\(dq, q=\(dqwell\(dq, nf=\(dqporos\(dq, output=\(dqstresult_conf_\(dq + str(dt + 1), dt=864000, diff_x=\(dqdiff\(dq,\(rs
+    diff_y=\(dqdiff\(dq, c=\(dqstresult_conf_\(dq + str(dt), al=0.1, at=0.01)
+\fR
+.fi
+.SH SEE ALSO
+\fIr.gwflow\fR
+.br
+\fIr3.gwflow\fR
+.br
+\fIr.out.vtk\fR
+.br
+.SH AUTHOR
+Sören Gebbert
+.PP
+This work is based on the Diploma Thesis of Sören Gebbert available
+here
+at Technical University Berlin in Germany.
+.SH SOURCE CODE
+.PP
+Available at: r.solute.transport source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

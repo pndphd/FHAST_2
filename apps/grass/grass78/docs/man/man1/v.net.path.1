@@ -1,0 +1,307 @@
+.TH v.net.path 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.net.path\fR\fR  \- Finds shortest path on vector network.
+.SH KEYWORDS
+vector, network, shortest path
+.SH SYNOPSIS
+\fBv.net.path\fR
+.br
+\fBv.net.path \-\-help\fR
+.br
+\fBv.net.path\fR [\-\fBtgs\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBarc_layer\fR=\fIstring\fR \fBarc_type\fR=\fIstring\fR[,\fIstring\fR,...] \fBnode_layer\fR=\fIstring\fR  [\fBfile\fR=\fIname\fR]   [\fBarc_column\fR=\fIstring\fR]   [\fBarc_backward_column\fR=\fIstring\fR]   [\fBnode_column\fR=\fIstring\fR]   [\fBdmax\fR=\fIfloat\fR]   [\fBturn_layer\fR=\fIstring\fR]   [\fBturn_cat_layer\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-t\fR" 4m
+.br
+Use turntable
+.IP "\fB\-g\fR" 4m
+.br
+Use geodesic calculation for longitude\-latitude locations
+.IP "\fB\-s\fR" 4m
+.br
+Write output as original input segments, not each path as one line.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBarc_layer\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Arc layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBarc_type\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Arc type
+.br
+Input feature type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.IP "\fBnode_layer\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Node layer
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI2\fR
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Name of file containing start and end points. If not given, read from stdin
+.IP "\fBarc_column\fR=\fIstring\fR" 4m
+.br
+Arc forward/both direction(s) cost column (number)
+.IP "\fBarc_backward_column\fR=\fIstring\fR" 4m
+.br
+Arc backward direction cost column (number)
+.IP "\fBnode_column\fR=\fIstring\fR" 4m
+.br
+Node cost column (number)
+.IP "\fBdmax\fR=\fIfloat\fR" 4m
+.br
+Maximum distance to the network
+.br
+If start/end are given as coordinates. If start/end point is outside this threshold, the path is not found and error message is printed. To speed up the process, keep this value as low as possible.
+.br
+Default: \fI1000\fR
+.IP "\fBturn_layer\fR=\fIstring\fR" 4m
+.br
+Layer with turntable
+.br
+Relevant only with \-t flag
+.br
+Default: \fI3\fR
+.IP "\fBturn_cat_layer\fR=\fIstring\fR" 4m
+.br
+Layer with unique categories used in turntable
+.br
+Relevant only with \-t flag
+.br
+Default: \fI4\fR
+.SH DESCRIPTION
+\fIv.net.path\fR determines least costly, e.g. shortest or fastest
+path(s) on a vector network.
+.PP
+Costs may be either line lengths, or attributes saved in a database
+table. These attribute values are taken as costs of whole segments, not
+as costs to traverse a length unit (e.g. meter) of the segment.
+For example, if the speed limit is 100 km / h, the cost to traverse a
+10 km long road segment must be calculated as
+.br
+.nf
+\fC
+length / speed = 10 km / (100 km/h) = 0.1 h.
+\fR
+.fi
+Supported are cost assignments for both arcs and nodes,
+and also different costs for both directions of a vector line.
+For areas, costs will be calculated along boundary lines.
+.PP
+The input vector needs to be prepared with v.net operation=connect
+in order to connect points representing center nodes to the network.
+.PP
+Nodes and arcs can be closed using cost = \-1.
+.PP
+Least cost paths are written to the output vector map with an
+attached attribute table.
+.PP
+Nodes can be
+.RS 4n
+.IP \(bu 4n
+piped into the program from file or from stdin, or
+.IP \(bu 4n
+defined in the graphical user interface (\(dqenter values interactively\(dq).
+.RE
+The syntax is as follows:
+.br
+.nf
+\fC
+id start_point_category end_point_category
+\fR
+.fi
+(Example: 1 1 2)
+.PP
+or
+.br
+.nf
+\fC
+id start_point_x start_point_y end_point_x end_point_y
+\fR
+.fi
+.PP
+Points specified by category must be exactly on network nodes, and the
+input vector map needs to be prepared with v.net operation=connect.
+.PP
+When specifying coordinates, the next network node to a given coordinate
+pair is used.
+.PP
+The attribute table will contain the following attributes:
+.RS 4n
+.IP \(bu 4n
+cat  \- path unique category assigned by module
+.IP \(bu 4n
+id   \- path id (read from input)
+.IP \(bu 4n
+fcat \- from point category
+.IP \(bu 4n
+tcat \- to point category
+.IP \(bu 4n
+sp \- result status:
+.RS 4n
+.IP \(bu 4n
+0 \- OK, path found
+.IP \(bu 4n
+1 \- node is not reachable
+.IP \(bu 4n
+2 \- point of given category does not exist
+.RE
+.IP \(bu 4n
+cost \- travelling costs (on the network, not to/from network)
+.IP \(bu 4n
+fdist \- the distance from first point to the network
+.IP \(bu 4n
+tdist \- the distance from the network to second point
+.RE
+.PP
+Application of flag \fB\-t\fR enables a turntable support.
+This flag requires additional parameters \fBturn_layer\fR and \fBturn_cat_layer\fR
+that are otherwise ignored.
+The turntable allows
+to model e.g. traffic code, where some turns may be prohibited.
+This means that the input layer is expanded by
+turntable with costs of every possible turn on any possible node
+(intersection) in both directions.
+Turntable can be created by
+the \fIv.net\fR module.
+For more information about turns in the vector network analyses see
+wiki page.
+.SH NOTES
+Nodes and arcs can be closed using cost = \-1.
+.PP
+If the cost columns \fBarc_column\fR, \fBarc_backward_column\fR and \fBnode_column\fR are not
+specified, the length of network segments is measured and
+zero costs are assumed for nodes.
+.PP
+When using attributes, the length of segments is not used. To get
+accurate results, the line length must be taken into account when
+assigning costs as attributes. For example, to get the \fIfastest path\fR,
+the columns \(cqmax_speed\(cq and \(cqlength\(cq are required. The correct fastest
+path can then be found by specifying arc_column=length/max_speed. If not yet
+existing, the column containing the line length (\(dqlength\(dq) has to added to the
+attributes table using \fIv.to.db\fR.
+.SH EXAMPLE
+Shortest (red) and fastest (blue) path between two digitized nodes (Spearfish):
+.PP
+.br
+.nf
+\fC
+# Spearfish
+echo \(dq1|601955.1|4916944.9|start
+2|594385.6|4921565.2|end\(dq | v.in.ascii in=\- cat=1 x=2 y=3 out=startend col=\(dqcat integer, \(rs
+                         east double precision, north double precision, label varchar(6)\(dq
+v.db.select startend
+g.copy vect=roads,myroads
+# create lines map connecting points to network
+v.net myroads points=startend out=myroads_net op=connect thresh=500 arc_layer=1 node_layer=2
+# set up costs
+# create unique categories for each road in layer 3
+v.category in=myroads_net out=myroads_net_time opt=add cat=1 layer=3 type=line
+# add new table for layer 3
+v.db.addtable myroads_net_time layer=3 col=\(dqcat integer,label varchar(43),length double precision,speed double precision,cost double precision,bcost double precision\(dq
+# copy road type to layer 3
+v.to.db myroads_net_time layer=3 qlayer=1 opt=query qcolumn=label columns=label
+# upload road length in miles
+v.to.db myroads_net_time layer=3 type=line option=length col=length unit=miles
+# set speed limits in miles / hour
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqinterstate\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq75.0\(dq where=\(dqlabel=\(cqprimary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq50.0\(dq where=\(dqlabel=\(cqsecondary highway, hard surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq25.0\(dq where=\(dqlabel=\(cqlight\-duty road, improved surface\(cq\(dq
+v.db.update myroads_net_time layer=3 col=speed val=\(dq5.0\(dq where=\(dqlabel=\(cqunimproved road\(cq\(dq
+# define traveling costs as traveling time in minutes:
+# set forward costs
+v.db.update myroads_net_time layer=3 col=cost val=\(dqlength / speed * 60\(dq
+# set backward costs
+v.db.update myroads_net_time layer=3 col=bcost val=\(dqlength / speed * 60\(dq
+# ... the \(cqstart\(cq and \(cqend\(cq nodes have category number 1 and 2
+# Shortest path: ID as first number, then cat1 and cat2
+echo \(dq1 1 2\(dq | v.net.path myroads_net_time arc_layer=3 node_layer=2 out=mypath
+# Fastest path: ID as first number, then cat1 and cat2
+echo \(dq1 1 2\(dq | v.net.path myroads_net_time arc_layer=3 node_layer=2 arc_column=cost arc_backward_column=bcost out=mypath_time
+\fR
+.fi
+To display the result, run for example:
+.br
+.nf
+\fC
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net
+# show shortest path
+d.vect mypath col=red width=2
+# show fastest path
+d.vect mypath_time col=blue width=2
+# start and end point
+d.vect myroads_net icon=basic/triangle fcol=green size=12 layer=2
+d.font font=Vera
+d.vect startend disp=cat type=point lsize=14 layer=2
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.path,
+v.net,
+v.net.alloc,
+v.net.iso,
+v.net.salesman,
+v.net.steiner,
+v.to.db
+\fR
+.SH AUTHORS
+Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Documentation: Markus Neteler, Markus Metz
+.SS TURNS SUPPORT
+The turns support was implemnented as part of GRASS GIS turns cost project at Czech Technical University in Prague, Czech Republic.
+.PP
+Implementation: Stepan Turek
+.br
+Documentation: Lukas Bocan, Eliska Kyzlikova, Viera Bejdova
+.br
+Mentor: Martin Landa
+.SH SOURCE CODE
+.PP
+Available at: v.net.path source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

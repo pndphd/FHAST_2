@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.out.vrml - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.out.vrml</b></em>  - Exports a raster map to the Virtual Reality Modeling Language (VRML).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_export.html">export</a>, <a href="keywords.html#output">output</a>, <a href="keywords.html#VRML">VRML</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.out.vrml</b><br></div>
+<b>r.out.vrml --help</b><br>
+<div id="synopsis"><b>r.out.vrml</b> <b>elevation</b>=<em>name</em>  [<b>color</b>=<em>name</em>]   [<b>exaggeration</b>=<em>float</em>]  <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>elevation</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input elevation raster map</dd>
+
+<dt><b>color</b>=<em>name</em></dt>
+<dd>Name of input color map</dd>
+
+<dt><b>exaggeration</b>=<em>float</em></dt>
+<dd>Vertical exaggeration</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output VRML file</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#warning" class="toc">WARNING</a></li>
+    <li class="toc"><a href="#note" class="toc">NOTE</a></li>
+    <li class="toc"><a href="#bugs:" class="toc">BUGS:</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This module exports a GRASS raster map to the Virtual Reality Modeling
+Language (VRML) format for 3D visualization.
+<p>This version only outputs raster maps in VRML 1.0 format.
+The newer VRML 2.0 format will be more efficient for geographic
+applications, as it introduces an "ElevationGrid" node so that
+only the elevation points will have to be written instead
+of the whole geometry.  The vast majority of VRML viewers
+currently only support VRML 1.0.
+
+If the extension "wrl" (world) is not present in the he
+<em>output</em> parameter, it will be added.
+
+
+<h2><a name="warning">WARNING</a></h2>
+VRML is not well suited for large geometrys which can result from even
+a small geographic region.  Most viewers seem to bog down with more
+than 12,000 polygons, depending on your hardware &amp; specific
+viewer.  Each grid cell results in two polygons, so a reasonable size
+region would be something less than about 75x75.  For improved
+performance and smaller file size, leave off a color map.  Since VRML
+is ascii text, gzip works very well to significantly compress file
+size.<p>
+
+<h2><a name="note">NOTE</a></h2>
+This is a preliminary release of "<em>r.out.vrml</em>".
+
+For further information about VRML and available viewers for various platforms, see:<p><a href="http://www.w3.org/MarkUp/VRML/">VRML Virtual Reality Modeling Language</a>
+
+
+<h2><a name="bugs:">BUGS:</a></h2>
+Currently the region is transformed to a unit size, so real geographic
+location is lost.  Side effects when working in a lat-lon location are
+that besides general distortion due to projection, a very small
+exaggeration factor (on order of .001) must be used to compensate for
+vertical units expected to be the same as map units.
+
+
+<h2><a name="todo">TODO</a></h2>
+
+Update to the more modern <a href="http://www.geovrml.org">GeoVRML format</a>,
+or probably better the next generation
+  <a href="http://www.web3d.org">X3D format</a>.
+See also the <a href="http://www.xj3d.org">Xj3D project</a>.
+
+<p>Future plans for this module are to allow draping of sites objects and
+vector maps and using the new sites format available in floating
+point GRASS to embed WWW links into site objects. It will also be
+upgraded to support VRML 2.0 and will allow entering multiple preset
+"views" using the existing GRASS 3d_view file format.<p>
+Other possible additions: 
+<ul>
+    <li> Allow animation of elevation, color, or sites based on 
+      user interaction.
+    <li> Degradation of the raster to produce TINs for improved
+      performance.
+</ul>
+
+<h2><a name="author">AUTHOR</a></h2>
+  Bill Brown, US Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.out.vrml">r.out.vrml source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.out.vrml">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

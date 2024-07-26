@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.linegraph - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.linegraph</b></em>  - Generates and displays simple line graphs in the active graphics monitor display frame.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.linegraph</b><br></div>
+<b>d.linegraph --help</b><br>
+<div id="synopsis"><b>d.linegraph</b> [-<b>xysl</b>] <b>x_file</b>=<em>string</em> <b>y_file</b>=<em>string</em>[,<i>string</i>,...]  [<b>directory</b>=<em>string</em>]   [<b>y_color</b>=<em>string</em>[,<i>string</i>,...]]   [<b>color_table</b>=<em>style</em>]   [<b>width</b>=<em>integer</em>[,<i>integer</i>,...]]   [<b>title_color</b>=<em>string</em>]   [<b>x_title</b>=<em>string</em>]   [<b>y_title</b>=<em>string</em>]   [<b>title</b>=<em>string</em>]   [<b>y_range</b>=<em>min,max</em>]   [<b>y_tics</b>=<em>float</em>[,<i>float</i>,...]]   [<b>x_scale</b>=<em>float</em>]   [<b>y_scale</b>=<em>float</em>]   [<b>icon</b>=<em>string</em>]   [<b>point_size</b>=<em>float</em>]   [<b>secondary_color</b>=<em>name</em>]   [<b>secondary_width</b>=<em>float</em>[,<i>float</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-x</b></dt>
+<dd>Scale only X labels, not values</dd>
+
+<dt><b>-y</b></dt>
+<dd>Scale only Y labels, not values</dd>
+
+<dt><b>-s</b></dt>
+<dd>Draw points</dd>
+
+<dt><b>-l</b></dt>
+<dd>Do not draw lines</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>x_file</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of data file for X axis of graph</dd>
+
+<dt><b>y_file</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of data file(s) for Y axis of graph</dd>
+
+<dt><b>directory</b>=<em>string</em></dt>
+<dd>Path to files</dd>
+<dd>Path to the directory where the input files are located</dd>
+
+<dt><b>y_color</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Color for Y data</dd>
+
+<dt><b>color_table</b>=<em>style</em></dt>
+<dd>Name of color table</dd>
+<dd>Options: <em>aspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave</em></dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspect.png" alt="aspect"> aspect</b>: aspect oriented grey colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/aspectcolr.png" alt="aspectcolr"> aspectcolr</b>: aspect oriented rainbow colors [range: 0 to 360]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bcyr.png" alt="bcyr"> bcyr</b>: blue through cyan through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/bgyr.png" alt="bgyr"> bgyr</b>: blue through green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/blues.png" alt="blues"> blues</b>: white to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byg.png" alt="byg"> byg</b>: blue through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/byr.png" alt="byr"> byr</b>: blue through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/celsius.png" alt="celsius"> celsius</b>: blue to red for degree Celsius temperature [range: -80 to 80]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/corine.png" alt="corine"> corine</b>: EU Corine land cover colors [range: 111 to 995]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/curvature.png" alt="curvature"> curvature</b>: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/differences.png" alt="differences"> differences</b>: differences oriented colors [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/elevation.png" alt="elevation"> elevation</b>: maps relative ranges of raster values to elevation color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/etopo2.png" alt="etopo2"> etopo2</b>: colors for ETOPO2 worldwide bathymetry/topography [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/evi.png" alt="evi"> evi</b>: enhanced vegetative index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/fahrenheit.png" alt="fahrenheit"> fahrenheit</b>: blue to red for Fahrenheit temperature [range: -112 to 176]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/forest_cover.png" alt="forest_cover"> forest_cover</b>: percentage of forest cover [range: 0 to 100]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gdd.png" alt="gdd"> gdd</b>: accumulated growing degree days [range: 0 to 6000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grass.png" alt="grass"> grass</b>: GRASS GIS green (perceptually uniform) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/greens.png" alt="greens"> greens</b>: white to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.png" alt="grey"> grey</b>: grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.eq.png" alt="grey.eq"> grey.eq</b>: histogram-equalized grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey.log.png" alt="grey.log"> grey.log</b>: histogram logarithmic transformed grey scale [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey1.0.png" alt="grey1.0"> grey1.0</b>: grey scale for raster values between 0.0-1.0 [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/grey255.png" alt="grey255"> grey255</b>: grey scale for raster values between 0-255 [range: 0 to 255]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/gyr.png" alt="gyr"> gyr</b>: green through yellow to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/haxby.png" alt="haxby"> haxby</b>: relative colors for bathymetry or topography [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/inferno.png" alt="inferno"> inferno</b>: perceptually uniform sequential color table inferno [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/kelvin.png" alt="kelvin"> kelvin</b>: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/magma.png" alt="magma"> magma</b>: perceptually uniform sequential color table magma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndvi.png" alt="ndvi"> ndvi</b>: Normalized Difference Vegetation Index colors [range: -1 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ndwi.png" alt="ndwi"> ndwi</b>: Normalized Difference Water Index colors [range: -200 to 200]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/nlcd.png" alt="nlcd"> nlcd</b>: US National Land Cover Dataset colors [range: 0 to 95]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/oranges.png" alt="oranges"> oranges</b>: white to orange [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/plasma.png" alt="plasma"> plasma</b>: perceptually uniform sequential color table plasma [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population.png" alt="population"> population</b>: color table covering human population classification breaks [range: 0 to 2e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/population_dens.png" alt="population_dens"> population_dens</b>: color table covering human population density classification breaks [range: 0 to 1e+009]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation.png" alt="precipitation"> precipitation</b>: precipitation color table (0..2000mm) [range: 0 to 7000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_daily.png" alt="precipitation_daily"> precipitation_daily</b>: precipitation color table (0..1000mm) [range: 0 to 10000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/precipitation_monthly.png" alt="precipitation_monthly"> precipitation_monthly</b>: precipitation color table (0..1000mm) [range: 0 to 1000]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rainbow.png" alt="rainbow"> rainbow</b>: rainbow color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ramp.png" alt="ramp"> ramp</b>: color ramp [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/random.png" alt="random"> random</b>: random color table [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/reds.png" alt="reds"> reds</b>: white to red [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/roygbiv.png" alt="roygbiv"> roygbiv</b>:  [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/rstcurv.png" alt="rstcurv"> rstcurv</b>: terrain curvature (from r.resamp.rst) [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryb.png" alt="ryb"> ryb</b>: red through yellow to blue [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/ryg.png" alt="ryg"> ryg</b>: red through yellow to green [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/sepia.png" alt="sepia"> sepia</b>: yellowish-brown through to white [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/slope.png" alt="slope"> slope</b>: r.slope.aspect-type slope colors for raster values 0-90 [range: 0 to 90]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/soilmoisture.png" alt="soilmoisture"> soilmoisture</b>: soilmoisture color table (0.0-1.0) [range: 0 to 1]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm.png" alt="srtm"> srtm</b>: color palette for Shuttle Radar Topography Mission elevation [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/srtm_plus.png" alt="srtm_plus"> srtm_plus</b>: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/terrain.png" alt="terrain"> terrain</b>: global elevation color table covering -11000 to +8850m [range: -11000 to 8850]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/viridis.png" alt="viridis"> viridis</b>: perceptually uniform sequential color table viridis [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/water.png" alt="water"> water</b>: water depth [range: map values]</dd>
+<dd><b><img height="12" style="max-width: 80;" src="colortables/wave.png" alt="wave"> wave</b>: color wave [range: map values]</dd>
+
+<dt><b>width</b>=<em>integer[,<i>integer</i>,...]</em></dt>
+<dd>Width of the lines</dd>
+
+<dt><b>title_color</b>=<em>string</em></dt>
+<dd>Color for axis, tics, numbers, and title</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>x_title</b>=<em>string</em></dt>
+<dd>Title for X data</dd>
+<dd>Default: <em></em></dd>
+
+<dt><b>y_title</b>=<em>string</em></dt>
+<dd>Title for Y data</dd>
+<dd>Default: <em></em></dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Title for Graph</dd>
+<dd>Default: <em></em></dd>
+
+<dt><b>y_range</b>=<em>min,max</em></dt>
+<dd>Minimum and maximun value for Y axis (min,max)</dd>
+
+<dt><b>y_tics</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Tic values for the Y axis</dd>
+
+<dt><b>x_scale</b>=<em>float</em></dt>
+<dd>Scale for X values</dd>
+
+<dt><b>y_scale</b>=<em>float</em></dt>
+<dd>Scale for Y values</dd>
+
+<dt><b>icon</b>=<em>string</em></dt>
+<dd>Symbol for point</dd>
+<dd>Options: <em>basic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half-box, extra/half-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half-arrow_left, geology/half-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9</em></dd>
+<dd>Default: <em>basic/circle</em></dd>
+
+<dt><b>point_size</b>=<em>float</em></dt>
+<dd>Point size</dd>
+<dd>Default: <em>5</em></dd>
+
+<dt><b>secondary_color</b>=<em>name</em></dt>
+<dd>Color</dd>
+<dd>Color for point symbol edge color</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>secondary_width</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Width of point symbol lines</dd>
+<dd>Default: <em>0.1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#data-format" class="toc">Data format</a></li>
+        <li class="toc"><a href="#file-inputs" class="toc">File inputs</a></li>
+        <li class="toc"><a href="#managing-colors" class="toc">Managing colors</a></li>
+        <li class="toc"><a href="#titles,-labels,-and-tics" class="toc">Titles, labels, and tics</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.linegraph</em> is a module to draw simple x,y line graphs
+(plots) based on numerical data contained in separate files.
+
+
+<h3><a name="data-format">Data format</a></h3>
+
+The X and Y data files for the graph are essentially a column of numbers in
+each file, with one input number per line.  The program expects that each X
+value will have a corresponding Y value, therefore the number of lines in
+each data input file should be the same.  Essentially, the X data becomes
+the X axis reference to which the Y data is plotted as a line. Therefore,
+the X data should be a monotonically increasing progression of numbers (i.e.
+"1,2,3,..."; "0, 10, 100, 1000,..."; "...-5,-1,0,1,5...").  If multiple Y
+data files are used, the Y axis scale will be based on the range of minimum
+and maximum values from all Y files, then all Y data given will be graphed
+according to that Y scale. Therefore, if multiple Y data inputs are used
+with dissimilar units, the graph produced comparing the two will be
+deceptive.
+
+
+<h3><a name="file-inputs">File inputs</a></h3>
+
+If the <b>directory</b> option is provided, the paths to files can (and
+should) be only relative paths to these files. While this is not recommended
+for scripting, it can be advantageous when typing the paths
+manually. For example when all files are stored in the directory
+<tt>/home/john/data</tt>, the user can provide the following in the command
+line:
+
+<div class="code"><pre>
+d.linegraph directory=/home/john/data x_file=x.txt y_file=y1.txt,y2.txt
+</pre></div>
+
+
+<h3><a name="managing-colors">Managing colors</a></h3>
+
+The user can specify the <b>y_color</b> option, the <b>color_table</b>
+option or just leave the defaults to influence the color of the
+plotted lines.
+
+<p>
+Colors specified by <b>y_color</b> option are used for drawing the lines
+in the graph. If multiple Y data files are used, an equal number of
+colors may be used to control the colors of the lines. Colors will be
+assigned to Y data in respect to the sequence of instantiation on the
+command line. It can be one of GRASS GIS named colors or the RGB
+values from 0-255 separated by colons (RRR:GGG:BBB).
+
+<p>
+Alternatively, the user can use the <b>color_table</b> option to specify one
+of the GRASS GIS predefined color tables.
+
+<p>
+By default, a series of colors will be chosen by the module if none are
+provided upon invocation. The order of default colors is red, green,
+violet, blue, orange, gray, brown, magenta, white, and indigo. The user is
+advised not to rely on the order of default colors but to either use the
+<b>y_color</b> or the <b>color_table</b> option to obtain predictable and
+reproducible results.
+
+<p>
+The color to be used for titles, axis lines, tics, and scale numbers
+is determined by the <b>title_color</b> option. The user can provide
+one of the GRASS GIS named colors (such as gray, white, or black)
+or use the GRASS GIS colon-separated format for RGB (RRR:GGG:BBB).
+
+<h3><a name="titles,-labels,-and-tics">Titles, labels, and tics</a></h3>
+
+The <b>title</b> option specifies the text for the title of the graph.
+It will be centered over the top of graph.
+
+The <b>x_title</b> option is a text to describe data for X axis. It will be
+centered beneath the graph. Default is no text unless there is a need
+for a unit descriptor determined by the <em>d.linegraph</em> module,
+then string such as "in hundreds" is generated.
+
+The <b>y_title</b> option is a text to describe data for Y axis. It
+will be centered beneath the X data description. Similarly, to the
+<b>x_title</b> option, default is no text unless there is a need for an
+auto-generated description. In the case of graphs with multiple lines
+(multiple inputs for Y axis), user may wish to use more specific text
+placement using the <em><a href="d.text.html">d.text</a></em> or
+<em><a href="v.label.html">v.label</a></em> programs.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+For historical reasons, the <em>d.linegraph</em> module accepts
+titles of more than one word where the underscore character ("_")
+is used to represent spaces (" "). For example "Census_data_1990" would be
+printed over the graph as "Census data 1990". The use of underscores is not
+necessary to use as long as the parameter is quoted in the command line.
+In general, use of underscores is not recommended and there is no need to use
+it at all in the GUI or when using <em>d.linegraph</em> in Python scripts.
+
+<p>
+The way the program locates and labels tic marks is less than perfect:
+<br>
+1) although distances between Y tics are proportional to the value, they are
+not proportional on the X axis;
+<br>
+2) decimal values between -1 and 1 can be printed on the X axis, but not
+on Y. (With respect to the later, the input for Y values can all be
+multiplied by a factor of 10 before graphing).
+
+<p>
+Depending on the user's needs, it might be easier or more appropriate
+to use a 3rd party tool such as xgraph, gnuplot, Matplotlib in Python,
+or R instead of <em>d.linegraph</em>.
+For a more general solution for plotting in GRASS GIS, the user is
+advised to use the <em><a href="d.graph.html">d.graph</a></em> module.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The following can be executed in Bash to create the input data for this
+example. The user can just create these files in a text editor, save
+them and specify path to them.
+
+<div class="code"><pre>
+cat &gt; x.txt &lt;&lt;EOF
+1
+3
+4
+6
+9
+EOF
+cat &gt; y1.txt &lt;&lt;EOF
+50
+58
+65
+34
+27
+EOF
+cat &gt; y2.txt &lt;&lt;EOF
+10
+20
+35
+50
+45
+EOF
+</pre></div>
+
+<!--
+export GRASS_FONT=sans  # fixes bad default font
+d.mon start=cairo output=plot.png width=400 height=400
+d.erase  # previous image is not cleaned
+-->
+
+<p>
+The next command sequence creates a file <tt>plot.png</tt> in the current
+directory which is the drawing made by <em>d.linegraph</em>.
+
+<div class="code"><pre>
+d.mon start=cairo output=plot.png width=400 height=400
+d.linegraph x_file=x.txt y_file=y1.txt,y2.txt
+d.mon stop=cairo
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="d.frame.html">d.frame</a>,
+<a href="d.text.html">d.text</a>,
+<a href="v.label.html">v.label</a>,
+<a href="d.graph.html">d.graph</a>,
+<a href="d.histogram.html">d.histogram</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+Chris Rewerts, Agricultural Engineering, Purdue University
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.linegraph">d.linegraph source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.linegraph">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

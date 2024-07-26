@@ -1,0 +1,344 @@
+.TH v.random 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.random\fR\fR  \- Generates random 2D/3D vector points.
+.SH KEYWORDS
+vector, sampling, statistics, random, point pattern, stratified random sampling, level1
+.SH SYNOPSIS
+\fBv.random\fR
+.br
+\fBv.random \-\-help\fR
+.br
+\fBv.random\fR [\-\fBzab\fR] \fBoutput\fR=\fIname\fR \fBnpoints\fR=\fIinteger\fR  [\fBrestrict\fR=\fIname\fR]   [\fBlayer\fR=\fIstring\fR]   [\fBcats\fR=\fIrange\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBzmin\fR=\fIfloat\fR]   [\fBzmax\fR=\fIfloat\fR]   [\fBseed\fR=\fIinteger\fR]   [\fBcolumn\fR=\fIname\fR]   [\fBcolumn_type\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Create 3D output
+.IP "\fB\-a\fR" 4m
+.br
+Generate n points for each individual area (requires restrict parameter)
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBnpoints\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of points to be created
+.IP "\fBrestrict\fR=\fIname\fR" 4m
+.br
+Name of input vector map
+.br
+Restrict points to areas in input vector
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name (\(cq\-1\(cq for all layers)
+.br
+A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI\-1\fR
+.IP "\fBcats\fR=\fIrange\fR" 4m
+.br
+Category values
+.br
+Example: 1,3,7\-9,13
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBzmin\fR=\fIfloat\fR" 4m
+.br
+Minimum z height (needs \-z flag or column name)
+.br
+Default: \fI0.0\fR
+.IP "\fBzmax\fR=\fIfloat\fR" 4m
+.br
+Maximum z height (needs \-z flag or column name)
+.br
+Default: \fI0.0\fR
+.IP "\fBseed\fR=\fIinteger\fR" 4m
+.br
+The seed to initialize the random generator. If not set the process ID is used
+.IP "\fBcolumn\fR=\fIname\fR" 4m
+.br
+Name of column for z values
+.br
+Writes z values to column
+.IP "\fBcolumn_type\fR=\fIstring\fR" 4m
+.br
+Type of column for z values
+.br
+Options: \fIinteger, double precision\fR
+.br
+Default: \fIdouble precision\fR
+.SH DESCRIPTION
+\fIv.random\fR randomly generates vector points within the
+current region using the selected random number generator.
+.PP
+\fIv.random\fR can generate also 3D vector points or write
+random value to the attribute table. Point height range or attribute value
+range is controlled by specifying \fBzmin\fR and \fBzmax\fR options.
+Both z values are included in range (\fIzmin <= z <=
+zmax\fR). Generated random attribute value type can be controlled
+by \fBcolumn_type\fR. Use \fIinteger\fR column type for integers and
+\fIdouble precision\fR for floating point numbers. Integer values are
+calculated by rounding random floating point number.
+.PP
+To produce repeatable results a random seed can be set using the
+option \fBseed\fR.
+.SS Restriction to vector areas
+.PP
+If an \fBrestrict\fR vector map with areas is specified, the location
+of random points is restricted to the selected areas. By default, the
+requested number of points are distributed across all areas.
+.PP
+If the \fB\-a\fR flag is given, the requested number of points is
+generated for each individual area. For example, if 20 points should be
+generated and the input map has 100 individual areas, 2000 points will
+be generated in total.
+.PP
+Attributes attached to \fBrestrict\fR vector map are also transferred
+if the \fBlayer\fR parameter is defined > 0,
+see \fIexample\fR
+below.
+.SH NOTES
+Importantly, attributes will only be transferred if \fBlayer\fR > 0
+(e.g., layer=1).
+.SH EXAMPLES
+All examples are based on the North Carolina sample dataset.
+.SS Generating random points in 2D
+Generate 20 random points with binary attributes (only 0 or 1):
+.br
+.nf
+\fC
+v.random output=binary_random npoints=20 zmin=0 zmax=1 column=\(cqbinary\(cq
+v.db.select binary_random
+cat|binary
+1|0.63495
+2|0.233421
+3|0.489302
+4|0.748264
+5|0.505556
+6|0.32975
+[...]
+v.univar \-d binary_random
+Calculating geometric distances between 20 primitives...
+[...]
+minimum: 148.515
+maximum: 16572.8
+[...]
+\fR
+.fi
+.SS Generating random points in 2D with binary attributes
+Generate 20 random points with binary attributes (only 0 or 1):
+.br
+.nf
+\fC
+v.random output=binary_random npoints=20 zmin=0 zmax=1 column=\(cqbinary\(cq column_type=integer
+v.db.select binary_random
+cat|binary
+1|0
+2|0
+3|0
+4|0
+5|1
+6|0
+[...]
+\fR
+.fi
+.SS Generating random points in 3D
+Generate 20 random 3D points using a specific random seed:
+.br
+.nf
+\fC
+v.random seed=52 output=height_random npoints=40 zmin=110 zmax=170 \-z
+v.univar \-d height_random
+Calculating geometric distances between 40 primitives...
+[...]
+minimum: 334.889
+maximum: 18351.9
+range: 18017
+sum: 5.38425e+06
+mean: 7266.2
+mean of absolute values: 7266.2
+population standard deviation: 3563.95
+[...]
+skewness: 0.34703
+\fR
+.fi
+.PP
+.br
+Random points with different X, Y, and Z coordinates
+.SS Generating random points in selected areas
+Generate 3 random points only in selected areas (\(dqRALEIGH\(dq related ZIP
+code areas):
+.br
+.nf
+\fC
+v.random restrict=zipcodes_wake output=zipcodes_local_random_n3 npoints=3 where=\(dqZIPNAME = \(cqRALEIGH\(cq\(dq \-a
+# visualization
+d.mon wx0
+d.vect zipcodes_wake
+d.vect zipcodes_wake fcolor=yellow where=\(dqZIPNAME = \(cqRALEIGH\(cq\(dq
+d.vect zipcodes_local_random_n3 color=red icon=basic/circle
+\fR
+.fi
+.br
+\fIFixed number of random points generated in selected areas\fR
+.SS Generating random adjacent areas
+To generate random adjacent areas, first the centroids are generated as
+points, then a triangulation is run (North Carolina sample dataset:
+.br
+.nf
+\fC
+g.region vector=nc_state
+v.random output=randpoints6k npoints=6000
+v.voronoi input=randpoints6k output=randareas6k
+v.info \-t randareas6k
+v.category randareas6k option=print
+# plot vector areas
+d.mon wx0
+d.vect randareas6k \-c
+\fR
+.fi
+.PP
+.br
+Random adjacent areas from random points (here: used as centroids)
+.PP
+To eventually obtain isolated areas, selected areas can be extracted with
+\fIv.extract\fR.
+.PP
+These vector areas can also be rasterized:
+.br
+.nf
+\fC
+# rasterize areas
+# note: rastermaps must result in at least 6k pixel in this example
+g.region vector=nc_state res=500 \-p \-a
+v.to.rast randareas6k out=randareas6k use=cat
+r.colors randareas6k color=random
+d.rast randareas6k
+\fR
+.fi
+.SS Random sampling from raster map
+Generate 20 random samples from a raster map:
+.br
+.nf
+\fC
+g.region \-p raster=elevation
+v.random output=random_samples npoints=20
+v.db.addtable map=random_samples columns=\(cqcat INTEGER, sample DOUBLE PRECISION\(cq
+v.what.rast map=random_samples raster=elevation column=sample
+v.db.select random_samples
+cat|sample
+1|103.9935
+2|129.1266
+3|96.01388
+[...]
+\fR
+.fi
+.SS Random sampling from vector map
+Generate 20 random points and sample attribute data from geology (vector) map:
+.br
+.nf
+\fC
+g.region \-p vector=geology
+v.random output=random_samples npoints=20
+v.db.addtable map=random_samples columns=\(cqcat integer, geology varchar(100)\(cq
+v.what.vect map=random_samples column=geology query_map=geology query_layer=1 query_column=GEO_NAME
+v.db.select random_samples
+cat|geology
+1|PzZm
+2|
+3|Zatm
+[...]
+\fR
+.fi
+.SS Stratified random sampling: Random sampling from vector map by attribute
+Generate 20 random points restricted to forested areas:
+.br
+.nf
+\fC
+g.region \-p raster=landclass96
+r.to.vect \-v input=landclass96 output=landclass96 type=area
+v.random restrict=landclass96 output=random_samples npoints=20 where=\(dqlabel = \(cqforest\(cq\(dq layer=1
+v.db.select map=random_samples
+cat|landclass96_cat|landclass96_label
+1|5|forest
+2|5|forest
+3|5|forest
+\&...
+\fR
+.fi
+.PP
+.br
+Random points only sampled in forested areas (stratified random sampling)
+.SS Stratified random sampling: Random sampling from vector map with spatial constraints
+Generating n points for each individual area: in this example two random
+points in each water body:
+.br
+.nf
+\fC
+g.region \-p raster=landclass96
+r.to.vect \-v input=landclass96 output=landclass96 type=area
+v.random restrict=landclass96 output=random_samples npoints=2 where=\(dqlabel = \(cqwater\(cq\(dq layer=1 \-a
+\fR
+.fi
+.PP
+.br
+Two random points sampled in each individual water body (stratified
+random sampling)
+.SH SEE ALSO
+\fI
+g.region,
+r.random,
+v.db.addtable,
+v.perturb,
+v.sample,
+v.univar,
+v.what.rast,
+v.what.vect
+\fR
+.PP
+SQL support in GRASS GIS
+.SH AUTHOR
+James Darrell McCauley
+<darrell@mccauley\-usa.com>,
+.br
+when he was at:
+Agricultural
+Engineering
+Purdue University
+.SH SOURCE CODE
+.PP
+Available at: v.random source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

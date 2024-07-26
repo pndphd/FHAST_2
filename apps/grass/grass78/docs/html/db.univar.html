@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.univar.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.univar.py</b></em>  - Calculates univariate statistics on selected table column.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#attribute table">attribute table</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.univar.py</b><br></div>
+<b>db.univar.py --help</b><br>
+<div id="synopsis"><b>db.univar.py</b> [-<b>eg</b>] <b>table</b>=<em>name</em> <b>column</b>=<em>name</em>  [<b>database</b>=<em>name</em>]   [<b>driver</b>=<em>name</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>percentile</b>=<em>float</em>[,<i>float</i>,...]]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Extended statistics (quartiles and 90th percentile)</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print stats in shell script style</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>table</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute table</dd>
+
+<dt><b>column</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of attribute column on which to calculate statistics (must be numeric)</dd>
+
+<dt><b>database</b>=<em>name</em></dt>
+<dd>Name of database</dd>
+
+<dt><b>driver</b>=<em>name</em></dt>
+<dd>Name of database driver</dd>
+<dd>Options: <em>dbf, odbc, ogr, sqlite, pg</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>percentile</b>=<em>float[,<i>float</i>,...]</em></dt>
+<dd>Percentile to calculate (requires extended statistics flag)</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>90</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.univar</em> calculates basic univariate statistics for numeric
+attributes in a data table. It will calculate minimum, maximum, range, mean,
+standard deviation, variance, coefficient of variation, quartiles, median, and
+90th percentile.
+It uses <em>db.select</em> to create list values for statistical calculations.
+
+<em>NOTES</em>
+
+If the database and driver are not specified, the default values set in
+<em>db.connect</em> will be used.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In this example, random points are sampled from the elevation map
+(North Carolina sample dataset) and univariate statistics performed:
+
+<div class="code"><pre>
+g.region raster=elevation -p
+v.random output=samples n=100
+v.db.addtable samples column="heights double precision"
+v.what.rast samples raster=elevation column=heights
+v.db.select samples
+
+db.univar samples column=heights
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.db.univar.html">v.db.univar</a>,
+<a href="r.univar.html">r.univar</a>,
+<a href="v.univar.html">v.univar</a>,
+<a href="db.select.html">db.select</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+ Michael Barton, Arizona State University
+<p>and authors of <em>r.univar.sh</em>
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/db.univar">db.univar source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/db.univar">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

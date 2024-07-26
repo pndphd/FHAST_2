@@ -1,0 +1,84 @@
+.TH projectionintro 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH Projections and spatial transformations in GRASS GIS
+.SS Projection management in general
+A GRASS location is referenced with a single projection and coordinate system
+(or unreferenced as XY location). When creating a new location from an existing
+raster or vector map using the tools available from the startup screen or
+the map import commands, projection and coordinate system are defined.
+To change the projection of maps, a new location has to be created and
+the desired maps have to be reprojected into it from the source location
+as explained below.
+.SS Raster map projections
+Raster maps are backward projected in GRASS. This means that the
+user has to run the raster projection command (r.proj)
+in the target location and \(dqpull\(dq the map from the source location.
+Both locations need to have a projection defined.
+.SS Raster map transformation
+To transform an unprojected map from a XY location into a projected
+location (or another XY location), a forward transformation is performed.
+The unreferenced map is geocoded within the XY location by defining
+four corner points or by seeking several ground control points
+(i.group, i.target,
+g.gui.gcp) and then transformed into the
+target location (i.rectify). Polynomial
+transformation of 1st, 2nd and 3rd order are supported.
+.PP
+A graphical user interface is provided by wxGUI.
+.PP
+To simply translate a raster map (without stretching or rotation), the
+r.region command can be used.
+.SS Vector map projections
+Vector maps are backward projected in GRASS. This means that the
+user has to run the vector projection command (v.proj)
+in the target location and \(dqpull\(dq the map from the source location.
+Both locations need to have a projection defined.
+.SS Vector map transformation
+To transform an unprojected map (e.g. CAD map) into projected coordinates,
+a forward transformation is performed. The unreferenced map is imported
+into the location with projection and geocoded within this location by
+defining  four corner points or by seeking several ground control points.
+These points are stored into an ASCII file and then transformed within
+the same location (v.transform).
+Alternatively, v.rectify rectifies a vector
+by computing a coordinate transformation for each object in the vector
+based on the control points.
+.PP
+A graphical user interface is provided by wxGUI.
+.SS References
+.RS 4n
+.IP \(bu 4n
+ASPRS Grids and Datum
+.IP \(bu 4n
+Projections Transform List (PROJ)
+.IP \(bu 4n
+Coordinate operations by PROJ (projections, conversions, transformations, pipeline operator)
+.IP \(bu 4n
+MapRef \- The Collection of Map Projections and Reference Systems for Europe
+.IP \(bu 4n
+Information and Service System for European Coordinate Reference Systems \- CRS
+.RE
+.SS See also
+.RS 4n
+.IP \(bu 4n
+Introduction into raster data processing
+.IP \(bu 4n
+Introduction into 3D raster data (voxel) processing
+.IP \(bu 4n
+Introduction into vector data processing
+.IP \(bu 4n
+Introduction into image processing
+.IP \(bu 4n
+Introduction into temporal data processing
+.IP \(bu 4n
+Database management
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,249 @@
+.TH t.rast.colors 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.rast.colors.py\fR\fR  \- Creates/modifies the color table associated with each raster map of the space time raster dataset.
+.SH KEYWORDS
+temporal, color table, raster, time
+.SH SYNOPSIS
+\fBt.rast.colors.py\fR
+.br
+\fBt.rast.colors.py \-\-help\fR
+.br
+\fBt.rast.colors.py\fR [\-\fBrwlngae\fR] \fBinput\fR=\fIname\fR  [\fBcolor\fR=\fIstyle\fR]   [\fBraster\fR=\fIname\fR]   [\fBraster_3d\fR=\fIname\fR]   [\fBrules\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-r\fR" 4m
+.br
+Remove existing color table
+.IP "\fB\-w\fR" 4m
+.br
+Only write new color table if it does not already exist
+.IP "\fB\-l\fR" 4m
+.br
+List available rules then exit
+.IP "\fB\-n\fR" 4m
+.br
+Invert colors
+.IP "\fB\-g\fR" 4m
+.br
+Logarithmic scaling
+.IP "\fB\-a\fR" 4m
+.br
+Logarithmic\-absolute scaling
+.IP "\fB\-e\fR" 4m
+.br
+Histogram equalization
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of the input space time raster dataset
+.IP "\fBcolor\fR=\fIstyle\fR" 4m
+.br
+Name of color table (see r.color help)
+.br
+Options: \fIaspect, aspectcolr, bcyr, bgyr, blues, byg, byr, celsius, corine, curvature, differences, elevation, etopo2, evi, fahrenheit, forest_cover, gdd, grass, greens, grey, grey.eq, grey.log, grey1.0, grey255, gyr, haxby, inferno, kelvin, magma, ndvi, ndwi, nlcd, oranges, plasma, population, population_dens, precipitation, precipitation_daily, precipitation_monthly, rainbow, ramp, random, reds, roygbiv, rstcurv, ryb, ryg, sepia, slope, soilmoisture, srtm, srtm_plus, terrain, viridis, water, wave\fR
+.br
+\fB aspect\fR: aspect oriented grey colors [range: map values]
+.br
+\fB aspectcolr\fR: aspect oriented rainbow colors [range: 0 to 360]
+.br
+\fB bcyr\fR: blue through cyan through yellow to red [range: map values]
+.br
+\fB bgyr\fR: blue through green through yellow to red [range: map values]
+.br
+\fB blues\fR: white to blue [range: map values]
+.br
+\fB byg\fR: blue through yellow to green [range: map values]
+.br
+\fB byr\fR: blue through yellow to red [range: map values]
+.br
+\fB celsius\fR: blue to red for degree Celsius temperature [range: \-80 to 80]
+.br
+\fB corine\fR: EU Corine land cover colors [range: 111 to 995]
+.br
+\fB curvature\fR: for terrain curvatures (from v.surf.rst and r.slope.aspect) [range: map values]
+.br
+\fB differences\fR: differences oriented colors [range: map values]
+.br
+\fB elevation\fR: maps relative ranges of raster values to elevation color ramp [range: map values]
+.br
+\fB etopo2\fR: colors for ETOPO2 worldwide bathymetry/topography [range: \-11000 to 8850]
+.br
+\fB evi\fR: enhanced vegetative index colors [range: \-1 to 1]
+.br
+\fB fahrenheit\fR: blue to red for Fahrenheit temperature [range: \-112 to 176]
+.br
+\fB forest_cover\fR: percentage of forest cover [range: 0 to 100]
+.br
+\fB gdd\fR: accumulated growing degree days [range: 0 to 6000]
+.br
+\fB grass\fR: GRASS GIS green (perceptually uniform) [range: map values]
+.br
+\fB greens\fR: white to green [range: map values]
+.br
+\fB grey\fR: grey scale [range: map values]
+.br
+\fB grey.eq\fR: histogram\-equalized grey scale [range: map values]
+.br
+\fB grey.log\fR: histogram logarithmic transformed grey scale [range: map values]
+.br
+\fB grey1.0\fR: grey scale for raster values between 0.0\-1.0 [range: 0 to 1]
+.br
+\fB grey255\fR: grey scale for raster values between 0\-255 [range: 0 to 255]
+.br
+\fB gyr\fR: green through yellow to red [range: map values]
+.br
+\fB haxby\fR: relative colors for bathymetry or topography [range: map values]
+.br
+\fB inferno\fR: perceptually uniform sequential color table inferno [range: map values]
+.br
+\fB kelvin\fR: blue to red for temperature in Kelvin scale [range: 193.15 to 353.15]
+.br
+\fB magma\fR: perceptually uniform sequential color table magma [range: map values]
+.br
+\fB ndvi\fR: Normalized Difference Vegetation Index colors [range: \-1 to 1]
+.br
+\fB ndwi\fR: Normalized Difference Water Index colors [range: \-200 to 200]
+.br
+\fB nlcd\fR: US National Land Cover Dataset colors [range: 0 to 95]
+.br
+\fB oranges\fR: white to orange [range: map values]
+.br
+\fB plasma\fR: perceptually uniform sequential color table plasma [range: map values]
+.br
+\fB population\fR: color table covering human population classification breaks [range: 0 to 2e+009]
+.br
+\fB population_dens\fR: color table covering human population density classification breaks [range: 0 to 1e+009]
+.br
+\fB precipitation\fR: precipitation color table (0..2000mm) [range: 0 to 7000]
+.br
+\fB precipitation_daily\fR: precipitation color table (0..1000mm) [range: 0 to 10000]
+.br
+\fB precipitation_monthly\fR: precipitation color table (0..1000mm) [range: 0 to 1000]
+.br
+\fB rainbow\fR: rainbow color table [range: map values]
+.br
+\fB ramp\fR: color ramp [range: map values]
+.br
+\fB random\fR: random color table [range: map values]
+.br
+\fB reds\fR: white to red [range: map values]
+.br
+\fB roygbiv\fR:  [range: map values]
+.br
+\fB rstcurv\fR: terrain curvature (from r.resamp.rst) [range: map values]
+.br
+\fB ryb\fR: red through yellow to blue [range: map values]
+.br
+\fB ryg\fR: red through yellow to green [range: map values]
+.br
+\fB sepia\fR: yellowish\-brown through to white [range: map values]
+.br
+\fB slope\fR: r.slope.aspect\-type slope colors for raster values 0\-90 [range: 0 to 90]
+.br
+\fB soilmoisture\fR: soilmoisture color table (0.0\-1.0) [range: 0 to 1]
+.br
+\fB srtm\fR: color palette for Shuttle Radar Topography Mission elevation [range: \-11000 to 8850]
+.br
+\fB srtm_plus\fR: color palette for Shuttle Radar Topography Mission elevation (with seafloor colors) [range: \-11000 to 8850]
+.br
+\fB terrain\fR: global elevation color table covering \-11000 to +8850m [range: \-11000 to 8850]
+.br
+\fB viridis\fR: perceptually uniform sequential color table viridis [range: map values]
+.br
+\fB water\fR: water depth [range: map values]
+.br
+\fB wave\fR: color wave [range: map values]
+.IP "\fBraster\fR=\fIname\fR" 4m
+.br
+Raster map from which to copy color table
+.IP "\fBraster_3d\fR=\fIname\fR" 4m
+.br
+3D raster map from which to copy color table
+.IP "\fBrules\fR=\fIname\fR" 4m
+.br
+Path to rules file
+.SH DESCRIPTION
+\fIt.rast.colors\fR computes a color table based on all registered maps
+of a space time raster dataset and to assign this color table to each map.
+Hence the created color table reflects the data range of
+the space time raster dataset. This module is a simple
+wrapper around r.colors.
+All options of \fIr.colors\fR are supported.
+Internally a file with map names is created and passed
+to the \fIfile\fR option of \fIr.colors\fR.
+.PP
+Please have a look at the r.colors
+manual page for further information.
+.SH EXAMPLE
+Set Celsius color table to monthly dataset
+.br
+.nf
+\fC
+t.rast.colors input=tempmean_monthly color=celsius
+r.colors.out map=2009_01_tempmean
+\-80 0:0:40
+\-40 91:10:168
+\-30 220:220:220
+\-25 91:50:128
+\-20 50:0:150
+\-15 4:25:130
+\-10 8:54:106
+\-8 4:20:150
+\-5 0:50:255
+\-2 8:10:118
+\-0.061449 8:113:155
+0.013855 8:118:157
+0.090594 8:123:158
+0.168767 8:128:159
+0.248375 8:133:159
+0.329417 8:136:160
+\&...
+40.6976 183:163:163
+41.0483 185:167:167
+41.4004 188:170:171
+41.754 190:174:174
+42.109 191:178:178
+42.4655 193:182:182
+42.8233 195:185:185
+43.1827 197:189:189
+43.5434 199:192:193
+43.9056 200:197:197
+44.2692 202:200:201
+44.6342 204:204:204
+45.0007 206:206:206
+80 155:10:155
+nv 255:255:255
+default 255:255:255
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.colors
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.rast.colors source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

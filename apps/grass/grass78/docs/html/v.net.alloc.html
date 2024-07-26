@@ -1,0 +1,366 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.net.alloc - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.net.alloc</b></em>  - Allocates subnets for nearest centers.<BR>
+Center node must be opened (costs >= 0). Costs of center node are used in calculation.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_network.html">network</a>, <a href="keywords.html#cost allocation">cost allocation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.net.alloc</b><br></div>
+<b>v.net.alloc --help</b><br>
+<div id="synopsis"><b>v.net.alloc</b> [-<b>tgu</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>method</b>=<em>string</em>]  <b>center_cats</b>=<em>range</em> <b>arc_layer</b>=<em>string</em> <b>arc_type</b>=<em>string</em>[,<i>string</i>,...] <b>node_layer</b>=<em>string</em>  [<b>arc_column</b>=<em>name</em>]   [<b>arc_backward_column</b>=<em>name</em>]   [<b>node_column</b>=<em>name</em>]   [<b>turn_layer</b>=<em>string</em>]   [<b>turn_cat_layer</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-t</b></dt>
+<dd>Use turntable</dd>
+
+<dt><b>-g</b></dt>
+<dd>Use geodesic calculation for longitude-latitude locations</dd>
+
+<dt><b>-u</b></dt>
+<dd>Create unique categories and attribute table</dd>
+<dd>Default: same category like nearest center</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Use costs from centers or costs to centers</dd>
+<dd>Options: <em>from, to</em></dd>
+<dd>Default: <em>from</em></dd>
+
+<dt><b>center_cats</b>=<em>range</em>&nbsp;<b>[required]</b></dt>
+<dd>Category values</dd>
+<dd>Categories of centers (points on nodes) to which net will be allocated, layer for this categories is given by nlayer option</dd>
+
+<dt><b>arc_layer</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Arc layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>arc_type</b>=<em>string[,<i>string</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Arc type</dd>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, boundary</em></dd>
+<dd>Default: <em>line,boundary</em></dd>
+
+<dt><b>node_layer</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Node layer</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>arc_column</b>=<em>name</em></dt>
+<dd>Arc forward/both direction(s) cost column (number)</dd>
+
+<dt><b>arc_backward_column</b>=<em>name</em></dt>
+<dd>Arc backward direction cost column (number)</dd>
+
+<dt><b>node_column</b>=<em>name</em></dt>
+<dd>Node cost column (number)</dd>
+
+<dt><b>turn_layer</b>=<em>string</em></dt>
+<dd>Layer with turntable</dd>
+<dd>Relevant only with -t flag</dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>turn_cat_layer</b>=<em>string</em></dt>
+<dd>Layer with unique categories used in turntable</dd>
+<dd>Relevant only with -t flag</dd>
+<dd>Default: <em>4</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a>
+    <ul class="toc">
+        <li class="toc"><a href="#turns-support" class="toc">TURNS SUPPORT</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.net.alloc</em> allocates subnets for nearest centers. Center 
+nodes must be opened (costs &gt;= 0). Costs of center nodes are used in 
+the calculation. 
+<p>
+Costs may be either line lengths, or attributes saved in a 
+database table. These attribute values are taken as costs of whole 
+segments, not as costs to traverse a length unit (e.g. meter) of the 
+segment. For example, if the speed limit is 100 km / h, the cost to 
+traverse a 10 km long road segment must be calculated as
+<br>
+length / speed = 10 km / (100 km/h) = 0.1 h.
+<br>
+Supported are cost assignments for both arcs and nodes, 
+and also different costs for both directions of a vector line. 
+For areas, costs will be calculated along boundary lines.
+<p>
+The input vector needs to be prepared with <em>v.net operation=connect</em> 
+in order to connect points representing center nodes to the network.
+<p>
+The nearest center can be determined using either costs from the 
+nearest center or costs to the nearest center with option 
+<b>method</b>. See example below.
+<p>
+By default, the category value of the nearest center is used as 
+category value for output lines. With the <b>-u</b> flag, output lines 
+become unique categories and an attribute table is created with the 
+fields <em>cat, ocat, center</em>. The <em>ocat</em> field holds the 
+original line category in <b>arc_layer</b> and the <em>center</em> 
+field holds the center category in <b>node_layer</b>. Additionally, 
+original line categories are copied from the input <b>arc_layer</b> to 
+layer 2 in the output, together with any attribute table.
+<p>
+Application of flag <b>-t</b> enables a turntable support. This flag 
+requires additional parameters <b>turn_layer</b> and 
+<b>turn_cat_layer</b> that are otherwise ignored. The turntable allows 
+to model e.g. traffic code, where some turns may be prohibited. This 
+means that the input layer is expanded by turntable with costs of every 
+possible turn on any possible node (intersection) in both directions. 
+Turntable can be created by the <em><a href="v.net.html">v.net</a></em> 
+module. For more information about turns in the vector network analyses 
+see
+<a href="https://grasswiki.osgeo.org/wiki/Turns_in_the_vector_network_analysis">wiki page</a>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Nodes and arcs can be closed using cost = -1. 
+<p>
+Center nodes can also be assigned to vector nodes using 
+<em><a href="wxGUI.vdigit.html">wxGUI vector digitizer</a></em>. 
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<p>1. Subnetwork allocation using distance:
+<p><img src="v_net_alloc.png" alt="v.net.alloc example using distance" border="1">
+<br>
+<p>2. Subnetwork allocation using traveling time:
+<p><img src="v_net_alloc_time.png" alt="v.net.alloc example using time" border="1">
+<br>
+
+<p>Example 1: <em>Calculating subnets for 3 center nodes using distances</em>
+<div class="code"><pre>
+# Spearfish
+
+# center nodes:
+echo "591235.5|4926306.62|1
+596591.8|4917042.5|2
+602722.9|4923544.2|3" | v.in.ascii in=- out=centernodes
+
+g.copy vect=roads,myroads
+
+# connect points to network
+v.net myroads points=centernodes out=myroads_net op=connect thresh=200
+
+# allocate, specifying range of center cats (easier to catch all):
+v.net.alloc myroads_net out=myroads_net_alloc center_cats=1-100000 node_layer=2
+
+# report categories
+v.category myroads_net_alloc option=report
+</pre></div>
+
+To display the result, run for example:
+
+<div class="code"><pre>
+# show result
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net layer=1
+
+# the result has to be selected by category number of the relevant node:
+d.vect myroads_net_alloc cat=1 col=red layer=1
+d.vect myroads_net_alloc cat=2 col=green layer=1
+d.vect myroads_net_alloc cat=3 col=yellow layer=1
+
+# center nodes
+d.vect myroads_net col=red icon=basic/triangle fcol=green size=12 layer=2
+</pre></div>
+
+<p>Example 2: <em>Calculating subnets for 3 center nodes using traveling time</em><br>
+
+<div class="code"><pre>
+# Spearfish
+
+# center nodes:
+echo "591235.5|4926306.62|1
+596591.8|4917042.5|2
+602722.9|4923544.2|3" | v.in.ascii in=- out=centernodes
+
+g.copy vect=roads,myroads
+
+# create lines map connecting points to network
+v.net myroads points=centernodes out=myroads_net op=connect thresh=500 arc_layer=1 node_layer=2
+
+# set up costs
+
+# create unique categories for each road in layer 3
+v.category in=myroads_net out=myroads_net_time opt=add cat=1 layer=3 type=line
+
+# add new table for layer 3
+v.db.addtable myroads_net_time layer=3 col="cat integer,label varchar(43),length double precision,speed double precision,cost double precision,bcost double precision"
+
+# copy road type to layer 3
+v.to.db myroads_net_time layer=3 qlayer=1 opt=query qcolumn=label columns=label
+
+# upload road length in miles
+v.to.db myroads_net_time layer=3 type=line option=length col=length unit=miles
+
+# set speed limits in miles / hour
+v.db.update myroads_net_time layer=3 col=speed val="5.0"
+v.db.update myroads_net_time layer=3 col=speed val="75.0" where="label='interstate'"
+v.db.update myroads_net_time layer=3 col=speed val="75.0" where="label='primary highway, hard surface'"
+v.db.update myroads_net_time layer=3 col=speed val="50.0" where="label='secondary highway, hard surface'"
+v.db.update myroads_net_time layer=3 col=speed val="25.0" where="label='light-duty road, improved surface'"
+v.db.update myroads_net_time layer=3 col=speed val="5.0" where="label='unimproved road'"
+
+# define traveling costs as traveling time in minutes:
+
+# set forward costs
+v.db.update myroads_net_time layer=3 col=cost val="length / speed * 60"
+# set backward costs
+v.db.update myroads_net_time layer=3 col=bcost val="length / speed * 60"
+
+# subnetwork allocation with fastest paths
+v.net.alloc in=myroads_net_time arc_layer=3 node_layer=2 arc_column=cost arc_backward_column=bcost out=myroads_net_alloc_time center_cats=1-3
+</pre></div>
+
+To display the result, run for example:
+
+<div class="code"><pre>
+# show result
+g.region vector=myroads_net
+d.mon x0
+d.vect myroads_net type=line layer=1
+
+# the result has to be selected by category number of the relevant node:
+d.vect myroads_net_alloc_time cat=1 col=red layer=1
+d.vect myroads_net_alloc_time cat=2 col=green layer=1
+d.vect myroads_net_alloc_time cat=3 col=yellow layer=1
+
+# center nodes
+d.vect myroads_net_time col=red icon=basic/triangle fcol=green size=12 type=point layer=2
+</pre></div>
+
+<p>Example 3: <em>Differences between costs from centers and costs to centers</em><br>
+
+Each lane of the two-lane road is a one-way road.
+<p>1. Subnetwork allocation from centers:
+<p><img src="v_net_alloc_from_centers.png" alt="v.net.alloc example from centers" border="1">
+<br>
+A center reaches any point following the one-way lanes.
+<p>2. Subnetwork allocation to centers:
+<p><img src="v_net_alloc_to_centers.png" alt="v.net.alloc example to centers" border="1">
+<br>
+Any node reaches reaches the nearest center following the one-way lanes.
+<p>
+In case of an accident, the ambulance should come from the nearest 
+'from' hospital and go to the nearest 'to' hospital.
+
+<div class="code"><pre>
+# North Carolina
+
+# center nodes are hospitals:
+# connect hospitals to streets as layer 2
+v.net input=streets_wake points=hospitals output=streets_hospitals operation=connect thresh=400 arc_layer=1 node_layer=2
+v.to.db map=streets_hospitals layer=1 type=line option=cat columns=cat
+
+# close oneway roads
+v.db.update map=streets_hospitals column=TF_COST value=-1 where="ONE_WAY = 'FT'"
+v.db.update map=streets_hospitals column=FT_COST value=-1 where="ONE_WAY = 'TF'"
+
+# add costs to newly created lines
+v.db.update map=streets_hospitals column=TF_COST value=0 where="cat > 49746"
+v.db.update map=streets_hospitals column=FT_COST value=0 where="cat > 49746"
+
+# from centers
+v.net.alloc in=streets_hospitals out=streets_hospitals_alloc_from center_cats=1-10000 arc_column=FT_COST arc_backward_column=TF_COST
+
+# to centers
+v.net.alloc in=streets_hospitals out=streets_hospitals_alloc_to method=to center_cats=1-10000 arc_column=FT_COST arc_backward_column=TF_COST
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em><a href="d.path.html">d.path</a></em>,
+<em><a href="v.net.html">v.net</a></em>,
+<em><a href="v.net.iso.html">v.net.iso</a></em>,
+<em><a href="v.net.path.html">v.net.path</a></em>,
+<em><a href="v.net.steiner.html">v.net.steiner</a></em>,
+<em><a href="v.net.salesman.html">v.net.salesman</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Radim Blazek, ITC-Irst, Trento, Italy<br>
+Documentation: Markus Neteler, Markus Metz
+
+<h3><a name="turns-support">TURNS SUPPORT</a></h3>
+
+The turns support was implemnented as part of GRASS GIS turns cost project at Czech Technical University in Prague, Czech Republic.  
+Eliska Kyzlikova, Stepan Turek, Lukas Bocan and Viera Bejdova participated at the project.
+
+Implementation: Stepan Turek 
+Documentation: Lukas Bocan
+Mentor: Martin Landa
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.net.alloc">v.net.alloc source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.net.alloc">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

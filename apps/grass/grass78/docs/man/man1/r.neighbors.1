@@ -1,0 +1,697 @@
+.TH r.neighbors 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.neighbors\fR\fR  \- Makes each cell category value a function of the category values assigned to the cells around it, and stores new cell values in an output raster map layer.
+.SH KEYWORDS
+raster, algebra, statistics, aggregation, neighbor, focal statistics, filter
+.SH SYNOPSIS
+\fBr.neighbors\fR
+.br
+\fBr.neighbors \-\-help\fR
+.br
+\fBr.neighbors\fR [\-\fBac\fR] \fBinput\fR=\fIname\fR  [\fBselection\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR[,\fIname\fR,...]  [\fBmethod\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBsize\fR=\fIinteger\fR]   [\fBtitle\fR=\fIphrase\fR]   [\fBweight\fR=\fIname\fR]   [\fBgauss\fR=\fIfloat\fR]   [\fBquantile\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Do not align output with the input
+.IP "\fB\-c\fR" 4m
+.br
+Use circular neighborhood
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBselection\fR=\fIname\fR" 4m
+.br
+Name of an input raster map to select the cells which should be processed
+.IP "\fBoutput\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmethod\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Neighborhood operation
+.br
+Options: \fIaverage, median, mode, minimum, maximum, range, stddev, sum, count, variance, diversity, interspersion, quart1, quart3, perc90, quantile\fR
+.br
+Default: \fIaverage\fR
+.IP "\fBsize\fR=\fIinteger\fR" 4m
+.br
+Neighborhood size
+.br
+Default: \fI3\fR
+.IP "\fBtitle\fR=\fIphrase\fR" 4m
+.br
+Title for output raster map
+.IP "\fBweight\fR=\fIname\fR" 4m
+.br
+Text file containing weights
+.IP "\fBgauss\fR=\fIfloat\fR" 4m
+.br
+Sigma (in cells) for Gaussian filter
+.IP "\fBquantile\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Quantile to calculate for method=quantile
+.br
+Options: \fI0.0\-1.0\fR
+.SH DESCRIPTION
+\fI\fBr.neighbors\fR\fR looks at each cell in a raster input
+file, and examines the values assigned to the
+cells in some user\-defined \(dqneighborhood\(dq around it.  It
+outputs a new raster map layer in which each cell is
+assigned a value that is some (user\-specified)
+function of the values in that cell\(cqs neighborhood.  For
+example, each cell in the output layer might be assigned a
+value equal to the average of the values
+appearing in its 3 x 3 cell \(dqneighborhood\(dq in the input
+layer. Note that the centre cell is also included in the calculation.
+.SS OPTIONS
+The user must specify the names of the raster map layers to
+be used for \fBinput\fR and \fBoutput\fR, the
+\fBmethod\fR used to analyze neighborhood
+values (i.e., the neighborhood function or operation to be
+performed), and the \fBsize\fR of the neighborhood.
+.PP
+The user can optionally
+specify a \fBselection\fR map, to compute new values only where the raster
+cells of the selection map are not NULL. In case of a NULL cells,
+the values from the input map are copied into the output map.
+This may useful to smooth only parts of an elevation map (pits, peaks, ...).
+.PP
+\fIExample how to use a selection map with method=average:\fR
+.br
+input map:
+.br
+.nf
+\fC
+1 1  1 1 1
+1 1  1 1 1
+1 1 10 1 1
+1 1  1 1 1
+1 1  1 1 1
+\fR
+.fi
+selection map, NULL values are marked as *:
+.br
+.nf
+\fC
+* * * * *
+* * 1 * *
+* 1 1 1 *
+* * 1 * *
+* * * * *
+\fR
+.fi
+The output map:
+.br
+.nf
+\fC
+1 1 1 1 1
+1 1 2 1 1
+1 2 2 2 1
+1 1 2 1 1
+1 1 1 1 1
+\fR
+.fi
+Without using the selection map, the output map would look like this:
+.br
+.nf
+\fC
+1 1 1 1 1
+1 2 2 2 1
+1 2 2 2 1
+1 2 2 2 1
+1 1 1 1 1
+\fR
+.fi
+.PP
+Optionally, the user can also specify the \fBTITLE\fR to
+be assigned to the raster map layer \fBoutput\fR, elect
+to not align the resolution of the output with that of the
+input (the \fB\-a\fR option), and run \fI\fBr.neighbors\fR\fR
+with a custom matrix weights with the \fIweight\fR option.
+These options are described further below.
+.PP
+\fINeighborhood Operation Methods:\fR
+The \fBneighborhood\fR operators determine what new
+value a center cell in a neighborhood will have after examining
+values inside its neighboring cells.
+Each cell in a raster map layer becomes the center cell of a neighborhood
+as the neighborhood window moves from cell to cell throughout the map layer.
+\fI\fBr.neighbors\fR\fR can perform the following operations:
+.PP
+.IP "\fBaverage\fR   " 4m
+.br
+The average value within the neighborhood.
+In the following example, the result would be:
+.br
+(7*4 + 6 + 5 + 4*3)/9 = 5.6667
+.br
+The result is rounded to the nearest integer (in this case 6).
+.br
+.nf
+\fC
+   Raw Data     Operation     New Data
+   +\-\-\-+\-\-\-+\-\-\-+          +\-\-\-+\-\-\-+\-\-\-+
+   | 7 | 7 | 5 |          |   |   |   |
+   +\-\-\-+\-\-\-+\-\-\-+ average  +\-\-\-+\-\-\-+\-\-\-+
+   | 4 | 7 | 4 |\-\-\-\-\-\-\-\-\->|   | 6 |   |
+   +\-\-\-+\-\-\-+\-\-\-+          +\-\-\-+\-\-\-+\-\-\-+
+   | 7 | 6 | 4 |          |   |   |   |
+   +\-\-\-+\-\-\-+\-\-\-+          +\-\-\-+\-\-\-+\-\-\-+
+\fR
+.fi
+.IP "\fBmedian\fR   " 4m
+.br
+The value found half\-way through a list of the
+neighborhood\(cqs values,
+when these are ranged in numerical order.
+.IP "\fBmode\fR   " 4m
+.br
+The most frequently occurring value in the neighborhood.
+.IP "\fBminimum\fR   " 4m
+.br
+The minimum value within the neighborhood.
+.IP "\fBmaximum\fR   " 4m
+.br
+The maximum value within the neighborhood.
+.IP "\fBrange\fR  " 4m
+.br
+The range value within the neighborhood.
+.IP "\fBstddev\fR   " 4m
+.br
+The statistical standard deviation of values
+within the neighborhood (rounded to the nearest integer).
+.IP "\fBsum\fR   " 4m
+.br
+The sum of values within the neighborhood.
+.IP "\fBcount\fR " 4m
+.br
+The count of filled (not NULL) cells.
+.IP "\fBvariance\fR   " 4m
+.br
+The statistical variance of values
+within the neighborhood (rounded to the nearest integer).
+.IP "\fBdiversity\fR   " 4m
+.br
+The number of different values within the neighborhood.
+In the above example, the diversity is 4.
+.IP "\fBinterspersion\fR   " 4m
+.br
+The percentage of cells containing values which differ from the values
+assigned to the center cell in the neighborhood, plus 1.
+In the above example, the interspersion is:
+.br
+5/8 * 100 + 1 = 63.5
+.br
+The result is rounded to the nearest integer (in this case 64).
+.IP "\fBquart1, quart3\fR  " 4m
+.br
+The result will be the first or the third quartile (equal of 25th and 75th percentiles).
+.IP "\fBperc90\fR  " 4m
+.br
+The result will be the 90th percentile of neighborhood.
+.IP "\fBquantile\fR  " 4m
+.br
+Any quantile as specified by \(dqquantile\(dq input parameter.
+.PP
+.br
+\fINeighborhood Size:\fR
+The neighborhood \fBsize\fR specifies which cells surrounding any given
+cell fall into the neighborhood for that cell.
+The \fBsize\fR must be an odd integer and represent the length of one of
+moving window edges in cells.
+For example, a size value of 3 will result in
+.br
+.nf
+\fC
+                              _ _ _
+                             |_|_|_|
+    3 x 3 neighborhood \-\-\->  |_|_|_|
+                             |_|_|_|
+\fR
+.fi
+.PP
+\fIMatrix weights:\fR
+A custom matrix can be used if none of the neighborhood operation
+methods are desirable by using the \fBweight\fR.  This option must
+be used in conjunction with the \fBsize\fR option to specify the
+matrix size.  The weights desired are to be entered into a text file.
+For example, to calculate the focal mean with a matrix \fBsize\fR of
+3,
+.br
+.nf
+\fC
+r.neigbors in=input.map out=output.map size=3 weight=weights.txt
+\fR
+.fi
+The contents of the weight.txt file:
+.br
+.nf
+\fC
+3 3 3
+1 4 8
+9 5 3
+\fR
+.fi
+This corresponds to the following 3x3 matrix:
+.br
+.nf
+\fC
++\-+\-+\-+
+|3|3|3|
++\-+\-+\-+
+|1|4|8|
++\-+\-+\-+
+|9|5|3|
++\-+\-+\-+
+\fR
+.fi
+To calculate an annulus shaped neighborhood the contents of weight.txt file
+may be e.g. for size=5:
+.br
+.nf
+\fC
+ 0 1 1 1 0
+ 1 0 0 0 1
+ 1 0 0 0 1
+ 1 0 0 0 1
+ 0 1 1 1 0
+\fR
+.fi
+The way that weights are used depends upon the specific aggregate
+(\fBmethod\fR) being used.
+However, most of the aggregates have the property that multiplying all
+of the weights by the same factor won\(cqt change the final result (an
+exception is \fBmethod=count\fR).
+Also, most (if not all) of them have the properties that an integer
+weight of N is equivalent to N occurrences of the cell value, and
+having all weights equal to one produces the same result as when
+weights are not used.
+When weights are used, the calculation for \fBmethod=average\fR is:
+.br
+.nf
+\fC
+  sum(w[i]*x[i]) / sum(w[i])
+\fR
+.fi
+In the case where all weights are zero, this will end up with both the
+numerator and denominator to zero, which produces a NULL result.
+.SS FLAGS
+.IP "\fB\-a\fR   " 4m
+.br
+If specified, \fI\fBr.neighbors\fR\fR will not align the output
+raster map layer with that of the input raster map layer.
+The \fI\fBr.neighbors\fR\fR program works in the current geographic region.
+It is recommended, but not required, that the resolution
+of the geographic region be the same as that of the raster map layer.
+By default, if unspecified,
+\fI\fBr.neighbors\fR\fR will align these geographic region settings.
+.PP
+.IP "\fB\-c\fR " 4m
+.br
+This flag will use a circular neighborhood for the moving analysis window,
+centered on the current cell.
+.PP
+The exact masks for the first few neighborhood sizes are as follows:
+.br
+.nf
+\fC
+3x3     . X .		5x5	. . X . .	7x7	. . . X . . .
+        X O X			. X X X .		. X X X X X .
+        . X .			X X O X X		. X X X X X .
+				. X X X .		X X X O X X X
+ 				. . X . .		. X X X X X .
+							. X X X X X .
+        						. . . X . . .
+9x9	. . . . X . . . .		11x11   . . . . . X . . . . .
+	. . X X X X X . .			. . X X X X X X X . .
+        . X X X X X X X .			. X X X X X X X X X .
+        . X X X X X X X .			. X X X X X X X X X .
+        X X X X O X X X X			. X X X X X X X X X .
+        . X X X X X X X .			X X X X X O X X X X X
+        . X X X X X X X .			. X X X X X X X X X .
+        . . X X X X X . .			. X X X X X X X X X .
+        . . . . X . . . .			. X X X X X X X X X .
+				        	. . X X X X X X X . .
+				        	. . . . . X . . . . .
+\fR
+.fi
+.SH NOTES
+The \fI\fBr.neighbors\fR\fR program works in the current geographic region
+with the current mask, if any.  It is recommended, but not required,
+that the resolution of the geographic region be the same as that
+of the raster map layer.  By default, \fI\fBr.neighbors\fR\fR will align
+these geographic region settings.  However, the user can select to keep
+original input and output resolutions which are not aligned by specifying
+this (e.g., using the \fB\-a\fR option).
+.PP
+\fI\fBr.neighbors\fR\fR doesn\(cqt propagate NULLs, but computes the
+aggregate over the non\-NULL cells in the neighborhood.
+.PP
+The \fB\-c\fR flag and the \fBweights\fR parameter are mutually exclusive.  Any
+use of the two together will produce an error. Differently\-shaped neighborhood
+analysis windows may be achieved by using the \fBweight=\fR parameter to
+specify a weights file where all values are equal. The user can also vary the
+weights at the edge of the neighborhood according to the proportion of the cell
+that lies inside the neighborhood circle, effectively anti\-aliasing the analysis
+mask.
+.PP
+For aggregates where a weighted calculation isn\(cqt meaningful
+(specifically: minimum, maximum, diversity and interspersion), the
+weights are used to create a binary mask, where zero causes the cell
+to be ignored and any non\-zero value causes the cell to be used.
+.PP
+\fI\fBr.neighbors\fR\fR copies the GRASS \fIcolor\fR files associated with
+the input raster map layer for those output map layers that are based
+on the neighborhood average, median, mode, minimum, and maximum.
+Because standard deviation, variance, diversity, and interspersion are indices,
+rather than direct correspondents to input values,
+no \fIcolor\fR files are copied for these map layers.
+(The user should note that although the \fIcolor\fR file is copied
+for \fIaverage\fR neighborhood function output,
+whether or not the color file makes sense for the output
+will be dependent on the input data values.)
+.SS Propagation of output precision
+The following logic has been implemented: For any aggregate, there are
+two factors affecting the output type:
+.IP
+.IP \fB1\fR
+Whether the input map is integer or floating\-point.
+.IP \fB2\fR
+Whether the weighted or unweighted version of the aggregate is used.
+.PP
+These combine to create four possibilities:
+.PP
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60 lw1 lw60 lw1 lw60.
+T{
+input type/weight
+T}	 	T{
+integer
+T}	 	T{
+float
+T}
+.sp 1
+T{
+no
+T}	 	T{
+yes
+T}	 	T{
+no
+T}	 	T{
+yes
+T}
+.sp 1
+T{
+average
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+median
+T}	 	T{
+[1]
+T}	 	T{
+[1]
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+mode
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+[2]
+T}	 	T{
+[2]
+T}
+.sp 1
+T{
+minimum
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+maximum
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+range
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+stddev
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+sum
+T}	 	T{
+integer
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+count
+T}	 	T{
+integer
+T}	 	T{
+float
+T}	 	T{
+integer
+T}	 	T{
+float
+T}
+.sp 1
+T{
+variance
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+diversity
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}
+.sp 1
+T{
+interspersion
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}	 	T{
+integer
+T}
+.sp 1
+T{
+quart1
+T}	 	T{
+[1]
+T}	 	T{
+[1]
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+quart3
+T}	 	T{
+[1]
+T}	 	T{
+[1]
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+perc90
+T}	 	T{
+[1]
+T}	 	T{
+[1]
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+T{
+quantile
+T}	 	T{
+[1]
+T}	 	T{
+[1]
+T}	 	T{
+float
+T}	 	T{
+float
+T}
+.sp 1
+.TE
+.PP
+[1] For integer input, quantiles may produce float results from
+interpolating between adjacent values.
+.br
+[2] Calculating the mode of floating\-point data is essentially
+meaningless.
+.PP
+With the current aggregates, there are 5 cases:
+.IP
+.IP \fB1\fR
+Output is always float: average, variance, stddev, quantiles (with
+interpolation).
+.IP \fB2\fR
+Output is always integer: diversity, interspersion.
+.IP \fB3\fR
+Output is integer if unweighted, float if weighted: count.
+.IP \fB4\fR
+Output matches input: minimum, maximum, range, mode (subject to
+note 2 above), quantiles (without interpolation).
+.IP \fB5\fR
+Output is integer for integer input and unweighted aggregate,
+otherwise float: sum.
+.PP
+.SH EXAMPLES
+.SS Measure occupancy of neighborhood
+Set up 10x10 computational region to aid visual inspection of results
+.br
+.nf
+\fC
+g.region rows=10 cols=10
+\fR
+.fi
+Fill 50% of computational region with randomly located cells.
+\(dqdistance=0\(dq will allow filling adjacent cells.
+.br
+.nf
+\fC
+r.random.cells output=random_cells distance=0 ncells=50
+\fR
+.fi
+Count non\-empty (not NULL) cells in 3x3 neighborhood
+.br
+.nf
+\fC
+r.neighbors input=random_cells output=counts method=count
+\fR
+.fi
+Optionally \- exclude centre cell from the count (= only look around)
+.br
+.nf
+\fC
+r.mapcalc \(dqcound_around = if( isnull(random_cells), counts, counts \- 1)\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fIg.region\fR
+.br
+\fIr.clump\fR
+.br
+\fIr.mapcalc\fR
+.br
+\fIr.mfilter\fR
+.br
+\fIr.statistics\fR
+.br
+\fIr.support\fR
+.SH AUTHORS
+Original version: Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.br
+Updates for GRASS GIS 7 by Glynn Clements and others
+.SH SOURCE CODE
+.PP
+Available at: r.neighbors source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

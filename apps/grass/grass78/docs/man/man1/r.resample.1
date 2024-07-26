@@ -1,0 +1,91 @@
+.TH r.resample 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.resample\fR\fR  \- GRASS raster map layer data resampling capability.
+.SH KEYWORDS
+raster, resample, nearest neighbor
+.SH SYNOPSIS
+\fBr.resample\fR
+.br
+\fBr.resample \-\-help\fR
+.br
+\fBr.resample\fR \fBinput\fR=\fIstring\fR \fBoutput\fR=\fIstring\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an input layer
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Name of an output layer
+.SH DESCRIPTION
+\fIr.resample\fR resamples the data values in a user\-specified raster
+input map layer \fIname\fR (bounded by the current geographic region
+and masked by the current mask), and produces a new raster output map layer
+\fIname\fR containing the results of the resampling.
+The category values in the new raster output map layer will be the same
+as those in the original, except that the resolution and extent of the
+new raster output map layer will match those of the current geographic region
+settings (see \fIg.region\fR).
+\fIr.resample\fR is intended for resampling of discrete raster data
+(such as land cover, geology or soil type) to a different resolution.
+Continuous data (such as elevation or temperature) usually require reinterpolation
+when changing resolution, see \fIr.resamp.interp\fR.
+.SH NOTES
+The method by which resampling is conducted is \(dqnearest neighbor\(dq
+(see \fIr.neighbors\fR).
+The resulting raster map layer will have the same
+resolution as the resolution of the current geographic region
+(set using \fIg.region\fR).
+.PP
+The resulting raster map layer may be identical to the original raster
+map layer.  The \fIr.resample\fR program will copy the color table
+and history file associated with the original raster map
+layer for the resulting raster map layer and will create a modified
+category file which contains description of only those categories
+which appear in resampled file.
+.PP
+When the user resamples a GRASS \fIreclass\fR file, a true raster map
+is created by \fIr.resample\fR.
+.SH SEE ALSO
+\fI
+g.region,
+r.mapcalc,
+r.mfilter,
+r.neighbors,
+r.rescale,
+r.resamp.interp
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.resample source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

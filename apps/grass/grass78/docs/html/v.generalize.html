@@ -1,0 +1,555 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.generalize - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.generalize</b></em>  - Performs vector based generalization.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_generalization.html">generalization</a>, <a href="keywords.html#simplification">simplification</a>, <a href="keywords.html#smoothing">smoothing</a>, <a href="keywords.html#displacement">displacement</a>, <a href="keywords.html#network generalization">network generalization</a>, <a href="keywords.html#topology">topology</a>, <a href="keywords.html#geometry">geometry</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.generalize</b><br></div>
+<b>v.generalize --help</b><br>
+<div id="synopsis"><b>v.generalize</b> [-<b>lt</b>] <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em>  [<b>error</b>=<em>name</em>]  <b>method</b>=<em>string</em> <b>threshold</b>=<em>float</em>  [<b>look_ahead</b>=<em>integer</em>]   [<b>reduction</b>=<em>float</em>]   [<b>slide</b>=<em>float</em>]   [<b>angle_thresh</b>=<em>float</em>]   [<b>degree_thresh</b>=<em>integer</em>]   [<b>closeness_thresh</b>=<em>float</em>]   [<b>betweeness_thresh</b>=<em>float</em>]   [<b>alpha</b>=<em>float</em>]   [<b>beta</b>=<em>float</em>]   [<b>iterations</b>=<em>integer</em>]   [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-l</b></dt>
+<dd>Disable loop support</dd>
+<dd>Do not modify end points of lines forming a closed loop</dd>
+
+<dt><b>-t</b></dt>
+<dd>Do not copy attributes</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>line, boundary, area</em></dd>
+<dd>Default: <em>line,boundary,area</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>error</b>=<em>name</em></dt>
+<dd>Error map with failed generalizations</dd>
+<dd>Lines and boundaries causing errors (collapsed to a point or topology errors)</dd>
+
+<dt><b>method</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Generalization algorithm</dd>
+<dd>Options: <em>douglas, douglas_reduction, lang, reduction, reumann, boyle, sliding_averaging, distance_weighting, chaiken, hermite, snakes, network, displacement</em></dd>
+<dd><b>douglas</b>: Douglas-Peucker Algorithm</dd>
+<dd><b>douglas_reduction</b>: Douglas-Peucker Algorithm with reduction parameter</dd>
+<dd><b>lang</b>: Lang Simplification Algorithm</dd>
+<dd><b>reduction</b>: Vertex Reduction Algorithm eliminates points close to each other</dd>
+<dd><b>reumann</b>: Reumann-Witkam Algorithm</dd>
+<dd><b>boyle</b>: Boyle's Forward-Looking Algorithm</dd>
+<dd><b>sliding_averaging</b>: McMaster's Sliding Averaging Algorithm</dd>
+<dd><b>distance_weighting</b>: McMaster's Distance-Weighting Algorithm</dd>
+<dd><b>chaiken</b>: Chaiken's Algorithm</dd>
+<dd><b>hermite</b>: Interpolation by Cubic Hermite Splines</dd>
+<dd><b>snakes</b>: Snakes method for line smoothing</dd>
+<dd><b>network</b>: Network generalization</dd>
+<dd><b>displacement</b>: Displacement of lines close to each other</dd>
+
+<dt><b>threshold</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Maximal tolerance value</dd>
+<dd>Options: <em>0-1000000000</em></dd>
+
+<dt><b>look_ahead</b>=<em>integer</em></dt>
+<dd>Look-ahead parameter</dd>
+<dd>Default: <em>7</em></dd>
+
+<dt><b>reduction</b>=<em>float</em></dt>
+<dd>Percentage of the points in the output of 'douglas_reduction' algorithm</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>50</em></dd>
+
+<dt><b>slide</b>=<em>float</em></dt>
+<dd>Slide of computed point toward the original point</dd>
+<dd>Options: <em>0-1</em></dd>
+<dd>Default: <em>0.5</em></dd>
+
+<dt><b>angle_thresh</b>=<em>float</em></dt>
+<dd>Minimum angle between two consecutive segments in Hermite method</dd>
+<dd>Options: <em>0-180</em></dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>degree_thresh</b>=<em>integer</em></dt>
+<dd>Degree threshold in network generalization</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>closeness_thresh</b>=<em>float</em></dt>
+<dd>Closeness threshold in network generalization</dd>
+<dd>Options: <em>0-1</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>betweeness_thresh</b>=<em>float</em></dt>
+<dd>Betweeness threshold in network generalization</dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>alpha</b>=<em>float</em></dt>
+<dd>Snakes alpha parameter</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>beta</b>=<em>float</em></dt>
+<dd>Snakes beta parameter</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>iterations</b>=<em>integer</em></dt>
+<dd>Number of iterations</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#simplification" class="toc">SIMPLIFICATION</a></li>
+        <li class="toc"><a href="#smoothing" class="toc">SMOOTHING</a></li>
+        <li class="toc"><a href="#displacement" class="toc">DISPLACEMENT</a></li>
+        <li class="toc"><a href="#network-generalization" class="toc">NETWORK GENERALIZATION</a></li>
+    </ul></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#simplification-example" class="toc">SIMPLIFICATION EXAMPLE</a></li>
+        <li class="toc"><a href="#smoothing-example" class="toc">SMOOTHING EXAMPLE</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.generalize</em> is a module for the generalization of GRASS 
+vector maps. This module consists of algorithms for line 
+simplification, line smoothing, network generalization and displacement 
+(new methods may be added later).
+
+<p>
+The <b>cats</b> and <b>where</b> options are used only if a <b>layer</b> 
+&gt; 0 is specified, otherwise, those options are ignored. Be aware 
+that the default is <em>layer=-1</em>, meaning that all layers are 
+processed, ignoring the <b>cats</b> and <b>where</b> options.
+
+<p>If <b>type=area</b> is selected, boundaries of selected areas will be 
+generalized, and the options <b>cats</b>, <b>where</b>, and 
+<b>layer</b> will be used to select areas. 
+
+<h2><a name="notes">NOTES</a></h2>
+(Line) simplification is a process of reducing the complexity of vector 
+features. The module transforms a line into another line consisting of 
+fewer vertices, that still approximate the original line. Most of the 
+algorithms described below select a subset of points on the original line.
+
+<p>(Line) smoothing is a "reverse" process which takes as input a line and 
+produces a smoother approximate of the original. In some cases, this is 
+achieved by inserting new vertices into the original line, and can total 
+up to 4000% of the number of vertices in the original. In such an instance, 
+it is always a good idea to simplify the line after smoothing.
+
+<p>Smoothing and simplification algorithms implemented in this module 
+work line by line, i.e. simplification/smoothing of one line does not 
+affect the other lines; they are treated separately. For isolated loops 
+formed by a single line/boundary, he first and the last point of each 
+line/boundary can be translated and/or deleted, unless the <em>-l</em> 
+flag is used to disable loop support.
+
+<p>Lines and boundaries are not translated if they would collapse to a 
+single point. Boundaries are not translated if they would intersect 
+with themselves or other boundaries. Such erroneous features are written 
+to an optional <em>error</em> vector map. Overlaying the <em>error</em> 
+map over the generalized map indicates the kind of error. 
+Lines/boundaries collapsing to a point are written out as points, 
+boundaries violating topology are written out as boundaries. The 
+<em>error</em> map can be overlaid over the generalized map to 
+understand why some features were not generalized.
+
+
+<h3><a name="simplification">SIMPLIFICATION</a></h3>
+
+Simplification can fail for many boundaries if the simplification 
+parameters would result in a large reduction of vertices. If many 
+lines/boundaries could not be simplified, try different parameters that 
+would cause a lower degree of simplification.
+
+<p><em>v.generalize</em> contains following line simplification algorithms:
+<ul>
+<li>Douglas-Peucker Algorithm</li>
+<li>Douglas-Peucker Reduction Algorithm</li>
+<li>Lang Algorithm</li>
+<li>Vertex Reduction</li>
+<li>Reumann-Witkam Algorithm</li>
+</ul>
+
+Different algorithms require different parameters, but all the algorithms 
+have one parameter in common: the <b>threshold</b> parameter, given in map
+units (for latitude-longitude locations: in decimal degree). In general,
+the degree of simplification increases with the increasing value of
+<b>threshold</b>.
+
+<h4>ALGORITHM DESCRIPTIONS</h4>
+
+<ul>
+<li> <i>Douglas-Peucker</i> - "Quicksort" of line simplification, the 
+     most widely used algorithm. Input parameters: <b>input</b>, 
+     <b>threshold</b>. For more information, see: <br>
+     <a href="http://geomalgorithms.com/a16-_decimate-1.html">http://geomalgorithms.com/a16-_decimate-1.html</a>.</li>
+<li> <i>Douglas-Peucker Reduction Algorithm</i> is essentially the same 
+     algorithm as the algorithm above, the difference being that it takes 
+     an additional <b>reduction</b> parameter which denotes the percentage 
+     of the number of points on the new line with respect to the number 
+     of points on the original line. Input parameters: <b>input</b>, 
+     <b>threshold</b>, <b>reduction</b>.</li>     
+<li> <i>Lang</i> - Another standard algorithm. Input parameters: 
+     <b>input</b>, <b>threshold</b>, <b>look_ahead</b>. 
+     For an excellent description, see:  <br>
+     <a href="https://web.archive.org/web/20090823022009/http://www.sli.unimelb.edu.au/gisweb/LGmodule/LGLangVisualisation.htm">http://www.sli.unimelb.edu.au/gisweb/LGmodule/LGLangVisualisation.htm</a>.</li>
+<li> <i>Vertex Reduction</i> - Simplest among the algorithms. Input 
+     parameters: <b>input</b>, <b>threshold</b>.
+     Given a line, this algorithm removes the points of this line which 
+     are closer to each other than <b>threshold</b>. More precisely, if 
+     p1 and p2 are two consecutive points, and the distance between p2 
+     and p1 is less than <b>threshold</b>, it removes p2 and repeats the 
+     same process on the remaining points.</li>
+<li> <i>Reumann-Witkam</i> - Input parameters: <b>input</b>, 
+     <b>threshold</b>. 
+     This algorithm quite reasonably preserves the global characteristics 
+     of the lines. For more information, see for example:<br> 
+     <a href="http://psimpl.sourceforge.net/reumann-witkam.html">http://psimpl.sourceforge.net/reumann-witkam.html</a>.</li>
+</ul>
+
+<i>Douglas-Peucker</i> and <i>Douglas-Peucker Reduction Algorithm</i> 
+use the same method to simplify the lines. Note that 
+
+<div class="code"><pre>
+v.generalize input=boundary_county output=boundary_county_dp20 method=douglas threshold=20
+</pre></div>
+
+is equivalent to
+
+<div class="code"><pre>
+v.generalize input=boundary_county output=boundary_county_dp_red20_100 \
+             method=douglas_reduction threshold=20 reduction=100
+</pre></div>
+
+However, in this case, the first method is faster. Also observe that
+<i>douglas_reduction</i> never outputs more vertices than <i>douglas</i>,
+and that, in general, <i>douglas</i> is more efficient than 
+<i>douglas_reduction</i>. More importantly, the effect of
+
+<div class="code"><pre>
+v.generalize input=boundary_county output=boundary_county_dp_red0_30 \
+             method=douglas_reduction threshold=0 reduction=30
+</pre></div>
+
+is that 'out' contains approximately only 30% of points of 'in'.
+
+
+<h3><a name="smoothing">SMOOTHING</a></h3>
+
+The following smoothing algorithms are implemented in <em>v.generalize</em>:
+
+<ul>
+<li><i>Boyle's Forward-Looking Algorithm</i> - The position of each point 
+    depends on the position of the previous points and the point 
+    <b>look_ahead</b> ahead. <b>look_ahead</b> consecutive points. Input 
+    parameters: <b>input</b>, <b>look_ahead</b>.</li>
+<li><i>McMaster's Sliding Averaging Algorithm</i> - Input Parameters: 
+    <b>input</b>, <b>slide</b>, <b>look_ahead</b>.
+    The new position of each point is the average of the <b>look_ahead</b> 
+    points around. Parameter <b>slide</b> is used for linear interpolation 
+    between old and new position (see below).</li>     
+<li><i>McMaster's Distance-Weighting Algorithm</i> - Takes the weighted 
+    average of <b>look_ahead</b> consecutive points where the weight is 
+    the reciprocal of the distance from the point to the currently 
+    smoothed point. The parameter <b>slide</b> is used for linear 
+    interpolation between the original position of the point and newly 
+    computed position where value 0 means the original position.
+    Input parameters: <b>input</b>, <b>slide</b>, <b>look_ahead</b>.
+    </li>
+<li><i>Chaiken's Algorithm</i> - "Inscribes" a line touching the original 
+    line such that the points on this new line are at least 
+    <i>threshold</i> apart. Input parameters: <b>input</b>, 
+    <b>threshold</b>. This algorithm approximates the given line very 
+    well.</li>
+<li> <i>Hermite Interpolation</i> - This algorithm takes the points of 
+     the given line as the control points of hermite cubic spline and 
+     approximates this spline by the points approximately 
+     <b>threshold</b> apart. This method has excellent results for small 
+     values of <b>threshold</b>, but in this case it produces a huge 
+     number of new points and some simplification is usually needed. 
+     Input parameters: <b>input</b>, <b>threshold</b>, <b>angle_thresh</b>.
+     <b>Angle_thresh</b> is used for reducing the number of the points. 
+     It denotes the minimal angle (in degrees) between two consecutive 
+     segments of a line.</li>     
+<li> <i>Snakes</i> is the method of minimisation of the "energy" of a 
+     line. This method preserves the general characteristics of the lines 
+     but smooths the "sharp corners" of a line. Input parameters 
+     <b>input</b>, <b>alpha</b>, <b>beta</b>.
+     This algorithm works very well for small values of <b>alpha</b> and 
+     <b>beta</b> (between 0 and 5). These parameters affect the 
+     "sharpness" and the curvature of the computed line.</li>                          
+</ul>
+
+One of the key advantages of <i>Hermite Interpolation</i> is the fact 
+that the computed line always passes through the points of the original 
+line, whereas the lines produced by the remaining algorithms never pass 
+through these points. In some sense, this algorithm outputs a line which 
+"circumscribes" the input line.
+
+<p>On the other hand, <i>Chaiken's Algorithm</i> outputs a line which 
+"inscribes" a given line. The output line always touches/intersects the 
+centre of the input line segment between two consecutive points. For 
+more iterations, the property above does not hold, but the computed 
+lines are very similar to the Bezier Splines. The disadvantage of the 
+two algorithms given above is that they increase the number of points. 
+However, <i>Hermite Interpolation</i> can be used as another 
+simplification algorithm. To achieve this, it is necessary to set 
+<i>angle_thresh</i> to higher values (15 or so). 
+
+<p>One restriction on both McMasters' Algorithms is that <i>look_ahead</i> 
+parameter must be odd. Also note that these algorithms have no effect if 
+<i>look_ahead = 1</i>. 
+
+<p>Note that <i>Boyle's</i>, <i>McMasters'</i> and <i>Snakes</i> algorithm 
+are sometimes used in the signal processing to smooth the signals.
+More importantly, these algorithms never change the number of points on 
+the lines; they only translate the points, and do not insert any new points. 
+
+<p><i>Snakes</i> Algorithm is (asymptotically) the slowest among the 
+algorithms presented above. Also, it requires quite a lot of memory. 
+This means that it is not very efficient for maps with the lines
+consisting of many segments.
+
+<h3><a name="displacement">DISPLACEMENT</a></h3>
+
+The displacement is used when the lines overlap and/or are close to each 
+other at the current level of detail. In general, displacement methods 
+move the conflicting features apart so that they do not interact and can 
+be distinguished.   
+
+<p>This module implements an algorithm for displacement of linear features 
+based on the <i>Snakes</i> approach. This method generally yields very 
+good results; however, it requires a lot of memory and is not very efficient.
+
+<p>Displacement is selected by <b>method=displacement</b>. It uses the 
+following parameters:
+
+<ul>
+<li>
+<b>threshold</b> - specifies critical distance. Two features interact if 
+they are closer than <b>threshold</b> apart.
+</li>
+
+<li>
+<b>alpha</b>, <b>beta</b> - These parameters define the rigidity of lines. 
+For larger values of <b>alpha</b>, <b>beta</b> (&gt;=1), the algorithm 
+does a better job at retaining the original shape of the lines, possibly 
+at the expense of displacement distance. If the values of <b>alpha</b>,
+<b>beta</b> are too small (&lt;=0.001), then the lines are moved 
+sufficiently, but the geometry and topology of lines can be destroyed. 
+Most likely the best way to find the good values of <b>alpha</b>, <b>beta</b>
+is by trial and error.
+</li>
+
+<li>
+<b>iterations</b> - denotes the number of iterations the interactions 
+between the lines are resolved. Good starting points for values of 
+<b>iterations</b> are between 10 and 100.
+</li>
+
+</ul>
+
+The lines affected by the algorithm can be specified by the <b>layer</b>,
+<b>cats</b> and <b>where</b> parameters.
+
+
+<h3><a name="network-generalization">NETWORK GENERALIZATION</a></h3>
+
+Used for selecting "the most important" part of the network. This is based
+on the graph algorithms. Network generalization is applied if method=network.
+The algorithm calculates three centrality measures for each line in the
+network and only the lines with the values greater than thresholds are selected.
+The behaviour of algorithm can be altered by the following parameters:
+
+<ul>
+<li>
+<b>degree_thresh</b> - algorithm selects only the lines which share a point
+with at least <b>degree_thresh</b> different lines.
+</li>
+<li>
+<b>closeness_thresh</b> - is always in the range (0, 1]. Only the lines 
+with the closeness centrality value at least <b>closeness_thresh</b> apart 
+are selected. The lines in the centre of a network have greater values of 
+this measure than the lines near the border of a network. This means that 
+this parameter can be used for selecting the centre(s) of a network. Note 
+that if closeness_thresh=0 then everything is selected.
+</li>
+<li>
+<b>betweeness_thresh</b> - Again, only the lines with a betweeness 
+centrality measure at least <b>betweeness_thresh</b> are selected. This 
+value is always positive and is larger for large networks. It denotes to 
+what extent a line is in between the other lines in the network. This 
+value is large for the lines which lie between other lines and lie on 
+the paths between two parts of a network. In the terminology of road 
+networks, these are highways, bypasses, main roads/streets, etc.
+</li>
+</ul>
+
+All three parameters above can be presented at the same time. In that 
+case, the algorithm selects only the lines which meet each criterion. 
+
+<p>Also, the outputed network may not be connected if the value of 
+<b>betweeness_thresh</b> is too large.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="simplification-example">SIMPLIFICATION EXAMPLE</a></h3>
+Simplification of county boundaries with DP method (North Carolina sample dataset),
+threshold given in mapset units (here: meters):
+
+<div class="code"><pre>
+v.generalize input=boundary_county output=boundary_county_dp20 \
+  method=douglas threshold=20 error=boundary_county_dp20_leftover
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="v_generalize_simplify.png">
+<img src="v_generalize_simplify.png" width="600" height="465" alt="v.generalize simplification example" border="0">
+</a><br>
+<i>Figure: Vector simplification example (spatial subset:
+   original map shown in black, simplified map with 26% remaining vertices shown in red)</i>
+</div>
+
+
+<h3><a name="smoothing-example">SMOOTHING EXAMPLE</a></h3>
+
+Smoothing of road network with Chaiken method (North Carolina sample dataset),
+threshold given in mapset units (here: meters):
+
+<div class="code"><pre>
+v.generalize input=roads output=roads_chaiken method=chaiken \
+  threshold=1 error=roads_chaiken_leftover
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="v_generalize_smooth.png">
+<img src="v_generalize_smooth.png" width="600" height="276" alt="v.generalize smoothing example" border="0">
+</a><br>
+<i>Figure: Vector smoothing example (spatial subset:
+   original map shown in black, smoothed map with 500% increased number of vertices shown in red)</i>
+</div>
+
+<!-- TODO: 
+<h3><a name="displacement">Displacement</a></h3>
+
+Displacement of ... (North Carolina sample dataset):
+
+<div class="code"><pre>
+v.generalize input=xxx output=xxx_yyy method=... \
+  ... error=xxx_eeee
+</pre></div>
+
+<h3><a name="network-generalization">Network generalization</a></h3>
+
+Network generalization of ... (North Carolina sample dataset):
+
+<div class="code"><pre>
+v.generalize input=xxx output=xxx_yyy method=... \
+  ... error=xxx_eeee
+</pre></div>
+-->
+
+<!-- TODO: 
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>...</li>
+</ul>
+-->
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="v.clean.html">v.clean</a>,
+  <a href="v.dissolve.html">v.dissolve</a>
+</em>
+<p>
+<a href="https://grasswiki.osgeo.org/wiki/V.generalize_tutorial">v.generalize Tutorial</a> (GRASS-Wiki)
+
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Daniel Bundala, Google Summer of Code 2007, Student<br>
+Wolf Bergenheim, Mentor<br>
+Partial rewrite: Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.generalize">v.generalize source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.generalize">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

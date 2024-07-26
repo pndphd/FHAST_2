@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.legend.vect - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.legend.vect</b></em>  - Displays a vector legend in the active graphics frame.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_cartography.html">cartography</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#legend">legend</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.legend.vect</b><br></div>
+<b>d.legend.vect --help</b><br>
+<div id="synopsis"><b>d.legend.vect</b> [-<b>b</b>]  [<b>at</b>=<em>left,top</em>]   [<b>columns</b>=<em>integer</em>]   [<b>title</b>=<em>string</em>]   [<b>symbol_size</b>=<em>integer</em>]   [<b>border_color</b>=<em>name</em>]   [<b>bgcolor</b>=<em>name</em>]   [<b>border_width</b>=<em>integer</em>]   [<b>font</b>=<em>string</em>]   [<b>fontsize</b>=<em>float</em>]   [<b>title_font</b>=<em>string</em>]   [<b>title_fontsize</b>=<em>float</em>]   [<b>sub_font</b>=<em>string</em>]   [<b>sub_fontsize</b>=<em>float</em>]   [<b>fontcolor</b>=<em>name</em>]   [<b>separator</b>=<em>character</em>]   [<b>input</b>=<em>name</em>]   [<b>output</b>=<em>name</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-b</b></dt>
+<dd>Display legend background</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>at</b>=<em>left,top</em></dt>
+<dd>Screen position of legend to be drawn (percentage, [0,0] is lower left)</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>10,40</em></dd>
+
+<dt><b>columns</b>=<em>integer</em></dt>
+<dd>Number of legend columns</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>title</b>=<em>string</em></dt>
+<dd>Legend title</dd>
+
+<dt><b>symbol_size</b>=<em>integer</em></dt>
+<dd>Symbol size</dd>
+<dd>Default: <em>20</em></dd>
+
+<dt><b>border_color</b>=<em>name</em></dt>
+<dd>Border color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>bgcolor</b>=<em>name</em></dt>
+<dd>Background color</dd>
+<dd>Either a standard color name, R:G:B triplet, or "none"</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>border_width</b>=<em>integer</em></dt>
+<dd>Background border width</dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>font</b>=<em>string</em></dt>
+<dd>Font name</dd>
+
+<dt><b>fontsize</b>=<em>float</em></dt>
+<dd>Font size</dd>
+<dd>Default: 12</dd>
+<dd>Options: <em>1-360</em></dd>
+
+<dt><b>title_font</b>=<em>string</em></dt>
+<dd>Title font name</dd>
+
+<dt><b>title_fontsize</b>=<em>float</em></dt>
+<dd>Title font size</dd>
+<dd>Default: 18</dd>
+<dd>Options: <em>1-360</em></dd>
+
+<dt><b>sub_font</b>=<em>string</em></dt>
+<dd>Subtitle font name</dd>
+
+<dt><b>sub_fontsize</b>=<em>float</em></dt>
+<dd>Subtitle font size</dd>
+<dd>Default: 14</dd>
+<dd>Options: <em>1-360</em></dd>
+
+<dt><b>fontcolor</b>=<em>name</em></dt>
+<dd>Font color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator for input file</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>input</b>=<em>name</em></dt>
+<dd>Input legend file</dd>
+<dd>Path to legend file </dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Output csv file</dd>
+<dd>Path to output file or '-' for standard output</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#changing-legend-symbols-and-labels" class="toc">Changing legend symbols and labels</a></li>
+        <li class="toc"><a href="#modifying-the-order-of-legend-entries-and-omitting-certain-vector-maps
+from-legend" class="toc">Modifying the order of legend entries and omitting certain vector maps
+from legend</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+Module <em>d.legend.vect</em> draws vector legend of currently displayed vector maps.
+<p>
+Parameter <b>at</b> defines the screen position of upper-left legend corner.
+Parameter <b>columns</b> defines the number of legend columns.
+User can specify a title of the legend using parameter <b>title</b>.
+The font of the title can be changed with <b>title_font</b>, <b>title_fontsize</b>.
+Flag <b>-b</b> is used to draw background of specified color (<b>bgcolor</b>),
+border color and border width (<b>border_color</b> and <b>border_width</b>).
+Parameter <b>symbol_size</b> defines the size of line and area symbols.
+The size of point symbols is based on currently set symbology of vector maps using
+<em><a href="d.vect.html">d.vect</a></em> or
+<em><a href="d.vect.thematic.html">d.vect.thematic</a></em>.
+<p>Module <em>d.vect.legend</em> supports subtitles (see section Notes).
+Their font and font size can be set using parameters <b>sub_font</b>
+and <b>sub_fontsize</b>.
+
+<h3><a name="changing-legend-symbols-and-labels">Changing legend symbols and labels</a></h3>
+Symbols for vector areas and lines, and labels for individual vector labels
+can be changed in the symbology setting of each vector map in
+<em><a href="d.vect.html">d.vect</a></em> or
+<em><a href="d.vect.thematic.html">d.vect.thematic</a></em>
+module (in Legend tab). Use its parameters
+<b>icon_area</b> and <b>icon_line</b> to pick from available symbols.
+By using parameter <b>legend_label</b> of <em>d.vect</em> module, users can change
+the default label, which is the map name.
+
+<h3>Modifying the order of legend entries and omitting certain vector maps
+from legend</h3>
+Modules <em><a href="d.vect.html">d.vect</a></em> and 
+<em><a href="d.vect.thematic.html">d.vect.thematic</a></em>
+have a flag <b>-s</b>
+which removes the particular vector or thematic vector from vector legend.
+<p>The order of entries is defined by the order in Layer Manager (if used
+in GRASS GIS GUI). If that's not desired, one can export the legend file
+into a text file using parameter <b>output</b>, change the order of entries
+(see section Notes for format description) and then upload the modified file
+with parameter <b>input</b>.
+Parameter <b>output</b> defines path to the file where the internal legend
+file will be saved to, <b>input</b> defines the input file which
+the vector legend will be based on (input file must have correct format).
+
+<h2><a name="notes">NOTES</a></h2>
+Module <em>d.legend.vect</em> draws vector legend based on legend file defined
+in shell environment variable GRASS_LEGEND_FILE.
+This file is automatically created and updated whenever
+<em><a href="d.vect.html">d.vect</a></em> command is used.
+User can create custom legend file and then use 
+<em>export GRASS_LEGEND_FILE=path/to/file</em> in shell.
+GRASS GUI and MONITORS create the legend file automatically.
+By default the legend file is stored in grassdata/location/mapset/.tmp/user
+directory (in case of d.mon deeper in /monitor_name directory).<br>
+<p>
+Legend file has this format:
+<pre>
+label|symbol_name|size|color_type|feature_color|fill_color|line_width|geometry_type|feature_count
+</pre>
+Color type can be 'lf' or 'ps'. Based on color type color columns are interpreted
+as line color and fill colors (lf), or primary and secondary colors (ps).
+Module d.vect always uses 'lf' and d.vect.thematic 'ps'.
+Here is an example of legend file with subtitles:
+<pre>
+Infrastructure||||||||
+major roads|legend/line|5|lf|black|200:200:200|2|line|355
+bridges|extra/bridge|15|lf|black|black|1|point|10938
+Hydrology||||||||
+streams|legend/line_crooked|5|lf|30:144:255|200:200:200|3|line|8554
+water bodies|legend/area_curved|5|lf|none|30:144:255|1|area|27764
+</pre>
+<img alt="Example of subheadings used in vector legend"
+ src="d_legend_vect_subheadings.png">
+
+<h2><a name="examples">EXAMPLES</a></h2>
+Open cairo monitor to render to file:
+<div class="code"><pre>
+g.region vector=nc_state
+d.mon cairo
+d.vect map=nc_state color=26:26:26 fill_color=229:229:229 width=2 legend_label="state boundaries"
+d.vect map=urbanarea color=none fill_color=127:127:127 width=1 legend_label="urban areas"
+d.vect map=railroads color=red width=1
+d.vect map=hospitals color=77:77:77 fill_color=0:187:0 width=1 icon=basic/cross3 size=10
+d.legend.vect -b at=2,40 title="Hospitals in North Carolina" symbol_size=26 fontsize=16 title_fontsize=20
+</pre></div>
+
+<center>
+<img src="d_legend_vect.png" alt="d.legend.vect example"><br>
+</center>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.vect.html">d.vect</a>,
+<a href="d.vect.thematic.html">d.vect.thematic</a>,
+<a href="d.legend.html">d.legend</a>
+</em>
+
+<p>
+Check also Python module from
+AddOns: <em><a href="https://grass.osgeo.org/grass7/manuals/addons/d.vect.thematic2.html">d.vect.thematic2</a></em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Adam Laza, during GSoC 2016
+Mentors: Anna Petrasova, Vaclav Petras, Martin Landa
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.legend.vect">d.legend.vect source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.legend.vect">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

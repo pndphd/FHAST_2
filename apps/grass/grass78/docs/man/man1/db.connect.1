@@ -1,0 +1,215 @@
+.TH db.connect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.connect\fR\fR  \- Prints/sets general DB connection for current mapset.
+.SH KEYWORDS
+database, attribute table, connection settings
+.SH SYNOPSIS
+\fBdb.connect\fR
+.br
+\fBdb.connect \-\-help\fR
+.br
+\fBdb.connect\fR [\-\fBpgcd\fR]  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]   [\fBschema\fR=\fIname\fR]   [\fBgroup\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print current connection parameters and exit
+.br
+Substitute variables in database settings
+.IP "\fB\-g\fR" 4m
+.br
+Print current connection parameters using shell style and exit
+.IP "\fB\-c\fR" 4m
+.br
+Check connection parameters, set if uninitialized, and exit
+.IP "\fB\-d\fR" 4m
+.br
+Set from default settings and exit
+.br
+Overwrite current settings if already initialized
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBschema\fR=\fIname\fR" 4m
+.br
+Database schema
+.br
+Do not use this option if schemas are not supported by driver/database server
+.IP "\fBgroup\fR=\fIstring\fR" 4m
+.br
+Default group of database users to which select privilege is granted
+.SH DESCRIPTION
+\fIdb.connect\fR allows the user to set database connection parameters.
+These parameters are then taken as default values by modules so that the
+user does not need to enter the parameters each time.
+.PP
+The default database backend in GRASS GIS 7
+is SQLite.
+.SH NOTES
+Values are stored in the mapset\(cqs VAR file;
+the connection is not tested for validity.
+.PP
+The \fB\-p\fR flag will display the current connection parameters.
+.PP
+The \fB\-c\fR flag will silently check if the connection parameters have
+been set, and if not will set them to use GRASS\(cqs default values.
+(useful in scripts before you attempt to create a new database table)
+.PP
+To connect a vector map to a database table,
+use \fIv.db.connect\fR or
+\fIv.db.addtable\fR.
+.SH EXAMPLES
+.SS SQLite (default backend)
+Local storage:
+.br
+.br
+.nf
+\fC
+db.connect \-d
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+The SQLite database file is created automatically when used the first time.
+.PP
+See SQLite database driver for details.
+.SS PostgreSQL (local connection)
+Local storage, database tables stored in database \(dqmydb\(dq
+(may require the use of \fIdb.login\fR):
+.br
+.br
+.nf
+\fC
+db.connect driver=pg database=mydb
+db.login user=myname pass=secret
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+See PostgreSQL database driver for details.
+.SS PostgreSQL (network connection)
+Network storage, database tables stored in database \(dqmydb\(dq
+(may require the use of \fIdb.login\fR):
+.br
+.br
+.nf
+\fC
+db.connect driver=pg database=mydb
+db.login user=myname pass=secret host=myserver.com port=6666
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+See PostgreSQL database driver for details.
+.SS MySQL (local connection)
+Local storage, database tables stored in database \(dqmydb\(dq (may require
+the use of \fIdb.login\fR):
+.br
+.br
+.nf
+\fC
+db.connect driver=mysql database=mydb
+db.login user=myname pass=secret
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+See MySQL database driver for details.
+.SS MySQL (network connection)
+Network storage, database tables stored in database \(dqmydb\(dq
+(may require the use of \fIdb.login\fR):
+.br
+.br
+.nf
+\fC
+db.connect driver=mysql database=mydb
+db.login user=myname pass=secret host=myserver.com
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+See MySQL database driver for details.
+.SS ODBC
+Network storage, database tables stored in database \(dqmydb\(dq
+(may require the use of \fIdb.login\fR):
+.br
+.br
+.nf
+\fC
+db.connect driver=odbc database=mydb
+db.login user=myname pass=secret
+db.connect \-p
+db.tables \-p
+\fR
+.fi
+.PP
+See ODBC database driver for details.
+.SS DBF (local, not recommended)
+Local storage (the dbf/ subdirectory in the mapset must exist or must be
+created by the user):
+.br
+.br
+.nf
+\fC
+db.connect driver=dbf database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq
+db.tables \-p
+\fR
+.fi
+.PP
+See DBF database driver for details.
+.SH SEE ALSO
+\fI
+db.columns,
+db.copy,
+db.drivers,
+db.login,
+db.tables,
+v.db.addtable,
+v.db.connect
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHORS
+Main author: Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+GRASS 7 improvements: Martin Landa, Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: db.connect source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

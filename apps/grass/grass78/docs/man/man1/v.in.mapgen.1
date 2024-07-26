@@ -1,0 +1,82 @@
+.TH v.in.mapgen 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.mapgen.py\fR\fR  \- Imports Mapgen or Matlab\-ASCII vector maps into GRASS.
+.SH KEYWORDS
+vector, import
+.SH SYNOPSIS
+\fBv.in.mapgen.py\fR
+.br
+\fBv.in.mapgen.py \-\-help\fR
+.br
+\fBv.in.mapgen.py\fR [\-\fBfz\fR] \fBinput\fR=\fIname\fR  [\fBoutput\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Input map is in Matlab format
+.IP "\fB\-z\fR" 4m
+.br
+Create a 3D vector points map from 3 column Matlab data
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file in Mapgen/Matlab format
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output vector map (omit for display to stdout)
+.SH DESCRIPTION
+\fIv.in.mapgen\fR allows the user to import Mapgen or Matlab vector maps
+into GRASS.
+.SH NOTES
+This module only imports data into vector lines.
+.PP
+The user can get coastline data in Mapgen or Matlab format from NOAA\(cqs Coastline
+Extractor at http://www.ngdc.noaa.gov/mgg/shorelines/shorelines.html.
+.PP
+Matlab vector line maps are simply a series of \(dqx y\(dq data points. Lines
+are separated by a row containing NaN NaN.
+Output from Matlab with this command:
+.br
+.br
+.nf
+\fC
+    save filename.txt arrayname \-ASCII
+\fR
+.fi
+.PP
+The user can import 3D lines from Matlab by exporting a 3 column array and
+using the \fB\-z\fR flag.
+.SH SEE ALSO
+\fIv.in.ascii\fR
+.SH AUTHORS
+Based on \fIv.in.mapgen.sh\fR for GRASS 5.0 by Andreas Lange
+.br
+Rewritten for GRASS 6 by Hamish Bowman
+.SH SOURCE CODE
+.PP
+Available at: v.in.mapgen source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

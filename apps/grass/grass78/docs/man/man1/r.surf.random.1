@@ -1,0 +1,95 @@
+.TH r.surf.random 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.surf.random\fR\fR  \- Produces a raster surface map of uniform random deviates with defined range.
+.SH KEYWORDS
+raster, surface, random
+.SH SYNOPSIS
+\fBr.surf.random\fR
+.br
+\fBr.surf.random \-\-help\fR
+.br
+\fBr.surf.random\fR [\-\fBi\fR] \fBoutput\fR=\fIname\fR  [\fBmin\fR=\fIinteger\fR]   [\fBmax\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-i\fR" 4m
+.br
+Create an integer raster map
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBmin\fR=\fIinteger\fR" 4m
+.br
+Minimum random value
+.br
+Default: \fI0\fR
+.IP "\fBmax\fR=\fIinteger\fR" 4m
+.br
+Maximum random value
+.br
+Default: \fI100\fR
+.SH DESCRIPTION
+\fBr.surf.random\fR produces a raster map layer of uniform random deviates
+whose range can be expressed by the user. It is essentially the same as
+\fIr.surf.gauss\fR, but uses a linear random number generator instead.
+It uses the random number generator drand48() or rand(),
+depending on the user\(cqs platform.
+.PP
+.br
+\fIHistogram of map generated with r.surf.random\fR
+.SH EXAMPLE
+.br
+.nf
+\fC
+g.region \-p n=228500 s=215000 w=630000 e=645000 res=10
+r.surf.random out=random min=0 max=100
+# check result
+r.univar random
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.random.surface,
+r.surf.contour,
+r.surf.fractal,
+r.surf.gauss,
+r.surf.idw,
+v.surf.rst
+\fR
+.SH AUTHOR
+Jo Wood
+.br
+Midlands Regional Research Laboratory (ASSIST)
+.br
+University of Leicester
+.br
+\fIOctober 1991\fR
+.br
+.SH SOURCE CODE
+.PP
+Available at: r.surf.random source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

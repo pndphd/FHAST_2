@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.fillnulls.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.fillnulls.py</b></em>  - Fills no-data areas in raster maps using spline interpolation.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#elevation">elevation</a>, <a href="keywords.html#interpolation">interpolation</a>, <a href="keywords.html#splines">splines</a>, <a href="keywords.html#no-data filling">no-data filling</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.fillnulls.py</b><br></div>
+<b>r.fillnulls.py --help</b><br>
+<div id="synopsis"><b>r.fillnulls.py</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em> <b>method</b>=<em>string</em>  [<b>tension</b>=<em>float</em>]   [<b>smooth</b>=<em>float</em>]   [<b>edge</b>=<em>integer</em>]   [<b>npmin</b>=<em>integer</em>]   [<b>segmax</b>=<em>integer</em>]   [<b>lambda</b>=<em>float</em>]   [<b>memory</b>=<em>memory in MB</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>method</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Interpolation method to use</dd>
+<dd>Options: <em>bilinear, bicubic, rst</em></dd>
+<dd>Default: <em>rst</em></dd>
+
+<dt><b>tension</b>=<em>float</em></dt>
+<dd>Spline tension parameter</dd>
+<dd>Default: <em>40.</em></dd>
+
+<dt><b>smooth</b>=<em>float</em></dt>
+<dd>Spline smoothing parameter</dd>
+<dd>Default: <em>0.1</em></dd>
+
+<dt><b>edge</b>=<em>integer</em></dt>
+<dd>Width of hole edge used for interpolation (in cells)</dd>
+<dd>Options: <em>2-100</em></dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>npmin</b>=<em>integer</em></dt>
+<dd>Minimum number of points for approximation in a segment (&gt;segmax)</dd>
+<dd>Options: <em>2-10000</em></dd>
+<dd>Default: <em>600</em></dd>
+
+<dt><b>segmax</b>=<em>integer</em></dt>
+<dd>Maximum number of points in a segment</dd>
+<dd>Options: <em>2-10000</em></dd>
+<dd>Default: <em>300</em></dd>
+
+<dt><b>lambda</b>=<em>float</em></dt>
+<dd>Tykhonov regularization parameter (affects smoothing)</dd>
+<dd>Used in bilinear and bicubic spline interpolation</dd>
+<dd>Default: <em>0.01</em></dd>
+
+<dt><b>memory</b>=<em>memory in MB</em></dt>
+<dd>Maximum memory to be used (in MB)</dd>
+<dd>Cache size for raster rows</dd>
+<dd>Default: <em>300</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#warning" class="toc">WARNING</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.fillnulls</em> fills NULL pixels (no data areas) in input raster
+map and stores filled data to a new output raster map. The fill areas
+are interpolated from the no data area boundaries buffer
+using <em><a href="v.surf.rst.html">v.surf.rst</a></em> regularized
+spline interpolation with tension (<b>method=rst</b>) or
+<em><a href="r.resamp.bspline.html">r.resamp.bspline</a></em> cubic or
+linear spline interpolation with Tykhonov regularization.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Each area boundary buffer is set to three times the map resolution to get nominally
+three points around the edge. This way the algorithm interpolates into the hole with
+a trained slope and curvature at the edges, in order to avoid that such a flat plane
+is generated in a hole. The width of edge area can be adjusted by 
+changing the edge parameter.
+<p>During the interpolation following warning may occur when using the RST method:<p>
+<tt>
+Warning: strip exists with insufficient data<br>
+Warning: taking too long to find points for interpolation--please change
+the region to area where your points are</tt>
+<p>
+This warning is generated if large data holes exist within the surface.
+As the idea of <em>r.fillnulls</em> is to fill such holes, the user may
+ignore the warning. The interpolation will be continued. However, the user
+may pay attention to below notes.
+<p>
+If interpolation fails, temporary raster and vector maps are left in place to allow
+unfilled map hole (NULL area) identification and manual repair.
+
+<p>
+When using the default RST method, the algorithm is based
+on <em><a href="v.surf.rst.html">v.surf.rst</a></em> regularized
+splines with tension interpolation module which interpolates the
+raster cell values for NULL data areas from the boundary values of the
+NULL data area. An eventual raster MASK is respected during the NULL
+data area(s) filling. The interpolated values are patched into the
+NULL data area(s) of the input map and saved into a new raster map.
+
+Otherwise, either the linear or cubic spline interpolation with
+Tykhonov regularization can be selected (based on
+<em><a href="r.resamp.bspline.html">r.resamp.bspline</a></em>). 
+
+<h2><a name="warning">WARNING</a></h2>
+
+Depending on the shape of the NULL data area(s) problems may occur due to an
+insufficient number of input cell values for the interpolation process. Most
+problems will occur if a NULL data area reaches a large amount of the map
+boundary. The user will have to carefully check the result using
+<em><a href="r.mapcalc.html">r.mapcalc</a></em> (generating a
+difference map to the input map and applying the
+&quot;differences&quot; color table
+with <em><a href="r.colors.html">r.colors</a></em>) and/or to query
+individual cell values.
+
+<p>
+RST method stores temporary maps on hard disk. It will require at least as much
+free space as one extra input raster map takes.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+In this example, the SRTM elevation map in the
+North Carolina sample dataset location is filtered for outlier
+elevation values; missing pixels are then re-interpolated to obtain
+a complete elevation map:
+
+<div class="code"><pre>
+g.region raster=elev_srtm_30m -p
+d.mon wx0
+d.histogram elev_srtm_30m
+
+# remove SRTM outliers, i.e. SRTM below 50m (esp. lakes), leading to no data areas
+r.mapcalc "elev_srtm_30m_filt = if(elev_srtm_30m < 50.0, null(), elev_srtm_30m)"
+d.histogram elev_srtm_30m_filt
+d.rast elev_srtm_30m_filt
+
+# using the default RST method to fill these holes in DEM
+r.fillnulls input=elev_srtm_30m_filt output=elev_srtm_30m_rst tension=20
+
+# using the bilinear method to fill these holes in DEM
+r.fillnulls input=elev_srtm_30m_filt output=elev_srtm_30m_bilin method=bilinear
+
+d.histogram elev_srtm_30m_rst
+d.rast elev_srtm_30m_rst
+
+d.erase
+d.histogram elev_srtm_30m_bilin
+d.rast elev_srtm_30m_bilin
+
+r.mapcalc "diff_rst_bilin = elev_srtm_30m_rst - elev_srtm_30m_bilin"
+r.colors diff_rst_bilin color=differences
+
+r.univar -e diff_rst_bilin
+d.erase
+d.rast diff_rst_bilin
+d.legend diff_rst_bilin
+</pre></div>
+
+<h2><a name="references">REFERENCES</a></h2>
+<ul>
+<li> Mitas, L., Mitasova, H., 1999, Spatial Interpolation. In: P.Longley,
+M.F. Goodchild, D.J. Maguire, D.W.Rhind (Eds.), Geographical Information
+Systems: Principles, Techniques, Management and Applications, Wiley,
+pp.481-492
+
+<li>Mitasova H., Mitas L.,&nbsp; Brown W.M.,&nbsp; D.P. Gerdes, I.
+Kosinovsky, Baker, T.1995, Modeling spatially and temporally distributed
+phenomena: New methods and tools for GRASS GIS. <i>International Journal of
+GIS</i>, 9 (4), special issue on Integrating GIS and Environmental modeling,
+433-446.
+
+<li><a href="http://www4.ncsu.edu/~hmitaso/gmslab/papers/lmg.rev1.ps">Mitasova H.
+and Mitas L. 1993</a>: Interpolation by Regularized Spline with Tension: I.
+Theory and Implementation, <i>Mathematical Geology</i> 25, 641-655.
+
+<li><a href="http://www4.ncsu.edu/~hmitaso/gmslab/papers/hmg.rev1.ps">Mitasova H.
+and Hofierka L. 1993</a>: Interpolation by Regularized Spline with Tension:
+II. Application to Terrain Modeling and Surface Geometry Analysis,
+<i>Mathematical Geology</i> 25, 657-667.
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.fill.dir.html">r.fill.dir</a>, 
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.resamp.bspline.html">r.resamp.bspline</a>, 
+<a href="v.surf.rst.html">v.surf.rst</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+Markus Neteler, University of Hannover  and Fondazione Edmund Mach<br>
+Improvement by Hamish Bowman, NZ
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/r.fillnulls">r.fillnulls source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/r.fillnulls">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

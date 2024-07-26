@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.profile - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.profile</b></em>  - Vector map profiling tool
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_profile.html">profile</a>, <a href="keywords.html#transect">transect</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.profile</b><br></div>
+<b>v.profile --help</b><br>
+<div id="synopsis"><b>v.profile</b> [-<b>cz</b>] <b>input</b>=<em>name</em>  [<b>type</b>=<em>string</em>[,<i>string</i>,...]]   [<b>where</b>=<em>sql_query</em>]   [<b>layer</b>=<em>string</em>]   [<b>output</b>=<em>string</em>]   [<b>separator</b>=<em>character</em>]   [<b>dp</b>=<em>integer</em>]  <b>buffer</b>=<em>float</em>  [<b>map_output</b>=<em>name</em>]   [<b>coordinates</b>=<em>east,north</em>[,<i>east,north</i>,...]]   [<b>profile_map</b>=<em>name</em>]   [<b>profile_where</b>=<em>sql_query</em>]   [<b>profile_layer</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Do not print column names</dd>
+
+<dt><b>-z</b></dt>
+<dd>Do not print 3D vector data (z values)</dd>
+<dd>Only affects 3D vectors</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line</em></dd>
+<dd>Default: <em>point,line</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Use features only from specified layer</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>output</b>=<em>string</em></dt>
+<dd>Path to output text file or - for stdout</dd>
+<dd>Default: <em>-</em></dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>dp</b>=<em>integer</em></dt>
+<dd>Number of significant digits</dd>
+<dd>Options: <em>0-32</em></dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>buffer</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Buffer (tolerance) for points in map units</dd>
+<dd>How far points can be from sampling line</dd>
+<dd>Default: <em>10</em></dd>
+
+<dt><b>map_output</b>=<em>name</em></dt>
+<dd>Name for profile line and buffer output map</dd>
+<dd>Profile line and buffer around it will be written</dd>
+
+<dt><b>coordinates</b>=<em>east,north[,<i>east,north</i>,...]</em></dt>
+<dd>Coordinates for profiling line nodes</dd>
+<dd>Specify profiling line vertexes and nodes</dd>
+
+<dt><b>profile_map</b>=<em>name</em></dt>
+<dd>Profiling line map</dd>
+<dd>Vector map containing profiling line</dd>
+
+<dt><b>profile_where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions for input profile line map</dd>
+<dd>Use to select only one line from profiling line map</dd>
+
+<dt><b>profile_layer</b>=<em>integer</em></dt>
+<dd>Profiling line map layer</dd>
+<dd>Default: <em>1</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#bugs" class="toc">BUGS</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.profile</em> prints out distance and attributes of points/lines
+along a profiling line. Distance is calculated from the first profiling line
+coordinate pair or from the beginning of vector line.<br>
+The <em>buffer</em> (tolerance) parameter sets how far point can be
+located from a profiling line and still be included in the output data set.<br>
+The <em>output</em> map option can be used to visually check which points are
+profiled. The <em>buffer</em> (tolerance) setting does not affect lines.
+Lines are sampled at their crossing point with profiling line.
+<p>
+By default Z values are printed if input vector is a 3D map. It can be
+disabled with the <b>-z</b> flag.<br>
+The profiling line can be provided as N,E coordinate pairs or from an
+input vector map. As a profiling line must be a single line, the user
+should use the <em>profile_where</em> parameter to select a single line
+from a profile input map if it contains multiple vector features.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<p>
+Currently the module can profile only points and lines (including 3D ones).
+Areas and other complex features are not supported. If in future users can
+provide reasonable examples how area sampling should work and why it is
+important, area (or any other feature type) sampling can be added.
+</p>
+<p>
+Due to bugs in GRASS native buffering algorithms, this module for now
+depends on GEOS and will not function if GRASS is compiled without GEOS.
+This restriction will be removed as soon as GRASS native buffer generation
+is fixed.
+</p>
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+List all geonames along part of road NC-96 (NC Basic dataset).
+The output will be stored in a file for later usage.
+We will use comma as delimiter and three numbers after decimal
+separator for distance. Output file will contain data for all points,
+that are within 500 m range to profiling line.
+
+<div class="code"><pre>
+v.profile input=geonames@PERMANENT output=/home/user/NC_96_geonames.csv\
+  separator=comma dp=3 buffer=500 profile_map=roadsmajor@PERMANENT profile_where=cat=56
+
+# Now lets see the output:
+cat NC_96_geonames.csv
+Number,Distance,cat,GEONAMEID,NAME,ASCIINAME,ALTERNATEN,FEATURECLA,FEATURECOD,COUNTRYCOD,CC2,ADMIN1,POPULATION,ELEVATION,GTOPO30,TIMEZONE,MODIFICATI,PPLKEY,SRC_ID,MAINT_ID
+1,360.719,26881,4482019,"New Zebulon Elementary School","New Zebulon Elementary School","","S","SCH","US","","NC",0,106,91,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+2,846.806,22026,4476596,"Little River, Township of","Little River, Township of","","A","ADMD","US","","NC",0,0,91,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+3,2027.918,16681,4470608,"Hendricks Pond","Hendricks Pond","","H","RSV","US","","NC",0,0,91,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+4,2027.918,16690,4470622,"Hendricks Dam","Hendricks Dam","","S","DAM","US","","NC",0,0,91,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+5,2999.214,39338,4496159,"Union Chapel","Union Chapel","","","","US","","NC",0,0,96,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+6,3784.992,43034,4500325,"Zebulon Airport","Zebulon Airport","","S","AIRP","US","","NC",0,108,98,"America/Iqaluit","2006-01-15 00:00:00",0,0,0
+</pre></div>
+
+<p>
+Create river valley crossection and provide river marker (Spearfish dataset):
+
+<div class="code"><pre>
+# Take elevation samples
+r.profile input=elevation.dem@PERMANENT output=/home/user/elevation.profile \
+  profile=600570.27364,4920613.41838,600348.034348,4920840.38617
+
+# Now get distance to place where river marker should be set
+v.profile input=streams@PERMANENT output=/home/user/river_profile.csv \
+  east_north=600570.27364,4920613.41838,600348.034348,4920840.38617
+</pre></div>
+
+<h2><a name="bugs">BUGS</a></h2>
+
+Strings are enclosed in double quotes ", still quotes within string are
+not escaped.
+<p>
+Output does not contain Vector CAT values. Only way how to get CAT value is from
+the attribute table.
+<p>
+If sampled feature (point, line) contains multiple attribute entries
+(has multiple CAT values), only the first one is reported. If this is a
+limitation in some practical use case, a feature request in GRASS GIS
+issue tracker should be opened.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.profile.html">r.profile</a>,
+<a href="lrs.html">Linear Referencing System</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Maris Nartiss
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.profile">v.profile source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.profile">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+analyze_nl              Analyze NetLogo simulation output
+check_netlogo_version   Check supported NetLogo versions
+download_netlogo        Download NetLogo
+eval_simoutput          Evaluate input/output integrity
+eval_variables_constants
+                        Evaluate variable validity
+experiment              Construct a new experiment object
+export_nl               Export NetLogo Experiment
+getexp                  Getter function to get a variable of an
+                        experiment object
+getnl                   Getter function to get a variable of a nl
+                        object
+getsim                  Getter function to get a variable of a
+                        simdesign object
+import_nl               Import NetLogo Experiment
+nl                      Construct a new nl object
+nl_distinct             Wolf Sheep model sample data: simdesign
+                        distinct
+nl_eFast                Wolf Sheep model sample data: simdesign eFast
+nl_ff                   Wolf Sheep model sample data: simdesign ff
+nl_gensa                Wolf Sheep model sample data: gensa
+nl_lhs                  Wolf Sheep model sample data: simdesign lhs
+nl_morris               Wolf Sheep model sample data: simdesign morris
+nl_simple               Wolf Sheep model sample data: simdesign simple
+nl_sobol                Wolf Sheep model sample data: simdesign sobol
+nl_sobol2007            Wolf Sheep model sample data: simdesign
+                        sobol2007
+nl_soboljansen          Wolf Sheep model sample data: simdesign
+                        soboljansen
+nl_spatial              Wolf Sheep model sample data: spatial
+nl_to_graph             Generate igraph objects from measured turtles
+                        and links metrics
+nl_to_points            Get spatial data from metrics.turtles output
+nl_to_raster            Get spatial data from metrics.patches output
+nldoc                   Create NetLogo documentation
+nldoc_network           Create NetLogo procedure network
+nlrx-package            nlrx: A package for running NetLogo simulations
+                        from R.
+print.nl                Print content of nl object
+report_model_parameters
+                        Report globals from a NetLogo model that is
+                        defined within a nl object
+run_nl_all              Execute all NetLogo simulations from a nl
+                        object
+run_nl_dyn              Execute NetLogo simulation without pregenerated
+                        parametersets
+run_nl_one              Execute one NetLogo simulation from a nl object
+setexp<-                Setter function to set a variable of an
+                        experiment object
+setnl<-                 Setter function to set a variable of a nl
+                        object
+setsim<-                Setter function to set a variable of a
+                        simdesign object
+simdesign               Construct a new simdesign object
+simdesign_ABCmcmc_Marjoram
+                        Add an Approximate Bayesian Computation
+                        (Monte-Carlo Markov-Chain) simdesign using the
+                        Majoram algorithm to a nl object
+simdesign_ABCmcmc_Marjoram_original
+                        Add an Approximate Bayesian Computation
+                        (Monte-Carlo Markov-Chain) simdesign using the
+                        Majoram Original algorithm to a nl object
+simdesign_ABCmcmc_Wegmann
+                        Add an Approximate Bayesian Computation
+                        (Monte-Carlo Markov-Chain) simdesign using the
+                        Wegmann algorithm to a nl object
+simdesign_GenAlg        Add a Genetic Algorithm simdesign to a nl
+                        object
+simdesign_GenSA         Add a Simulated Annealing simdesign to a nl
+                        object
+simdesign_distinct      Add a distinct simdesign to a nl object
+simdesign_eFast         Add an eFast simdesign to a nl object
+simdesign_ff            Add a full-factorial simdesign to a nl object
+simdesign_lhs           Add a latin-hypercube simdesign to a nl object
+simdesign_morris        Add a morris elementary effects simdesign to a
+                        nl object
+simdesign_simple        Add a simple simdesign to a nl object
+simdesign_sobol         Add a sobol simdesign to a nl object
+simdesign_sobol2007     Add a sobol2007 simdesign to a nl object
+simdesign_soboljansen   Add a soboljansen simdesign to a nl object
+supported_netlogo_versions
+                        Report supported NetLogo versions
+test_nlrx               Test if nlrx runs on the local system
+unnest_simoutput        Get spatial data from metrics.turtles and
+                        metrics.patches output
+write_simoutput         Write attached NetLogo simulation output to
+                        file

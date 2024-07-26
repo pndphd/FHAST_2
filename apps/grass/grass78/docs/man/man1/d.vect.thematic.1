@@ -1,0 +1,229 @@
+.TH d.vect.thematic 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBd.vect.thematic\fR\fR  \- Displays a thematic vector map in the active graphics frame.
+.SH KEYWORDS
+display, cartography, choropleth map, legend
+.SH SYNOPSIS
+\fBd.vect.thematic\fR
+.br
+\fBd.vect.thematic \-\-help\fR
+.br
+\fBd.vect.thematic\fR [\-\fBlnes\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR  [\fBbreaks\fR=\fIstring\fR[,\fIstring\fR,...]]   [\fBalgorithm\fR=\fIstring\fR]   [\fBnclasses\fR=\fIinteger\fR]  \fBcolors\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBwhere\fR=\fIsql_query\fR]   [\fBboundary_width\fR=\fIinteger\fR]   [\fBboundary_color\fR=\fIname\fR]   [\fBicon\fR=\fIstring\fR]   [\fBsize\fR=\fIfloat\fR]   [\fBicon_line\fR=\fIstring\fR]   [\fBicon_area\fR=\fIstring\fR]   [\fBlegend_title\fR=\fIstring\fR]   [\fBlegendfile\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-l\fR" 4m
+.br
+Create legend information and send to stdout
+.IP "\fB\-n\fR" 4m
+.br
+Do not draw map, only output the legend information
+.IP "\fB\-e\fR" 4m
+.br
+[DEPRECATED] When printing legend info, include extended statistical info from classification algorithm
+.IP "\fB\-s\fR" 4m
+.br
+Do not show this layer in vector legend
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Layer number. If \-1, all layers are displayed.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to be classified
+.IP "\fBbreaks\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Class breaks, without minimum and maximum
+.IP "\fBalgorithm\fR=\fIstring\fR" 4m
+.br
+Algorithm to use for classification
+.br
+Options: \fIint, std, qua, equ, dis\fR
+.br
+\fBint\fR: simple intervals
+.br
+\fBstd\fR: standard deviations
+.br
+\fBqua\fR: quantiles
+.br
+\fBequ\fR: equiprobable (normal distribution)
+.IP "\fBnclasses\fR=\fIinteger\fR" 4m
+.br
+Number of classes to define
+.IP "\fBcolors\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Colors (one per class)
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBboundary_width\fR=\fIinteger\fR" 4m
+.br
+Boundary width
+.br
+Default: \fI1\fR
+.IP "\fBboundary_color\fR=\fIname\fR" 4m
+.br
+Boundary color
+.br
+Either a standard color name, R:G:B triplet, or \(dqnone\(dq
+.br
+Default: \fIblack\fR
+.IP "\fBicon\fR=\fIstring\fR" 4m
+.br
+Point and centroid symbol
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIbasic/x\fR
+.IP "\fBsize\fR=\fIfloat\fR" 4m
+.br
+Symbol size
+.br
+Default: \fI5\fR
+.IP "\fBicon_line\fR=\fIstring\fR" 4m
+.br
+Legend symbol for lines
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIlegend/line\fR
+.IP "\fBicon_area\fR=\fIstring\fR" 4m
+.br
+Legend symbol for areas
+.br
+Options: \fIbasic/arrow, basic/arrow1, basic/arrow2, basic/arrow3, basic/box, basic/circle, basic/cross1, basic/cross2, basic/cross3, basic/diamond, basic/hexagon, basic/marker, basic/octagon, basic/pin, basic/pin_dot, basic/point, basic/pushpin, basic/star, basic/triangle, basic/x, demo/muchomurka, demo/smrk, extra/4pt_star, extra/adcp, extra/airport, extra/alpha_flag, extra/bridge, extra/dim_arrow, extra/dive_flag, extra/fiducial, extra/fish, extra/half\-box, extra/half\-circle, extra/offbox_ne, extra/offbox_nw, extra/offbox_se, extra/offbox_sw, extra/pentagon, extra/ping, extra/ring, extra/simple_zia, extra/target, geology/circle_cross, geology/half\-arrow_left, geology/half\-arrow_right, geology/strike_box, geology/strike_circle, geology/strike_cleavage, geology/strike_half\-bowtie, geology/strike_line, geology/strike_parallel, geology/strike_triangle, legend/area, legend/area_curved, legend/line, legend/line_crooked, n_arrows/basic_compass, n_arrows/fancy_compass, n_arrows/n_arrow1a, n_arrows/n_arrow1b, n_arrows/n_arrow2, n_arrows/n_arrow3, n_arrows/n_arrow4, n_arrows/n_arrow5, n_arrows/n_arrow6, n_arrows/n_arrow7a, n_arrows/n_arrow7b, n_arrows/n_arrow8a, n_arrows/n_arrow8b, n_arrows/n_arrow9\fR
+.br
+Default: \fIlegend/area\fR
+.IP "\fBlegend_title\fR=\fIstring\fR" 4m
+.br
+Thematic map title
+.IP "\fBlegendfile\fR=\fIname\fR" 4m
+.br
+[DEPRECATED] Output legend file
+.SH DESCRIPTION
+\fId.vect.thematic\fR draws thematic choropleth vector maps based
+on an attribute column or an expression involving several columns.
+It takes a list of class \fBbreaks\fR (excluding the minimum and maximum
+values) and a list of \fBcolors\fR to apply to the classes (has to be the
+number of class breaks + 1).
+.PP
+Instead of a list of class breaks, the user can also chose a
+classification \fBalgorithm\fR and a number of classes
+(\fBnbclasses\fR). See the
+\fIv.class\fR for more information on
+these different algorithms.
+.SH NOTES
+The \fB\-l\fR flag instructs the module to print legend information
+in vector legend format as described in \fId.legend.vect\fR
+to standard output for further use in graphical software.
+When combined with the verbose flag, the legend information will
+be extended with some additional statistical information. If the
+\fB\-n\fR flag is set, the module will only print the legend
+information without drawing the map.
+.PP
+Option \fBlegendfile\fR, is deprecated, instead
+use the GRASS_LEGEND_FILE environmental variable
+(see \fId.legend.vect\fR)
+to save legend into a file.
+Flag \fB\-e\fR is deprecated, instead use verbose flag.
+.SH EXAMPLES
+.SS Thematic map with classes
+.br
+.nf
+\fC
+d.vect.thematic \-l map=communes3 column=pop \(rs
+  breaks=111393.250000,222785.500000,334177.750000 \(rs
+  colors=\(dq255:0:0,0:255:0,0:0:255,0,0,0\(dq
+\fR
+.fi
+.SS Thematic map with calculated class breaks
+The following example uses a calculated attribute (density =
+pop/area) and the standard deviation algorithm to calculate class
+breaks for 5 classes:
+.br
+.nf
+\fC
+d.vect.thematic \-l map=communes2 column=pop/area algorithm=std \(rs
+  nbclasses=5 colors=\(dq0:0:255,50:100:255,255:100:50,255:0:0,156:0:0\(dq
+\fR
+.fi
+.SS Thematic map with legend
+Example for the North Carolina sample dataset, colorizing basin polygons by
+average elevation and displaying school capacity:
+.br
+.nf
+\fC
+# create watersheds from elevation map
+g.region raster=elevation
+r.watershed elevation=elevation threshold=10000 basin=basins_10k
+# convert raster to vector
+r.to.vect input=basins_10k output=basins_10k type=area column=basin_num
+# upload raster statistics to each polygon in vector map
+v.rast.stats map=basins_10k raster=elevation column_prefix=elev
+# open a graphical display
+d.mon wx0
+# draw thematic polygons and specify legend title
+d.vect.thematic map=basins_10k column=elev_average algorithm=int \(rs
+  nclasses=5 colors=0:195:176,39:255:0,251:253:0,242:127:11,193:126:60 \(rs
+  legend_title=\(dqAverage elevation (m)\(dq
+# draw thematic points and specify legend title
+d.vect.thematic map=schools_wake@PERMANENT column=CORECAPACI algorithm=std \(rs
+  nclasses=3 colors=149:203:255,45:143:240,0:81:161 icon=basic/circle size=15 \(rs
+  legend_title=\(dqSchool capacity\(dq
+# and finally draw legend
+d.legend.vect \-b at=2,80 font=Sans symbol_size=25
+\fR
+.fi
+.br
+\fIThematic map of average elevation and school capacity\fR
+.SH SEE ALSO
+\fI
+v.class,
+d.legend.vect,
+d.vect,
+d.graph,
+v.univar
+\fR
+.PP
+Check also Python module from
+AddOns: \fId.vect.thematic2\fR
+.SH AUTHOR
+Moritz Lennert
+.SH SOURCE CODE
+.PP
+Available at: d.vect.thematic source code (history)
+.PP
+Main index |
+Display index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

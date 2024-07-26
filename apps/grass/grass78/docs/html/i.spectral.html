@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.spectral.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.spectral.py</b></em>  - Displays spectral response at user specified locations in group or images.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_querying.html">querying</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#multispectral">multispectral</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.spectral.py</b><br></div>
+<b>i.spectral.py --help</b><br>
+<div id="synopsis"><b>i.spectral.py</b> [-<b>cgt</b>]  [<b>group</b>=<em>name</em>]   [<b>subgroup</b>=<em>name</em>]   [<b>raster</b>=<em>name</em>[,<i>name</i>,...]]  <b>coordinates</b>=<em>east,north</em>[,<i>east,north</i>,...]  [<b>output</b>=<em>name</em>]   [<b>format</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Show sampling coordinates instead of numbering in the legend</dd>
+
+<dt><b>-g</b></dt>
+<dd>Use gnuplot for display</dd>
+
+<dt><b>-t</b></dt>
+<dd>output to text file</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em></dt>
+<dd>Name of input imagery group</dd>
+
+<dt><b>subgroup</b>=<em>name</em></dt>
+<dd>Name of input imagery subgroup</dd>
+
+<dt><b>raster</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of input raster map(s)</dd>
+
+<dt><b>coordinates</b>=<em>east,north[,<i>east,north</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Coordinates</dd>
+
+<dt><b>output</b>=<em>name</em></dt>
+<dd>Name for output image (or text file for -t)</dd>
+
+<dt><b>format</b>=<em>string</em></dt>
+<dd>Graphics format for output file</dd>
+<dd>Options: <em>png, eps, svg</em></dd>
+<dd>Default: <em>png</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.spectral</em> displays spectral response at user specified 
+locations in images.
+
+<h2><a name="notes">NOTES</a></h2>
+
+This script needs gnuplot to be installed.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Analysis of LANDSAT TM7 channels (North Carolina dataset):
+
+<div class="code"><pre>
+g.region raster=lsat7_2002_10 -p
+i.spectral -g input=lsat7_2002_10,lsat7_2002_20,lsat7_2002_30,lsat7_2002_40,lsat7_2002_50,lsat7_2002_70 \
+           coordinates=636069,215440,637958,223393,633277,223605
+</pre></div>
+
+<center>
+<img src="i_spectral.png" border=1><br>
+Spectral plot of 3 different land cover types: (1) water, (2) green vegetation, and (3) highway
+</center>
+
+
+<p>
+North Carolina sample dataset:
+
+<div class="code"><pre>
+g.region raster=lsat7_2002_10 -p
+LIST=`g.list type=raster pattern="lsat7_2002_[1-5,7]0" separator=","`
+i.spectral input=$LIST coordinates=637502.25,221744.25
+</pre></div>
+
+This will search all LANDSAT map for 2002 but select only the B, G, R, 
+NIR, and MIR channels.
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="d.where.html">d.where</a>,
+<a href="r.what.html">r.what</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Markus Neteler<br>
+Francesco Pirotti
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/scripts/i.spectral">i.spectral source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/scripts/i.spectral">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>m.nviz.image - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>m.nviz.image</b></em>  - Creates a 3D rendering of GIS data.<BR>
+Renders surfaces (raster data), 2D/3D vector data, and volumes (3D raster data) in 3D.
+<h2>KEYWORDS</h2>
+<a href="miscellaneous.html">miscellaneous</a>, <a href="topic_visualization.html">visualization</a>, <a href="keywords.html#graphics">graphics</a>, <a href="keywords.html#raster">raster</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#raster3d">raster3d</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>m.nviz.image</b><br></div>
+<b>m.nviz.image --help</b><br>
+<div id="synopsis"><b>m.nviz.image</b> [-<b>anb</b>]  [<b>elevation_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>elevation_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>color_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>color</b>=<em>name</em>[,<i>name</i>,...]]   [<b>mask_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>transparency_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>transparency_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>shininess_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>shininess_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>emission_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>emission_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>mode</b>=<em>string</em>[,<i>string</i>,...]]   [<b>resolution_fine</b>=<em>value</em>[,<i>value</i>,...]]   [<b>resolution_coarse</b>=<em>value</em>[,<i>value</i>,...]]   [<b>style</b>=<em>string</em>[,<i>string</i>,...]]   [<b>shading</b>=<em>string</em>[,<i>string</i>,...]]   [<b>wire_color</b>=<em>name</em>[,<i>name</i>,...]]   [<b>surface_position</b>=<em>x,y,z</em>[,<i>x,y,z</i>,...]]   [<b>vline</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vline_layer</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vline_width</b>=<em>value</em>[,<i>value</i>,...]]   [<b>vline_width_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vline_color</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vline_color_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vline_mode</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vline_height</b>=<em>value</em>[,<i>value</i>,...]]   [<b>vline_position</b>=<em>x,y,z</em>[,<i>x,y,z</i>,...]]   [<b>vpoint</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_layer</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vpoint_size</b>=<em>value</em>[,<i>value</i>,...]]   [<b>vpoint_size_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_width</b>=<em>value</em>[,<i>value</i>,...]]   [<b>vpoint_width_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_color</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_color_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_marker</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vpoint_marker_column</b>=<em>name</em>[,<i>name</i>,...]]   [<b>vpoint_mode</b>=<em>string</em>[,<i>string</i>,...]]   [<b>vpoint_position</b>=<em>x,y,z</em>[,<i>x,y,z</i>,...]]   [<b>volume</b>=<em>name</em>[,<i>name</i>,...]]   [<b>volume_mode</b>=<em>string</em>[,<i>string</i>,...]]   [<b>volume_shading</b>=<em>string</em>[,<i>string</i>,...]]   [<b>volume_position</b>=<em>x,y,z</em>[,<i>x,y,z</i>,...]]   [<b>volume_resolution</b>=<em>value</em>[,<i>value</i>,...]]   [<b>isosurf_level</b>=<em>volume:value</em>[,<i>volume:value</i>,...]]   [<b>isosurf_color_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>isosurf_color_value</b>=<em>name</em>[,<i>name</i>,...]]   [<b>isosurf_transparency_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>isosurf_transparency_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>isosurf_shininess_map</b>=<em>name</em>[,<i>name</i>,...]]   [<b>isosurf_shininess_value</b>=<em>value</em>[,<i>value</i>,...]]   [<b>slice</b>=<em>volume:axis</em>[,<i>volume:axis</i>,...]]   [<b>slice_position</b>=<em>x1,x2,y1,y2,z1,z2</em>[,<i>x1,x2,y1,y2,z1,z2</i>,...]]   [<b>slice_transparency</b>=<em>value</em>[,<i>value</i>,...]]   [<b>bgcolor</b>=<em>name</em>]   [<b>position</b>=<em>x,y</em>]   [<b>height</b>=<em>value</em>]   [<b>perspective</b>=<em>value</em>]   [<b>twist</b>=<em>value</em>]   [<b>zexag</b>=<em>value</em>]   [<b>focus</b>=<em>x,y,z</em>]   [<b>light_position</b>=<em>x,y,z</em>]   [<b>light_color</b>=<em>name</em>]   [<b>light_brightness</b>=<em>integer</em>]   [<b>light_ambient</b>=<em>integer</em>]   [<b>fringe</b>=<em>string</em>[,<i>string</i>,...]]   [<b>fringe_color</b>=<em>name</em>]   [<b>fringe_elevation</b>=<em>integer</em>]   [<b>cplane</b>=<em>value</em>[,<i>value</i>,...]]   [<b>cplane_position</b>=<em>x,y,z</em>[,<i>x,y,z</i>,...]]   [<b>cplane_rotation</b>=<em>value</em>[,<i>value</i>,...]]   [<b>cplane_tilt</b>=<em>value</em>[,<i>value</i>,...]]   [<b>cplane_shading</b>=<em>string</em>]   [<b>arrow_position</b>=<em>x,y</em>]   [<b>arrow_size</b>=<em>value</em>]   [<b>arrow_color</b>=<em>name</em>]  <b>output</b>=<em>name</em> <b>format</b>=<em>string</em> <b>size</b>=<em>width,height</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-a</b></dt>
+<dd>Use draw mode for all loaded surfaces</dd>
+
+<dt><b>-n</b></dt>
+<dd>Toggles normal direction of all isosurfaces (changes light effect)</dd>
+
+<dt><b>-b</b></dt>
+<dd>Draw volume box</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>elevation_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for elevation</dd>
+
+<dt><b>elevation_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Constant elevation value(s) to use instead of a raster DEM</dd>
+
+<dt><b>color_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for color</dd>
+
+<dt><b>color</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Color value(s)</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+
+<dt><b>mask_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for mask</dd>
+
+<dt><b>transparency_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for transparency</dd>
+
+<dt><b>transparency_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Transparency value(s)</dd>
+<dd>Options: <em>0-255</em></dd>
+
+<dt><b>shininess_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for shininess</dd>
+
+<dt><b>shininess_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Shininess value(s)</dd>
+<dd>Options: <em>0-255</em></dd>
+
+<dt><b>emission_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) for emission</dd>
+
+<dt><b>emission_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Emission value(s)</dd>
+<dd>Options: <em>0-255</em></dd>
+
+<dt><b>mode</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Draw mode</dd>
+<dd>Options: <em>coarse, fine, both</em></dd>
+<dd>Default: <em>fine</em></dd>
+
+<dt><b>resolution_fine</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Fine resolution</dd>
+<dd>Default: <em>6</em></dd>
+
+<dt><b>resolution_coarse</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Coarse resolution</dd>
+<dd>Default: <em>9</em></dd>
+
+<dt><b>style</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Draw style</dd>
+<dd>Options: <em>wire, surface</em></dd>
+<dd>Default: <em>surface</em></dd>
+
+<dt><b>shading</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Shading</dd>
+<dd>Options: <em>flat, gouraud</em></dd>
+<dd>Default: <em>gouraud</em></dd>
+
+<dt><b>wire_color</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Wire color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>136:136:136</em></dd>
+
+<dt><b>surface_position</b>=<em>x,y,z[,<i>x,y,z</i>,...]</em></dt>
+<dd>Surface position</dd>
+<dd>Default: <em>0,0,0</em></dd>
+
+<dt><b>vline</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of vector map</dd>
+<dd>Name of line vector overlay map(s)</dd>
+
+<dt><b>vline_layer</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Layer number or name</dd>
+<dd>Layer number or name for thematic mapping</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>vline_width</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Vector line width</dd>
+<dd>Options: <em>1-100</em></dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>vline_width_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of width definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vline_color</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Vector line color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>blue</em></dd>
+
+<dt><b>vline_color_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of color definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vline_mode</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Vector line display mode</dd>
+<dd>Options: <em>surface, flat</em></dd>
+<dd>Default: <em>surface</em></dd>
+<dd><b>surface</b>: drape on raster surface</dd>
+<dd><b>flat</b>: draw at constant elevation</dd>
+
+<dt><b>vline_height</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Vector line height</dd>
+<dd>Options: <em>0-1000</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>vline_position</b>=<em>x,y,z[,<i>x,y,z</i>,...]</em></dt>
+<dd>Vector lines position</dd>
+<dd>Default: <em>0,0,0</em></dd>
+
+<dt><b>vpoint</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of vector map</dd>
+<dd>Name of point vector overlay map(s)</dd>
+
+<dt><b>vpoint_layer</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Layer number or name</dd>
+<dd>Layer number or name for thematic mapping</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>vpoint_size</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Icon size (map units)</dd>
+<dd>Options: <em>0-1000</em></dd>
+<dd>Default: <em>100</em></dd>
+
+<dt><b>vpoint_size_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of size definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vpoint_width</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Icon width</dd>
+<dd>Options: <em>1-1000</em></dd>
+<dd>Default: <em>2</em></dd>
+
+<dt><b>vpoint_width_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of width definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vpoint_color</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Icon color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>blue</em></dd>
+
+<dt><b>vpoint_color_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of color definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vpoint_marker</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Icon marker</dd>
+<dd>Options: <em>x, box, sphere, cube, diamond, dec_tree, con_tree, aster, gyro, histogram</em></dd>
+<dd>Default: <em>sphere</em></dd>
+
+<dt><b>vpoint_marker_column</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of marker definition column</dd>
+<dd>Name of attribute column</dd>
+
+<dt><b>vpoint_mode</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>3D vector point display mode</dd>
+<dd>Options: <em>surface, 3D</em></dd>
+<dd>Default: <em>3D</em></dd>
+<dd><b>surface</b>: drape on raster surface</dd>
+<dd><b>3D</b>: place at 3D point's z-elevation</dd>
+
+<dt><b>vpoint_position</b>=<em>x,y,z[,<i>x,y,z</i>,...]</em></dt>
+<dd>Vector points position</dd>
+<dd>Default: <em>0,0,0</em></dd>
+
+<dt><b>volume</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of 3D raster map(s)</dd>
+
+<dt><b>volume_mode</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Volume draw mode</dd>
+<dd>Options: <em>isosurface, slice</em></dd>
+<dd>Default: <em>isosurface</em></dd>
+
+<dt><b>volume_shading</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Volume shading</dd>
+<dd>Options: <em>flat, gouraud</em></dd>
+<dd>Default: <em>gouraud</em></dd>
+
+<dt><b>volume_position</b>=<em>x,y,z[,<i>x,y,z</i>,...]</em></dt>
+<dd>Volume position</dd>
+<dd>Default: <em>0,0,0</em></dd>
+
+<dt><b>volume_resolution</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Volume resolution</dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>isosurf_level</b>=<em>volume:value[,<i>volume:value</i>,...]</em></dt>
+<dd>Isosurface level</dd>
+
+<dt><b>isosurf_color_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of volume for isosurface color</dd>
+
+<dt><b>isosurf_color_value</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Isosurface color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+
+<dt><b>isosurf_transparency_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of 3D raster map(s) for isosurface transparency</dd>
+
+<dt><b>isosurf_transparency_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Transparency value(s)for isosurfaces</dd>
+<dd>Options: <em>0-255</em></dd>
+
+<dt><b>isosurf_shininess_map</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of 3D raster map(s) for shininess</dd>
+
+<dt><b>isosurf_shininess_value</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Shininess value(s) for isosurfaces</dd>
+<dd>Options: <em>0-255</em></dd>
+
+<dt><b>slice</b>=<em>volume:axis[,<i>volume:axis</i>,...]</em></dt>
+<dd>Volume slice parallel to given axis (x, y, z)</dd>
+
+<dt><b>slice_position</b>=<em>x1,x2,y1,y2,z1,z2[,<i>x1,x2,y1,y2,z1,z2</i>,...]</em></dt>
+<dd>Volume slice position</dd>
+<dd>Default: <em>0,1,0,1,0,1</em></dd>
+
+<dt><b>slice_transparency</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Volume slice transparency</dd>
+<dd>Options: <em>0-255</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>bgcolor</b>=<em>name</em></dt>
+<dd>Background color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>position</b>=<em>x,y</em></dt>
+<dd>Viewpoint position (x,y model coordinates)</dd>
+<dd>Options: <em>0.0-1.0</em></dd>
+<dd>Default: <em>0.84,0.16</em></dd>
+
+<dt><b>height</b>=<em>value</em></dt>
+<dd>Viewpoint height (in map units)</dd>
+
+<dt><b>perspective</b>=<em>value</em></dt>
+<dd>Viewpoint field of view (in degrees)</dd>
+<dd>Options: <em>1-180</em></dd>
+<dd>Default: <em>40</em></dd>
+
+<dt><b>twist</b>=<em>value</em></dt>
+<dd>Viewpoint twist angle (in degrees)</dd>
+<dd>Options: <em>-180-180</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>zexag</b>=<em>value</em></dt>
+<dd>Vertical exaggeration</dd>
+
+<dt><b>focus</b>=<em>x,y,z</em></dt>
+<dd>Focus to point on surface (from SW corner in map units)</dd>
+
+<dt><b>light_position</b>=<em>x,y,z</em></dt>
+<dd>Light position (x,y,z model coordinates)</dd>
+<dd>Default: <em>0.68,-0.68,0.80</em></dd>
+
+<dt><b>light_color</b>=<em>name</em></dt>
+<dd>Light color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>white</em></dd>
+
+<dt><b>light_brightness</b>=<em>integer</em></dt>
+<dd>Light brightness</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>80</em></dd>
+
+<dt><b>light_ambient</b>=<em>integer</em></dt>
+<dd>Light ambient</dd>
+<dd>Options: <em>0-100</em></dd>
+<dd>Default: <em>20</em></dd>
+
+<dt><b>fringe</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Fringe edges</dd>
+<dd>Options: <em>nw, ne, sw, se</em></dd>
+<dd><b>nw</b>: North-West edge</dd>
+<dd><b>ne</b>: North-East edge</dd>
+<dd><b>sw</b>: South-West edge</dd>
+<dd><b>se</b>: South-East edge</dd>
+
+<dt><b>fringe_color</b>=<em>name</em></dt>
+<dd>Fringe color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>grey</em></dd>
+
+<dt><b>fringe_elevation</b>=<em>integer</em></dt>
+<dd>Fringe elevation</dd>
+<dd>Default: <em>55</em></dd>
+
+<dt><b>cplane</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Cutting plane index (0-5)</dd>
+
+<dt><b>cplane_position</b>=<em>x,y,z[,<i>x,y,z</i>,...]</em></dt>
+<dd>Cutting plane x,y,z coordinates</dd>
+<dd>Default: <em>0,0,0</em></dd>
+
+<dt><b>cplane_rotation</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Cutting plane rotation along the vertical axis</dd>
+<dd>Options: <em>0-360</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>cplane_tilt</b>=<em>value[,<i>value</i>,...]</em></dt>
+<dd>Cutting plane tilt</dd>
+<dd>Options: <em>0-360</em></dd>
+<dd>Default: <em>0</em></dd>
+
+<dt><b>cplane_shading</b>=<em>string</em></dt>
+<dd>Cutting plane color (between two surfaces)</dd>
+<dd>Options: <em>clear, top, bottom, blend, shaded</em></dd>
+<dd>Default: <em>clear</em></dd>
+
+<dt><b>arrow_position</b>=<em>x,y</em></dt>
+<dd>Place north arrow at given position &nbsp;&nbsp;&nbsp;&nbsp;(in screen coordinates from bottom left corner)</dd>
+
+<dt><b>arrow_size</b>=<em>value</em></dt>
+<dd>North arrow size (in map units)</dd>
+
+<dt><b>arrow_color</b>=<em>name</em></dt>
+<dd>North arrow color</dd>
+<dd>Either a standard color name or R:G:B triplet</dd>
+<dd>Default: <em>black</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output image file (without extension)</dd>
+
+<dt><b>format</b>=<em>string</em>&nbsp;<b>[required]</b></dt>
+<dd>Graphics file format</dd>
+<dd>Options: <em>ppm, tif</em></dd>
+<dd>Default: <em>ppm</em></dd>
+
+<dt><b>size</b>=<em>width,height</em>&nbsp;<b>[required]</b></dt>
+<dd>Size (width, height) of output image</dd>
+<dd>Default: <em>640,480</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>m.nviz.image</em> allows users to realistically render multiple
+<em>surfaces</em> (raster data) in a 3D space, optionally using
+thematic coloring, draping 2D <em>vector</em> data over the surfaces,
+displaying 3D vector data in the space, and visualization
+of <em>volume</em> data (3D raster data) from the command line.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Render elevation map in a 3D space.
+
+<div class="code"><pre>
+g.region raster=elevation
+m.nviz.image elevation_map=elevation output=elev perspective=15
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="wxGUI.nviz.html">wxGUI 3D viewer</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+<a href="http://geo.fsv.cvut.cz/gwiki/Landa">Martin
+Landa</a>, <a href="https://grasswiki.osgeo.org/wiki/WxNviz_GSoC_2008">Google
+Summer of Code 2008</a> (mentor: Michael Barton)
+and <a href="https://grasswiki.osgeo.org/wiki/WxNviz_GSoC_2010">Google
+Summer of Code 2010</a> (mentor: Helena Mitasova)<br>
+Anna Kratochvilova, <a href="https://grasswiki.osgeo.org/wiki/WxNviz_GSoC_2011">Google
+Summer of Code 2011</a> (mentor: Martin Landa)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/misc/m.nviz.image">m.nviz.image source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/misc/m.nviz.image">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="miscellaneous.html">Miscellaneous index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

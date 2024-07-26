@@ -1,0 +1,166 @@
+---
+output:  html_document
+number_sections: true
+title: "FHAST Habitat Summary"
+header-includes:
+    - \usepackage{setspace}\singlespacing
+    - \usepackage{float}
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=0.2in
+fontsize: 16pt
+fig_caption: yes
+indent: true
+---
+ <font size="4">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, knitr::opts_chunk$set(warning = FALSE, message = FALSE))
+library(here)
+
+```
+
+```{r load_data, include=FALSE}
+
+abm_summary_stats = readRDS(file = here(output_temp_folder,  "abm_summary_table.rds"))
+
+predator_rating_area = readRDS(file = here(output_temp_folder,  "predator_rating_area_stats_table.rds"))
+
+mort_risk_area_stat = readRDS(file = here(output_temp_folder,  "mort_risk_area_stats_table.rds"))
+
+fish_parm = readRDS(file = here(output_temp_folder,  "fish_parm.rds")) 
+
+pred_map = here(output_temp_folder,  "predator_map.png")
+
+fish_pred_plot = here(output_temp_folder,  "predation_map.png")
+
+abm_rearing_plot = here(output_temp_folder,  "abm_rearing_plot.png")
+
+abm_growth_plot = here(output_temp_folder,  "abm_growth_plot.png")
+
+abm_count_v_growth_plot = here(output_temp_folder,  "abm_count_v_growth_plot.png")
+
+abm_count_v_length_plot = here(output_temp_folder,  "abm_count_v_length_plot.png")
+
+abm_mortality_plot = here(output_temp_folder,  "abm_mortality_plot.png")
+```
+
+```{r pre_rrocess, include=FALSE}
+predator_list =  readRDS(here(output_temp_folder, "pred_list.rds"))
+fish_list = readRDS(here(output_temp_folder, "fish_list.rds"))
+n = 0
+t = 0
+```
+
+### Simulation name: `r run_name`
+***
+## Tabular Outputs 
+
+```{r print_abm_stats, echo = FALSE}
+fish_count <- length(unique(abm_summary_stats$Species))
+
+if (fish_count > 0){
+  t = t + 1
+  kable(abm_summary_stats,
+        caption = paste0("Table ", t, ". The fish summary statistics for the ABM of the ", fish_count, " specie(s) of fish. Units vary and are given next to each item name."),
+        col.names = c("Species", "Measure", "Value"))
+}
+```
+
+\newpage
+## Figures Outputs
+
+```{r print_pred_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(pred_map,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** The predation rating map. This map shows the extent to which the preatotors selected (`r predator_list`) for this model will be attracted to areas. The attraction is abase on the average of the conditions in each area over the entire extent the the run (i.e. the start (`r daily_inputs["start date",]`) and end (`r daily_inputs["end date",]`) dates of the daily environmental conditions input file).<br><br><br><br>
+
+```{r predator_rating_area, echo = FALSE}
+t = t + 1
+kable(predator_rating_area, caption = paste0("Table ", t, ". The predator rating area statistics (unitless scale 0-1)."),
+        col.names = c("Predator Rating", "Area", "Percent Area"))
+```
+<br><br><br><br>
+
+```{r print_fish_pred_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(fish_pred_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A set of maps showing the mortality rate for the juvenile life stage (represented by fish of length `r fish_parm$eg_juvenile_length` cm) of the fish species (`r fish_list`). <br><br><br><br>
+
+```{r mort_risk_area_stat , echo = FALSE}
+t = t + 1
+kable(mort_risk_area_stat , caption = paste0("Table ", t, ". The predator mortality risk area statistics (unitless)."),
+        col.names = c("Mortality Risk", "Area", "Percent Area", "Fish"))
+```
+<br><br><br><br>
+
+```{r print_abm_rearing_plot, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(abm_rearing_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A line plot showing the number of fish rearing (non-smolts which are growing) of the fish species (`r unique(abm_summary_stats$Species)`). <br><br><br><br>
+
+```{r print_abm_growth_plot, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(abm_growth_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A line plot showing the mean daily growth of the fish species (`r unique(abm_summary_stats$Species)`). <br><br><br><br>
+
+```{r print_abm_count_v_growth_plot, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(abm_count_v_growth_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A scatter plot showing the relation between fractional growth of rearing fish and number of rearing fish of fish species (`r unique(abm_summary_stats$Species)`) in the system`). <br><br><br><br>
+
+```{r print_abm_count_v_length_plot, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(abm_count_v_length_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A scatter plot showing the relation between length increase of rearing fish and number of rearing fish of fish species (`r unique(abm_summary_stats$Species)`) in the system`). <br><br><br><br>
+
+```{r print_abm_mortality_plot, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(abm_mortality_plot,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A bar plot showing the relative sources of mortality for the fish species (`r unique(abm_summary_stats$Species)`). <br><br><br><br>
+
+\newpage
+## Appendix
+### Run inputs
+The main input file:
+```{r, echo=FALSE}
+cat(readLines(file.path(here(output_folder, "input_file.txt"))), sep = '\n')
+```
+---
+
+The daily input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "daily_input.txt"))), sep = '\n')
+```
+---
+
+The interaction input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "interactions_input.txt"))), sep = '\n')
+```
+---
+
+The fish population file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "population_input.txt"))), sep = '\n')
+```
+---
+
+The fish parameter file:
+---
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "fish_input.txt"))), sep = '\n')
+```
+---
+
+The habitat parameter file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "habitat_input.txt"))), sep = '\n')
+```
+---
+
+The predator input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "predator_input.txt"))), sep = '\n')
+```
+---
+</font>

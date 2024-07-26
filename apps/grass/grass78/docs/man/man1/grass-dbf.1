@@ -1,0 +1,128 @@
+.TH grass-dbf 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH DBF DATABASE DRIVER
+The DBF driver is a file based attribute table driver.
+.SH Defining the DBF driver
+The DBF driver is a file based driver, in theory no user interaction is
+required. However, if the settings should be set back from a different
+driver to the DBF driver, the following step is required:
+.br
+.nf
+\fC
+# keep single quotes:
+db.connect driver=dbf database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\(cq
+db.connect \-p
+\fR
+.fi
+The dbf/ subdirectory in the mapset must exist or must be created by the user.
+.SH Creating a DBF table
+DBF tables are created by GRASS when generating a vector map
+with attributes and having defined the DBF as attribute driver.
+.PP
+If a DBF table has to be created manually, db.execute
+can be used or a spreadsheet application. Also db.copy
+is sometimes useful as well as db.in.ogr to import external
+tables.
+.SH Supported SQL commands by DBF driver
+.br
+.nf
+\fC
+  ALTER TABLE table ADD [COLUMN] columndef
+  ALTER TABLE table DROP COLUMN colname
+  CREATE TABLE table ( columndefs )
+  DROP TABLE table
+  SELECT columns FROM table
+  SELECT columns FROM table WHERE condition
+  SELECT columns FROM table ORDER BY column
+  DELETE FROM table
+  DELETE FROM table WHERE condition
+  INSERT INTO table VALUES (value1[,value2,...])
+  INSERT INTO table ( column1[,column2,...] ) VALUES (value1[,value2,...])
+  UPDATE table SET assignment1[,assignment2,...]
+  UPDATE table SET assignment1[,assignment2,...] WHERE condition
+\fR
+.fi
+.SH Operators available in conditions
+.br
+.nf
+\fC
+  \(dq=\(dq  : equal
+  \(dq<\(dq  : smaller than
+  \(dq<=\(dq : smaller/equal than
+  \(dq>\(dq  : larger than
+  \(dq>=\(dq : larger/equal than
+  \(dq<>\(dq : not equal
+  \(dq~\(dq  : Substring matching  (non\-standard SQL)
+  \(dq%\(dq  : Substring matching  (limited functionality)
+\fR
+.fi
+.PP
+Arithmetic expressions using constants and field values are allowed
+in condition clauses and in the RHS of assignments.
+.br
+Usual precedence rules and bracketing (using \(cq(\(cq and \(cq)\(cq) are supported.
+.br
+Type conversion is performed if necessary (experimental).
+.PP
+Conditions allow boolean expressions using the AND, OR and NOT operators,
+with the usual precedence rules.
+.PP
+NULLs can be tested by \(cqcolname IS NULL\(cq in conditions. The negation is
+\(cqcolname NOT NULL\(cq.
+.PP
+Sorting: Empty fields in a character column are sorted to the end.
+.SH LIMITATIONS OF THE DBF DRIVER
+The DBF driver supports only a \fBfew SQL statements\fR since the DBF tables are
+intended for simple table storage. DBF column names are limited to 10 characters
+(as defined in the DBF specifications). For example,
+.RS 4n
+.IP \(bu 4n
+aggregate functions (sum, count, min, max,...) are \fBnot\fR supported
+in SELECT clauses;
+.IP \(bu 4n
+mathematic functions (sin, cos, exp, log,...) are \fBnot\fR supported
+in expressions;
+.IP \(bu 4n
+SQL query with IN are \fBnot\fR supported.
+.RE
+.SH ERROR MESSAGES
+An error message such as:
+.br
+.nf
+\fC
+DBMI\-DBF driver error:
+SQL parser error: syntax error, unexpected NAME processing \(cqIN\(cq..
+\fR
+.fi
+indicates that an unsupported SQL statement (here, \(cqIN\(cq) was used. The only
+solution is to switch the DBMI backend to a real SQL engine (SQLite,
+PostgreSQL, MySQL etc.). See SQL support in GRASS GIS.
+.PP
+An error message such as:
+.br
+.nf
+\fC
+DBMI\-DBF driver error:
+SQL parser error: syntax error, unexpected DESC, expecting NAME processing \(cqDESC\(cq
+\fR
+.fi
+indicates that a column name corresponds to a reserved SQL word (here: \(cqDESC\(cq).
+A different column name should be used. If this happens during import with
+\fIv.in.ogr\fR, the \fIcnames\fR parameter can be used to assign different
+column names on the fly.
+.SH SEE ALSO
+\fI
+db.connect,
+SQL support in GRASS GIS
+.br
+DBF Specifications (Shapelib)
+\fR
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

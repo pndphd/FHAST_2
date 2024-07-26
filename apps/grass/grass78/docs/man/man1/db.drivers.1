@@ -1,0 +1,71 @@
+.TH db.drivers 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.drivers\fR\fR  \- Lists all database drivers.
+.SH KEYWORDS
+database, connection settings
+.SH SYNOPSIS
+\fBdb.drivers\fR
+.br
+\fBdb.drivers \-\-help\fR
+.br
+\fBdb.drivers\fR [\-\fBfp\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-f\fR" 4m
+.br
+Full output
+.IP "\fB\-p\fR" 4m
+.br
+Print drivers and exit
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SH DESCRIPTION
+\fIdb.drivers\fR lists all database drivers (DBMI backends).
+.SH EXAMPLE
+Show all installed GRASS database drivers:
+.PP
+.br
+.nf
+\fC
+db.drivers \-p
+pg
+ogr
+sqlite
+dbf
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.describe,
+db.droptable,
+db.execute,
+db.login,
+db.tables,
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: db.drivers source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,159 @@
+.TH r.out.mpeg 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.out.mpeg\fR\fR  \- Converts raster map series to MPEG movie.
+.SH KEYWORDS
+raster, export, output, animation
+.SH SYNOPSIS
+\fBr.out.mpeg\fR
+.br
+\fBr.out.mpeg \-\-help\fR
+.br
+\fBr.out.mpeg\fR [\-\fBc\fR] \fBview1\fR=\fIname\fR[,\fIname\fR,...]  [\fBview2\fR=\fIname\fR[,\fIname\fR,...]]   [\fBview3\fR=\fIname\fR[,\fIname\fR,...]]   [\fBview4\fR=\fIname\fR[,\fIname\fR,...]]  \fBoutput\fR=\fIname\fR  [\fBquality\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Convert on the fly, uses less disk space
+.br
+Requires r.out.ppm with stdout option
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBview1\fR=\fIname[,\fIname\fR,...]\fR \fB[required]\fR" 4m
+.br
+Name of input raster map(s) for view no.1
+.IP "\fBview2\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s) for view no.2
+.IP "\fBview3\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s) for view no.3
+.IP "\fBview4\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name of input raster map(s) for view no.4
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output file
+.IP "\fBquality\fR=\fIinteger\fR" 4m
+.br
+Quality factor (1 = highest quality, lowest compression)
+.br
+Options: \fI1\-5\fR
+.br
+Default: \fI3\fR
+.SH DESCRIPTION
+\fIr.out.mpeg\fR is a tool for combining a series of GRASS raster
+maps into a single MPEG\-1
+(Motion
+Pictures Experts Group) format file.  MPEG\-1 is a
+\(dqlossy\(dq video compression format, so the quality of each
+resulting frame of the animation will be much diminished from the
+original raster image.  The resulting output file may then be viewed
+using your favorite mpeg\-format viewing program.  MPEG\-2 and MPEG\-4
+provide much better quality animations.
+.PP
+The user may define up to four \(dqviews\(dq, or sub\-windows,
+to animate simultaneously.  e.g., View 1 could be rainfall, View 2
+flooded areas, View 3 damage to bridges or levees, View 4 other
+economic damage, all animated as a time series. A black border 2
+pixels wide is drawn around each view. There is an arbitrary limit of
+400 files per view (400 animation frames).  Temporary files are
+created in the conversion process, so lack of adequate tmp space could
+also limit the number of frames you are able to convert.
+.PP
+The environment variable GMPEG_SIZE is checked for a value to use
+as the dimension, in pixels, of the longest dimension of the animation
+image.  If GMPEG_SIZE is not set, the animation size defaults to the
+rows & columns in the current GRASS region, scaling if necessary
+to a default minimum size of 200 and maximum of 500.  These size
+defaults are overridden when using the \fB\-c\fR flag (see below). The
+resolution of the current GRASS region is maintained, independent of
+image size.  Playback programs have to decode the compressed data
+\(dqon\-the\-fly\(dq, therefore smaller dimensioned animations will provide
+higher frame rates and smoother animations.
+.PP
+UNIX \- style wild cards may be used with the command line version
+in place of a raster map name, but wild cards must be quoted.
+.PP
+A quality value of \fBquality=1\fR will yield higher quality images,
+but with less compression (larger MPEG file size). Compression ratios
+will vary depending on the number of frames in the animation, but an
+MPEG produced using \fBquality=5\fR will usually be about 60% the size
+of the MPEG produced using \fBquality=1\fR.
+.SH Example
+.br
+.nf
+\fC
+r.out.mpeg view1=\(dqrain[1\-9]\(dq,\(dqrain1[0\-2]\(dq view2=\(dqtemp*\(dq
+\fR
+.fi
+.PP
+If the number of files differs for each view, the view with the
+fewest files will determine the number of frames in the animation.
+.PP
+With \fB\-c\fR flag the module converts \(dqon the fly\(dq, uses less
+disk space by using \fIr.out.ppm\fR
+with stdout option to convert frames as needed instead of converting
+all frames to ppm before encoding.  Only use when encoding a single
+view.  Use of this option also overrides any size defaults, using
+the \fBCURRENTLY DEFINED GRASS REGION for the output size\fR. So be
+careful to set region to a reasonable size prior to encoding.
+.SH KNOWN ISSUES
+MPEG images must be 16\-pixel aligned for successful compression, so if
+the rows & columns of the calculated image size (scaled, with
+borders added) are not evenly divisible by 16, a few rows/columns will
+be cut off the bottom & right sides of the image. The MPEG format
+is optimized to recognize image MOTION, so abrupt changes from one
+frame to another will cause a \(dqnoisy\(dq encoding.
+.SH NOTES
+This program requires the program \fImpeg_encode\fR
+(aka \fIppmtompeg\fR):
+.PP
+MPEG\-1 Video Software Encoder
+.br
+(Version 1.3; March 14, 1994)
+.PP
+Lawrence A. Rowe, Kevin Gong, Ketan Patel, and Dan Wallach Computer Science
+Division\-EECS, Univ. of Calif. at Berkeley
+.PP
+Available from Berkeley:
+http://biowiki.org/BerkeleyMpegEncoder
+.br
+or as part of the netpbm package (\fIppmtompeg\fR):
+http://netpbm.sourceforge.net
+.PP
+Use of the \fB\-c\fR flag requires
+the \fIr.out.ppm\fR GRASS module with
+the \fBstdout\fR option.
+.SH SEE ALSO
+\fIr.out.ppm\fR
+.br
+.SH AUTHOR
+Bill Brown,
+U.S. Army Construction Engineering Research Laboratories
+.SH SOURCE CODE
+.PP
+Available at: r.out.mpeg source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

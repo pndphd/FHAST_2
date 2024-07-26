@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.group - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.group</b></em>  - Creates, edits, and lists groups of imagery data.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_map_management.html">map management</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.group</b><br></div>
+<b>i.group --help</b><br>
+<div id="synopsis"><b>i.group</b> [-<b>rlsg</b>] <b>group</b>=<em>name</em>  [<b>subgroup</b>=<em>name</em>]   [<b>input</b>=<em>name</em>[,<i>name</i>,...]]   [<b>file</b>=<em>name</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Remove selected files from specified group or subgroup</dd>
+
+<dt><b>-l</b></dt>
+<dd>List files from specified (sub)group</dd>
+
+<dt><b>-s</b></dt>
+<dd>List subgroups from specified group</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print in shell script style</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>group</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of imagery group</dd>
+
+<dt><b>subgroup</b>=<em>name</em></dt>
+<dd>Name of imagery subgroup</dd>
+
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of raster map(s) to include in group</dd>
+
+<dt><b>file</b>=<em>name</em></dt>
+<dd>Input file with one raster map name per line</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.group</em> allows the user to collect raster map layers in an imagery
+group by assigning them to user-named subgroups or other groups. This
+enables the user to run analyses on any combination of the raster map layers
+in a group.  The user creates the groups and subgroups and selects the
+raster map layers that are to reside in them. Imagery analysis programs like
+<em><a href="g.gui.gcp.html">g.gui.gcp</a></em>, 
+<em><a href="i.rectify.html">i.rectify</a></em>,
+<em><a href="i.ortho.photo.html">i.ortho.photo</a></em> and
+others ask the user for the name of an imagery group whose data are to be
+analyzed. Imagery analysis programs like
+<em><a href="i.cluster.html">i.cluster</a></em> and 
+<em><a href="i.maxlik.html">i.maxlik</a></em> ask the user for the imagery group
+and imagery subgroup whose data are to be analyzed.
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+The <em>i.group</em> options are only available for 
+imagery map layers in the current LOCATION_NAME.
+
+<p>Subgroup names may not contain more than 12 characters.
+
+<h3><a name="example">EXAMPLE</a></h3>
+
+This example runs in the "landsat" mapset of the North Carolina sample
+dataset. The following command creates a group and subgroup containing
+only the visible light bands of Landsat-7:
+
+<div class="code"><pre>
+i.group group=vis_bands subgroup=vis_bands input=lsat7_2000_10,lsat7_2000_20,lsat7_2000_30
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+The GRASS 4 <em>
+<a href="https://grass.osgeo.org/gdp/imagery/grass4_image_processing.pdf">Image
+Processing manual</a></em>
+
+<p><em>
+<a href="g.gui.gcp.html">g.gui.gcp</a>,
+<a href="i.cluster.html">i.cluster</a>,
+<a href="i.maxlik.html">i.maxlik</a>,
+<a href="i.rectify.html">i.rectify</a>,
+<a href="i.ortho.photo.html">i.ortho.photo</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Michael Shapiro,
+U.S.Army Construction Engineering 
+Research Laboratory
+<br>
+Parser support: Bob Covill (Tekmap, Canada)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.group">i.group source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.group">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>2. Summarizing categorical data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">2. Summarizing categorical data</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This vignette builds upon the sample data for São Miguel (introduced in <a href="vig1_population.html">the previous vignette</a>) to demonstrate the use of <code>exactextractr</code> with categorical land cover data. A sample of the <a href="https://land.copernicus.eu/pan-european/corine-land-cover/clc2018">CORINE 2018</a> raster dataset is included in <code>exactextractr</code>.</p>
+<p>As in the previous vignette, the following packages are used:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(exactextractr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="kw">library</span>(sf)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="kw">library</span>(raster)</span></code></pre></div>
+</div>
+<div id="loading-the-sample-data" class="section level2">
+<h2>Loading the sample data</h2>
+<p>First, we load the CORINE land cover data and the <em>concelho</em> boundaries.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>clc &lt;-<span class="st"> </span><span class="kw">raster</span>(<span class="kw">system.file</span>(<span class="st">&#39;sao_miguel/clc2018_v2020_20u1.tif&#39;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>                     <span class="dt">package =</span> <span class="st">&#39;exactextractr&#39;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>concelhos &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="kw">system.file</span>(<span class="st">&#39;sao_miguel/concelhos.gpkg&#39;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>                                 <span class="dt">package =</span> <span class="st">&#39;exactextractr&#39;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>                     <span class="dt">quiet =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>The land cover class descriptions are provided in a separate DBF file. We read this in to a data frame, then use <code>levels()</code> to associate the class descriptions with the raster.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>clc_classes &lt;-<span class="st"> </span>foreign<span class="op">::</span><span class="kw">read.dbf</span>(<span class="kw">system.file</span>(<span class="st">&#39;sao_miguel/clc2018_v2020_20u1.tif.vat.dbf&#39;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>                                             <span class="dt">package =</span> <span class="st">&#39;exactextractr&#39;</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a>                                 <span class="dt">as.is =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(<span class="dt">value =</span> Value,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a>                <span class="dt">landcov =</span> LABEL3)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="kw">levels</span>(clc) &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">data.frame</span>(<span class="dt">ID =</span> clc_classes<span class="op">$</span>value,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a>                               <span class="dt">landcov =</span> clc_classes<span class="op">$</span>landcov))</span></code></pre></div>
+<p>This association provides us with a way to look up the description for a given ID. Alternatively, we can relate the values using <code>merge</code> or a `<code>dplyr</code> join.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="kw">factorValues</span>(clc, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">18</span>, <span class="dv">24</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co">#&gt;                      landcov</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="co">#&gt; 1 Discontinuous urban fabric</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">#&gt; 2                   Pastures</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">#&gt; 3          Coniferous forest</span></span></code></pre></div>
+</div>
+<div id="summarizing-land-cover-classifications" class="section level2">
+<h2>Summarizing land cover classifications</h2>
+<p>One of the most basic questions we might ask is which land cover classification is predominant in each <em>concelho</em>. We can do this with the built-in <code>mode</code> summary operation. The <code>minority</code> and <code>variety</code> operations are also applicable to categorical data and provide the least-common classification and number of distinct classifications, respectively.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>landcov_mode &lt;-<span class="st"> </span><span class="kw">exact_extract</span>(clc, concelhos, <span class="st">&#39;mode&#39;</span>, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>                              <span class="dt">append_cols =</span> <span class="st">&#39;name&#39;</span>, <span class="dt">progress =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">inner_join</span>(clc_classes, <span class="dt">by=</span><span class="kw">c</span>(<span class="dt">mode =</span> <span class="st">&#39;value&#39;</span>))</span></code></pre></div>
+<table>
+<colgroup>
+<col width="19%"></col>
+<col width="80%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">landcov</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="left">Coniferous forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="left">Broad-leaved forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+</tbody>
+</table>
+<div id="summary-functions" class="section level3">
+<h3>Summary functions</h3>
+<p>While <code>mode</code> provides a handy way to see the most common land cover category, we need to write a custom summary function if we want to see the frequency of different land cover types in an area.</p>
+<p>Summary functions are called once per feature from the input <code>sf</code> object. They can return either:</p>
+<ul>
+<li><p>a scalar, in which case the return value of <code>exact_extract</code> will be a vector whose entries correspond with the rows of the input <code>sf</code> object, or</p></li>
+<li><p>a data frame, in which case <code>exact_extract</code> will return a rowwise combination of the data frames for each feature. If the data frame returned by the summary function will have than a single row, it is useful for some identifying information to be included in the returned data frame.</p></li>
+</ul>
+<p>If we are going to perform typical data frame operations on the raster values and coverage fractions, it can be more convenient for the summary function to accept a single data frame argument, instead of separate arguments for the cell values and coverage fractions. This behavior can be enabled with the <code>summarize_df</code> argument.</p>
+<p>Using this method, we can calculate the fraction of each <em>concelho</em> that is covered by each land cover category:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>landcov_fracs &lt;-<span class="st"> </span><span class="kw">exact_extract</span>(clc, concelhos, <span class="cf">function</span>(df) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>  df <span class="op">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">frac_total =</span> coverage_fraction <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(coverage_fraction)) <span class="op">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">group_by</span>(name, value) <span class="op">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">freq =</span> <span class="kw">sum</span>(frac_total))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>}, <span class="dt">summarize_df =</span> <span class="ot">TRUE</span>, <span class="dt">include_cols =</span> <span class="st">&#39;name&#39;</span>, <span class="dt">progress =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p>Here we use the <code>include_cols</code> argument here to include the <code>name</code> column from <code>concelhos</code> in the data frame passed to the summary function. (Although the value of <code>name</code> will be the same for all rows in <code>df</code>, we include <code>name</code> in the <code>group_by</code> expression so that it is not removed by <code>summarize</code>.) Other similar arguments include <code>include_xy</code> to get the cell center coordinates, <code>include_area</code> to get the cell area, and <code>include_cell</code> to get the cell index used by the <code>raster</code> package.</p>
+<p>This provides us with a correspondence between each numeric land cover category and its frequency in each <em>concelho</em>:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="kw">head</span>(landcov_fracs)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a><span class="co">#&gt; # A tibble: 6 × 3</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="co">#&gt; # Groups:   name [1]</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="co">#&gt;   name  value    freq</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="co">#&gt;   &lt;chr&gt; &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a><span class="co">#&gt; 1 Lagoa     2 0.0630 </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a><span class="co">#&gt; 2 Lagoa     3 0.0136 </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a><span class="co">#&gt; 3 Lagoa     7 0.00659</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a><span class="co">#&gt; 4 Lagoa     9 0.00637</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="co">#&gt; 5 Lagoa    12 0.170  </span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="co">#&gt; 6 Lagoa    18 0.154</span></span></code></pre></div>
+<p>Joining this table to <code>clc_classes</code>, we can associate the descriptions with the numeric types and view the three most common land cover classes in each <em>concelho</em>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a>landcov_fracs <span class="op">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="st">  </span><span class="kw">inner_join</span>(clc_classes, <span class="dt">by =</span> <span class="st">&#39;value&#39;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(name) <span class="op">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(freq)) <span class="op">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">slice_head</span>(<span class="dt">n =</span> <span class="dv">3</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">freq =</span> <span class="kw">sprintf</span>(<span class="st">&#39;%0.1f%%&#39;</span>, <span class="dv">100</span><span class="op">*</span>freq)) <span class="op">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a><span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>()</span></code></pre></div>
+<table>
+<colgroup>
+<col width="17%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+<col width="72%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="right">value</th>
+<th align="left">freq</th>
+<th align="left">landcov</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="right">21</td>
+<td align="left">26.8%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Lagoa</td>
+<td align="right">12</td>
+<td align="left">17.0%</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="right">20</td>
+<td align="left">15.6%</td>
+<td align="left">Complex cultivation patterns</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="right">24</td>
+<td align="left">24.3%</td>
+<td align="left">Coniferous forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Nordeste</td>
+<td align="right">18</td>
+<td align="left">22.5%</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="right">21</td>
+<td align="left">14.2%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="right">18</td>
+<td align="left">29.9%</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Ponta Delgada</td>
+<td align="right">21</td>
+<td align="left">26.5%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="right">12</td>
+<td align="left">11.3%</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="right">23</td>
+<td align="left">24.2%</td>
+<td align="left">Broad-leaved forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Povoação</td>
+<td align="right">18</td>
+<td align="left">20.1%</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="right">21</td>
+<td align="left">16.7%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="right">21</td>
+<td align="left">25.1%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Ribeira Grande</td>
+<td align="right">18</td>
+<td align="left">22.7%</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="right">12</td>
+<td align="left">16.4%</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">21</td>
+<td align="left">36.0%</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">18</td>
+<td align="left">15.5%</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">27</td>
+<td align="left">15.0%</td>
+<td align="left">Moors and heathland</td>
+</tr>
+</tbody>
+</table>
+<p>Similarly, we can find the top land covers by area:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>landcov_areas &lt;-<span class="st"> </span><span class="kw">exact_extract</span>(clc, concelhos, <span class="cf">function</span>(df) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>  df <span class="op">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">group_by</span>(name, value) <span class="op">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">area_km2 =</span> <span class="kw">sum</span>(coverage_area) <span class="op">/</span><span class="st"> </span><span class="fl">1e6</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a>}, <span class="dt">summarize_df =</span> <span class="ot">TRUE</span>, <span class="dt">coverage_area =</span> <span class="ot">TRUE</span>, <span class="dt">include_cols =</span> <span class="st">&#39;name&#39;</span>, <span class="dt">progress =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<table>
+<colgroup>
+<col width="17%"></col>
+<col width="8%"></col>
+<col width="73%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="right">area_km2</th>
+<th align="left">landcov</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="right">12.243526</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Lagoa</td>
+<td align="right">7.749522</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="right">7.129778</td>
+<td align="left">Complex cultivation patterns</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="right">24.662020</td>
+<td align="left">Coniferous forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Nordeste</td>
+<td align="right">22.832392</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="right">14.404089</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="right">69.843899</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Ponta Delgada</td>
+<td align="right">61.752290</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="right">26.315411</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="right">25.798260</td>
+<td align="left">Broad-leaved forest</td>
+</tr>
+<tr class="odd">
+<td align="left">Povoação</td>
+<td align="right">21.438728</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="right">17.821336</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="right">45.394998</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="even">
+<td align="left">Ribeira Grande</td>
+<td align="right">40.902179</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="right">29.625931</td>
+<td align="left">Non-irrigated arable land</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">28.120871</td>
+<td align="left">Land principally occupied by agriculture, with significant areas of natural vegetation</td>
+</tr>
+<tr class="odd">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">12.081576</td>
+<td align="left">Pastures</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="right">11.681901</td>
+<td align="left">Moors and heathland</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="summarizing-population-land-cover" class="section level2">
+<h2>Summarizing population land cover</h2>
+<p>One extension of the analysis above is to see which land covers are associated with human population in a given <em>concelho</em>. Is the population primary urban or rural?</p>
+<p>As described in the previous vignette, the population density raster provides the most robust results in the presence of partially-covered pixels.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>pop_density &lt;-<span class="st"> </span><span class="kw">raster</span>(<span class="kw">system.file</span>(<span class="st">&#39;sao_miguel/gpw_v411_2020_density_2020.tif&#39;</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>                                  <span class="dt">package =</span> <span class="st">&#39;exactextractr&#39;</span>))</span></code></pre></div>
+<p>We are able to perform this analysis because the CORINE sample distributed with <code>exactextractr</code> has been reprojected from its native Lambert Equal Area projection into geographic coordinates consistent with GPW. Otherwise, working with multiple rasters in different projections requires transformation to a common grid using tools such as <code>raster::projectRaster</code> or the <code>gdalwarp</code> command-line utility.</p>
+<p>Very little about the call to <code>exact_extract</code> requires changing to incorporate population. We set <code>weights = pop_density</code> and, since we are using the <code>summarize_df</code> option, a column called <code>weight</code> will be added to the data frame passed to the summary function. We also set <code>coverage_area = TRUE</code> so that we can multiply the density by the covered pixel area to get a population count.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a>landcov_pop_areas &lt;-<span class="st"> </span><span class="kw">exact_extract</span>(clc, concelhos, <span class="cf">function</span>(df) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>  df <span class="op">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a><span class="st">    </span><span class="kw">group_by</span>(name, value) <span class="op">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">pop =</span> <span class="kw">sum</span>(coverage_area <span class="op">*</span><span class="st"> </span>weight <span class="op">/</span><span class="st"> </span><span class="fl">1e6</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">pop_frac =</span> pop <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(pop))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>}, <span class="dt">weights =</span> pop_density, <span class="dt">coverage_area =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>   <span class="dt">summarize_df =</span> <span class="ot">TRUE</span>, <span class="dt">include_cols =</span> <span class="st">&#39;name&#39;</span>)</span></code></pre></div>
+<p>Looking at the highest-population land cover type in each <em>concelho</em>, we can can see that the western/central <em>concelhos</em> of Lagoa, Ponta Delgada, Ribeira Grande, and Vila Franca do Campo have a more urban population than Nordeste or Povoação to the east.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">name</th>
+<th align="left">landcov</th>
+<th align="right">pop</th>
+<th align="right">pop_frac</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lagoa</td>
+<td align="left">Discontinuous urban fabric</td>
+<td align="right">6548</td>
+<td align="right">0.415</td>
+</tr>
+<tr class="even">
+<td align="left">Nordeste</td>
+<td align="left">Complex cultivation patterns</td>
+<td align="right">1280</td>
+<td align="right">0.282</td>
+</tr>
+<tr class="odd">
+<td align="left">Ponta Delgada</td>
+<td align="left">Discontinuous urban fabric</td>
+<td align="right">27224</td>
+<td align="right">0.381</td>
+</tr>
+<tr class="even">
+<td align="left">Povoação</td>
+<td align="left">Complex cultivation patterns</td>
+<td align="right">1568</td>
+<td align="right">0.261</td>
+</tr>
+<tr class="odd">
+<td align="left">Ribeira Grande</td>
+<td align="left">Discontinuous urban fabric</td>
+<td align="right">13497</td>
+<td align="right">0.374</td>
+</tr>
+<tr class="even">
+<td align="left">Vila Franca do Campo</td>
+<td align="left">Discontinuous urban fabric</td>
+<td align="right">4442</td>
+<td align="right">0.377</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

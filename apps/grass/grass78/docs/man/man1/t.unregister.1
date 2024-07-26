@@ -1,0 +1,107 @@
+.TH t.unregister 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBt.unregister.py\fR\fR  \- Unregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset.
+.SH KEYWORDS
+temporal, map management, unregister, time
+.SH SYNOPSIS
+\fBt.unregister.py\fR
+.br
+\fBt.unregister.py \-\-help\fR
+.br
+\fBt.unregister.py\fR  [\fBinput\fR=\fIname\fR]   [\fBfile\fR=\fIname\fR]   [\fBtype\fR=\fIname\fR]   [\fBmaps\fR=\fIname\fR[,\fIname\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR" 4m
+.br
+Name of the input space time dataset
+.IP "\fBfile\fR=\fIname\fR" 4m
+.br
+Input file with map names, one per line
+.IP "\fBtype\fR=\fIname\fR" 4m
+.br
+Type of the input map
+.br
+Options: \fIraster, vector, raster_3d\fR
+.br
+Default: \fIraster\fR
+.IP "\fBmaps\fR=\fIname[,\fIname\fR,...]\fR" 4m
+.br
+Name(s) of existing raster, vector or raster3d map(s) to unregister
+.SH DESCRIPTION
+This module is designed to unregister raster, 3D raster and vector map
+layers from space time datasets and the temporal database.
+.PP
+Map layer that should be unregistered from the temporal database can be
+specified as a list of comma separated map names or using a text file,
+that contains one map layer name per line. By default the map type that
+should be unregistered is set to raster. The option\fItype\fR must
+be used to specify 3D raster or vector map layer types.
+.SH INPUT FILE FORMAT
+Specification of map names:
+.br
+.nf
+\fC
+a1
+a2
+a3
+a4
+a5
+a6
+\fR
+.fi
+.SS NOTE
+In case the \fIinput\fR option is used to specify a space time dataset
+the maps are only unregistered from the space time dataset, but not from the
+temporal database. The reason is that maps can be registered in
+multiple space time datasets and there is a need to
+unregister them from a specific STDS without affecting other STDS.
+.SH EXAMPLE
+In this example a precipitation map it is registered into temperature
+dataset, so the wrong map will be unregister.
+.br
+.nf
+\fC
+t.register \-i type=raster input=tempmean_monthly@climate_2009_2012 \(rs
+    maps=2012_01_precip \(rs
+    start=\(dq2013\-01\-01\(dq increment=\(dq1 month\(dq
+# We unregister raster map 2012_01_precip from a space time dataset,
+# the raster maps are still present in the temporal database
+t.unregister type=raster input=tempmean_monthly@climate_2009_2012 maps=2012_01_precip
+# We unregister raster map 2012_01_precip from the temporal database, hence
+# the time stamps are removed
+t.unregister type=raster maps=2012_01_precip
+\fR
+.fi
+.SH SEE ALSO
+\fI
+t.create,
+t.info
+\fR
+.SH AUTHOR
+Sören Gebbert, Thünen Institute of Climate\-Smart Agriculture
+.SH SOURCE CODE
+.PP
+Available at: t.unregister source code (history)
+.PP
+Main index |
+Temporal index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

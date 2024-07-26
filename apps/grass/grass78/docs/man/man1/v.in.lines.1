@@ -1,0 +1,102 @@
+.TH v.in.lines 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.lines.py\fR\fR  \- Imports ASCII x,y[,z] coordinates as a series of lines.
+.SH KEYWORDS
+vector, import, line, point
+.SH SYNOPSIS
+\fBv.in.lines.py\fR
+.br
+\fBv.in.lines.py \-\-help\fR
+.br
+\fBv.in.lines.py\fR [\-\fBz\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBseparator\fR=\fIcharacter\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Create a 3D line from 3 column data
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input file (or \(dq\-\(dq to read from stdin)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBseparator\fR=\fIcharacter\fR" 4m
+.br
+Field separator
+.br
+Special characters: pipe, comma, space, tab, newline
+.br
+Default: \fIpipe\fR
+.SH DESCRIPTION
+Imports a stream of ASCII x,y[,z] coordinates as a line or series of lines.
+.SH NOTES
+Input ASCII coordinates are simply a series of \(dqx y\(dq data points.
+Lines are separated by a row containing \(dqNaN NaN\(dq.
+.PP
+The user can import 3D lines by providing 3 columns of data in the input
+stream and using the \fB\-z\fR flag.
+.PP
+This script is a simple wrapper around the \fIv.in.mapgen\fR module.
+.SH EXAMPLE
+.br
+.nf
+\fC
+v.in.lines in=\- out=two_lines separator=, <<EOF
+167.846717,\-46.516653
+167.846663,\-46.516645
+167.846656,\-46.516644
+167.846649,\-46.516644
+167.846642,\-46.516643
+NaN,NaN
+167.846520,\-46.516457
+167.846528,\-46.516461
+167.846537,\-46.516464
+167.846535,\-46.516486
+167.846544,\-46.516489
+167.846552,\-46.516493
+EOF
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.graph,
+v.centroids,
+v.in.ascii,
+v.in.mapgen,
+v.in.region,
+v.out.ascii,
+r.in.poly
+\fR
+.SH AUTHOR
+Hamish Bowman
+.br
+Dunedin, New Zealand
+.SH SOURCE CODE
+.PP
+Available at: v.in.lines source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

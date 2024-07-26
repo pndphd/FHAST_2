@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.surf.contour - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.surf.contour</b></em>  - Generates surface raster map from rasterized contours.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_surface.html">surface</a>, <a href="keywords.html#interpolation">interpolation</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.surf.contour</b><br></div>
+<b>r.surf.contour --help</b><br>
+<div id="synopsis"><b>r.surf.contour</b> <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map containing contours</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#parameters:" class="toc">Parameters:</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.surf.contour</em> creates a raster elevation map from a rasterized
+contour map.  Elevation values are determined using procedures similar
+to a manual methods.
+To determine the elevation of a point on a contour map, an individual
+might interpolate its value from those of the two nearest contour lines
+(uphill and downhill).
+
+<p>
+<em>r.surf.contour</em> works in a similar way.  Initially, a vector map of
+the contour lines is made with the elevation of each line as an attribute.
+When the program <em><a href="v.to.rast.html">v.to.rast</a></em>
+is run on the vector map, continuous "lines" of rasters containing the
+contour line values will be the input for <em>r.surf.contour</em>. For each
+cell in the input map, either the cell is a contour line cell (which is
+given that value), or a flood fill is generated from that spot until the
+fill comes to two unique values. So the <em>r.surf.contour</em> algorithm
+<strong>linearly interpolates</strong> between contour lines. The flood fill
+is not allowed to cross over
+the rasterized contour lines, thus ensuring that an uphill and downhill
+contour value will be the two values chosen.  <em>r.surf.contour</em>
+interpolates from the uphill and downhill values by the true distance.
+
+
+<h3><a name="parameters:">Parameters:</a></h3>
+
+<dl>
+
+<dt><b>input=</b><em>name</em> 
+
+<dd>Name of an existing raster map that contains a set of 
+initial category values (i.e., some cells contain known elevation
+values (denoting contours) while the rest contain NULL values).
+
+<dt><b>output=</b><em>name</em> 
+
+<dd>Name to be assigned to new output raster map that represents
+a smooth (e.g., elevation) surface generated from
+the known category values in the input raster map layer.
+</dl>
+
+<p>An existing MASK raster map is respected for both reading <em>input</em>
+and writing <em>output</em>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+<em>r.surf.contour</em> works well under the following circumstances:
+1) the contour lines extend to the the edge of the current region,
+2) the program is run at the same resolution as that of the input map,
+3) there are no disjointed contour lines,
+and 4) no spot elevation data BETWEEN contour lines exist.  Spot elevations at
+the tops of hills and the bottoms of depressions, on the other hand, improve
+the output greatly.
+Violating these constraints will cause non-intuitive anomalies to appear in
+the output map.  Run <em> <a href="r.slope.aspect.html">r.slope.aspect</a>
+</em> on <em>r.surf.contour</em> results to locate potential anomalies.
+
+
+<p>The running of <em>r.surf.contour</em> is very sensitive to the resolution of
+rasterized vector map.  If multiple contour lines go through the same raster,
+slight anomalies may occur.  The speed of <em>r.surf.contour</em> is dependent
+on how far "apart" the contour lines are from each other (as measured in
+raster cells).  Since a flood fill algorithm is used, the program's running
+time will grow exponentially with the distance between contour lines.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+Example to create contour lines from elevation model, then recreating DEM
+from these contour lines along with differences analysis (North Carolina
+sample data set):
+
+<div class="code"><pre>
+g.region raster=elevation -p
+
+# get minimum elevation value
+r.univar elevation
+
+# generate vector contour lines 
+r.contour input=elevation output=contours_5m step=5 minlevel=50
+
+# rasterize contour lines
+v.info -c contours_5m
+v.to.rast input=contours_5m output=contours_5m use=attr attribute_column=level
+
+# generate DEM from rasterized contour lines
+r.surf.contour input=contours_5m output=elevation_from_cont5m
+
+# calculate difference map
+r.mapcalc "diff = elevation - elevation_from_cont5m"
+r.colors diff color=differences
+
+# analyze differences statistically
+r.univar diff
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.slope.aspect.html">r.slope.aspect</a>,
+<a href="r.surf.idw.html">r.surf.idw</a>,
+<a href="wxGUI.vdigit.html">wxGUI vector digitizer</a>,
+<a href="v.surf.idw.html">v.surf.idw</a>,
+<a href="v.surf.rst.html">v.surf.rst</a>,
+<a href="v.to.rast.html">v.to.rast</a>
+</em>
+
+<p>
+Overview: <a href="https://grasswiki.osgeo.org/wiki/Interpolation">Interpolation and Resampling</a> in GRASS GIS
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Chuck Ehlschlaeger, U.S. Army Construction Engineering Research Laboratory
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.surf.contour">r.surf.contour source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.surf.contour">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

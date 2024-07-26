@@ -1,0 +1,98 @@
+.TH r.basins.fill 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.basins.fill\fR\fR  \- Generates watershed subbasins raster map.
+.SH KEYWORDS
+raster, hydrology, watershed
+.SH SYNOPSIS
+\fBr.basins.fill\fR
+.br
+\fBr.basins.fill \-\-help\fR
+.br
+\fBr.basins.fill\fR \fBcnetwork\fR=\fIname\fR \fBtnetwork\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBnumber\fR=\fIinteger\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBcnetwork\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input coded stream network raster map
+.IP "\fBtnetwork\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input thinned ridge network raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBnumber\fR=\fIinteger\fR \fB[required]\fR" 4m
+.br
+Number of passes through the dataset
+.SH DESCRIPTION
+\fIr.basins.fill\fR
+generates a raster map layer depicting subbasins, based
+on input raster map layers for the coded stream network
+(where each channel segment has been \(dqcoded\(dq with a unique category value)
+and for the ridges within a given watershed.
+The raster map layer depicting ridges should include
+the ridge which defines the perimeter of the watershed.
+The coded stream network can be generated
+as part of the
+\fIr.watershed\fR program,
+but the map layer of ridges will need to be created by hand
+(for example, through digitizing done in \fIwxGUI vector digitizer\fR).
+.PP
+The resulting output raster map layer will
+code the subbasins with category values matching
+those of the channel segments passing through them.
+A user\-supplied number of passes through the data is
+made in an attempt to fill in these subbasins.
+If the resulting map layer from this program appears to
+have holes within a subbasin, the program should be
+rerun with a higher number of passes.
+.br
+.br
+.SH NOTES
+The current geographic region setting is ignored.
+Instead, the geographic region for the entire input stream\(cqs
+map layer is used.
+.SH SEE ALSO
+See Appendix A of the \fBGRASS\fR Tutorial:
+r.watershed for further details on the combined use of
+\fIr.basins.fill\fR and \fIr.watershed\fR.
+.PP
+\fI
+r.water.outlet,
+r.watershed,
+wxGUI vector digitizer
+\fR
+.SH AUTHORS
+Dale White,
+Dept. of Geography,
+Pennsylvania State University
+.br
+Larry Band, Dept. of Geography, University of Toronto, Canada
+.SH SOURCE CODE
+.PP
+Available at: r.basins.fill source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

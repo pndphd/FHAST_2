@@ -1,0 +1,102 @@
+.TH r.mode 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.mode\fR\fR  \- Finds the mode of values in a cover map within areas assigned the same category value in a user\-specified base map.
+.SH KEYWORDS
+raster, statistics, algebra
+.SH SYNOPSIS
+\fBr.mode\fR
+.br
+\fBr.mode \-\-help\fR
+.br
+\fBr.mode\fR \fBbase\fR=\fIstring\fR \fBcover\fR=\fIstring\fR \fBoutput\fR=\fIstring\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBbase\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Base map to be reclassified
+.IP "\fBcover\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Coverage map
+.IP "\fBoutput\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Output map
+.SH DESCRIPTION
+\fIr.mode\fR calculates the most frequently occurring value (i. e., mode)
+of data contained in a \fIcover\fR raster map layer for areas assigned
+the same category value in the user\-specified \fIbase\fR raster map
+layer. These modes are stored in the new \fIoutput\fR map layer.
+.PP
+The \fIoutput\fR map is actually a \fIreclass\fR of the \fIbase\fR
+map.
+.PP
+The \fBbase\fR parameter defines an existing raster map layer in the user\(cqs
+current mapset search path. For each group of cells assigned the same
+category value in the \fIbase\fR map, the mode of the values assigned
+these cells in the \fIcover\fR map will be computed.
+.PP
+The \fBcover\fR parameter defines an existing raster map layer containing
+the values to be used to compute the mode within each category of the
+\fIbase\fR map.
+.SH NOTES
+The user should use the results of \fIr.mode\fR with care.
+Since this utility assigns a value to each
+cell which is based on global information (i.e., information at spatial
+locations other than just the location of the cell itself), the resultant
+map layer is only valid if the geographic region and mask settings are
+the same as they were at the time that the result map was created.
+.PP
+Results are affected by the current region settings and mask.
+.SH EXAMPLE
+Mode of K\-factor (erosion) for Spearfish fields:
+.br
+.nf
+\fC
+g.region raster=fields \-p
+r.mode base=fields cover=soils.Kfactor output=K.by.farm.mode
+r.univar K.by.farm.mode
+\fR
+.fi
+.SH SEE ALSO
+\fIg.region\fR,
+\fIr.category\fR,
+\fIr.clump\fR,
+\fIr.describe\fR,
+\fIr.mapcalc\fR,
+\fIr.mfilter\fR,
+\fIr.neighbors\fR,
+\fIr.reclass\fR,
+\fIr.stats\fR,
+\fIr.statistics\fR,
+\fIr.univar\fR
+.SH AUTHOR
+Michael Shapiro,
+U.S.Army Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: r.mode source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,134 @@
+.TH v.db.univar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.db.univar.py\fR\fR  \- Calculates univariate statistics on selected table column for a GRASS vector map.
+.SH KEYWORDS
+vector, statistics, attribute table
+.SH SYNOPSIS
+\fBv.db.univar.py\fR
+.br
+\fBv.db.univar.py \-\-help\fR
+.br
+\fBv.db.univar.py\fR [\-\fBeg\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR  [\fBwhere\fR=\fIsql_query\fR]   [\fBpercentile\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Extended statistics (quartiles and 90th percentile)
+.IP "\fB\-g\fR" 4m
+.br
+Print stats in shell script style
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column on which to calculate statistics (must be numeric)
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBpercentile\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Percentile to calculate (requires extended statistics flag)
+.br
+Options: \fI0\-100\fR
+.br
+Default: \fI90\fR
+.SH DESCRIPTION
+\fIv.db.univar\fR calculates basic univariate statistics for numeric
+attributes in a vector attribute table. It will calculate minimum,
+maximum, range, mean, standard deviation, variance, coefficient of
+variation, quartiles, median, and 90th percentile.
+.PP
+\fIv.db.univar\fR uses \fIdb.univar\fR which in turn uses
+\fIdb.select\fR to get the attribute values on which it calculates the
+statistics.  This means that statistics are calculated based on the entries in
+the attribute table, not based on the features in the map. One attribute value
+is read from each line in the attribute table, whether there are no, one or
+several features with the category value referenced by that line, or whether any
+features have more than one category value.  For feature\-based, instead of
+attribute table\-based, univariate statistics on attributes see v.univar.
+\fINOTES\fR
+A database connection must be defined for the selected vector layer.
+.SH EXAMPLES
+.SS Univariate statistics on attribute table column
+In this example, the 30 years precipitation data table is statistically
+analysed (North Carolina sample dataset) and univariate statistics performed:
+.br
+.nf
+\fC
+# show columns of attribute table connected to precipitation map
+v.info \-c precip_30ynormals
+# univariate statistics on 30 years annual precipitation in NC
+v.db.univar precip_30ynormals column=annual
+ Number of values: 136
+ Minimum: 947.42
+ Maximum: 2329.18
+ Range: 1381.76
+ Mean: 1289.31147058823
+ [...]
+\fR
+.fi
+.SS Univariate statistics on randomly sampled data points
+In this example, random points are sampled from the elevation map
+(North Carolina sample dataset) and univariate statistics performed:
+.br
+.nf
+\fC
+g.region raster=elevation \-p
+v.random output=samples n=100
+v.db.addtable samples column=\(dqheights double precision\(dq
+v.what.rast samples raster=elevation column=heights
+v.db.select samples
+v.db.univar samples column=heights
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.univar,
+r.univar,
+v.univar,
+db.select,
+d.vect.thematic,
+v.random
+\fR
+.SH AUTHOR
+Michael Barton, Arizona State University
+.PP
+and authors of \fIr.univar.sh\fR (Markus Neteler et al.)
+.SH SOURCE CODE
+.PP
+Available at: v.db.univar source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

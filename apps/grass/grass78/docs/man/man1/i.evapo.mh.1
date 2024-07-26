@@ -1,0 +1,101 @@
+.TH i.evapo.mh 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBi.evapo.mh\fR\fR  \- Computes evapotranspiration calculation modified or original Hargreaves formulation, 2001.
+.SH KEYWORDS
+imagery, evapotranspiration
+.SH SYNOPSIS
+\fBi.evapo.mh\fR
+.br
+\fBi.evapo.mh \-\-help\fR
+.br
+\fBi.evapo.mh\fR [\-\fBzhs\fR] \fBnetradiation_diurnal\fR=\fIname\fR \fBaverage_temperature\fR=\fIname\fR \fBminimum_temperature\fR=\fIname\fR \fBmaximum_temperature\fR=\fIname\fR  [\fBprecipitation\fR=\fIname\fR]  \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-z\fR" 4m
+.br
+Set negative ETa to zero
+.IP "\fB\-h\fR" 4m
+.br
+Use original Hargreaves (1985)
+.IP "\fB\-s\fR" 4m
+.br
+Use Hargreaves\-Samani (1985)
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBnetradiation_diurnal\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input diurnal net radiation raster map [W/m2/d]
+.IP "\fBaverage_temperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input average air temperature raster map [C]
+.IP "\fBminimum_temperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input minimum air temperature raster map [C]
+.IP "\fBmaximum_temperature\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input maximum air temperature raster map [C]
+.IP "\fBprecipitation\fR=\fIname\fR" 4m
+.br
+Name of precipitation raster map [mm/month]
+.br
+Disabled for original Hargreaves (1985)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map [mm/d]
+.SH DESCRIPTION
+\fIi.evapo.mh\fR calculates the reference evapotranspiration (ET) after
+Hargreaves et al. (1985), Hargreaves and Samani (1985) and the Modified Hargreaves version found in Droogers and Allen (2002).
+.SH SEE ALSO
+\fI
+i.evapo.pt,
+i.evapo.pm,
+i.evapo.time,
+r.sun
+\fR
+.SH REFERENCES
+.RS 4n
+.IP \(bu 4n
+Hargreaves GL, Hargreaves GH, Riley JP, 1985. Agricultural benefits for
+Senegal River Basin. Journal of Irrigation and Drainange Engineering,
+ASCE, 111(2):113\-124.
+.IP \(bu 4n
+Droogers P, Allen RG, 2002. Towards a simplified global reference
+evapotranspiration equation. Irrigation Science.
+.IP \(bu 4n
+Droogers, P., Allen RG. 2002. Estimating reference evapotranspiration
+under inaccurate data conditions. Irrigation and Drainage Systems 16: 33\-45.
+.IP \(bu 4n
+Hargreaves GH, Samani ZA, 1985. Reference crop evapotranspiration from
+ambient air temperature. American Society of Agricultural Engineers
+(Microfiche collection)(USA). no. fiche no. 85\-2517.
+.RE
+.SH AUTHORS
+Yann Chemin, GRASS Development team, 2007\-2016
+.br
+.SH SOURCE CODE
+.PP
+Available at: i.evapo.mh source code (history)
+.PP
+Main index |
+Imagery index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,13 @@
+prefix=D:/src/osgeo4w64/src/netcdf-4.7.3/osgeo4w/install-x86_64
+exec_prefix=D:/src/osgeo4w64/src/netcdf-4.7.3/osgeo4w/install-x86_64
+libdir=D:/src/osgeo4w64/src/netcdf-4.7.3/osgeo4w/install-x86_64/lib
+includedir=D:/src/osgeo4w64/src/netcdf-4.7.3/osgeo4w/install-x86_64/include
+ccompiler=C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/x86_amd64/cl.exe
+
+Name: netCDF
+Description: NetCDF Client Library for C
+URL: http://www.unidata.ucar.edu/netcdf
+Version: 4.7.3
+Libs: -L${libdir} -lnetcdf
+Libs.private: -lhdf5 -lhdf5_hl -lzdll -lcurl
+Cflags: -I${includedir}

@@ -1,0 +1,132 @@
+.TH db.describe 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.describe\fR\fR  \- Describes a table in detail.
+.SH KEYWORDS
+database, attribute table
+.SH SYNOPSIS
+\fBdb.describe\fR
+.br
+\fBdb.describe \-\-help\fR
+.br
+\fBdb.describe\fR [\-\fBct\fR] \fBtable\fR=\fIname\fR  [\fBdriver\fR=\fIname\fR]   [\fBdatabase\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Print column names only instead of full column descriptions
+.IP "\fB\-t\fR" 4m
+.br
+Print table structure
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBtable\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute table
+.IP "\fBdriver\fR=\fIname\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.SH DESCRIPTION
+\fIdb.describe\fR displays table information. If parameter \fB\-c\fR
+is used only column names instead of full column descriptions is given.
+.SH NOTE
+If parameters for database connection are already set with
+db.connect, they are taken as default values and
+do not need to be spcified each time.
+.SH EXAMPLES
+\fIList column descriptions of table in SQLite database (note that this
+is the default setting)\fR
+.br
+.br
+.nf
+\fC
+db.describe driver=sqlite table=hospitals \(rs
+   database=\(cq$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\(cq
+# or simply
+db.describe myarchsites
+\fR
+.fi
+.SS DBF example
+.br
+.nf
+\fC
+db.describe \-c table=hospitals database=\(cq$GISDBASE/$LOCATION_NAME/PERMANENT/dbf/\(cq \(rs
+            driver=dbf
+ncols: 16
+nrows: 160
+Column 1: cat:INTEGER:11
+Column 2: OBJECTID:INTEGER:11
+Column 3: AREA:DOUBLE PRECISION:20
+[...]
+\fR
+.fi
+.br
+.nf
+\fC
+db.describe table=hospitals database=\(cq$GISDBASE/$LOCATION_NAME/PERMANENT/dbf/\(cq \(rs
+            driver=dbf
+table:hospitals
+description:
+insert:yes
+delete:yes
+ncols:16
+nrows:160
+column:cat
+description:
+type:INTEGER
+len:11
+scale:0
+precision:10
+default:
+nullok:yes
+select:yes
+update:yes
+column:OBJECTID
+description:
+type:INTEGER
+[...]
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.columns,
+db.droptable,
+db.execute,
+db.login,
+db.tables,
+GRASS SQL interface
+\fR
+.SH AUTHOR
+Radim Blazek, ITC\-Irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: db.describe source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

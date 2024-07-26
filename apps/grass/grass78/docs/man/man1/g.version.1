@@ -1,0 +1,141 @@
+.TH g.version 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.version\fR\fR  \- Displays GRASS GIS version info.
+.br
+Optionally also prints build or copyright information.
+.SH KEYWORDS
+general, support, citing, copyright, version, license
+.SH SYNOPSIS
+\fBg.version\fR
+.br
+\fBg.version \-\-help\fR
+.br
+\fBg.version\fR [\-\fBcxbreg\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Print also the copyright message
+.IP "\fB\-x\fR" 4m
+.br
+Print also the citation options
+.IP "\fB\-b\fR" 4m
+.br
+Print also the build information
+.IP "\fB\-r\fR" 4m
+.br
+Print also the GIS library revision number and date
+.IP "\fB\-e\fR" 4m
+.br
+Print also extended info for additional libraries
+.br
+GDAL/OGR, PROJ, GEOS
+.IP "\fB\-g\fR" 4m
+.br
+Print info in shell script style (including Git reference commit)
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SH DESCRIPTION
+\fIg.version\fR prints to standard output the GRASS version number,
+date, the GRASS GIS copyright (\fB\-c\fR flag), and GRASS build information
+(\fB\-b\fR flag).
+.SH NOTES
+This program requires no command line arguments; the user simply types
+\fIg.version\fR on the command line to see the version number and
+date of the GRASS GIS software currently being run by the user.
+.PP
+Information about GRASS GIS
+core GIS
+Library can be printed by \fB\-r\fR flag.
+.PP
+Version numbers of additional libraries
+like PROJ, GDAL/OGR
+or GEOS are printed
+by \fB\-e\fR flag.
+.PP
+See also function version()
+from Python
+Scripting Library.
+.br
+.nf
+\fC
+import grass.script as gcore
+print gcore.version()
+\fR
+.fi
+.SH EXAMPLES
+.SS Basic info
+.br
+.nf
+\fC
+g.version
+GRASS 7.8.dev (2019)
+\fR
+.fi
+.SS GIS Library info
+.br
+.nf
+\fC
+g.version \-r
+GRASS 7.8.dev (2019)
+libgis Revision
+libgis Date
+\fR
+.fi
+.SS Full info in shell script style
+.br
+.nf
+\fC
+g.version \-rge
+version=7.8.dev
+date=2019
+revision=d4879d401
+build_date=2019\-08\-04
+build_platform=x86_64\-pc\-linux\-gnu
+build_off_t_size=8
+libgis_revision=060163d17
+libgis_date=\(dq2017\-04\-04 09:43:02 +0200 (Tue, 04 Apr 2017) \(dq
+proj4=5.2.0
+gdal=2.3.2
+geos=3.7.1
+sqlite=3.26.0
+\fR
+.fi
+Note: if revision=exported is reported instead of the git hash then the
+git program was not available during compilation of GRASS GIS and the
+source code did not contain the .git/ subdirectory (requires e.g. to
+git clone the GRASS GIS software repository.)
+.SH Citing GRASS GIS
+The GRASS Development Team has invested significant time and effort
+in creating GRASS GIS, please cite it when using it for data analysis.
+The GRASS GIS Web site
+offers citations in different styles.
+.SH AUTHORS
+Michael Shapiro,
+U.S. Army Construction Engineering
+Research Laboratory
+.br
+Extended info by Martin Landa, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: g.version source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

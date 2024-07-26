@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>d.info - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>d.info</b></em>  - Displays information about the active display monitor.<BR>
+Display monitors are maintained by d.mon.
+<h2>KEYWORDS</h2>
+<a href="display.html">display</a>, <a href="topic_graphics.html">graphics</a>, <a href="keywords.html#monitors">monitors</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>d.info</b><br></div>
+<b>d.info --help</b><br>
+<div id="synopsis"><b>d.info</b> [-<b>rdfebg</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-r</b></dt>
+<dd>Display screen rectangle (left, right, top, bottom)</dd>
+
+<dt><b>-d</b></dt>
+<dd>Display screen dimensions (width, height)</dd>
+
+<dt><b>-f</b></dt>
+<dd>Display active frame rectangle</dd>
+
+<dt><b>-e</b></dt>
+<dd>Display frame dimensions (width, height)</dd>
+
+<dt><b>-b</b></dt>
+<dd>Display screen rectangle of current region</dd>
+
+<dt><b>-g</b></dt>
+<dd>Display geographic coordinates and resolution of entire frame</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>d.info</em> displays information about the active display
+monitor. Display monitors are maintained
+by <em><a href="d.mon.html">d.mon</a></em>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<div class="code"><pre>
+d.mon start=cairo
+
+d.info -r
+rectangle: 0.000000 640.000000 0.000000 480.000000
+</pre></div>
+
+<h2><a name="notes">NOTES</a></h2>
+
+Units are screen pixels (except for <b>-g</b> flag where map units are
+used).
+<br>Where two numbers are given the format is: width, height.
+<br>Where four numbers are given the format is: left, right, top, bottom.
+
+<p>
+Note: GRASS display pixel coordinates are measured from the top left.
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="d.mon.html">d.mon</a>,
+  <a href="d.vect.html">d.vect</a>,
+  <a href="d.rast.html">d.rast</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+Glynn Clements
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/display/d.info">d.info source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/display/d.info">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="display.html">Display index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+.TH db.in.ogr 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.in.ogr.py\fR\fR  \- Imports attribute tables in various formats.
+.SH KEYWORDS
+database, import, attribute table
+.SH SYNOPSIS
+\fBdb.in.ogr.py\fR
+.br
+\fBdb.in.ogr.py \-\-help\fR
+.br
+\fBdb.in.ogr.py\fR \fBinput\fR=\fIname\fR  [\fBdb_table\fR=\fIname\fR]   [\fBoutput\fR=\fIname\fR]   [\fBkey\fR=\fIstring\fR]   [\fBencoding\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Table file to be imported or DB connection string
+.IP "\fBdb_table\fR=\fIname\fR" 4m
+.br
+Name of table from given DB to be imported
+.IP "\fBoutput\fR=\fIname\fR" 4m
+.br
+Name for output table
+.IP "\fBkey\fR=\fIstring\fR" 4m
+.br
+Name for auto\-generated unique key column
+.IP "\fBencoding\fR=\fIstring\fR" 4m
+.br
+Encoding value for attribute data
+.SH DESCRIPTION
+\fIdb.in.ogr\fR imports attribute tables in various formats as
+supported by the OGR library
+on the local system (DBF, CSV, PostgreSQL, SQLite, MySQL, ODBC,
+etc.). Optionally a unique \fBkey\fR (ID) column can be
+added to the table.
+.SH EXAMPLES
+.SS Import CSV file
+Limited type recognition can be done for Integer, Real, String, Date, Time and DateTime
+columns through a descriptive file with same name as the CSV file, but .csvt extension
+(see details here).
+.br
+.nf
+\fC
+# NOTE: create koeppen_gridcode.csvt first for automated type recognition
+db.in.ogr input=koeppen_gridcode.csv output=koeppen_gridcode
+db.select table=koeppen_gridcode
+\fR
+.fi
+.SS Import DBF table
+Import of a DBF table with additional unique key column (e.g., needed
+for \fIv.in.db\fR).
+.br
+.nf
+\fC
+db.in.ogr input=/path/to/mydata.dbf output=census_raleigh key=myid
+db.describe \-c census_raleigh
+\fR
+.fi
+.SS Import of a SQLite table
+.br
+.nf
+\fC
+db.in.ogr input=/path/to/sqlite.db db_table=census_raleigh output=census_raleigh
+\fR
+.fi
+.SS Import of a PostgreSQL table
+.br
+.nf
+\fC
+# HINT: if the database contains spatial tables, but you want to import a non\-spatial
+table, set the environmental variable PG_LIST_ALL_TABLES to YES before importing
+db.in.ogr input=\(dqPG:host=localhost dbname=ecad user=neteler\(dq \(rs
+          db_table=ecad_verona_tmean output=ecad_verona_tmean
+db.select table=ecad_verona_tmean
+db.describe \-c ecad_verona_tmean
+\fR
+.fi
+.SS Import XLS file
+To force reading headers, define environmental
+variable OGR_XLS_HEADERS=\(cqFORCE\(cq. Parameter \fBdb_table\fR
+refers to the list within XLS file.
+.br
+.nf
+\fC
+export OGR_XLS_HEADERS=\(cqFORCE\(cq
+db.in.ogr input=address.xls db_table=address_data
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.select,
+v.in.ogr,
+v.in.db
+\fR
+.PP
+GRASS SQL interface
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: db.in.ogr source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

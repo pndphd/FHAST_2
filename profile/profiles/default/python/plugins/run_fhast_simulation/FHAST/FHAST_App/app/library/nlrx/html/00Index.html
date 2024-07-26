@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head><title>R: Setup, Run and Analyze 'NetLogo' Model Simulations from 'R' via
+'XML'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+<h1> Setup, Run and Analyze 'NetLogo' Model Simulations from 'R' via
+'XML'
+<img class="toplogo" src="../../../doc/html/Rlogo.svg" alt="[R logo]" />
+</h1>
+<hr/>
+<div style="text-align: center;">
+<a href="../../../doc/html/packages.html"><img class="arrow" src="../../../doc/html/left.jpg" alt="[Up]" /></a>
+<a href="../../../doc/html/index.html"><img class="arrow" src="../../../doc/html/up.jpg" alt="[Top]" /></a>
+</div><h2>Documentation for package &lsquo;nlrx&rsquo; version 0.4.4</h2>
+
+<ul><li><a href="../DESCRIPTION">DESCRIPTION file</a>.</li>
+<li><a href="../doc/index.html">User guides, package vignettes and other documentation.</a></li>
+<li><a href="../NEWS">Package NEWS</a>.</li>
+</ul>
+
+<h2>Help Pages</h2>
+
+
+<table style="width: 100%;">
+<tr><td style="width: 25%;"><a href="nlrx-package.html">nlrx-package</a></td>
+<td>nlrx: A package for running NetLogo simulations from R.</td></tr>
+<tr><td style="width: 25%;"><a href="analyze_nl.html">analyze_nl</a></td>
+<td>Analyze NetLogo simulation output</td></tr>
+<tr><td style="width: 25%;"><a href="check_netlogo_version.html">check_netlogo_version</a></td>
+<td>Check supported NetLogo versions</td></tr>
+<tr><td style="width: 25%;"><a href="download_netlogo.html">download_netlogo</a></td>
+<td>Download NetLogo</td></tr>
+<tr><td style="width: 25%;"><a href="eval_simoutput.html">eval_simoutput</a></td>
+<td>Evaluate input/output integrity</td></tr>
+<tr><td style="width: 25%;"><a href="eval_variables_constants.html">eval_variables_constants</a></td>
+<td>Evaluate variable validity</td></tr>
+<tr><td style="width: 25%;"><a href="experiment.html">experiment</a></td>
+<td>Construct a new experiment object</td></tr>
+<tr><td style="width: 25%;"><a href="export_nl.html">export_nl</a></td>
+<td>Export NetLogo Experiment</td></tr>
+<tr><td style="width: 25%;"><a href="getexp.html">getexp</a></td>
+<td>Getter function to get a variable of an experiment object</td></tr>
+<tr><td style="width: 25%;"><a href="getnl.html">getnl</a></td>
+<td>Getter function to get a variable of a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="getsim.html">getsim</a></td>
+<td>Getter function to get a variable of a simdesign object</td></tr>
+<tr><td style="width: 25%;"><a href="import_nl.html">import_nl</a></td>
+<td>Import NetLogo Experiment</td></tr>
+<tr><td style="width: 25%;"><a href="nl.html">nl</a></td>
+<td>Construct a new nl object</td></tr>
+<tr><td style="width: 25%;"><a href="nldoc.html">nldoc</a></td>
+<td>Create NetLogo documentation</td></tr>
+<tr><td style="width: 25%;"><a href="nldoc_network.html">nldoc_network</a></td>
+<td>Create NetLogo procedure network</td></tr>
+<tr><td style="width: 25%;"><a href="nlrx-package.html">nlrx</a></td>
+<td>nlrx: A package for running NetLogo simulations from R.</td></tr>
+<tr><td style="width: 25%;"><a href="nl_distinct.html">nl_distinct</a></td>
+<td>Wolf Sheep model sample data: simdesign distinct</td></tr>
+<tr><td style="width: 25%;"><a href="nl_eFast.html">nl_eFast</a></td>
+<td>Wolf Sheep model sample data: simdesign eFast</td></tr>
+<tr><td style="width: 25%;"><a href="nl_ff.html">nl_ff</a></td>
+<td>Wolf Sheep model sample data: simdesign ff</td></tr>
+<tr><td style="width: 25%;"><a href="nl_gensa.html">nl_gensa</a></td>
+<td>Wolf Sheep model sample data: gensa</td></tr>
+<tr><td style="width: 25%;"><a href="nl_lhs.html">nl_lhs</a></td>
+<td>Wolf Sheep model sample data: simdesign lhs</td></tr>
+<tr><td style="width: 25%;"><a href="nl_morris.html">nl_morris</a></td>
+<td>Wolf Sheep model sample data: simdesign morris</td></tr>
+<tr><td style="width: 25%;"><a href="nl_simple.html">nl_simple</a></td>
+<td>Wolf Sheep model sample data: simdesign simple</td></tr>
+<tr><td style="width: 25%;"><a href="nl_sobol.html">nl_sobol</a></td>
+<td>Wolf Sheep model sample data: simdesign sobol</td></tr>
+<tr><td style="width: 25%;"><a href="nl_sobol2007.html">nl_sobol2007</a></td>
+<td>Wolf Sheep model sample data: simdesign sobol2007</td></tr>
+<tr><td style="width: 25%;"><a href="nl_soboljansen.html">nl_soboljansen</a></td>
+<td>Wolf Sheep model sample data: simdesign soboljansen</td></tr>
+<tr><td style="width: 25%;"><a href="nl_spatial.html">nl_spatial</a></td>
+<td>Wolf Sheep model sample data: spatial</td></tr>
+<tr><td style="width: 25%;"><a href="nl_to_graph.html">nl_to_graph</a></td>
+<td>Generate igraph objects from measured turtles and links metrics</td></tr>
+<tr><td style="width: 25%;"><a href="nl_to_points.html">nl_to_points</a></td>
+<td>Get spatial data from metrics.turtles output</td></tr>
+<tr><td style="width: 25%;"><a href="nl_to_raster.html">nl_to_raster</a></td>
+<td>Get spatial data from metrics.patches output</td></tr>
+<tr><td style="width: 25%;"><a href="print.nl.html">print.nl</a></td>
+<td>Print content of nl object</td></tr>
+<tr><td style="width: 25%;"><a href="report_model_parameters.html">report_model_parameters</a></td>
+<td>Report globals from a NetLogo model that is defined within a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="run_nl_all.html">run_nl_all</a></td>
+<td>Execute all NetLogo simulations from a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="run_nl_dyn.html">run_nl_dyn</a></td>
+<td>Execute NetLogo simulation without pregenerated parametersets</td></tr>
+<tr><td style="width: 25%;"><a href="run_nl_one.html">run_nl_one</a></td>
+<td>Execute one NetLogo simulation from a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="setexp.html">setexp</a></td>
+<td>Setter function to set a variable of an experiment object</td></tr>
+<tr><td style="width: 25%;"><a href="setexp.html">setexp&lt;-</a></td>
+<td>Setter function to set a variable of an experiment object</td></tr>
+<tr><td style="width: 25%;"><a href="setnl.html">setnl</a></td>
+<td>Setter function to set a variable of a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="setnl.html">setnl&lt;-</a></td>
+<td>Setter function to set a variable of a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="setsim.html">setsim</a></td>
+<td>Setter function to set a variable of a simdesign object</td></tr>
+<tr><td style="width: 25%;"><a href="setsim.html">setsim&lt;-</a></td>
+<td>Setter function to set a variable of a simdesign object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign.html">simdesign</a></td>
+<td>Construct a new simdesign object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_ABCmcmc_Marjoram.html">simdesign_ABCmcmc_Marjoram</a></td>
+<td>Add an Approximate Bayesian Computation (Monte-Carlo Markov-Chain) simdesign using the Majoram algorithm to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_ABCmcmc_Marjoram_original.html">simdesign_ABCmcmc_Marjoram_original</a></td>
+<td>Add an Approximate Bayesian Computation (Monte-Carlo Markov-Chain) simdesign using the Majoram Original algorithm to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_ABCmcmc_Wegmann.html">simdesign_ABCmcmc_Wegmann</a></td>
+<td>Add an Approximate Bayesian Computation (Monte-Carlo Markov-Chain) simdesign using the Wegmann algorithm to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_distinct.html">simdesign_distinct</a></td>
+<td>Add a distinct simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_eFast.html">simdesign_eFast</a></td>
+<td>Add an eFast simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_ff.html">simdesign_ff</a></td>
+<td>Add a full-factorial simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_GenAlg.html">simdesign_GenAlg</a></td>
+<td>Add a Genetic Algorithm simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_GenSA.html">simdesign_GenSA</a></td>
+<td>Add a Simulated Annealing simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_lhs.html">simdesign_lhs</a></td>
+<td>Add a latin-hypercube simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_morris.html">simdesign_morris</a></td>
+<td>Add a morris elementary effects simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_simple.html">simdesign_simple</a></td>
+<td>Add a simple simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_sobol.html">simdesign_sobol</a></td>
+<td>Add a sobol simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_sobol2007.html">simdesign_sobol2007</a></td>
+<td>Add a sobol2007 simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="simdesign_soboljansen.html">simdesign_soboljansen</a></td>
+<td>Add a soboljansen simdesign to a nl object</td></tr>
+<tr><td style="width: 25%;"><a href="supported_netlogo_versions.html">supported_netlogo_versions</a></td>
+<td>Report supported NetLogo versions</td></tr>
+<tr><td style="width: 25%;"><a href="test_nlrx.html">test_nlrx</a></td>
+<td>Test if nlrx runs on the local system</td></tr>
+<tr><td style="width: 25%;"><a href="unnest_simoutput.html">unnest_simoutput</a></td>
+<td>Get spatial data from metrics.turtles and metrics.patches output</td></tr>
+<tr><td style="width: 25%;"><a href="write_simoutput.html">write_simoutput</a></td>
+<td>Write attached NetLogo simulation output to file</td></tr>
+</table>
+</div></body></html>

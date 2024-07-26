@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.circle - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.circle</b></em>  - Creates a raster map containing concentric rings around a given point.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_buffer.html">buffer</a>, <a href="keywords.html#geometry">geometry</a>, <a href="keywords.html#circle">circle</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.circle</b><br></div>
+<b>r.circle --help</b><br>
+<div id="synopsis"><b>r.circle</b> [-<b>b</b>] <b>output</b>=<em>name</em> <b>coordinates</b>=<em>east,north</em>  [<b>min</b>=<em>float</em>]   [<b>max</b>=<em>float</em>]   [<b>multiplier</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-b</b></dt>
+<dd>Generate binary raster map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map</dd>
+
+<dt><b>coordinates</b>=<em>east,north</em>&nbsp;<b>[required]</b></dt>
+<dd>The coordinate of the center (east,north)</dd>
+
+<dt><b>min</b>=<em>float</em></dt>
+<dd>Minimum radius for ring/circle map (in meters)</dd>
+
+<dt><b>max</b>=<em>float</em></dt>
+<dd>Maximum radius for ring/circle map (in meters)</dd>
+
+<dt><b>multiplier</b>=<em>float</em></dt>
+<dd>Data value multiplier</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+This module creates an output raster map centered on the <em>x,y</em> values specified
+with the <em>coordinate</em> parameter, out to the edge of the current region.
+The output cell values increase linearly from the specified center. The <em>min</em> 
+and <em>max</em> parameters control the inner and outer output raster map radii, respectively. 
+
+<p>The <em>mult</em> parameter can be used to multiply the output raster cells by a common factor.
+Note that this parameter does not affect the output raster position or size; only the z-values
+are changed with this parameter. 
+<p>Binary-output raster maps (solid circles of one value) can be created
+with the <b>-b</b> flag. Raster maps so created can be used to create
+binary filters for use in <em>i.ifft</em> (inverse Fourier transformations;
+apply filter with <em>r.mask</em>).
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Generate a raster circle at current map center with a radius of 300m and outwardly
+increasing raster values:
+
+<div class="code"><pre>
+EASTCENTER=`g.region -c |  awk ' /center easting:/ { print $3 }'`
+NORTHCENTER=`g.region -c | awk ' /center northing:/ { print $3 }'`
+r.circle output=circle coordinate=${EASTCENTER},${NORTHCENTER} max=300
+</pre></div>
+
+Generate a binary raster ring around current map center with an inner radius 
+of 500m and an outer radius of 1000m:
+
+<div class="code"><pre>
+EASTCENTER=`g.region -c |  awk ' /center easting:/ { print $3 }'`
+NORTHCENTER=`g.region -c | awk ' /center northing:/ { print $3 }'`
+r.circle -b output=circle coordinate=${EASTCENTER},${NORTHCENTER} min=500 max=1000
+</pre></div>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="g.remove.html">g.remove</a>, 
+<a href="g.rename.html">g.rename</a>, 
+<a href="i.fft.html">i.fft</a>, 
+<a href="i.ifft.html">i.ifft</a>,
+<a href="r.mask.html">r.mask</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+Bill Brown, U.S. Army Construction Engineering Research Laboratory<br>
+Additional flag/min/max parameter by Markus Neteler, University of Hannover
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.circle">r.circle source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.circle">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

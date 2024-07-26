@@ -1,0 +1,149 @@
+.TH v.what.vect 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.what.vect.py\fR\fR  \- Uploads vector values at positions of vector points to the table.
+.SH KEYWORDS
+vector, sampling, database, position, querying, attribute table
+.SH SYNOPSIS
+\fBv.what.vect.py\fR
+.br
+\fBv.what.vect.py \-\-help\fR
+.br
+\fBv.what.vect.py\fR \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]  \fBcolumn\fR=\fIname\fR \fBquery_map\fR=\fIname\fR  [\fBquery_layer\fR=\fIstring\fR]  \fBquery_column\fR=\fIname\fR  [\fBdmax\fR=\fIfloat\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector points map for which to edit attributes
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBcolumn\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to be updated with the query result
+.IP "\fBquery_map\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map to be queried
+.br
+Or data source for direct OGR access
+.IP "\fBquery_layer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBquery_column\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of attribute column to be queried
+.IP "\fBdmax\fR=\fIfloat\fR" 4m
+.br
+Maximum query distance in map units (meters for ll)
+.br
+Default: \fI0.0\fR
+.SH DESCRIPTION
+\fIv.what.vect\fR transfers attributes from the \fBquery_map\fR\(cqs
+attribute table into the \fBmap\fR\(cqs attribute table. The module can
+be used to transfer attributes from the table of a polygon map into the
+attribute table of a point vector map, as well as the other way around,
+i.e., from a point map into the attribute table of a polygon map (See
+examples). The script is based on \fIv.distance\fR.
+.SH NOTES
+The upload \fBcolumn\fR into which the query results are stored must be
+present in \fBmap\fR. Use \fIv.db.addcolumn\fR to add one if needed.
+.PP
+Use the \fBdmax\fR parameter to control the query distance tolerance, i.e.,
+how far \fBmap\fR\(cqs points/centroids can be from the \fBquery_map\fR features.
+For further options, use \fIv.distance\fR.
+.PP
+In case of a multipoint input \fBmap\fR with several points having the
+same category number, it can happen that the query result is NULL if the same
+category number falls into different \fBquery_map\fR polygons.
+.PP
+When transferring attributes from a point map into a polygon map,
+\fBdmax\fR has to be larger than zero, i.e., it will be determined by the
+distance between query points and polygon centroids. Importantly, distance
+is in meters for latitude\-longitude locations.
+.PP
+In case that one or both input vector maps are 3D, features need to
+touch also in the 3rd dimension (z coordinate) in order to transfer
+attributes.
+.SH EXAMPLES
+In this example, the \(cqhospitals\(cq point map in the North Carolina location is
+copied to the current mapset, a new attribute column is added and the urban
+names from the \(cqurbanarea\(cq polygon map are transferred to hospital points
+locations in \(cqmyhospitals\(cq map:
+.br
+.nf
+\fC
+g.copy vect=hospitals,myhospitals
+v.db.addcolumn myhospitals column=\(dqurb_name varchar(25)\(dq
+v.what.vect myhospitals query_map=urbanarea column=urb_name query_column=NAME
+# verification:
+v.db.select myhospitals
+\fR
+.fi
+.PP
+In this example, city names, population data and others from
+Geonames.org country files are
+transferred to selected EU CORINE landuse/landcover classes
+(\(dqContinuous urban fabric\(dq, 111, and \(dqDiscontinuous urban fabric\(dq, 112).
+Note: The example is in UTM projection to which the input maps have been
+projected beforehand.
+.br
+.nf
+\fC
+# extract populated places from geonames
+v.extract geonames_IT where=\(dqfeaturecla=\(cqP\(cq\(dq output=geonames_IT_cities
+# add new column
+v.db.addcol corine_code111_112_cities column=\(dqgnameid double precision\(dq
+# transfer geonameid (3000m maximal distance between points and centroids)
+v.what.vect corine_code111_112_cities query_map=geonames_IT_cities column=gnameid \(rs
+            query_column=geonameid dmax=3000
+# now gnameid can be used for v.db.join to join further
+# attributes from geonames.org
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.db.addcolumn,
+v.db.select,
+v.distance,
+v.rast.stats,
+v.what.rast,
+v.what.rast3,
+v.vect.stats
+\fR
+.SH AUTHOR
+Markus Neteler
+.SH SOURCE CODE
+.PP
+Available at: v.what.vect source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

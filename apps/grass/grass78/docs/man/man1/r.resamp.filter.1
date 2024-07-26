@@ -1,0 +1,141 @@
+.TH r.resamp.filter 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.resamp.filter\fR\fR  \- Resamples raster map layers using an analytic kernel.
+.SH KEYWORDS
+raster, resample, kernel filter, filter, convolution, FIR, bartlett, blackman, box, gauss, hamming, hann, hermite, lanczos, sinc
+.SH SYNOPSIS
+\fBr.resamp.filter\fR
+.br
+\fBr.resamp.filter \-\-help\fR
+.br
+\fBr.resamp.filter\fR [\-\fBn\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR \fBfilter\fR=\fIstring\fR[,\fIstring\fR,...]  [\fBradius\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBx_radius\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\fBy_radius\fR=\fIfloat\fR[,\fIfloat\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-n\fR" 4m
+.br
+Propagate NULLs
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input raster map
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBfilter\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Filter kernel(s)
+.br
+Options: \fIbox, bartlett, gauss, normal, hermite, sinc, lanczos1, lanczos2, lanczos3, hann, hamming, blackman\fR
+.IP "\fBradius\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Filter radius
+.IP "\fBx_radius\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Filter radius (horizontal)
+.IP "\fBy_radius\fR=\fIfloat[,\fIfloat\fR,...]\fR" 4m
+.br
+Filter radius (vertical)
+.SH DESCRIPTION
+\fIr.resamp.filter\fR resamples an input raster, filtering the
+input with an analytic kernel. Each output cell is typically calculated
+based upon a small subset of the input cells, not the entire input.
+\fIr.resamp.filter\fR performs convolution (i.e. a weighted sum is
+calculated for every raster cell).
+.PP
+The module maps the input range to the width of the window function, so
+wider windows will be \(dqsharper\(dq (have a higher cut\-off frequency), e.g.
+lanczos3 will be sharper than lanczos2.
+.PP
+r.resamp.filter implements FIR (finite impulse response) filtering. All
+of the functions are low\-pass filters, as they are symmetric. See
+Wikipedia: Window function
+for examples of common window functions and their frequency responses.
+.PP
+A piecewise\-continuous function defined by sampled data can be considered
+a mixture (sum) of the underlying signal and quantisation noise. The
+intent of a low pass filter is to discard the quantisation noise while
+retaining the signal.
+The cut\-off frequency is normally chosen according to the sampling
+frequency, as the quantisation noise is dominated by the sampling
+frequency and its harmonics. In general, the cut\-off frequency is
+inversely proportional to the width of the central \(dqlobe\(dq of the window
+function.
+.PP
+When using \fIr.resamp.filter\fR with a specific radius, a specific
+cut\-off frequency regardless of the method is chosen. So while lanczos3
+uses 3 times as large a window as lanczos1, the cut\-off frequency remains
+the same. Effectively, the radius is \(dqnormalised\(dq.
+.PP
+All of the kernels specified by the \fBfilter\fR parameter are
+multiplied together. Typical usage will use either a single kernel or an
+infinite kernel along with a finite window.
+.SH NOTES
+Resampling modules (\fIr.resample, r.resamp.stats, r.resamp.interp,
+r.resamp.rst, r.resamp.filter\fR) resample the map to match the
+current region settings.
+.PP
+When using a kernel which can have negative values (sinc, Lanczos),
+the \fI\-n\fR flag should be used. Otherwise, extreme values can
+arise due to the total weight being close (or even equal) to zero.
+.PP
+Kernels with infinite extent (Gauss, normal, sinc, Hann, Hamming,
+Blackman) must be used in conjunction with a finite windowing function
+(box, Bartlett, Hermite, Lanczos).
+.PP
+The way that Lanczos filters are defined, the number of samples is
+supposed to be proportional to the order (\(dqa\(dq parameter), so lanczos3
+should use 3 times as many samples (at the same sampling frequency, i.e.
+cover 3 times as large a time interval) as lanczos1 in order to get a
+similar frequency response (higher\-order filters will fall off faster, but
+the frequency at which the fall\-off starts should be the same). See
+Wikipedia: Lanczos\-kernel.svg
+for an illustration. If both graphs were drawn on the same axes, they
+would have roughly the same shape, but the a=3 window would have a longer
+tail. By scaling the axes to the same width, the a=3 window has a narrower
+central lobe.
+.PP
+For longitude\-latitude locations, the interpolation algorithm is based on
+degree fractions, not on the absolute distances between cell centers.  Any
+attempt to implement the latter would violate the integrity of the
+interpolation method.
+.SH SEE ALSO
+\fI
+g.region,
+r.mfilter,
+r.resample,
+r.resamp.interp,
+r.resamp.rst,
+r.resamp.stats
+\fR
+.PP
+Overview: Interpolation and Resampling in GRASS GIS
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.resamp.filter source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

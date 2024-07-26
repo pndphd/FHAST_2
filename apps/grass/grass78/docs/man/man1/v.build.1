@@ -1,0 +1,153 @@
+.TH v.build 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.build\fR\fR  \- Creates topology for vector map.
+.br
+Optionally also checks for topological errors.
+.SH KEYWORDS
+vector, topology, geometry
+.SH SYNOPSIS
+\fBv.build\fR
+.br
+\fBv.build \-\-help\fR
+.br
+\fBv.build\fR [\-\fBe\fR] \fBmap\fR=\fIname\fR  [\fBerror\fR=\fIname\fR]  \fBoption\fR=\fIstring\fR[,\fIstring\fR,...]  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-e\fR" 4m
+.br
+Extensive checks for topological errors
+.br
+Perform in\-depth checks for topological errors when building topology
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.IP "\fBerror\fR=\fIname\fR" 4m
+.br
+Name for output vector map where erroneous vector features are written to
+.IP "\fBoption\fR=\fIstring[,\fIstring\fR,...]\fR \fB[required]\fR" 4m
+.br
+Build topology or dump topology or indices to standard output
+.br
+Options: \fIbuild, dump, sdump, cdump, fdump\fR
+.br
+Default: \fIbuild\fR
+.br
+\fBbuild\fR: build topology
+.br
+\fBdump\fR: write topology to stdout
+.br
+\fBsdump\fR: write spatial index to stdout
+.br
+\fBcdump\fR: write category index to stdout
+.br
+\fBfdump\fR: write feature index to stdout (OGR simple\-feature\-based formats only)
+.SH DESCRIPTION
+\fIv.build\fR builds support files for GRASS vector maps. These
+support files supply topology and category information including
+spatial index that are needed by other GRASS modules.
+.PP
+GRASS is generating these support files automatically, only in rare
+cases the user has to (re)build them.
+.PP
+Refer to
+vector data processing in GRASS GIS for
+more information on GRASS vector data model.
+.SH NOTES
+\fIv.build\fR creates support files only for vector maps located in
+the user\(cqs current mapset. It\(cqs not possible to rebuild support files
+(\fBoption=build\fR) for vector maps from other mapsets.
+.PP
+In case of errors, the user can optionally generate an \fBerror\fR
+vector map containing the erroneous vectors for later inspection.
+.PP
+If \fBerror\fR vector map is specified, \fIv.build\fR checks:
+.RS 4n
+.IP \(bu 4n
+isolated bondaries (which are not forming any areas),
+.IP \(bu 4n
+centroids outside of area,
+.IP \(bu 4n
+duplicated centroids.
+.RE
+.PP
+Extensive checks for topological errors (flag \fB\-e\fR) also
+includes:
+.RS 4n
+.IP \(bu 4n
+lines or boundaries of zero length,
+.IP \(bu 4n
+intersecting boundaries, ie. overlapping areas,
+.IP \(bu 4n
+areas without centroids that are not isles.
+.RE
+.SH EXAMPLES
+.SS Build topology
+Note that \fBoption=build\fR recreates also spatial and category
+indices, not only topology. For linked OGR layers
+(see \fIv.external\fR) also feature
+index is created.
+.br
+.nf
+\fC
+v.build map=urbanarea option=build
+\fR
+.fi
+Note that the vector map \fIurbanarea\fR must be located in the
+current mapset.
+.SS Dump topology or indices
+Dump options print topology, spatial, category or feature index to
+standard output. Such information can be printed also for vector maps
+from other mapsets. A description of the vector topology is available in
+the GRASS GIS 7 Programmer\(cqs Manual,
+section \(dqVector library topology management\(dq.
+.br
+.nf
+\fC
+v.build map=urbanarea option=dump
+\fR
+.fi
+.SH SEE ALSO
+\fI
+v.build.all,
+v.build.polylines,
+v.edit,
+v.split
+\fR
+.PP
+See also \fIwxGUI vector digitizer\fR.
+.SH AUTHORS
+Dave Gerdes, U.S.Army Construction Engineering Research
+Laboratory,
+.br
+Michael Higgins, U.S.Army Construction Engineering Research Laboratory,
+.br
+Radim Blazek, ITC\-irst, Trento, Italy
+.SH SOURCE CODE
+.PP
+Available at: v.build source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

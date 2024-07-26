@@ -1,0 +1,107 @@
+---
+output:  html_document
+number_sections: true
+title: "FHAST Habitat Summary"
+header-includes:
+    - \usepackage{setspace}\singlespacing
+    - \usepackage{float}
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=0.2in
+fontsize: 16pt
+fig_caption: yes
+indent: true
+---
+ <font size="4">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, knitr::opts_chunk$set(warning = FALSE, message = FALSE))
+library(here)
+
+```
+
+```{r load_data, include=FALSE}
+
+fish_migration_stats = readRDS(file = here(output_temp_folder,  "summary_migration_table.rds"))
+
+fish_migration_map = here(output_temp_folder,  "migration_map.png")
+
+fish_migration_hist = here(output_temp_folder,  "migration_energy_hist.png")
+
+```
+
+```{r pre_rrocess, include=FALSE}
+predator_list =  readRDS(here(output_temp_folder, "pred_list.rds"))
+fish_list = readRDS(here(output_temp_folder, "fish_list.rds"))
+n = 0
+```
+
+### Simulation name: `r run_name`
+***
+## Tabular Outputs 
+```{r print_fish_migration_stats, echo = FALSE}
+fish_count <- length(unique(fish_migration_stats$species))
+
+kable(fish_migration_stats,
+      caption = paste0("The fish summary statistics for adult migration of the ", fish_count, " specie(s) of fish."),
+      col.names = c("Species", "Energy Use (j)"))
+```
+
+\newpage
+## Figures Outputs
+
+```{r print_fish_migration_map, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(fish_migration_map,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A set of maps showing the most used migration paths for the adult migrants of the fish species (`r unique(fish_migration_stats$species)`). <br><br><br><br>
+
+```{r print_fish_migration_hist, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(fish_migration_hist,  error = FALSE)
+```
+**Fig. `r (n = n + 1)`** A set of histograms showing the energy expenditure for the adult migrants of the fish species (`r unique(fish_migration_stats$species)`). <br><br><br><br>
+
+\newpage
+## Appendix
+### Run inputs
+The main input file:
+```{r, echo=FALSE}
+cat(readLines(file.path(here(output_folder, "input_file.txt"))), sep = '\n')
+```
+---
+
+The daily input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "daily_input.txt"))), sep = '\n')
+```
+---
+
+The interaction input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "interactions_input.txt"))), sep = '\n')
+```
+---
+
+The fish population file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "population_input.txt"))), sep = '\n')
+```
+---
+
+The fish parameter file:
+---
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "fish_input.txt"))), sep = '\n')
+```
+---
+
+The habitat parameter file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "habitat_input.txt"))), sep = '\n')
+```
+---
+
+The predator input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(output_temp_folder,  "predator_input.txt"))), sep = '\n')
+```
+---
+</font>

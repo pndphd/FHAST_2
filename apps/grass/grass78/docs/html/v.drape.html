@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>v.drape - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>v.drape</b></em>  - Converts 2D vector features to 3D by sampling of elevation raster map.
+<h2>KEYWORDS</h2>
+<a href="vector.html">vector</a>, <a href="topic_geometry.html">geometry</a>, <a href="keywords.html#sampling">sampling</a>, <a href="keywords.html#3D">3D</a>, <a href="keywords.html#surface information">surface information</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>v.drape</b><br></div>
+<b>v.drape --help</b><br>
+<div id="synopsis"><b>v.drape</b> <b>input</b>=<em>name</em>  [<b>layer</b>=<em>string</em>]   [<b>cats</b>=<em>range</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>type</b>=<em>string</em>[,<i>string</i>,...]]  <b>output</b>=<em>name</em> <b>elevation</b>=<em>name</em>  [<b>method</b>=<em>string</em>]   [<b>scale</b>=<em>float</em>]   [<b>null_value</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input vector map</dd>
+<dd>Or data source for direct OGR access</dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name ('-1' for all layers)</dd>
+<dd>A single vector map can be connected to multiple database tables. This number determines which table to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>-1</em></dd>
+
+<dt><b>cats</b>=<em>range</em></dt>
+<dd>Category values</dd>
+<dd>Example: 1,3,7-9,13</dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>type</b>=<em>string[,<i>string</i>,...]</em></dt>
+<dd>Input feature type</dd>
+<dd>Options: <em>point, line, boundary, centroid</em></dd>
+<dd>Default: <em>point,line,boundary,centroid</em></dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output vector map</dd>
+
+<dt><b>elevation</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Elevation raster map for height extraction</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Sampling interpolation method</dd>
+<dd>Options: <em>nearest, bilinear, bicubic</em></dd>
+<dd>Default: <em>nearest</em></dd>
+<dd><b>nearest</b>: Nearest-neighbor interpolation</dd>
+<dd><b>bilinear</b>: Bilinear interpolation</dd>
+<dd><b>bicubic</b>: Bicubic interpolation</dd>
+
+<dt><b>scale</b>=<em>float</em></dt>
+<dd>Scale factor sampled raster values</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>null_value</b>=<em>float</em></dt>
+<dd>Height for sampled raster NULL values</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#povray-example" class="toc">POVRAY example</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>v.drape</em> converts 2D/3D vector data into 3D vector format via
+sampling of an elevation surface. Three sampling algorithms adapted
+from <em><a href="v.sample.html">v.sample</a></em> were incorporated
+into this module: nearest neighbor, bilinear, and cubic convultion.
+
+<p>
+<em>v.drape</em> will skip vector features outside of current
+computational region or where raster map has NULL value. It's possible
+to include all vector features by specifying height value that will be
+assigned to verticles whose values can not be determined from raster
+map.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Additional vertices can be added to the input 2D vector map
+with <em><a href="v.split.html">v.split</a></em>.
+
+<p>
+The module can be used in conjunction
+with <em><a href="v.out.pov.html">v.out.pov</a></em> and
+<em><a href="r.out.pov.html">r.out.pov</a></em> to export a complete
+set of vector and raster data for display
+in <a href="http://www.povray.org/">POVRAY</a>.
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+Spearfish example:
+
+<div class="code"><pre>
+v.drape in=roads elevation=elevation.10m method=bilinear out=roads3d
+v.info roads3d
+</pre></div>
+
+<p>
+Create 3D vector roads map containing only "unimproved" roads. Set
+road height to 1000 m for all parts without height information.
+
+<div class="code"><pre>
+v.drape input=roads type=line elevation=elevation.dem output=roads_3d \
+        method=nearest scale=1.0 where='cat=5' layer=1 null_value=1000
+</pre></div>
+
+<h3><a name="povray-example">POVRAY example</a></h3>
+
+<div class="code"><pre>
+#export the vector data
+v.drape in=roads out=roads3d elevation=elevation.10m
+v.out.pov roads3d out=roads3d.pov
+#export the raster data
+r.out.pov elevation.10m tga=elevation.tga
+r.out.png landcover.30m out=landcover30m.png
+
+# now write a complete povray-script and launch povray
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="v.extrude.html">v.extrude</a>,
+<a href="v.to.3d.html">v.to.3d</a>,
+<a href="r.out.pov.html">r.out.pov</a>,
+<a href="v.in.region.html">v.in.region</a>,
+<a href="v.out.pov.html">v.out.pov</a>,
+<a href="v.overlay.html">v.overlay</a>,
+<a href="v.split.html">v.split</a>,
+<a href="v.what.rast.html">v.what.rast</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Dylan Beaudette, University of California at Davis.<br>
+Updated for GRASS 7 by Martin Landa, Czech Technical University in
+Prague, Czech Republic
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/vector/v.drape">v.drape source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/vector/v.drape">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="vector.html">Vector index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+[general]
+name=QuickMultiAttributeEdit3
+qgisMinimumVersion=3.0
+qgisMaximumVersion=3.99
+description=QuickMultiAttributeEdit3 plugin is a quick and handy way to edit an attribute field value for all selected elements in the current/active layer.
+about=QuickMultiAttributeEdit3 plugin is a way to edit selected elements on vector layer assigning the inserted field/value to them; optionally the plugin can remember the field and the latest inserted value.
+version=version 3.0.3
+category=Plugins
+author=Marco Braida
+email=marcobra.ubuntu@gmail.com
+; end of mandatory metadata
+
+; start of optional metadata 
+changelog=
+          2020/03/04 v. 3.0.3 - Fix metadata plugin issue
+          2020/03/04 v. 3.0.2 - Fix cancel button issue https://github.com/marcobra/QuickMultiAttributeEdit3/issues/4
+          2018/10/31 v. 3.0.1 - Better filter on layer type on start edit plugin request. Thank to Carlo Nicolini for testing
+          2018/09/15 v. 3.0.0  Qgis 3.X release.  
+
+
+; tags are in comma separated value format, spaces are allowed
+tags=vector,attribute,database,update,edit,field
+
+; these metadata can be empty
+; in a future version of the web application it will
+; be probably possible to create a project on redmine
+; if they are not filled
+homepage=https://github.com/marcobra/QuickMultiAttributeEdit3
+tracker=http://github.com/marcobra/QuickMultiAttributeEdit3/issues
+repository=https://github.com/marcobra/QuickMultiAttributeEdit3
+icon=icons/quickmultiattributeedit_update_selected.png
+
+
+; experimental flag
+experimental=Falsedeprecated flag (applies to the whole plugin and not only to the uploaded version)
+deprecated=False
+

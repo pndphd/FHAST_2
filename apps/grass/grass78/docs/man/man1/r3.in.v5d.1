@@ -1,0 +1,95 @@
+.TH r3.in.v5d 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr3.in.v5d\fR\fR  \- Import 3\-dimensional Vis5D files.
+.SH KEYWORDS
+raster3d, import, voxel
+.SH SYNOPSIS
+\fBr3.in.v5d\fR
+.br
+\fBr3.in.v5d \-\-help\fR
+.br
+\fBr3.in.v5d\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBnull_value\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR]   [\fBprecision\fR=\fIstring\fR]   [\fBcompression\fR=\fIstring\fR]   [\fBtiledimension\fR=\fIXxYxZ\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of V5D raster file to be imported
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output 3D raster map
+.IP "\fBnull_value\fR=\fIstring\fR" 4m
+.br
+String representing NULL value
+.br
+Default: \fInone\fR
+.IP "\fBtype\fR=\fIstring\fR" 4m
+.br
+Data type used in the output raster3d map
+.br
+Options: \fIdefault, double, float\fR
+.br
+Default: \fIdefault\fR
+.IP "\fBprecision\fR=\fIstring\fR" 4m
+.br
+Number of digits used as mantissa in the internal map storage, 0 \-23 for float, 0 \- 52 for double, max or default
+.br
+Default: \fIdefault\fR
+.IP "\fBcompression\fR=\fIstring\fR" 4m
+.br
+The compression method used in the output raster3d map
+.br
+Options: \fIdefault, zip, none\fR
+.br
+Default: \fIdefault\fR
+.IP "\fBtiledimension\fR=\fIXxYxZ\fR" 4m
+.br
+The dimensions of the tiles used in the output raster3d map (XxYxZ or default: 16x16x8)
+.br
+Default: \fIdefault\fR
+.SH DESCRIPTION
+\fIr3.in.v5d\fR imports 3\-dimensional files (i.e. the V5D file with
+one variable and one time step). Otherwise, only first variable and
+timestep from 4/5D V5D file will be imported.
+.PP
+Vis5D is a system
+for interactive visualization of large 5D gridded data sets such as those
+produced by numerical weather models. The user can make isosurfaces, contour
+line slices, colored slices, volume renderings, etc. of data in a 3D raster map,
+then rotate and animate the images in real time. There\(cqs also a feature
+for wind trajectory tracing, a way to make text anotations for publications,
+support for interactive data analysis, etc.
+.SH SEE ALSO
+\fI
+r3.out.v5d
+\fR
+.SH AUTHOR
+Jaro Hofierka, GeoModel s.r.o., Slovakia
+.SH SOURCE CODE
+.PP
+Available at: r3.in.v5d source code (history)
+.PP
+Main index |
+3D raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

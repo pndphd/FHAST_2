@@ -1,0 +1,277 @@
+.TH sql 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH SQL support in GRASS GIS
+Vector points, lines and areas usually have attribute data that are
+stored in DBMS. The attributes are linked to each vector object using a
+category number (attribute ID, usually the \(dqcat\(dq integer column). The
+category numbers are stored both in the vector geometry and the
+attribute table.
+.PP
+GRASS GIS supports various RDBMS
+(Relational
+database management system) and embedded databases. SQL
+(Structured Query
+Language) queries are directly passed to the underlying database
+system. The set of supported SQL commands depends on the RDMBS and
+database driver selected.
+.SH Database drivers
+The default database driver used by GRASS GIS 7 is SQLite. GRASS GIS
+handles multiattribute vector data by default. The \fIdb.*\fR set of
+commands  provides basic SQL support for attribute management, while the
+\fIv.db.*\fR set of commands operates on vector maps.
+.PP
+Note: The list of available database drivers can vary in various binary
+distributions of GRASS GIS:
+.PP
+.TS
+expand;
+lw60 lw1 lw60 lw1 lw60.
+T{
+sqlite
+T}	 	T{
+Data storage in SQLite database files (default DB backend)
+T}	 	T{
+http://sqlite.org/
+T}
+.sp 1
+T{
+dbf
+T}	 	T{
+Data storage in DBF files
+T}	 	T{
+http://shapelib.maptools.org/dbf_api.html
+T}
+.sp 1
+T{
+pg
+T}	 	T{
+Data storage in PostgreSQL RDBMS
+T}	 	T{
+http://postgresql.org/
+T}
+.sp 1
+T{
+mysql
+T}	 	T{
+Data storage in MySQL RDBMS
+T}	 	T{
+http://mysql.org/
+T}
+.sp 1
+T{
+odbc
+T}	 	T{
+Data storage via UnixODBC (PostgreSQL, Oracle, etc.)
+T}	 	T{
+http://www.unixodbc.org/
+T}
+.sp 1
+T{
+ogr
+T}	 	T{
+Data storage in OGR files
+T}	 	T{
+http://gdal.org/
+T}
+.sp 1
+.TE
+.SH NOTES
+.SS Database table name restrictions
+.RS 4n
+.IP \(bu 4n
+No dots are allowed as SQL does not support \(cq.\(cq (dots) in table names.
+.IP \(bu 4n
+Supported table name characters are only:
+.br
+.br
+.nf
+\fC
+[A\-Za\-z][A\-Za\-z0\-9_]*
+\fR
+.fi
+.IP \(bu 4n
+A table name must start with a character, not a number.
+.IP \(bu 4n
+Text\-string matching requires the text part to be \(cqsingle quoted\(cq.
+When run from the command line multiple queries should be contained
+in \(dqdouble quotes\(dq. e.g.
+.br
+.br
+.nf
+\fC
+d.vect map where=\(dqindividual=\(cqjuvenile\(cq and area=\(cqbeach\(cq\(dq
+\fR
+.fi
+.IP \(bu 4n
+Attempts to use a reserved SQL word (depends on database backend) as
+column or table name will cause a \(dqSQL syntax error\(dq.
+.IP \(bu 4n
+An error message such as \(dqdbmi: Protocol
+error\(dq either indicates an invalid column name or an
+unsupported column type (then the GRASS SQL parser needs to be
+extended).
+.IP \(bu 4n
+DBF column names are limited to 10 characters (DBF API definition).
+.RE
+.SS Database table column types
+The supported types of columns depend on the database backend. However, all backends
+should support VARCHAR, INT, DOUBLE PRECISION and DATE.
+.SH EXAMPLES
+.SS Display of vector feature selected by attribute query
+Display all vector points except for \fILAMAR\fR valley
+and \fIextensive trapping\fR (brackets are superfluous in this
+example):
+.br
+.nf
+\fC
+g.region vector=schools_wake \-p
+d.mon wx0
+d.vect roadsmajor
+# all schools
+d.vect schools_wake fcol=black icon=basic/diamond col=white size=13
+# numerical selection: show schools with capacity of above 1000 kids:
+d.vect schools_wake fcol=blue icon=basic/diamond col=white size=13 \(rs
+    where=\(dqCAPACITYTO > 1000\(dq
+# string selection: all schools outside of Raleigh
+#   along with higher level schools in Raleigh
+d.vect schools_wake fcol=red icon=basic/diamond col=white size=13 \(rs
+    where=\(dqADDRCITY <> \(cqRaleigh\(cq OR (ADDRCITY = \(cqRaleigh\(cq AND GLEVEL = \(cqH\(cq)\(dq
+\fR
+.fi
+.PP
+Select all attributes from table where \fICORECAPACI\fR column values are
+smaller than 200 (children):
+.br
+.nf
+\fC
+# must be run from the mapset which contains the table
+echo \(dqSELECT * FROM schools_wake WHERE CORECAPACI < 200\(dq | db.select input=\-
+\fR
+.fi
+.PP
+.PP
+Example of subquery expressions from a list (not supported for DBF driver):
+.br
+.nf
+\fC
+v.db.select schools_wake where=\(dqADDRCITY IN (\(cqApex\(cq, \(cqWendell\(cq)\(dq
+\fR
+.fi
+.SS Example of pattern matching
+.br
+.nf
+\fC
+# field contains string:
+#  for DBF driver:
+v.extract schools_wake out=elementary_schools where=\(dqNAMELONG LIKE \(cqELEM\(cq\(dq
+#  for SQLite driver:
+v.extract schools_wake out=rivers_noce where=\(dqDES LIKE \(cq%NOCE%\(cq\(dq
+v.extract schools_wake out=elementary_schools where=\(dqNAMELONG LIKE \(cq%ELEM%\(cq\(dq
+# match exactly number of characters (here: 2), does not work for DBF driver:
+v.db.select mysites where=\(dqid LIKE \(cqP__\(cq\(dq
+#define wildcard:
+v.db.select mysites where=\(dqid LIKE \(cqP%\(cq\(dq
+\fR
+.fi
+.SS Example of null handling
+.br
+.nf
+\fC
+v.db.addcolumn map=roads col=\(dqnulltest int\(dq
+v.db.update map=roads col=nulltest value=1 where=\(dqcat > 2\(dq
+d.vect roads where=\(dqnulltest is null\(dq
+v.db.update map=roads col=nulltest value=2 where=\(dqcat <= 2\(dq
+\fR
+.fi
+.SS Update of attributes
+Examples of complex expressions in updates (using v.db.*
+modules):
+.br
+.nf
+\fC
+v.db.addcolumn map=roads column=\(dqexprtest double precision\(dq
+v.db.update map=roads column=exprtest value=\(dqcat/nulltest\(dq
+v.db.update map=roads column=exprtest value=\(dqcat/nulltest+cat\(dq where=\(dqcat=1\(dq
+# using data from another column
+v.db.update map=roads column=exprtest qcolumn=\(dq(cat*100.)/SHAPE_LEN.\(dq
+\fR
+.fi
+.PP
+Examples of more complex expressions in updates (using db.*
+modules):
+.br
+.nf
+\fC
+echo \(dqUPDATE roads SET exprtest=null\(dq
+echo \(dqUPDATE roads SET exprtest=cat/2\(dq | db.execute
+echo \(dqUPDATE roads SET exprtest=cat/2+cat/3\(dq | db.execute
+echo \(dqUPDATE roads SET exprtest=NULL WHERE cat>2\(dq | db.execute
+echo \(dqUPDATE roads SET exprtest=cat/3*(cat+1) WHERE exprtest IS NULL\(dq | db.execute\(dq
+\fR
+.fi
+.PP
+Instead of creating and updating new columns with an expression, you
+can use the expression directly in a command:
+.br
+.nf
+\fC
+d.vect roads where=\(dq(cat/3*(cat+1))>8\(dq
+d.vect roads where=\(dqcat>exprtest\(dq
+\fR
+.fi
+.SS Example of changing a SQL type (type casting)
+\fINote: not supported for DBF driver.\fR
+.PP
+North Carolina data set: convert string column to double precision:
+.PP
+.br
+.nf
+\fC
+# first copy map into current mapset
+g.copy vect=geodetic_pts,mygeodetic_pts
+v.db.addcolumn mygeodetic_pts col=\(dqzval double precision\(dq
+# the \(cqz_value\(cq col contains \(cqN/A\(cq strings, not to be converted
+v.db.update mygeodetic_pts col=zval \(rs
+            qcol=\(dqCAST(z_value AS double precision)\(dq \(rs
+            where=\(dqz_value <> \(cqN/A\(cq\(dq
+\fR
+.fi
+.SS Example of concatenation of fields
+\fINote: not supported for DBF driver.\fR
+.br
+.nf
+\fC
+v.db.update vectormap column=column3 qcolumn=\(dqcolumn1 || column2\(dq
+\fR
+.fi
+.SS Example of conditions
+Conditions (like if statements) are usually written as CASE statement in SQL:
+.br
+.nf
+\fC
+v.db.update vectormap column=species qcolumn=\(dqCASE WHEN col1 >= 12 THEN cat else NULL end\(dq
+# a more complex example with nested conditions
+v.db.update vectormap column=species qcolumn=\(dqCASE WHEN col1 >= 1 THEN cat WHEN row = 13 then 0 ELSE NULL end\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.select,
+db.execute,
+v.db.connect,
+v.db.select,
+v.db.update
+\fR
+.PP
+Database management in GRASS GIS,
+Help pages for database modules
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

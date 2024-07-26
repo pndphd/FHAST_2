@@ -1,0 +1,99 @@
+.TH m.measure 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBm.measure\fR\fR  \- Measures the lengths and areas of features.
+.SH KEYWORDS
+miscellaneous, measurement, distance, area
+.SH SYNOPSIS
+\fBm.measure\fR
+.br
+\fBm.measure \-\-help\fR
+.br
+\fBm.measure\fR [\-\fBg\fR] \fBcoordinates\fR=\fIeast,north\fR[,\fIeast,north\fR,...]  [\fBunits\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-g\fR" 4m
+.br
+Shell script style
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBcoordinates\fR=\fIeast,north[,\fIeast,north\fR,...]\fR \fB[required]\fR" 4m
+.br
+Coordinates
+.IP "\fBunits\fR=\fIstring\fR" 4m
+.br
+Units
+.br
+Default: location map units
+.br
+Options: \fImiles, feet, meters, kilometers, acres, hectares\fR
+.SH DESCRIPTION
+\fIm.measure\fR provides the user with a way to measure the lengths
+and areas of lines and polygons. Areas can be stated in acres,
+hectares, square miles, square feet, square meters and square kilometers.
+.SH EXAMPLES
+Distance example in a latitude\-longitude location (on great circle, i.e. an orthodrome):
+.br
+.nf
+\fC
+Bonn_DE=\(dq7.09549,50.73438\(dq
+Philadelphia_US=\(dq\-75.16379,39.95233\(dq
+m.measure coordinates=\(dq$Bonn_DE,$Philadelphia_US\(dq units=kilometers
+Length:  6217.916452 kilometers
+\fR
+.fi
+.br
+\fIVisualization (with d.geodesic) of m.measure distance example\fR
+.PP
+As an example for the North Carolina sample dataset, here four points
+describing a square of 1000m side length:
+.br
+.nf
+\fC
+m.measure units=meters \(rs
+  coordinates=922000,2106000,923000,2106000,923000,2107000,922000,2107000
+Length:  3000.000000 meters
+Area:    1000000.000000 square meters
+# script style output:
+m.measure \-g units=hectares \(rs
+  coordinates=922000,2106000,923000,2106000,923000,2107000,922000,2107000
+units=meters,square meters
+length=3000.000000
+area=1000000.000000
+\fR
+.fi
+.SH SEE ALSO
+\fI
+d.geodesic
+\fR
+.SH AUTHORS
+Glynn Clements
+.br
+Some updates by Martin Landa, CTU in Prague, Czech Republic
+.br
+.br
+Derived from d.measure by James Westervelt, Michael Shapiro, U.S. Army
+Construction Engineering Research Laboratory
+.SH SOURCE CODE
+.PP
+Available at: m.measure source code (history)
+.PP
+Main index |
+Miscellaneous index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

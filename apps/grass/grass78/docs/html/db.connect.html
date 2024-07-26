@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>db.connect - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>db.connect</b></em>  - Prints/sets general DB connection for current mapset.
+<h2>KEYWORDS</h2>
+<a href="database.html">database</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#connection settings">connection settings</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>db.connect</b><br></div>
+<b>db.connect --help</b><br>
+<div id="synopsis"><b>db.connect</b> [-<b>pgcd</b>]  [<b>driver</b>=<em>name</em>]   [<b>database</b>=<em>name</em>]   [<b>schema</b>=<em>name</em>]   [<b>group</b>=<em>string</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-p</b></dt>
+<dd>Print current connection parameters and exit</dd>
+<dd>Substitute variables in database settings</dd>
+
+<dt><b>-g</b></dt>
+<dd>Print current connection parameters using shell style and exit</dd>
+
+<dt><b>-c</b></dt>
+<dd>Check connection parameters, set if uninitialized, and exit</dd>
+
+<dt><b>-d</b></dt>
+<dd>Set from default settings and exit</dd>
+<dd>Overwrite current settings if already initialized</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>driver</b>=<em>name</em></dt>
+<dd>Name of database driver</dd>
+<dd>Options: <em>dbf, odbc, ogr, pg, sqlite</em></dd>
+<dd>Default: <em>sqlite</em></dd>
+
+<dt><b>database</b>=<em>name</em></dt>
+<dd>Name of database</dd>
+<dd>Default: <em>$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db</em></dd>
+
+<dt><b>schema</b>=<em>name</em></dt>
+<dd>Database schema</dd>
+<dd>Do not use this option if schemas are not supported by driver/database server</dd>
+
+<dt><b>group</b>=<em>string</em></dt>
+<dd>Default group of database users to which select privilege is granted</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#sqlite-(default-backend)" class="toc">SQLite (default backend)</a></li>
+        <li class="toc"><a href="#postgresql-(local-connection)" class="toc">PostgreSQL (local connection)</a></li>
+        <li class="toc"><a href="#postgresql-(network-connection)" class="toc">PostgreSQL (network connection)</a></li>
+        <li class="toc"><a href="#mysql-(local-connection)" class="toc">MySQL (local connection)</a></li>
+        <li class="toc"><a href="#mysql-(network-connection)" class="toc">MySQL (network connection)</a></li>
+        <li class="toc"><a href="#odbc" class="toc">ODBC</a></li>
+        <li class="toc"><a href="#dbf-(local,-not-recommended)" class="toc">DBF (local, not recommended)</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>db.connect</em> allows the user to set database connection parameters.
+These parameters are then taken as default values by modules so that the
+user does not need to enter the parameters each time.
+<p>
+The default database backend in GRASS GIS 7
+is <a href="grass-sqlite.html">SQLite</a>.
+
+<h2><a name="notes">NOTES</a></h2>
+
+Values are stored in the mapset's <tt>VAR</tt> file;
+the connection is not tested for validity.
+<p>The <b>-p</b> flag will display the current connection parameters. 
+<p>The <b>-c</b> flag will silently check if the connection parameters have
+been set, and if not will set them to use GRASS's default values.
+(useful in scripts before you attempt to create a new database table)
+<p>To connect a vector map to a database table,
+use <em><a href="v.db.connect.html">v.db.connect</a></em> or
+<em><a href="v.db.addtable.html">v.db.addtable</a></em>.
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+<h3><a name="sqlite-(default-backend)">SQLite (default backend)</a></h3>
+
+Local storage:
+<br>
+<div class="code"><pre>
+db.connect -d
+db.connect -p
+db.tables -p
+</pre></div>
+<p>The SQLite database file is created automatically when used the first time.
+<p>See <a href="grass-sqlite.html">SQLite</a> database driver for details.
+
+<h3><a name="postgresql-(local-connection)">PostgreSQL (local connection)</a></h3>
+
+Local storage, database tables stored in database "mydb"
+(may require the use of <em><a href=db.login.html>db.login</a></em>):
+<br>
+<div class="code"><pre>
+db.connect driver=pg database=mydb
+db.login user=myname pass=secret
+db.connect -p
+db.tables -p
+</pre></div>
+<p>See <a href="grass-pg.html">PostgreSQL</a> database driver for details.
+
+<h3><a name="postgresql-(network-connection)">PostgreSQL (network connection)</a></h3>
+
+Network storage, database tables stored in database "mydb"
+(may require the use of <em><a href=db.login.html>db.login</a></em>):
+<br>
+<div class="code"><pre>
+db.connect driver=pg database=mydb
+db.login user=myname pass=secret host=myserver.com port=6666
+db.connect -p
+db.tables -p
+</pre></div>
+<p>See <a href="grass-pg.html">PostgreSQL</a> database driver for details.
+
+<h3><a name="mysql-(local-connection)">MySQL (local connection)</a></h3>
+
+Local storage, database tables stored in database "mydb" (may require
+the use of <em><a href=db.login.html>db.login</a></em>):
+<br>
+<div class="code"><pre>
+db.connect driver=mysql database=mydb
+db.login user=myname pass=secret
+db.connect -p
+db.tables -p
+</pre></div>
+<p>See <a href="grass-mysql.html">MySQL</a> database driver for details.
+
+<h3><a name="mysql-(network-connection)">MySQL (network connection)</a></h3>
+
+Network storage, database tables stored in database "mydb"
+(may require the use of <em><a href=db.login.html>db.login</a></em>):
+<br>
+<div class="code"><pre>
+db.connect driver=mysql database=mydb
+db.login user=myname pass=secret host=myserver.com
+db.connect -p
+db.tables -p
+</pre></div>
+<p>See <a href="grass-mysql.html">MySQL</a> database driver for details.
+  
+<h3><a name="odbc">ODBC</a></h3>
+
+Network storage, database tables stored in database "mydb"
+(may require the use of <em><a href=db.login.html>db.login</a></em>):
+<br> 
+<div class="code"><pre>
+db.connect driver=odbc database=mydb
+db.login user=myname pass=secret
+db.connect -p
+db.tables -p
+</pre></div>
+<p>See <a href="grass-odbc.html">ODBC</a> database driver for details.
+
+<h3><a name="dbf-(local,-not-recommended)">DBF (local, not recommended)</a></h3>
+
+Local storage (the dbf/ subdirectory in the mapset must exist or must be
+created by the user):
+<br>
+<div class="code"><pre>
+db.connect driver=dbf database='$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/'
+db.tables -p
+</pre></div>
+<p>See <a href="grass-dbf.html">DBF</a> database driver for details.
+  
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="db.columns.html">db.columns</a>,
+<a href="db.copy.html">db.copy</a>,
+<a href="db.drivers.html">db.drivers</a>,
+<a href="db.login.html">db.login</a>,
+<a href="db.tables.html">db.tables</a>,
+<a href="v.db.addtable.html">v.db.addtable</a>,
+<a href="v.db.connect.html">v.db.connect</a>
+</em>
+
+<p>
+<a href="sql.html">GRASS SQL interface</a>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+Main author: Radim Blazek, ITC-Irst, Trento, Italy<br>
+GRASS 7 improvements: Martin Landa, Markus Metz
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/db/db.connect">db.connect source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/db/db.connect">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="database.html">Database index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

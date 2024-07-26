@@ -1,0 +1,307 @@
+Changes in flexclust version 1.4-1
+
+  o stepFlexclust now ensures that group is a factor. Thanks to
+    Bernhard Mutius for pointing the issue out.
+
+  o Remove use of deprecated legacy S constants in C code.
+
+Changes in flexclust version 1.4-0
+
+  o Bettina Grün is new co-author.
+
+  o Included several new functions written for the open access book
+    "Market Segmentation Analysis - Understanding It, Doing It, and
+    Making It Useful" by Sara Dolnicar, Bettina Grün and Friedrich
+    Leisch (Springer, 2018). 
+    http://dx.doi.org/10.1007/978-981-10-8818-6
+
+
+Changes in flexclust version 1.3-6
+
+  o Clusters in priceFeature(n, which="3clust") got re-arranged, old layout 
+    is available via priceFeature(n, which="3clustold").
+
+  o New function Cutree() to cut trees in order of dendrograms.
+
+  o New data set vacmot.
+
+  o Fixed bug in storing call in stepcclust().
+
+  o New function bclust() for bagged clustering (update of bclust()
+    from e1071 to S4 classes and methods, integration with other
+    flexclust functions).
+
+  o New histogram() methods for kcca objects.
+
+
+Changes in flexclust version 1.3-5
+
+  o Brian Ripley corrected the Canberra distance (similar to the
+    change in stats::dist in 2018) and made several other corrections
+    such as adding missing imports.
+
+
+Changes in flexclust version 1.3-4
+
+  o Better documentation of differences of qtclust() to original
+    algorithm.
+
+  o New function priceFeature() for artificial market segments.
+
+  o .rda files for data now use xz compression.
+
+  o New data sets auto and volunteers.
+
+  o Shaded boxplots and barcharts.
+
+
+Changes in flexclust version 1.3-3
+
+  o bootFlexclust() did not work for k of length 1.
+
+  o Use package parallel instead of snow and multicore.
+
+  o Argument FUN of stepFlexclust() can be a character string 
+    naming the function. 
+
+  o kccaFamily("angle") supports weights.
+
+  o New conversion method as.kcca.skmeans().
+
+  o Use cor() instead of .Internal() cor.
+
+
+Changes in flexclust version 1.3-2
+
+  o It was not documented that argument k in kcca() and cclust() can
+    also be a vector of initial cluster assignments (in addition to
+    number of clusters and matrix of centroids). The feature has been
+    available for a long time.
+
+  o The line segments to the poulation mean in the barchart() method
+    can now have a diffent color than the corresponding points.
+
+  o It is now documented and checked that parallel processing with
+    snow currently works only for bootFlexclust(), not stepFlexclust().
+
+  o New initialization strategy kmeans++ for kcca() and cclust(),
+    invoked using the control argument. Users can also specify and
+    implement their own initialization strategies.
+
+
+Changes in flexclust version 1.3-1
+
+  o Bugfix in parallel processing with snow.
+
+  o Do not run example with snow by default (does not work on Solaris), 
+    snow test is now private.
+
+
+Changes in flexclust version 1.3-0
+
+  o Added support for parallel processing with package snow in 
+    addition to multicore. 
+
+  o Added data from election for German parliament 2009.
+
+  o barchart(clobj, mcol=NULL) did not work.
+
+  o New conversion method from kccasimple to S3 kmeans.
+
+
+Changes in flexclust version 1.2-2
+
+  o New randIndex methods for integer arguments (cluster membership vectors).
+
+  o New function as.kcca.hclust().
+
+  o Fixed two bugs in the CITATION file.
+
+
+Changes in flexclust version 1.2-1
+
+  o New arguments seed and multicore for bootFlexclust(), which now by
+    default uses multicore for parallel processing if available. Note
+    that this changes handling of random numbers (we need parallel
+    streams), so results with the same seed are not the same as for
+    previous versions of the package.
+
+  o New wrapper stepcclust() for stepFlexclust(..., FUN=cclust).
+
+
+Changes in flexclust version 1.2-0
+
+  o New functions propBarchart(), shadow(), Silhouette(), shadowStars() 
+    and stripes(), see corresponding help files for details.
+
+  o List subsetting operator [[]] can now be used as a 
+    shortcut for getModel() on stepFlexclust objects.
+
+  o New argument legend in barchart() method. Percentages in 
+    panel strips now rounded to next integer.
+
+  o New arguments seed and multicore for stepFlexclust(), which now by
+    default uses multicore for parallel processing if available. Note
+    that this changes handling of random numbers (we need parallel
+    streams), so results with the same seed are not the same as for
+    previous versions of the package.
+
+
+Changes in flexclust version 1.1-2
+
+  o Set "ZipData: no" in DESCRIPTION.
+
+
+Changes in flexclust version 1.1-1
+
+  o Bugfix in barchart().
+
+
+Changes in flexclust version 1.1-0
+
+  o New generic randIndex() for computation of the Rand Index for partition 
+    agreement. 
+
+  o New function bootFlexclust() to bootstrap cluster stability.
+
+  o show() method for kcca objects reports NAs in cluster assignment
+    only if there are any.
+
+
+Changes in flexclust version 1.0-0
+
+  o New data set with German Bundestag election results.
+
+
+Changes in flexclust version 0.99-1
+
+  o kcca() now chooses the random set of initial centroids only from
+    the complete observations in x, this allows the usage of distance
+    and centroid computation functions which can deal with missing
+    values.
+
+  o Bugfix: cclust segfaulted for manhattan distance when clusters 
+    got empty.
+
+  o Don't use the show() method to plot projected Axes, it only
+    confuses people (including myself).
+
+  o qtclust() now has an argument `kcca' instead of `simple' with
+    slightly different meaning (at the end, run kcca() to convergence
+    rather than only one iteration). This also fixes a bug which
+    reported differnt cluster sizes in the print() and summary()
+    method for the return objects of qtclust().
+
+  o The never really used support for similarity measures has been
+    dropped to make the code cleaner and easier to maintain.
+
+
+Changes in flexclust version 0.99-0
+
+  o qtclust() searched only for clusters with size>min.size 
+    rather than the documented size>=min.size.
+
+  o qtclust() now by default returns objects of class
+    "kccasimple" which contains only a subset of the slots of regular
+    "kcca" objects (and hence are much faster to compute). The new
+    default was chosen because if the radius is chosen too small, the
+    number of clusters can easily be very large.
+
+  o show() now prints only summary statistics of cluster sizes if 
+    there are more than 20 clusters.
+
+  o The 'project' argument of the plot() method now also handles 'lda'
+    objects correctly.
+
+  o The barchart() method has several new arguments and is now much more 
+    flexible.
+ 
+  o Fixed two typos in data set dentitio ("ferret" was "ferrer", 
+    "pygmy bat" was "pigmy bat").
+
+  o Improved handling of color of cluster centroid labels in the plot method.
+
+  o New "medium" color palette.
+
+  o The was a bug in stepFlexclust() when using families with a 
+    data pre-processing function like kccaFamily("angle").
+
+  o The data matrix x can now be stored in the return object and is 
+    then used automatically by the plot() method. 
+
+  o New generic randomTour() with methods for data matrices and
+    flexclust objects.
+
+  o Renamed cluster() to clusters() to avoid conflict with cluster() 
+    from package survival
+
+  o The default hulls for clusters are now convex hulls rather than 
+    ellipses, which can be misleading for non-Gaussian data.
+
+
+Changes in flexclust version 0.9-1
+
+  o new argument newdata for cluster()
+
+
+Changes in flexclust version 0.9-0
+
+  o kcca() and cclust() can now optionally return objects of class
+    "kccasimple" which contains only a subset of the slots of regular
+    "kcca" objects (basically only centers and cluster
+    membership). Computation is faster, but no plotting methods are
+    available.
+
+  o Cluster membership vectors now preserve the rownames of the
+    original data.
+
+  o Fixed a bug in Jaccard distance computation and random break of
+    ties for cluster assignment, both reported by Christian Buchta.
+
+  o New barchart() method for visualization of centroids.
+
+  o Utility function flxColors() can be used to access the flexclust color 
+    palette. 
+
+
+Changes in flexclust version 0.8-1
+
+  o Fixed a bug in the definition of class "flexclustControl".
+  
+
+Changes in flexclust version 0.8-0
+
+  o List ellipse as suggested package, use only when available.
+
+  o Class "flexclust" has a new slot "clusinfo", which is modeled
+    after the same slot of partition objects in package cluster. This
+    replaces slots "size" and "withindist".
+
+  o New generic info() can be used to obtain various pieces of
+    information about a clustering.
+
+  o New summary() method lists contents of clusinfo slot, show() method 
+    only cluster sizes. 
+
+  o Added details of neural gas learning paramters to 
+    flexclustControl-class.Rd and fixed a type (number of parameters is 4, 
+    not 3). 
+
+  o New methods cluster() and parameters().
+
+  o New function projAxes() to add arrows for original coordinate axes 
+    to a projection plot. 
+
+  o New pairs() method for matrix of neighborhood graphs.
+
+  o New function dist2().
+
+  o Improved performance of qtclust() and distCor().
+
+  o barplot() now plots clusters by default in the same colors as
+    plot().
+
+  o Correct citation of the package is the forthcoming CSDA paper.
+
+    
+First version released on CRAN: 0.7-0

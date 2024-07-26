@@ -1,0 +1,3 @@
+QuickMultiAttributeEdit3 version for QGIS 3.0
+QuickMultiAttributeEdit3 plugin is a way to edit selected elements on vector layer assigning the form inserted field/value to them; 
+optionally the plugin can remember the field and the latest inserted value.

@@ -1,0 +1,158 @@
+.TH general_graphical 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+\&.img\-list {
+margin: 0;
+padding: 0;
+list\-style\-type: none;
+}
+\&.img\-list li {
+padding: 5px;
+overflow: auto;
+}
+\&.img\-list li:hover {
+background\-color: #eee;
+}
+\&.img\-list li a {
+color: initial;
+text\-decoration: none;
+display: block;
+}
+\&.img\-list li img {
+width: 10%;
+float: left;
+margin: 0 15px 0 0;
+background: white;
+object\-fit: scale\-down;
+}
+\&.img\-list li img.default\-img {
+max\-height: 5ex;
+}
+\&.img\-list li .desc {
+margin: 0px;
+}
+\&.img\-list li .name {
+margin: 5px;
+display: block;
+color: #409940;
+font\-weight: bold;
+font\-style: italic;
+}
+.SH Graphical index of GRASS GIS modules
+.SS General modules:
+.RS 4n
+.IP \(bu 4n
+\fCg.access\fR \fCControls access to the current mapset for other users on the system.
+.br
+\fR
+.IP \(bu 4n
+\fCg.copy\fR \fCCopies available data files in the current mapset search path to the user\(cqs current mapset.\fR
+.IP \(bu 4n
+\fCg.dirseps\fR \fCInternal GRASS utility for converting directory separator characters.
+.br
+\fR
+.IP \(bu 4n
+\fCg.extension.all\fR \fCRebuilds or removes all locally installed GRASS Addons extensions.
+.br
+\fR
+.IP \(bu 4n
+\fCg.extension\fR \fCMaintains GRASS Addons extensions in local GRASS installation.
+.br
+\fR
+.IP \(bu 4n
+\fCg.filename\fR \fCPrints GRASS data base file names.\fR
+.IP \(bu 4n
+\fCg.findetc\fR \fCSearches for GRASS support files.\fR
+.IP \(bu 4n
+\fCg.findfile\fR \fCSearches for GRASS data base files and sets variables for the shell.\fR
+.IP \(bu 4n
+\fCg.gisenv\fR \fCOutputs and modifies the user\(cqs current GRASS variable settings.
+.br
+\fR
+.IP \(bu 4n
+\fCg.gui.animation\fR \fCTool for animating a series of raster and vector maps or a space time raster or vector dataset.\fR
+.IP \(bu 4n
+\fCg.gui.datacatalog\fR \fCTool for browsing, modifying and managing GRASS maps.\fR
+.IP \(bu 4n
+\fCg.gui.dbmgr\fR \fCLaunches graphical attribute table manager.\fR
+.IP \(bu 4n
+\fCg.gui.gcp\fR \fCGeorectifies a map and allows managing Ground Control Points.\fR
+.IP \(bu 4n
+\fCg.gui.gmodeler\fR \fCGraphical Modeler.
+.br
+\fR
+.IP \(bu 4n
+\fCg.gui\fR \fCLaunches a GRASS graphical user interface (GUI) session.
+.br
+\fR
+.IP \(bu 4n
+\fCg.gui.iclass\fR \fCTool for supervised classification of imagery data.
+.br
+\fR
+.IP \(bu 4n
+\fCg.gui.image2target\fR \fCGeorectifies a map and allows managing Ground Control Points for 3D correction.\fR
+.IP \(bu 4n
+\fCg.gui.mapswipe\fR \fCInteractively compares two maps by swiping a visibility bar.\fR
+.IP \(bu 4n
+\fCg.gui.photo2image\fR \fCCorrects scanning distortions of a paper photo.\fR
+.IP \(bu 4n
+\fCg.gui.psmap\fR \fCTool for creating hardcopy map outputs.\fR
+.IP \(bu 4n
+\fCg.gui.rlisetup\fR \fCConfiguration tool for r.li modules.\fR
+.IP \(bu 4n
+\fCg.gui.timeline\fR \fCAllows comparing temporal datasets by displaying their temporal extents in a plot.\fR
+.IP \(bu 4n
+\fCg.gui.tplot\fR \fCPlots the values of temporal datasets.\fR
+.IP \(bu 4n
+\fCg.gui.vdigit\fR \fCInteractive editing and digitization of vector maps.\fR
+.IP \(bu 4n
+\fCg.list\fR \fCLists available GRASS data base files of the user\-specified data type optionally using the search pattern.\fR
+.IP \(bu 4n
+\fCg.manual\fR \fCDisplays the manual pages of GRASS modules.\fR
+.IP \(bu 4n
+\fCg.mapset\fR \fCChanges/reports current mapset.
+.br
+\fR
+.IP \(bu 4n
+\fCg.mapsets\fR \fCModifies/prints the user\(cqs current mapset search path.
+.br
+\fR
+.IP \(bu 4n
+\fCg.message\fR \fCPrints a message, warning, progress info, or fatal error in the GRASS way.
+.br
+\fR
+.IP \(bu 4n
+\fCg.mkfontcap\fR \fCGenerates the font configuration file by scanning various directories for fonts.\fR
+.IP \(bu 4n
+\fCg.parser\fR \fCProvides automated parser, GUI, and help support for GRASS scipts.\fR
+.IP \(bu 4n
+\fCg.pnmcomp\fR \fCOverlays multiple PPM image files.\fR
+.IP \(bu 4n
+\fCg.ppmtopng\fR \fCConverts between PPM/PGM and PNG image formats.\fR
+.IP \(bu 4n
+\fCg.proj\fR \fCPrints or modifies GRASS projection information files (in various co\-ordinate system descriptions).
+.br
+\fR
+.IP \(bu 4n
+\fCg.region\fR \fCManages the boundary definitions for the geographic region.\fR
+.IP \(bu 4n
+\fCg.remove\fR \fCRemoves data base element files from the user\(cqs current mapset using the search pattern.\fR
+.IP \(bu 4n
+\fCg.rename\fR \fCRenames data base element files in the user\(cqs current mapset.\fR
+.IP \(bu 4n
+\fCg.search.modules\fR \fCSearch in GRASS modules using keywords\fR
+.IP \(bu 4n
+\fCg.tempfile\fR \fCCreates a temporary file and prints it\(cqs file name.\fR
+.IP \(bu 4n
+\fCg.version\fR \fCDisplays GRASS GIS version info.
+.br
+\fR
+.RE
+.PP
+Main index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

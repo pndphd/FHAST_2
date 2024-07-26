@@ -1,0 +1,127 @@
+.TH v.clip 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.clip.py\fR\fR  \- Extracts features of input map which overlay features of clip map.
+.SH KEYWORDS
+vector, clip, area
+.SH SYNOPSIS
+\fBv.clip.py\fR
+.br
+\fBv.clip.py \-\-help\fR
+.br
+\fBv.clip.py\fR [\-\fBdr\fR] \fBinput\fR=\fIname\fR \fBclip\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-d\fR" 4m
+.br
+Do not dissolve clip map
+.IP "\fB\-r\fR" 4m
+.br
+Clip by region
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map to be clipped
+.br
+Or data source for direct OGR access
+.IP "\fBclip\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of clip vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.SH DESCRIPTION
+\fIv.clip\fR module enables extracting those features of input
+vector map, which overlay features of clip map, as well as their
+storing in a new vector map.
+.PP
+In default, boundaries of clip map are dissolved before
+clipping. Alternatively, flag \fB\-d\fR can be ticked to retain the
+boundaries of clip map. Flag \fB\-b\fR facilitates clipping by current
+computational region.
+.PP
+It is possible to clip vector maps consisting of points, lines,
+areas or combinations of these. However, the current version does not
+fully support clipping of mixed geometry containing points. In such a
+case, the output map will only store clipped lines and/or areas.
+.SH NOTES
+\fIv.clip\fR is a front\-end
+to \fIv.overlay\fR, as well
+as \fIv.select\fR. Clipping of areas
+and/or lines can be achieved
+using \fIv.overlay\fR. Clipping of
+points can be performed
+with \fIv.select\fR.
+.SH EXAMPLES
+.SS Basic use
+Clip railroads by counties Wake and Johnston in North Carolina (North
+Carolina data set).
+.br
+.nf
+\fC
+v.extract input=boundary_county where=\(dqNAME=\(cqWAKE\(cq OR NAME=\(cqJOHNSTON\(cq\(dq output=county_WAKE_JOHNSTON
+v.clip input=railroads clip=county_WAKE_JOHNSTON output=railroads_WAKE_JOHNSTON
+\fR
+.fi
+.br
+\fIFigure: v.clip example \- basic use\fR
+.SS Retain boundaries of clip map
+.br
+.nf
+\fC
+v.clip \-d input=railroads clip=county_WAKE_JOHNSTON output=railroads_WAKE_JOHNSTON
+\fR
+.fi
+.SS Clip by current computational region
+Clip hospitals by computational region adjusted to counties Wake and
+Johnston in North Carolina (North Carolina data set).
+It is not obligatory to enter name of clip map. In case it is stated,
+the clip map will be omitted.
+.br
+.nf
+\fC
+v.extract input=boundary_county where=\(dqNAME=\(cqWAKE\(cq OR NAME=\(cqJOHNSTON\(cq\(dq output=county_WAKE_JOHNSTON
+v.clip \-r input=hospitals output=hospitals_clip
+\fR
+.fi
+.br
+\fIFigure: v.clip example \- clip by computational region\fR
+.SH SEE ALSO
+\fI
+v.overlay,
+v.select,
+v.dissolve,
+v.in.region
+\fR
+.SH AUTHOR
+Zofie Cimburova, GeoForAll
+Lab, Czech Technical University in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.clip source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

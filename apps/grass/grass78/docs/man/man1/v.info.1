@@ -1,0 +1,226 @@
+.TH v.info 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.info\fR\fR  \- Outputs basic information about a vector map.
+.SH KEYWORDS
+vector, metadata, topology, extent, history, attribute columns, level1
+.SH SYNOPSIS
+\fBv.info\fR
+.br
+\fBv.info \-\-help\fR
+.br
+\fBv.info\fR [\-\fBhcget\fR] \fBmap\fR=\fIname\fR  [\fBlayer\fR=\fIstring\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-h\fR" 4m
+.br
+Print history instead of info and exit
+.IP "\fB\-c\fR" 4m
+.br
+Print types/names of table columns for specified layer instead of info and exit
+.IP "\fB\-g\fR" 4m
+.br
+Print region info in shell script style
+.IP "\fB\-e\fR" 4m
+.br
+Print extended metadata info in shell script style
+.IP "\fB\-t\fR" 4m
+.br
+Print topology info in shell script style
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBmap\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of vector map
+.br
+Or data source for direct OGR access
+.IP "\fBlayer\fR=\fIstring\fR" 4m
+.br
+Layer number or name
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.SH DESCRIPTION
+\fIv.info\fR reports some basic information (metadata) about a
+user\-specified vector map and its topology status.
+.PP
+If topology info is not available (i.e., vector map cannot be opened on
+level 2), vector map extends and number of features need to be counted
+on the fly which may take some time.
+.PP
+Note that the flag \fB\-c\fR only works when the vector map is connected
+to one or several attribute table(s). This connection can be shown or set
+with \fIv.db.connect\fR.
+.SH EXAMPLE
+.SS Basic metadata information
+.br
+.nf
+\fC
+v.info map=geology
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+ | Name:            geology                                                   |
+ | Mapset:          PERMANENT                                                 |
+ | Location:        nc_spm_08                                                 |
+ | Database:        /home/martin/grassdata                                    |
+ | Title:           North Carolina geology map (polygon map)                  |
+ | Map scale:       1:1                                                       |
+ | Map format:      native                                                    |
+ | Name of creator: helena                                                    |
+ | Organization:    NC OneMap                                                 |
+ | Source date:     Mon Nov  6 15:48:53 2006                                  |
+ |\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-|
+ |   Type of map: vector (level: 2)                                           |
+ |                                                                            |
+ |   Number of points:       0               Number of centroids:  1832       |
+ |   Number of lines:        0               Number of boundaries: 3649       |
+ |   Number of areas:        1832            Number of islands:    907        |
+ |                                                                            |
+ |   Map is 3D:              No                                               |
+ |   Number of dblinks:      1                                                |
+ |                                                                            |
+ |   Projection: Lambert Conformal Conic                                      |
+ |                                                                            |
+ |               N:   318117.43741634    S:    10875.82723209                 |
+ |               E:   930172.31282271    W:   123971.19498978                 |
+ |                                                                            |
+ |   Digitization threshold: 0                                                |
+ |   Comment:                                                                 |
+ |                                                                            |
+ +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+\fR
+.fi
+.SS Map history
+.br
+.nf
+\fC
+v.info \-h map=geology
+COMMAND: v.in.ogr input=\(dqgeol.shp\(dq output=\(dqgeology\(dq min_area=0.0001 snap=\-1
+GISDBASE: /bigdata/grassdata05
+LOCATION: ncfromfile MAPSET: PERMANENT USER: helena DATE: Mon Nov  6 15:48:53 2006
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+1832 input polygons
+total area: 1.276093e+11 (1832 areas)
+overlapping area: 0.000000e+00 (0 areas)
+area without category: 0.000000e+00 (0 areas)
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+\fR
+.fi
+.SS Attribute columns for given layer
+.br
+.nf
+\fC
+v.info \-c map=geology
+Displaying column types/names for database connection of layer <1>:
+INTEGER|cat
+DOUBLE PRECISION|onemap_pro
+DOUBLE PRECISION|PERIMETER
+INTEGER|GEOL250_
+INTEGER|GEOL250_ID
+CHARACTER|GEO_NAME
+DOUBLE PRECISION|SHAPE_area
+DOUBLE PRECISION|SHAPE_len
+\fR
+.fi
+.SS Basic metadata information in shell script style
+.br
+.nf
+\fC
+v.info \-get map=geology
+name=geology
+mapset=PERMANENT
+location=nc_spm_08
+database=/home/martin/grassdata
+title=North Carolina geology map (polygon map)
+scale=1:1
+format=native
+creator=helena
+organization=NC OneMap
+source_date=Mon Nov  6 15:48:53 2006
+level=2
+map3d=0
+num_dblinks=1
+projection=Lambert Conformal Conic
+digitization_threshold=0.000000
+comment=
+north=318117.43741634
+south=10875.82723209
+east=930172.31282271
+west=123971.19498978
+top=0.000000
+bottom=0.000000
+nodes=4556
+points=0
+lines=0
+boundaries=3649
+centroids=1832
+areas=1832
+islands=907
+primitives=5481
+\fR
+.fi
+.br
+.nf
+\fC
+v.info \-g map=geology
+north=318117.43741634
+south=10875.82723209
+east=930172.31282271
+west=123971.19498978
+top=0.000000
+bottom=0.000000
+\fR
+.fi
+.SH PYTHON
+See \fIPython
+Scripting Library\fR for more info.
+.PP
+Note: The Python tab in the \fIwxGUI\fR can be used for entering the
+following code:
+.PP
+.br
+.nf
+\fC
+import grass.script as gcore
+gcore.vector_columns(\(cqgeology\(cq)   # for \(gav.info \-c\(ga
+gcore.vector_info_topo(\(cqgeology\(cq) # for \(gav.info shell=topo\(ga
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.info,
+r3.info,
+t.info,
+v.db.connect
+\fR
+.SH AUTHORS
+Original author CERL
+.br
+Updated to GRASS 6 by Radim Blazek, ITC\-Irst, Trento, Italy
+.br
+Level 1 support by Markus Metz
+.br
+Updated to GRASS 7 by Martin Landa, CTU in Prague, Czech Republic
+.SH SOURCE CODE
+.PP
+Available at: v.info source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

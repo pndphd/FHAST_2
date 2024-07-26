@@ -1,0 +1,439 @@
+.TH v.vol.rst 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.vol.rst\fR\fR  \- Interpolates point data to a 3D raster map using regularized spline with tension (RST) algorithm.
+.SH KEYWORDS
+vector, voxel, surface, interpolation, RST, 3D, no\-data filling
+.SH SYNOPSIS
+\fBv.vol.rst\fR
+.br
+\fBv.vol.rst \-\-help\fR
+.br
+\fBv.vol.rst\fR [\-\fBc\fR] \fBinput\fR=\fIname\fR  [\fBcross_input\fR=\fIname\fR]   [\fBwcolumn\fR=\fIname\fR]   [\fBtension\fR=\fIfloat\fR]   [\fBsmooth\fR=\fIfloat\fR]   [\fBsmooth_column\fR=\fIname\fR]   [\fBwhere\fR=\fIsql_query\fR]   [\fBdeviations\fR=\fIname\fR]   [\fBcvdev\fR=\fIname\fR]   [\fBmaskmap\fR=\fIname\fR]   [\fBsegmax\fR=\fIinteger\fR]   [\fBnpmin\fR=\fIinteger\fR]   [\fBnpmax\fR=\fIinteger\fR]   [\fBdmin\fR=\fIfloat\fR]   [\fBwscale\fR=\fIfloat\fR]   [\fBzscale\fR=\fIfloat\fR]   [\fBcross_output\fR=\fIname\fR]   [\fBelevation\fR=\fIname\fR]   [\fBgradient\fR=\fIname\fR]   [\fBaspect_horizontal\fR=\fIname\fR]   [\fBaspect_vertical\fR=\fIname\fR]   [\fBncurvature\fR=\fIname\fR]   [\fBgcurvature\fR=\fIname\fR]   [\fBmcurvature\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Perform a cross\-validation procedure without volume interpolation
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input 3D vector points map
+.IP "\fBcross_input\fR=\fIname\fR" 4m
+.br
+Name of input surface raster map for cross\-section
+.IP "\fBwcolumn\fR=\fIname\fR" 4m
+.br
+Name of column containing w\-values attribute to interpolate
+.IP "\fBtension\fR=\fIfloat\fR" 4m
+.br
+Tension parameter
+.br
+Default: \fI40.\fR
+.IP "\fBsmooth\fR=\fIfloat\fR" 4m
+.br
+Smoothing parameter
+.br
+Default: \fI0.1\fR
+.IP "\fBsmooth_column\fR=\fIname\fR" 4m
+.br
+Name of column with smoothing parameters
+.IP "\fBwhere\fR=\fIsql_query\fR" 4m
+.br
+WHERE conditions of SQL statement without \(cqwhere\(cq keyword
+.br
+Example: income < 1000 and population >= 10000
+.IP "\fBdeviations\fR=\fIname\fR" 4m
+.br
+Name for output deviations vector point map
+.IP "\fBcvdev\fR=\fIname\fR" 4m
+.br
+Name for output cross\-validation errors vector point map
+.IP "\fBmaskmap\fR=\fIname\fR" 4m
+.br
+Name of input raster map used as mask
+.IP "\fBsegmax\fR=\fIinteger\fR" 4m
+.br
+Maximum number of points in a segment
+.br
+Default: \fI50\fR
+.IP "\fBnpmin\fR=\fIinteger\fR" 4m
+.br
+Minimum number of points for approximation in a segment (>segmax)
+.br
+Default: \fI200\fR
+.IP "\fBnpmax\fR=\fIinteger\fR" 4m
+.br
+Maximum number of points for approximation in a segment (>npmin)
+.br
+Default: \fI700\fR
+.IP "\fBdmin\fR=\fIfloat\fR" 4m
+.br
+Minimum distance between points (to remove almost identical points)
+.IP "\fBwscale\fR=\fIfloat\fR" 4m
+.br
+Conversion factor for w\-values used for interpolation
+.br
+Default: \fI1.0\fR
+.IP "\fBzscale\fR=\fIfloat\fR" 4m
+.br
+Conversion factor for z\-values
+.br
+Default: \fI1.0\fR
+.IP "\fBcross_output\fR=\fIname\fR" 4m
+.br
+Name for output cross\-section raster map
+.IP "\fBelevation\fR=\fIname\fR" 4m
+.br
+Name for output elevation 3D raster map
+.IP "\fBgradient\fR=\fIname\fR" 4m
+.br
+Name for output gradient magnitude 3D raster map
+.IP "\fBaspect_horizontal\fR=\fIname\fR" 4m
+.br
+Name for output gradient horizontal angle 3D raster map
+.IP "\fBaspect_vertical\fR=\fIname\fR" 4m
+.br
+Name for output gradient vertical angle 3D raster map
+.IP "\fBncurvature\fR=\fIname\fR" 4m
+.br
+Name for output change of gradient 3D raster map
+.IP "\fBgcurvature\fR=\fIname\fR" 4m
+.br
+Name for output Gaussian curvature 3D raster map
+.IP "\fBmcurvature\fR=\fIname\fR" 4m
+.br
+Name for output mean curvature 3D raster map
+.SH DESCRIPTION
+.PP
+\fIv.vol.rst\fR interpolates values to a 3\-dimensional raster map from
+3\-dimensional point data (e.g. temperature, rainfall data from climatic
+stations, concentrations from drill holes etc.) given in a 3\-D vector
+point file named \fBinput\fR.  The size of the output
+3D raster map \fBelevation\fR is given by the current 3D region. Sometimes, the
+user
+may want to get a 2\-D map showing a modelled phenomenon at a
+crossection surface. In that case, \fBcross_input\fR and \fBcross_output\fR
+options must be specified, with the output 2D raster map \fBcross_output\fR
+containing the crossection of the interpolated volume with a surface
+defined by \fBcross_input\fR
+2D raster map. As an option, simultaneously with interpolation,
+geometric parameters of the interpolated
+phenomenon can be computed (magnitude of gradient, direction of
+gradient defined by horizontal and vertical angles), change of gradient,
+Gauss\-Kronecker curvature, or mean curvature). These geometric
+parameteres are saved as
+3D raster maps \fBgradient, aspect_horizontal, aspect_vertical, ncurvature, gcurvature, mcurvature\fR,
+respectively. Maps \fBaspect_horizontal\fR and \fBaspect_vertical\fR are in degrees.
+.PP
+At first, data points are checked for identical positions and points
+that are closer to each other than given \fBdmin\fR are removed.
+Parameters \fBwscale\fR and \fBzscale\fR allow the user to re\-scale
+the w\-values and z\-coordinates of the point data (useful e.g. for
+transformation of elevations given in feet to meters, so that the
+proper values of gradient and curvatures can be computed).
+Rescaling of z\-coordinates (\fBzscale\fR) is also needed when the distances
+in vertical direction are much smaller than the horizontal
+distances; if that is the case, the value of \fBzscale\fR
+should be selected so that the vertical and horizontal distances
+have about the same magnitude.
+.PP
+Regularized spline with tension method is used in the interpolation.
+The \fBtension\fR parameter controls the distance over which
+each given point influences the resulting volume (with very high tension,
+each point influences only its close neighborhood and the volume goes
+rapidly to trend between the points).
+Higher values of tension parameter reduce the overshoots that
+can appear in volumes with rapid change of gradient. For noisy data, it
+is possible to define a global smoothing parameter, \fBsmooth\fR.
+With the
+smoothing parameter set to zero (\fBsmooth=0\fR) the resulting volume
+passes exactly through the data points.
+When smoothing is used, it is possible to output a vector map \fBdeviations\fR
+containing deviations of the resulting volume from the given data.
+.PP
+The user can define a 2D raster map named \fBmaskmap\fR, which will
+be used as a mask. The interpolation is skipped for 3\-dimensional cells
+whose 2\-dimensional projection has a zero value in the mask. Zero values will
+be assigned to these cells in all output 3D raster maps.
+.PP
+If the number of given points is greater than 700, segmented
+processing is used. The region is split into 3\-dimensional \(dqbox\(dq
+segments, each having less than \fBsegmax\fR points and interpolation
+is performed on each segment of the region. To ensure the smooth
+connection of segments, the interpolation function for each segment is
+computed using the points in the given segment
+and the points in its neighborhood. The minimum number of points taken
+for interpolation is controlled by \fBnpmin\fR , the value of which
+must be larger than \fBsegmax\fR and less than 700. This limit of 700 was
+selected to ensure the numerical stability and efficiency of the
+algorithm.
+.SS SQL support
+Using the \fBwhere\fR parameter, the interpolation can be limited to use
+only a subset of the input vectors.
+.br
+.nf
+\fC
+# preparation as in above example
+v.vol.rst elevrand_3d wcol=soilrange elevation=soilrange zscale=100 where=\(dqsoilrange > 3\(dq
+\fR
+.fi
+.SS Cross validation procedure
+Sometimes it can be difficult to figure out the proper values of
+interpolation parameters. In this case, the user can use a
+crossvalidation procedure using \fB\-c\fR flag (a.k.a. \(dqjack\-knife\(dq
+method) to find optimal parameters for given data. In this method,
+every point in the input point file is temporarily excluded from the
+computation and interpolation error for this point location is
+computed.  During this procedure no output grid files can be
+simultanuously computed.  The procedure for larger datasets may take a
+very long time, so it might be worth to use just a sample data
+representing the whole dataset.
+.PP
+\fIExample
+(based on Slovakia3d dataset):\fR
+.PP
+.br
+.nf
+\fC
+v.info \-c precip3d
+g.region n=5530000 s=5275000 w=4186000 e=4631000 res=500 \-p
+v.vol.rst \-c input=precip3d wcolumn=precip zscale=50 segmax=700 cvdev=cvdevmap tension=10
+v.db.select cvdevmap
+v.univar cvdevmap col=flt1 type=point
+\fR
+.fi
+Based on these results, the parameters will have to be optimized. It is
+recommended to plot the CV error as curve while modifying
+the parameters.
+.PP
+The best approach is to start with \fBtension\fR, \fBsmooth\fR
+and \fBzscale\fR with rough steps, or to set \fBzscale\fR to a
+constant somewhere between 30\-60. This helps to find minimal RMSE
+values while then finer steps can be used in all parameters. The
+reasonable range is \fBtension\fR=10...100,
+\fBsmooth\fR=0.1...1.0, \fBzscale\fR=10...100.
+.PP
+In \fIv.vol.rst\fR the tension parameter is much more sensitive to
+changes than in \fIv.surf.rst\fR,
+therefore the user should always check the
+result by visual inspection. Minimizing CV does not always provide the best
+result, especially when the density of data are insufficient. Then
+the optimal result found by CV is an oversmoothed surface.
+.SH NOTES
+The vector points map must be a 3D vector map (x, y, z as geometry).
+The module v.in.db can be used to generate
+a 3D vector map from a table containing x,y,z columns.
+Also, the input data should be in a projected coordinate system, such as
+Universal Transverse Mercator. The module does not appear to have support for
+geographic (Lat/Long) coordinates as of May 2009.
+.PP
+\fIv.vol.rst\fR uses regularized spline with tension for
+interpolation from point data (as described in Mitasova and Mitas,
+1993). The implementation has an improved segmentation procedure based
+on Oct\-trees which enhances the efficiency for large data sets.
+.PP
+Geometric parameters \- magnitude of gradient (\fBgradient\fR),
+horizontal (\fBaspect_horizontal\fR) and vertical (\fBaspect_vertical)\fRaspects,
+change of gradient (\fBncurvature\fR), Gauss\-Kronecker (\fBgcurvature\fR) and
+mean curvatures (\fBmcurvature\fR) are computed directly from the
+interpolation function so that the important relationships between
+these parameters are preserved. More information on these parameters
+can be found in Mitasova et al., 1995 or Thorpe, 1979.
+.PP
+The program gives warning when significant overshoots appear and
+higher tension should be used. However, with tension too high the
+resulting volume will have local maximum in each given point
+and everywhere else the volume goes rapidly to trend. With a smoothing
+parameter greater than zero, the volume will not pass through the data
+points and the higher the parameter the closer the volume will be to the
+trend. For theory on smoothing with splines see Talmi and Gilat, 1977 or Wahba, 1990.
+.PP
+If a visible connection of segments appears, the program should be
+rerun with higher \fBnpmin\fR to get more points from the
+neighborhood of given segment.
+.PP
+If the number of points in a vector map is less than 400, \fBsegmax\fR
+should be set to 400 so that segmentation is not performed when it is
+not necessary.
+.PP
+The program gives a warning when the user wants to interpolate outside the
+\(dqbox\(dq given by minimum and maximum coordinates in the input vector map.
+To remedy this, zoom into the area encompassing the input vector data points.
+.PP
+For large data sets (thousands of data points), it is suggested to
+zoom into a smaller representative area and test whether the parameters
+chosen (e.g. defaults) are appropriate.
+.PP
+The user must run \fIg.region\fR before the program to set the
+3D region for interpolation.
+.SH EXAMPLES
+Spearfish example (we first simulate 3D soil range data):
+.br
+.nf
+\fC
+g.region \-dp
+# define volume
+g.region res=100 tbres=100 res3=100 b=0 t=1500 \-ap3
+### First part: generate synthetic 3D data (true 3D soil data preferred)
+# generate random positions from elevation map (2D)
+r.random elevation.10m vector_output=elevrand n=200
+# generate synthetic values
+v.db.addcolumn elevrand col=\(dqx double precision, y double precision\(dq
+v.to.db elevrand option=coor col=x,y
+v.db.select elevrand
+# create new 3D map
+v.in.db elevrand out=elevrand_3d x=x y=y z=value key=cat
+v.info \-c elevrand_3d
+v.info \-t elevrand_3d
+# remove the now superfluous \(cqx\(cq, \(cqy\(cq and \(cqvalue\(cq (z) columns
+v.db.dropcolumn elevrand_3d col=x
+v.db.dropcolumn elevrand_3d col=y
+v.db.dropcolumn elevrand_3d col=value
+# add attribute to have data available for 3D interpolation
+# (Soil range types taken from the USDA Soil Survey)
+d.mon wx0
+d.rast soils.range
+d.vect elevrand_3d
+v.db.addcolumn elevrand_3d col=\(dqsoilrange integer\(dq
+v.what.rast elevrand_3d col=soilrange rast=soils.range
+# fix 0 (no data in raster map) to NULL:
+v.db.update elevrand_3d col=soilrange value=NULL where=\(dqsoilrange=0\(dq
+v.db.select elevrand_3d
+# optionally: check 3D points in Paraview
+v.out.vtk input=elevrand_3d output=elevrand_3d.vtk type=point dp=2
+paraview \-\-data=elevrand_3d.vtk
+### Second part: 3D interpolation from 3D point data
+# interpolate volume to \(dqsoilrange\(dq voxel map
+v.vol.rst input=elevrand_3d wcol=soilrange elevation=soilrange zscale=100
+# visualize I: in GRASS GIS wxGUI
+g.gui
+# load: 2D raster map: elevation.10m
+#       3D raster map: soilrange
+# visualize II: export to Paraview
+r.mapcalc \(dqbottom = 0.0\(dq
+r3.out.vtk \-s input=soilrange top=elevation.10m bottom=bottom dp=2 output=volume.vtk
+paraview \-\-data=volume.vtk
+\fR
+.fi
+.SH KNOWN ISSUES
+\fBdeviations\fR file is written as 2D and deviations are not written as attributes.
+.SH REFERENCES
+.PP
+Hofierka J., Parajka J., Mitasova H., Mitas L., 2002, Multivariate
+Interpolation of Precipitation Using Regularized Spline with Tension.
+Transactions in
+GIS  6, pp. 135\-150.
+.PP
+Mitas, L.,
+Mitasova, H., 1999, Spatial Interpolation. In: P.Longley, M.F.
+Goodchild, D.J. Maguire, D.W.Rhind (Eds.), Geographical Information
+Systems: Principles, Techniques, Management and Applications, Wiley,
+pp.481\-492
+.PP
+Mitas L., Brown W. M., Mitasova H., 1997,
+Role
+of dynamic cartography in simulations of landscape processes based on
+multi\-variate fields. Computers and Geosciences, Vol. 23, No. 4,
+pp. 437\-446 (includes CDROM and WWW: www.elsevier.nl/locate/cgvis)
+.PP
+Mitasova H., Mitas L.,  Brown W.M.,  D.P. Gerdes, I.
+Kosinovsky, Baker, T.1995, Modeling spatially and temporally
+distributed phenomena:
+New methods and tools for GRASS GIS. International Journal of GIS, 9
+(4),
+special issue on Integrating GIS and Environmental modeling, 433\-446.
+.PP
+Mitasova, H., Mitas, L., Brown, B., Kosinovsky, I., Baker, T.,
+Gerdes, D. (1994):
+Multidimensional
+interpolation and visualization in GRASS GIS
+.PP
+Mitasova
+H. and Mitas L. 1993: Interpolation by Regularized Spline with
+Tension: I. Theory and Implementation, \fIMathematical Geology\fR 25,
+641\-655.
+.PP
+Mitasova
+H. and Hofierka J. 1993: Interpolation by Regularized Spline with
+Tension: II. Application to Terrain Modeling and Surface Geometry
+Analysis, \fIMathematical Geology\fR 25, 657\-667.
+.PP
+Mitasova, H., 1992 : New capabilities for interpolation and
+topographic analysis in GRASS, GRASSclippings 6, No.2 (summer), p.13.
+.PP
+Wahba, G., 1990 : Spline Models for Observational Data, CNMS\-NSF
+Regional Conference series in applied mathematics, 59, SIAM,
+Philadelphia, Pennsylvania.
+.PP
+Mitas, L., Mitasova H., 1988 : General variational approach to the
+interpolation problem, Computers and Mathematics with Applications 16,
+p. 983
+.PP
+Talmi, A. and Gilat, G., 1977 : Method for Smooth Approximation of
+Data, Journal of Computational Physics, 23, p.93\-123.
+.PP
+Thorpe, J. A. (1979): Elementary Topics in Differential Geometry.
+Springer\-Verlag, New York, pp. 6\-94.
+.SH SEE ALSO
+\fI
+g.region,
+v.in.ascii,
+r3.mask,
+v.in.db,
+v.surf.rst,
+v.univar
+\fR
+.SH AUTHOR
+Original version of program (in FORTRAN) and GRASS enhancements:
+.br
+Lubos Mitas, NCSA, University of Illinois at Urbana\-Champaign,
+Illinois, USA, since 2000 at Department of Physics,
+North Carolina State University, Raleigh, USA
+lubos_mitas@ncsu.edu
+.br
+Helena Mitasova, Department of Marine, Earth and Atmospheric Sciences,
+North Carolina State University, Raleigh, USA,
+hmitaso@unity.ncsu.edu
+.PP
+Modified program (translated to C, adapted for GRASS, new
+segmentation procedure):
+.br
+Irina Kosinovsky, US Army CERL, Champaign, Illinois, USA
+.br
+Dave Gerdes, US Army CERL, Champaign, Illinois, USA
+.PP
+Modifications for g3d library, geometric parameters,
+cross\-validation, deviations:
+.br
+Jaro Hofierka, Department of Geography and Regional Development,
+University of Presov, Presov, Slovakia,
+hofierka@fhpv.unipo.sk,
+http://www.geomodel.sk
+.SH SOURCE CODE
+.PP
+Available at: v.vol.rst source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

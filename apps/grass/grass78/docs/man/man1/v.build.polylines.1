@@ -1,0 +1,149 @@
+.TH v.build.polylines 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.build.polylines\fR\fR  \- Builds polylines from lines or boundaries.
+.SH KEYWORDS
+vector, topology, geometry, line, node, vertex
+.SH SYNOPSIS
+\fBv.build.polylines\fR
+.br
+\fBv.build.polylines \-\-help\fR
+.br
+\fBv.build.polylines\fR \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBcats\fR=\fIstring\fR]   [\fBtype\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of input vector map
+.br
+Or data source for direct OGR access
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBcats\fR=\fIstring\fR" 4m
+.br
+Category number mode
+.br
+Options: \fIno, first, multi, same\fR
+.br
+Default: \fIno\fR
+.br
+\fBno\fR: Do not assign any category number to polyline
+.br
+\fBfirst\fR: Assign category number of first line to polyline
+.br
+\fBmulti\fR: Assign multiple category numbers to polyline
+.br
+\fBsame\fR: Create polyline from lines with same categories
+.IP "\fBtype\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Input feature type
+.br
+Options: \fIline, boundary\fR
+.br
+Default: \fIline,boundary\fR
+.SH DESCRIPTION
+\fIv.build.polylines\fR builds polylines from the lines or
+boundaries in a vector map.
+.PP
+A line is defined by one start node, one end node and any number of
+vertices between the start and end nodes. The shortest possible line
+consists of only two vertices where the coordinates of the start and end
+nodes are identical to those of the two vertices.
+.PP
+\fIv.build.polylines\fR picks a line and from its start node, walks
+back as long as exactly one other line of the same type is connected to
+this node. Line directions are reversed as required, i.e. it does not
+matter if the next line is connected to the current node by its start or
+end node. Once the start line of a polyline is identified, it walks
+forward and adds all vertices (in reverse order if needed) of
+connected lines to the start line, i.e. the start line and connecting
+lines are reversed as needed. That is, if a line is reversed depends
+on what node is initially picked for building polylines. If the
+direction of lines is important (it\(cqs not for boundaries to build
+areas), you have to manually change line directions with
+either \fIv.edit\fR or
+the \fIwxGUI vector
+digitizer\fR.
+.PP
+Polylines provide the most appropriate representation of curved lines when
+it is important that nodes serve to define topology rather than geometry.
+Curved lines are usually digitized as polylines, but these are sometimes broken
+into their constituent straight line segments during conversion from one data
+format to another. \fIv.build.polylines\fR can be used to rebuild such
+broken polylines.
+.SH NOTES
+\fIv.build.polylines\fR combines only lines of the same type to
+a new polyline, i.e. lines and boundaries are kept separate.
+.PP
+Category number(s) are assigned to a polyline based on \fBcats\fR parameter.
+.RS 4n
+.IP \(bu 4n
+\fBcats=no\fR \- No category number is assigned to a
+polyline. Also attributes tables linked to the input vector map are
+not copied to the output vector map.
+.IP \(bu 4n
+\fBcats=first\fR \- Assign to a polyline category number of the
+first line. All linked attributes tables are copied to the output
+vector map without filtering, but the categories are processed according
+to the cats option.
+.IP \(bu 4n
+\fBcats=multi\fR \- If the lines that make up a polyline have
+different category numbers then \fIv.build.polylines\fR will
+set the multiple category numbers to a polyline.  Also all linked
+attributes tables are copied to the output vector map.
+.IP \(bu 4n
+\fBcats=same\fR \- Assigned lines to a polyline have
+same category numbers in all layers. Linked
+attributes tables are copied to the output vector map.
+.RE
+\fIv.build.polylines\fR correctly handles \fBinput\fR vector maps
+containing lines, boundaries, centroids and points. Lines and
+boundaries will be converted to polylines.  Areas
+are guaranteed to be preserved.
+.SH ACKNOWLEDGEMENTS
+This program was originally written during Mark Lake\(cqs tenure of a
+Leverhulme Special Research Fellowship at University College London.
+.SH SEE ALSO
+\fI
+v.build,
+v.in.ascii,
+v.edit,
+v.split
+\fR
+.SH AUTHORS
+Mark Lake, Institute of Archaeology, University College London.
+.br
+Major rewrite by Radim Blazek, October 2002
+.br
+Category mode added by Martin Landa, FBK\-irst, Trento, Italy, October 2007
+.br
+Support for categories, attributes, and different line types by Markus Metz
+.SH SOURCE CODE
+.PP
+Available at: v.build.polylines source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

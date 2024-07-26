@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>i.topo.corr - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>i.topo.corr</b></em>  - Computes topographic correction of reflectance.
+<h2>KEYWORDS</h2>
+<a href="imagery.html">imagery</a>, <a href="topic_terrain.html">terrain</a>, <a href="keywords.html#topographic correction">topographic correction</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>i.topo.corr</b><br></div>
+<b>i.topo.corr --help</b><br>
+<div id="synopsis"><b>i.topo.corr</b> [-<b>is</b>]  [<b>input</b>=<em>name</em>[,<i>name</i>,...]]  <b>output</b>=<em>name</em> <b>basemap</b>=<em>name</em> <b>zenith</b>=<em>float</em>  [<b>azimuth</b>=<em>float</em>]   [<b>method</b>=<em>string</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-i</b></dt>
+<dd>Output sun illumination terrain model</dd>
+
+<dt><b>-s</b></dt>
+<dd>Scale output to input and copy color rules</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of reflectance raster maps to be corrected topographically</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name (flag -i) or prefix for output raster maps</dd>
+
+<dt><b>basemap</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input base raster map (elevation or illumination)</dd>
+
+<dt><b>zenith</b>=<em>float</em>&nbsp;<b>[required]</b></dt>
+<dd>Solar zenith in degrees</dd>
+
+<dt><b>azimuth</b>=<em>float</em></dt>
+<dd>Solar azimuth in degrees (only if flag -i)</dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Topographic correction method</dd>
+<dd>Options: <em>cosine, minnaert, c-factor, percent</em></dd>
+<dd>Default: <em>c-factor</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a>
+    <ul class="toc">
+        <li class="toc"><a href="#method:-cosine" class="toc">Method: cosine</a></li>
+        <li class="toc"><a href="#method:-minnaert" class="toc">Method: minnaert</a></li>
+        <li class="toc"><a href="#method:-c-factor" class="toc">Method: c-factor</a></li>
+        <li class="toc"><a href="#method:-percent" class="toc">Method: percent</a></li>
+    </ul></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>i.topo.corr</em> is used to topographically correct reflectance
+from imagery files, e.g. obtained with <em>i.landsat.toar</em>, using a
+sun illumination terrain model. This illumination model represents the
+cosine of the incident angle <em>i</em>, i.e. the  angle between the normal to the
+ground and the sun rays.
+<p>
+Note: If needed, the sun position can be calculated for a given date with
+<em>r.sunmask</em>.
+
+
+<center>
+<img src="i_topo_corr_angles.png" alt="Figure showing terrain and solar angles"><br>
+Figure showing terrain and solar angles
+</center>
+
+<p>
+Using the <b>-i</b> flag and given an elevation basemap (metric),
+<em>i.topo.corr</em> creates a simple illumination model using the formula:
+<ul>
+  <li> cos_i = cos(s) * cos(z) + sin(s) * sin(z) * cos(a - o) </li>
+</ul>
+where,
+<em>i</em> is the incident angle to be calculated,
+<em>s</em> is the terrain slope angle,
+<em>z</em> is the solar zenith angle,
+<em>a</em> the solar azimuth angle,
+<em>o</em> the terrain aspect angle.
+
+<p>
+For each band file, the corrected reflectance (ref_c) is calculate from
+the original reflectance (ref_o) using one of the four offered methods
+<!-- TODO: fix next numbers -->
+(one lambertian and two non-lambertian).</p>
+
+<h3><a name="method:-cosine">Method: cosine</a></h3>
+
+<ul>
+  <li> ref_c = ref_o * cos_z / cos_i </li>
+</ul>
+
+<h3><a name="method:-minnaert">Method: minnaert</a></h3>
+
+<ul>
+  <li>ref_c = ref_o * (cos_z / cos_i) ^k</li>
+</ul>
+where,
+<em>k</em> is obtained by linear regression of<br>
+ln(ref_o) = ln(ref_c) - k ln(cos_i/cos_z)
+
+<h3><a name="method:-c-factor">Method: c-factor</a></h3>
+
+<ul>
+  <li>ref_c = ref_o * (cos_z + c)/ (cos_i + c)</li>
+</ul>
+where,
+<em>c</em> is a/m from ref_o = a + m * cos_i
+
+<h3><a name="method:-percent">Method: percent</a></h3>
+
+We can use cos_i to estimate the percent of solar incidence on the surface,
+then the transformation (cos_i + 1)/2 varied from 0
+(surface in the side in opposition to the sun: infinite correction) to 1
+(direct exhibition to the sun: no correction) and the corrected reflectance can
+be calculated as
+<ul>
+  <li>ref_c = ref_o * 2 / (cos_i + 1)</li>
+</ul>
+
+
+<h2><a name="notes">NOTES</a></h2>
+
+<ol>
+<li>The illumination model (cos_i) with flag -i uses the actual region
+    as limits and the resolution of the elevation map.</li>
+<li>The topographic correction use the full reflectance file (null remain
+    null) and its resolution.</li>
+<li>The elevation map to calculate the illumination model should be metric.</li>
+</ol>
+
+
+<h2><a name="examples">EXAMPLES</a></h2>
+
+First, make a illumination model from the elevation map (here, SRTM). Then
+make perform the topographic correction of e.g. the bands toar.5, toar.4 and toar.3
+with output as tcor.toar.5, tcor.toar.4, and tcor.toar.3 using c-factor (= c-correction)
+method:
+<p>
+
+<div class="code"><pre>
+# first pass: create illumination model
+i.topo.corr -i base=SRTM zenith=33.3631 azimuth=59.8897 output=SRTM.illumination
+
+# second pass: apply illumination model
+i.topo.corr base=SRTM.illumination input=toar.5,toar.4,toar.3 output=tcor \ 
+  zenith=33.3631 method=c-factor
+</pre></div>
+
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+<li>Law K.H. and Nichol J, 2004. Topographic Correction For Differential
+    Illumination Effects On Ikonos Satellite Imagery. International Archives of
+    Photogrammetry Remote Sensing and Spatial Information, pp. 641-646.</li>
+<li>Meyer, P. and Itten, K.I. and Kellenberger, KJ and Sandmeier, S. and
+    Sandmeier, R., 1993. Radiometric corrections of topographically induced
+    effects on Landsat TM data in alpine terrain. Photogrammetric Engineering
+    and Remote Sensing 48(17).</li>
+<li>Ria&ntilde;o, D. and Chuvieco, E. and Salas, J. and Aguado, I., 2003.
+    Assessment of Different Topographic Corrections in Landsat-TM
+    Data for Mapping Vegetation Types. IEEE Transactions On Geoscience
+    And Remote Sensing, Vol. 41, No. 5</li>
+<li>Twele A. and Erasmi S, 2005. Evaluating topographic correction algorithms
+    for improved land cover discrimination in mountainous areas of
+    Central Sulawesi. G&ouml;ttinger Geographische Abhandlungen, vol. 113.</li>
+</ul>
+
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="i.landsat.toar.html">i.landsat.toar</a>,
+<a href="r.mapcalc.html">r.mapcalc</a>,
+<a href="r.sun.html">r.sun</a>
+<a href="r.sunmask.html">r.sunmask</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+E. Jorge Tizado  (ej.tizado unileon es)<br>
+Dept. Biodiversity and Environmental Management, University of Le&oacute;n, Spain
+<p>
+Figure derived from Neteler &amp; Mitasova, 2008.
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/imagery/i.topo.corr">i.topo.corr source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/imagery/i.topo.corr">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="imagery.html">Imagery index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

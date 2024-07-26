@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r3.stats - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r3.stats</b></em>  - Generates volume statistics for 3D raster maps.
+<h2>KEYWORDS</h2>
+<a href="raster3d.html">raster3d</a>, <a href="topic_statistics.html">statistics</a>, <a href="keywords.html#voxel">voxel</a>, <a href="keywords.html#volume">volume</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r3.stats</b><br></div>
+<b>r3.stats --help</b><br>
+<div id="synopsis"><b>r3.stats</b> [-<b>ec</b>] <b>input</b>=<em>name</em>  [<b>nsteps</b>=<em>integer</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-e</b></dt>
+<dd>Calculate statistics based on equal value groups</dd>
+
+<dt><b>-c</b></dt>
+<dd>Only print cell counts</dd>
+
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input 3D raster map</dd>
+
+<dt><b>nsteps</b>=<em>integer</em></dt>
+<dd>Number of subranges to collect stats from</dd>
+<dd>Default: <em>20</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#examples" class="toc">EXAMPLES</a>
+    <ul class="toc">
+        <li class="toc"><a href="#lausanne-foss4g-2006-3d-demo-dataset-example" class="toc">Lausanne FOSS4G 2006 3D demo dataset example</a></li>
+        <li class="toc"><a href="#generic-example" class="toc">Generic example</a></li>
+    </ul></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r3.stats</em> calculates volume statistics for 3D raster maps.
+Volumes are created on base of value subranges or groups of equal values.
+The default number of subranges is 20 and can vary from 1 to infinite. 
+Larger number of subranges will result in larger memory consumption.
+The volumes are calculated in qubic meters. Null values are marked with "*".
+If the flag <em>-e</em> is set, the number of subranges will be ignored.
+
+<h2><a name="notes">NOTES</a></h2>
+
+As with most GRASS 3D raster map modules, <em>r3.stats</em> operates on the cell
+array defined by the current 3D region settings, not the original extent and
+resolution of the input map. See <em>g.region</em>.
+<p>The region setting will not effect the memory consumption of this module.
+The number of subranges in case of value range calculation or the number of 
+equal value groups effect the memory consumption and the calculation time.
+The user can expect a huge time consumption to calculate the equal value
+groups (flag <em>-e</em>) if large region settings occur for maps which
+have many equal value groups (> 100000).
+
+<h2><a name="examples">EXAMPLES</a></h2>
+<h3><a name="lausanne-foss4g-2006-3d-demo-dataset-example">Lausanne FOSS4G 2006 3D demo dataset example</a></h3>
+
+The 3D raster map <em>geology</em> has three values. Each value represents 
+a specific geological layer, clay = 1, sand = 2 and bedrock = 3. To calculate
+the volume of each geological layer, we can use the flag <em>-e</em> to group
+equal values into single volumes. 
+<em>r3.stats geology -e</em> will produce the following output:
+
+<p><div class="code"><pre>
+  num   |        value       |     volume    |   perc  |    count
+      1             1.000000   300822000.000   50.13700        50137
+      2             2.000000   101400000.000   16.90000        16900
+      3             3.000000   197778000.000   32.96300        32963
+      4                    *           0.000   0.00000            0
+
+Number of groups with equal values: 3
+Sum of non Null cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Count = 100000
+
+Sum of all cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Count = 100000
+
+</pre></div>
+<h3><a name="generic-example">Generic example</a></h3>
+
+<div class="code"><pre>
+#create a small 3D region
+g.region n=1000 s=0 e=2000 w=0 t=300 b=0 res3=100
+
+#create a raster3D map with row() and null values
+r3.mapcalc "volmap = if(row() == 5, null(), row())"
+
+#run r3.stats with a subrange of 10
+r3.stats input=volmap nsteps=10
+
+#the result should look like this
+ num   | minimum <= value   | value &lt; maximum    |     volume    |   perc  | cell count
+      1          1.000000000          1.900000000    60000000.000   10.00000           60
+      2          1.900000000          2.800000000    60000000.000   10.00000           60
+      3          2.800000000          3.700000000    60000000.000   10.00000           60
+      4          3.700000000          4.600000000    60000000.000   10.00000           60
+      5          4.600000000          5.500000000           0.000   0.00000            0
+      6          5.500000000          6.400000000    60000000.000   10.00000           60
+      7          6.400000000          7.300000000    60000000.000   10.00000           60
+      8          7.300000000          8.200000000    60000000.000   10.00000           60
+      9          8.200000000          9.100000000    60000000.000   10.00000           60
+     10          9.100000000         10.000000001    60000000.000   10.00000           60
+     11                    *                    *    60000000.000   10.00000           60
+
+Sum of non Null cells:
+        Volume = 540000000.000
+        Percentage =  90.000
+        Cell count = 540
+
+Sum of all cells:
+        Volume = 600000000.000
+        Percentage = 100.000
+        Cell count = 600
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="g.region.html">g.region</a>,
+<a href="r3.univar.html">r3.univar</a>,
+<a href="r.stats.html">r.stats</a>,
+<a href="r.statistics.html">r.statistics</a>,
+<a href="v.univar.html">v.univar</a>
+</em>
+
+
+<h2><a name="author">AUTHOR</a></h2>
+S&ouml;ren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster3d/r3.stats">r3.stats source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster3d/r3.stats">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster3d.html">3D raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

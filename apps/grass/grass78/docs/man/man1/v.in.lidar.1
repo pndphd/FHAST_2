@@ -1,0 +1,404 @@
+.TH v.in.lidar 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBv.in.lidar\fR\fR  \- Converts LAS LiDAR point clouds to a GRASS vector map with libLAS.
+.SH KEYWORDS
+vector, import, LIDAR, level1
+.SH SYNOPSIS
+\fBv.in.lidar\fR
+.br
+\fBv.in.lidar \-\-help\fR
+.br
+\fBv.in.lidar\fR [\-\fBpruvetcboi\fR] \fBinput\fR=\fIname\fR \fBoutput\fR=\fIname\fR  [\fBid_layer\fR=\fIstring\fR]   [\fBreturn_layer\fR=\fIstring\fR]   [\fBclass_layer\fR=\fIstring\fR]   [\fBrgb_layer\fR=\fIstring\fR]   [\fBspatial\fR=\fIxmin,ymin,xmax,ymax\fR[,\fIxmin,ymin,xmax,ymax\fR,...]]   [\fBzrange\fR=\fImin,max\fR]   [\fBreturn_filter\fR=\fIstring\fR]   [\fBclass_filter\fR=\fIinteger\fR[,\fIinteger\fR,...]]   [\fBmask\fR=\fIname\fR]   [\fBmask_layer\fR=\fIstring\fR]   [\fBskip\fR=\fIinteger\fR]   [\fBpreserve\fR=\fIinteger\fR]   [\fBoffset\fR=\fIinteger\fR]   [\fBlimit\fR=\fIinteger\fR]   [\fBlocation\fR=\fIname\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print LAS file info and exit
+.IP "\fB\-r\fR" 4m
+.br
+Limit import to the current region
+.IP "\fB\-u\fR" 4m
+.br
+Invert mask when selecting points
+.IP "\fB\-v\fR" 4m
+.br
+Use only valid points
+.br
+Points invalid according to APSRS LAS specification will be filtered out
+.IP "\fB\-e\fR" 4m
+.br
+Extend region extents based on new dataset
+.IP "\fB\-t\fR" 4m
+.br
+Do not create attribute table
+.IP "\fB\-c\fR" 4m
+.br
+Do not automatically add unique ID as category to each point
+.br
+Create only requested layers and categories
+.IP "\fB\-b\fR" 4m
+.br
+Do not build topology
+.br
+Advantageous when handling a large number of points
+.IP "\fB\-o\fR" 4m
+.br
+Override projection check (use current location\(cqs projection)
+.br
+Assume that the dataset has same projection as the current location
+.IP "\fB\-i\fR" 4m
+.br
+Create the location specified by the \(dqlocation\(dq parameter and exit. Do not import the vector data.
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBinput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+LAS input file
+.br
+LiDAR input files in LAS format (*.las or *.laz)
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output vector map
+.IP "\fBid_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store generated point ID as category
+.br
+Set to 1 by default, use \-c to not store it
+.IP "\fBreturn_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store return information as category
+.br
+Leave empty to not store it
+.IP "\fBclass_layer\fR=\fIstring\fR" 4m
+.br
+Layer number to store class number as category
+.br
+Leave empty to not store it
+.IP "\fBrgb_layer\fR=\fIstring\fR" 4m
+.br
+Layer number where RBG colors are stored as category
+.br
+Leave empty to not store it
+.IP "\fBspatial\fR=\fIxmin,ymin,xmax,ymax[,\fIxmin,ymin,xmax,ymax\fR,...]\fR" 4m
+.br
+Import subregion only
+.br
+Format: xmin,ymin,xmax,ymax \- usually W,S,E,N
+.IP "\fBzrange\fR=\fImin,max\fR" 4m
+.br
+Filter range for z data (min,max)
+.IP "\fBreturn_filter\fR=\fIstring\fR" 4m
+.br
+Only import points of selected return type
+.br
+If not specified, all points are imported
+.br
+Options: \fIfirst, last, mid\fR
+.IP "\fBclass_filter\fR=\fIinteger[,\fIinteger\fR,...]\fR" 4m
+.br
+Only import points of selected class(es)
+.br
+Input is comma separated integers. If not specified, all points are imported.
+.IP "\fBmask\fR=\fIname\fR" 4m
+.br
+Areas where to import points
+.br
+Name of vector map with areas where the points should be imported
+.IP "\fBmask_layer\fR=\fIstring\fR" 4m
+.br
+Layer number or name for mask option
+.br
+Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.
+.br
+Default: \fI1\fR
+.IP "\fBskip\fR=\fIinteger\fR" 4m
+.br
+Do not import every n\-th point
+.br
+For example, 5 will import 80 percent of points. If not specified, all points are imported
+.IP "\fBpreserve\fR=\fIinteger\fR" 4m
+.br
+Import only every n\-th point
+.br
+For example, 4 will import 25 percent of points. If not specified, all points are imported
+.IP "\fBoffset\fR=\fIinteger\fR" 4m
+.br
+Skip first n points
+.br
+Skips the given number of points at the beginning.
+.IP "\fBlimit\fR=\fIinteger\fR" 4m
+.br
+Import only n points
+.br
+Imports only the given number of points
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Name for new location to create
+.SH DESCRIPTION
+\fIv.in.lidar\fR converts LiDAR point clouds in LAS format to a GRASS
+vector, using the libLAS library.
+The created vector is true 3D with x, y, z coordinates.
+.PP
+For larger datasets, it is recommended to not build topology (\-b flag).
+Also, creating a table with attributes can take some time for larger datasets.
+.PP
+The optional \fBspatial\fR parameter defines spatial query extents.
+This parameter allows the user to restrict the region to a spatial subset
+while importing the data. All LiDAR points falling into this rectangle
+subregion are imported. The \fB\-r\fR current region flag is identical,
+but uses the current region settings as the spatial bounds
+(see \fIg.region\fR).
+.PP
+A LiDAR pulse can have multiple returns. The first return values can be
+used to obtain a digital surface model (DSM) where e.g. canopy cover is
+represented. The last return values can be used to obtain a digital
+terrain model (DTM) where e.g. the forest floor instead of canopy
+cover is represented. The \fBreturn_filter\fR option allows selecting one of
+first, mid, or last returns.
+.PP
+LiDAR points can be already classified into standardized classes. For example,
+class number 2 represents ground (for other classes see LAS format specification
+in references). The \fBclass_filter\fR option allows selecting one or more
+classes, as numbers (integers) separated by comma.
+.PP
+Note that proper filtering of the input points in not only critical for
+the analysis itself but it can also speed up the processing
+significantly.
+.SS Decimation
+Table with selected percentages of points to keep with corresponding
+decimation parameters:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+percentage
+T}	 	T{
+parameters
+T}
+.sp 1
+T{
+0.1%
+T}	 	T{
+preserve=1000
+T}
+.sp 1
+T{
+1%
+T}	 	T{
+preserve=100
+T}
+.sp 1
+T{
+5%
+T}	 	T{
+preserve=20
+T}
+.sp 1
+T{
+10%
+T}	 	T{
+preserve=10
+T}
+.sp 1
+T{
+20%
+T}	 	T{
+preserve=5
+T}
+.sp 1
+T{
+25%
+T}	 	T{
+preserve=4
+T}
+.sp 1
+T{
+50%
+T}	 	T{
+skip=2
+T}
+.sp 1
+T{
+75%
+T}	 	T{
+skip=4
+T}
+.sp 1
+T{
+80%
+T}	 	T{
+skip=5
+T}
+.sp 1
+T{
+90%
+T}	 	T{
+skip=10
+T}
+.sp 1
+.TE
+Table with selected fractions of points to keep with corresponding
+decimation parameters:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+ratio
+T}	 	T{
+parameters
+T}
+.sp 1
+T{
+1/3
+T}	 	T{
+preserve=3
+T}
+.sp 1
+T{
+1/4
+T}	 	T{
+preserve=4
+T}
+.sp 1
+T{
+1/5
+T}	 	T{
+preserve=5
+T}
+.sp 1
+T{
+1/6
+T}	 	T{
+preserve=6
+T}
+.sp 1
+.TE
+Table with selected fractions of points to throw away with corresponding
+decimation parameters:
+.TS
+expand;
+lw60 lw1 lw60.
+T{
+ratio
+T}	 	T{
+parameters
+T}
+.sp 1
+T{
+1/3
+T}	 	T{
+skip=3
+T}
+.sp 1
+T{
+1/4
+T}	 	T{
+skip=4
+T}
+.sp 1
+T{
+1/5
+T}	 	T{
+skip=5
+T}
+.sp 1
+T{
+1/6
+T}	 	T{
+skip=6
+T}
+.sp 1
+.TE
+.SH Location Creation
+\fIv.in.lidar\fR attempts to preserve projection information when importing
+datasets if the source format includes projection information, and if
+the LAS driver supports it.  If the projection of the source dataset does
+not match the projection of the current location \fIv.in.lidar\fR will
+report an error message (\(dqProjection of dataset does not appear to
+match current location\(dq) and then report the PROJ_INFO parameters of
+the source dataset.
+.PP
+If the user wishes to ignore the difference between the apparent coordinate
+system of the source data and the current location, they may pass the
+\fB\-o\fR flag to override the projection check.
+.PP
+If the user wishes to import the data with the full projection definition,
+it is possible to have \fIv.in.lidar\fR automatically create a new location based
+on the projection and extents of the file being read.  This is accomplished
+by passing the name to be used for the new location via the \fBlocation\fR
+parameter.  Upon completion of the command, a new location will have been
+created (with only a PERMANENT mapset), and the vector map will have been
+imported with the indicated \fBoutput\fR name into the PERMANENT mapset.
+.SH NOTES
+The typical file extensions for the LAS format are .las and .laz (compressed).
+The compressed LAS (.laz) format can be imported only if libLAS has been compiled
+with laszip support. It is also recommended to compile libLAS with GDAL,
+needed to test for matching projections.
+.SH EXAMPLE
+This example is analogous to the example used in the GRASS wiki page for
+importing LAS as vector points.
+.PP
+The sample LAS data are in the file \(dqSerpent Mound Model LAS Data.las\(dq,
+available at
+appliedimagery.com
+.br
+.nf
+\fC
+  # print LAS file info
+  v.in.lidar \-p input=\(dqSerpent Mound Model LAS Data.las\(dq
+  # create location with projection information of the LAS data
+  v.in.lidar \-i input=\(dqSerpent Mound Model LAS Data.las\(dq location=Serpent_Mound
+  # quit and restart GRASS in the newly created location \(dqSerpent_Mound\(dq
+  # real import of LiDAR LAS data, without topology and without attribute table
+  v.in.lidar \-tb input=\(dqSerpent Mound Model LAS Data.las\(dq output=Serpent_Mound_Model_pts
+\fR
+.fi
+.SH SEE ALSO
+\fI
+r.in.lidar,
+r3.in.lidar,
+g.region,
+v.vect.stats,
+v.in.ogr
+\fR
+.SH REFERENCES
+ASPRS LAS format
+.br
+LAS library
+.br
+LAS library C API documentation
+.SH AUTHOR
+Markus Metz
+.br
+Vaclav Petras,
+NCSU GeoForAll Lab
+(decimation, cats, areas, zrange)
+.br
+based on \fIv.in.ogr\fR by various authors
+.SH SOURCE CODE
+.PP
+Available at: v.in.lidar source code (history)
+.PP
+Main index |
+Vector index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

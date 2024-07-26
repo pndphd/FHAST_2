@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.param.scale - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.param.scale</b></em>  - Extracts terrain parameters from a DEM.<BR>
+Uses a multi-scale approach by taking fitting quadratic parameters to any size window (via least squares).
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_geomorphology.html">geomorphology</a>, <a href="keywords.html#terrain">terrain</a>, <a href="keywords.html#elevation">elevation</a>, <a href="keywords.html#landform">landform</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.param.scale</b><br></div>
+<b>r.param.scale --help</b><br>
+<div id="synopsis"><b>r.param.scale</b> [-<b>c</b>] <b>input</b>=<em>name</em> <b>output</b>=<em>name</em>  [<b>slope_tolerance</b>=<em>float</em>]   [<b>curvature_tolerance</b>=<em>float</em>]   [<b>size</b>=<em>integer</em>]   [<b>method</b>=<em>string</em>]   [<b>exponent</b>=<em>float</em>]   [<b>zscale</b>=<em>float</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-c</b></dt>
+<dd>Constrain model through central window cell</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output raster map containing morphometric parameter</dd>
+
+<dt><b>slope_tolerance</b>=<em>float</em></dt>
+<dd>Slope tolerance that defines a 'flat' surface (degrees)</dd>
+<dd>Default: <em>1.0</em></dd>
+
+<dt><b>curvature_tolerance</b>=<em>float</em></dt>
+<dd>Curvature tolerance that defines 'planar' surface</dd>
+<dd>Default: <em>0.0001</em></dd>
+
+<dt><b>size</b>=<em>integer</em></dt>
+<dd>Size of processing window (odd number only)</dd>
+<dd>Options: <em>3-499</em></dd>
+<dd>Default: <em>3</em></dd>
+
+<dt><b>method</b>=<em>string</em></dt>
+<dd>Morphometric parameter in 'size' window to calculate</dd>
+<dd>Options: <em>elev, slope, aspect, profc, planc, longc, crosc, minic, maxic, feature</em></dd>
+<dd>Default: <em>elev</em></dd>
+
+<dt><b>exponent</b>=<em>float</em></dt>
+<dd>Exponent for distance weighting (0.0-4.0)</dd>
+<dd>Default: <em>0.0</em></dd>
+
+<dt><b>zscale</b>=<em>float</em></dt>
+<dd>Vertical scaling factor</dd>
+<dd>Default: <em>1.0</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#todo" class="toc">TODO</a></li>
+    <li class="toc"><a href="#references" class="toc">REFERENCES</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#authors" class="toc">AUTHORS</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+<em>r.param.scale</em> extracts terrain parameters from a digital elevation model. Uses a
+multi-scale approach by fitting a bivariate quadratic polynomial to a given
+window size using least squares.
+
+<p>The module calculates the following parameters (terminology is from Wood,
+1996 with related terminology used in other GRASS modules listed in
+brackets):
+<ul>
+<li>
+<i>elev</i>: Generalised elevation value (for resampling purposes at different
+scale)</li>
+
+<li>
+<i>slope</i>: Magnitude of maximum gradient (steepest slope angle)</li>
+
+<li>
+<i>aspect</i>: Direction of maximum gradient (steepest slope direction=flow direction)</li>
+
+<li>
+<i>profc</i>: profile curvature (curvature intersecting with the plane
+defined by <i>Z</i> axis and maximum gradient direction). Positive values
+describe convex profile curvature, negative values concave profile
+curvature.</li>
+
+<li>
+<i>planc</i>: plan curvature (horizontal curvature, intersecting with
+the <i>XY</i> plane)</li>
+
+<li>
+<i>longc</i>: longitudinal curvature (profile curvature intersecting
+with the plane defined by the surface normal and maximum gradient direction)</li>
+
+<li>
+<i>crosc</i>: cross-sectional curvature (tangential curvature intersecting
+with the plane defined by the surface normal and a tangent to the contour
+- perpendicular to maximum gradient direction)</li>
+
+<li>
+<i>maxic</i>: maximum curvature (can be in any direction)</li>
+
+<li>
+<i>minic</i>: minimum curvature (in direction perpendicular to the direction
+of of maximum curvature)</li>
+
+<!--
+<li>
+<i>meanc</i> or mean curvature (average of maximum and minimum curvatures).</li>
+-->
+
+<li>
+<i>feature</i>: Morphometric features: peaks, ridges, passes, channels, pits and planes</li>
+</ul>
+
+<h2><a name="notes">NOTES</a></h2>
+In <i>r.param.scale</i> the direction of maximum gradient (considered
+downslope) is stored as (West is 0 degree, East is +/- 180 degree):
+
+<ul>
+<li>
+0..+180 degree from West to North to East</li>
+
+<li>
+0..-180 degree from West to South to East</li>
+</ul>
+
+Note that the aspect map is calculated differently from
+<em><a href="r.slope.aspect.html">r.slope.aspect</a></em>.
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The next commands will create a geomorphological map of the Spearfish sample
+dataset region:
+
+<div class="code"><pre>
+g.region raster=elevation.10m -p
+r.param.scale in=elevation.10m output=morphology method=feature size=9
+</pre></div>
+
+<div align="center" style="margin: 10px">
+<a href="r_param_scale_morph.jpg">
+<img src="r_param_scale_morph.jpg" width="600" alt="r.param.scale example" border=0><br>
+</a>
+<i>Figure: Geomorphological map of a subregion in the Spearfish (SD) area</i>
+</div>
+
+
+<h2><a name="todo">TODO</a></h2>
+
+Fix bug when `constrain through central cell' option selected. Create color
+tables for all output files (presently only on features).
+
+<h2><a name="references">REFERENCES</a></h2>
+
+<ul>
+  <li>Wood, J. (1996): The Geomorphological characterisation of
+    Digital Elevation Models. Diss., Department of Geography, University
+    of Leicester, U.K<br>online at:
+    <a href="http://hdl.handle.net/2381/34503">http://hdl.handle.net/2381/34503</a></li>
+  <li>Java Code in
+    <a href="http://www.geog.le.ac.uk/jwo/research/LandSerf">LandSerf</a>
+    that implements the same procedure</li>
+</ul>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+  <a href="r.geomorphon.html">r.geomorphon</a>,
+  <a href="r.slope.aspect.html">r.slope.aspect</a>
+</em>
+
+<h2><a name="authors">AUTHORS</a></h2>
+
+<address>
+<a href="MAILTO:jwo@le.ac.uk">jwo@le.ac.uk</a>
+- <a href="http://www.geog.le.ac.uk/assist/index.html">ASSIST's home</a></address>
+
+<p>Update to FP 3/2002: L. Potrich, M. Neteler, S. Menegon (ITC-irst)
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.param.scale">r.param.scale source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.param.scale">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

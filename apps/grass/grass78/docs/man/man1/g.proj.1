@@ -1,0 +1,384 @@
+.TH g.proj 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.proj\fR\fR  \- Prints or modifies GRASS projection information files (in various co\-ordinate system descriptions).
+.br
+Can also be used to create new GRASS locations.
+.SH KEYWORDS
+general, projection, create location
+.SH SYNOPSIS
+\fBg.proj\fR
+.br
+\fBg.proj \-\-help\fR
+.br
+\fBg.proj\fR [\-\fBpgdjfwetc\fR]  [\fBgeoref\fR=\fIfile\fR]   [\fBwkt\fR=\fIfile\fR]   [\fBproj4\fR=\fIparams\fR]   [\fBepsg\fR=\fIcode\fR]   [\fBlist_codes\fR=\fIstring\fR]   [\fBdatum\fR=\fIname\fR]   [\fBdatum_trans\fR=\fIindex\fR]   [\fBlocation\fR=\fIname\fR]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print projection information in conventional GRASS format
+.IP "\fB\-g\fR" 4m
+.br
+Print projection information in shell script style
+.IP "\fB\-d\fR" 4m
+.br
+Verify datum information and print transformation parameters
+.IP "\fB\-j\fR" 4m
+.br
+Print projection information in PROJ.4 format
+.IP "\fB\-f\fR" 4m
+.br
+Print \(cqflat\(cq output with no linebreaks (applies to WKT and PROJ.4 output)
+.IP "\fB\-w\fR" 4m
+.br
+Print projection information in WKT format
+.IP "\fB\-e\fR" 4m
+.br
+Use ESRI\-style format (applies to WKT output only)
+.IP "\fB\-t\fR" 4m
+.br
+Force override of datum transformation information in input co\-ordinate system
+.IP "\fB\-c\fR" 4m
+.br
+Modify current location projection files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBgeoref\fR=\fIfile\fR" 4m
+.br
+Name of georeferenced data file to read projection information from
+.IP "\fBwkt\fR=\fIfile\fR" 4m
+.br
+Name of ASCII file containing a WKT projection description
+.br
+\(cq\-\(cq for standard input
+.IP "\fBproj4\fR=\fIparams\fR" 4m
+.br
+PROJ.4 projection description
+.br
+\(cq\-\(cq for standard input
+.IP "\fBepsg\fR=\fIcode\fR" 4m
+.br
+EPSG projection code
+.br
+Options: \fI1\-1000000\fR
+.IP "\fBlist_codes\fR=\fIstring\fR" 4m
+.br
+List codes for given authority, e.g. EPSG, and exit
+.br
+Options: \fIEPSG, ESRI, IGNF, OGC, PROJ\fR
+.IP "\fBdatum\fR=\fIname\fR" 4m
+.br
+Datum (overrides any datum specified in input co\-ordinate system)
+.br
+Accepts standard GRASS datum codes, or \(dqlist\(dq to list and exit
+.IP "\fBdatum_trans\fR=\fIindex\fR" 4m
+.br
+Index number of datum transform parameters
+.br
+\(dq0\(dq for unspecified or \(dq\-1\(dq to list and exit
+.br
+Options: \fI\-1\-100\fR
+.br
+Default: \fI0\fR
+.IP "\fBlocation\fR=\fIname\fR" 4m
+.br
+Name of new location to create
+.SH DESCRIPTION
+.PP
+\fIg.proj\fR provides a means of converting a co\-ordinate system
+description (i.e. projection information) between various formats.
+If compiled without OGR present, the
+functionality is limited to:
+.RS 4n
+.IP \(bu 4n
+Reporting the projection information for the current location,
+either in conventional GRASS (\-p flag) or PROJ (\-j flag) format
+.IP \(bu 4n
+Changing the datum, or reporting and modifying the datum transformation
+parameters, for the current location
+.RE
+.PP
+When compiled with OGR, functionality is increased and allows output of
+the projection information in the Well\-Known Text (WKT) format popularised
+by proprietary GIS. In addition, if one of the parameters \fIgeoref\fR,
+\fIwkt\fR, \fIproj4\fR or \fIepsg\fR is specified, rather than the
+projection information being read from the current location it is imported
+from an external source as follows:
+.IP "georef=\fIfilename\fR" 4m
+.br
+\fIg.proj\fR attempts to invoke GDAL and OGR in turn to read a
+georeferenced file \fIfilename\fR. The projection information will be
+read from this file. If the file is not georeferenced or cannot be read,
+XY (unprojected) will be used.
+.IP "wkt=\fIfilename\fR or \fI\-\fR" 4m
+.br
+The file \fIfilename\fR should contain a projection description in WKT
+format with or without line\-breaks (e.g. a \(cq.prj\(cq file). If \fI\-\fR is given
+for the filename, the WKT description will be read from stdin rather than a
+file.
+.IP "proj4=\fIdescription\fR or \fI\-\fR" 4m
+.br
+\fIdescription\fR should be a projection description in
+PROJ format, enclosed in
+quotation marks if there are any spaces. If \fI\-\fR is given for
+\fIdescription\fR, the PROJ description will be read from stdin rather
+than as a directly\-supplied command\-line parameter.
+.IP "epsg=\fInumber\fR" 4m
+.br
+\fInumber\fR should correspond to the index number of a valid
+co\-ordinate system in the EPSG
+database. EPSG code support is based upon a local copy of the GDAL CSV
+co\-ordinate system and datum information files, stored in the directory
+$GISBASE/etc/proj/ogr_csv. These can be updated if necessary
+to support future revisions of the EPSG database.
+.PP
+If datum information is incorrect or missing in the input
+co\-ordinate system definition (e.g. PROJ descriptions have very limited
+support for specifying datum names), a GRASS datum abbreviation can instead be
+supplied using the \fIdatum\fR parameter. This will override any
+datum contained in the input co\-ordinate system, and discard
+any datum transformation parameters. Enter datum=\fIlist\fR to return a
+list of all the datums supported by GRASS. Since any
+existing datum transformation parameters will have been discarded, the
+\fIdatumtrans\fR parameter should in general always be used in
+conjunction with \fIdatum\fR.
+.PP
+The \-p, \-j, \-w, etc. flags are all functional when importing projection
+information from an external source, meaning that \fIg.proj\fR can be
+used to convert between representations of the information. It is
+not required that either the input or output be in GRASS
+format.
+.PP
+In addition however, if the \-c flag is specified, \fIg.proj\fR will
+create new GRASS projection files (PROJ_INFO, PROJ_UNITS, WIND and
+DEFAULT_WIND) based on the imported information. If the \fIlocation\fR
+parameter is specified in addition to \-c, then a new location will be created.
+Otherwise the projection information files in the current location will be
+overwritten. The program will not warn before doing this.
+.PP
+The final mode of operation of g.proj is to report on the datum
+information and datum transformation parameters associated with the
+co\-ordinate system. The \-d flag will report a human\-readable summary of
+this.
+.SH NOTES
+.PP
+If the input co\-ordinate system contains a datum name but no
+transformation parameters, and there is more than one suitable parameter set
+available (according to the files datum.table and datumtransform.table in
+$GISBASE/etc/proj), \fIg.proj\fR will check the value of
+the \fIdatumtrans\fR option and act according to the following:
+.br
+\-1: List available parameter sets in a GUI\-parsable (but also
+human\-readable) format and exit.
+.br
+0 (default): Continue without specifying parameters \- if
+used when creating a location, other GRASS modules will use the \(dqdefault\(dq
+(likely non\-optimum) parameters for this datum if necessary in the future.
+.br
+Any other number less than or equal to the number of parameter sets
+available for this datum: Choose this parameter set and add it to the
+co\-ordinate system description.
+.br
+If the \fI\-t\fR flag is specified, the module will attempt to change the
+datum transformation parameters using one of the above two methods
+even if a valid parameter set is already specified in the
+input co\-ordinate system. This can be useful to change the datum information
+for an existing location.
+.PP
+Output is simply based on the input projection information. g.proj does
+not attempt to verify that the co\-ordinate system thus
+described matches an existing system in use in the world. In particular,
+this means there are no EPSG Authority codes in the WKT output.
+.PP
+WKT format shows the false eastings and northings in the projected unit
+(e.g. meters, feet) but in PROJ format it should always be given in meters.
+.PP
+The maximum size of input WKT or PROJ projection descriptions is
+limited to 8000 bytes.
+.SH EXAMPLES
+.SS Print information
+Print the projection information for the current location:
+.br
+.br
+.nf
+\fC
+g.proj \-p
+\fR
+.fi
+.PP
+List the possible datum transformation parameters for the current location:
+.br
+.br
+.nf
+\fC
+g.proj \-t datumtrans=\-1
+\fR
+.fi
+.SS Create projection (PRJ) file
+Create a \(cq.prj\(cq file in ESRI format corresponding to the current location:
+.br
+.br
+.nf
+\fC
+g.proj \-wef > irish_grid.prj
+\fR
+.fi
+.SS Read projection from file
+Read the projection information from a GeoTIFF file and print it in PROJ
+format:
+.br
+.br
+.nf
+\fC
+g.proj \-jf georef=ASTER_DEM20020508161837.tif
+\fR
+.fi
+.PP
+Convert the PROJ projection description contained in a text file to WKT
+format:
+.br
+.br
+.nf
+\fC
+cat proj4.description | g.proj \-w proj4=\-
+\fR
+.fi
+.SS Create new location
+.PP
+Create a new location with the co\-ordinate system referred to by EPSG code
+4326 (Latitude\-Longitude/WGS84), without explicitly specifying datum
+transformation parameters:
+.br
+.br
+.nf
+\fC
+g.proj \-c epsg=4326 location=latlong
+\fR
+.fi
+.PP
+Create a new location with the co\-ordinate system referred to by ESRI\-EPSG code
+900913 (Google Mercator Projection)
+.br
+.br
+.nf
+\fC
+g.proj \-c epsg=900913 location=google
+\fR
+.fi
+.PP
+Create a new location with the co\-ordinate system referred to by EPSG code
+29900 (Irish Grid), selecting datum transformation parameter set no. 2:
+.br
+.br
+.nf
+\fC
+# list available datums for EPSG code 29900
+g.proj \-t datumtrans=\-1 epsg=29900
+g.proj \-c epsg=29900 datumtrans=2 location=irish_grid
+\fR
+.fi
+.PP
+Create a new location with the same co\-ordinate system as the current
+location, but forcing a change to datum transformation parameter set no. 1:
+.br
+.br
+.nf
+\fC
+g.proj \-c location=newloc \-t datumtrans=1
+\fR
+.fi
+.PP
+Create a new location with the co\-ordinate system from a WKT definition
+stored in a text file:
+.br
+.br
+.nf
+\fC
+g.proj \-c wkt=irish_grid.prj location=irish_grid
+\fR
+.fi
+.PP
+Create a new location from a PROJ description, explicitly
+specifying a datum and using the default datum transformation
+parameters:
+.br
+.br
+.nf
+\fC
+g.proj \-c location=spain proj4=\(dq+proj=utm +zone=30 +ellps=intl\(dq datum=eur50 datumtrans=0
+\fR
+.fi
+.SS Using g.proj output for GDAL/OGR tools
+.PP
+Reproject external raster map to current GRASS projection (does not always make sense!)
+using the GDAL \(cqgdalwarp\(cq tool. We recommend to use the ERDAS/Img format and not
+to use the ESRI style of WKT:
+.br
+.br
+.nf
+\fC
+# example for 30x30 pixel resolution (enforce with \-tr to avoid odd values)
+gdalwarp \-of HFA \-tr 30 30 \-t_srs \(dq\(gag.proj \-wf\(ga\(dq aster.img aster_tmerc.img
+\fR
+.fi
+.PP
+Reproject external vector map to current GRASS projection
+using the OGR \(cqogr2ogr\(cq tool:
+.br
+.br
+.nf
+\fC
+ogr2ogr \-t_srs \(dq\(gag.proj \-wf\(ga\(dq polbnda_italy_GB_ovest.shp polbnda_italy_LL.shp
+\fR
+.fi
+.SH REFERENCES
+PROJ: Projection/datum support library
+.br
+GDAL raster library and toolset
+.br
+OGR vector library and toolset
+.PP
+\fBFurther reading\fR
+.RS 4n
+.IP \(bu 4n
+ASPRS Grids and Datum
+.IP \(bu 4n
+MapRef \- The Collection of Map Projections and Reference Systems for Europe
+.IP \(bu 4n
+Projections Transform List (PROJ)
+.RE
+.SH SEE ALSO
+\fI
+m.proj,
+r.proj,
+v.proj,
+r.import,
+r.in.gdal,
+v.import,
+v.in.ogr
+\fR
+.SH AUTHOR
+Paul Kelly
+.SH SOURCE CODE
+.PP
+Available at: g.proj source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

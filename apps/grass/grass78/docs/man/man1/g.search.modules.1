@@ -1,0 +1,137 @@
+.TH g.search.modules 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBg.search.modules.py\fR\fR  \- Search in GRASS modules using keywords
+.SH KEYWORDS
+general, modules, search
+.SH SYNOPSIS
+\fBg.search.modules.py\fR
+.br
+\fBg.search.modules.py \-\-help\fR
+.br
+\fBg.search.modules.py\fR [\-\fBanmkcgj\fR]  [\fBkeyword\fR=\fIstring\fR[,\fIstring\fR,...]]   [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-a\fR" 4m
+.br
+Display only modules where all keywords are available (AND), default: OR
+.IP "\fB\-n\fR" 4m
+.br
+Invert selection (logical NOT)
+.IP "\fB\-m\fR" 4m
+.br
+Search in manual pages too (can be slow)
+.IP "\fB\-k\fR" 4m
+.br
+Search only for the exact keyword in module keyword list
+.br
+Instead of full text search, search only in actual keywords
+.IP "\fB\-c\fR" 4m
+.br
+Use colorized (more readable) output to terminal
+.IP "\fB\-g\fR" 4m
+.br
+Shell script format
+.IP "\fB\-j\fR" 4m
+.br
+JSON format
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBkeyword\fR=\fIstring[,\fIstring\fR,...]\fR" 4m
+.br
+Keyword to be searched
+.br
+List all modules if not given
+.SH DESCRIPTION
+\fIg.search.module\fR searches for given keyword in GRASS GIS modules name,
+description, keywords and optionally manpages, too. Also installed addons are
+considered in the search.
+.SH NOTES
+Multiple keywords may be specified, \fIg.search.modules\fR will search for
+all of them.
+.SH EXAMPLE
+Search all modules, where keywords \fIbuffer\fR OR \fIclip\fR can be found:
+.br
+.nf
+\fC
+g.search.modules keyword=buffer,clip
+r.circle
+    keywords: raster,buffer,geometry,circle
+    description: Creates a raster map containing concentric rings around a
+                 given point.
+r.buffer.lowmem
+    keywords: raster,buffer
+    description: Creates a raster map showing buffer zones surrounding cells
+                 that contain non\-NULL category values. This is the low\-
+                 memory alternative to the classic r.buffer module.
+r.buffer
+    keywords: raster,buffer
+    description: Creates a raster map showing buffer zones surrounding cells
+                 that contain non\-NULL category values.
+\fR
+.fi
+.PP
+Search all modules, where keywords \fIoverlay\fR AND \fIclip\fR can be
+found with some fancy terminal output (not shown here):
+.br
+.nf
+\fC
+g.search.modules keyword=clip,overlay \-a \-c
+v.clip
+    keywords: vector,clip,area
+    description: Extracts features of input map which overlay features
+                 of clip map.
+v.overlay
+    keywords: vector,geometry,spatial
+              query,clip,difference,intersection,union
+    description: Overlays two vector maps offering clip, intersection,
+                 difference, symmetrical difference, union operators.
+\fR
+.fi
+.PP
+Search in manual pages as well:
+.br
+.nf
+\fC
+g.search.modules \-m keyword=kapri
+db.execute
+    keywords: database,attribute table,SQL
+    description: Executes any SQL statement. For SELECT statements use
+                 \(cqdb.select\(cq.
+db.select
+    keywords: database,attribute table,SQL
+    description: Selects data from attribute table. Performs SQL query
+                 statement(s).
+\fR
+.fi
+.SH SEE ALSO
+\fI
+g.manual
+\fR
+.SH AUTHORS
+Jachym Cepicky, OpenGeoLabs s.r.o., Czech Republic: original author
+.br
+Anika Bettge, mundialis, Germany: addon search added
+.SH SOURCE CODE
+.PP
+Available at: g.search.modules source code (history)
+.PP
+Main index |
+General index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

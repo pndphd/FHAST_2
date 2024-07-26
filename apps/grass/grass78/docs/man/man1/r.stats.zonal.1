@@ -1,0 +1,142 @@
+.TH r.stats.zonal 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.stats.zonal\fR\fR  \- Calculates category or object oriented statistics (accumulator\-based statistics).
+.SH KEYWORDS
+raster, statistics, zonal statistics
+.SH SYNOPSIS
+\fBr.stats.zonal\fR
+.br
+\fBr.stats.zonal \-\-help\fR
+.br
+\fBr.stats.zonal\fR [\-\fBcr\fR] \fBbase\fR=\fIname\fR \fBcover\fR=\fIname\fR \fBmethod\fR=\fIstring\fR \fBoutput\fR=\fIname\fR  [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-c\fR" 4m
+.br
+Cover values extracted from the category labels of the cover map
+.IP "\fB\-r\fR" 4m
+.br
+Create reclass map with statistics as category labels
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBbase\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of base raster map
+.IP "\fBcover\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of cover raster map
+.IP "\fBmethod\fR=\fIstring\fR \fB[required]\fR" 4m
+.br
+Method of object\-based statistic
+.br
+Options: \fIcount, sum, min, max, range, average, avedev, variance, stddev, skewness, kurtosis, variance2, stddev2, skewness2, kurtosis2\fR
+.br
+\fBcount\fR: Count of values in specified objects
+.br
+\fBsum\fR: Sum of values in specified objects
+.br
+\fBmin\fR: Minimum of values in specified objects
+.br
+\fBmax\fR: Maximum of values in specified objects
+.br
+\fBrange\fR: Range of values (max \- min) in specified objects
+.br
+\fBaverage\fR: Average of values in specified objects
+.br
+\fBavedev\fR: Average deviation of values in specified objects
+.br
+\fBvariance\fR: Variance of values in specified objects
+.br
+\fBstddev\fR: Standard deviation of values in specified objects
+.br
+\fBskewness\fR: Skewness of values in specified objects
+.br
+\fBkurtosis\fR: Kurtosis of values in specified objects
+.br
+\fBvariance2\fR: (2\-pass) Variance of values in specified objects
+.br
+\fBstddev2\fR: (2\-pass) Standard deviation of values in specified objects
+.br
+\fBskewness2\fR: (2\-pass) Skewness of values in specified objects
+.br
+\fBkurtosis2\fR: (2\-pass) Kurtosis of values in specified objects
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Resultant raster map
+.SH DESCRIPTION
+\fIr.stats.zonal\fR is a tool to analyse exploratory statistics of a
+floating\-point \(dqcover layer\(dq according to how it intersects with objects
+in a \(dqbase layer\(dq. A variety of standard statistical measures are possible.
+This type of analysis is often called \fIzonal statistics\fR.
+The zones are specified as the \fBbase\fR raster map and
+the statistics are computed from cells in the \fBcover\fR raster map.
+Notably, the output of this module is spatial:
+The resulting values are recorded as cell values in the \fBoutput\fR raster map.
+.SH NOTES
+\fIr.stats.zonal\fR is intended to be a partial replacement for
+\fIr.statistics\fR, with support
+for floating\-point cover maps at the expense of not supporting
+quantiles. For this, see \fIr.stats.quantile\fR.
+.SH EXAMPLE
+In this example, the raster polygon map zipcodes in the North
+Carolina sample dataset is used to calculate zonal raster statistics using
+the elevation raster map:
+.br
+.nf
+\fC
+g.region raster=zipcodes \-p
+# pixel count in zipcode areas
+r.stats.zonal base=zipcodes cover=elevation method=count output=zipcodes_elev_count
+r.colors zipcodes_elev_count color=gyr \-g
+# average elevation in zipcode areas
+r.stats.zonal base=zipcodes cover=elevation method=average output=zipcodes_elev_avg
+r.colors zipcodes_elev_avg color=elevation \-g
+\fR
+.fi
+.SH SEE ALSO
+.RS 4n
+.IP \(bu 4n
+\fIr.stats.quantile\fR
+for computing quantiles in zones (objects in base raster map),
+.IP \(bu 4n
+\fIr.quantile\fR
+for computing quantiles of a whole raster map,
+.IP \(bu 4n
+\fIr.statistics\fR
+for categorical (integer) zonal statistics,
+.IP \(bu 4n
+\fIr.univar\fR
+for zonal statistics with textual (non\-spatial) output,
+.IP \(bu 4n
+\fIv.vect.stats\fR
+for statistics of vector points in vector areas.
+.RE
+.SH AUTHOR
+Glynn Clements
+.SH SOURCE CODE
+.PP
+Available at: r.stats.zonal source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

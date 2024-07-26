@@ -1,0 +1,129 @@
+.TH db.login 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBdb.login\fR\fR  \- Sets user/password for DB driver/database.
+.SH KEYWORDS
+database, connection settings
+.SH SYNOPSIS
+\fBdb.login\fR
+.br
+\fBdb.login \-\-help\fR
+.br
+\fBdb.login\fR [\-\fBp\fR] \fBdriver\fR=\fIname\fR \fBdatabase\fR=\fIname\fR  [\fBuser\fR=\fIstring\fR]   [\fBpassword\fR=\fIstring\fR]   [\fBhost\fR=\fIstring\fR]   [\fBport\fR=\fIstring\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-p\fR" 4m
+.br
+Print connection settings and exit
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBdriver\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of database driver
+.br
+Options: \fIdbf, odbc, ogr, pg, sqlite\fR
+.br
+Default: \fIsqlite\fR
+.IP "\fBdatabase\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name of database
+.br
+Default: \fI$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\fR
+.IP "\fBuser\fR=\fIstring\fR" 4m
+.br
+Username
+.IP "\fBpassword\fR=\fIstring\fR" 4m
+.br
+Password
+.IP "\fBhost\fR=\fIstring\fR" 4m
+.br
+Hostname
+.br
+Relevant only for pg and mysql driver
+.IP "\fBport\fR=\fIstring\fR" 4m
+.br
+Port
+.br
+Relevant only for pg and mysql driver
+.SH DESCRIPTION
+\fIdb.login\fR sets login parameters such an user name and
+optionally also a password, a hostname or a port for the connection to
+the selected \fBdatabase\fR through the DB \fBdriver\fR.
+.SH NOTE
+Options \fBhost\fR and \fBport\fR are related to only SQL database
+backends like PostgreSQL,
+MySQL or ODBC.
+.PP
+Note that the passwords are stored in a hidden, \fIunencrypted\fR
+file in the user account, specifically
+.RS 4n
+.IP \(bu 4n
+in the \(cqhome\(cq directory, i.e. $HOME/.grass7/dblogin (Unix\-like systems)
+.IP \(bu 4n
+%APPDATA%/GRASS7/dblogin (MS\-Windows)
+.RE
+Only the file owner can access this file.
+.SH EXAMPLES
+Only username specified (assuming locally accessible PostgreSQL DB
+without password):
+.br
+.nf
+\fC
+db.login driver=pg database=mydb
+\fR
+.fi
+.PP
+Username, password and hostname specified (note that the command lines
+history will store the password in this way):
+.br
+.nf
+\fC
+db.login driver=pg database=mydb user=bacava password=secret host=db.example.com
+\fR
+.fi
+.PP
+Username and empty password specified:
+.br
+.nf
+\fC
+db.login driver=pg database=mydb user=bacava password=\(dq\(dq
+\fR
+.fi
+.SH SEE ALSO
+\fI
+db.connect,
+db.test,
+db.tables
+\fR
+.PP
+SQL support in GRASS GIS
+.SH AUTHOR
+Radim Blazek
+.br
+Support for hostname and port by Martin Landa, OSGeoREL, Czech Technical University in Prague, Czech Republic (GRASS 7.1)
+.SH SOURCE CODE
+.PP
+Available at: db.login source code (history)
+.PP
+Main index |
+Database index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

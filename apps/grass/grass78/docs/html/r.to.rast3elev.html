@@ -1,0 +1,190 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>r.to.rast3elev - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>r.to.rast3elev</b></em>  - Creates a 3D volume map based on 2D elevation and value raster maps.
+<h2>KEYWORDS</h2>
+<a href="raster.html">raster</a>, <a href="topic_conversion.html">conversion</a>, <a href="keywords.html#raster3d">raster3d</a>, <a href="keywords.html#voxel">voxel</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>r.to.rast3elev</b><br></div>
+<b>r.to.rast3elev --help</b><br>
+<div id="synopsis"><b>r.to.rast3elev</b> [-<b>ulm</b>] <b>input</b>=<em>name</em>[,<i>name</i>,...] <b>elevation</b>=<em>name</em>[,<i>name</i>,...] <b>output</b>=<em>name</em>  [<b>upper</b>=<em>float</em>]   [<b>lower</b>=<em>float</em>]   [<b>tilesize</b>=<em>integer</em>]   [--<b>overwrite</b>]  [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>-u</b></dt>
+<dd>Use the input map values to fill the upper cells</dd>
+
+<dt><b>-l</b></dt>
+<dd>Use the input map values to fill the lower cells</dd>
+
+<dt><b>-m</b></dt>
+<dd>Use 3D raster mask (if exists) with input map</dd>
+
+<dt><b>--overwrite</b></dt>
+<dd>Allow output files to overwrite existing files</dd>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input raster map(s)</dd>
+
+<dt><b>elevation</b>=<em>name[,<i>name</i>,...]</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of input elevation raster map(s)</dd>
+
+<dt><b>output</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name for output 3D raster map</dd>
+
+<dt><b>upper</b>=<em>float</em></dt>
+<dd>The value to fill the upper cells, default is null</dd>
+
+<dt><b>lower</b>=<em>float</em></dt>
+<dd>The value to fill the lower cells, default is null</dd>
+
+<dt><b>tilesize</b>=<em>integer</em></dt>
+<dd>The maximum tile size in kilo bytes. Default is 32KB.</dd>
+<dd>Default: <em>32</em></dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#notes" class="toc">NOTES</a></li>
+    <li class="toc"><a href="#example" class="toc">Example</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+Creates a 3D volume map based on 2D elevation and value raster maps.
+If the 2d and 3d region settings are different,
+the 2d resolution will be adjust to the 3d resolution.
+
+<center>
+<img src="r.to.rast3elev.png" border="0"><br>
+<table border="0" width="700">
+<tr><td><center>
+<i>How r.to.rast3elev works</i>
+</center></td></tr>
+</table>
+</center>
+
+
+<h2><a name="notes">NOTES</a></h2>
+The hight of the 2D elevation maps will be used to verify the position 
+within the 3D region. If the cell value of the elevation raster maps is located within the 3D region, the 
+cell value of the appropriate 2D input raster maps will be written to the associated 3D cell.
+There are flags and options to fill the upper and lower 3D cells with a specific value, or the
+input raster maps values.
+
+<h2><a name="example">Example</a></h2>
+Simple Spearfish sample data set example
+
+<div class="code"><pre>
+g.region raster=elevation.10m -p
+g.region res=200 res3=200 t=2000 b=0 tbres=20 -p
+
+# Write the values of raster map soils based on the elevation of elevation.10m
+# to the 3D map volev
+
+r.to.rast3elev in=soils elev=elevation.10m out=volev
+
+# Write the values of map soils based on the elevation of elevation.10m
+# to the 3D map volev_l and fill the lower cells with the soils map values
+
+r.to.rast3elev in=soils elev=elevation.10m out=volev_l -l
+
+# Write the values of map soils based on the elevation of elevation.10m
+# to the 3D map volev_u and fill the upper cells with the soils map values
+
+r.to.rast3elev in=soils elev=elevation.10m out=volev_u -u
+
+# Example with multiple elevation maps.
+## first we need three support maps
+
+r.mapcalc expression="one = 1" 
+r.mapcalc expression="two = 2" 
+r.mapcalc expression="three = 3" 
+
+## Now we generate the new evelation maps
+
+r.mapcalc expression="elev_mid = elevation.10m - 500"
+r.mapcalc expression="elev_bottom = elevation.10m - 1000"
+
+## Now fill the lower cells below the elevation maps with the values one, two and three
+
+r.to.rast3elev -l input=one,two,three elevation=elevation.10m,elev_mid,elev_bottom output=threelayer
+
+## Export the map for visualization with paraview (http://www.paraview.org)
+## By default the null value is -9999.99, we adjust it to 0.0 for 
+## better visualization 
+r3.out.vtk null=0.0 input=threelayer output=/tmp/threelayer.vtk
+
+# Start paraview 
+
+paraview --data=/tmp/threelayer.vtk
+
+# Note: First you need to choose the surface representation style and 
+# then color by "threelayer" in paraview.
+</pre></div>                                                                           
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="r.to.rast3.html">r.to.rast3</a>,
+<a href="r3.cross.rast.html">r3.cross.rast</a>,
+<a href="g.region.html">g.region</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+Soeren Gebbert
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+--><h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/raster/r.to.rast3elev">r.to.rast3elev source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/raster/r.to.rast3elev">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="raster.html">Raster index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>

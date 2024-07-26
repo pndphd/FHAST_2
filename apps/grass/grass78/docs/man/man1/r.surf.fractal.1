@@ -1,0 +1,126 @@
+.TH r.surf.fractal 1 "" "GRASS 7.8.5" "GRASS GIS User's Manual"
+.SH NAME
+\fI\fBr.surf.fractal\fR\fR  \- Creates a fractal surface of a given fractal dimension.
+.SH KEYWORDS
+raster, surface, fractal
+.SH SYNOPSIS
+\fBr.surf.fractal\fR
+.br
+\fBr.surf.fractal \-\-help\fR
+.br
+\fBr.surf.fractal\fR \fBoutput\fR=\fIname\fR  [\fBdimension\fR=\fIfloat\fR]   [\fBnumber\fR=\fIinteger\fR]   [\-\-\fBoverwrite\fR]  [\-\-\fBhelp\fR]  [\-\-\fBverbose\fR]  [\-\-\fBquiet\fR]  [\-\-\fBui\fR]
+.SS Flags:
+.IP "\fB\-\-overwrite\fR" 4m
+.br
+Allow output files to overwrite existing files
+.IP "\fB\-\-help\fR" 4m
+.br
+Print usage summary
+.IP "\fB\-\-verbose\fR" 4m
+.br
+Verbose module output
+.IP "\fB\-\-quiet\fR" 4m
+.br
+Quiet module output
+.IP "\fB\-\-ui\fR" 4m
+.br
+Force launching GUI dialog
+.SS Parameters:
+.IP "\fBoutput\fR=\fIname\fR \fB[required]\fR" 4m
+.br
+Name for output raster map
+.IP "\fBdimension\fR=\fIfloat\fR" 4m
+.br
+Fractal dimension of surface (2 < D < 3)
+.br
+Default: \fI2.05\fR
+.IP "\fBnumber\fR=\fIinteger\fR" 4m
+.br
+Number of intermediate images to produce
+.br
+Default: \fI0\fR
+.SH DESCRIPTION
+\fBr.surf.fractal\fR creates a fractal surface of a given fractal
+dimension. It uses the spectral synthesis method. The module can create
+intermediate layers showing the build up of different spectral coefficients
+(see Saupe, pp.106\-107 for an example of this).
+.PP
+This module generates naturally looking synthetical elevation models
+(DEM).
+.SH NOTE
+This module requires the FFTW library
+for computing Discrete Fourier Transforms.
+.SH EXAMPLE
+Generate surface using fractals in selected region, set color table and
+display with shade.
+.br
+.nf
+\fC
+g.region \-p raster=elevation
+r.surf.fractal output=fractals
+r.colors map=fractals color=byr
+r.relief input=fractals output=fractals_shade
+d.mon wx0
+d.shade shade=fractals_shade color=fractals b=50
+\fR
+.fi
+.br
+Artificial surface created with fractals
+.br
+Compare results when using different fractal dimensions:
+.br
+.nf
+\fC
+# D=2.0005
+g.region \-dp
+r.surf.fractal out=dem_d2_0005 dim=2.0005
+r.info \-r dem_d2_0005
+r.mapcalc \(dqdem_d2_0005_final = 1.0 * dem_d2_0005 + abs(min(dem_d2_0005))\(dq
+r.colors dem_d2_0005_final color=terrain
+r.slope.aspect dem_d2_0005_final aspect=dem_d2_0005_final_as
+# D=2.90
+r.surf.fractal out=dem_d2_90 dim=2.90
+r.info \-r dem_d2_90
+r.mapcalc \(dqdem_d2_90_final = 1.0 * dem_d2_90 + abs(min(dem_d2_90))\(dq
+r.colors dem_d2_90_final color=terrain
+r.slope.aspect dem_d2_90_final aspect=dem_d2_90_final_as
+\fR
+.fi
+.br
+Artificial DEMs created with fractals:
+.br
+top: fractal dimension d=2.0005 (left: elevation map, right: aspect map)
+.br
+top: fractal dimension d=2.90 (left: elevation map, right: aspect map)
+.SH REFERENCES
+Saupe, D. (1988) Algorithms for random fractals, in Barnsley M.,
+Devaney R., Mandelbrot B., Peitgen, H\-O., Saupe D., and Voss R.
+(1988) The Science of Fractal Images, Ch. 2, pp.71\-136. London:
+Springer\-Verlag.
+.SH SEE ALSO
+\fI
+r.surf.contour,
+r.surf.idw,
+r.surf.gauss,
+r.surf.random,
+v.surf.idw,
+v.surf.rst
+\fR
+.SH AUTHOR
+Jo Wood,
+Midlands Regional Research Laboratory (ASSIST),
+University of Leicester
+.SH SOURCE CODE
+.PP
+Available at: r.surf.fractal source code (history)
+.PP
+Main index |
+Raster index |
+Topics index |
+Keywords index |
+Graphical index |
+Full index
+.PP
+© 2003\-2020
+GRASS Development Team,
+GRASS GIS 7.8.5 Reference Manual

@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>t.vect.db.select.py - GRASS GIS manual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="grassdocs.css" type="text/css">
+</head>
+<body bgcolor="white">
+<div id="container">
+
+<a href="index.html"><img src="grass_logo.png" alt="GRASS logo"></a>
+<hr class="header">
+
+<h2>NAME</h2>
+<em><b>t.vect.db.select.py</b></em>  - Prints attributes of vector maps registered in a space time vector dataset.
+<h2>KEYWORDS</h2>
+<a href="temporal.html">temporal</a>, <a href="topic_attribute_table.html">attribute table</a>, <a href="keywords.html#vector">vector</a>, <a href="keywords.html#database">database</a>, <a href="keywords.html#select">select</a>, <a href="keywords.html#time">time</a>
+<h2>SYNOPSIS</h2>
+<div id="name"><b>t.vect.db.select.py</b><br></div>
+<b>t.vect.db.select.py --help</b><br>
+<div id="synopsis"><b>t.vect.db.select.py</b> <b>input</b>=<em>name</em>  [<b>columns</b>=<em>name</em>[,<i>name</i>,...]]   [<b>separator</b>=<em>character</em>]   [<b>layer</b>=<em>string</em>]   [<b>where</b>=<em>sql_query</em>]   [<b>t_where</b>=<em>sql_query</em>]   [--<b>help</b>]  [--<b>verbose</b>]  [--<b>quiet</b>]  [--<b>ui</b>] 
+</div>
+
+<div id="flags">
+<h3>Flags:</h3>
+<dl>
+<dt><b>--help</b></dt>
+<dd>Print usage summary</dd>
+<dt><b>--verbose</b></dt>
+<dd>Verbose module output</dd>
+<dt><b>--quiet</b></dt>
+<dd>Quiet module output</dd>
+<dt><b>--ui</b></dt>
+<dd>Force launching GUI dialog</dd>
+</dl>
+</div>
+
+<div id="parameters">
+<h3>Parameters:</h3>
+<dl>
+<dt><b>input</b>=<em>name</em>&nbsp;<b>[required]</b></dt>
+<dd>Name of the input space time vector dataset</dd>
+
+<dt><b>columns</b>=<em>name[,<i>name</i>,...]</em></dt>
+<dd>Name of attribute column(s)</dd>
+
+<dt><b>separator</b>=<em>character</em></dt>
+<dd>Field separator character between the output columns</dd>
+<dd>Special characters: pipe, comma, space, tab, newline</dd>
+<dd>Default: <em>pipe</em></dd>
+
+<dt><b>layer</b>=<em>string</em></dt>
+<dd>Layer number or name</dd>
+<dd>Vector features can have category values in different layers. This number determines which layer to use. When used with direct OGR access this is the layer name.</dd>
+<dd>Default: <em>1</em></dd>
+
+<dt><b>where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword</dd>
+<dd>Example: income &lt; 1000 and population &gt;= 10000</dd>
+
+<dt><b>t_where</b>=<em>sql_query</em></dt>
+<dd>WHERE conditions of SQL statement without 'where' keyword used in the temporal GIS framework</dd>
+<dd>Example: start_time &gt; '2001-01-01 12:30:00'</dd>
+
+</dl>
+</div>
+<div class="toc">
+<h4 class="toc">Table of contents</h4>
+<ul class="toc">
+    <li class="toc"><a href="#description" class="toc">DESCRIPTION</a></li>
+    <li class="toc"><a href="#example" class="toc">EXAMPLE</a></li>
+    <li class="toc"><a href="#see-also" class="toc">SEE ALSO</a></li>
+    <li class="toc"><a href="#author" class="toc">AUTHOR</a></li>
+</ul>
+</div>
+<h2><a name="description">DESCRIPTION</a></h2>
+
+The module <em>t.vect.db.select</em> prints attributes of vector maps
+registered in a space time vector dataset.
+
+
+<h2><a name="example">EXAMPLE</a></h2>
+
+The example is querying the <em>shoreline</em> space time dataset:
+
+<div class="code"><pre>
+t.vect.db.select input=shoreline
+start_time|end_time|cat|DESCR|SOURCE|DATE
+1849|1873|1|T-736|NOAA/USGS|01/01/1858
+1849|1873|2|T-657|NOAA/USGS|01/01/1857
+1849|1873|3|T-381(2)|NOAA/USGS|01/01/1852
+1849|1873|4|T-381(1)|NOAA/USGS|01/01/1852
+1849|1873|5|T-381(1)|NOAA/USGS|01/01/1852
+...
+2009||44|2009 USDA NAIP|2009-07-11|VA, SAND, Wet / Dry
+2009||45|2009 USDA NAIP|2009-07-11|Carolina Beach, SAND, Wet / Dry
+2009||46|2009 USDA NAIP|2009-07-11|Carolina Beach, REVETMENT-ROCK, Hard Structure
+2009||47|2009 USDA NAIP|2009-07-11|Fort Fisher, REVETMENT-ROCK, Hard Structure
+</pre></div>
+
+In the following example it print only DATE and SOURCE columns for data
+before 1900-01-01.
+
+<div class="code"><pre>
+t.vect.db.select input=shoreline column=DATE,SOURCE t_where="start_time < 1900"
+start_time|end_time|DATE|SOURCE
+1849|1873|01/01/1858|NOAA/USGS
+1849|1873|01/01/1857|NOAA/USGS
+1849|1873|01/01/1852|NOAA/USGS
+1849|1873|01/01/1852|NOAA/USGS
+...
+1849|1873|01/01/1860|NOAA/USGS
+1849|1873|01/01/1860|NOAA/USGS
+1849|1873|01/01/1873|Coastal Carolina University
+1849|1873|01/01/1873|Coastal Carolina University
+1849|1873|01/01/1873|Coastal Carolina University
+</pre></div>
+
+<h2><a name="see-also">SEE ALSO</a></h2>
+
+<em>
+<a href="t.create.html">t.create</a>,
+<a href="t.info.html">t.info</a>
+</em>
+
+<h2><a name="author">AUTHOR</a></h2>
+
+S&ouml;ren Gebbert, Th&uuml;nen Institute of Climate-Smart Agriculture
+
+<!--
+<p>
+<i>Last changed: $Date$</i>
+-->
+<h2>SOURCE CODE</h2>
+<p>Available at: <a href="https://github.com/OSGeo/grass/tree/master/temporal/t.vect.db.select">t.vect.db.select source code</a> (<a href="https://github.com/OSGeo/grass/commits/master/temporal/t.vect.db.select">history</a>)</p>
+<hr class="header">
+<p>
+<a href="index.html">Main index</a> |
+<a href="temporal.html">Temporal index</a> |
+<a href="topics.html">Topics index</a> |
+<a href="keywords.html">Keywords index</a> |
+<a href="graphical_index.html">Graphical index</a> |
+<a href="full_index.html">Full index</a>
+</p>
+<p>
+&copy; 2003-2020
+<a href="http://grass.osgeo.org">GRASS Development Team</a>,
+GRASS GIS 7.8.5 Reference Manual
+</p>
+
+</div>
+</body>
+</html>
