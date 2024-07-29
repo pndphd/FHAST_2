@@ -62,7 +62,7 @@ class FHASTTempletMaker:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&FHAST Templet Maker')
+        self.menu = self.tr(u'&FHAST Template Maker')
 
         # Check if plugin was started the first time in current QGIS session
         # Must be set in initGui() to survive plugin reloads
@@ -187,7 +187,7 @@ class FHASTTempletMaker:
         icon_path = ':/plugins/fhast_templet_maker/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'FHAST Templet Maker'),
+            text=self.tr(u'FHAST Template Maker'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -198,7 +198,7 @@ class FHASTTempletMaker:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&FHAST Templet Maker'),
+                self.tr(u'&FHAST Template Maker'),
                 action)
             self.iface.removeToolBarIcon(action)
 

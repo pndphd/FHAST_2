@@ -186,7 +186,7 @@ class FHASTFile:
         icon_path = ':/plugins/fhast_file/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'FHAST Templet and File Maker'),
+            text=self.tr(u'FHAST Template and File Maker'),
             callback=self.run,
             parent=self.iface.mainWindow())
 

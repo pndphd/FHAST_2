@@ -7,80 +7,57 @@
     <x>0</x>
     <y>0</y>
     <width>475</width>
-    <height>168</height>
+    <height>118</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Add Column</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>120</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>10</y>
-     <width>281</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Select a csv layer to add an empty column to</string>
-   </property>
-   <property name="text">
-    <string>Select the CSV file to add a column to</string>
-   </property>
-  </widget>
-  <widget class="QgsMapLayerComboBox" name="add_column_select">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>40</y>
-     <width>391</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="column_name_in">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>80</y>
-     <width>221</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="column_name">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>80</y>
-     <width>171</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Give the new column a name (the column head)</string>
-   </property>
-   <property name="text">
-    <string>Name the new column </string>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Select a csv layer to add an empty column to</string>
+     </property>
+     <property name="text">
+      <string>Select the CSV file to add a column to</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QgsMapLayerComboBox" name="add_column_select"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="column_name">
+     <property name="toolTip">
+      <string>Give the new column a name (the column head)</string>
+     </property>
+     <property name="text">
+      <string>Name the new column </string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="column_name_in"/>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="button_box">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>

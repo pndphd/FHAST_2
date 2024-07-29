@@ -6,6 +6,17 @@
 # The main formating function
 load_daily_conditions = function(daily_inputs_in) {
   ##### Make the Files #####
+  # Error check in case user put in an actual hydrograph file
+  if(NCOL(daily_inputs_in)>1){
+    message(paste0("!!!!!!!!!!!\n",
+                   "!!!ERROR!!! Too many columns in the environmental input file. \n",
+                   "!!!!!!!!!!!\n",
+                   "You may be entering a hydrograph file and not a \n",
+                   "refrence file pointing to it."))
+    stop()
+    
+  }
+  
   # Get what type of file it is
   file_type = daily_inputs_in["type",]
   

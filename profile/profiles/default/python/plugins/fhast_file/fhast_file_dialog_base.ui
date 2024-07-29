@@ -7,115 +7,80 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>218</height>
+    <height>179</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>FHAST Simulation Runner</string>
   </property>
-  <widget class="QDialogButtonBox" name="button_box">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>170</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string/>
-   </property>
-   <property name="toolTipDuration">
-    <number>-1</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-   <property name="centerButtons">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QgsFileWidget" name="output_folder">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>130</y>
-     <width>361</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="cursor">
-    <cursorShape>ArrowCursor</cursorShape>
-   </property>
-   <property name="storageMode">
-    <enum>QgsFileWidget::GetDirectory</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>110</y>
-     <width>161</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Select the folder in which to create the dummy files.</string>
-   </property>
-   <property name="text">
-    <string>Select Output Folder</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>341</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Make FHAST Templet and Dummy Files</string>
-   </property>
-  </widget>
-  <widget class="QgsProjectionSelectionWidget" name="projection_input">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>70</y>
-     <width>361</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>161</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Select the CRS you want the shape fiels to be in.</string>
-   </property>
-   <property name="text">
-    <string>Select Output Folder</string>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Make FHAST Template and Dummy Files</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>Select the CRS you want the shape fiels to be in.</string>
+     </property>
+     <property name="text">
+      <string>Select Output Folder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QgsProjectionSelectionWidget" name="projection_input"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="toolTip">
+      <string>Select the folder in which to create the dummy files.</string>
+     </property>
+     <property name="text">
+      <string>Select Output Folder</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QgsFileWidget" name="output_folder">
+     <property name="cursor">
+      <cursorShape>ArrowCursor</cursorShape>
+     </property>
+     <property name="storageMode">
+      <enum>QgsFileWidget::GetDirectory</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QDialogButtonBox" name="button_box">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="toolTipDuration">
+      <number>-1</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
