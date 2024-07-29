@@ -71,7 +71,6 @@ load_daily_conditions = function(daily_inputs_in) {
 
     # Get parameters
     hydro_file_name = daily_inputs_in["file",]
-    
     # Read in the file and convert to date
     daily_folder = str_sub(daily_path,
                            end = max(unlist(str_locate_all(daily_path, "/"))))
@@ -87,6 +86,15 @@ load_daily_conditions = function(daily_inputs_in) {
                      "!!!ERROR!!! The hydrograph file is missing a required column. \n",
                      "!!!!!!!!!!!\n",
                      "The columns are flow_cms, temp_c, & turb_ntu"))
+      stop()
+      
+    }
+    
+    # Check that all the days are there
+    if(as.numeric(max(hydro_file$date) - min(hydro_file$date)) != NROW(hydro_file)-1){
+      message(paste0("!!!!!!!!!!!\n",
+                     "!!!ERROR!!! The hydrograph file is missing some or has too many days. \n",
+                     "!!!!!!!!!!!\n"))
       stop()
       
     }
