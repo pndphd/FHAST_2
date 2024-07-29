@@ -3,13 +3,13 @@
 #################################################
 
 ##### Inputs #####
-output_file = "../sacramento_above_ar_con/compare.csv"
+output_file = "../american_river_cal/compare.csv"
 
-write = FALSE
+write = TRUE
 run = TRUE
 
 area_base	= 0.18
-area_effect = 0.10
+area_effect = 0.08
 density = 0.003
 food = 0.01
 base_wood = 0.05
@@ -24,86 +24,33 @@ library(broom)
 remove = c(100)
 
 file_names = c(
-  
-  "../../micks_runs/mick_norm_correct.txt",
-  "../../micks_runs/mick_norm_wrong.txt",
-  "../../micks_runs/mick_lwd_correct.txt",
-  "../../micks_runs/mick_lwd_wrong.txt"
-  # "../../sacramento_above_ar_con/steel_2020_2013_1.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2013_2.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2013_3.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2013_4.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2013_5.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2013_6.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2014_1.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2014_2.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2014_3.txt",
-  # "../../sacramento_above_ar_con/steel_2020_2014_4.txt",
-  # "../../sacramento_above_ar_con/michel_2015_1.txt",
-  # "../../sacramento_above_ar_con/michel_2015_2.txt",
-  # "../../sacramento_above_ar_con/michel_2015_3.txt",
-  # "../../sacramento_above_ar_con/michel_2015_4.txt",
-  # "../../sacramento_above_ar_con/michel_2015_5.txt",
-  # "../../sacramento_above_ar_con/michel_2015_6.txt",
-  # "../../sacramento_above_ar_con/michel_2015_7.txt",
-  # "../../sacramento_above_ar_con/michel_2015_8.txt",
-  # "../../sacramento_above_ar_con/michel_2015_9.txt",
-  # "../../sacramento_above_ar_con/michel_2015_10.txt",
-  # "../../sacramento_above_ar_con/michel_2015_11.txt",
-  # "../../sacramento_above_ar_con/sommer_2001_1998.txt",
-  # "../../sacramento_above_ar_con/sommer_2001_1999.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_1.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_2.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_3.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_4.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_5.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_6.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_7.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_8.txt",
-  # "../../sacramento_above_ar_con/sandstorm_2020_9.txt",
-  # "../../sacramento_above_ar_con/singer_2012_1.txt",
-  # "../../sacramento_above_ar_con/singer_2012_2.txt",
-  # "../../sacramento_above_ar_con/singer_2012_3.txt",
-  # "../../sacramento_above_ar_con/singer_2012_4.txt"
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_2.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_2.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_2.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_2.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_2.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_1.txt",
+  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_2.txt"
 )
 
 compare_values = c(
-  0.7300608,
-  0.80934084,
-  0.82719252,
-  0.85484322,
-  0.84523824,
-  0.82719252,
-  0.85484322,
-  0.72093504,
-  0.78253392,
-  0.82719252,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  0.92,
-  NA,
-  NA,
-  0.836,
-  0.57,
-  0.6,
-  0.84,
-  0.79,
-  0.62,
-  0.63,
-  0.7,
-  0.86,
-  0.756,
-  0.756,
-  0.678,
-  0.687
+  1.3,
+  1.9,
+  1.3,
+  1.9,
+  1.3,
+  1.9,
+  1.3,
+  1.9,
+  1.3,
+  1.9,
+  1.3,
+  1.9
 )
 
 file_names = file_names[-remove]
@@ -207,7 +154,7 @@ if (write) {
   }
 }
 
-data_base = read.csv(output_file)
+data_base = read.csv(output_file) 
 
 summary = data_base %>% 
   mutate(percent_diff = abs(d_value - field_data)/field_data) %>% 
@@ -227,14 +174,14 @@ labeled = data_base %>%
                           str_locate(name, "ar_con/")[2]+7,
                           str_locate(name, "ar_con/")[2]+10))
 
-plot = ggplot(labeled %>% filter(run %in% c(14, 13, 15)),
+plot = ggplot(labeled %>% filter(run %in% c(14)),
               aes(x = field_data,
                   y = d_value, 
                   color = factor(run),
-                  shape = factor(run))) +
+                  shape = factor(species))) +
   theme_classic() +
   geom_abline(intercept = 0, slope = 1) +
-  # coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
   geom_point(size = 4)+
   labs(x = "Filed Survival",
        y = "Model Survival")

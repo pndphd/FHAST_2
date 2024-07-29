@@ -23,7 +23,7 @@ if (FALSE) {
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
 -------------------------------------------------------------------------------- 
 
-Version 2.0.0 (Long Gill) 2024-07-26
+Version 2.0.1 (Long Gill) 2024-07-29
   
   Development Team
     Peter N. Dudley (PI)
@@ -46,7 +46,9 @@ Contributions
     -Using NetLogo 6.2.2 with vid extension disabled (removes log4*.jar files)
 
   Recent changes since last file update
-    -added in une QGIS based GUI
+    -added in error catches for hydrograph and missing dates
+    -fixed spelling 'error'
+    -Improved layouts of GUI mods
     
   
 "
