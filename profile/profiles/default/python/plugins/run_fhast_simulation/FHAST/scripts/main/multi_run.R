@@ -3,16 +3,16 @@
 #################################################
 
 ##### Inputs #####
-output_file = "../american_river_cal/compare.csv"
+output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/compare.csv"
 
-write = TRUE
-run = TRUE
+write = FALSE
+run = FALSE
 
-area_base	= 0.18
+area_base	= 0.25
 area_effect = 0.08
 density = 0.003
-food = 0.01
-base_wood = 0.05
+food = 0.0005
+base_wood = 0.00
 fish_number = 10000
   
 ##### Load Libraries ######
@@ -25,32 +25,32 @@ remove = c(100)
 
 file_names = c(
   "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_2.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_2.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_2.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_2.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_2.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_1.txt",
-  ".C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_2.txt"
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_2.txt"
 )
 
 compare_values = c(
-  1.3,
-  1.9,
-  1.3,
-  1.9,
-  1.3,
-  1.9,
-  1.3,
-  1.9,
-  1.3,
-  1.9,
-  1.3,
-  1.9
+  0.13,
+  0.19,
+  0.13,
+  0.19,
+  0.13,
+  0.19,
+  0.13,
+  0.19,
+  0.13,
+  0.19,
+  0.13,
+  0.19
 )
 
 file_names = file_names[-remove]
@@ -68,7 +68,7 @@ if (run){
 
 ##### Functions to process runs ######
 get_survival = function(name, add, file, column, fish_input){
-  name = str_sub(name, 4, -1)
+  #name = str_sub(name, 4, -1)
   new_name = paste0(str_sub(name, 1, -5), add, "/", file)
   data = read.csv(new_name)
   output = data.frame(name =str_sub(name, 1, -5),
@@ -76,7 +76,7 @@ get_survival = function(name, add, file, column, fish_input){
 }
 
 get_temperature = function(name, add, file, column, fish_input){
-  name = str_sub(name, 4, -1)
+  #name = str_sub(name, 4, -1)
   new_name = paste0(str_sub(name, 1, -5), add, "/", file)
   data = read.csv(new_name) %>% 
     mutate(temp_c = as.numeric(temp_c))
@@ -85,7 +85,7 @@ get_temperature = function(name, add, file, column, fish_input){
 }
 
 get_growth = function(name, add, file, column_1, column_2, fish_input){
-  name = str_sub(name, 4, -1)
+  #name = str_sub(name, 4, -1)
   new_name = paste0(str_sub(name, 1, -5), add, "/", file)
   data = read.csv(new_name) %>% 
     mutate(growth = as.numeric(mean_rearing_growth_length),
@@ -174,15 +174,15 @@ labeled = data_base %>%
                           str_locate(name, "ar_con/")[2]+7,
                           str_locate(name, "ar_con/")[2]+10))
 
-plot = ggplot(labeled %>% filter(run %in% c(14)),
+plot = ggplot(labeled,
               aes(x = field_data,
-                  y = d_value, 
-                  color = factor(run),
-                  shape = factor(species))) +
+                  y = g_value, 
+                  color = factor(run))) +
   theme_classic() +
   geom_abline(intercept = 0, slope = 1) +
   coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
-  geom_point(size = 4)+
-  labs(x = "Filed Survival",
-       y = "Model Survival")
+  geom_point(size = 4, shape = 1)+
+  coord_cartesian(xlim = c(0.1, 0.2), ylim = c(0.1, 0.2)) +
+  labs(x = "Filed Growth",
+       y = "Model Growth")
 print(plot)

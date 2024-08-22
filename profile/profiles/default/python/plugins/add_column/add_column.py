@@ -183,7 +183,7 @@ class AddColumn:
         icon_path = ':/plugins/add_column/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Add New Column'),
+            text=self.tr(u'Add/Remove Column'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -220,6 +220,7 @@ class AddColumn:
 
             # get the name
             column_name = self.dlg.column_name_in.text()
+            del_column_name = self.dlg.del_column_name_in.text()
             
             # Read the CSV file into a DataFrame
             csv_file_path = add_file.source()
@@ -227,6 +228,8 @@ class AddColumn:
             
             # Add the new column to the DataFrame
             df[column_name] = ""
+            if del_column_name in df.columns:
+                del df[del_column_name]
             
             # Write the DataFrame back to the CSV file
             df.to_csv(csv_file_path, index=False)
