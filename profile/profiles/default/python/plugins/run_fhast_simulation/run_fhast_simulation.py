@@ -238,8 +238,6 @@ class RunFHASTSimulation:
             if len(folder_path) == 0:
                 QMessageBox.information(None, "!!!ERROR!!!", "No Output Folder Selected") 
                 self.iface.addVectorLayer(stop_program) 
-
-
             
             # get project name
             project_name = QgsProject.instance().fileName()
