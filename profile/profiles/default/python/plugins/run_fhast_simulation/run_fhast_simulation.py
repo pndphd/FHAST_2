@@ -235,6 +235,10 @@ class RunFHASTSimulation:
 
             #get the oputput path
             folder_path = self.dlg.output_folder.filePath()
+            if len(folder_path) == 0:
+                QMessageBox.information(None, "!!!ERROR!!!", "No Output Folder Selected") 
+                self.iface.addVectorLayer(stop_program) 
+
 
             
             # get project name
