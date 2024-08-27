@@ -89,11 +89,11 @@ load_daily_conditions = function(daily_inputs_in) {
       stop()
       
     }
-    
+
     # Check that all the days are there
     if(as.numeric(max(hydro_file$date) - min(hydro_file$date)) != NROW(hydro_file)-1){
       message(paste0("!!!!!!!!!!!\n",
-                     "!!!ERROR!!! The hydrograph file is missing some or has too many days. \n",
+                     "!!!ERROR!!! The hydrograph file is missing some or has duplicate days. \n",
                      "!!!!!!!!!!!\n"))
       stop()
       

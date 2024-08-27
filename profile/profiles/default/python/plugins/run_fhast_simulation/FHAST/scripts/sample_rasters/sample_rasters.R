@@ -39,12 +39,12 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   d_files = list.files(raster_folder, "D\\d+.tif", full.names=TRUE)
   v_files = list.files(raster_folder, "V\\d+.tif", full.names=TRUE)
   # remove just the values from the file lists.
-  d_values = str_remove(d_files, raster_folder) %>% 
+  d_values = str_remove(d_files, coll(raster_folder)) %>% 
     str_sub(start = 3) %>% 
     str_extract(".*(?=\\.)") %>% 
     as.numeric() %>% 
     sort()
-  v_values = str_remove(v_files, raster_folder) %>% 
+  v_values = str_remove(v_files, coll(raster_folder)) %>% 
     str_sub(start = 3) %>% 
     str_extract(".*(?=\\.)") %>% 
     as.numeric() %>% 

@@ -3,15 +3,15 @@
 #################################################
 
 ##### Inputs #####
-output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/compare.csv"
+output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/compare.csv"
 
-write = FALSE
+write = TRUE
 run = FALSE
 
-area_base	= 0.25
-area_effect = 0.08
+area_base	= 0.18
+area_effect = 0.10
 density = 0.003
-food = 0.0005
+food = 0.87
 base_wood = 0.00
 fish_number = 10000
   
@@ -24,34 +24,44 @@ library(broom)
 remove = c(100)
 
 file_names = c(
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2001_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2002_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2004_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2006_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2007_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/american_river_cal/satter_2008_2.txt"
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_7.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_8.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_9.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/michel_2015_10.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_7.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_8.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sandstorm_2020_9.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/singer_2012_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/singer_2012_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/singer_2012_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/singer_2012_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sommer_2001_1998.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/sommer_2001_1999.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2013_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2014_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2014_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2014_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/steel_2020_2014_4.txt"
 )
 
-compare_values = c(
-  0.13,
-  0.19,
-  0.13,
-  0.19,
-  0.13,
-  0.19,
-  0.13,
-  0.19,
-  0.13,
-  0.19,
-  0.13,
-  0.19
-)
+compare_values = rep(0.1, 35)
 
 file_names = file_names[-remove]
 compare_values = compare_values[-remove]
@@ -182,7 +192,7 @@ plot = ggplot(labeled,
   geom_abline(intercept = 0, slope = 1) +
   coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
   geom_point(size = 4, shape = 1)+
-  coord_cartesian(xlim = c(0.1, 0.2), ylim = c(0.1, 0.2)) +
+  # coord_cartesian(xlim = c(0.1, 0.2), ylim = c(0.1, 0.2)) +
   labs(x = "Filed Growth",
        y = "Model Growth")
 print(plot)

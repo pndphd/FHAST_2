@@ -18,9 +18,9 @@ make_map_plot <- function() {
   # Get a sample raster file to get the extent
   # find all the depth and velocity rasters
   d_files <- list.files(raster_folder, "D\\d+.tif", full.names = TRUE)
-  
+
   # remove just the values from the file lists.
-  flow_values <- str_remove(d_files, raster_folder) %>%
+  flow_values <- str_remove(d_files, coll(raster_folder)) %>%
     str_sub(start = 3) %>%
     str_extract(".*(?=\\.)") %>%
     as.numeric() %>%

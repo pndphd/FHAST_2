@@ -227,9 +227,11 @@ class AddColumn:
             df = pd.read_csv(csv_file_path)
             
             # Add the new column to the DataFrame
-            df[column_name] = ""
-            if del_column_name in df.columns:
-                del df[del_column_name]
+            if len(column_name) > 0:
+                df[column_name] = ""
+            if len(del_column_name) > 0:
+                if del_column_name in df.columns:
+                    del df[del_column_name]
             
             # Write the DataFrame back to the CSV file
             df.to_csv(csv_file_path, index=False)
