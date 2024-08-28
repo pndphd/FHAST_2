@@ -6,7 +6,7 @@
 
 # Uncoment for development to pick a specific file and run from IDE
 # need an extra up level ".." to compensate for being in the default input directory 
-wild_card_file_name = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/FHAST_deploy/small_dist_chinook_outputs/config.txt"
+# wild_card_file_name = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/FHAST_deploy/small_dist_chinook_outputs/config.txt"
 
 ##### Run the initialization scripts #####
 # install and load the here package if necessary

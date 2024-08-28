@@ -6,13 +6,13 @@
 output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/sacramento_above_ar_con_gs/compare.csv"
 
 write = TRUE
-run = FALSE
+run = TRUE
 
 area_base	= 0.18
 area_effect = 0.10
 density = 0.003
-food = 0.87
-base_wood = 0.00
+food = 0.01
+base_wood = 0.05
 fish_number = 10000
   
 ##### Load Libraries ######
