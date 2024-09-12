@@ -66,6 +66,31 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
                                     -lat_dist),
                              0))
   
+  ##### Trim Grid #####
+  #get the rasters
+  d_files = list.files(raster_folder, "D\\d+.tif", full.names=TRUE)
+  # remove just the values from the file lists.
+  d_values = str_remove(d_files, coll(raster_folder)) %>%
+    str_sub(start = 3) %>%
+    str_extract(".*(?=\\.)") %>%
+    as.numeric() %>%
+    sort()
+  # find the value larger then the max flow
+  max_raster_value = d_values[min(which(d_values > max(daily_input_data$flow_cms)))]
+  max_raster = rast(here(raster_folder, paste0("D", max_raster_value, ".tif")))
+
+  tic()
+  grid = exact_extract(max_raster, grid, fun = 'max', progress = FALSE) %>%
+    data.frame() %>%
+    # bind it back to the polygons
+    cbind(data.frame(grid)) %>%
+    na.omit() %>%
+    select(-1) %>%
+    st_as_sf()
+  toc()
+
+  rm(max_raster)
+
   ##### Save Outputs #####
   saveRDS(grid, temp_river_grid_path)
   
