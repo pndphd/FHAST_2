@@ -159,3 +159,78 @@ try:
 except ImportError:
     from qgis.core import QGis as Qgis
 Qgis.QGIS_VERSION
+A = QgsProject.instance().mapLayersByName('aoi_small')[0]
+A
+B = QgsProject.instance().mapLayersByName('aoi_large')[0]
+parameters = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'memory'}
+results = processing.runAndLoadResults('qgis:difference', parameters)
+results = processing.runAndLoadResults('qgis:intersection', parameters)
+results = processing.runAndLoadResults('qgis:clip', parameters)
+parameters = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'memory2'}
+results = processing.runAndLoadResults('qgis:intersection', parameters)
+mygroup = root.findGroup("Area of Interest (Optional)")
+mygroup = QgsProject.root.findGroup("Area of Interest (Optional)")
+mygroup = QgsProject.findGroup("Area of Interest (Optional)")
+mygroup = QgsProject.instance().findGroup("Area of Interest (Optional)")
+mygroup = QgsProject.instance().root.findGroup("Area of Interest (Optional)")
+mygroup = QgsLayerTreeNode.findGroup("Area of Interest (Optional)")
+root = QgsProject.instance().layerTreeRoot()
+group = root.findGroup("Area of Interest (Optional)")
+group
+layer_list= group.findLayers()
+layer_list
+B = layer_list[0]
+A = layer_list[1]
+parameters = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'memory3'}
+results = processing.runAndLoadResults('qgis:intersection', parameters)
+A
+B
+B = QgsProject.instance().mapLayersByName('aoi_large')[0]
+B
+A.layer()(
+)
+A.layer()
+QgsVectorFileWriter.writeAsVectorFormatV3(
+memory,
+`
+_writer = QgsVectorFileWriter.writeAsVectorFormat('memory','C:\Users\pndph\Desktop\Temp\tesh.shp','utf-8',driverName='ESRI Shapefile')
+_writer = QgsVectorFileWriter.writeAsVectorFormat("memory","C:\Users\pndph\Desktop\Temp\tesh.shp",'utf-8',driverName='ESRI Shapefile')
+_writer = QgsVectorFileWriter.writeAsVectorFormat("memory","C:/Users/pndph/Desktop/Temp/tesh.shp",'utf-8',driverName='ESRI Shapefile')
+_writer = QgsVectorFileWriter.writeAsVectorFormat(layer_list[1].layer(),"C:/Users/pndph/Desktop/Temp/tesh.shp",'utf-8',driverName='ESRI Shapefile')
+result
+B = QgsProject.instance().mapLayersByName('aoi_large')[0]
+A = QgsProject.instance().mapLayersByName('aoi_small')[0]
+parameters = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'memory3'}
+results = processing.runAndLoadResults('qgis:intersection', parameters)
+results
+results.layer()
+results
+results['OUTPUT']
+results['OUTPUT'].layer()
+A = QgsProject.instance().mapLayersByName('aoi_small')[0]
+B = QgsProject.instance().mapLayersByName('aoi_large')[0]
+results = processing.runAndLoadResults('qgis:intersection', parameters)
+results
+result = processing.run('qgis:intersection', parameters)
+parametersR = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'memory4'}
+result = processing.run('qgis:intersection', parametersR)
+result
+result['OUTPUT']
+QgsVectorFileWriter.writeAsVectorFormat(temp_layer,
+                                                             "C:/Users/pndph/Desktop/Temp/AOI.shp",
+                                                             'utf-8',
+                                                             driverName='ESRI Shapefile')
+writer = QgsVectorFileWriter.writeAsVectorFormat(result['OUTPUT'],"C:/Users/pndph/Desktop/Temp/AOI.shp",'utf-8',driverName='ESRI Shapefile')
+parametersR = {'INPUT' : A, 'OVERLAY' : B, 'OUTPUT' : 'C:/Users/pndph/Desktop/Temp/AOI2.shp'}
+result = processing.run('qgis:intersection', parametersR)
+group
+len(group)
+root = QgsProject.instance().layerTreeRoot()
+mygroup = root.findGroup("Area of Interest (Optional)")
+layer_list= mygroup.findLayers()
+len(layer_list)
+layer_list[1].layer().source()
+result
+result["output"
+]
+result['OUTPUT']

@@ -32,15 +32,19 @@ from qgis.core import *
 from qgis.gui import (
     QgsMessageBar
 )
+
 from PyQt5.QtWidgets import QMenu
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
 from .run_fhast_simulation_dialog import RunFHASTSimulationDialog
+
 import os.path
 import os
 import pathlib
+import processing
+
 
 
 class RunFHASTSimulation:
@@ -362,12 +366,23 @@ class RunFHASTSimulation:
             for layer in layer_list:
                 cover_layer = layer.layer().source()
 
-            # Get path of Cover File
+            # Get path of AOI File
             aoi_layer = " "
             mygroup = root.findGroup("Area of Interest (Optional)")
             layer_list= mygroup.findLayers()
-            for layer in layer_list:
-                aoi_layer = layer.layer().source()
+
+            # If just one set it as aoi
+            if len(layer_list) == 1:
+                for layer in layer_list:
+                    aoi_layer = layer.layer().source()
+
+            # if 2 set the intercept as the aoi
+            if len(layer_list) > 1:
+                layer_1 = layer_list[0].layer()
+                layer_2 = layer_list[1].layer()
+                parameters = {'INPUT' : layer_1, 'OVERLAY' : layer_2, 'OUTPUT' : new_path + '\\joint_aoi.shp'}
+                results = processing.run('qgis:intersection', parameters)
+                aoi_layer = results['OUTPUT']
 
             # Get path of Canopy File
             mygroup = root.findGroup("Canopy File")
