@@ -2059,6 +2059,10 @@ to select_destination_cell
 
     move_fish destination  ; Destination should be set to the fallback migration patch
 
+    let destination_patch_path_survival fallback_migration_patch_path_survival
+
+    ask destination [ set path_survival destination_patch_path_survival]
+
     if is_drifter = true and ycor = reach_end [set drifter_history "no valid destinations or cells with pos net energy, drifted out of river"]
     if is_drifter = true and ycor != reach_end [set drifter_history "no valid destinations or cells with pos net energy, did not reach end"]
 
@@ -2174,7 +2178,7 @@ to-report find_possible_drift_destinations [fish max_dist]
             ; If we're in stranding logic we might be evaluating patches that aren't currently wet.
             ; Make sure a patch is wet before considering it a valid destination.
             ; Also chack to make sure there is area fo the fish
-            if pycor < [ ycor ] of fish and (pycor = reach_end or is_valid_destination fish destinations) [
+            if pycor < [ ycor ] of fish and ((pycor = reach_end and today_depth > 0) or is_valid_destination fish destinations) [
               ; If all checks pass (including depth and having available area), mark as a potential destination.
               table:put destinations patch_identifier self self
               if (pycor < [pycor] of [fallback_migration_patch] of fish) and move_cost < max_dist [
