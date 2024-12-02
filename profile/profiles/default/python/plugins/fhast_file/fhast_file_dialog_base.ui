@@ -34,7 +34,7 @@
       <string>Select the CRS you want the shape fiels to be in.</string>
      </property>
      <property name="text">
-      <string>Select Output Folder</string>
+      <string>Select Projection</string>
      </property>
     </widget>
    </item>
@@ -47,7 +47,7 @@
       <string>Select the folder in which to create the dummy files.</string>
      </property>
      <property name="text">
-      <string>Select Output Folder</string>
+      <string>Select Output Folder for Dummy Files</string>
      </property>
     </widget>
    </item>
