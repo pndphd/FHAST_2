@@ -321,7 +321,7 @@ patches-own [
 
   frac_velocity_shelter     ; The fraction of a cell with velocity shelters (the wood + veg sum)
 
-  cell_available_ben         ; Availability ofdenthic food in, g
+  cell_available_ben         ; Availability of denthic food in, g
   cell_available_vel_shelter ; Available area of velocity shelter in cell, (m^2)
   cell_available_wet_area    ; Available wetted area in cell, (m^2)
 
