@@ -724,7 +724,7 @@ to set_daily_fish_counts
   set daily_ls_values but-first (map [n -> item lifestage_column n ] daily_fish_csv)
   set daily_length_values but-first (map [n -> item length_column n ] daily_fish_csv)
   set daily_sd_values but-first (map [n -> item length_sd_column n ] daily_fish_csv)
-  set fish_formated_dates (map [n -> (time:create-with-format n "MM/dd/yyy")] fish_date_values)
+  set fish_formated_dates (map [n -> (time:create-with-format n "MM/dd/yyyy")] fish_date_values)
 
   ; take off fish that arive before sim window
   loop [
@@ -1599,6 +1599,11 @@ to find_potential_destination_cells
   ; Number of patches within the maximum distance that a fish can travel. Essentially the "radius" in cm converted to meters and divided by the resolutio
   set patch_radius (((item species_id move_dist_a) * (f_length ^ (item species_id move_dist_b)))) / resolution
   set patch_radius max (list patch_radius 1)
+
+  ; If the fish only has access to its current patch let it access its neighbors as well
+  if (patch_radius <= 1.0)[
+    set patch_radius 1.1
+  ]
 
   ; Find all of the reachable cells within the radius
   set wet_cells_in_radius find_possible_destinations self patch_radius
@@ -2926,11 +2931,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-570
-629
+239
+1563
 -1
 -1
-5.769230769230769
+1.0
 1
 10
 1
@@ -2940,10 +2945,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--30
-30
+-10
+10
 0
-104
+1553
 1
 1
 1
@@ -3216,7 +3221,7 @@ INPUTBOX
 209
 473
 run_folder
-0
+C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\calibration\\american_river_cal\\satter_2001_1_outputs\\temporary
 1
 0
 String
