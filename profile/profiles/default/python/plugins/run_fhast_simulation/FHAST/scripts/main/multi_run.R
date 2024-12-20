@@ -2,18 +2,30 @@
 # This script runs multiple FHAST runs 
 #################################################
 
-##### In4506s #####
+##### Inputs #####
+# Enter your output file to amend on you computer 
 output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/compare.csv"
 
+# Do you want to write the outputs
 write = TRUE
+
+# Do you want to run FAHST (FLASE will just read in existing outputs and do post processing)
 run = TRUE
 
+# Write in the parameters you are using. they will be noted in the output file 
+# The base area for predators
 area_base	= 0.18
+# the parameter for how temperature affects predation area 
 area_effect = 0.08
+# the density of predators
 density = 0.003
+# density of drift or search food (whatever you are comparing to)
 food = 0.022
+# a base level of wood for the wildcard shape
 base_wood = 0.05
+# the number of fish you are putting in
 fish_number = 10000
+# the lenghts 
 length = rep(c(5,7),6)
   
 ##### Load Libraries ######
@@ -22,10 +34,12 @@ library(here)
 library(broom)
 
 ##### List the File names #####
+# any of th ebelow list you want to remove
 remove = c(100)
 
+# list of input files to run
 file_names = c(
-  #Sacramento
+
   "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_1.txt",
   "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_2.txt",
   "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_3.txt",
@@ -78,9 +92,11 @@ file_names = c(
   # "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/american_river_cal/satter_2008_2.txt"
 )
 
+# growth values on the american
 # American
-compare_values = rep(c(0.13, 0.19),6)
+# compare_values = rep(c(0.13, 0.19),6)
 
+# survival values on the sacramento
 # Sacramento
 compare_values = c(
                    rep(0.92, 11),
@@ -185,7 +201,7 @@ compare = left_join(survival_data,temp_data, by = "name") %>%
          density = density,
          food = food,
          base_wood = base_wood,
-         # length = length,
+         length = length,
          field_data = compare_values,
          fish_count = fish_number)
   
