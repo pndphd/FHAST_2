@@ -79,15 +79,15 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   max_raster_value = d_values[min(which(d_values > max(daily_input_data$flow_cms)))]
   max_raster = rast(here(raster_folder, paste0("D", max_raster_value, ".tif")))
 
-  tic()
-  grid = exact_extract(max_raster, grid, fun = 'max', progress = FALSE) %>%
-    data.frame() %>%
-    # bind it back to the polygons
-    cbind(data.frame(grid)) %>%
-    na.omit() %>%
-    select(-1) %>%
-    st_as_sf()
-  toc()
+# Filter the grid so only use potentially wetted cells
+  # grid = exact_extract(max_raster, grid, fun = 'max', progress = FALSE) %>%
+  #   data.frame() %>%
+  #   # bind it back to the polygons
+  #   cbind(data.frame(grid)) %>%
+  #   na.omit() %>%
+  #   select(-1) %>%
+  #   st_as_sf()
+
 
   rm(max_raster)
 

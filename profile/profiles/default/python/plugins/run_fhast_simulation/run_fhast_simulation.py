@@ -433,8 +433,6 @@ class RunFHASTSimulation:
             wildcard = "wildcard"
             new_line = "\n"
             comma = ", "
-
-
             
             # Make the config text string
             config_text = (run_name_code + comma + file_name + new_line +
@@ -467,8 +465,8 @@ class RunFHASTSimulation:
             new_path_formated = new_path.replace("\\","/")
             fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run.R\" \"" + new_path_formated + "/config.txt" + "\""
                #fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run.R\""
-
             
+            #print(start_command + quote_string + cd_command + file_path + "\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
             # Run FHAST
             os.system(start_command + quote_string + cd_command + file_path + "\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
             
