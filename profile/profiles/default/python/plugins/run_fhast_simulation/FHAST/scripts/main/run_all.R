@@ -4,6 +4,14 @@
 # and then run the various fhast scripts in order
 ########################################
 
+##### Developer options #####
+# do you want to print plots
+print_plots = FALSE
+# what width do you want teh default plots 
+# Set default plot width
+plot_width = 5
+
+
 # Uncoment for development to pick a specific file and run from IDE
 # need an extra up level ".." to compensate for being in the default input directory 
 config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
@@ -32,6 +40,7 @@ source(here("scripts","main","run_preview.R"))
 if (preview_flag){
   stop("PREVIEW RUN COMPLETE.\nThis is not an error.")  
 }
+# Remove variabel no longer needed
 rm(preview_flag)
 
 ##### Run the calculation scripts #####

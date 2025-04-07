@@ -304,8 +304,8 @@ make_hist_plot = function(data_in, variabel, legend, caption = ""){
           plot.caption = element_text(hjust = 0, size = 15)) +
     geom_histogram(aes(y=after_stat(density)),
                    bins = 30,
-                   color = cbPalette[1],
-                   fill = cbPalette[1],
+                   color = ml$df$palette[1],
+                   fill = ml$df$palette[1],
                    alpha = 0.25) +
     scale_x_continuous(expand = expansion(mult = c(0, 0.05))) +
     scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +

@@ -385,7 +385,7 @@ display_plot(heat_map_plot)
 
 ##### Maps #####
 # Set the plot widths
-plot_widths = 5
+ml$var$plot_width = 5
 
 # wetted map
 cover_map <- make_map(
@@ -424,8 +424,8 @@ if (juvenile_run == TRUE){
       scale_name = "Mortality\nRisk",
       title = str_replace_all(.y, c("-" = " ", "_" = " ")))) %T>% 
     assign(x = "predation_map_length", value = length(.), envir = .GlobalEnv) %>% 
-    wrap_plots(ncol = 1, widths = plot_widths,
-               heights = predation_map_length * plot_widths)
+    wrap_plots(ncol = 1, widths = ml$var$plot_width,
+               heights = predation_map_length * ml$var$plot_width)
   display_plot(mort_map, 15, 15)
 }
 
@@ -434,10 +434,10 @@ cutoff_labels <- c("1" = "Below D",
                    "0" = "Below None",
                    "11" = "Below Both",
                    "10" = "Below V")
-color_values = c(cbPalette[3],
-                 cbPalette[1],
-                 cbPalette[2],
-                 cbPalette[8])
+color_values = c(ml$df$palette[3],
+                 ml$df$palette[1],
+                 ml$df$palette[2],
+                 ml$df$palette[8])
 cover_cutoff_map  <- ggplot(data = mean_map) +
   theme_classic(base_size = selected_base_size) +
   theme(axis.text.x = element_text(angle = 90)) +
@@ -458,8 +458,8 @@ if (adult_run == 1){
       title = str_replace_all(paste0(.x$species[1]),
                               c("-" = " ", "_" = " ")))) %T>% 
     assign(x = "migration_map_length", value = length(.), envir = .GlobalEnv)%>% 
-    wrap_plots(ncol = 1, widths = plot_widths,
-               heights = migration_map_length * plot_widths)
+    wrap_plots(ncol = 1, widths = ml$var$plot_width,
+               heights = migration_map_length * ml$var$plot_width)
   display_plot(migration_map, 15, 15)
 }
 
@@ -471,8 +471,8 @@ metabolic_map <- map_data %>%
     scale_name = "Metabolic Rate\n(j/day)",
     title = str_replace_all(.y, c("-" = " ", "_" = " ")))) %T>% 
   assign(x = "metabolic_map_length", value = length(.), envir = .GlobalEnv)%>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = metabolic_map_length * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = metabolic_map_length * ml$var$plot_width)
 display_plot(metabolic_map, 15, 15)
 
 # Net energy map
@@ -483,8 +483,8 @@ net_energy_map <-  map_data %>%
     scale_name = "Net Positive\nEnergy Areas\n(j/day)",
     title = str_replace_all(.y, c("-" = " ", "_" = " ")))) %T>% 
   assign(x = "net_energy_map_length", value = length(.), envir = .GlobalEnv)%>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = net_energy_map_length * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = net_energy_map_length * ml$var$plot_width)
 display_plot(net_energy_map, 15, 15)
 
 ##### Histograms and bar plots #####
@@ -509,7 +509,7 @@ if (adult_run == 1){
           axis.ticks.y=element_blank()) +
     geom_density(aes(x = energy_cost/1000,
                      y=after_stat(scaled)),
-                 fill = cbPalette[1]) +
+                 fill = ml$df$palette[1]) +
     labs(x = "Energy Cost (kJ)") +
     facet_wrap(species~., scales = "free", ncol = 1)
   display_plot(migration_energy_hist)

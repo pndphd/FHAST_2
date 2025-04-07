@@ -59,11 +59,11 @@ make_map_plot <- function() {
     coord_sf(xlim = c(grid_extent[1], grid_extent[2]),
              ylim = c(grid_extent[3], grid_extent[4]), expand = FALSE) +
     scale_color_manual(name = NULL,
-                       values = c(Grid = cbPalette[1],
-                                  Cover = cbPalette[2],
-                                  Canopy = cbPalette[3],
-                                  AOI = cbPalette[8],
-                                  Top = cbPalette[5])) +
+                       values = c(Grid = ml$df$palette[1],
+                                  Cover = ml$df$palette[2],
+                                  Canopy = ml$df$palette[3],
+                                  AOI = ml$df$palette[8],
+                                  Top = ml$df$palette[5])) +
     labs(caption = paste0(
       "The layout of the spatial input files. A green background means\n",
       "these shapes are within the bounds of the raster extent.")) +

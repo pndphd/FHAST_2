@@ -61,8 +61,8 @@ rearing_plot = map(detailed_data_list,
                                  x_lab =  "Date",
                                  y_lab = "Rearing Fish",
                                 title = .x$Species[1])) %>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = length(detailed_data_list) * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = length(detailed_data_list) * ml$var$plot_width)
 
 # X11()
 # print(rearing_plot)
@@ -74,8 +74,8 @@ growth_plot = map(detailed_data_list,
                                    x_lab =  "Date",
                                    y_lab = "Growth (cm)",
                                    title = .x$Species[1])) %>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = length(detailed_data_list) * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = length(detailed_data_list) * ml$var$plot_width)
 # X11()
 # print(growth_plot)
 
@@ -88,8 +88,8 @@ count_v_growth_plot = map(detailed_data_list,
                                   color = run_day,
                                   color_lab = "Run Day",
                                   title = .x$Species[1])) %>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = length(detailed_data_list) * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = length(detailed_data_list) * ml$var$plot_width)
 
 # X11()
 # print(count_v_growth_plot)
@@ -103,8 +103,8 @@ count_v_length_plot = map(detailed_data_list,
                                                    color = run_day,
                                                    color_lab = "Run Day",
                                                    title = .x$Species[1])) %>% 
-  wrap_plots(ncol = 1, widths = plot_widths,
-             heights = length(detailed_data_list) * plot_widths)
+  wrap_plots(ncol = 1, widths = ml$var$plot_width,
+             heights = length(detailed_data_list) * ml$var$plot_width)
 
 # X11()
 # print(count_v_length_plot)
@@ -115,7 +115,7 @@ mortality_plot = ggplot(data = mortality_breakdown) +
   labs(x = "Cause", y = "Mortality Counts") +
   geom_bar(aes(x = Cause, y = Count, fill = Species),
            stat="identity", position=position_dodge()) +
-  scale_fill_manual(values = cbPalette)
+  scale_fill_manual(values = ml$df$palette)
 # X11()
 # print(mortality_plot)
   
@@ -130,11 +130,11 @@ plot_name_list = list("abm_rearing_plot",
                       "abm_count_v_growth_plot",
                       "abm_count_v_length_plot",
                       "abm_mortality_plot")
-plot_dimeshions = list((length(detailed_data_list)) * plot_widths,
-                       (length(detailed_data_list)) * plot_widths,
-                       (length(detailed_data_list)) * plot_widths,
-                       (length(detailed_data_list)) * plot_widths,
-                        plot_widths)
+plot_dimeshions = list((length(detailed_data_list)) * ml$var$plot_width,
+                       (length(detailed_data_list)) * ml$var$plot_width,
+                       (length(detailed_data_list)) * ml$var$plot_width,
+                       (length(detailed_data_list)) * ml$var$plot_width,
+                        ml$var$plot_width)
 
 table_list = list(summary_table)
 table_name_list = list("abm_summary_table")

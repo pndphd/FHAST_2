@@ -1,1 +1,0 @@
-D:\GitHub\FHAST\FHAST_App\dist\R-Portable\App\R-Portable\bin\Rscript.exe --vanilla D:\GitHub\FHAST\scripts\main\run_config.R %*

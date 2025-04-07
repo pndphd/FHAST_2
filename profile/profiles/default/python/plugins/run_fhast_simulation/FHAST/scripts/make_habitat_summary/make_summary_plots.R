@@ -12,7 +12,7 @@ make_line_plot <- function(data_frame_in, x_axis, y_axis, x_lab, y_lab, title = 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ggtitle(title) +
     geom_path(
-      color = cbPalette[1],
+      color = ml$df$palette[1],
       linewidth = 1,
       linetype = "solid"
     ) +
@@ -29,7 +29,7 @@ make_scatter_plot <- function(data_frame_in, x_axis, y_axis, x_lab, y_lab, title
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ggtitle(title) +
     geom_point(
-      color = cbPalette[1],
+      color = ml$df$palette[1],
       size = 2,
       shape = 1,
       stroke = 2
