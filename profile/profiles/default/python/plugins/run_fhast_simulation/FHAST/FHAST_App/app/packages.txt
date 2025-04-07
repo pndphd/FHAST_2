@@ -40,7 +40,8 @@ igraph
 sf
 lutz # used to get time zones
 shadow
-maptools
+suntools
+
 smoothr
 exactextractr
 raster

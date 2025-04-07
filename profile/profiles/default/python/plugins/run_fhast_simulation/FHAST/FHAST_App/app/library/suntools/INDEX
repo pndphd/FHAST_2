@@ -1,0 +1,4 @@
+crepuscule              Compute crepuscular time
+solarnoon               Compute solar noon time
+solarpos                Compute solar position
+sunriset                Calculate sunrise/sunset

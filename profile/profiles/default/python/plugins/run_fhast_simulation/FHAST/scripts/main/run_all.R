@@ -1,12 +1,12 @@
 ########################################
 # This is just a series or source calls of the scripts
 # It will run the necessary files to initialize the FHAST program
-# and then run the various fast scripts in order
+# and then run the various fhast scripts in order
 ########################################
 
 # Uncoment for development to pick a specific file and run from IDE
 # need an extra up level ".." to compensate for being in the default input directory 
-# wild_card_file_name = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_1.txt"
+config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
 
 ##### Run the initialization scripts #####
 # install and load the here package if necessary
@@ -15,7 +15,7 @@ if(!require(c("here"), character.only = T)){install.packages(package)}
 # Get the path is running from the UI
 preview_flag = FALSE
 if (exists("pass_arguments")){
-  wild_card_file_name = pass_arguments[1]
+  config_file_name = pass_arguments[1]
   Sys.setenv(JAVA_HOME = here("jdk-11"))
   if (pass_arguments[2] == "1"){
     preview_flag = TRUE
@@ -32,6 +32,7 @@ source(here("scripts","main","run_preview.R"))
 if (preview_flag){
   stop("PREVIEW RUN COMPLETE.\nThis is not an error.")  
 }
+rm(preview_flag)
 
 ##### Run the calculation scripts #####
 source(here("scripts","main","run_model.R"))

@@ -3,13 +3,12 @@
 ########################################
 
 # Load a color blind friendly pallet
-cbPalette <<- c("#999999", "#0072B2", "#D55E00",
-                         "#F0E442", "#56B4E9", "#E69F00",
-                         "#0072B2", "#009E73", "#CC79A7"
-                         )
+cbPalette = c("#999999", "#0072B2", "#D55E00",
+                "#F0E442", "#56B4E9", "#E69F00",
+                "#0072B2", "#009E73", "#CC79A7")
 
 # Set default plot width
-plot_widths <<- 5
+plot_widths = 5
 
 
 ##### Functions #####

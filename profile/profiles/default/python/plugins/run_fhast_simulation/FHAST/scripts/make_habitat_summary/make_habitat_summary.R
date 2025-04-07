@@ -630,8 +630,8 @@ if (adult_run == TRUE){
   data_name_list = append(data_name_list, list("summary_migration_table"))
 }
 
-object_list = c(data_list, plot_list)
-object_name_list = c(data_name_list, plot_name_list)
+object_list = c(data_list, plot_list, list(map_data))
+object_name_list = c(data_name_list, plot_name_list, "full_map_data")
 
 # Save all the outputs 
 walk2(object_list, object_name_list, ~saveRDS(

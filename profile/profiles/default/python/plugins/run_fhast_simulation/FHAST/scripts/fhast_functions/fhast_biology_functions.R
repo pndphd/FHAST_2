@@ -4,14 +4,14 @@
 ########################################
 
 # Get the fish body mass
-get_fish_body_mass <- function(params) {
+get_fish_body_mass = function(params) {
   a <- params$length_mass_a
   b <- params$length_mass_b
   a * params$eg_adult_length^b
 }
 
 # Calculate max sustanind swimm speed
-get_ucrit <- function(params, fish_index, temperature_C) {
+get_ucrit = function(params, fish_index, temperature_C) {
   # ucrit in body lengths per second
   a <- params$ucrit_a[fish_index]
   b <- params$ucrit_b[fish_index]
@@ -28,14 +28,14 @@ get_ucrit <- function(params, fish_index, temperature_C) {
 }
 
 # Calculate thet max swimm speed
-get_max_swim_speed <- function(params) {
+get_max_swim_speed = function(params) {
   m_per_cm <- 0.01
   body_length_m <- params$eg_adult_length * m_per_cm
   0.4 + 7.4 * body_length_m
 }
 
-# this function calculates a fishes metabolic cost
-calc_met <- function(params = NULL,
+# This function calculates a fishes metabolic cost
+calc_met = function(params = NULL,
                      fish_index = NULL,
                      length = NULL,
                      temp = NULL,

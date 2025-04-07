@@ -14,12 +14,12 @@ make_shade_shape = function(shape_file_in,
     x = time_in,
     tz = tz_lookup(location, method = "accurate")
   )
-  
+
   # get the sunset time
   set = sunriset(
     crds = st_coordinates(location),
     dateTime = time,
-    proj4string=CRS(st_crs(location)$proj4string),
+    crs=CRS(st_crs(location)$proj4string),
     direction="sunset",
     POSIXct.out=TRUE
   )
@@ -28,7 +28,7 @@ make_shade_shape = function(shape_file_in,
   rise = sunriset(
     crds = st_coordinates(location),
     dateTime = time,
-    proj4string=CRS(st_crs(location)$proj4string),
+    crs=CRS(st_crs(location)$proj4string),
     direction="sunrise",
     POSIXct.out=TRUE
   )

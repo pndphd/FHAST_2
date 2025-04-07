@@ -2,6 +2,7 @@
 # This is a set of functions commonly
 # used in FHAST for maths
 ########################################
+
 # calculate the logistic function in the style of inSALMO
 convert_logistic_parameters <- function(parm_10, parm_90){
   parm_10 <- as.numeric(parm_10)
@@ -35,6 +36,7 @@ calc_beta_sig <- function(parm_A = NULL,
   return(s)
 }
 
+# get a value for a linear model
 get_estimate_for_linear_model <- function(intercept, slope, x){
   intercept + slope * x
 }

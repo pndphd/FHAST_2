@@ -116,7 +116,6 @@ initialize_fhast <- function(file_path) {
     wild_path <<- NA
   }
   
-
   # Reset this stuff to be ready for a new run, the random seed in particular
   # should get set every time.
 

@@ -6,8 +6,8 @@
 input_folder <- file.path(here(), "default_input")
 
 # Check if doing multi run. If not just function normally
-if(exists("wild_card_file_name")){
-  fhast_config_file <- wild_card_file_name
+if(exists("config_file_name")){
+  fhast_config_file <- config_file_name
 }else{
   fhast_config_file <- "input_file.txt"
 }

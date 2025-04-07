@@ -70,7 +70,7 @@ compare_values = compare_values[-remove]
 
 ##### Run the Sims #####
 run_multi = function(file_name){
-  wild_card_file_name <<- file_name
+  config_file_name <<- file_name
   source(here("scripts","main","run_all.R"))
 }
 
