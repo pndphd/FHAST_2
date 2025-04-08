@@ -7,7 +7,7 @@
 source(here("scripts","sample_shapes","sample_shapes_functions.R"))
 
 # inputs
-# temp_river_grid_path, temp_shape_file_path, cover_path, hab_path, aoi_path
+# temp_river_grid_path, temp_shape_file_path, ml$path$cover, ml$path$hab, ml$path$aoi
 # outputs
 # temp_netlogo_shape_data_path
 
@@ -21,7 +21,7 @@ temp_netlogo_shape_data_path <- here(temp_folder,
                                      paste0("Shape_Data_Input.csv"))
 
 input_output_file_paths <- c(temp_river_grid_path, temp_shape_file_path,
-                             cover_path, hab_path, aoi_path, wild_path,
+                             ml$path$cover, ml$path$hab, ml$path$aoi, ml$path$wild,
                              temp_netlogo_shape_data_path)
 
 hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
@@ -73,7 +73,7 @@ hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
  
   
   # Add in the AOI
-  if(is.na(aoi_path)){
+  if(is.na(ml$path$aoi)){
     sampeled_w_aoi = sampeled_shapes %>%
       mutate(aoi = 1) %>% 
       st_as_sf(sf_column_name = "geometry") 

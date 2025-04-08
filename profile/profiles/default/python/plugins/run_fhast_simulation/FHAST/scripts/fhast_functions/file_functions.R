@@ -1,6 +1,29 @@
-########################################
+################################################################################
 # This is a set of functions communally used in FHAST for file manupi
-########################################
+################################################################################
+
+# Main function to write configuration file
+write_config_file <- function(file_path, name, output_folder_path,
+                              notes, fish_pop, daily,
+                              fish_params, line, point,
+                              cover, canopy, tree_growth,
+                              hab_params, interaction_params, predator,
+                              raster, aoi, wild) {
+  obj <- data.frame(
+    names = c("run name", "output path", "notes file",
+              "fish population", "daily conditions", "fish parameters",
+              "grid centerline", "grid top point", "cover",
+              "canopy", "tree growth", "habitat parameters",
+              "interaction parameters", "predator parameters", "raster folder",
+              "aoi", "wildcard"),
+    paths = c(name, output_folder_path, notes,
+              fish_pop, daily, fish_params,
+              line, point, cover,
+              canopy, tree_growth, hab_params,
+              interaction_params, predator, raster,
+              aoi, wild))
+  save_text_file(file_path, obj)
+}
 
 # Make a directory if it's missing for a file path
 make_dir_if_missing <- function(file_path) {
@@ -31,7 +54,7 @@ check_file_exists = function(file_path){
 
 # Load the text files with equals in them 
 load_text_file <- function(file_path) {
-  file_path <- get_path(fhast_base_folder, file_path)
+  file_path <- get_path(ml$path$base_folder, file_path)
   if (!file.exists(file_path) || dir.exists(file_path)) {
     return(NULL)
   }
@@ -49,7 +72,7 @@ load_text_file <- function(file_path) {
 
 # Save a text file
 save_text_file <- function(file_path, obj) {
-  file_path <- get_path(fhast_base_folder, file_path)
+  file_path <- get_path(ml$path$base_folder, file_path)
   make_dir_if_missing(file_path)
   fwrite(obj,
          file = file_path,
@@ -87,3 +110,7 @@ compare_last_run_hashes <- function(file_path, files) {
   # verify md5 matches
   return(all(mapply(identical, hashes, obj[,1])))
 }
+
+################################################################################
+# End
+################################################################################

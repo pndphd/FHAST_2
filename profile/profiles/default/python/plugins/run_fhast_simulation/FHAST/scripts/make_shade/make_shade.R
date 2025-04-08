@@ -23,7 +23,7 @@ temp_river_grid_path <- here(temp_folder, "river_grid.rds")
 temp_shade_file_path <- here(temp_folder,  paste0("shade_file_", habitat_parm$veg_growth_years,".rds"))
 temp_netlogo_daily_input_path <- here(temp_folder, "daily_input_file.csv")
 
-input_output_file_paths <- c(canopy_path, tree_growth_path,
+input_output_file_paths <- c(ml$path$canopy, ml$path$tree_growth,
                              temp_daily_file_path,
                              temp_river_grid_path,
                              temp_shade_file_path)

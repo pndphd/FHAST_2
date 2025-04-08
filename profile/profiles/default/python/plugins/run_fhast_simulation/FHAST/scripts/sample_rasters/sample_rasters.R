@@ -10,7 +10,7 @@ source(here("scripts", "sample_rasters", "sample_rasters_functions.R"))
 source(here("scripts", "sample_rasters", "make_migration_path.R"))
 
 # inputs
-# temp_river_grid_path, raster_folder_files
+# temp_river_grid_path, ml$path$raster_folder_files
 # outputs
 # temp_netlogo_depth_velocity_path
 
@@ -19,12 +19,12 @@ temp_river_grid_path <- here(temp_folder,
 temp_netlogo_depth_velocity_path <- here(temp_folder, 
                                          paste0("Depth_Velocity_Data_Input.csv"))
 
-input_output_file_paths <- list.files(raster_folder, full.names=TRUE)
+input_output_file_paths <- list.files(ml$path$raster_folder, full.names=TRUE)
 input_output_file_paths <- append(input_output_file_paths, temp_river_grid_path)
 input_output_file_paths <- append(input_output_file_paths,
                                   temp_netlogo_depth_velocity_path)
 input_output_file_paths <- append(input_output_file_paths,
-                                  fish_population_path)
+                                  ml$path$fish_pop)
 
 hash_storage <-here(temp_folder, "sample_raster_run_hashes.txt")
 
@@ -36,15 +36,15 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 
   ##### Load the flow list #####
   # find all the depth and velocity rasters
-  d_files = list.files(raster_folder, "D\\d+.tif", full.names=TRUE)
-  v_files = list.files(raster_folder, "V\\d+.tif", full.names=TRUE)
+  d_files = list.files(ml$path$raster_folder, "D\\d+.tif", full.names=TRUE)
+  v_files = list.files(ml$path$raster_folder, "V\\d+.tif", full.names=TRUE)
   # remove just the values from the file lists.
-  d_values = str_remove(d_files, coll(raster_folder)) %>% 
+  d_values = str_remove(d_files, coll(ml$path$raster_folder)) %>% 
     str_sub(start = 3) %>% 
     str_extract(".*(?=\\.)") %>% 
     as.numeric() %>% 
     sort()
-  v_values = str_remove(v_files, coll(raster_folder)) %>% 
+  v_values = str_remove(v_files, coll(ml$path$raster_folder)) %>% 
     str_sub(start = 3) %>% 
     str_extract(".*(?=\\.)") %>% 
     as.numeric() %>% 
@@ -62,13 +62,13 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   ##### Main Part #####
   # Put all the rasters in a stack
   raster_stack_d = load_rasters(type = "depth",
-                                folder = raster_folder,
+                                folder = ml$path$raster_folder,
                                 clip_mask = river_grid)
   
   
   # Put all the rasters in a stack
   raster_stack_v = load_rasters(type = "velocity",
-                                folder = raster_folder,
+                                folder = ml$path$raster_folder,
                                 clip_mask = river_grid) 
 
 

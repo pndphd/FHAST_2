@@ -72,9 +72,9 @@ load_daily_conditions = function(daily_inputs_in) {
     # Get parameters
     hydro_file_name = daily_inputs_in["file",]
     # Read in the file and convert to date
-    daily_folder = str_sub(daily_path,
-                           end = max(unlist(str_locate_all(daily_path, "/"))))
-    message(daily_path)
+    daily_folder = str_sub(ml$path$daily,
+                           end = max(unlist(str_locate_all(ml$path$daily, "/"))))
+    message(ml$path$daily)
     hydro_file = read.csv(file = here(daily_folder, hydro_file_name)) %>% 
       mutate(date = mdy(date))
     

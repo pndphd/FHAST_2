@@ -6,7 +6,7 @@
 source(here("scripts","make_grid","make_grid_functions.R"))
 
 # inputs
-# grid_center_line_path, hab_path, grid_top_marker_path
+# ml$path$center_line, ml$path$hab, ml$path$top_marker
 # outputs
 # temp_river_grid_path, temp_river_grid_shape_path
 
@@ -14,8 +14,8 @@ temp_river_grid_path <- here(temp_folder, "river_grid.rds")
 
 temp_river_grid_shape_path <- here(temp_folder, "river_grid.shp")
 
-input_output_file_paths <- c(grid_center_line_path, hab_path,
-                             grid_top_marker_path, temp_river_grid_path,
+input_output_file_paths <- c(ml$path$center_line, ml$path$hab,
+                             ml$path$top_marker, temp_river_grid_path,
                              temp_river_grid_shape_path)
 
 hash_storage <-here(temp_folder, "make_grid_run_hashes.txt")
@@ -68,16 +68,16 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   
   ##### Trim Grid #####
   #get the rasters
-  d_files = list.files(raster_folder, "D\\d+.tif", full.names=TRUE)
+  d_files = list.files(ml$path$raster_folder, "D\\d+.tif", full.names=TRUE)
   # remove just the values from the file lists.
-  d_values = str_remove(d_files, coll(raster_folder)) %>%
+  d_values = str_remove(d_files, coll(ml$path$raster_folder)) %>%
     str_sub(start = 3) %>%
     str_extract(".*(?=\\.)") %>%
     as.numeric() %>%
     sort()
   # find the value larger then the max flow
   max_raster_value = d_values[min(which(d_values > max(daily_input_data$flow_cms)))]
-  max_raster = rast(here(raster_folder, paste0("D", max_raster_value, ".tif")))
+  max_raster = rast(here(ml$path$raster_folder, paste0("D", max_raster_value, ".tif")))
 
 # Filter the grid so only use potentially wetted cells
   # grid = exact_extract(max_raster, grid, fun = 'max', progress = FALSE) %>%

@@ -7,17 +7,17 @@ source(here("scripts", "convert_parameters", "convert_parameters_functions.R"))
 
 ##### Initial file checks ######
 # make a list of all the inputs that must exist
-input_paths = list(grid_center_line_path,
-                   grid_top_marker_path,
-                   canopy_path,
-                   tree_growth_path,
-                   cover_path,
-                   daily_path,
-                   fish_population_path,
-                   fish_parameters_path,
-                   predator_path,
-                   hab_path,
-                   interaction_path)
+input_paths = list(ml$path$center_line,
+                   ml$path$top_marker,
+                   ml$path$canopy,
+                   ml$path$tree_growth,
+                   ml$path$cover,
+                   ml$path$daily,
+                   ml$path$fish_pop,
+                   ml$path$fish_parms,
+                   ml$path$predator,
+                   ml$path$hab,
+                   ml$path$interaction)
 
 # Check if they exist
 walk(input_paths, ~check_file_exists(.x))
@@ -25,41 +25,41 @@ walk(input_paths, ~check_file_exists(.x))
 ##### Copy over some to be printed in reports #####
 
 
-file.copy(daily_path, here(output_temp_folder, "daily_input.txt"), overwrite = TRUE)
-file.copy(interaction_path, here(output_temp_folder, "interactions_input.txt"), overwrite = TRUE)
-file.copy(fish_population_path, here(output_temp_folder, "population_input.txt"), overwrite = TRUE)
-file.copy(fish_parameters_path, here(output_temp_folder, "fish_input.txt"), overwrite = TRUE)
-file.copy(hab_path, here(output_temp_folder, "habitat_input.txt"), overwrite = TRUE)
-file.copy(predator_path, here(output_temp_folder, "predator_input.txt"), overwrite = TRUE)
-file.copy(notes_path, here(output_temp_folder, "notes.txt"), overwrite = TRUE)
+file.copy(ml$path$daily, here(output_temp_folder, "daily_input.txt"), overwrite = TRUE)
+file.copy(ml$path$interaction, here(output_temp_folder, "interactions_input.txt"), overwrite = TRUE)
+file.copy(ml$path$fish_pop, here(output_temp_folder, "population_input.txt"), overwrite = TRUE)
+file.copy(ml$path$fish_parms, here(output_temp_folder, "fish_input.txt"), overwrite = TRUE)
+file.copy(ml$path$hab, here(output_temp_folder, "habitat_input.txt"), overwrite = TRUE)
+file.copy(ml$path$predator, here(output_temp_folder, "predator_input.txt"), overwrite = TRUE)
+file.copy(ml$path$notes, here(output_temp_folder, "notes.txt"), overwrite = TRUE)
 
 ##### Read in the files #####
-cover_shape <- st_read(cover_path, quiet = TRUE)
+cover_shape <- st_read(ml$path$cover, quiet = TRUE)
 base_crs <- st_crs(cover_shape)
-grid_center_line <- st_read(grid_center_line_path, quiet = TRUE) %>% 
+grid_center_line <- st_read(ml$path$center_line, quiet = TRUE) %>% 
   st_zm() %>% 
   st_transform(base_crs)
-grid_top_marker <- st_read(grid_top_marker_path, quiet = TRUE) %>% 
+grid_top_marker <- st_read(ml$path$top_marker, quiet = TRUE) %>% 
   st_zm() %>% 
   st_transform(base_crs)
-canopy_shape <- st_read(canopy_path, quiet = TRUE)
-tree_growth_parms_in <- read.csv(file = tree_growth_path, sep = ",", header = TRUE)
-daily_inputs <- load_text_file(daily_path)
-fish_daily_inputs <- read.csv(file = fish_population_path, sep = ",", header = TRUE) %>%
+canopy_shape <- st_read(ml$path$canopy, quiet = TRUE)
+tree_growth_parms_in <- read.csv(file = ml$path$tree_growth, sep = ",", header = TRUE)
+daily_inputs <- load_text_file(ml$path$daily)
+fish_daily_inputs <- read.csv(file = ml$path$fish_pop, sep = ",", header = TRUE) %>%
   mutate(date = mdy(date))
-fish_parm_temp <- read_csv(file = fish_parameters_path,
+fish_parm_temp <- read_csv(file = ml$path$fish_parms,
                            col_types = cols(.default = "d", species = "c"),
                            progress = FALSE)
-pred_parm_temp <- read_csv(file = predator_path,
+pred_parm_temp <- read_csv(file = ml$path$predator,
                            col_types = cols(.default = "d", species = "c"),
                            progress = FALSE) %>%
   rename(term = species) %>%
   mutate(term = str_remove(term, "pred_glm_"))
-hab_parm_temp <- load_text_file(hab_path)
-int_parm_temp <- load_text_file(interaction_path)
+hab_parm_temp <- load_text_file(ml$path$hab)
+int_parm_temp <- load_text_file(ml$path$interaction)
 
-if (!is.na(aoi_path)) {
-  aoi_shape <- st_read(aoi_path, quiet = TRUE) %>% 
+if (!is.na(ml$path$aoi)) {
+  aoi_shape <- st_read(ml$path$aoi, quiet = TRUE) %>% 
     st_zm() %>% 
     st_transform(base_crs)
 }
@@ -81,7 +81,7 @@ if (NROW(grid_center_line) != 1)
 if("wildcard" %in% cover_shape$class){
 
   wildError <<- FALSE
-  tryCatch(check_file_exists(wild_path),
+  tryCatch(check_file_exists(ml$path$wild),
            error = function(e) {
              print(e)
              wildError <<- TRUE
@@ -92,7 +92,7 @@ if("wildcard" %in% cover_shape$class){
                 "!!!!!!!!!!!\n"))
   }
 
-  wild_values = read_csv(wild_path, show_col_types = FALSE)
+  wild_values = read_csv(ml$path$wild, show_col_types = FALSE)
   wild_shape = cover_shape %>% 
     filter(class == "wildcard") 
 
@@ -302,7 +302,7 @@ pred_temp_params %>%
   rename(term = name) %>%
   bind_rows(pred_parm_temp) %>%
   filter(!(term %in% temp_model_par_names)) %>%
-  write_csv(here(temp_folder, basename(predator_path)),
+  write_csv(here(temp_folder, basename(ml$path$predator)),
             progress = FALSE)
 
 # Save the predation models

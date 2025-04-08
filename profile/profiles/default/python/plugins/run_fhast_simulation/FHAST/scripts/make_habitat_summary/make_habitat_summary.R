@@ -77,7 +77,7 @@ habitat_fixed = shape_file %>%
   select(-starts_with("shade_")) 
 
 # Make an average predator from the predator parameter file
-pred_parm <- read_csv(file = predator_path,
+pred_parm <- read_csv(file = ml$path$predator,
                       col_types = cols(.default = "d", species = "c")) %>%
   # the 1 ensures the names are kept
   rename(species_temp = species) %>% 

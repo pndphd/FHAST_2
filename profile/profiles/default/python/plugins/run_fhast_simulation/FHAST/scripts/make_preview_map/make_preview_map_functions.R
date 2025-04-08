@@ -17,16 +17,16 @@ make_map_plot <- function() {
   
   # Get a sample raster file to get the extent
   # find all the depth and velocity rasters
-  d_files <- list.files(raster_folder, "D\\d+.tif", full.names = TRUE)
+  d_files <- list.files(ml$path$raster_folder, "D\\d+.tif", full.names = TRUE)
 
   # remove just the values from the file lists.
-  flow_values <- str_remove(d_files, coll(raster_folder)) %>%
+  flow_values <- str_remove(d_files, coll(ml$path$raster_folder)) %>%
     str_sub(start = 3) %>%
     str_extract(".*(?=\\.)") %>%
     as.numeric() %>%
     sort()
   example_flow <- flow_values[ceiling(length(flow_values) / 2)]
-  example_raster <- raster(paste0(raster_folder,"/D",example_flow,".tif"))
+  example_raster <- raster(paste0(ml$path$raster_folder,"/D",example_flow,".tif"))
   
   raster_extent <- extent(example_raster) %>%
     as("SpatialPolygons") %>%
@@ -49,7 +49,7 @@ make_map_plot <- function() {
               size = 5, label.size = 1, color = "black")
   
   # If there is an AOI add it in
-  if (!is.na(aoi_path)) {
+  if (!is.na(ml$path$aoi)) {
     map_plot <- map_plot +
       geom_sf(data = aoi_shape, aes(color = "AOI"), fill = NA, size = 2)
   }
