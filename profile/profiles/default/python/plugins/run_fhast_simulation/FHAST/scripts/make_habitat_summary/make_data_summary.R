@@ -9,10 +9,10 @@ make_data_summary = function(..., habitat){
   ls = fish_type$life_stage
   
   # Which species are we looking at
-  id = which(fish_parm$specie == fish_type$species)
+  id = which(ml$df$fish_parms$specie == fish_type$species)
   
   # Give the parameter list a shorter name 
-  pl = fish_parm
+  pl = ml$df$fish_parms
   
   # Get the example length
   fish_length =  ifelse(ls == "juvenile", pl$eg_juvenile_length[id], pl$eg_adult_length[id])
@@ -31,7 +31,7 @@ make_data_summary = function(..., habitat){
   wall_factor = ifelse(pl$benthic_fish[id] == 0, 1,
                        # all the following hard coded constants from the
                        # relationship for the law of the wall
-                       habitat_parm$base_wall_factor)
+                       ml$df$habitat_parms$base_wall_factor)
 
   # If there are juveniles do predation calculations
   if(juvenile_run & ls == "juvenile"){
@@ -63,7 +63,7 @@ make_data_summary = function(..., habitat){
       # Reduce velocity for benthic fish and in cover fish if habitat is available
       benthic_flag = pl$benthic_fish[id], 
       shelter_fraction = if_else(fish_length^2/1e4 < wetted_area*cover_fra & pl$benthic_fish[id] == 0,
-                                 habitat_parm$shelter_frac,
+                                 ml$df$habitat_parms$shelter_frac,
                                  1),
       experienced_vel = wall_factor*velocity*shelter_fraction,
       # Calculate teh active and passive metabolic rate
@@ -103,18 +103,18 @@ make_data_summary = function(..., habitat){
                                       parm_90 = pl$capture_V9[id],
                                       value = velocity/max_swim_speed),
       # Calculate food eaten per day
-      drift_eaten = capture_success *capture_area * habitat_parm$hab_drift_con *
+      drift_eaten = capture_success *capture_area * ml$df$habitat_parms$hab_drift_con *
         velocity * 86400 * photoperiod,
       ben_eaten = pi * pl$feeding_speed[id] * fish_length / fish_width *
         86400 * (1 - photoperiod)  *
-        fish_width^2 * habitat_parm$hab_bentic_con / (1E4 *
+        fish_width^2 * ml$df$habitat_parms$hab_bentic_con / (1E4 *
         log(pl$feeding_speed[id] * fish_length / fish_width *
               (1 - photoperiod) * 86400)),
-      ben_avaiable = habitat_parm$hab_bentic_con *
+      ben_avaiable = ml$df$habitat_parms$hab_bentic_con *
         ben_food_fra * wetted_area,
       # Calculate the food eaten
-      intake_ben_energy = pmin(ben_eaten, ben_avaiable, cmax)* habitat_parm$hab_bentic_ene,
-      intake_drift_energy = pmin(drift_eaten, cmax)* habitat_parm$hab_drift_ene,
+      intake_ben_energy = pmin(ben_eaten, ben_avaiable, cmax)* ml$df$habitat_parms$hab_bentic_ene,
+      intake_drift_energy = pmin(drift_eaten, cmax)* ml$df$habitat_parms$hab_drift_ene,
       # Calculate the energy intake and net energy
       energy_intake = (intake_ben_energy *pl$benthic_fish[id] + 
                          intake_drift_energy * (1 - pl$benthic_fish[id])) * feeding_flag,

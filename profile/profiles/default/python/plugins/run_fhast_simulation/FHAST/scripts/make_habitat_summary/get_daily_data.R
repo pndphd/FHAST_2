@@ -59,7 +59,7 @@ if(adult_run){
       select(species, number)
     habitat_area = mid_flow %>% 
       left_join(migration_area, by = c("lat_dist", "distance"))
-    migration_data <- get_path_min_costs_all_species(habitat_area, fish_parm, habitat_parm, todays_adults)
+    migration_data <- get_path_min_costs_all_species(habitat_area, ml$df$fish_parms, ml$df$habitat_parms, todays_adults)
   }
 } else {migration_data <- NA}
 

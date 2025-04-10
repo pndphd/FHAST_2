@@ -9,11 +9,11 @@ raster_to_df <- function(raster = NULL) {
 make_map_plot <- function() {
   ##### Process things for map #####
   # Get the grid oputline
-  river_appx = grid_center_line %>% 
+  river_appx = ml$df$center_line %>% 
     smooth(method = "ksmooth",
-           max_distance = habitat_parm$resolution,
-           bandwidth = habitat_parm$resolution*10) %>% 
-    st_buffer(dist = habitat_parm$buffer, endCapStyle = "FLAT")
+           max_distance = ml$df$habitat_parms$resolution,
+           bandwidth = ml$df$habitat_parms$resolution*10) %>% 
+    st_buffer(dist = ml$df$habitat_parms$buffer, endCapStyle = "FLAT")
   
   # Get a sample raster file to get the extent
   # find all the depth and velocity rasters
@@ -34,8 +34,8 @@ make_map_plot <- function() {
     st_set_crs(crs(river_appx))
   
   ##### Make the plot #####
-  top_label = data.frame(x = st_coordinates(grid_top_marker)[1],
-                         y = st_coordinates(grid_top_marker)[2],
+  top_label = data.frame(x = st_coordinates(ml$df$top_marker)[1],
+                         y = st_coordinates(ml$df$top_marker)[2],
                          name = "TOP")
   
   grid_extent <- extent(river_appx)
@@ -43,15 +43,15 @@ make_map_plot <- function() {
     theme_classic(base_size = 25) +
     geom_sf(data = raster_extent, fill = "#E8F5E9") +
     geom_sf(data = river_appx, aes(color = "Grid"), fill = NA) +
-    geom_sf(data = cover_shape, aes(color = "Cover"), fill = NA) +
-    geom_sf(data = canopy_shape, aes(color = "Canopy"), fill = NA) +
+    geom_sf(data = ml$df$cover, aes(color = "Cover"), fill = NA) +
+    geom_sf(data = ml$df$canopy, aes(color = "Canopy"), fill = NA) +
     geom_label(data = top_label, aes(x,y,label = name),
               size = 5, label.size = 1, color = "black")
   
   # If there is an AOI add it in
   if (!is.na(ml$path$aoi)) {
     map_plot <- map_plot +
-      geom_sf(data = aoi_shape, aes(color = "AOI"), fill = NA, size = 2)
+      geom_sf(data = ml$df$aoi, aes(color = "AOI"), fill = NA, size = 2)
   }
   
   # mare map process that must be done after APO addation 
@@ -72,7 +72,7 @@ make_map_plot <- function() {
           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
   ##### Save the data #####
-  write_sf(river_appx, here(output_shape_folder, "preview_river_grid_outline.shp"),
+  write_sf(river_appx, here(ml$path$output_shape_folder, "preview_river_grid_outline.shp"),
            driver ="ESRI Shapefile")
   ggsave(filename =here(output_folder, "preview_plot.png"),
          plot = map_plot,

@@ -12,7 +12,7 @@ source(here("scripts","sample_shapes","sample_shapes_functions.R"))
 # temp_netlogo_shape_data_path
 
 temp_river_grid_path <- here(temp_folder, paste0("river_grid.rds"))
-temp_shape_file_path <- here(temp_folder, paste0("shade_file_", habitat_parm$veg_growth_years,".rds"))
+temp_shape_file_path <- here(temp_folder, paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
 
 temp_RDS_shape_data_path <- here(temp_folder,
                                      paste0("Shape_Data_Input.rds"))
@@ -36,17 +36,17 @@ hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
   
   ##### Main Work #####
   # get what is classified as benthic food habitat
-  benthic_food_habitat = habitat_parm$hab_benthic_hab %>% 
+  benthic_food_habitat = ml$df$habitat_parms$hab_benthic_hab %>% 
     str_split(",") %>% 
     pluck(1) %>% 
     str_trim(side = "both")
   # get what is classified as cover habitat
-  cover_habitat = habitat_parm$cover_hab %>% 
+  cover_habitat = ml$df$habitat_parms$cover_hab %>% 
     str_split(",") %>% 
     pluck(1) %>% 
     str_trim(side = "both")
   # get what is classified as small cover habitat
-  small_cover_habitat = habitat_parm$small_cover_hab %>% 
+  small_cover_habitat = ml$df$habitat_parms$small_cover_hab %>% 
     str_split(",") %>% 
     pluck(1) %>% 
     str_trim(side = "both")
@@ -55,7 +55,7 @@ hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
   cover_names = list("veg", "wood", "fine", "gravel", "cobble", "rock")
   
   # Get a list of data frames with just one for each df that 
-  shape_dfs = map(cover_names, ~select(cover_shape, matches(.x))) 
+  shape_dfs = map(cover_names, ~select(ml$df$cover, matches(.x))) 
   
   the_variables = c(cover_names, as.list(paste0("shade_", seq(1,12,1))))
   shape_files = c(shape_dfs, shade_file)
@@ -79,11 +79,11 @@ hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
       st_as_sf(sf_column_name = "geometry") 
   } else {
     # Load the aoi shape
-    aoi_shape = aoi_shape %>% 
+    ml$df$aoi = ml$df$aoi %>% 
     mutate(aoi = 1) %>% 
     select(aoi)
     
-    sampeled_w_aoi = sample_shape_with_grid(river_grid, aoi_shape, "aoi", "aoi") %>%
+    sampeled_w_aoi = sample_shape_with_grid(river_grid, ml$df$aoi, "aoi", "aoi") %>%
       mutate(aoi = ifelse(aoi>0,1,0)) %>% 
       select(aoi, ID) %>% 
       right_join(sampeled_shapes, by = c("ID")) %>% 
@@ -105,7 +105,7 @@ hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
 
 ##### Load and save the outputs #####
 result = readRDS(file = temp_RDS_shape_data_path)
-write_sf(result, here(output_shape_folder, "sampeled_shape.shp"),
+write_sf(result, here(ml$path$output_shape_folder, "sampeled_shape.shp"),
          driver ="ESRI Shapefile")
 
 ###########################################

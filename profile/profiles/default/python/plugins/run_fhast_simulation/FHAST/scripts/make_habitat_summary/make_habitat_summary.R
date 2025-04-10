@@ -13,19 +13,19 @@ source(here("scripts", "make_habitat_summary", "habitat_summary_functions.R"))
 
 ##### Load Files #####
 # Load the shape file names
-shape_file <- read.csv(here(output_temp_folder, 
+shape_file <- read.csv(here(ml$path$output_temp_folder, 
                             paste0("Shape_Data_Input.csv")))
 
 # Load the raster file
-raster_file <- read.csv(here(output_temp_folder,  
+raster_file <- read.csv(here(ml$path$output_temp_folder,  
                              paste0("Depth_Velocity_Data_Input.csv")))
 
 # Load the daily environmental inputs 
-daily_file <- read.csv(here(output_temp_folder,  "daily_input_file.csv")) %>%
+daily_file <- read.csv(here(ml$path$output_temp_folder,  "daily_input_file.csv")) %>%
   mutate(date = mdy(date))
 
 # Load the Grid file
-grid_file <- readRDS(here(output_temp_folder, 
+grid_file <- readRDS(here(ml$path$output_temp_folder, 
                           paste0("river_grid.rds"))) %>%
   select(distance, lat_dist)
 
@@ -63,7 +63,7 @@ rm(habitat_flows_all)
 
 # Get all the fish combos
 fish_combos <- expand.grid(
-  species = fish_parm$specie,
+  species = ml$df$fish_parms$specie,
   life_stage = c("juvenile", "adult"))
 
 # Get migration codes over to shape file
@@ -106,7 +106,7 @@ habitat_variable = daily_data_sets %>%
   select(-area) %>% 
   left_join(habitat_fixed, by = c("lat_dist", "distance")) %>% 
   group_by(date) %>% 
-  mutate(reach_preds = round(habitat_parm$pred_per_area * sum(wetted_area)),
+  mutate(reach_preds = round(ml$df$habitat_parms$pred_per_area * sum(wetted_area)),
          # Add in variable to calculate inundation
          wetted = ifelse(wetted_area > 0, 1, 0)) %>% 
   ungroup() 
@@ -156,15 +156,15 @@ map_data_full <- data_summary %>%
 mean_map <- map_data[[1]] %>%  
   #remove fish specific things
   select(-contains("pred_mort_risk"), -benthic_flag, -fish_met_j_per_day, -energy_intake, -net_energy) %>% 
-  mutate(below_d_cutoff = ifelse(depth < habitat_parm$dep_cutoff, 1, 0) ,
-         below_v_cutoff = ifelse(velocity < habitat_parm$vel_cutoff, 1, 0),
+  mutate(below_d_cutoff = ifelse(depth < ml$df$habitat_parms$dep_cutoff, 1, 0) ,
+         below_v_cutoff = ifelse(velocity < ml$df$habitat_parms$vel_cutoff, 1, 0),
          below_group = below_d_cutoff + 10*below_v_cutoff) 
 
 mean_map_full <- map_data_full[[1]] %>%  
   #remove fish specific things
   select(-contains("pred_mort_risk"), -benthic_flag, -fish_met_j_per_day, -energy_intake, -net_energy) %>% 
-  mutate(below_d_cutoff = ifelse(depth < habitat_parm$dep_cutoff, 1, 0) ,
-         below_v_cutoff = ifelse(velocity < habitat_parm$vel_cutoff, 1, 0),
+  mutate(below_d_cutoff = ifelse(depth < ml$df$habitat_parms$dep_cutoff, 1, 0) ,
+         below_v_cutoff = ifelse(velocity < ml$df$habitat_parms$vel_cutoff, 1, 0),
          below_group = below_d_cutoff + 10*below_v_cutoff)
 
 # add flow data to daily averages
@@ -203,7 +203,7 @@ summary_stats_full <- data.frame(cover_area_m2 = sum(mean_map_full$cover_fra *
                                      (mean_map_full$area > mean_map_full$wetted_area) *
                                      mean_map_full$cover_fra),
     near_shore_cover_area_below_v_m2 = sum(mean_map_full$wetted_area *
-                                             (mean_map_full$velocity < habitat_parm$vel_cutoff) *
+                                             (mean_map_full$velocity < ml$df$habitat_parms$vel_cutoff) *
                                              (mean_map_full$area > mean_map_full$wetted_area) *
                                              mean_map_full$cover_fra),
     percent_near_shore_area = sum(mean_map_full$wetted_area *
@@ -211,8 +211,8 @@ summary_stats_full <- data.frame(cover_area_m2 = sum(mean_map_full$cover_fra *
       sum(mean_map_full$wetted_area) * 100,
     CBC_percent = sum((mean_map_full$cover_fra) *
                         mean_map_full$wetted_area *
-                        (mean_map_full$depth < habitat_parm$dep_cutoff) *
-                        (mean_map_full$velocity < habitat_parm$vel_cutoff)) /
+                        (mean_map_full$depth < ml$df$habitat_parms$dep_cutoff) *
+                        (mean_map_full$velocity < ml$df$habitat_parms$vel_cutoff)) /
       sum(mean_map_full$wetted_area) * 100,
     average_cover_percent = sum((mean_map_full$cover_fra) *
                                   mean_map_full$wetted_area) /
@@ -233,7 +233,7 @@ summary_stats <- data.frame(cover_area_m2 = sum(mean_map$cover_fra *
                                      (mean_map$area > mean_map$wetted_area) *
                                      mean_map$cover_fra),
     near_shore_cover_area_below_v_m2 = sum(mean_map$wetted_area *
-                                             (mean_map$velocity < habitat_parm$vel_cutoff) *
+                                             (mean_map$velocity < ml$df$habitat_parms$vel_cutoff) *
                                              (mean_map$area > mean_map$wetted_area) *
                                              mean_map$cover_fra),
        percent_near_shore_area = sum(mean_map$wetted_area *
@@ -241,8 +241,8 @@ summary_stats <- data.frame(cover_area_m2 = sum(mean_map$cover_fra *
       sum(mean_map$wetted_area) * 100,
     CBC_percent = sum((mean_map$cover_fra) *
       mean_map$wetted_area *
-        (mean_map$depth < habitat_parm$dep_cutoff) *
-        (mean_map$velocity < habitat_parm$vel_cutoff)) /
+        (mean_map$depth < ml$df$habitat_parms$dep_cutoff) *
+        (mean_map$velocity < ml$df$habitat_parms$vel_cutoff)) /
       sum(mean_map$wetted_area) * 100,
     average_cover_percent = sum((mean_map$cover_fra) *
                                   mean_map$wetted_area) /
@@ -399,8 +399,8 @@ display_plot(cover_map)
 cutoff_map <- make_map(
   data_frame = mean_map %>%
     filter(
-      depth < habitat_parm$dep_cutoff,
-      velocity < habitat_parm$vel_cutoff
+      depth < ml$df$habitat_parms$dep_cutoff,
+      velocity < ml$df$habitat_parms$vel_cutoff
     ),
   fill = (cover_fra),
   scale_name = "Cover\nFraction"
@@ -559,18 +559,18 @@ if (adult_run == TRUE){
 
 ##### Save GIS Maps #####
 # Write the habitat map
-write_sf(mean_map, here(output_shape_folder, "habitat_map.shp"),
+write_sf(mean_map, here(ml$path$output_shape_folder, "habitat_map.shp"),
          driver ="ESRI Shapefile")
 
 # Write the mean fish maps
 walk2(.x = map_data, .y = names(map_data),
       ~write_sf(obj = .x, 
-                dsn = here(output_shape_folder, paste0("fish_map_", .y, ".shp"))))
+                dsn = here(ml$path$output_shape_folder, paste0("fish_map_", .y, ".shp"))))
 if (adult_run == TRUE){
   # Write the adult migration maps
   walk(adult_migration_map_data,
        ~write_sf(obj = .x,
-                 dsn = here(output_shape_folder,
+                 dsn = here(ml$path$output_shape_folder,
                             paste0("adult_migration_path_",
                                    .x$species[1],
                                    ".shp"))))
@@ -636,7 +636,7 @@ object_name_list = c(data_name_list, plot_name_list, "full_map_data")
 # Save all the outputs 
 walk2(object_list, object_name_list, ~saveRDS(
   object = .x,
-  file = here(output_temp_folder, paste0(.y, ".rds"))))
+  file = here(ml$path$output_temp_folder, paste0(.y, ".rds"))))
 
 # Save the summary tables as CSV
 walk2(data_list, data_name_list, ~write.csv(
@@ -657,6 +657,6 @@ pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
 pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
   height = ..3*5,
   plot = ..1,
-  filename = here(output_temp_folder, paste0(..2, ".png")),
+  filename = here(ml$path$output_temp_folder, paste0(..2, ".png")),
   limitsize = FALSE,
   device = "png"))

@@ -17,7 +17,7 @@ params_pivot_wider <- function(df) {
 }
 
 write_rds_temp_folder <- function(df, filename) {
-  write_rds(df, here(temp_folder,  filename))
+  write_rds(df, here(ml$path$output_temp_folder,  filename))
 }
 
 select_model_param <- function(df, param) {
@@ -30,30 +30,30 @@ make_variables <- function(df, filename) {
   do.call("<<-",list(filename,df))
 }
 
-# adds some additional parameters to the fish_parm list for madult migration
-calculate_adult_parameters <- function(fish_parm){
-  num_species <- length(fish_parm$specie)
-  fish_parm_lol <- map(1:num_species, ~ map(fish_parm, .x))
-  fish_parm[["fish_mass_g"]] <- map_dbl(fish_parm_lol, get_fish_body_mass)
-  fish_parm[["swim_speed_max_m_per_s"]] <- map_dbl(fish_parm_lol, get_max_swim_speed)
-  return(fish_parm)
+# adds some additional parameters to the ml$df$fish_parms list for madult migration
+calculate_adult_parameters <- function(ml$df$fish_parms){
+  num_species <- length(ml$df$fish_parms$specie)
+  fish_parm_lol <- map(1:num_species, ~ map(ml$df$fish_parms, .x))
+  ml$df$fish_parms[["fish_mass_g"]] <- map_dbl(fish_parm_lol, get_fish_body_mass)
+  ml$df$fish_parms[["swim_speed_max_m_per_s"]] <- map_dbl(fish_parm_lol, get_max_swim_speed)
+  return(ml$df$fish_parms)
 }
 
 # calculates the parameters need to estimate the optimal swim speed curve 
-get_swim_speed_model_params <- function(fish_parm, fish_index){
+get_swim_speed_model_params <- function(ml$df$fish_parms, fish_index){
 
-  #fish_parm <- map(fish_parm, ~.x[[fish_id]])
-  fish_length <- fish_parm$eg_adult_length[fish_index]
-  fish_mass <- fish_parm$fish_mass_g[fish_index]
-  swim_speed_max <- fish_parm$swim_speed_max_m_per_s[fish_index]
+  #ml$df$fish_parms <- map(ml$df$fish_parms, ~.x[[fish_id]])
+  fish_length <- ml$df$fish_parms$eg_adult_length[fish_index]
+  fish_mass <- ml$df$fish_parms$fish_mass_g[fish_index]
+  swim_speed_max <- ml$df$fish_parms$swim_speed_max_m_per_s[fish_index]
   
   dt <- make_environment_dt(swim_speed_max) %>% 
-    .[, ucrit := get_ucrit(fish_parm, fish_index, temperature)]
+    .[, ucrit := get_ucrit(ml$df$fish_parms, fish_index, temperature)]
   dt$swim_speed_martin <- pmap_dbl(list(dt$velocity, dt$temperature, dt$ucrit), 
                                    ~ optimize(get_cost_of_travel, 
                                               interval =  c(..1 + 1e-6, swim_speed_max), 
                                               water_velocity_m_per_s = ..1, 
-                                              fish_parm = fish_parm,
+                                              ml$df$fish_parms = ml$df$fish_parms,
                                               fish_index = fish_index, 
                                               temperature_C = ..2, 
                                               ucrit_m_per_s = ..3,
@@ -95,11 +95,11 @@ get_swim_speed_model_params <- function(fish_parm, fish_index){
 }
 
 # runs through the main swim speed param function for all species 
-get_swim_speed_parameters_for_all_species <- function(fish_parm){
-  fish_ids <- 1:length(fish_parm$specie)
+get_swim_speed_parameters_for_all_species <- function(ml$df$fish_parms){
+  fish_ids <- 1:length(ml$df$fish_parms$specie)
   future_map(fish_ids, 
              get_swim_speed_model_params, 
-             fish_parm = fish_parm) %>% 
+             ml$df$fish_parms = ml$df$fish_parms) %>% 
     pmap(c)
 }
 
@@ -115,28 +115,28 @@ make_environment_dt <- function(swim_speed_max){
 get_cost_of_travel <- function(swim_speed_m_per_s, 
                                water_velocity_m_per_s, 
                                ucrit_m_per_s,
-                               fish_parm,
+                               ml$df$fish_parms,
                                fish_index,
                                temperature_C,
                                ratio) {
   
   anaerobic_fuel_recovery_parameter <- 1.82
-  length = fish_parm$eg_adult_length[fish_index] 
+  length = ml$df$fish_parms$eg_adult_length[fish_index] 
   seconds_per_day <- 86400
   
-  base_metabolic_rate <- calc_met(fish_parm,
+  base_metabolic_rate <- calc_met(ml$df$fish_parms,
                                   fish_index,
                                   length,
                                   temperature_C,
                                   0)/seconds_per_day
 
-  critical_metabolic_rate <- calc_met(fish_parm,
+  critical_metabolic_rate <- calc_met(ml$df$fish_parms,
                                       fish_index,
                                       length,
                                       temperature_C,
                                       ucrit_m_per_s)/seconds_per_day
 
-  total_metabolic_rate <- calc_met(fish_parm,
+  total_metabolic_rate <- calc_met(ml$df$fish_parms,
                                    fish_index,
                                    length,
                                    temperature_C,

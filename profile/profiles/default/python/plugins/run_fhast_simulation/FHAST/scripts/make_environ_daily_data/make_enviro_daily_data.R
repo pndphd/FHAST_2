@@ -8,10 +8,10 @@ source(here("scripts",  "make_environ_daily_data", "make_enviro_daily_data_funct
 
 ##### Main Work #####
 # Convert the input file into the desired CSV output
-daily_input_data <- load_daily_conditions(daily_inputs)
+daily_input_data <- load_daily_conditions(ml$df$daily)
 
 # calculate photo period use grid top marker as location
-daily_w_photo_period = calc_photo_period(grid_top_marker, daily_input_data)
+daily_w_photo_period = calc_photo_period(ml$df$top_marker, daily_input_data)
 
 ##### Make the Files #####
 # make one file to be used in the rest of the process
@@ -25,7 +25,7 @@ write.csv(x = daily_w_photo_period,
           row.names = FALSE)
 
 # Copy the input file over to the output folder for refrence
-write.table(daily_inputs,
+write.table(ml$df$daily,
             file = here(output_folder, "daily_conditions.txt"),
             row.names = F,
             col.names = F)

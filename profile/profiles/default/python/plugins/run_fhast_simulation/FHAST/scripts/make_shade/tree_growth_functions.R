@@ -7,7 +7,7 @@
 grow_tree <- function(height_m = NULL,
                       species_in = NULL,
                       time = NULL,
-                      growth_parms = tree_growth_parms){
+                      growth_parms = ml$df$tree_growth_parms){
 
   height_cm = height_m * 100
   

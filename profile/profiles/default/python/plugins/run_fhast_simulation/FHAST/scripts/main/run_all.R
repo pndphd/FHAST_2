@@ -46,7 +46,7 @@ source(here("scripts","main","run_model.R"))
 if(juvenile_run == TRUE){
   future::plan(strategy = sequential)
   source(here("scripts", "netlogo", "NetLogo_Controller.R"))
-  results <- run_netlogo_model(output_temp_folder)
+  results <- run_netlogo_model(ml$path$output_temp_folder)
   future::plan(strategy = multisession,
                workers = num_cores)
 }

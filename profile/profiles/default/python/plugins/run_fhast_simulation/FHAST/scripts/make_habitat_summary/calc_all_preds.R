@@ -33,16 +33,16 @@ calc_all_preds = function(p_id, pred_habitat, fish_length){
       temp_effect = 1 / (1 + exp(-(temp* pred_parm$area_pred_b[[p_id]] +
                                      pred_parm$area_pred_a[[p_id]]))),
       # Calculate the fraction of area the predators occupy
-      porp_area = pmin(predators * (habitat_parm$reaction_distance *
-                                      habitat_parm$t_area_effect * temp_effect) / (wetted_area),
+      porp_area = pmin(predators * (ml$df$habitat_parms$reaction_distance *
+                                      ml$df$habitat_parms$t_area_effect * temp_effect) / (wetted_area),
                        predators),
       # calculate the distance to cover
       dis_to_cover_m = pmax(sqrt(area) * predict(cover_fra_model, newdata = data.frame(pct_cover = cover_fra)), 0),
       # Calculate the survival bonuses 
       survival_bonus = 1/(1+exp(-(dis_to_cover_model$coefficients[1] +
                                     dis_to_cover_model$coefficients[2] * dis_to_cover_m))),
-      turb_bonus = 1 / (1 + exp(-1 *(habitat_parm$turbidity_int +
-                                       turb * habitat_parm$turbidity_slope))),
+      turb_bonus = 1 / (1 + exp(-1 *(ml$df$habitat_parms$turbidity_int +
+                                       turb * ml$df$habitat_parms$turbidity_slope))),
       survival_prob = 1 - (1 - survival_bonus) * (1 - turb_bonus),
       # Calculate the predation risk and include the length bonus
       pred_mort_risk = if_else(porp_area > 1,

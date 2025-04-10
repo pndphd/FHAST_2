@@ -8,7 +8,7 @@
 ##### Tolerance #####
 # the units of tolerance to simplify shape
 # units are whatever the crs of the shape file is
-simplfly_tolarence = habitat_parm$resolution/2
+simplfly_tolarence = ml$df$habitat_parms$resolution/2
 
 # Set a different validity check then the default one... for some reason
 rgeos::set_RGEOS_CheckValidity(2L)
@@ -20,7 +20,7 @@ source(here("scripts","make_shade","tree_growth_functions.R"))
 
 temp_daily_file_path <- here(temp_folder,  "daily_input_file.csv")
 temp_river_grid_path <- here(temp_folder, "river_grid.rds")
-temp_shade_file_path <- here(temp_folder,  paste0("shade_file_", habitat_parm$veg_growth_years,".rds"))
+temp_shade_file_path <- here(temp_folder,  paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
 temp_netlogo_daily_input_path <- here(temp_folder, "daily_input_file.csv")
 
 input_output_file_paths <- c(ml$path$canopy, ml$path$tree_growth,
@@ -47,15 +47,15 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   # simplify it to speed up
   if(juvenile_run == TRUE){
     # make attributes constant to supress warnings
-    st_agr(canopy_shape) = "constant"
+    st_agr(ml$df$canopy) = "constant"
     st_agr(clip_mask) = "constant"
     
-    shade_shape = canopy_shape %>% 
+    shade_shape = ml$df$canopy %>% 
       st_intersection(clip_mask) %>% 
       # Filter out empty ones
       filter(!st_is_empty(.)) %>% 
-      grow_trees(parms = tree_growth_parms,
-                 years = habitat_parm$veg_growth_years) %>%
+      grow_trees(parms = ml$df$tree_growth_parms,
+                 years = ml$df$habitat_parms$veg_growth_years) %>%
       # This procedure simplifies the canopy while making it remain valid
       st_simplify(dTolerance = simplfly_tolarence) %>%
       st_buffer(0) %>%
@@ -65,7 +65,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
       ungroup()
   } else {
     # Make a dummy shape for shade if just adults in the run 
-    shade_shape = grid_center_line %>% 
+    shade_shape = ml$df$center_line %>% 
       st_centroid() %>% 
       mutate(height = 1) %>% 
       select(height) %>% 
@@ -92,5 +92,5 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 
 ##### Load and save the outputs #####
   result = readRDS(file = temp_shade_file_path)
-  walk(.x = seq(1,12,1), .f = ~write_sf(result[[.x]], here(output_shape_folder, paste0("shade_shape", .x, ".shp")),
+  walk(.x = seq(1,12,1), .f = ~write_sf(result[[.x]], here(ml$path$output_shape_folder, paste0("shade_shape", .x, ".shp")),
                                         driver ="ESRI Shapefile"))

@@ -1,6 +1,6 @@
-########################################
+################################################################################
 # Run the initialization
-########################################
+################################################################################
 
 ##### Variable structure #####
 # Make the master list of data and put in the few variable we have so far
@@ -24,43 +24,45 @@ ml$df$palette = c("#999999", "#0072B2", "#D55E00",
 # set the main input folders
 ml$path$base_folder = dirname(ml$path$config_file)
 
-##### Read in config file and variabels #####
+##### Read in config file and variables #####
 # Read in the main input file file to get cores used
-input_data = load_text_file(ml$path$config_file)
+ml$df$config_data = load_text_file(ml$path$config_file)
 
 # Get the run name
-ml$var$run_name = ifelse(is.na(input_data["run name", ]),
+ml$var$run_name = ifelse(is.na(ml$df$config_data["run name", ]),
                          str_replace_all(paste0("none_given_", Sys.time()), ":", "-"),
-                         input_data["run name", ])
+                         ml$df$config_data["run name", ])
 
-# Get the path to the output folder
-ml$path$output_folder = get_path(ml$path$base_folder, input_data["output path",])
+# Get the path to the output folder and make the folders
+ml$path$output_folder = here(get_path(ml$path$base_folder,
+                                      ml$df$config_data["output path",]),
+                             paste0(ml$var$run_name, "_outputs"))
 
 # Get the path to the notes file
-ml$path$notes = get_path(ml$path$base_folder, input_data["notes file",])
+ml$path$notes = get_path(ml$path$base_folder, ml$df$config_data["notes file",])
 
 # get the name of the input file
-ml$path$fish_pop = get_path(ml$path$base_folder, input_data["fish population", ])
-ml$path$daily = get_path(ml$path$base_folder, input_data["daily conditions", ])
+ml$path$fish_pop = get_path(ml$path$base_folder, ml$df$config_data["fish population", ])
+ml$path$daily = get_path(ml$path$base_folder, ml$df$config_data["daily conditions", ])
 
 # get the name of the input file
-ml$path$fish_parms = get_path(ml$path$base_folder, input_data["fish parameters", ])
+ml$path$fish_parms = get_path(ml$path$base_folder, ml$df$config_data["fish parameters", ])
 
 # get the paths for the files
-ml$path$center_line = get_path(ml$path$base_folder, input_data["grid centerline", ])
-ml$path$top_marker = get_path(ml$path$base_folder, input_data["grid top point", ])
-ml$path$cover = get_path(ml$path$base_folder, input_data["cover", ])
-ml$path$canopy = get_path(ml$path$base_folder, input_data["canopy", ])
-ml$path$tree_growth = get_path(ml$path$base_folder, input_data["tree growth", ])
-ml$path$hab = get_path(ml$path$base_folder, input_data["habitat parameters", ])
-ml$path$interaction = get_path(ml$path$base_folder, input_data["interaction parameters", ])
-ml$path$predator = get_path(ml$path$base_folder, input_data["predator parameters", ])
+ml$path$center_line = get_path(ml$path$base_folder, ml$df$config_data["grid centerline", ])
+ml$path$top_marker = get_path(ml$path$base_folder, ml$df$config_data["grid top point", ])
+ml$path$cover = get_path(ml$path$base_folder, ml$df$config_data["cover", ])
+ml$path$canopy = get_path(ml$path$base_folder, ml$df$config_data["canopy", ])
+ml$path$tree_growth = get_path(ml$path$base_folder, ml$df$config_data["tree growth", ])
+ml$path$hab = get_path(ml$path$base_folder, ml$df$config_data["habitat parameters", ])
+ml$path$interaction = get_path(ml$path$base_folder, ml$df$config_data["interaction parameters", ])
+ml$path$predator = get_path(ml$path$base_folder, ml$df$config_data["predator parameters", ])
 
 # Location of rasters
-ml$path$raster_folder = get_path(ml$path$base_folder, input_data["raster folder", ])
+ml$path$raster_folder = get_path(ml$path$base_folder, ml$df$config_data["raster folder", ])
 
 # get to the aoi path
-ml$string$aoi = input_data["aoi", ]
+ml$string$aoi = ml$df$config_data["aoi", ]
 # Checking length is not sufficient (ml$string$aoi can be an array containing a
 # single empty string), so the nzchar check is also needed.
 if (!is.na(ml$string$aoi) && length(ml$string$aoi) > 0 && nzchar(ml$string$aoi)) {
@@ -70,7 +72,7 @@ if (!is.na(ml$string$aoi) && length(ml$string$aoi) > 0 && nzchar(ml$string$aoi))
 }
 
 # get the wildcard path
-ml$string$wild <- input_data["wildcard", ]
+ml$string$wild <- ml$df$config_data["wildcard", ]
 # Checking length is not sufficient (ml$string$aoi can be an array containing a
 # single empty string), so the nzchar check is also needed.
 if (!is.na(ml$string$wild) && length(ml$string$wild) > 0 && nzchar(ml$string$wild)) {
@@ -90,11 +92,10 @@ pick_num_cores <- function(ratio = 0.75){
     return(cores_to_use)
   }
 }
-num_cores <- pick_num_cores()
 
 future::plan(
   strategy = multisession,
-  workers = num_cores
+  workers = pick_num_cores()
 )
 
 future.seed <- FALSE

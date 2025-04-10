@@ -7,7 +7,7 @@ source(here("scripts",  "make_fish_daily_data",
             "make_fish_daily_data_functions.R"))
 
 ##### Run the main function
-fish_schedule_full = load_fish_timeseries(fish_daily_inputs) 
+fish_schedule_full = load_fish_timeseries(ml$df$fish_pop) 
   
 fish_schedule = fish_schedule_full %>%
   # take out dates that aren't in the enviromental data

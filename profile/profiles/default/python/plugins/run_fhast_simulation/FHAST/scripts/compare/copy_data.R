@@ -13,7 +13,7 @@ copy_over = function(input_folder, number){
   j_files = c("abm_summary_table.rds",
               "predator_rating_area_stats_table.rds",
               "mort_risk_area_stats_table.rds",
-              "fish_parm.rds",
+              "ml$df$fish_parms.rds",
               "pred_list.rds",
               "fish_list.rds")
                 
@@ -30,6 +30,6 @@ copy_over = function(input_folder, number){
   g_files = c("summary_stats_table.rds",
               "summary_stats_cutoff_table.rds",
               "fish_energy_area_stats_table.rds",
-              "habitat_parm.rds",
+              "ml$df$habitat_parms.rds",
               "summary_fish_stats_table.rds")
 } 

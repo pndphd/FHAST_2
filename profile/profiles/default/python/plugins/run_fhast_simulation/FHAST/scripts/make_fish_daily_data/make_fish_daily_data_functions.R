@@ -35,7 +35,7 @@ load_fish_timeseries <- function(input_file_in) {
     group_by(species, lifestage) %>% 
     # change to account for super individuals
     mutate(date = format(date, "%m/%d/%Y"),
-           cum_sum = floor(cumsum(number)/habitat_parm$superind_ratio),
+           cum_sum = floor(cumsum(number)/ml$df$habitat_parms$superind_ratio),
            number = ifelse(lifestage == "adult", number,
                            cum_sum-lag(cum_sum, default = 0))) %>% 
     ungroup() %>% 
@@ -48,7 +48,7 @@ plot_fish_timeseries <- function(fish_schedule) {
     mutate(Group = str_c(species, " ", lifestage),
            plot_number = ifelse(lifestage == "adult",
                                 number,
-                                number * habitat_parm$superind_ratio))
+                                number * ml$df$habitat_parms$superind_ratio))
   
   time_series_plot_fish <- ggplot(data = fish_plot_data, aes(x = mdy(date),
                                                              y = plot_number,

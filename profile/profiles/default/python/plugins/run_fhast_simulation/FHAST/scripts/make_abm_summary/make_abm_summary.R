@@ -13,14 +13,14 @@ source(here("scripts","make_abm_summary","make_abm_summary_functions.R"))
 
 ##### Load the data #####
 
-detailed_data_temp <- read.csv(file = here(output_temp_folder, "detailed_pop_output.csv"),
+detailed_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "detailed_pop_output.csv"),
                                skip = 1) %>% 
   mutate(date = ymd(time)) %>% 
   filter(juveniles != 0)
-cell_data_temp <- read.csv(file = here(output_temp_folder, "cell_info_output.csv"),
+cell_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "cell_info_output.csv"),
                            skip = 1) %>% 
   mutate(date = ymd(time))
-event_data_temp <- read.csv(file = here(output_temp_folder, "events_output.csv"),
+event_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "events_output.csv"),
                             skip = 1) %>% 
   mutate(date = ymd(time))
 
@@ -144,13 +144,13 @@ object_name_list = c(plot_name_list, table_name_list)
 
 walk2(object_list, object_name_list, ~saveRDS(
   object = .x,
-  file = here(output_temp_folder, paste0(.y, ".rds"))))
+  file = here(ml$path$output_temp_folder, paste0(.y, ".rds"))))
 
 # Save for future use
 pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
   plot = ..1,
   height = ..3,
-  filename = here(output_temp_folder, paste0(..2, ".png")),
+  filename = here(ml$path$output_temp_folder, paste0(..2, ".png")),
   limitsize = FALSE,
   device = "png"))
 

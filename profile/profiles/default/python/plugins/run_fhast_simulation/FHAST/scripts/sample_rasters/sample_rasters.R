@@ -97,8 +97,8 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   
   # Add in the accessible migration cells for each species
   # Find the flow level
-  sampeled_grid =  map2_dfc(.x = fish_parm$specie,
-                           .y = fish_parm$adult_migration_min_flow,
+  sampeled_grid =  map2_dfc(.x = ml$df$fish_parms$specie,
+                           .y = ml$df$fish_parms$adult_migration_min_flow,
                            .f = ~ make_migration_paths(flows = d_values,
                                                        flow_level = .y,
                                                        species = .x,
