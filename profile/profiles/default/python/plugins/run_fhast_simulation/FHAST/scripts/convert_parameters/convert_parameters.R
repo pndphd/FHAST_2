@@ -210,22 +210,20 @@ df_list[[2]] = df_list[[2]] %>%
 pred_output_names = list(
   "pred_model_params",
   "pred_length_data",
-  "pred_params",
+  "ml$df$pred_params",
   "gape_params")
 
 # assign the variables
 walk2(df_list, pred_output_names, make_variables, models_separated)
 
 # convert logistic parameters in the temperature model
-converted_pred_temperature_par <- convert_logistic_parameters(
+converted_pred_temperature_par = convert_logistic_parameters(
   ml$df$pred_params$area_pred_10,
-  ml$df$pred_params$area_pred_90
-)
+  ml$df$pred_params$area_pred_90)
 
-ml$df$pred_params <- tibble(
+ml$df$pred_params = tibble(
   area_pred_a = converted_pred_temperature_par$log_a,
-  area_pred_b = converted_pred_temperature_par$log_b
-)
+  area_pred_b = converted_pred_temperature_par$log_b)
 
 # clean up variables
 rm(log_model_par_names,
@@ -235,8 +233,9 @@ rm(log_model_par_names,
    models_separated,
    longer,
    wider,
-   df_list)
-
+   df_list,
+   pred_output_names,
+   converted_pred_temperature_par)
 
 ##### Make predator models for habitat summary #####
 # for models related to cover, an lm() object is rebuilt
