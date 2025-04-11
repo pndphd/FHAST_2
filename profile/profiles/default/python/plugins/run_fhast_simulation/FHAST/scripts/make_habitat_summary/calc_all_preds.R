@@ -7,7 +7,6 @@ calc_all_preds = function(p_id, pred_habitat, fish_length){
                       pred_parm$gape_b[[p_id]] * pred_length^2)
   # Check if it is vulnerable to predation
   length_pred_bonous = ifelse(fish_length >= prey_length, 0, 1)
-  
   pred_habitat = pred_habitat %>% 
     mutate(shaded = ifelse(shade > 0.5, 1, 0),
            substrate = rowSums(across(gravel:rock)),
@@ -37,10 +36,14 @@ calc_all_preds = function(p_id, pred_habitat, fish_length){
                                       ml$df$habitat_parms$t_area_effect * temp_effect) / (wetted_area),
                        predators),
       # calculate the distance to cover
-      dis_to_cover_m = pmax(sqrt(area) * predict(cover_fra_model, newdata = data.frame(pct_cover = cover_fra)), 0),
+      dis_to_cover_m = pmax(sqrt(area) * (ml$df$habitat_parms$int_pct_cover +
+                                ml$df$habitat_parms$sqrt_pct_cover * sqrt(cover_fra) +
+                                ml$df$habitat_parms$pct_cover * cover_fra +
+                                ml$df$habitat_parms$sqrt_pct_cover_x_pct_cover * cover_fra ^ 1.5),
+                              0),
       # Calculate the survival bonuses 
-      survival_bonus = 1/(1+exp(-(dis_to_cover_model$coefficients[1] +
-                                    dis_to_cover_model$coefficients[2] * dis_to_cover_m))),
+      survival_bonus = 1/(1+exp(-(ml$df$habitat_parms$dis_to_cover_int +
+                                    ml$df$habitat_parms$dis_to_cover_m * dis_to_cover_m))),
       turb_bonus = 1 / (1 + exp(-1 *(ml$df$habitat_parms$turbidity_int +
                                        turb * ml$df$habitat_parms$turbidity_slope))),
       survival_prob = 1 - (1 - survival_bonus) * (1 - turb_bonus),

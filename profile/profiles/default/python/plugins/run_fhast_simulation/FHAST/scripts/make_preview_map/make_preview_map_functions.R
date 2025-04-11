@@ -74,7 +74,7 @@ make_map_plot <- function() {
   ##### Save the data #####
   write_sf(river_appx, here(ml$path$output_shape_folder, "preview_river_grid_outline.shp"),
            driver ="ESRI Shapefile")
-  ggsave(filename =here(output_folder, "preview_plot.png"),
+  ggsave(filename =here(ml$path$output_folder, "preview_plot.png"),
          plot = map_plot,
          dpi = 300,
          device = "png",

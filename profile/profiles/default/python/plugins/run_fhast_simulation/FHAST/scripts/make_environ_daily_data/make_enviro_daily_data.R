@@ -16,17 +16,17 @@ daily_w_photo_period = calc_photo_period(ml$df$top_marker, daily_input_data)
 ##### Make the Files #####
 # make one file to be used in the rest of the process
 write.csv(x = daily_w_photo_period,
-          file = here(temp_folder, "daily_input_file.csv"),
+          file = here(ml$path$output_temp_folder, "daily_input_file.csv"),
           row.names = FALSE)
 
 # make one file to for output
 write.csv(x = daily_w_photo_period,
-          file = here(output_folder, "daily_conditions_processed.csv"),
+          file = here(ml$path$output_folder, "daily_conditions_processed.csv"),
           row.names = FALSE)
 
 # Copy the input file over to the output folder for refrence
 write.table(ml$df$daily,
-            file = here(output_folder, "daily_conditions.txt"),
+            file = here(ml$path$output_folder, "daily_conditions.txt"),
             row.names = F,
             col.names = F)
 

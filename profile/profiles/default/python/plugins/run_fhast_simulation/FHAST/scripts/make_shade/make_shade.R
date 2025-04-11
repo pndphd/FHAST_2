@@ -18,17 +18,17 @@ rgeos::set_RGEOS_CheckValidity(2L)
 source(here("scripts","make_shade","make_shade_functions.R"))
 source(here("scripts","make_shade","tree_growth_functions.R"))
 
-temp_daily_file_path <- here(temp_folder,  "daily_input_file.csv")
-temp_river_grid_path <- here(temp_folder, "river_grid.rds")
-temp_shade_file_path <- here(temp_folder,  paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
-temp_netlogo_daily_input_path <- here(temp_folder, "daily_input_file.csv")
+temp_daily_file_path <- here(ml$path$output_temp_folder,  "daily_input_file.csv")
+temp_river_grid_path <- here(ml$path$output_temp_folder, "river_grid.rds")
+temp_shade_file_path <- here(ml$path$output_temp_folder,  paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
+temp_netlogo_daily_input_path <- here(ml$path$output_temp_folder, "daily_input_file.csv")
 
 input_output_file_paths <- c(ml$path$canopy, ml$path$tree_growth,
                              temp_daily_file_path,
                              temp_river_grid_path,
                              temp_shade_file_path)
 
-hash_storage <-here(temp_folder, "calculate_shade_hashes.txt")
+hash_storage <-here(ml$path$output_temp_folder, "calculate_shade_hashes.txt")
 
 if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   ##### Load Files #####

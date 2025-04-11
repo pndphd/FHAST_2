@@ -96,8 +96,7 @@ if("wildcard" %in% ml$df$cover$class){
   rm(wild_values, wild_shape, wild_shape_new)
 }
 
-
-##### Convert into usable formats #####
+##### Convert into usable formats ##############################################
 # Fish Parameters: to named list with species as index
 ml$df$fish_parms = fish_parm_temp %>%
   # select species used in the run
@@ -123,7 +122,8 @@ ml$df$tree_growth_parms = tree_growth_parm_temp %>%
          a = as.numeric(a),
          b = as.numeric(b),
          c = as.numeric(c),
-         d = as.numeric(d),)
+         d = as.numeric(d))
+rm(tree_growth_parm_temp)
 
 # Habitat Parameters: convert logistic parameters to slope and intercept
 turbidity_params <- convert_logistic_parameters(
@@ -174,127 +174,36 @@ ml$df$habitat_parms <- tibble(
     across(
       .cols = matches(c("hab_benthic_hab", "cover_hab", "small_cover_hab")),
       .fns = ~str_replace_all(., "-", ",")))
-rm(hab_parm_temp, init_parm_temp, turbidity_params, dis_to_cover_params)
+rm(hab_parm_temp, int_parm_temp, turbidity_params, dis_to_cover_params)
 
 # Predator Parameters
-# make lists of parameters per file, so the data frame can be separated appropriately
-log_model_par_names = c("int", "shade", "veg",
-                         "wood", "depth", "velocity",
-                         "substrate")
-temp_model_par_names = c("area_pred_10", "area_pred_90")
-gape_par_names = c("gape_a", "gape_b")
-length_dist_par_names = c("pred_length_mean", "pred_length_sd")
+# convert the logistic parameters form 10 and 90% to solpes and intercepts
+ml$df$pred_params = pred_parm_temp %>%
+  filter(term %in% c("area_pred_10", "area_pred_90")) %>% 
+  pivot_longer(cols = -term, names_to = "species") %>%
+  pivot_wider(names_from = term) %>% 
+  mutate(area_pred_a = convert_logistic_parameters(area_pred_10,
+                                                   area_pred_90)[[1]],
+         area_pred_b = convert_logistic_parameters(area_pred_10,
+                                                   area_pred_90)[[2]]) %>% 
+  select(-area_pred_10, -area_pred_90) %>% 
+  pivot_longer(cols = c(area_pred_a, area_pred_b), names_to = "term") %>% 
+  pivot_wider(names_from = species) %>% 
+  bind_rows(pred_parm_temp) %>% 
+  filter(!term %in% c("area_pred_10", "area_pred_90"))
+rm(pred_parm_temp, temp_model_par_names)
 
-# combined all parameter lists into a list of lists to use with map
-par_lol = list(log_model_par_names,
-               temp_model_par_names,
-               gape_par_names,
-               length_dist_par_names)
-
-# make a list of separate dataframes
-models_separated = map(par_lol, ~ pred_parm_temp %>%
-                         filter(term %in% .x))
-
-# reshape data depending on needs
-longer = map(list(models_separated[[1]], models_separated[[4]]), params_pivot_longer)
-wider = map(list( models_separated[[2]], models_separated[[3]]), params_pivot_wider)
-
-# make a list of lists into a single list
-df_list = flatten(list(longer, wider))
-
-# final reshape to the length distribution model params
-df_list[[2]] = df_list[[2]] %>%
-  pivot_wider(names_from = "term", values_from = "estimate")
-
-# variable names
-pred_output_names = list(
-  "pred_model_params",
-  "pred_length_data",
-  "ml$df$pred_params",
-  "gape_params")
-
-# assign the variables
-walk2(df_list, pred_output_names, make_variables, models_separated)
-
-# convert logistic parameters in the temperature model
-converted_pred_temperature_par = convert_logistic_parameters(
-  ml$df$pred_params$area_pred_10,
-  ml$df$pred_params$area_pred_90)
-
-ml$df$pred_params = tibble(
-  area_pred_a = converted_pred_temperature_par$log_a,
-  area_pred_b = converted_pred_temperature_par$log_b)
-
-# clean up variables
-rm(log_model_par_names,
-   gape_par_names,
-   length_dist_par_names,
-   par_lol,
-   models_separated,
-   longer,
-   wider,
-   df_list,
-   pred_output_names,
-   converted_pred_temperature_par)
-
-##### Make predator models for habitat summary #####
-# for models related to cover, an lm() object is rebuilt
-# using fake data and the model params
-
-# make a dataframe with fake x values and predicted values
-synth_cover_data <- tibble(
-  pct_cover = seq(0.01, 0.99, 0.01),
-  dis_to_cover_m = ml$df$habitat_parms$int_pct_cover +
-    ml$df$habitat_parms$sqrt_pct_cover * sqrt(pct_cover) +
-    ml$df$habitat_parms$pct_cover * pct_cover +
-    ml$df$habitat_parms$sqrt_pct_cover_x_pct_cover * pct_cover ^ 1.5)
-
-# build the model object
-pct_cover_model <- lm(dis_to_cover_m ~ pct_cover * sqrt(pct_cover),
-                      data = synth_cover_data)
-
-# model params for the model converting distance to cover to safety from predation
-synth_cover_benefit_data <- tibble(
-  dis_to_cover_m = seq(0, 5, 0.1),
-  unitless_y = 1 / (1 + exp(-1 * (dis_to_cover_m * ml$df$habitat_parms$dis_to_cover_m +
-                                    ml$df$habitat_parms$dis_to_cover_int))))
-
-cover_ben_model <- glm(unitless_y ~ dis_to_cover_m,
-                       data = synth_cover_benefit_data,
-                       family = stats::quasibinomial(logit))
-
-##### Write the files for NetLogo #####
+##### Write the files for NetLogo ##############################################
 # Write the habitat parameters
 write_csv(ml$df$habitat_parms %>%
             mutate(across(where(is.numeric), as.character)) %>%
             pivot_longer(cols = everything()),
           file = here(ml$path$output_temp_folder, "habitat.csv"),
           progress = FALSE)
-
-# Add the updated temperature model parameters to the predator params and save in Netlogo temp folder
-ml$df$pred_params %>%
-  map_dfr(rep, times = 2) %>%
-  mutate(species = c("pikeminnow", "bass")) %>%
-  pivot_longer(cols = area_pred_a:area_pred_b) %>%
-  pivot_wider(names_from = species, values_from = value) %>%
-  rename(term = name) %>%
-  bind_rows(pred_parm_temp) %>%
-  filter(!(term %in% temp_model_par_names)) %>%
-  write_csv(here(ml$path$output_temp_folder, basename(ml$path$predator)),
-            progress = FALSE)
-rm(pred_parm_temp, temp_model_par_names)
-
-# Save the predation models
-cover_models <- list(pct_cover_model, cover_ben_model)
-cover_model_filenames <- list("pct_cov_convers_model.rds",
-                              "dis_to_cov_model.rds")
-walk2(cover_models, cover_model_filenames, write_rds_temp_folder)
-
-##### Write RDS filed for the summary #####
-saveRDS(unique(pred_model_params$species), file = here(ml$path$output_temp_folder, "pred_list.rds"))
-saveRDS(unique(ml$df$fish_parms$specie), file = here(ml$path$output_temp_folder, "fish_list.rds"))
-saveRDS(ml$df$habitat_parms, file = here(ml$path$output_temp_folder, "ml$df$habitat_parms.rds"))
-saveRDS(ml$df$fish_parms, file = here(ml$path$output_temp_folder, "ml$df$fish_parms.rds"))
+write_csv(ml$df$pred_params,
+          file = here(here(ml$path$output_temp_folder,
+                           basename(ml$path$predator))),
+          progress = FALSE)
 
 ################################################################################
 # End

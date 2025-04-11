@@ -158,14 +158,14 @@ pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
 pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
   plot = ..1,
   height = ..3,
-  filename = here(output_folder, paste0(..2, ".png")),
+  filename = here(ml$path$output_folder, paste0(..2, ".png")),
   limitsize = FALSE,
   device = "png"))
 
 # Move over the abm outputs to the output folder
 write.csv(detailed_data_temp,
-          file = here(output_folder, "abm_detailed_pop_output.csv"))
+          file = here(ml$path$output_folder, "abm_detailed_pop_output.csv"))
 write.csv(cell_data_temp,
-          file = here(output_folder, "abm_cell_info_output.csv"))
+          file = here(ml$path$output_folder, "abm_cell_info_output.csv"))
 write.csv(event_data_temp,
-          file = here(output_folder, "abm_events_output.csv"))
+          file = here(ml$path$output_folder, "abm_events_output.csv"))

@@ -1,16 +1,16 @@
 
 # function to select appropriate columns and filter depths  --------
 
-prep_habitat_df <- function(df, ml$df$fish_parms, ml$df$habitat_parms, min_depth) {
+prep_habitat_df <- function(df, fish_parms_in, habitat_parms_in, min_depth) {
   test = df %>%
     as.data.table() %>% 
     #setnames(old = grep("dista|lat|velo", names(.), value = TRUE), new = c("distance", "lat_dist", "velocity")) %>%
     .[order(distance, lat_dist)] %>%
     # filter cells accessible to the species based on flow
-    .[.[[grep(ml$df$fish_parms$specie, names(.), value = TRUE)]] == 1,] %>%
+    .[.[[grep(fish_parms_in$specie, names(.), value = TRUE)]] == 1,] %>%
     # filter columns by depth
     .[.$depth > min_depth, ] %>%
-    adjust_velocity_for_wall_factor(ml$df$fish_parms, ml$df$habitat_parms) %>%
+    adjust_velocity_for_wall_factor(fish_parms_in, habitat_parms_in) %>%
     # select columns
     .[, .SD, .SDcols = grep("dista|lat|velo|dept|area|temp", names(.), value = TRUE)] %>%
     .[, id := seq(1, nrow(.))] %>% 
@@ -19,10 +19,10 @@ prep_habitat_df <- function(df, ml$df$fish_parms, ml$df$habitat_parms, min_depth
 
 # changes velocity to reflect the depth of benthic fish -------------------
 
-adjust_velocity_for_wall_factor <- function(df, ml$df$fish_parms, ml$df$habitat_parms) {
-  if (ml$df$fish_parms$benthic_fish == 1) {
+adjust_velocity_for_wall_factor <- function(df, fish_parms_in, habitat_parms_in) {
+  if (fish_parms_in$benthic_fish == 1) {
     df %>%
-      .[depth >= ml$df$habitat_parms$ben_vel_height, velocity := velocity * ml$df$habitat_parms$base_wall_factor]
+      .[depth >= habitat_parms_in$ben_vel_height, velocity := velocity * habitat_parms_in$base_wall_factor]
   } else {
     df
   }
@@ -112,13 +112,13 @@ get_ratios <- function(df) {
 # based on a numerical estimate of the optimal speed for the Martin et al. model 
 # substituted with the FHAST metabolic equations
 
-get_cell_swim_speeds <- function(df, ml$df$fish_parms) {
-  ucrit <- ml$df$fish_parms$ucrit_m_per_s
-  ucrit_cutoff <- ml$df$fish_parms$ucrit_cutoff_m_per_s
-  swim_speed_max <- ml$df$fish_parms$swim_speed_max_m_per_s
-  min_vel_ucrit <- ml$df$fish_parms$min_vel_ucrit_m_per_s
-  max_vel_ucrit <- ml$df$fish_parms$max_vel_ucrit_m_per_s
-  max_water_vel <- ml$df$fish_parms$max_water_vel_m_per_s
+get_cell_swim_speeds <- function(df, fish_parms_in) {
+  ucrit <- fish_parms_in$ucrit_m_per_s
+  ucrit_cutoff <- fish_parms_in$ucrit_cutoff_m_per_s
+  swim_speed_max <- fish_parms_in$swim_speed_max_m_per_s
+  min_vel_ucrit <- fish_parms_in$min_vel_ucrit_m_per_s
+  max_vel_ucrit <- fish_parms_in$max_vel_ucrit_m_per_s
+  max_water_vel <- fish_parms_in$max_water_vel_m_per_s
   
   calculate_slope_and_intercept <- function(x1,x2,y1,y2){
    slope <- ( y2 - y1 )/ (x2 - x1)
@@ -136,7 +136,7 @@ get_cell_swim_speeds <- function(df, ml$df$fish_parms) {
           ucrit > ucrit_cutoff &
             min_vel_ucrit * get(str_replace(cur_column(), "velocity", "ratio")) > .x, .x / get(str_replace(cur_column(), "velocity", "ratio")) * min_vel_params$slope + ucrit_cutoff,
           # set ucrit swim speed
-          ml$df$fish_parms$max_vel_ucrit * get(str_replace(cur_column(), "velocity", "ratio")) >= .x, ucrit,
+          fish_parms_in$max_vel_ucrit * get(str_replace(cur_column(), "velocity", "ratio")) >= .x, ucrit,
           # burst swim speeds between ucrit and max speed are +50% higher than water velocity
           swim_speed_max > (max_vel_params$slope * .x) / get(str_replace(cur_column(), "velocity", "ratio")) + max_vel_params$intercept, (max_vel_params$slope * .x) / get(str_replace(cur_column(), "velocity", "ratio")) + max_vel_params$intercept,
           swim_speed_max <= .x, NA_real_,
@@ -166,30 +166,30 @@ get_paths <- function(prepped_df, graph, from, to, weights) {
 
 get_paths_and_costs <- function(hab_df, 
                                 fish_parm_temp, 
-                                ml$df$habitat_parms, 
+                                habitat_parms_in, 
                                 fish_id) {
   # set params --------------------------------------------------------------
-  ml$df$fish_parms <- map(fish_parm_temp, ~.x[[fish_id]])
-  species <- ml$df$fish_parms$specie
+  fish_parms_in <- map(fish_parm_temp, ~.x[[fish_id]])
+  species <- fish_parms_in$specie
   date <- hab_df$date[[1]]
   reach_temp_C <- hab_df$temp[[1]]
-  min_depth_m <- get_min_depth(factor = 0.5, ml$df$fish_parms)
-  cell_width_m <- ml$df$habitat_parms$resolution
-  ml$df$fish_parms[["ucrit_m_per_s"]] <- get_ucrit(fish_parm_temp, fish_id, reach_temp_C)
-  ml$df$fish_parms[["min_vel_ucrit_m_per_s"]] <- get_estimate_for_linear_model(
-    ml$df$fish_parms$pars_min_water_vel_ucrit_int, ml$df$fish_parms$pars_min_water_vel_ucrit_slope, ml$df$fish_parms$ucrit_m_per_s)
-  ml$df$fish_parms[["max_vel_ucrit_m_per_s"]] <- get_estimate_for_linear_model(
-    ml$df$fish_parms$pars_max_water_vel_ucrit_int, ml$df$fish_parms$pars_max_water_vel_ucrit_slope, ml$df$fish_parms$ucrit_m_per_s)
+  min_depth_m <- get_min_depth(factor = 0.5, fish_parms_in)
+  cell_width_m <- habitat_parms_in$resolution
+  fish_parms_in[["ucrit_m_per_s"]] <- get_ucrit(fish_parm_temp, fish_id, reach_temp_C)
+  fish_parms_in[["min_vel_ucrit_m_per_s"]] <- get_estimate_for_linear_model(
+    fish_parms_in$pars_min_water_vel_ucrit_int, fish_parms_in$pars_min_water_vel_ucrit_slope, fish_parms_in$ucrit_m_per_s)
+  fish_parms_in[["max_vel_ucrit_m_per_s"]] <- get_estimate_for_linear_model(
+    fish_parms_in$pars_max_water_vel_ucrit_int, fish_parms_in$pars_max_water_vel_ucrit_slope, fish_parms_in$ucrit_m_per_s)
 
   # determine cell relationships and costs ----------------------------------
-  prepped_df <- prep_habitat_df(hab_df, ml$df$fish_parms, ml$df$habitat_parms, min_depth_m)
+  prepped_df <- prep_habitat_df(hab_df, fish_parms_in, habitat_parms_in, min_depth_m)
   relations <- add_destination_info_to_start_cells(prepped_df, cell_width_m) %>% 
     get_cell_length(cell_width_m) %>%
     get_cell_hypotenuse(cell_width_m) %>%
     # hypotenuse multiplier for determining forward velocity component during diagonal movement
     get_ratios() %>%
     get_cell_swim_speeds(
-      ml$df$fish_parms
+      fish_parms_in
     ) %>%
     # drop any cells that would have negative overground velocity values
     drop_na() %>%
@@ -197,7 +197,7 @@ get_paths_and_costs <- function(hab_df,
       energy_cost = rowSums(across(ends_with("swim_speed"),
                                    .fns = ~ get_cost_of_travel(.x, 
                                                                get(str_replace(cur_column(), "swim_speed", "velocity")), 
-                                                               ml$df$fish_parms$ucrit_m_per_s,
+                                                               fish_parms_in$ucrit_m_per_s,
                                                                fish_parm_temp,
                                                                fish_id,
                                                                reach_temp_C,
@@ -246,10 +246,10 @@ get_paths_and_costs <- function(hab_df,
 
 # runs through the main function for all species --------------------------
 
-get_path_min_costs_all_species <- function(hab_df, ml$df$fish_parms, ml$df$habitat_parms, fish_schedule) {
+get_path_min_costs_all_species <- function(hab_df, fish_parms_in, habitat_parms_in, fish_schedule) {
   species <- fish_schedule$species
-  fish_ids <- match(species, ml$df$fish_parms$specie)
-  pathfinding_table <- map_dfr(fish_ids, ~ get_paths_and_costs(hab_df, ml$df$fish_parms, ml$df$habitat_parms, .x))
+  fish_ids <- match(species, fish_parms_in$specie)
+  pathfinding_table <- map_dfr(fish_ids, ~ get_paths_and_costs(hab_df, fish_parms_in, habitat_parms_in, .x))
   pathfinding_table[as.data.table(fish_schedule), on = "species", nomatch = 0]
 }
 

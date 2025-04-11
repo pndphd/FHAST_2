@@ -48,7 +48,7 @@ if(juvenile_run == TRUE){
   source(here("scripts", "netlogo", "NetLogo_Controller.R"))
   results <- run_netlogo_model(ml$path$output_temp_folder)
   future::plan(strategy = multisession,
-               workers = num_cores)
+               workers = pick_num_cores())
 }
 
 ##### Run the post processing scripts #####

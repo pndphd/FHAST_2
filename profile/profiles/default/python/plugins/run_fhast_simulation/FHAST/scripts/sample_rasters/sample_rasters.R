@@ -14,9 +14,9 @@ source(here("scripts", "sample_rasters", "make_migration_path.R"))
 # outputs
 # temp_netlogo_depth_velocity_path
 
-temp_river_grid_path <- here(temp_folder,  
+temp_river_grid_path <- here(ml$path$output_temp_folder,  
                          paste0("river_grid.rds"))
-temp_netlogo_depth_velocity_path <- here(temp_folder, 
+temp_netlogo_depth_velocity_path <- here(ml$path$output_temp_folder, 
                                          paste0("Depth_Velocity_Data_Input.csv"))
 
 input_output_file_paths <- list.files(ml$path$raster_folder, full.names=TRUE)
@@ -26,7 +26,7 @@ input_output_file_paths <- append(input_output_file_paths,
 input_output_file_paths <- append(input_output_file_paths,
                                   ml$path$fish_pop)
 
-hash_storage <-here(temp_folder, "sample_raster_run_hashes.txt")
+hash_storage <-here(ml$path$output_temp_folder, "sample_raster_run_hashes.txt")
 
 if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 

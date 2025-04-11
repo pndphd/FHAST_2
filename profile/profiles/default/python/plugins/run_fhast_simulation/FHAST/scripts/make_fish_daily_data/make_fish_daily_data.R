@@ -27,12 +27,12 @@ adult_run = ifelse(NROW(filter(fish_schedule, lifestage == "adult"))>0, T ,F)
 
 ##### Save the result #####
 write.csv(fish_schedule,
-          file = here(temp_folder, "daily_fish_input.csv"),
+          file = here(ml$path$output_temp_folder, "daily_fish_input.csv"),
           row.names = FALSE)
 
 # make one file to for output
 write.csv(x = fish_schedule,
-          file = here(output_folder, "daily_fish_processed.csv"),
+          file = here(ml$path$output_folder, "daily_fish_processed.csv"),
           row.names = FALSE)
 
 ##### Make a plot #####

@@ -11,20 +11,20 @@ source(here("scripts","sample_shapes","sample_shapes_functions.R"))
 # outputs
 # temp_netlogo_shape_data_path
 
-temp_river_grid_path <- here(temp_folder, paste0("river_grid.rds"))
-temp_shape_file_path <- here(temp_folder, paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
+temp_river_grid_path <- here(ml$path$output_temp_folder, paste0("river_grid.rds"))
+temp_shape_file_path <- here(ml$path$output_temp_folder, paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
 
-temp_RDS_shape_data_path <- here(temp_folder,
+temp_RDS_shape_data_path <- here(ml$path$output_temp_folder,
                                      paste0("Shape_Data_Input.rds"))
 
-temp_netlogo_shape_data_path <- here(temp_folder,
+temp_netlogo_shape_data_path <- here(ml$path$output_temp_folder,
                                      paste0("Shape_Data_Input.csv"))
 
 input_output_file_paths <- c(temp_river_grid_path, temp_shape_file_path,
                              ml$path$cover, ml$path$hab, ml$path$aoi, ml$path$wild,
                              temp_netlogo_shape_data_path)
 
-hash_storage <-here(temp_folder, "sample_shapes_run_hashes.txt")
+hash_storage <-here(ml$path$output_temp_folder, "sample_shapes_run_hashes.txt")
 
 # if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 

@@ -8,7 +8,8 @@ ml = list(var = list(),
           df = list(),
           plot = list(),
           path = list(),
-          string = list())
+          string = list(),
+          model = list())
 ml$var$plot_width = plot_width
 ml$var$print_plots = print_plots 
 ml$path$config_file = config_file_name

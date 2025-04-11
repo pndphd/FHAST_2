@@ -10,15 +10,15 @@ source(here("scripts","make_grid","make_grid_functions.R"))
 # outputs
 # temp_river_grid_path, temp_river_grid_shape_path
 
-temp_river_grid_path <- here(temp_folder, "river_grid.rds")
+temp_river_grid_path <- here(ml$path$output_temp_folder, "river_grid.rds")
 
-temp_river_grid_shape_path <- here(temp_folder, "river_grid.shp")
+temp_river_grid_shape_path <- here(ml$path$output_temp_folder, "river_grid.shp")
 
 input_output_file_paths <- c(ml$path$center_line, ml$path$hab,
                              ml$path$top_marker, temp_river_grid_path,
                              temp_river_grid_shape_path)
 
-hash_storage <-here(temp_folder, "make_grid_run_hashes.txt")
+hash_storage <-here(ml$path$output_temp_folder, "make_grid_run_hashes.txt")
 
 if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 

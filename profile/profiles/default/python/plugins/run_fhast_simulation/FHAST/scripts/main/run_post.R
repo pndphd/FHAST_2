@@ -15,18 +15,18 @@ if (juvenile_run == TRUE){
 # make the html doc
 rmarkdown::render(input = here("scripts", "make_habitat_summary", "make_general_summary.Rmd"),
                   output_format = "html_document",
-                  output_file = here(output_folder, "report_general.html"))
+                  output_file = here(ml$path$output_folder, "report_general.html"))
 
 if (juvenile_run == TRUE){
   rmarkdown::render(input = here("scripts", "make_habitat_summary", "make_juvenile_summary.Rmd"),
                    output_format = "html_document",
-                   output_file = here(output_folder, "report_juvenile_rearing.html") )
+                   output_file = here(ml$path$output_folder, "report_juvenile_rearing.html") )
 }
 
 if (adult_run == TRUE){
   rmarkdown::render(input = here("scripts", "make_habitat_summary", "make_adult_summary.Rmd"),
                     output_format = "html_document",
-                    output_file = here(output_folder, "report_adult_migration.html") )
+                    output_file = here(ml$path$output_folder, "report_adult_migration.html") )
 }
 
 message("!!! FHAST RUN COMPLETE !!!\n")

@@ -29,11 +29,9 @@ grid_file <- readRDS(here(ml$path$output_temp_folder,
                           paste0("river_grid.rds"))) %>%
   select(distance, lat_dist)
 
-# Distance to cover model
-dis_to_cover_model <- read_rds(here(temp_folder, "dis_to_cov_model.rds"))
 
 # Load the percent cover model
-cover_fra_model <- read_rds(here(temp_folder, "pct_cov_convers_model.rds"))
+cover_fra_model <- read_rds(here(ml$path$output_temp_folder, "pct_cov_convers_model.rds"))
 
 ##### Pre Processing #####
 # Make a data frame with each cell at each flow value
@@ -533,24 +531,24 @@ if (adult_run == TRUE){
 walk2(df_outputs,
       df_outputs_names,
       ~write.csv(x = .x,
-                 file = here(output_folder,
+                 file = here(ml$path$output_folder,
                              paste0(.y, ".csv")),
                  row.names = FALSE))
 
 # Write all the fish daily data sets
 walk2(.x = daily_data, .y = names(daily_data),
-      .f = ~write.csv(x = .x, file = here(output_folder, paste0(.y,"_daily.csv")),
+      .f = ~write.csv(x = .x, file = here(ml$path$output_folder, paste0(.y,"_daily.csv")),
                       row.names = FALSE))
 
 # Write all the fish daily data sets
 walk2(.x = map_data, .y = names(map_data),
-      .f = ~write.csv(x = .x, file = here(output_folder, paste0(.y,"_map.csv")),
+      .f = ~write.csv(x = .x, file = here(ml$path$output_folder, paste0(.y,"_map.csv")),
                       row.names = FALSE))
 
 if (adult_run == TRUE){
   # Write the adult migration map to csv
   walk(adult_migration_map_data, ~write.csv(x = .x,
-                                   file = here(output_folder,
+                                   file = here(ml$path$output_folder,
                                                paste0("adult_migration_path_",
                                                       .x$species[1],
                                                       ".csv")),
@@ -642,14 +640,14 @@ walk2(object_list, object_name_list, ~saveRDS(
 walk2(data_list, data_name_list, ~write.csv(
   # Replace the fancy squared character for CSV
   x = mutate_all(.x, .funs = ~str_replace_all(.,"(m\u00B2)", " m^2")),
-  file = here(output_folder, paste0(.y, ".csv")),
+  file = here(ml$path$output_folder, paste0(.y, ".csv")),
    row.names = FALSE))
 
 # Save for output
 pwalk(list(plot_list, plot_name_list, plot_dimeshions), ~ggsave(
   height = ..3*5,
   plot = ..1,
-  filename = here(output_folder, paste0(..2, ".png")),
+  filename = here(ml$path$output_folder, paste0(..2, ".png")),
   limitsize = FALSE,
   device = "png"))
 
