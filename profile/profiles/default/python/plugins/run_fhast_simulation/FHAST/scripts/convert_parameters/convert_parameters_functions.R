@@ -1,34 +1,6 @@
-########################################
-# This script loads all functions to help parametr conversion
-########################################
-
-# 2 Pivot functions
-params_pivot_longer <- function(df) {
-  df %>% 
-    pivot_longer(cols = -term, names_to = "species", values_to = "estimate") %>% 
-    select(species, term, estimate) %>% 
-    arrange(species)
-}
-
-params_pivot_wider <- function(df) {
-  df %>% 
-    select(1:2) %>% 
-    pivot_wider(names_from = term, values_from = pikeminnow)
-}
-
-write_rds_temp_folder <- function(df, filename) {
-  write_rds(df, here(ml$path$output_temp_folder,  filename))
-}
-
-select_model_param <- function(df, param) {
-  df %>% 
-    filter(name == param) %>% 
-    pull(value) %>% as.numeric()
-}
-
-make_variables <- function(df, filename) {
-  do.call("<<-",list(filename,df))
-}
+################################################################################
+# This script loads all functions to help parameter conversion
+################################################################################
 
 # adds some additional parameters to the fish_parms list for madult migration
 calculate_adult_parameters <- function(fish_parms){
@@ -42,7 +14,6 @@ calculate_adult_parameters <- function(fish_parms){
 # calculates the parameters need to estimate the optimal swim speed curve 
 get_swim_speed_model_params <- function(fish_parms, fish_index){
 
-  #fish_parms <- map(fish_parms, ~.x[[fish_id]])
   fish_length <- fish_parms$eg_adult_length[fish_index]
   fish_mass <- fish_parms$fish_mass_g[fish_index]
   swim_speed_max <- fish_parms$swim_speed_max_m_per_s[fish_index]
@@ -84,14 +55,12 @@ get_swim_speed_model_params <- function(fish_parms, fish_index){
     lm(max ~ ucrit, data = .) %>%
     .[[1]]
   
-  list(
-    max_water_vel_m_per_s = water_velocity_at_max_burst,
-    ucrit_cutoff_m_per_s = ucrit_cutoff,
-    pars_min_water_vel_ucrit_int = parameters_for_min_water_velocity_at_ucrit[[1]],
-    pars_min_water_vel_ucrit_slope = parameters_for_min_water_velocity_at_ucrit[[2]],
-    pars_max_water_vel_ucrit_int = parameters_for_max_water_velocity_at_ucrit[[1]],
-    pars_max_water_vel_ucrit_slope = parameters_for_max_water_velocity_at_ucrit[[2]]
-  )
+  list(max_water_vel_m_per_s = water_velocity_at_max_burst,
+       ucrit_cutoff_m_per_s = ucrit_cutoff,
+       pars_min_water_vel_ucrit_int = parameters_for_min_water_velocity_at_ucrit[[1]],
+       pars_min_water_vel_ucrit_slope = parameters_for_min_water_velocity_at_ucrit[[2]],
+       pars_max_water_vel_ucrit_int = parameters_for_max_water_velocity_at_ucrit[[1]],
+       pars_max_water_vel_ucrit_slope = parameters_for_max_water_velocity_at_ucrit[[2]])
 }
 
 # runs through the main swim speed param function for all species 
@@ -106,9 +75,8 @@ get_swim_speed_parameters_for_all_species <- function(fish_parms){
 # makes a simulated environment with different temp and water velocity
 make_environment_dt <- function(swim_speed_max){
   
-  CJ(
-    temperature = seq(1,25,1),
-    velocity = seq(0, swim_speed_max, swim_speed_max/50))
+  CJ(temperature = seq(1,25,1),
+     velocity = seq(0, swim_speed_max, swim_speed_max/50))
 }
 
 # Martin et al. model of movement cost vs. distance 
