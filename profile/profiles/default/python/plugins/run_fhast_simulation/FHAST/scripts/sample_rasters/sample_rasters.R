@@ -51,8 +51,8 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
     sort()
   
   # check the folow arent outside values
-  if(min(v_values) > min(daily_w_photo_period$flow_cms) | 
-     max(v_values) < max(daily_w_photo_period$flow_cms)){
+  if(min(v_values) > min(ml$df$daily_input$flow_cms) | 
+     max(v_values) < max(ml$df$daily_input$flow_cms)){
     message(paste0("!!!!!!!!!!!\n",
                    "!!!ERROR!!! The hydrograph file has flow values outside the range of the V & D rasters. \n",
                    "!!!!!!!!!!!\n"))

@@ -120,7 +120,7 @@ survival_data = map_df(file_names, ~get_survival(.x,
 
 temp_data = map_df(file_names, ~get_temperature(.x,
                                                 add = "_outputs",
-                                                file = "daily_conditions_processed.csv",
+                                                file = "daily_input_filed.csv",
                                                 column = "temp_c",
                                                 fish_input = 10000))
 

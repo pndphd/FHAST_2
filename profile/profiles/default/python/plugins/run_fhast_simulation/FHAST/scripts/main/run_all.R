@@ -43,7 +43,7 @@ source(here("scripts","main","run_model.R"))
 # Shut off futures for this
 # and only run if juvenile are present
 
-if(juvenile_run == TRUE){
+if(ml$var$juvenile_run == TRUE){
   future::plan(strategy = sequential)
   source(here("scripts", "netlogo", "NetLogo_Controller.R"))
   results <- run_netlogo_model(ml$path$output_temp_folder)

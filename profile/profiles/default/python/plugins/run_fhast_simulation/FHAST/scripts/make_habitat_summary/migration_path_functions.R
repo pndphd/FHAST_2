@@ -246,11 +246,11 @@ get_paths_and_costs <- function(hab_df,
 
 # runs through the main function for all species --------------------------
 
-get_path_min_costs_all_species <- function(hab_df, fish_parms_in, habitat_parms_in, fish_schedule) {
-  species <- fish_schedule$species
+get_path_min_costs_all_species <- function(hab_df, fish_parms_in, habitat_parms_in, fish_plan) {
+  species <- fish_plan$species
   fish_ids <- match(species, fish_parms_in$specie)
   pathfinding_table <- map_dfr(fish_ids, ~ get_paths_and_costs(hab_df, fish_parms_in, habitat_parms_in, .x))
-  pathfinding_table[as.data.table(fish_schedule), on = "species", nomatch = 0]
+  pathfinding_table[as.data.table(fish_plan), on = "species", nomatch = 0]
 }
 
 

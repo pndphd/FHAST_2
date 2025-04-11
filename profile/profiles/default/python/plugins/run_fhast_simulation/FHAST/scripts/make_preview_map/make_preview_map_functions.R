@@ -1,3 +1,7 @@
+################################################################################
+# These functions are used to make the preview map
+################################################################################
+
 # This function changes a raster to an object that can be plotted with ggplot
 raster_to_df <- function(raster = NULL) {
   test_spdf <- as(raster, "SpatialPixelsDataFrame")
@@ -6,6 +10,7 @@ raster_to_df <- function(raster = NULL) {
   return(test_df)
 }
 
+# constructs the plot
 make_map_plot <- function() {
   ##### Process things for map #####
   # Get the grid oputline
@@ -84,3 +89,7 @@ make_map_plot <- function() {
   
   return(map_plot)
 }
+
+################################################################################
+# End
+################################################################################

@@ -3,8 +3,9 @@
 
 # Make the function to calculate fish per day
 spread_out_fish <- function(...) {
-
+  #get each row of the input file and deal with it
   current <- tibble(...)
+
   # Get the standard deviation
   sd <- (current$interquartile / 2) / qnorm(0.75)
   df <- data.frame(date = seq(from = current$date - 100 * current$interquartile,
@@ -29,7 +30,7 @@ spread_out_fish <- function(...) {
 load_fish_timeseries <- function(input_file_in) {
   ##### Make the Files #####
   # make the list of days and fish
-  fish_schedule <- input_file_in %>%
+  fish_plan = input_file_in %>%
     pmap_dfr(~spread_out_fish(...)) %>%
     arrange(date) %>%
     group_by(species, lifestage) %>% 
@@ -40,11 +41,11 @@ load_fish_timeseries <- function(input_file_in) {
                            cum_sum-lag(cum_sum, default = 0))) %>% 
     ungroup() %>% 
     select(-cum_sum)
-  return(fish_schedule)
+  return(fish_plan)
 }
 
-plot_fish_timeseries <- function(fish_schedule) {
-  fish_plot_data <- fish_schedule %>%
+plot_fish_timeseries <- function(fish_plan) {
+  fish_plot_data <- fish_plan %>%
     mutate(Group = str_c(species, " ", lifestage),
            plot_number = ifelse(lifestage == "adult",
                                 number,

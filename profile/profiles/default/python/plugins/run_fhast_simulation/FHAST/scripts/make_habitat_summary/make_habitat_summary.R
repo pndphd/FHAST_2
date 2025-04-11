@@ -89,12 +89,12 @@ pred_parm <- read_csv(file = ml$path$predator,
 ##### Main Processing #####
 # Make a list with one item being the daily habitat data 
 # and the second being the migration data
-daily_data_sets = daily_w_photo_period %>% 
+daily_data_sets = ml$df$daily_input %>% 
   pmap(.f = ~get_daily_data(..., 
                             habitat_data = habitat_flows,
                             fixed_data = shape_file,
                             flows_list = flows,
-                            fish_schedule = fish_schedule,
+                            fish_plan = ml$df$fish_schedule,
                             migration_area = migration_area,
                             sig_figs = 10)) 
 
@@ -109,7 +109,7 @@ habitat_variable = daily_data_sets %>%
          wetted = ifelse(wetted_area > 0, 1, 0)) %>% 
   ungroup() 
 
-if(adult_run == TRUE){
+if(ml$var$adult_run == TRUE){
   # extract the migration data
   migration_data = daily_data_sets %>% 
     map_df(.f = ~.x$mig_data)
@@ -180,7 +180,7 @@ daily_data_full = data_summary %>%
   setNames(map(data_summary, ~paste0(.x$species, "-", .x$lifestage)))
 
 # Format adult migration data 
-if (adult_run == 1){
+if (ml$var$adult_run == 1){
   adult_migration_energy_data = adult_migration$energy_costs %>% 
     unnest(energy_cost)
   adult_migration_map_data = adult_migration$paths %>% 
@@ -348,7 +348,7 @@ fish_summary_stats <- map_data %>%
   left_join(fish_summary_stats_full, by = c("species", "lifestage"))
 
 # and for the migrating adults
-if (adult_run == 1){
+if (ml$var$adult_run == 1){
   migration_summary_stats = adult_migration_energy_data %>% 
     group_by(species) %>% 
     summarise(migration_energy_cost = mean(energy_cost, na.rm = TRUE)) %>% 
@@ -405,7 +405,7 @@ cutoff_map <- make_map(
 )
 display_plot(cutoff_map)
 
-if (juvenile_run == TRUE){
+if (ml$var$juvenile_run == TRUE){
   # predator maps
   pred_map <- make_map(
     data_frame = mean_map,
@@ -447,7 +447,7 @@ cover_cutoff_map  <- ggplot(data = mean_map) +
 display_plot(cover_cutoff_map, 10, 20)
 
 # adult migration map
-if (adult_run == 1){
+if (ml$var$adult_run == 1){
   migration_map <- adult_migration_map_data %>% 
     map(~make_map(
       data_frame = .x,
@@ -499,7 +499,7 @@ cover_facet_hist  <- make_hist(
                                  below_v_cutoff = v_cutoff_label))
 display_plot(cover_facet_hist, 10, 20)
 
-if (adult_run == 1){
+if (ml$var$adult_run == 1){
   migration_energy_hist <- ggplot(adult_migration_energy_data) +
     theme_classic(base_size = 20) +
     theme(axis.title.y=element_blank(),
@@ -522,7 +522,7 @@ df_outputs = list(st_drop_geometry(mean_map),
 df_outputs_names = list("habitat_map_data",
                         "habitat_daily_data")
 
-if (adult_run == TRUE){
+if (ml$var$adult_run == TRUE){
   df_outputs = append(df_outputs, list(adult_migration_energy_data))
   df_outputs_names = append(df_outputs_names, list("adult_migration_energy_data"))
 }
@@ -545,7 +545,7 @@ walk2(.x = map_data, .y = names(map_data),
       .f = ~write.csv(x = .x, file = here(ml$path$output_folder, paste0(.y,"_map.csv")),
                       row.names = FALSE))
 
-if (adult_run == TRUE){
+if (ml$var$adult_run == TRUE){
   # Write the adult migration map to csv
   walk(adult_migration_map_data, ~write.csv(x = .x,
                                    file = here(ml$path$output_folder,
@@ -564,7 +564,7 @@ write_sf(mean_map, here(ml$path$output_shape_folder, "habitat_map.shp"),
 walk2(.x = map_data, .y = names(map_data),
       ~write_sf(obj = .x, 
                 dsn = here(ml$path$output_shape_folder, paste0("fish_map_", .y, ".shp"))))
-if (adult_run == TRUE){
+if (ml$var$adult_run == TRUE){
   # Write the adult migration maps
   walk(adult_migration_map_data,
        ~write_sf(obj = .x,
@@ -612,13 +612,13 @@ plot_dimeshions = list(1.2,1.2,1.2,1.2,1.2,1.2,
                        metabolic_map_length+1,
                        net_energy_map_length+1)
 
-if (juvenile_run == TRUE){
+if (ml$var$juvenile_run == TRUE){
   plot_list = append(plot_list, list(pred_map,mort_map))
   plot_name_list = append(plot_name_list, list("predator_map", "predation_map"))
   plot_dimeshions = append(plot_dimeshions, list(1.2, predation_map_length+1))
 }
 
-if (adult_run == TRUE){
+if (ml$var$adult_run == TRUE){
   plot_list = append(plot_list, list(migration_map, migration_energy_hist))
   plot_name_list = append(plot_name_list, list("migration_map",
                                                "migration_energy_hist"))

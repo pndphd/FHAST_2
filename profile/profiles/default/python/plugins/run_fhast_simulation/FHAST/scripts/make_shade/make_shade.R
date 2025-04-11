@@ -45,7 +45,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   
   # Load the canopy cover zone file 
   # simplify it to speed up
-  if(juvenile_run == TRUE){
+  if(ml$var$juvenile_run == TRUE){
     # make attributes constant to supress warnings
     st_agr(ml$df$canopy) = "constant"
     st_agr(clip_mask) = "constant"
@@ -77,7 +77,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   times_list = as.list(paste0("2010-", seq(1,12,1), "-15 12:00:00"))
   
   # calculate photo period
-  daily_w_photo_period = calc_photo_period(shade_shape, daily_file)
+  # ml$df$daily_input = calc_photo_period(shade_shape, daily_file)
   
   # Run the function and combine all the shade layers by month
   result = future_map(times_list, ~make_shade_shape(shade_shape, .x)) %>% 

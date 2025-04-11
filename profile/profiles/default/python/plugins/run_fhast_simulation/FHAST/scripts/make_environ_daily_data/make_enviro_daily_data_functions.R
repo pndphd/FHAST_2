@@ -1,12 +1,11 @@
-##### Description ######################
+################################################################################
 # These are the functions for the make_the_input_file
-########################################
+################################################################################
 
-##### Functions #####
-# The main formating function
+# The main formatting function
 load_daily_conditions = function(daily_inputs_in) {
-  ##### Make the Files #####
-  # Error check in case user put in an actual hydrograph file
+  ##### Set up for making files ##### 
+  # Error check in case user put in an actual hydro graph file
   if(NCOL(daily_inputs_in)>1){
     message(paste0("!!!!!!!!!!!\n",
                    "!!!ERROR!!! Too many columns in the environmental input file. \n",
@@ -14,7 +13,6 @@ load_daily_conditions = function(daily_inputs_in) {
                    "You may be entering a hydrograph file and not a \n",
                    "refrence file pointing to it."))
     stop()
-    
   }
   
   # Get what type of file it is
@@ -32,8 +30,8 @@ load_daily_conditions = function(daily_inputs_in) {
   # Get parameters
   params = read_parameters(daily_inputs_in, file_type)
     
+  ##### Distribution #####
   if (file_type == "distribution"){
-    
     # get the starting values
     start_flow = get_starting_values(params$flow_type, params$flow_mean)
     start_temp = get_starting_values(params$temp_type, params$temp_mean)
@@ -66,15 +64,17 @@ load_daily_conditions = function(daily_inputs_in) {
             temp_c = pmax(temp_c_con + params$temp_change * (day - 1), 0),
             turb_ntu = pmax(turb_ntu_con + params$turb_change * (day - 1), 0)) %>% 
       select(-flow_cms_con, -temp_c_con, -turb_ntu_con)
-    
+  
+  ##### Hydrograph ######  
   } else if (file_type == "hydrograph"){
 
     # Get parameters
     hydro_file_name = daily_inputs_in["file",]
+    
     # Read in the file and convert to date
     daily_folder = str_sub(ml$path$daily,
                            end = max(unlist(str_locate_all(ml$path$daily, "/"))))
-    message(ml$path$daily)
+
     hydro_file = read.csv(file = here(daily_folder, hydro_file_name)) %>% 
       mutate(date = mdy(date))
     
@@ -87,7 +87,6 @@ load_daily_conditions = function(daily_inputs_in) {
                      "!!!!!!!!!!!\n",
                      "The columns are flow_cms, temp_c, & turb_ntu"))
       stop()
-      
     }
 
     # Check that all the days are there
@@ -96,7 +95,6 @@ load_daily_conditions = function(daily_inputs_in) {
                      "!!!ERROR!!! The hydrograph file is missing some or has duplicate days. \n",
                      "!!!!!!!!!!!\n"))
       stop()
-      
     }
     
     # use left join to just get dates wanted and convert to dumb excel date format
@@ -106,6 +104,7 @@ load_daily_conditions = function(daily_inputs_in) {
       left_join(hydro_file, by = "date") %>% 
       mutate(date = format(date, "%m/%d/%Y"))
 
+  ##### Link ###### 
   } else if (file_type == "link"){
 
     # get the starting values
@@ -216,8 +215,8 @@ get_starting_values <- function(dist_type, mean_value){
 }
 
 # A function to calculate photo period
-calc_photo_period = function(shape_file_in,
-                             df_in){
+calc_photo_period = function(df_in, shape_file_in){
+  
   location = shape_file_in %>% 
     summarize(geometry = st_union(geometry)) %>% 
     st_centroid() %>% 
@@ -242,40 +241,41 @@ calc_photo_period = function(shape_file_in,
 
 # Make the time series plot
 make_daily_timeseries_plot = function(output_data) {
-  # Plot each time series
-time_series_plot_f = ggplot(data = output_data, aes(x = mdy(date), y = flow_cms)) +
-  theme_classic(base_size = 20) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_path(linetype = "solid") +
-  labs(x = "Date", y = "Flow (cms)") +
-  theme(axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-time_series_plot_t = ggplot(data = output_data, aes(x = mdy(date), y = temp_c)) +
-  theme_classic(base_size = 20) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_path(linetype = "solid") +
-  labs(x = "Date", y = "Temperature (\u00B0C)") +
-  theme(axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-time_series_plot_u = ggplot(data = output_data, aes(x = mdy(date), y = turb_ntu)) +
-  theme_classic(base_size = 20) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  geom_path(linetype = "solid") +
-  labs(x = "Date",
-       y = "Turbidity (NTUs)",
-       caption = paste0("Three time series graph of the daily conditions.")) +
-  theme(plot.caption = element_text(hjust = 0, size = 15))
 
-# merge them all into 1 plot
-time_series_plot = time_series_plot_f /
-  time_series_plot_t/
-  time_series_plot_u
-  return (time_series_plot)
+  # Plot each time series
+  time_series_plot_f = ggplot(data = output_data, aes(x = mdy(date), y = flow_cms)) +
+    theme_classic(base_size = 20) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_path(linetype = "solid") +
+    labs(x = "Date", y = "Flow (cms)") +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  time_series_plot_t = ggplot(data = output_data, aes(x = mdy(date), y = temp_c)) +
+    theme_classic(base_size = 20) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_path(linetype = "solid") +
+    labs(x = "Date", y = "Temperature (\u00B0C)") +
+    theme(axis.title.x = element_blank(),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())
+  time_series_plot_u = ggplot(data = output_data, aes(x = mdy(date), y = turb_ntu)) +
+    theme_classic(base_size = 20) +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+    geom_path(linetype = "solid") +
+    labs(x = "Date",
+         y = "Turbidity (NTUs)",
+         caption = paste0("Three time series graph of the daily conditions.")) +
+    theme(plot.caption = element_text(hjust = 0, size = 15))
+  
+  # merge them all into 1 plot
+  time_series_plot = time_series_plot_f /
+    time_series_plot_t/
+    time_series_plot_u
+    return (time_series_plot)
 }
 
-# The function fo the combinde histogram plot
+# The function for the combined histogram plot
 make_daily_histogram_plot = function(output_data) {
   # Make the plots
   temp_hist_plot = make_hist_plot(output_data,
@@ -314,3 +314,7 @@ make_hist_plot = function(data_in, variabel, legend, caption = ""){
   
   return(out_hist_plot)
 }
+
+################################################################################
+# End 
+################################################################################

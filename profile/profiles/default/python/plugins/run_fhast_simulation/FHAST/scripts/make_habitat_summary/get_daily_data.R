@@ -3,7 +3,7 @@ get_daily_data <- function(... ,
                            habitat_data,
                            fixed_data,
                            flows_list,
-                           fish_schedule,
+                           fish_plan,
                            migration_area,
                            sig_figs) {
   current = list(...)
@@ -50,8 +50,8 @@ get_daily_data <- function(... ,
            photoperiod, area) %>% 
     left_join(shade_data, by = c("distance", "lat_dist"))
 
-if(adult_run){
-  todays_adults = filter(fish_schedule, date == current$date & lifestage == "adult")
+if(ml$var$adult_run){
+  todays_adults = filter(fish_plan, date == current$date & lifestage == "adult")
   if (nrow(todays_adults) == 0) {
     migration_data <- data.table(date = NA_character_, species = NA_character_, energy_cost = NA, paths = NA, number = NA_real_)
   } else {

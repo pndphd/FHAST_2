@@ -34,7 +34,7 @@ make_data_summary = function(..., habitat){
                        ml$df$habitat_parms$base_wall_factor)
 
   # If there are juveniles do predation calculations
-  if(juvenile_run & ls == "juvenile"){
+  if(ml$var$juvenile_run & ls == "juvenile"){
     pred_results = map_dfc(seq(1, length(pred_parm[[1]]), 1),
                            ~calc_all_preds(.x, habitat, fish_length)) %>% 
       mutate(hab_rating = rowSums(across(starts_with("hab_rating"))),

@@ -7,38 +7,37 @@ source(here("scripts",  "make_fish_daily_data",
             "make_fish_daily_data_functions.R"))
 
 ##### Run the main function
-fish_schedule_full = load_fish_timeseries(ml$df$fish_pop) 
-  
-fish_schedule = fish_schedule_full %>%
-  # take out dates that aren't in the enviromental data
-  filter(mdy(date) >= min(mdy(daily_input_data$date)) &
-           mdy(date) <= max(mdy(daily_input_data$date)))
+ml$df$fish_schedule = load_fish_timeseries(ml$df$fish_pop) %>%
+  # take out dates that aren't in the environmental data
+  filter(mdy(date) >= min(mdy(ml$df$daily_input$date)) &
+           mdy(date) <= max(mdy(ml$df$daily_input$date)))
 
 # Check if you removed fish
-if(NROW(fish_schedule) < NROW(fish_schedule_full)){
+if(NROW(ml$df$fish_schedule) < NROW(load_fish_timeseries(ml$df$fish_pop))){
   message(paste0("!!!!!!!!!!!!!\n",
                  "!!!WARNING!!! Some fish removed because they are outside the model time window. \n",
                  "!!!!!!!!!!!!!\n"))
 }
 
 # Get flags to check what runs to do
-juvenile_run = ifelse(NROW(filter(fish_schedule, lifestage == "juvenile"))>0, T ,F)
-adult_run = ifelse(NROW(filter(fish_schedule, lifestage == "adult"))>0, T ,F)
+ml$var$juvenile_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "juvenile"))>0, T ,F)
+ml$var$adult_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "adult"))>0, T ,F)
 
 ##### Save the result #####
-write.csv(fish_schedule,
+write.csv(ml$df$fish_schedule,
           file = here(ml$path$output_temp_folder, "daily_fish_input.csv"),
           row.names = FALSE)
 
 # make one file to for output
-write.csv(x = fish_schedule,
-          file = here(ml$path$output_folder, "daily_fish_processed.csv"),
+write.csv(x = ml$df$fish_schedule,
+          file = here(ml$path$output_folder, "daily_fish_input.csv"),
           row.names = FALSE)
 
 ##### Make a plot #####
-fish_plot_data <- fish_schedule %>%
-  mutate(Group = str_c(species, " ", lifestage))
+ml$plot$time_series_plot_fish = plot_fish_timeseries(ml$df$fish_schedule)
 
-time_series_plot_fish <- plot_fish_timeseries(fish_schedule)
+display_plot(ml$plot$time_series_plot_fish, 12, 12, preview_flag)
 
-display_plot(time_series_plot_fish, 12, 12, preview_flag)
+################################################################################
+# End
+################################################################################

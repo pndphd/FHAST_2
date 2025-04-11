@@ -76,7 +76,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
     as.numeric() %>%
     sort()
   # find the value larger then the max flow
-  max_raster_value = d_values[min(which(d_values > max(daily_input_data$flow_cms)))]
+  max_raster_value = d_values[min(which(d_values > max(ml$df$daily_input$flow_cms)))]
   max_raster = rast(here(ml$path$raster_folder, paste0("D", max_raster_value, ".tif")))
 
 # Filter the grid so only use potentially wetted cells
