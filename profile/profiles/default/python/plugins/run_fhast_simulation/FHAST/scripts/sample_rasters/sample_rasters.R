@@ -9,18 +9,14 @@ area = raster::area
 source(here("scripts", "sample_rasters", "sample_rasters_functions.R"))
 source(here("scripts", "sample_rasters", "make_migration_path.R"))
 
-# inputs
-# temp_river_grid_path, ml$path$raster_folder_files
-# outputs
-# temp_netlogo_depth_velocity_path
 
-temp_river_grid_path <- here(ml$path$output_temp_folder,  
-                         paste0("river_grid.rds"))
+
+
 temp_netlogo_depth_velocity_path <- here(ml$path$output_temp_folder, 
                                          paste0("Depth_Velocity_Data_Input.csv"))
 
 input_output_file_paths <- list.files(ml$path$raster_folder, full.names=TRUE)
-input_output_file_paths <- append(input_output_file_paths, temp_river_grid_path)
+input_output_file_paths <- append(input_output_file_paths, ma$path$river_grid)
 input_output_file_paths <- append(input_output_file_paths,
                                   temp_netlogo_depth_velocity_path)
 input_output_file_paths <- append(input_output_file_paths,
@@ -32,7 +28,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 
   ##### Load some files #####
   # load the river grid
-  river_grid = readRDS(temp_river_grid_path)
+  river_grid =   ml$df$grid
 
   ##### Load the flow list #####
   # find all the depth and velocity rasters

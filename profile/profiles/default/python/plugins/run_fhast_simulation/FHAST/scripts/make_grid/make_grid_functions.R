@@ -1,4 +1,6 @@
-# This file has the functions used in river_grid_maker_run.R #
+################################################################################
+# This file has the functions used in river_grid_maker_run.R 
+################################################################################
 
 ##### make_distances_list #####
 # This Function makes the list of distances
@@ -73,7 +75,6 @@ make_vor_cells = function(points = NULL,
                           top = NULL,
                           resolution = NULL){
 
-
   # set up a set of vornoi cells
   vor_cells_1 = st_voronoi(x = st_union(points)) %>%
     st_sf() %>%
@@ -85,8 +86,7 @@ make_vor_cells = function(points = NULL,
   #Get to top most cell using the user input point
   top_vor_cell = top %>% 
     st_join(vor_cells_1) 
-  
-    
+
   vor_cells_2 = vor_cells_1 %>% 
     # If we flip the distances make a row of the new distances
     # also make a row column which will just be 0 if no flip is necessary
@@ -104,9 +104,7 @@ make_vor_cells = function(points = NULL,
   }
   
   return(vor_cells_2)
-    
 }
-
 
 ##### make_grid #####
 make_grid = function(resolution = NULL,
@@ -114,7 +112,7 @@ make_grid = function(resolution = NULL,
                      buffers = NULL,
                      large_buffer = NULL){
   
-   st_agr(cells) = "constant"
+  st_agr(cells) = "constant"
   st_agr(buffers) = "constant"
   
   grid = cells %>% 
@@ -135,3 +133,7 @@ make_grid = function(resolution = NULL,
   
   return(grid)
 }
+
+################################################################################
+# End
+################################################################################

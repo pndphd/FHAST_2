@@ -1,9 +1,9 @@
-########################################
+################################################################################
 # This program takes in a shade shape file and calculates shade values
 # for mid day, half way between sun rise and mid day, and half way
 # between mid-day and sun set
 # any where shaded in these times is considered shaded
-########################################
+################################################################################
 
 ##### Tolerance #####
 # the units of tolerance to simplify shape
@@ -19,13 +19,12 @@ source(here("scripts","make_shade","make_shade_functions.R"))
 source(here("scripts","make_shade","tree_growth_functions.R"))
 
 temp_daily_file_path <- here(ml$path$output_temp_folder,  "daily_input_file.csv")
-temp_river_grid_path <- here(ml$path$output_temp_folder, "river_grid.rds")
 temp_shade_file_path <- here(ml$path$output_temp_folder,  paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
 temp_netlogo_daily_input_path <- here(ml$path$output_temp_folder, "daily_input_file.csv")
 
 input_output_file_paths <- c(ml$path$canopy, ml$path$tree_growth,
                              temp_daily_file_path,
-                             temp_river_grid_path,
+                             ma$path$river_grid,
                              temp_shade_file_path)
 
 hash_storage <-here(ml$path$output_temp_folder, "calculate_shade_hashes.txt")
@@ -36,7 +35,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   daily_file <- read.csv(file = temp_daily_file_path)
   
   # load the river grid and make it a mask
-  river_grid = readRDS(temp_river_grid_path) 
+  river_grid =   ml$df$grid 
   
   # Make a clip mask form the river grid
   clip_mask = river_grid %>%
@@ -94,3 +93,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   result = readRDS(file = temp_shade_file_path)
   walk(.x = seq(1,12,1), .f = ~write_sf(result[[.x]], here(ml$path$output_shape_folder, paste0("shade_shape", .x, ".shp")),
                                         driver ="ESRI Shapefile"))
+
+################################################################################
+# End
+################################################################################

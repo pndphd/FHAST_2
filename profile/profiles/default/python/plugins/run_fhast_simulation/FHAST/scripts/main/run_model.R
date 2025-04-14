@@ -1,9 +1,28 @@
-########################################
+################################################################################
 # Runs all the scripts for FHAST calculations
-#
-# This assumes you've run load_libraries and default_initializaiton
-# (and possibly re-initialized to other inputs).
-########################################
+################################################################################
+
+# Make the daily input file
+message("Making daily environment file.\n")
+source(here("scripts", "make_environ_daily_data","make_enviro_daily_data.R"))
+message("Making daily environment file: Done.\n")
+
+# Make the daily fish input file
+message("Making daily fish file.\n")
+source(here("scripts", "make_fish_daily_data","make_fish_daily_data.R"))
+message("Making daily fish file: Done.\n")
+
+# Make preview map
+message("Making preview map.\n")
+source(here("scripts","make_preview_map","make_preview_map.R"))
+message("Making preview map: Done.\n")
+
+# Stop run if we just want a preview
+if (preview_flag){
+  stop("PREVIEW RUN COMPLETE.\nThis is not an error.")  
+}
+# Remove variable no longer needed
+rm(preview_flag)
 
 # Make the grid 
 message("Making model grid.\n")
@@ -34,4 +53,6 @@ source(here("scripts","sample_shapes","sample_shapes.R"))
 message("Sampling shape files: Done.\n")
 message("Starting NetLogo run.\n")
 
-
+################################################################################
+# End
+################################################################################

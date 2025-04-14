@@ -7,7 +7,7 @@ sample_shape_with_grid <- function(grid, shape_file, column_name, output_name) {
   column_name <- enquo(column_name)
   # fix up the grid file
   grid <- grid %>%
-    select(distance, area, left_or_right, geometry, lat_dist) %>%
+    select(distance, area, l_or_r, geometry, lat_dist) %>%
     rowid_to_column("ID")
 
   # This suppresses a warning about attributes
@@ -64,7 +64,7 @@ sample_all_shapes <- function(grid = NULL,
     .options = furrr_options(seed = TRUE)
   ) %>%
     # Join the data frames together
-    reduce(~ left_join(.x, .y, by = c("ID", "distance", "area", "left_or_right", "geometry", "lat_dist"))) %>%
+    reduce(~ left_join(.x, .y, by = c("ID", "distance", "area", "l_or_r", "geometry", "lat_dist"))) %>%
     # Make it a shape file
     st_as_sf(sf_column_name = "geometry")
 
@@ -75,6 +75,6 @@ sample_all_shapes <- function(grid = NULL,
 sampled_to_csv <- function(sampled_shapes = NULL) {
   shapes_csv <- sampled_shapes %>%
     as_tibble() %>%
-    select(-geometry, -left_or_right, -ID)
+    select(-geometry, -l_or_r, -ID)
   return(shapes_csv)
 }

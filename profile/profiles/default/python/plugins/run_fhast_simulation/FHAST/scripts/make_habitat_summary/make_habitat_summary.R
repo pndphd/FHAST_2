@@ -25,8 +25,7 @@ daily_file <- read.csv(here(ml$path$output_temp_folder,  "daily_input_file.csv")
   mutate(date = mdy(date))
 
 # Load the Grid file
-grid_file <- readRDS(here(ml$path$output_temp_folder, 
-                          paste0("river_grid.rds"))) %>%
+grid_file <-   ml$df$grid %>%
   select(distance, lat_dist)
 
 

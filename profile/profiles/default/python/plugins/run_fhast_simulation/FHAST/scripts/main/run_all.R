@@ -33,9 +33,6 @@ if (exists("pass_arguments")){
 ##### Run the setup scripts #####
 source(here("scripts","main","run_setup.R"))
 
-##### Run the preview scripts #####
-source(here("scripts","main","run_preview.R"))
-
 ##### Run the calculation scripts #####
 source(here("scripts","main","run_model.R"))
 

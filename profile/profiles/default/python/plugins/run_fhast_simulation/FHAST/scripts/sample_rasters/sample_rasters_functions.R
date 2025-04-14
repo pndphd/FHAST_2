@@ -81,8 +81,6 @@ sample_grid = function(stack = NULL,
     data.frame() %>% 
     # bind it back to the polygons
     cbind(data.frame(grid)) %>% 
-    # set left and right bank correctly
-    # mutate(lat_dist = ifelse(lat_dist>0,ifelse(left_or_right>0, lat_dist, -lat_dist),0)) %>% 
     # Convert to simple feature then a df and remove uncessary rows
     data.frame() %>% 
     dplyr::select(all_of(paste0("mean.", type_letter, flows)),

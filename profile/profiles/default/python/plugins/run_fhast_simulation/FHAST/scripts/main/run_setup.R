@@ -35,16 +35,6 @@ message("Loading parameters.\n")
 source(here("scripts","convert_parameters","convert_parameters.R"))
 message("Loading parameters: Done.\n")
 
-# Make the daily input file
-message("Making daily environment file.\n")
-source(here("scripts", "make_environ_daily_data","make_enviro_daily_data.R"))
-message("Making daily environment file: Done.\n")
-
-# Make the daily fish input file
-message("Making daily fish file.\n")
-source(here("scripts", "make_fish_daily_data","make_fish_daily_data.R"))
-message("Making daily fish file: Done.\n")
-
 ################################################################################
 # End
 ################################################################################

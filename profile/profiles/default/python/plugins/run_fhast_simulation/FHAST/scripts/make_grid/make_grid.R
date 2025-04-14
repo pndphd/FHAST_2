@@ -1,24 +1,19 @@
-########################################
+################################################################################
 # This script runs the necessary functions to make and save a rive grid
-########################################
+################################################################################
 
 ##### Load functions used in the script #####
 source(here("scripts","make_grid","make_grid_functions.R"))
 
-# inputs
-# ml$path$center_line, ml$path$hab, ml$path$top_marker
-# outputs
-# temp_river_grid_path, temp_river_grid_shape_path
+ml$path$river_grid = here(ml$path$output_temp_folder, "river_grid.rds")
 
-temp_river_grid_path <- here(ml$path$output_temp_folder, "river_grid.rds")
+ml$path$river_grid_shape = here(ml$path$output_shape_folder, "river_grid.shp")
 
-temp_river_grid_shape_path <- here(ml$path$output_temp_folder, "river_grid.shp")
+input_output_file_paths = c(ml$path$center_line, ml$path$hab,
+                            ml$path$top_marker, ml$path$river_grid,
+                            ml$path$river_grid_shape)
 
-input_output_file_paths <- c(ml$path$center_line, ml$path$hab,
-                             ml$path$top_marker, temp_river_grid_path,
-                             temp_river_grid_shape_path)
-
-hash_storage <-here(ml$path$output_temp_folder, "make_grid_run_hashes.txt")
+hash_storage = here(ml$path$output_temp_folder, "make_grid_run_hashes.txt")
 
 if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
 
@@ -55,16 +50,13 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
                              resolution = ml$df$habitat_parms$resolution)
   
   # Combine the buffers and vornoi cells to make the grid
-  grid = make_grid(resolution = ml$df$habitat_parms$resolution,
+  ml$df$grid = make_grid(resolution = ml$df$habitat_parms$resolution,
                    cells = vor_cells,
                    buffers = buffers,
                    large_buffer = large_buffer) %>% 
     # set left and right bank correctly
-    mutate(lat_dist = ifelse(lat_dist>0, 
-                             ifelse(left_or_right<0,
-                                    lat_dist,
-                                    -lat_dist),
-                             0))
+    mutate(lat_dist = ifelse(lat_dist > 0, 
+                             ifelse(left_or_right < 0, lat_dist, -lat_dist), 0))
   
   ##### Trim Grid #####
   #get the rasters
@@ -80,32 +72,40 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   max_raster = rast(here(ml$path$raster_folder, paste0("D", max_raster_value, ".tif")))
 
 # Filter the grid so only use potentially wetted cells
-  # grid = exact_extract(max_raster, grid, fun = 'max', progress = FALSE) %>%
-  #   data.frame() %>%
-  #   # bind it back to the polygons
-  #   cbind(data.frame(grid)) %>%
-  #   na.omit() %>%
-  #   select(-1) %>%
-  #   st_as_sf()
-
-
-  rm(max_raster)
-
-  ##### Save Outputs #####
-  saveRDS(grid, temp_river_grid_path)
-  
-  # rename some things to avoid a warning
-  grid_save = grid %>% 
+  ml$df$grid = exact_extract(max_raster, ml$df$grid, fun = 'max', progress = FALSE) %>%
+    data.frame() %>%
+    # bind it back to the polygons
+    cbind(data.frame(ml$df$grid)) %>%
+    na.omit() %>%
+    select(-1) %>%
+    st_as_sf() %>% 
     rename(dist = distance,
            l_or_r = left_or_right)
-  
-  write_sf(grid_save, temp_river_grid_shape_path,
+
+  ##### Save Outputs #####
+  saveRDS(ml$df$grid, here(ml$path$output_temp_folder, "river_grid.rds"))
+  write_sf(ml$df$grid, here(ml$path$output_shape_folder, "river_grid.shp"),
            driver ="ESRI Shapefile")
 
   store_last_run_hashes(hash_storage, input_output_file_paths) 
+  
+  rm(distances_list,
+     max_raster,
+     smooth_line,
+     buffers,
+     large_buffer,
+     sample_points,
+     vor_cells,
+     d_files,
+     d_values,
+     max_raster_value,
+     max_raster)
 }
 
 ##### Load and save the outputs #####
-result = read_sf(temp_river_grid_shape_path)
-write_sf(result, here(ml$path$output_shape_folder, "river_grid.shp"),
-         driver ="ESRI Shapefile")
+ml$df$grid = readRDS(here(ml$path$output_temp_folder, "river_grid.rds"))
+rm(hash_storage, input_output_file_paths)
+
+################################################################################
+# End
+################################################################################
