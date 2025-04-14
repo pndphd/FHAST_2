@@ -31,11 +31,11 @@ message("Making model grid: Done.\n")
 
 # Calculate shade
 message("Making shade file.\n")
-shadeError <<- FALSE
+shadeError = FALSE
 tryCatch(suppressWarnings(source(here("scripts","make_shade","make_shade.R"))),
          error = function(e) {
            print(e)
-           shadeError <<- TRUE
+           shadeError = TRUE
          })
 if (shadeError) {
   stop('Error while generating shade, check canopy shape file, cover shape file, and wildcard file.')

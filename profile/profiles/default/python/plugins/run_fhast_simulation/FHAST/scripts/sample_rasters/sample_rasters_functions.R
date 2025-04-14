@@ -1,4 +1,6 @@
+################################################################################
 # This folder contains the functions for sample_raster.R
+################################################################################
 
 ##### get_type_letter #####
 # this function translates the type word into the letter
@@ -20,7 +22,7 @@ load_rasters = function(type = NULL,
                         folder = NULL,
                         clip_mask = NULL){
 
-    # Get the extent of the grid
+  # Get the extent of the grid
   extent = ext(clip_mask)
 
   # Get the letter type
@@ -28,8 +30,10 @@ load_rasters = function(type = NULL,
 
   # Find the files that match the type.
   files = list.files(folder, paste0(type_letter, "\\d+.tif"), full.names=TRUE)
+  
   # Sort the files so they are in flow order of low to high.
   files_sorted = files[order(strtoi(str_extract(str_extract(files, paste0(type_letter, "\\d+.tif")), "\\d+")))]
+  
   # make the raster stack and crop it
   stack = rast(map(files_sorted, ~rast(.x))) 
 
@@ -74,7 +78,7 @@ sample_grid = function(stack = NULL,
   type_letter = get_type_letter(type)
 
   samples = stack %>% 
-    #take mean excluding NAs
+    # take mean excluding NAs
     exact_extract(grid,
                   fun = 'mean',
                   progress = FALSE) %>%  
@@ -87,14 +91,13 @@ sample_grid = function(stack = NULL,
                   lat_dist,
                   # if velocity the correction factor is not inside 
                   contains("mean.correction_factor"),
-                  distance,
+                  dist,
                   area) 
   
-
   if(type_letter == "D"){
     
     wetter_area = stack %>%
-      exact_extract(river_grid,
+      exact_extract(grid,
                     fun = NULL,
                     progress = FALSE,
                     default_value = 0) %>%
@@ -108,3 +111,29 @@ sample_grid = function(stack = NULL,
   
   return(samples)
 }
+
+##### make the migration paths #####
+make_migration_paths = function(flows = NULL,
+                                flow_level = NULL,
+                                species = NULL,
+                                df_in = NULL){
+  
+  # make a variable name
+  variable_name = paste0("mig_path_", species)
+  
+  # find the flow value
+  flow_value = ifelse(flow_level >= max(d_values),
+                      max(d_values),
+                      d_values[min(which(sort(d_values) >= flow_level))])
+  
+  # make a df of possible cells
+  sampeled_grid_out = df_in %>% 
+    select(paste0("wetd.D", flow_value)) %>% 
+    rename(wetted = 1) %>% 
+    mutate(!!variable_name := ifelse(wetted == 0, 0, 1)) %>% 
+    select(-wetted)
+}
+
+################################################################################
+# End
+################################################################################

@@ -18,27 +18,21 @@ rgeos::set_RGEOS_CheckValidity(2L)
 source(here("scripts","make_shade","make_shade_functions.R"))
 source(here("scripts","make_shade","tree_growth_functions.R"))
 
-temp_daily_file_path <- here(ml$path$output_temp_folder,  "daily_input_file.csv")
-temp_shade_file_path <- here(ml$path$output_temp_folder,  paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
-temp_netlogo_daily_input_path <- here(ml$path$output_temp_folder, "daily_input_file.csv")
+ml$path$shade_file = here(ml$path$output_temp_folder,
+                          paste0("shade_file_", ml$df$habitat_parms$veg_growth_years,".rds"))
 
-input_output_file_paths <- c(ml$path$canopy, ml$path$tree_growth,
-                             temp_daily_file_path,
-                             ma$path$river_grid,
-                             temp_shade_file_path)
+input_output_file_paths = c(ml$path$canopy,
+                            ml$path$tree_growth,
+                            ml$path$daily_input_csv,
+                            ml$path$river_grid,
+                            ml$path$shade_file)
 
-hash_storage <-here(ml$path$output_temp_folder, "calculate_shade_hashes.txt")
+hash_storage = here(ml$path$output_temp_folder, "calculate_shade_hashes.txt")
 
 if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   ##### Load Files #####
-  # load the daily files
-  daily_file <- read.csv(file = temp_daily_file_path)
-  
-  # load the river grid and make it a mask
-  river_grid =   ml$df$grid 
-  
   # Make a clip mask form the river grid
-  clip_mask = river_grid %>%
+  clip_mask = ml$df$grid %>%
     summarise() %>% 
     st_buffer(dist = 100)
   
@@ -84,15 +78,27 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
     future_map2(seq(1,12,1), ~rename(.x, !!paste0("shade_", .y) := shade))
 
   # save the files
-  saveRDS(result, file = temp_shade_file_path)
+  saveRDS(result, file = ml$path$shade_file)
 
   store_last_run_hashes(hash_storage, input_output_file_paths)
+  rm(simplfly_tolarence, 
+     result,
+     clip_mask,
+     times_list, 
+     shade_shape)
 }
 
 ##### Load and save the outputs #####
-  result = readRDS(file = temp_shade_file_path)
-  walk(.x = seq(1,12,1), .f = ~write_sf(result[[.x]], here(ml$path$output_shape_folder, paste0("shade_shape", .x, ".shp")),
-                                        driver ="ESRI Shapefile"))
+result = readRDS(file = ml$path$shade_file)
+walk(.x = seq(1,12,1),
+     .f = ~write_sf(result[[.x]],
+                    here(ml$path$output_shape_folder, paste0("shade_shape", .x, ".shp")),
+                    driver ="ESRI Shapefile"))
+
+rm(hash_storage,
+   input_output_file_paths,
+   simplfly_tolarence,
+   result)
 
 ################################################################################
 # End

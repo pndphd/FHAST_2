@@ -9,8 +9,9 @@ source(here("scripts",  "make_fish_daily_data",
 ##### Run the main function
 ml$df$fish_schedule = load_fish_timeseries(ml$df$fish_pop) %>%
   # take out dates that aren't in the environmental data
-  filter(mdy(date) >= min(mdy(ml$df$daily_input$date)) &
-           mdy(date) <= max(mdy(ml$df$daily_input$date)))
+  filter(mdy(date) >= min(ymd(ml$df$daily_input$date)) &
+           mdy(date) <= max(ymd(ml$df$daily_input$date))) %>% 
+  mutate(date = mdy(date))
 
 # Check if you removed fish
 if(NROW(ml$df$fish_schedule) < NROW(load_fish_timeseries(ml$df$fish_pop))){
@@ -22,6 +23,7 @@ if(NROW(ml$df$fish_schedule) < NROW(load_fish_timeseries(ml$df$fish_pop))){
 # Get flags to check what runs to do
 ml$var$juvenile_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "juvenile"))>0, T ,F)
 ml$var$adult_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "adult"))>0, T ,F)
+
 
 ##### Save the result #####
 write.csv(ml$df$fish_schedule,

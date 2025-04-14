@@ -11,12 +11,14 @@ source(here("scripts",
 ##### Main Work #####
 # Convert the input file into the desired CSV output
 ml$df$daily_input = load_daily_conditions(ml$df$daily) %>% 
-  calc_photo_period(ml$df$top_marker)
+  calc_photo_period(ml$df$top_marker) %>% 
+  mutate(date = mdy(date))
 
 ##### Make the Files #####
 # make one file to be used in the rest of the process
+ml$path$daily_input_csv = here(ml$path$output_temp_folder, "daily_input_file.csv")
 write.csv(x = ml$df$daily_input,
-          file = here(ml$path$output_temp_folder, "daily_input_file.csv"),
+          file = ml$path$daily_input_csv,
           row.names = FALSE)
 
 # make one file to for output

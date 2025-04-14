@@ -20,9 +20,6 @@ shape_file <- read.csv(here(ml$path$output_temp_folder,
 raster_file <- read.csv(here(ml$path$output_temp_folder,  
                              paste0("Depth_Velocity_Data_Input.csv")))
 
-# Load the daily environmental inputs 
-daily_file <- read.csv(here(ml$path$output_temp_folder,  "daily_input_file.csv")) %>%
-  mutate(date = mdy(date))
 
 # Load the Grid file
 grid_file <-   ml$df$grid %>%
@@ -42,7 +39,7 @@ flows <- as.numeric(unique(habitat_flows_all$flow))
 
 # Make a screen for cells that are never wet
 # Get the max flow from the daily environmental file
-max_flow = flows[min(which(flows > max(daily_file$flow_cms)))]
+max_flow = flows[min(which(flows > max(ml$df$daily_input$flow_cms)))]
 # Get all cells that are wet at that max flow
 habitat_open <- habitat_flows_all %>% 
   filter(flow == max_flow,
@@ -166,14 +163,14 @@ mean_map_full <- map_data_full[[1]] %>%
 
 # add flow data to daily averages
 daily_data = data_summary %>%
-  map(~ left_join(.x$average_day, select(daily_file, date, day, flow_cms),
+  map(~ left_join(.x$average_day, select(ml$df$daily_input, date, day, flow_cms),
                   by = "date")) %>%
   map(~mutate(.x, wetted = wetted * analyzed_cells)) %>% 
   setNames(map(data_summary, ~paste0(.x$species, "-", .x$lifestage)))
 
 # add flow data to daily averages
 daily_data_full = data_summary %>%
-  map(~ left_join(.x$average_day_full, select(daily_file, date, day, flow_cms),
+  map(~ left_join(.x$average_day_full, select(ml$df$daily_input, date, day, flow_cms),
                   by = "date")) %>%
   map(~mutate(.x, wetted = wetted * analyzed_cells)) %>% 
   setNames(map(data_summary, ~paste0(.x$species, "-", .x$lifestage)))

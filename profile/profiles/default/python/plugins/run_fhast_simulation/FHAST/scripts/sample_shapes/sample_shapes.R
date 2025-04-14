@@ -7,7 +7,7 @@
 source(here("scripts","sample_shapes","sample_shapes_functions.R"))
 
 # inputs
-# ma$path$river_grid, temp_shape_file_path, ml$path$cover, ml$path$hab, ml$path$aoi
+# ml$path$river_grid, temp_shape_file_path, ml$path$cover, ml$path$hab, ml$path$aoi
 # outputs
 # temp_netlogo_shape_data_path
 
@@ -20,7 +20,7 @@ temp_RDS_shape_data_path <- here(ml$path$output_temp_folder,
 temp_netlogo_shape_data_path <- here(ml$path$output_temp_folder,
                                      paste0("Shape_Data_Input.csv"))
 
-input_output_file_paths <- c(ma$path$river_grid, temp_shape_file_path,
+input_output_file_paths <- c(ml$path$river_grid, temp_shape_file_path,
                              ml$path$cover, ml$path$hab, ml$path$aoi, ml$path$wild,
                              temp_netlogo_shape_data_path)
 

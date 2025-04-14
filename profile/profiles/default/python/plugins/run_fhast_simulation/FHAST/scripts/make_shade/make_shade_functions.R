@@ -16,8 +16,7 @@ make_shade_shape = function(shape_file_in,
   # Get the time and time zone based on location
   time = as.POSIXct(
     x = time_in,
-    tz = tz_lookup(location, method = "accurate")
-  )
+    tz = tz_lookup(location, method = "accurate"))
 
   # get the sunset time
   set = sunriset(
@@ -25,8 +24,7 @@ make_shade_shape = function(shape_file_in,
     dateTime = time,
     crs=CRS(st_crs(location)$proj4string),
     direction="sunset",
-    POSIXct.out=TRUE
-  )
+    POSIXct.out=TRUE)
   
   # get the sunrise time
   rise = sunriset(
@@ -34,8 +32,7 @@ make_shade_shape = function(shape_file_in,
     dateTime = time,
     crs=CRS(st_crs(location)$proj4string),
     direction="sunrise",
-    POSIXct.out=TRUE
-  )
+    POSIXct.out=TRUE)
   
   # Get a set number of times in between rise and set and drop the 
   # rise and set times
@@ -48,8 +45,7 @@ make_shade_shape = function(shape_file_in,
     solar_pos = solarpos(
       crds = st_coordinates(location_in),
       dateTime = time_in,
-      proj4string=CRS(st_crs(location_in)$proj4string)
-    )
+      proj4string=CRS(st_crs(location_in)$proj4string))
     
     # calculate the foot print of the shade
     # the height attribute needs to be in the same units as the crs

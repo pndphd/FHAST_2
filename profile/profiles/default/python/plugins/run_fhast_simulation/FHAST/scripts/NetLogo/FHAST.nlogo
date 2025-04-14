@@ -522,10 +522,10 @@ to setup
   set photoperiod_column (position "photoperiod" (item 0 daily_input_csv))
 
   ; Set the initial and end time
-  set first_day time:create-with-format item date (item 1 daily_input_csv) "MM/dd/yyyy"
+  set first_day time:create-with-format item date (item 1 daily_input_csv) "yyyy-MM-dd"
   ; Get a zero day so ticaks line up with the first day
   let zero_day time:plus first_day -1.0 "days"
-  set last_day time:create-with-format item date (item (length daily_input_csv - 1) daily_input_csv) "MM/dd/yyyy"
+  set last_day time:create-with-format item date (item (length daily_input_csv - 1) daily_input_csv) "yyyy-MM-dd"
   set tick_date (time:anchor-to-ticks zero_day 1 "days")
 
   ;; For the fish parameters
@@ -541,12 +541,12 @@ to setup
 
   ;; From the flow inputs
   set x_flow (position "lat_dist" (item 0 flow_input_csv)) ;shows which column lat_dist is in csv, and then which element is first in the column
-  set y_flow (position "distance" (item 0 flow_input_csv))
+  set y_flow (position "dist" (item 0 flow_input_csv))
   set area_column (position "area" (item 0 flow_input_csv))
 
   ;; From the shape input file
   set x_shape (position "lat_dist" (item 0 shape_input_csv))
-  set y_shape (position "distance" (item 0 shape_input_csv))
+  set y_shape (position "dist" (item 0 shape_input_csv))
   set canopy_column (position "height" (item 0 shape_input_csv))
   set wood_column (position "wood" (item 0 shape_input_csv))
   set cover_column (position "cover_fra" (item 0 shape_input_csv))
@@ -724,14 +724,14 @@ to set_daily_fish_counts
   set daily_ls_values but-first (map [n -> item lifestage_column n ] daily_fish_csv)
   set daily_length_values but-first (map [n -> item length_column n ] daily_fish_csv)
   set daily_sd_values but-first (map [n -> item length_sd_column n ] daily_fish_csv)
-  set fish_formated_dates (map [n -> (time:create-with-format n "MM/dd/yyyy")] fish_date_values)
+  set fish_formated_dates (map [n -> (time:create-with-format n "yyyy-MM-dd")] fish_date_values)
 
   ; take off fish that arive before sim window
   loop [
     ; check if the list is empty
     ifelse empty? paired_fish_list = false [
       ; get teh first on the list in the correct format
-      let check_day time:create-with-format item 0 (item 0 paired_fish_list) "MM/dd/yyyy"
+      let check_day time:create-with-format item 0 (item 0 paired_fish_list) "yyyy-MM-dd"
       ; compare to the first day and if defore remove it
       ifelse time:is-before? check_day first_day [
 
@@ -1422,7 +1422,7 @@ to hatch_fish
 
   loop [
     ; get todays date
-    let todays_date time:show tick_date "MM/dd/yyyy"
+    let todays_date time:show tick_date "yyyy-MM-dd"
     ; check if today data exists in the first entry in the fish list
     ; and that the list is not empty
     let todays_fish_check false
@@ -2931,11 +2931,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-239
-1563
+408
+629
 -1
 -1
-1.0
+5.128205128205129
 1
 10
 1
@@ -2945,10 +2945,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--10
-10
+-22
+14
 0
-1553
+117
 1
 1
 1
@@ -3221,7 +3221,7 @@ INPUTBOX
 209
 473
 run_folder
-C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\calibration\\american_river_cal\\satter_2001_1_outputs\\temporary
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String
