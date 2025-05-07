@@ -1,0 +1,176 @@
+---
+output:  html_document
+number_sections: true
+title: "FHAST Habitat Summary"
+header-includes:
+    - \usepackage{setspace}\singlespacing
+    - \usepackage{float}
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=0.2in
+fontsize: 16pt
+fig_caption: yes
+indent: true
+---
+ <font size="4">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, knitr::opts_chunk$set(warning = FALSE, message = FALSE))
+library(here)
+
+```
+
+```{r load_data, include=FALSE}
+
+
+summary_stats = ml$table$summary_stats 
+
+summary_stats_cutoff = ml$table$summary_stats_cutoff 
+
+fish_energy_area_stats = ml$table$fish_energy_area_stats 
+
+habitat_parm = ml$df$habitat_parms 
+
+fish_summary_stats = merge(ml$table$fish_summary_stats_full,
+                           ml$table$fish_summary_stats,
+                           by = "type")
+
+cover_scatter_plot = here(ml$path$output_folder,  "cover_scatter_plot.png")
+
+cover_cutoff_map = here(ml$path$output_folder,  "cover_cutoff_map.png")
+
+cover_facet_hist = here(ml$path$output_folder,  "cover_facet_hist.png")
+
+cutoff_map = here(ml$path$output_folder,  "cutoff_map.png")
+
+heat_map_plot = here(ml$path$output_folder,  "depth_velocity_heatmap.png")
+
+fish_met_plot = here(ml$path$output_folder,  "metabolic_map.png")
+
+fish_net_energy_plot = here(ml$path$output_folder,  "net_energy_map.png")
+
+```
+
+```{r pre_rrocess, include=FALSE}
+fish_list = as.list(unique(ml$df$fish_combos$species))
+n = 0
+t = 0 
+```
+
+### Simulation name: `r ml$var$run_name`
+Notes
+```{r, echo=FALSE, }
+cat(readLines(here(ml$path$output_temp_folder, "notes.txt")), sep = '\n')
+```
+***
+## Tabular Outputs 
+
+```{r print_summary_stats, echo = FALSE}
+t = t + 1 
+kable(summary_stats, caption = paste0("Table ", t, ". The habitat summary statistics. Units vary and are given next to each item name. CBC stands for cover bellow cuttoff percent which is the precent of area which is bellow the depth (", habitat_parm$dep_cutoff, " m) and velocity (", habitat_parm$vel_cutoff, " m/s) cuttoffs and has cover"))
+```
+
+```{r print_fish_summary_stats, echo = FALSE}
+fish_count <- length(fish_list)
+t = t + 1
+kable(fish_summary_stats,
+      caption = paste0("Table ", t, ". The fish summary statistics for both juvenile and adult life stages of the ", fish_count, " specie(s) of fish."),
+      col.names = c("Type", "Metabolic Rate (j/day) (Full)", "Metabolic Rate (AOI) (j/day)"))
+```
+
+\newpage
+## Figures Outputs
+
+```{r print_cover_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(cover_scatter_plot,  error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** The amount of cover area that is is water shallower then the cutoff (`r habitat_parm$dep_cutoff` m) for the level of flows present in the simulation. <br><br><br><br>
+
+
+```{r print_facet_map, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(cover_cutoff_map,  error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** The fraction of an area that is undercover separated by sections that are on average above or bellow the depth and velocity cutoffs (`r habitat_parm$dep_cutoff` m and `r habitat_parm$vel_cutoff` m/s respectively). <br><br><br><br>
+
+```{r print_summary_cutoff_stats, echo = FALSE}
+t = t + 1 
+kable(summary_stats_cutoff, caption = paste0("Table ", t, ". The habitat cutoff summary statistics. Units  are m or m/s. Cutoffs are: depth = ", habitat_parm$dep_cutoff, " m and velocity = ", habitat_parm$vel_cutoff, " m/s."))
+```
+<br><br><br><br>
+
+```{r print_facet_hist, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(cover_facet_hist, error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** The density histograms of the area that is undercover separated by sections that are on average above or bellow the depth and velocity cutoffs (`r habitat_parm$dep_cutoff` m and `r habitat_parm$vel_cutoff` m/s respectively). <br><br><br><br>
+
+```{r print_heatmap_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(heat_map_plot,  error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** A heat map showing the fraction of area at set average depths and velocities over the time of the simulation (`r ml$df$daily["start date",]` to `r  ml$df$daily["end date",]`) . <br><br><br><br>
+
+```{r print_fish_met_figure, echo = FALSE, out.width = "100%",  fig.align="center" }
+knitr::include_graphics(fish_met_plot, error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** A set of maps showing the metabolic rate for both the juvenile and adult life stage of the simulated species of fish (`r fish_list`) if the fish swam at the water velocity and temperature of the cell for 24 hours. <br><br><br><br>
+
+```{r print_fish_energy_figure, echo = FALSE, out.width = "100%",  fig.align="center", fig.cap = "The net energy of the fish."}
+knitr::include_graphics(fish_net_energy_plot, error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** A set of maps showing the net energy budget for both the juvenile and adult life stage of the simulated species of fish (`r fish_list`) if the fish swam at the water velocity and temperature of the cell for 24 hours and consumed food. <br><br><br><br>
+
+```{r print_fish_energy_area_stats, echo = FALSE}
+t = t + 1
+kable(fish_energy_area_stats, caption = paste0("Table ", t, ". The fish net energy budgets area statistics. Units are j/d."))
+```
+<br><br><br><br>
+
+\newpage
+## Appendix
+### Run inputs
+The main input file:
+```{r, echo=FALSE}
+cat(readLines(file.path(here(ml$path$output_folder, "input_file.txt"))), sep = '\n')
+```
+---
+
+The daily input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "daily_input.txt"))), sep = '\n')
+```
+---
+
+The interaction input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "interactions_input.txt"))), sep = '\n')
+```
+---
+
+The fish population file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "population_input.txt"))), sep = '\n')
+```
+---
+
+The fish parameter file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "fish_input.txt"))), sep = '\n')
+```
+---
+
+The habitat parameter file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "habitat_input.txt"))), sep = '\n')
+```
+---
+
+The predator input file:
+```{r, echo=FALSE, }
+cat(readLines(file.path(here(ml$path$output_temp_folder,  "predator_input.txt"))), sep = '\n')
+```
+---
+</font>

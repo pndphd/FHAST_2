@@ -468,7 +468,7 @@ class RunFHASTSimulation:
             
             #print(start_command + quote_string + cd_command + file_path + "\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
             # Run FHAST
-            os.system(start_command + quote_string + cd_command + file_path + "\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
+            os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
             
             pass
         
