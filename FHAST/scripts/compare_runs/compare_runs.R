@@ -60,30 +60,39 @@ ml$table = map2(ml_a$table, ml_b$table, ~subtract_dfs(.x, .y))
 ml$df$cover = subtract_dfs(ml_a$df$cover, ml_b$df$cover)  
 ml$df$daily = subtract_dfs(ml_a$df$daily, ml_b$df$daily)
 ml$df$daily_input = subtract_dfs(ml_a$df$daily_input, ml_b$df$daily_input)
-ml$df$full_grid = subtract_dfs(ml_a$df$full_grid, ml_b$df$full_grid)
-ml$df$full_habitat = subtract_dfs(ml_a$df$full_habitat, ml_b$df$full_habitat)
+ml$df$full_grid = subtract_group_data(ml_a$df$full_grid,
+                                      ml_b$df$full_grid,
+                                      groups = c("geometry"))
+ml$df$full_habitat = subtract_group_data(ml_a$df$full_habitat,
+                                         ml_b$df$full_habitat,
+                                         groups = c("date", "geometry"))
 ml$df$adult_migration_energy_data = merge_adult_energy(ml_a$df$adult_migration_energy_data,
                                                        ml_b$df$adult_migration_energy_data)
 
-ml$sum = map2(ml_a$sum, ml_b$sum, ~map2(.x, .y, ~subtract_dfs(.x, .y)))
+ml$sum = map2(ml_a$sum, ml_b$sum, ~map2(.x, .y, ~subtract_sum(.x, .y)))
 
 # it adults are present
 if (ml$var$adult_run == 1){
+  ml_a$df$adult_migration_map_data$geometry = NULL
+  ml_b$df$adult_migration_map_data$geometry = NULL
   ml$df$adult_migration_map_data = map2(ml_a$df$adult_migration_map_data,
                                         ml_b$df$adult_migration_map_data,
-                                        ~subtract_dfs(.x, .y))
+                                        ~subtract_group_data(.x,
+                                                             .y,
+                                                             groups = c("geometry", "species")))
 }
 
 # if juveniules are present 
 if (ml$var$juvenile_run == 1){
-  ml$df$detailed_data = subtract_time_data(ml_a$df$detailed_data,
+  ml$df$detailed_data = subtract_group_data(ml_a$df$detailed_data,
                                            ml_b$df$detailed_data,
-                                           time_name = "date", "Species")
+                                           groups = c("date", "Species"))
   ml$df$mortality_breakdown = subtract_dfs(ml_a$df$mortality_breakdown,
                                            ml_b$df$mortality_breakdown)
   ml$df$detailed_data_list = map2(ml_a$df$detailed_data_list,
                                   ml_b$df$detailed_data_list,
-                                  ~subtract_time_data(.x, .y, "date", "Species"))
+                                  ~subtract_group_data(.x, .y,
+                                                      groups = c("date", "Species")))
 }
 
 ##### Run the scripts to make the reports ######################################

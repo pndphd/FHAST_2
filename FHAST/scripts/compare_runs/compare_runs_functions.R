@@ -24,13 +24,28 @@ subtract_dfs = function(df_1, df_2){
   }
 }
 
+##### Subtract the sum tables ##################################################
+subtract_sum = function(df_1, df_2){
+  if("geometry" %in% colnames(df_1)){
+    df = subtract_group_data(df_1, df_2, "geometry")
+  } else {
+    df = subtract_dfs(df_1, df_2)
+  }
+  return(df)
+}
+
 ##### Subtract two data frames numeric columns #################################
-subtract_time_data = function(df_1, df_2, time_name, group_name){
+subtract_group_data = function(df_1, df_2, groups){
   df_2_neg = mutate_if(df_2, is.numeric, ~ . * -1)
-  
+
   df = bind_rows(df_1, df_2_neg) %>% 
-    group_by(across(all_of(c(group_name, time_name)))) %>% 
-    summarise_all(sum)
+    group_by(across(all_of(c(groups)))) %>% 
+    summarise_all(sum) %>% 
+    ungroup()
+  
+  if("geometry" %in% groups){
+    df = st_as_sf(df)
+  }
   return(df)
 }
 

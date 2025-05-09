@@ -27,7 +27,7 @@ ml$plot$cover_cutoff_map_1 = ggplot(data = ml_a$sum[[1]]$map) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(alpha = "Cover", fill = "Group") +
   geom_sf(aes(fill = factor(below_group), 
-              alpha = ml$sum[[1]]$map$cover_fra), lwd = 0) +
+              alpha = ml_a$sum[[1]]$map$cover_fra), lwd = 0) +
   scale_fill_manual(values = c(ml$df$palette[3],
                                ml$df$palette[1],
                                ml$df$palette[2],
@@ -41,7 +41,7 @@ ml$plot$cover_cutoff_map_2 = ggplot(data = ml_b$sum[[1]]$map) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(alpha = "Cover", fill = "Group") +
   geom_sf(aes(fill = factor(below_group), 
-              alpha = ml$sum[[1]]$map$cover_fra), lwd = 0) +
+              alpha = ml_b$sum[[1]]$map$cover_fra), lwd = 0) +
   scale_fill_manual(values = c(ml$df$palette[3],
                                ml$df$palette[1],
                                ml$df$palette[2],
