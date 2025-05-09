@@ -112,7 +112,7 @@ ml$plot$metabolic_map = deep_pluck(ml$sum, "map") %>%
     fill = fish_met_j_per_day,
     scale_name = "Metabolic Rate\n(j/day)",
     title = str_replace_all(.y, c("-" = " ", "_" = " ")))) %T>% 
-  assign(x = "temp_metabolic_map_length", value = length(.), envir = .GlobalEnv)%>% 
+  assign(x = "temp_metabolic_map_length", value = length(.), envir = .GlobalEnv) %>% 
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = temp_metabolic_map_length * ml$var$plot_width)
 display_plot(ml$plot$metabolic_map, 15, 15)

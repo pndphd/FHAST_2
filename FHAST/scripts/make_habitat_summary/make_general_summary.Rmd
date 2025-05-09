@@ -21,7 +21,6 @@ library(here)
 
 ```{r load_data, include=FALSE}
 
-
 summary_stats = ml$table$summary_stats 
 
 summary_stats_cutoff = ml$table$summary_stats_cutoff 
@@ -39,8 +38,6 @@ cover_scatter_plot = here(ml$path$output_folder,  "cover_scatter_plot.png")
 cover_cutoff_map = here(ml$path$output_folder,  "cover_cutoff_map.png")
 
 cover_facet_hist = here(ml$path$output_folder,  "cover_facet_hist.png")
-
-cutoff_map = here(ml$path$output_folder,  "cutoff_map.png")
 
 heat_map_plot = here(ml$path$output_folder,  "depth_velocity_heatmap.png")
 

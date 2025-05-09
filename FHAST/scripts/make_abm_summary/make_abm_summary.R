@@ -16,13 +16,16 @@ source(here("scripts","make_abm_summary","make_abm_summary_functions.R"))
 detailed_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "detailed_pop_output.csv"),
                                skip = 1) %>% 
   mutate(date = ymd(time)) %>% 
-  filter(juveniles != 0)
+  filter(juveniles != 0) %>% 
+  select(-time)
 cell_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "cell_info_output.csv"),
                            skip = 1) %>% 
-  mutate(date = ymd(time))
+  mutate(date = ymd(time))%>% 
+  select(-time)
 event_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "events_output.csv"),
                             skip = 1) %>% 
-  mutate(date = ymd(time))
+  mutate(date = ymd(time))%>% 
+  select(-time)
 
 ##### Pre-calculations #########################################################
 

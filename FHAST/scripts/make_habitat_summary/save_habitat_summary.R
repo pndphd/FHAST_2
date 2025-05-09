@@ -107,9 +107,6 @@ if (ml$var$adult_run == TRUE){
 
 object_list = c(data_list, plot_list, summary_data = ml$sum)
 
-# Save all the outputs 
-# walk2(object_list, names(object_list), ~saveRDS(object = .x,
-#   file = here(ml$path$output_temp_folder, paste0(.y, ".rds"))))
 
 # Save the summary tables as CSV
 walk(data_list, names(data_list), ~write.csv(

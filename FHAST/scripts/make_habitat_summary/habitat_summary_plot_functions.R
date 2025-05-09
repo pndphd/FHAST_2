@@ -132,6 +132,7 @@ make_heat_map = function(data_frame_in,
   # Make the plot
   heat_map_plot = ggplot(plot_df, aes(x = x_value,
                                       y = y_value,
+                                      z = z_fraction_final,
                                       fill = z_fraction_final)) +
     theme_classic(base_size = ml$var$selected_base_size) +
     geom_raster(interpolate = FALSE) +
