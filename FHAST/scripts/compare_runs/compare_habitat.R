@@ -13,13 +13,14 @@ ml$plot$cover_scatter_plot = make_scatter_plot(
   x_lab = "Flow (cms)",
   y_lab = expression(Cover ~ Area ~ (m^2)))
 
-ggsave(filename =here(output_folder, "cover_scatter_plot.png"),
-       plot = ml$plot$cover_scatter_plot,
-       dpi = 300,
-       device = "png",
-       height = 5,
-       width = 5,
-       units = "in")
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "cover_scatter_plot.png"),
+                        plot = ml$plot$cover_scatter_plot,
+                        dpi = 300,
+                        device = "png",
+                        height = 5,
+                        width = 5,
+                        units = "in"))
 
 # Cover vs cutoff criteria map 
 ml$plot$cover_cutoff_map_1 = ggplot(data = ml_a$sum[[1]]$map) +
@@ -56,13 +57,14 @@ ml$plot$cover_cutoff_map = ml$plot$cover_cutoff_map_1 +
   plot_layout(guides = "collect") +
   plot_layout(ncol = 1)
 
-ggsave(filename =here(output_folder, "cover_cutoff_map.png"),
-       plot = ml$plot$cover_cutoff_map,
-       dpi = 300,
-       device = "png",
-       height = 10,
-       width = 10,
-       units = "in")
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                     "cover_cutoff_map.png"),
+                        plot = ml$plot$cover_cutoff_map,
+                        dpi = 300,
+                        device = "png",
+                        height = 10,
+                        width = 10,
+                        units = "in"))
 
 # Cover facet histogram
 ml$plot$cover_facet_hist = ggplot(data = ml_a$sum[[1]]$map) +
@@ -92,10 +94,11 @@ ml$plot$cover_facet_hist = ggplot(data = ml_a$sum[[1]]$map) +
                                  below_v_cutoff = c("1" = "Below V",
                                                     "0" = "Above V")))
 
-ggsave(filename =here(output_folder, "cover_facet_hist.png"),
-       plot =ml$plot$cover_facet_hist,
-       dpi = 300,
-       device = "png")
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "cover_facet_hist.png"),
+                        plot =ml$plot$cover_facet_hist,
+                        dpi = 300,
+                        device = "png"))
 
 # D and V heat map plot
 ml$plot$depth_velocity_heatmap_1 = make_heat_map(
@@ -134,11 +137,12 @@ ml$plot$depth_velocity_heatmap = ggplot(heatmap_data,
   scale_fill_viridis(name = expression(Area ~ (m^2))) +
   labs(x = "Depth (m)", y = "Velcoity (m/s)",)
 
-ggsave(filename =here(output_folder, "depth_velocity_heatmap.png"),
-       plot = ml$plot$depth_velocity_heatmap,
-       dpi = 300,
-       device = "png",
-       units = "in")
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "depth_velocity_heatmap.png"),
+                        plot = ml$plot$depth_velocity_heatmap,
+                        dpi = 300,
+                        device = "png",
+                        units = "in"))
 
 # Metabolic maps 
 ml$plot$metabolic_map = deep_pluck(ml$sum, "map") %>% 
@@ -151,11 +155,12 @@ ml$plot$metabolic_map = deep_pluck(ml$sum, "map") %>%
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = temp_metabolic_map_length * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "metabolic_map.png"),
-       plot = ml$plot$metabolic_map,
-       dpi = 300,
-       device = "png",
-       height = (length(ml$sum) + 1) * 3)
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "metabolic_map.png"),
+                        plot = ml$plot$metabolic_map,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$sum)) * ml$var$plot_width))
 
 # Energy budget maps 
 ml$plot$net_energy_map = deep_pluck(ml$sum, "map") %>%
@@ -168,16 +173,16 @@ ml$plot$net_energy_map = deep_pluck(ml$sum, "map") %>%
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = temp_net_energy_map_length * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "net_energy_map.png"),
-       plot = ml$plot$net_energy_map,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width,
-       height = (length(ml$sum) + 1) * ml$var$plot_width)
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "net_energy_map.png"),
+                        plot = ml$plot$net_energy_map,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$sum)) * ml$var$plot_width))
 
 ##### Save the ml data #########################################################
 
-saveRDS(ml, here(output_folder, "master_data_list.rds"))
+saveRDS(ml, here(ml$path$output_folder, "master_data_list.rds"))
 
 ################################################################################
 # End

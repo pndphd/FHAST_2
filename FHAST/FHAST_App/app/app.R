@@ -2,4 +2,4 @@
 library(rmarkdown)
 library(here)
 find_pandoc(dir=here("FHAST_App", "dist", "Pandoc"))
-# shiny::runApp("./scripts/ui/", launch.browser=TRUE)
+

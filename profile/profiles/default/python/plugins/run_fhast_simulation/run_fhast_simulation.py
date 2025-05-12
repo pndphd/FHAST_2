@@ -255,7 +255,6 @@ class RunFHASTSimulation:
             preview_flag = 0
             if self.dlg.previewBox.isChecked():
                 preview_flag = 1
-
           
             # Get the paths of the csv files
             # Get path of Environmental Input File
@@ -463,10 +462,8 @@ class RunFHASTSimulation:
             quote_string = "\""
             cd_command = "cd "
             new_path_formated = new_path.replace("\\","/")
-            fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run.R\" \"" + new_path_formated + "/config.txt" + "\""
-               #fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run.R\""
-            
-            #print(start_command + quote_string + cd_command + file_path + "\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
+            fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run_fhast.R\" \"" + new_path_formated + "/config.txt" + "\""
+
             # Run FHAST
             os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + str(preview_flag) + quote_string)
             

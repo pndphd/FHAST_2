@@ -11,10 +11,10 @@ ml$plot$pred_map = make_map(
   fill = hab_rating,
   scale_name = "Predator\nHabitat Rating")
 
-ggsave(filename =here(output_folder, "pred_map.png"),
-       plot =ml$plot$pred_map,
-       dpi = 300,
-       device = "png")
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "pred_map.png"),
+                        plot =ml$plot$pred_map,
+                        dpi = 300,
+                        device = "png"))
 
 # Mortality risk
 ml$plot$mort_map = deep_pluck(ml$sum, "map") %>% 
@@ -28,11 +28,11 @@ ml$plot$mort_map = deep_pluck(ml$sum, "map") %>%
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = temp_predation_map_length * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "mort_map.png"),
-       plot = ml$plot$mort_map,
-       dpi = 300,
-       device = "png",
-       height = (length(ml$sum[grep("juvenile", names(ml$sum))]) + 1) * 3)
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "mort_map.png"),
+                        plot = ml$plot$mort_map,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$sum[grep("juvenile", names(ml$sum))]) + 1) * 3))
 
 # Rearing time plot
 ml$plot$rearing_plot = map(ml$df$detailed_data_list,
@@ -45,12 +45,11 @@ ml$plot$rearing_plot = map(ml$df$detailed_data_list,
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = length(ml$df$detailed_data_list) * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "abm_rearing_plot.png"),
-       plot = ml$plot$rearing_plot,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width,
-       height = (length(ml$df$detailed_data_list)) * ml$var$plot_width)
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "abm_rearing_plot.png"),
+                        plot = ml$plot$rearing_plot,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$df$detailed_data_list)) * ml$var$plot_width))
 
 # Growth time plot
 ml$plot$growth_plot = map(ml$df$detailed_data_list,
@@ -63,12 +62,11 @@ ml$plot$growth_plot = map(ml$df$detailed_data_list,
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = length(ml$df$detailed_data_list) * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "abm_growth_plot.png"),
-       plot = ml$plot$growth_plot,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width,
-       height = (length(ml$df$detailed_data_list)) * ml$var$plot_width)
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "abm_growth_plot.png"),
+                        plot = ml$plot$growth_plot,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$df$detailed_data_list)) * ml$var$plot_width))
 
 # Count vs. growth plot
 ml$plot$count_v_growth_plot = map(ml$df$detailed_data_list,
@@ -83,12 +81,12 @@ ml$plot$count_v_growth_plot = map(ml$df$detailed_data_list,
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = length(ml$df$detailed_data_list) * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "abm_count_v_growth_plot.png"),
-       plot = ml$plot$count_v_growth_plot,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width,
-       height = (length(ml$df$detailed_data_list)) * ml$var$plot_width)
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "abm_count_v_growth_plot.png"),
+                        plot = ml$plot$count_v_growth_plot,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$df$detailed_data_list)) * ml$var$plot_width))
 
 # Count vs. length plot
 ml$plot$count_v_length_plot = map(ml$df$detailed_data_list,
@@ -103,12 +101,12 @@ ml$plot$count_v_length_plot = map(ml$df$detailed_data_list,
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = length(ml$df$detailed_data_list) * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "abm_count_v_length_plot.png"),
-       plot = ml$plot$count_v_length_plot,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width,
-       height = (length(ml$df$detailed_data_list)) * ml$var$plot_width)
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "abm_count_v_length_plot.png"),
+                        plot = ml$plot$count_v_length_plot,
+                        dpi = 300,
+                        device = "png",
+                        height = (length(ml$df$detailed_data_list)) * ml$var$plot_width))
 
 # ABM mortality plot
 ml$plot$mortality_plot = ggplot(data = ml$df$mortality_breakdown) +
@@ -119,10 +117,11 @@ ml$plot$mortality_plot = ggplot(data = ml$df$mortality_breakdown) +
            stat="identity", position=position_dodge()) +
   scale_fill_manual(values = ml$df$palette)
 
-ggsave(filename =here(output_folder, "abm_mortality_plot.png"),
-       plot = ml$plot$mortality_plot,
-       dpi = 300,
-       device = "png")
+suppressMessages(ggsave(filename =here(ml$path$output_folder,
+                                       "abm_mortality_plot.png"),
+                        plot = ml$plot$mortality_plot,
+                        dpi = 300,
+                        device = "png"))
 
 ################################################################################
 # End

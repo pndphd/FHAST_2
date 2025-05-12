@@ -117,7 +117,7 @@ walk(data_list, names(data_list), ~write.csv(
 
 # Save for output
 pwalk(list(plot_list, plot_dimeshions, names(plot_list)),
-      ~suppressMessages(ggsave(height = ..2*5,
+      ~suppressMessages(ggsave(height = ..2 * ml$var$plot_width,
                                plot = ..1,
                                filename = here(ml$path$output_folder,
                                                paste0(..3, ".png")),

@@ -51,9 +51,7 @@ subtract_group_data = function(df_1, df_2, groups){
 
 ##### Merge the dault mighration energy use data ###############################
 merge_adult_energy = function(df_1, df_2){
-  df_1 = ml_a$df$adult_migration_energy_data
-  df_2 = ml_b$df$adult_migration_energy_data
-  
+
   df_1_avg =  df_1 %>% 
     group_by(species) %>% 
     summarise(energy_cost = mean(energy_cost, na.rm = TRUE)) %>% 
@@ -72,7 +70,22 @@ merge_adult_energy = function(df_1, df_2){
   return(df_out)
 }
 
-
+##### Copy over input files ####################################################
+merge_inputs = function(path_1, path_2, out_path, file_name){
+  write.table(x = "FILE A _______________________________" %>%
+                rbind(read.table(here(path_1, file_name),
+                                 sep = '\t',
+                                 header = FALSE,
+                                 stringsAsFactors = FALSE)) %>%
+                rbind("FILE B _______________________________") %>% 
+                rbind(read.table(here(path_2, file_name),
+                                 sep = '\t',
+                                 header = FALSE,
+                                 stringsAsFactors = FALSE)),
+              file = here(out_path, file_name),
+              row.names = FALSE,
+              col.names = FALSE)
+}
 
 ################################################################################
 # End

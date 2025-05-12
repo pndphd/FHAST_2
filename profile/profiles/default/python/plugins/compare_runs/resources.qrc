@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/compare_runs" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>

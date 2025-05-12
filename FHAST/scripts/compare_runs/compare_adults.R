@@ -17,12 +17,12 @@ ml$plot$migration_map = ml$df$adult_migration_map_data %>%
   wrap_plots(ncol = 1, widths = ml$var$plot_width,
              heights = temp_migration_map_length * ml$var$plot_width)
 
-ggsave(filename =here(output_folder, "migration_map.png"),
-       plot = ml$plot$migration_map,
-       dpi = 300,
-       device = "png",
-       width = ml$var$plot_width*1.5,
-       height = (ml$var$migration_map_length) * ml$var$plot_width*1.5)
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "migration_map.png"),
+                        plot = ml$plot$migration_map,
+                        dpi = 300,
+                        device = "png",
+                        width = ml$var$plot_width*1.5,
+                        height = (ml$var$migration_map_length) * ml$var$plot_width*1.5))
 
 # Migration energy use
 ml$plot$migration_energy_hist = ggplot(data = ml$df$adult_migration_energy_data) +
@@ -33,10 +33,10 @@ ml$plot$migration_energy_hist = ggplot(data = ml$df$adult_migration_energy_data)
            stat = "identity", position = position_dodge()) 
 
 
-ggsave(filename =here(output_folder, "migration_energy_hist.png"),
-       plot = ml$plot$migration_energy_hist,
-       dpi = 300,
-       device = "png")
+suppressMessages(ggsave(filename =here(ml$path$output_folder, "migration_energy_hist.png"),
+                        plot = ml$plot$migration_energy_hist,
+                        dpi = 300,
+                        device = "png"))
 
 ################################################################################
 # End

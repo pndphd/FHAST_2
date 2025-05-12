@@ -1,7 +1,7 @@
 ---
 output:  html_document
 number_sections: true
-title: "FHAST Habitat Summary"
+title: "FHAST Adult Summary"
 header-includes:
     - \usepackage{setspace}\singlespacing
     - \usepackage{float}
