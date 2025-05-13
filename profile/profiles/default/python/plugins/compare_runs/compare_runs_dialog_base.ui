@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>538</width>
-    <height>322</height>
+    <width>662</width>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,16 +55,6 @@
      </property>
      <property name="text">
       <string>Compare Output Folder Location</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="toolTip">
-      <string>Select the folder in which to create the output folder.</string>
-     </property>
-     <property name="text">
-      <string>Compare Output Folder Name</string>
      </property>
     </widget>
    </item>
@@ -117,6 +107,16 @@
      </property>
      <property name="storageMode">
       <enum>QgsFileWidget::GetDirectory</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="toolTip">
+      <string>Select the folder in which to create the output folder.</string>
+     </property>
+     <property name="text">
+      <string>Compare Output Folder Name (If this folder exists it will be deleted)</string>
      </property>
     </widget>
    </item>
