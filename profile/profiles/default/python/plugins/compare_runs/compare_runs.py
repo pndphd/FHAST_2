@@ -37,6 +37,7 @@ from .compare_runs_dialog import CompareRunsDialog
 import os.path
 import pathlib
 import processing
+import shutil
 
 
 class CompareRuns:
@@ -247,10 +248,12 @@ class CompareRuns:
                 QMessageBox.information(None, "!!!ERROR!!!", "No Output Folder Name Selected") 
                 self.iface.addVectorLayer(stop_program)  
 
-            # Make the output folder
+            # Delete and remake the output folder
             new_path = folder_path + "\\" + folder_name
-            if not os.path.exists(new_path):
-                os.makedirs(new_path)
+            if os.path.exists(new_path):
+                shutil.rmtree(new_path)
+            # if not os.path.exists(new_path):
+            os.makedirs(new_path)
             
             # Make some variables the represent the commands to run code
             start_command = "start \"RUNNING FHAST\" cmd /K "
@@ -263,11 +266,5 @@ class CompareRuns:
 
             # Run FHAST
             os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + folder_1_f + " " + folder_2_f + quote_string)
-            
-            #fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run_fhast.R\" \"" + folder_1_f + " " + folder_1_f + " " + new_path_f + "\""
-
-            # Run FHAST
-            #os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + quote_string)
-            # print(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + quote_string)
             
             pass

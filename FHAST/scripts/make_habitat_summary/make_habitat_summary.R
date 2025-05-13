@@ -113,20 +113,6 @@ ml$table$fish_energy_area_stats <- ml$sum %>%
                               name = "energy j/d") %>% 
            mutate(fish = .y)) 
 
-# A set of summary stats for the predator rating in the AOI
-ml$table$predator_rating_area_stats = ml$sum[[1]]$map %>%
-  get_bined_results(column = hab_rating,
-                    name = "predator rating") 
-
-# A set of summary stats for the fish mortality risk in the AOI
-ml$table$mort_risk_area_stats = deep_pluck(ml$sum, "map") %>% 
-  .[grep("juvenile", names(.))] %>%
-  map2_df(names(.[grep("juvenile", names(.))]),
-          ~ get_bined_results(df = .x,
-                              column = pred_mort_risk,
-                              name = "mortailit risk") %>% 
-            mutate(fish = .y)) 
-
 # A set of summary stats for the fish in the full habitat
 ml$table$fish_summary_stats_full <- deep_pluck(ml$sum, "map_full") %>%
   map_df(~ data.frame(met_j_per_day_full =
@@ -148,6 +134,23 @@ if (ml$var$adult_run == 1){
 } else{
   ml$table$migration_summary_stats = data.frame(migration_energy_cost = 0,
                                                 Species = "None")
+}
+
+# For juveniles
+if(ml$var$juvenile_run == 1){
+  # A set of summary stats for the predator rating in the AOI
+  ml$table$predator_rating_area_stats = ml$sum[[1]]$map %>%
+    get_bined_results(column = hab_rating,
+                      name = "predator rating") 
+  
+  # A set of summary stats for the fish mortality risk in the AOI
+  ml$table$mort_risk_area_stats = deep_pluck(ml$sum, "map") %>% 
+    .[grep("juvenile", names(.))] %>%
+    map2_df(names(.[grep("juvenile", names(.))]),
+            ~ get_bined_results(df = .x,
+                                column = pred_mort_risk,
+                                name = "mortailit risk") %>% 
+              mutate(fish = .y)) 
 }
 
 ################################################################################

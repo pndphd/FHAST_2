@@ -5,15 +5,16 @@
 ##### Developer options ########################################################
 # Uncomment for development to pick a specific file and run from IDE
 
-# run_a = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs"
-# run_b = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_2_outputs"
-# pass_arguments = NULL
-# pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/compare"
+if (!exists("pass_arguments")){
+  pass_arguments = NULL
+  pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs"
+  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_2_outputs"
+  pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/compare"
+}
 
 ################################################################################
 
 ##### Run setup ################################################################
-
 
 # install and load the here package if necessary
 if(!require(c("here"), character.only = T)){install.packages(package)}
@@ -35,7 +36,6 @@ source(here("scripts","compare_runs","compare_runs_functions.R"))
 source(here("scripts", "make_habitat_summary", "habitat_summary_plot_functions.R"))
 source(here("scripts", "make_habitat_summary", "habitat_summary_functions.R"))
 
-
 # get the input and output folders
 run_a = pass_arguments[2]
 run_b = pass_arguments[3]
@@ -49,6 +49,11 @@ message("Read Output 1: Done.\n")
 message("Read Output 2.\n")
 ml_b = readRDS(here(run_b, "master_data_list.rds"))
 message("Read Output 2: Done.\n")
+
+##### Check if these can be compared ###########################################
+message("Checking if comparable.\n")
+source(here("scripts","compare_runs","check_runs.R"))
+message("Checking if comparable: Done.\n")
 
 ##### Calculate differences ####################################################
 
@@ -92,7 +97,6 @@ ml$df$full_grid = subtract_group_data(ml_a$df$full_grid,
 ml$df$full_habitat = subtract_group_data(ml_a$df$full_habitat,
                                          ml_b$df$full_habitat,
                                          groups = c("date", "geometry"))
-
 
 ml$sum = map2(ml_a$sum, ml_b$sum, ~map2(.x, .y, ~subtract_sum(.x, .y)))
 
