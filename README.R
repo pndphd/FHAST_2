@@ -23,7 +23,7 @@ if (FALSE) {
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
 -------------------------------------------------------------------------------- 
 
-Version 2.0.1 (Long Gill) 2024-07-29
+Version 2.1.0 (Sharp Scale) 2025-05-13
   
   Development Team
     Peter N. Dudley (PI)
@@ -46,9 +46,9 @@ Contributions
     -Using NetLogo 6.2.2 with vid extension disabled (removes log4*.jar files)
 
   Recent changes since last file update
-    -added in error catches for hydrograph and missing dates
-    -fixed spelling 'error'
-    -Improved layouts of GUI mods
+    -Code is restructures for efficiency in speed and memory use
+    -Added in batch reprojection tool in gui
+    -Added in report compare tool in gui
     
   
 "

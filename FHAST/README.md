@@ -7,5 +7,5 @@ The structure is a different folder for each component of the model within the s
 
 Scripts are divided between NetLogo and R.
 
-Branch names should designated who is in charge based on the first 2 letters being the person initials (e.g. PD_new_function).
+
 
