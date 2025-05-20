@@ -46,7 +46,7 @@ Contributions
     -Using NetLogo 6.2.2 with vid extension disabled (removes log4*.jar files)
 
   Recent changes since last file update
-    -Code is restructures for efficiency in speed and memory use
+    -Code is restructured for efficiency in speed and memory use
     -Added in batch reprojection tool in gui
     -Added in report compare tool in gui
     

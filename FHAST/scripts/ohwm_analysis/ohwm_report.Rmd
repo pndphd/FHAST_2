@@ -1,0 +1,45 @@
+---
+output:  html_document
+number_sections: true
+title: "FHAST OHWM Report"
+header-includes:
+    - \usepackage{setspace}\singlespacing
+    - \usepackage{float}
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=0.2in
+fontsize: 16pt
+fig_caption: yes
+indent: true
+---
+ <font size="4">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, knitr::opts_chunk$set(warning = FALSE, message = FALSE))
+library(here)
+
+```
+
+```{r pre_rrocess, include=FALSE}
+n = 0
+t = 0 
+```
+
+### Simulation name: `r basename(ml$path$output_folder)`
+***
+## Tabular Outputs 
+
+```{r print_summary_stats, echo = FALSE}
+t = t + 1 
+kable(ml$table$summary, caption = paste0("Table ", t, ". The summary percentages and areas (", ml$var$measure_units, "^2^) of each feature and how much is inside or outside of the ordinary high water mark (OHWM). In this analysis ", ml$var$percent_in, "% of the total project footprint of ", ml$var$total_area, " ", ml$var$measure_units, "^2^ is inside the OHWM."))
+```
+
+\newpage
+## Figures Outputs
+
+```{r print_cover_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+knitr::include_graphics(here(ml$path$output_folder, "ohwm_map.png"),  error = FALSE)
+```
+
+**Fig. `r (n = n + 1)`** The portion of the project footprint that the OHWM covers divided into feature type. The feature type key is in Table `r t`. <br><br><br><br>
+
+</font>
