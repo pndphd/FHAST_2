@@ -262,7 +262,7 @@ class OHWMOverlap:
                     QMessageBox.information(None, "!!!ERROR!!!", "Layers Do Not Share a Common CRS") 
                     self.iface.addVectorLayer(stop_program)
                 elif (self.dlg.reproject_box.isChecked()):
-                    QMessageBox.information(None, "!!!!!!", "Atempting to Reproject OHWM") 
+                    QMessageBox.information(None, "!!!!!!", "Attempting to Reproject OHWM") 
 
                     # reproject
                     ohwm_path = new_path_temp + "\\" + "re_" + os.path.basename(ohwm_path)
@@ -285,7 +285,7 @@ class OHWMOverlap:
                     QMessageBox.information(None, "!!!ERROR!!!", "OHWM Has Errors or is Invalid") 
                     self.iface.addVectorLayer(stop_program)
                 elif (self.dlg.ohwm_box.isChecked()):
-                    QMessageBox.information(None, "!!!!!!", "Atempting to fix OHWM")
+                    QMessageBox.information(None, "!!!!!!", "Attempting to fix OHWM")
                     old_ohwm_path = ohwm_path
                     ohwm_path = new_path_temp + "\\" + "fixed_" + os.path.basename(ohwm_path)
 
@@ -315,7 +315,7 @@ class OHWMOverlap:
                     QMessageBox.information(None, "!!!ERROR!!!", "Project Footprint Has Errors or is Invalid") 
                     self.iface.addVectorLayer(stop_program)
                 elif (self.dlg.footprint_box.isChecked()):
-                    QMessageBox.information(None, "!!!!!!", "Atempting to Fix Project Footprint") 
+                    QMessageBox.information(None, "!!!!!!", "Attempting to Fix Project Footprint") 
                     old_footprint_path = footprint_path
                     footprint_path = new_path_temp + "\\" + "fixed_" + os.path.basename(footprint_path)
 

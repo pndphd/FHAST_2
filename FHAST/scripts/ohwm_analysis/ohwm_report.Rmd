@@ -40,6 +40,6 @@ kable(ml$table$summary, caption = paste0("Table ", t, ". The summary percentages
 knitr::include_graphics(here(ml$path$output_folder, "ohwm_map.png"),  error = FALSE)
 ```
 
-**Fig. `r (n = n + 1)`** The portion of the project footprint that the OHWM covers divided into feature type. The feature type key is in Table `r t`. <br><br><br><br>
+**Fig. `r (n = n + 1)`** The portion of the project footprint that the OHWM covers divided into feature type. The feature type key is in Table `r t`. Colored portions are inside the OHWM while white portions are outside. <br><br><br><br>
 
 </font>
