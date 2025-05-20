@@ -29,6 +29,7 @@ from qgis.PyQt.QtWidgets import (
 )
 from qgis.core import (
     QgsVectorLayer,
+    QgsProject,
     QgsVectorFileWriter,
     QgsField
 )
@@ -254,6 +255,28 @@ class OHWMOverlap:
                 self.iface.addVectorLayer(stop_program)
             
             ##### Do layer Checks ##############################################################
+            
+            # check the for crs match
+            if (ohwm.crs() != footprint.crs()):
+                if (not self.dlg.reproject_box.isChecked()):
+                    QMessageBox.information(None, "!!!ERROR!!!", "Layers Do Not Share a Common CRS") 
+                    self.iface.addVectorLayer(stop_program)
+                elif (self.dlg.reproject_box.isChecked()):
+                    QMessageBox.information(None, "!!!!!!", "Atempting to Reproject OHWM") 
+
+                    # reproject
+                    ohwm_path = new_path_temp + "\\" + "re_" + os.path.basename(ohwm_path)
+
+                    # remove old file if it exists
+                    if (os.path.isfile(ohwm_path)):
+                        os.remove(ohwm_path)
+
+                    # Write the file    
+                    reprojected = processing.run("native:reprojectlayer", 
+                                                {'INPUT': self.dlg.ohwm.filePath(),
+                                                 'TARGET_CRS': footprint.crs(),
+                                                 'OUTPUT': ohwm_path})['OUTPUT']
+            
             # check the ohwm layer
             ohwm_check = processing.run("qgis:checkvalidity",
                                         {"INPUT_LAYER" : ohwm_path})
@@ -263,19 +286,26 @@ class OHWMOverlap:
                     self.iface.addVectorLayer(stop_program)
                 elif (self.dlg.ohwm_box.isChecked()):
                     QMessageBox.information(None, "!!!!!!", "Atempting to fix OHWM")
-                    ohwm_path = new_path_temp + "\\" + "fixed_" + os.path.basename(self.dlg.ohwm.filePath())
+                    old_ohwm_path = ohwm_path
+                    ohwm_path = new_path_temp + "\\" + "fixed_" + os.path.basename(ohwm_path)
 
                     # remove old file if it exists
-                    try:
+                    
+                    if (os.path.isfile(ohwm_path)):
                         os.remove(ohwm_path)
-                    except OSError:
-                        pass
+
                     
                     # Creat the new file
                     fixed = processing.run("native:fixgeometries",
-                                          {'INPUT':self.dlg.ohwm.filePath(),
-                                           'OUTPUT':ohwm_path})['OUTPUT']
-                    ohwm = QgsVectorLayer(ohwm_path, "ohwm", "ogr")
+                                          {'INPUT':old_ohwm_path,
+                                           'OUTPUT':ohwm_path})
+
+                    # Check again
+                    ohwm_check = processing.run("qgis:checkvalidity",
+                                               {"INPUT_LAYER" : ohwm_path})
+                    if (ohwm_check['ERROR_COUNT'] != 0 or ohwm_check['INVALID_COUNT'] != 0):
+                        QMessageBox.information(None, "!!!ERROR!!!", "OHWM Still Has Errors or is Invalid") 
+                        self.iface.addVectorLayer(stop_program)
 
             # check the footprint layer
             footprint_check = processing.run("qgis:checkvalidity",
@@ -286,43 +316,26 @@ class OHWMOverlap:
                     self.iface.addVectorLayer(stop_program)
                 elif (self.dlg.footprint_box.isChecked()):
                     QMessageBox.information(None, "!!!!!!", "Atempting to Fix Project Footprint") 
-                    footprint_path = new_path_temp + "\\" + "fixed_" + os.path.basename(self.dlg.footprint.filePath())
+                    old_footprint_path = footprint_path
+                    footprint_path = new_path_temp + "\\" + "fixed_" + os.path.basename(footprint_path)
 
                     # remove old file if it exists
-                    try:
+                    if (os.path.isfile(footprint_path)):
                         os.remove(footprint_path)
-                    except OSError:
-                        pass
 
                     # Creat the new file
                     fixed = processing.run("native:fixgeometries",
-                                           {'INPUT':self.dlg.footprint.filePath(),
-                                            'OUTPUT':footprint_path})['OUTPUT']
-                    footprint = QgsVectorLayer(output_path, "footprint", "ogr")
-
-            # check the for crs match
-            if (ohwm.crs() != footprint.crs()):
-                if (not self.dlg.reproject_box.isChecked()):
-                    QMessageBox.information(None, "!!!ERROR!!!", "Layers Do Not Share a Common CRS") 
-                    self.iface.addVectorLayer(stop_program)
-                elif (self.dlg.reproject_box.isChecked()):
-                    QMessageBox.information(None, "!!!!!!", "Atempting to Reproject OHWM") 
-
-                    # reproject
-                    ohwm_path = new_path_temp + "\\" + "re_" + os.path.basename(self.dlg.ohwm.filePath())
-
-                    # remove old file if it exists
-                    try:
-                        os.remove(ohwm_path)
-                    except OSError:
-                        pass
+                                           {'INPUT':old_footprint_path,
+                                            'OUTPUT':footprint_path})
                     
-                    # Write the file    
-                    reprojected = processing.run("native:reprojectlayer", 
-                                                {'INPUT': self.dlg.ohwm.filePath(),
-                                                 'TARGET_CRS': footprint.crs(),
-                                                 'OUTPUT': ohwm_path})['OUTPUT']
+                    # Check again
+                    footprint_check = processing.run("qgis:checkvalidity",
+                                                    {"INPUT_LAYER" : footprint_path})
+                    if (footprint_check['ERROR_COUNT'] != 0 or footprint_check['INVALID_COUNT'] != 0):
+                        QMessageBox.information(None, "!!!ERROR!!!", "Project Footprint Still Has Errors or is Invalid") 
+                        self.iface.addVectorLayer(stop_program)
 
+            
             ##### Make some variables the represent the commands to run code #############################
             start_command = "start \"RUNNING FHAST\" cmd /K "
             quote_string = "\""
