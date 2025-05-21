@@ -500,6 +500,7 @@ to setup
   set-default-shape turtles "dot"     ; Set the default turtel shape to dot
 
   ; Read in files and set resolution
+
   set habitat_params_csv csv:from-file word run_folder "/habitat.csv"                  ; Read in general habitat params
   set_habitat_params                                                                  ; Sets numerous values including resolution and buffer
   set resolution_factor 600                                                           ; Set the resolution factor
@@ -534,7 +535,9 @@ to setup
   ;; From the fish daily input file
   set number_column (position "number" (item 0 daily_fish_csv))
   set species_column (position "species" (item 0 daily_fish_csv))
+
   set fish_date_column (position "date" (item 0 daily_fish_csv))
+
   set length_column (position "length" (item 0 daily_fish_csv))
   set length_sd_column (position "length_sd" (item 0 daily_fish_csv))
   set lifestage_column (position "lifestage" (item 0 daily_fish_csv))
@@ -542,11 +545,13 @@ to setup
   ;; From the flow inputs
   set x_flow (position "lat_dist" (item 0 flow_input_csv)) ;shows which column lat_dist is in csv, and then which element is first in the column
   set y_flow (position "dist" (item 0 flow_input_csv))
+
   set area_column (position "area" (item 0 flow_input_csv))
 
   ;; From the shape input file
   set x_shape (position "lat_dist" (item 0 shape_input_csv))
   set y_shape (position "dist" (item 0 shape_input_csv))
+
   set canopy_column (position "height" (item 0 shape_input_csv))
   set wood_column (position "wood" (item 0 shape_input_csv))
   set cover_column (position "cover_fra" (item 0 shape_input_csv))
@@ -726,12 +731,14 @@ to set_daily_fish_counts
   set daily_sd_values but-first (map [n -> item length_sd_column n ] daily_fish_csv)
   set fish_formated_dates (map [n -> (time:create-with-format n "yyyy-MM-dd")] fish_date_values)
 
+
   ; take off fish that arive before sim window
   loop [
     ; check if the list is empty
     ifelse empty? paired_fish_list = false [
-      ; get teh first on the list in the correct format
+      ; get the first on the list in the correct format
       let check_day time:create-with-format item 0 (item 0 paired_fish_list) "yyyy-MM-dd"
+
       ; compare to the first day and if defore remove it
       ifelse time:is-before? check_day first_day [
 
@@ -1423,6 +1430,7 @@ to hatch_fish
   loop [
     ; get todays date
     let todays_date time:show tick_date "yyyy-MM-dd"
+
     ; check if today data exists in the first entry in the fish list
     ; and that the list is not empty
     let todays_fish_check false
@@ -1476,9 +1484,16 @@ to hatch_fish
 
         set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
 
+        let initalization_length f_length * 0.01
+
         set size 2
         set shape "fish"
-        set destination one-of wet_patches with [(today_velocity < .2 and today_velocity > .17) and today_depth > .15 and frac_velocity_shelter > 0]
+
+        ;set destination one-of wet_patches with [(today_velocity < .2 and today_velocity > .17) and today_depth > .15 and frac_velocity_shelter > 0]
+        set destination one-of wet_patches with [today_velocity < .279 and (today_depth > initalization_length) and frac_velocity_shelter > 0]
+
+        save_event "hatch"
+
         move-to destination
         set color red
         set exit_status 0
@@ -1600,10 +1615,6 @@ to find_potential_destination_cells
   set patch_radius (((item species_id move_dist_a) * (f_length ^ (item species_id move_dist_b)))) / resolution
   set patch_radius max (list patch_radius 1)
 
-  ; If the fish only has access to its current patch let it access its neighbors as well
-  if (patch_radius <= 1.0)[
-    set patch_radius 1.1
-  ]
 
   ; Find all of the reachable cells within the radius
   set wet_cells_in_radius find_possible_destinations self patch_radius
@@ -1646,6 +1657,7 @@ to-report find_possible_destinations [fish move_dist]
         ; validate neighbor is wet
         if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
           let survival [path_survival] of cur_patch * calculate_patch_survival fish
+
           ; If this is the first time being visited or this path was less risky than an alternative
           if (has_visited? = false) or (path_survival < survival) [
             let move_cost [path_to_here_cost] of cur_patch + calculate_move_cost cur_patch
@@ -1683,6 +1695,7 @@ to-report find_possible_destinations [fish move_dist]
     if ([is_valid_destination fish destinations] of cur_patch) [
       ask cur_patch [
         set path_survival calculate_patch_survival fish
+
       ]
       table:put destinations patch_identifier cur_patch cur_patch
     ]
@@ -1712,6 +1725,7 @@ to calculate_outmigration_probability
 
     set fish_smolting_prob_flength (evaluate_logistic "smolt_flength" species f_length)
 
+
     ;If the velocity experience list has less than 5 items, we take the average of those values
     ifelse length velocity_experience_list <= 5 [
       set running_average_velocity  mean velocity_experience_list
@@ -1725,6 +1739,7 @@ to calculate_outmigration_probability
     ; Avoid divide by zero error. Check if running_average_velocity is 0 first, and if so, percent_change_velocity will be 0.
     if running_average_velocity != 0 [
       ; Calculate the percent change from the running average to the current radius velocity
+
       set percent_change_velocity ( mean_velocity_in_radius - running_average_velocity) / running_average_velocity
 
       ; If the change is negative (velocity decreased) then we set it to zero so the outmigration probability is 0
@@ -1738,9 +1753,12 @@ to calculate_outmigration_probability
 
     set overall_outmigration_prob max (list fish_outmigration_prob_velocity (fish_smolting_prob_photoperiod * fish_smolting_prob_flength))
 
+
+
     if ((random-float 1.0) < overall_outmigration_prob) [
       set is_migrant true
-      set breed migrants
+      ;set breed migrants
+
       ;set daily_migrant_count count migrants
     ]
     ;set is_smolt true  ; or pseudo-smolt for sturgeon
@@ -1881,7 +1899,7 @@ to survive
 
       if (random-float 1.0) > n [
 
-        ;print "died of fish predation"
+
         table:put death_pred_table species table:get death_pred_table species + 1
         save_event "died of predation"
         set is_alive false
@@ -1910,9 +1928,11 @@ to survive
     ]
   ]
 
+
   if (random-float 1.0) < ([fish_death_hightemp_prob] of destination) [
     ; Fish died of high temperature
-    ;print "died of high temperature"
+    ; print "died of high temperature"
+
     table:put death_temp_table species table:get death_temp_table species + 1
     save_event "died of high temp"
     set is_alive false
@@ -1922,6 +1942,7 @@ to survive
     (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
     die
   ]
+
 
   if (random-float 1.0) > (fish_death_starv_survival_prob) [
     ; Fish died of poor condition
@@ -2082,7 +2103,7 @@ to select_destination_cell
    ; print "starving fish, select food"
 
    if (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false) or (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = true) [  ; if all of the cells in the radius have negative net energy values, the fish moves elsewhere in the reach to get out of crappy area
-      ;print "turned to drifter, no dests available"
+
       set is_drifter true
       set drifter_history "drifting, no dests available"
       table:put drifter_count_table species table:get drifter_count_table species + 1 ]
@@ -2094,9 +2115,12 @@ to select_destination_cell
         move_fish destination]
 
   if any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true [ ; if ANY of the cells in the radius have positive net energy values, the fish select cell with higher net energy regardless of risk
-      ;print "was drifting, found dest"
+
+     ; print "was drifting, found dest"
       set drifter_history "was drifting, found dest"
       set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
+
+
       move_fish destination
       set is_drifter false] ; If they found a destination, turned drifter off
 
@@ -2108,19 +2132,36 @@ to select_destination_cell
       if (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false) or (any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = false) [
         ;print "was not drifting, found dest"
         ask wet_cells_in_radius [
+
+
+          ifelse total_net_energy_in_cell = 0 [
+
+          set consider_path_risk path_survival
+
+        ][
+
           ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
-          set consider_path_risk  total_net_energy_in_cell * path_survival
+            set consider_path_risk  total_net_energy_in_cell * path_survival
+          ]
         ]
+
+
         set destination max-one-of wet_cells_in_radius [consider_path_risk]
         set drifter_history "was not drifting, found dest"
         move_fish destination
       ]
 
       if (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = true) or (any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true) [
-        ;print "was drifting, found dest"
+
+       ; print "was drifting, found dest"
         ask wet_cells_in_radius [
+
+           ifelse total_net_energy_in_cell = 0 [
+          set consider_path_risk path_survival
+        ][
           ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
-          set consider_path_risk  total_net_energy_in_cell * path_survival
+            set consider_path_risk  total_net_energy_in_cell * path_survival]
+
         ]
         set destination max-one-of wet_cells_in_radius [consider_path_risk]
         set drifter_history "was drifting, found dest"
@@ -2222,6 +2263,7 @@ end
 ;; Procedure for drifters drifting downstream
 to drift_downstream
 
+
   ; Temporarily set the drifter's color to blue
   set color blue
 
@@ -2246,7 +2288,7 @@ to drift_downstream
 
   ; If there are no valid cells that the fish can drift to, it drifts out of the river or strands
   if any? random_drift_downstream_cells = FALSE [
-    print "no random drift downstream cells"
+
     ; This formerly marked fish as stranded, but that's now handled in the drift function.
 
     let max_migration_distance (item species_id migration_max_dist) / resolution
@@ -2379,6 +2421,7 @@ to grow
 
   set daily_growth ([daily_net_energy] of destination) / item species_id energy_density
 
+
   ifelse daily_growth = 0.0 [ ; if daily growth is 0, set the percent daily growth to a very small number to avoid div by 0 error
     ; This is the daily growth in percent body weight (column in output file)
     set percent_daily_growth 0
@@ -2388,6 +2431,7 @@ to grow
   ]
 
   ; Calculate the fish's new weight
+
   set new_mass mass + daily_growth
 
   ; If the fish's mass is 0, the condition is 0
@@ -2397,12 +2441,9 @@ to grow
   ]
 
   set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b)) ; g
-  ;print "healthy mass"
-  ;show healthy_mass
 
   set desired_length (new_mass / (item species_id length_mass_a)) ^ (1 / (item species_id length_mass_b)) ; cm
-  ;print "desired length"
-  ;show desired_length
+
 
   ; If the new mass is greater than the healthy mass for its length, we set the new length to the desired length and new condition to 1
   ifelse new_mass > healthy_mass [
@@ -2825,7 +2866,9 @@ to build_output_file_named [a_file_name]
 
   ;; Create the detailed population output file.
   if a_file_name = "d-p-o-n" [ ; This is the value of the uninitialized file name
+
     set detailed_population_outfile_name (word run_folder "/detailed_pop_output.csv")
+
     if file-exists? detailed_population_outfile_name [ file-delete detailed_population_outfile_name ]
     ; These header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
@@ -2834,7 +2877,9 @@ to build_output_file_named [a_file_name]
   ]
   ;; Create the destination cell info output file.
   if a_file_name = "c-i-o-n" [ ; This is the value of the uninitialized file name
+
     set cell_info_outfile_name (word run_folder "/cell_info_output.csv")
+
     if file-exists? cell_info_outfile_name [ file-delete cell_info_outfile_name ]
     ; These header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
@@ -2844,18 +2889,24 @@ to build_output_file_named [a_file_name]
 
   ; Create the fish events output file.
   if a_file_name = "f-e-o-n" [ ; This is the value of the uninitialized file name
+
     set fish_events_outfile_name (word run_folder "/events_output.csv")
+
     if file-exists? fish_events_outfile_name [ file-delete fish_events_outfile_name ]
     ; There can be events on the fish-events-list when file is created (from fish initialization)
     ; so these header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
+
     set fish_events_list fput "time, Species, id, x_pos, y_pos, start length , length, length change, start mass, mass, previous_condition, condition, growth, percent_daily_growth, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
+
     set fish_events_list fput (word "FHAST fish events output file, Created " date-and-time) fish_events_list
   ]
 
   ; Create output file for recording attributes of all cells in the model (for mapping and testing purposes)
   if a_file_name = "a-c-o-n"  [ ; This is the value of the uninitialized file name
+
      set all_cell_outfile_name (word run_folder "/all_cell_output.csv")
+
      if file-exists? all_cell_outfile_name [ file-delete all_cell_outfile_name ]
      ; These header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
@@ -2931,8 +2982,8 @@ end
 GRAPHICS-WINDOW
 211
 15
-408
-629
+407
+623
 -1
 -1
 5.128205128205129
@@ -3141,7 +3192,7 @@ CHOOSER
 background_display
 background_display
 "veg" "wood" "depth" "velocity" "shade" "predator encounter prob" "wetted fraction" "available velocity shelter" "none"
-5
+3
 
 SWITCH
 14
