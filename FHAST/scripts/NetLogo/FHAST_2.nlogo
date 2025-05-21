@@ -3221,7 +3221,7 @@ INPUTBOX
 209
 473
 run_folder
-0
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String
