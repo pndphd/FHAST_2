@@ -9,7 +9,7 @@
 if (!exists("pass_arguments")){
   pass_arguments = NULL
   pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/test2/temporary/re_clip2_LAR_OHWM_18,500_cfs.shp"
-  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/ARCF_C3A_project_features_test2.shp/ARCF_C3A_project_features_test2.shp"
+  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/ARCF_C3A_project_features_test2/ARCF_C3A_project_features_test2.shp"
   pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/test2"
 }
 
@@ -49,7 +49,7 @@ message("Read Footprint.\n")
 ml$df$footprint = st_read(ml$path$footprint) %>% 
   rename_with(str_to_title, !matches("geometry")) %>% 
   select(Feature, Project) %>% 
-  mutate(Inside = FALSE)
+  mutate(OHWM = FALSE)
 message("Read Footprint: Done.\n")
  
 ##### Process in and out footprint #############################################
@@ -65,7 +65,7 @@ message("Calculate Summaries.\n")
 
 ml$df$footprint_in = ml$df$footprint %>% 
   st_intersection(ml$df$ohwm) %>% 
-  mutate(Inside = TRUE)
+  mutate(OHWM = TRUE)
 
 ml$df$footprint_out = ml$df$footprint %>% 
   st_difference(ml$df$ohwm)
@@ -83,19 +83,20 @@ ml$df$footprint_processed = ml$df$footprint_out %>%
 # Make a summary tabel
 ml$table$summary = ml$df$footprint_processed %>% 
   st_drop_geometry() %>% 
-  group_by(Feature, Project, Inside) %>% 
+  group_by(Feature, Project, OHWM) %>% 
   summarise(Area = as.numeric(round(sum(area),2))) %>% 
   filter(Area != 0) %>% 
   left_join(ml$df$lookup_table, by = "Feature") %>% 
-  mutate(Feature = str_to_title(Feature))
+  mutate(Feature = str_to_title(Feature),
+         OHWM = ifelse(OHWM, "Inside", "Outside"))
 
 # get the percent of total footprint in the ohwm
 ml$var$percent_in = ml$table$summary %>% 
-  group_by(Inside) %>% 
+  group_by(OHWM) %>% 
   summarise(area = sum(Area)) %>% 
   mutate(total = sum(area),
          percent = area*100/total) %>% 
-  filter(Inside == TRUE) %>% 
+  filter(OHWM == TRUE) %>% 
   .$percent %>% 
   round(1)
 
@@ -113,16 +114,22 @@ message("Calculate Summaries: Done.\n")
 message("Make Plots.\n")
 
 ml$plot$output_map = ggplot(data = ml$df$footprint_in %>% 
-                      left_join(ml$df$lookup_table, by = "Feature") ) +
+                              left_join(ml$df$lookup_table, by = "Feature") %>%
+                              rowwise() %>% 
+                              mutate(Feature = ifelse(str_length(Feature) > 45,
+                                                      paste0(str_sub(Feature, 1, 45), "..."),
+                                                      Feature))) +
   theme_classic(base_size = 20) +
-  theme(axis.text.x = element_text(angle = 90)) +
-  geom_sf(aes(fill = factor(Type)), color = "black") +
-  scale_fill_viridis_d(name = "Type") +
+  theme(axis.text.x = element_text(angle = 90),
+        legend.position = "top",
+        legend.direction ='vertical') +
+  geom_sf(aes(fill = factor(Feature)), color = "black") +
+  scale_fill_viridis_d(name = "Feature") +
   geom_sf(data = ml$df$footprint_out_dis, fill = "white") 
 
 ggsave(here(ml$path$output_folder, "ohwm_map.png"),
        ml$plot$output_map,
-       height = 7,
+       height = 7 + length(unique(ml$df$footprint_in$Feature))/12,
        width = 7,
        units = "in",
        device = "png")
