@@ -1615,6 +1615,11 @@ to find_potential_destination_cells
   set patch_radius (((item species_id move_dist_a) * (f_length ^ (item species_id move_dist_b)))) / resolution
   set patch_radius max (list patch_radius 1)
 
+  ; If the fish only has access to its current patch let it access its neighbors as well
+  ; we turned this off as it only happens to super small fish in a 20 m cell area but turning it back on incase use of small er cell size
+    if (patch_radius <= 1.0)[
+      set patch_radius 1.1
+    ]
 
   ; Find all of the reachable cells within the radius
   set wet_cells_in_radius find_possible_destinations self patch_radius
@@ -2982,8 +2987,8 @@ end
 GRAPHICS-WINDOW
 211
 15
-407
-623
+408
+629
 -1
 -1
 5.128205128205129
