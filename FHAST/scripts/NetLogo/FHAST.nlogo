@@ -1,6 +1,8 @@
-;; The FHAST program
+;##########################################################################################################
+;##### The FHAST program
+;##########################################################################################################
 
-;; Load Extensions
+;##### Load Extensions #####################################################
 extensions [
   csv      ; The extenshion the allows for csv IO
   palette  ; Allows the use of more palets like ColorBrewer
@@ -11,24 +13,23 @@ extensions [
 ]
 
 ;##### Define Variables #####################################################
-
 ;; Define global variables
 globals [
 
   ;; General run setup variabels
   resolution          ; The grid resolution in meters
-  resolution_file     ; the file that contaions the resolution and buffer information
-  buffer              ; Set the buffer (only used to read in the files)
   resolution_factor   ; A factor used to control how large the display can get
   area_column         ; The location index for area of a cell read in from the flow CSV
   reach_start         ; The upper most reach distance
   reach_end           ; The bottom reach distance
   top_patches         ; The patches that are closest to the top and are wet
-
+  lat_column          ; The location index for the x position of a cell read in from the flow CSV
+  lon_column          ; The location index for the y position of a cell read in from the flow CSV
 
   ;; Internal parameter variables
-  species_list         ; A list of species names
-  fish_logistics_table ; A table of logistic functions for survival, by species
+  species_list                   ; A list of species names
+  fish_logistics_table           ; A table of logistic functions for survival, by species
+  pathfinding_dirty_patches      ; patch-set of patches that have pathfinding data that need to be cleared.
 
   ;; Time variables
   first_day           ; Pointless time variabel to initalize
@@ -37,24 +38,19 @@ globals [
 
   ;; Daily input variabels
   daily_input_csv          ; The daily flow and temperature data
-  day                      ; The day of the simulation
-  date                     ; A date value
-  month                    ; The month (used for shade)
   flow_column              ; The location index for the flow from the daily CSV
-  month_column             ; The location index for the months from the daily CSV
-  daily_flow_values        ; The complete list of daily flow values
-  month_values             ; A list of the months
-  flow                     ; The daily flow value
-  x_flow                   ; The location index for the x position of a cell read in from the flow CSV
-  y_flow                   ; The location index for the y position of a cell read in from the flow CSV
-  temp_column              ; The location index for the temperature from the daily CSV
-  daily_temp_values        ; The complete list of daily temp values
-  temperature              ; The daily temperature value
   turbidity_column         ; The column that gives the turbidity values
+  temp_column              ; The location index for the temperature from the daily CSV
+  photoperiod_column       ; The column that has the information on photoperiod
+  daily_flow_values        ; The complete list of daily flow values
   daily_turbidity_values   ; The complete list of daily turbidity values
-  turbidity                ; The daily turbidity
-  photoperiod              ; daily photoperiod (day length) in hours
+  daily_temp_values        ; The complete list of daily temp values
   daily_photoperiod_values ; The complete list of daily photoperiod values
+  flow                     ; The daily flow value
+  turbidity                ; The daily turbidity
+  temperature              ; The daily temperature value
+  photoperiod              ; Daily photoperiod (day length) in hours
+  month_values             ; What month each day is in
 
   ;; Habitat and interaction params
   habitat_params_csv ; csv file with a variety of habitat params, including foods, predator density, resolution, buffer, etc.
@@ -70,47 +66,20 @@ globals [
   ben_vel_height     ; The height off the bed where the velocity is experienced by the benthic fish
   shelter_frac       ; Fraction of the cells velocity experienced by a fish in cover
 
-  ; Percentt cover to distance to cover conversion
+  ;; Percentt cover to distance to cover conversion
   int_pct_cover               ; the intercept of the percent cover to distance to cover relation
   sqrt_pct_cover              ; the sqrt root parameter of the percent cover to distance to cover relation
   pct_cover                   ; the the single poser parameter of the percent cover to distance to cover relation
   sqrt_pct_cover_x_pct_cover  ; the the 2/3 parameter of the percent cover to distance to cover relation
 
-  ; Distance to cover to prey safety conversion
+  ;; Distance to cover to prey safety conversion
   dis_to_cover_par  ; the logistic parameter slop to convert distance to cover to survival benefit
   dis_to_cover_int  ; the logistic parameter intercept to convert distance to cover to survival benefit
 
-  ; turbidity model params
+  ;; Turbidity model params
   turb_int              ; the logistic parameter slope to convert turbidity to survival benefit
   turb_slope            ; the logistic parameter intercept to convert turbidity to survival benefit
   turb_survival_bonus   ; bonus to fish survival against preds due to turbidity updates dailys
-
-  ;; Daily Fish input variables
-  daily_fish_csv        ; The column that gives the number of fish per day
-  fish_wo_dates         ; The info for the fish file with not date info
-  paired_fish_list      ; The dates and lists paired
-  fish_date_column      ; The column that gives the dates of fish entry
-  number_column         ; The column that gives the number of fish
-  species_column        ; The column the lists the species of fish
-  lifestage_column      ; The column that lists the life stage
-  length_column         ; The column the gives the fish lenght
-  length_sd_column      ; The column that gives the fish lenght sd
-  daily_number_values   ; The daily values for the fish counts
-  daily_species_values  ; The daily values for the species
-  daily_ls_values       ; The daily values for the lifestage
-  daily_length_values   ; The daily values for the length
-  daily_sd_values       ; The daily values for the sd of length
-  fish_date_values      ; The values in the fish date columns
-  fish_formated_dates   ; The values in the fish date columns formated as LogoTime
-
-  ;; Variables used for drifter fish
-  net_energy                       ; The net energy of the cells
-  positive_energy_cell_count       ; A variable keeping track of whether a cell with positive net energy has been found
-  all_net_energy                   ; A list of net energy values for the cells in the radius of the random drift cells
-  closest_cell_with_pos_energy     ; The random drift cell closest to the agent that has positive net energy
-  possible_wet_cells_in_radius     ; Cells in the radius of the random drift cells
-  sorted_distance_cells            ; The random drift cells sorted in ascending order of distance to the agent
-  no_cell_has_pos_energy           ; A boolean indicating whether any of the random drift cells have positive net energy
 
   ;; Flow raster variabels
   flow_input_csv      ; The variabel to hole the flow csv
@@ -134,11 +103,14 @@ globals [
   rock_column         ; The column that has the information on percent rock or bedrock
   ben_food_column     ; The column that has the information on fraction of area that has benthic food
   canopy_column       ; The column that has the information on percent canopy cover
-  photoperiod_column  ; The column that has the information on photoperiod
 
-  ;; Display Variables
-  max_cell_available_vel_shelter ; Max available area of velocity shelter from all cells (just used to color patches according to the available vel shelter)
-  max_encounter_prob              ; Maximum encounter probability of predators for all cells (just used to color patches)
+  ;; Daily Fish input variables
+  daily_fish_csv        ; The column that gives the number of fish per day
+  fish_list             ; The dates and lists paired
+  number_column         ; The column that gives the number of fish
+  species_column        ; The column the lists the species of fish
+  lifestage_column      ; The column that lists the life stage
+  length_column         ; The column the gives the fish lenght
 
   ;; Fish variables
   fish_params_csv           ; A csv with the individual species parameters
@@ -157,7 +129,6 @@ globals [
   met_t                     ; temperature term for metabolic rate equation
   met_lm_t                  ; log mass * temperature term for metabolic rate equation
   met_sqv                   ; the smolt flag factor for metabolic rate equation
-  ;total_metab_rate          ; total metabolic rate
   cmax_a                    ; Allometric constant in cMax equation (unitless)
   cmax_b                    ; Allometric exponent in cMax equation (unitless)
   cmax_c                    ; First parameter for the cmax temperature relation (C)
@@ -190,47 +161,56 @@ globals [
   outmigrate_V1             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
   outmigrate_V9             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
 
+  ;; Fish equations
+  cmax_temp_func                    ; A list of cmax temperature functions for each species
+  max_swim_temp_func                ; A list of cmax temperature functions for each species
+
+  ;; Predator variables
+  pred_input_file_csv        ; Input csv file with some default params for pred counts
+  total_preds                ; The total number of predators in the system
+  pred_species               ; A list of the species of predators
+  num_pred_species           ; The number of predators
+  ; glm for habitat rating for predators
+  int_glm                    ; A prameter for predatror intercept
+  shade_glm                  ; A prameter for how the predators react to shade
+  veg_glm                    ; A prameter for how the predators react to vegetation
+  wood_glm                   ; A prameter for how the predators react to wood
+  depth_glm                  ; A prameter for how the predators react to depth
+  velocity_glm               ; A prameter for how the predators react to velocity
+  substrate_glm              ; A prameter for how the predators react to substrate
+  ; params for log-normal distribution
+  meanlog                    ; Parameter for fish lenght distributions
+  sdlog                      ; Parameters fo rfish lenght distribution
+  ; gape limitation params
+  a_gape                     ; intercept fo the gape limitation of a predator
+  b_gape                     ; slope for the gape limitation of a predator
+  ; temp vs pred activity params
+  pred_temperature_activity  ; the temperature logistic function for predator space coverage slope
+  int_temp                   ; the temperature logistic function for predator space coverage intercept
+
   ;; End of simulation outputs
-  death_temp_table            ; A list of 1s representing deaths caused by temperature
-  death_velocity_table        ; A list of 1s representing deaths caused by velocity
-  death_stranding_table       ; A list of 1s representing deaths caused by stranding
-  death_pred_table            ; A list of 1s representing deaths caused by predation
-  death_condition_table       ; A list of 1s representing deaths caused by poor condition
-  smolt_count_table           ; A list of 1s representing smolts that day
-  ;smolt_length_list           ; A list of smolts' length that day
-  ;smolt_mass_list             ; A list of smolts' mass that day
-  ;smolt_condition_list        ; A list of smolts' condition that day
+  death_temp_table               ; A list of 1s representing deaths caused by temperature
+  death_stranding_table          ; A list of 1s representing deaths caused by stranding
+  death_pred_table               ; A list of 1s representing deaths caused by predation
+  death_condition_table          ; A list of 1s representing deaths caused by poor condition
   nonmigrants_count_table        ; A list of 1s representing nonsmolts that day
-  nonmigrants_length_list        ; A list of nonsmolts' length that day
-  nonmigrants_mass_list          ; A list of nonsmolts' mass that day
-  nonmigrants_condition_list     ; A list of nonsmolts' condition that day
-  migrant_count_table         ; A list of 1s representing migrants that day
-  migrant_length_list         ; A list of the migrants' length when it exits the river
-  migrant_mass_list           ; A list of the migrants' mass when it exits the river
-  migrant_condition_list      ; A list of the migrants' condition when it exits the river
-  drifter_count_table         ; A list of 1s representing drifters that day
-  drifter_length_list         ; A list of the drifters' length when it exits the river
-  drifter_mass_list           ; A list of the drifters' mass when it exits the river
-  drifter_condition_list      ; A list of the drifters' condition when it exits the river
+  migrant_count_table            ; A list of 1s representing migrants that day
+  drifter_count_table            ; A list of 1s representing drifters that day
 
   ;; Daily outputs
-  dead_fish_count_table       ; A list of 1s representing all of the dead fish (includes smolts and nonsmolts) that day
-  dead_migrants_count_table   ; A list of 1s representing all of the dead migrants that day
-  ;dead_smolts_count_table     ; A list of 1s representing all of the dead smolts that day
+  dead_fish_count_table         ; A list of 1s representing all of the dead fish (includes smolts and nonsmolts) that day
+  dead_migrants_count_table     ; A list of 1s representing all of the dead migrants that day
   dead_nonmigrants_count_table  ; A list of 1s representing all of the dead nonsmolts that day
-  dead_rearing_count_table    ; A list of 1s representing all of the dead nonsmolts with positive growth that day
-  total_daily_juveniles       ; Total number of juveniles (smolts and nonsmolts) at any given timestep
-  total_daily_dead_fish       ; Total number of dead fish (smolts and nonsmolts) at any given timestep
-  total_daily_dead_migrants   ; Total number of dead migrants at any given timestep
-  ;total_daily_dead_smolts     ; Total number of dead smolts at any given timestep
+  dead_rearing_count_table      ; A list of 1s representing all of the dead nonsmolts with positive growth that day
+  total_daily_juveniles         ; Total number of juveniles (smolts and nonsmolts) at any given timestep
+  total_daily_dead_fish         ; Total number of dead fish (smolts and nonsmolts) at any given timestep
+  total_daily_dead_migrants     ; Total number of dead migrants at any given timestep
   total_daily_dead_nonmigrants  ; Total number of dead nonsmolts at any given timestep
-  total_daily_migrants        ; Total number of migrants at any given timestep
-  ;total_daily_smolts          ; Total number of fish smolting at any given timestep
+  total_daily_migrants          ; Total number of migrants at any given timestep
   total_daily_nonmigrants       ; Total number of non smolting fish at any given timestep (not including migrating fish)
-  total_daily_drifters        ; Total number of fish drifting at any given timestep
+  total_daily_drifters          ; Total number of fish drifting at any given timestep
 
   ;; Other global variables/inernal data structures
-  mortality_events_outfile_name     ; String with name of mortality events output file; set in build_output_files
   fish_events_outfile_name          ; String with name of fish events output file; set in build_output_files
   cell_info_outfile_name            ; String with name of cell info output file; set in build_output_files
   detailed_population_outfile_name  ; String with name of detailed population output file; set in build_output_files
@@ -241,44 +221,6 @@ globals [
   detailed_population_list          ; List of all summary fish-related info per day (total migrating, total smolting) that can be written to the detailed population output file
   all_cell_attributes_list
   migrant_path_info_list
-  next_output_time                  ; A LogoTime for when the next file output is scheduled.
-  shade_variable                    ; Controls patch shading. Equal to "velocity", "depth", "light" or "off"
-  all_cells
-  destination_cells                 ; A list of all of the destination cells during a time step
-  cmax_temp_func                    ; A list of cmax temperature functions for each species
-  max_swim_temp_func                ; A list of cmax temperature functions for each species
-
-  ;; Predator variables
-  pred_input_file_csv          ; Input csv file with some default params for pred counts
-  total_preds                  ; The total number of predators in the system
-
-  ;; Predator model variables
-  pred_species      ; A list of the species of predators
-  num_pred_species  ; the number of predators
-
-  ;; glm for habitat rating
-  int_glm          ; A prameter for predatror intercept
-  shade_glm        ; A prameter for how the predators react to shade
-  veg_glm          ; A prameter for how the predators react to vegetation
-  wood_glm         ; A prameter for how the predators react to wood
-  depth_glm        ; A prameter for how the predators react to depth
-  velocity_glm     ; A prameter for how the predators react to velocity
-  substrate_glm    ; A prameter for how the predators react to substrate
-
-  ; params for log-normal distribution
-  meanlog     ; Parameter for fish lenght distributions
-  sdlog       ; Parameters fo rfish lenght distribution
-
-  ; gape limitation params
-  a_gape     ; intercept fo the gape limitation of a predator
-  B_gape     ; slope for the gape limitation of a predator
-
-  ; temp vs pred activity params
-  pred_temperature_activity  ; the temperature logistic function for predator space coverage slope
-  int_temp                   ; the temperature logistic function for predator space coverage intercept
-
-  ; pathfinding data holders
-  pathfinding_dirty_patches      ; patch-set of patches that have pathfinding data that need to be cleared.
 ]
 
 ;; Define patch variables
@@ -301,15 +243,16 @@ patches-own [
   yesterday_velocity  ; The velocity of the patch on the previous day.
 
   ;; Shape file releated variables
-  veg                 ; the fraction of the area that is covered with vegetation
-  wood                ; the fraction of the area that is covered with wood
-  fine                ; the fraction of the area that is covered with fine sediment
-  gravel              ; the fraction of the area that is covered with gravel
-  cobble              ; the fraction of the area that is cobble
-  rock                ; the fraction of the area that is rock
-  shades              ; All the shade values a call can have
-  shade               ; The shade fraction of a cell
-  ben_food_fra        ; The fraction of the cell area that has benthic food
+  veg                       ; the fraction of the area that is covered with vegetation
+  wood                      ; the fraction of the area that is covered with wood
+  fine                      ; the fraction of the area that is covered with fine sediment
+  gravel                    ; the fraction of the area that is covered with gravel
+  cobble                    ; the fraction of the area that is cobble
+  rock                      ; the fraction of the area that is rock
+  shades                    ; All the shade values a call can have
+  shade                     ; The shade fraction of a cell
+  ben_food_fra              ; The fraction of the cell area that has benthic food
+  frac_velocity_shelter     ; The fraction of a cell with velocity shelters (the wood + veg sum)
 
   ;; Parameters for valid patch logic for fish
   has_visited?        ; Used to identify if the pathfinding has visited the patch
@@ -319,26 +262,18 @@ patches-own [
   previous_patch      ; The previous patch in the path from pathfinding
   path_score          ; Score evaluating how good of a patch this is for the next step of the migration pathing
 
-  frac_velocity_shelter     ; The fraction of a cell with velocity shelters (the wood + veg sum)
-
+  ;; Track resources
   cell_available_ben         ; Availability of denthic food in, g
   cell_available_vel_shelter ; Available area of velocity shelter in cell, (m^2)
   cell_available_wet_area    ; Available wetted area in cell, (m^2)
 
-  ratio_vel_max_swim         ; Ratio of the cell velocity and the maximum swim speed sustained by a fish
-  capture_area               ; The area over which fish can capture food
-  swim_speed                 ; (m/s)
-  capture_success            ; The fraction of food items passing through the capture area that are actually caught
-  feed_time                  ; Number of house spend feeding per day (set at 12)
-
+  ;; Variabels used to assess cells
   distance_to_drifter           ; Distance a patch is to a drifting fish
-  closest_random_cell           ; When the fish disperses downstream, it selects the closest random cell from "random_drift_downstream_cells" - used for drifters
-  all_downstream_cells          ; All of the valid downstream cells of a drifter fish
   random_drift_downstream_cells ; the random cells selected for drif
-  open_cells_for_dispersal      ; All of the wet cells within the new area that the fish (a drifter) can disperse to
-
-  active_metab_rate
-  passive_metab_rate
+  count_fish_destination                 ; Total number of fish alive in a cell at the end of a timestep
+  swim_speed                 ; Swim speed of a certain fish in cell
+  active_metab_rate          ; AMR of a certain fish in cell
+  passive_metab_rate         ; RMR of a certain fish in cell
   total_metab_rate           ; total metabolic rate
   daily_intake               ; Drift intake (g/d), limited by cmax, drift availability etc
   daily_energy_intake        ; Drift intake in J energy
@@ -347,17 +282,13 @@ patches-own [
   total_mort_risk_for_cell   ; Total probability of surviving all of the mortality risks in the cell (total_mort_risk_for_cell/total_net_energy_in_cell)
   ratio_net_energy_risk      ; Ratio of total mortality risk to the net energy in the cell
   consider_path_risk         ; Path survival multiplied by the ratio net energy to risk. Used by fish when selecting desination cells while taking into account path risk
-
   fish_death_hightemp_prob          ; Probability of a fish surviving high temperature
-  ratio_swim_speed_max_swim_speed   ; Ratio of swim speed to the max swim speed that can be sustained by fish
   fish_death_aq_pred_prob           ; Probability of a fish surviving predation by other fish
-
-  count_fish_destination                 ; Total number of fish alive in a cell at the end of a timestep
-
   avg_weight_fish_in_destination         ; Average weight of live fish in a cell at the end of a timestep
   avg_length_fish_in_destination         ; Average length of live fish in a cell at the end of a timestep
   avg_condition_fish_in_destination      ; Average condition of live fish in a cell at the end of a timestp
 
+  ;; Migration variables
   running_average_velocity              ; The mean velocity that the fish has experienced over the last 5 time steps
   migrant_patch                         ; Identifies the patch as having a migrant juvenile in it at any given timestep
 
@@ -386,74 +317,53 @@ turtles-own [
   ;; Species
   species_id   ; The assigned number for this species
   species      ; The species name
+  fish_sex     ; Sex of fish
 
   ;; Physological parameters
-  mass                 ; Mass
-  start_mass           ; Mass at beginning of time step
   f_length             ; Fork length
   start_length         ; Fork length at beginning of time step
-  change_length        ; Change in fork length
-  healthy_mass         ; Mass for a healthy condition factor
-  percent_daily_growth ; Percent that the daily growth is of its mass
-
-  fish_sex             ; Sex of fish
-  fish_condition       ; Condition factor K (values 0 - 1, fish condition)
-  previous_condition   ; Condition before the fish grows (condition at the beginning of timestep that drives habitat selection)
-  daily_growth         ; Growth per day (g)
-  max_swim_speed       ; Maximum sustainable swim speed for a fish
   new_length           ; Used in "grow" procedure - equal to previous length + change in length
+  change_length        ; Change in fork length
+  healthy_length       ; Length for a healthy individual of weight
+  mass                 ; Mass
+  start_mass           ; Mass at beginning of time step
   new_mass             ; Used in "grow" procedure - equal to previous mass + growth
+  change_mass          ; Growth per day (g)
+  percent_change_mass  ; Percent that the daily growth is of its mass
+  healthy_mass         ; Mass for a healthy condition factor
+  fish_condition       ; Condition factor K (values 0 - 1, fish condition)
+  start_condition      ; Condition before the fish grows (condition at the beginning of timestep that drives habitat selection)
   new_condition        ; Used in "grow" procedure
-  desired_length       ; Length for a healthy individual of weight
+
+  ;; Metabolic calcualtions
+  max_swim_speed       ; Maximum sustainable swim speed for a fish
   cmax                 ; Maximum daily consumption rate as limited by its physiology (g/d)
   energy_intake        ; J/d
 
+  ;; Habitat interactions
+  is_in_shelter        ; If the fish is using shelter
+  is_smolt             ; If the fish has undergone smoltification (depending on photoperiod and size)
+  is_migrant           ; If the fish has decided to migrate (depending on change in flow)
+  is_alive             ; If the fish is alive
+  is_drifter           ; A boolean for whether fish is drifting downstream due to crappy habitat
+  starving?            ; A booleam for whether the fish is starving (true if random number greater than prob of starving)
+  drifter_history      ; String showing whether drifter was only a drifter for one timestep
   exit_status          ; If the fish is exiting this turn
   strand_status        ; If the fish is getting stranded this turn
 
-  patch_radius              ; Radius (in cells) representing where the fish can move in one time step
-  territory_size            ; The fish territory size
-  fish_in_radius            ; Count of number of fish in the radius before the fish decides its destination cell
-  dispersal_distance        ; If the fish is a drifter, this is the max area it can dirft to
-  destination               ; The cell that the fish moves to by the end of the time step
-  wet_cells_in_radius       ; The cells that are in a fish's radius
-
-  mean_velocity_in_radius   ; The mean velocity that the fish experiences in its radius
-
-  reachable_patches         ; Patches the agent can migrate to
-  min_pycor_reachable_patches ; The pycor of the patch at the very edge of the the max movement radius. Will usually be reach_end
-  downstream_patches        ; Patches downstream of a juvenile
-
-  fish_death_starv_survival_prob  ; Probability of suriviving starvation from poor condition
-  fish_smolting_prob_photoperiod  ; Probability of being in the "smolting window"
-  fish_smolting_prob_flength      ; Probability of smolting based on length
-  overall_smolting_prob           ; Product of prob of smolting based on photoperiod and prob of smolting based on flength
-  fish_outmigration_prob_velocity ; Probability of outmigrating due to velocity
-  overall_outmigration_prob       ; Overall probability of outmigrating due to changes in velocity, length, and photoperiod
-  velocity_experience_list        ; List of mean radius cell velocity fish experience each day
-  path_survival_list              ; ; A list of path survival probabilities for drifter fish (should only have max two elements inside)
-
-  is_in_shelter                   ; If the fish is using shelter
-  is_smolt                        ; If the fish has undergone smoltification (depending on photoperiod and size)
-  is_migrant                      ; If the fish has decided to migrate (depending on change in flow)
-  is_alive                        ; If the fish is alive
-  is_drifter                      ; A boolean for whether fish is drifting downstream due to crappy habitat
-  starving?                       ; A booleam for whether the fish is starving (true if random number greater than prob of starving)
-  drifter_history                 ; string showing whether drifter was only a drifter for one timestep
-
-  ;; Intermediate variables to reduce calcs.,
-  fish_resp_std_wt_term           ; resp-A * wt ^ resp-B
-  fish_max_speed_len_term         ; max-swim-A * L + max-swim-B
-  fish_cmax_wt_term               ; cmax-A * wt ^ (1+cmax-B)
-  max_swim_l_term                 ; speed-A * l ^ (speed-B)
-
-  fish_logistic_table             ; Table holding the logistic functions
-
-  fallback_migration_patch                ; A patch that the fish can reach within the max move distance of a call to find drift destinations
+  ;; Movement
+  patch_radius                            ; Radius (in cells) representing where the fish can move in one time step
+  territory_size                          ; The fish territory size
+  destination                             ; The cell that the fish moves to by the end of the time step
+  wet_cells_in_radius                     ; The cells that are in a fish's radius
+  mean_velocity_in_radius                 ; The mean velocity that the fish experiences in its radius
+  fish_death_starv_survival_prob          ; Probability of suriviving starvation from poor condition
+  overall_outmigration_prob               ; Overall probability of outmigrating due to changes in velocity, length, and photoperiod
+  velocity_experience_list                ; List of mean radius cell velocity fish experience each day
+  path_survival_list                      ; A list of path survival probabilities for drifter fish (should only have max two elements inside)
+  fallback_migration_patch                ; Path survival of the fallback_migration_patch
   fallback_migration_patch_path_survival  ; Path survival of the fallback_migration_patch
 
-  pathfinding_list_x
-  pathfinding_list_y
 ]
 
 ;##### Setup Breeds ########################################################
@@ -514,10 +424,8 @@ to setup
   set pred_input_file_csv csv:from-file word run_folder "/predator_params_input.csv"   ; Read in the predator input csv
 
   ;; Get the indexes for the columns in each file
-  set day (position "day" (item 0 daily_input_csv))
-  set date (position "date" (item 0 daily_input_csv))
+  let date (position "date" (item 0 daily_input_csv))
   set flow_column (position "flow_cms" (item 0 daily_input_csv))
-  set month_column (position "month" (item 0 daily_input_csv))
   set temp_column (position "temp_c" (item 0 daily_input_csv))
   set turbidity_column (position "turb_ntu" (item 0 daily_input_csv))
   set photoperiod_column (position "photoperiod" (item 0 daily_input_csv))
@@ -535,17 +443,12 @@ to setup
   ;; From the fish daily input file
   set number_column (position "number" (item 0 daily_fish_csv))
   set species_column (position "species" (item 0 daily_fish_csv))
-
-  set fish_date_column (position "date" (item 0 daily_fish_csv))
-
   set length_column (position "length" (item 0 daily_fish_csv))
-  set length_sd_column (position "length_sd" (item 0 daily_fish_csv))
   set lifestage_column (position "lifestage" (item 0 daily_fish_csv))
 
   ;; From the flow inputs
-  set x_flow (position "lat_dist" (item 0 flow_input_csv)) ;shows which column lat_dist is in csv, and then which element is first in the column
-  set y_flow (position "dist" (item 0 flow_input_csv))
-
+  set lat_column (position "lat_dist" (item 0 flow_input_csv)) ;shows which column lat_dist is in csv, and then which element is first in the column
+  set lon_column (position "dist" (item 0 flow_input_csv))
   set area_column (position "area" (item 0 flow_input_csv))
 
   ;; From the shape input file
@@ -626,8 +529,8 @@ end
 to set_world_size
 
   ; Get necessary information to set up world size
-  let x_values (map [n -> item x_flow n ] flow_input_csv)  ; Read in all the x positions
-  let y_values (map [n -> item y_flow n ] flow_input_csv)  ; Read in all the y positions
+  let x_values (map [n -> item lat_column n ] flow_input_csv)  ; Read in all the x positions
+  let y_values (map [n -> item lon_column n ] flow_input_csv)  ; Read in all the y positions
   let x_max max x_values                                   ; Get the max x value
   let x_min min x_values                                   ; Get the min x value
   let y_max max y_values                                   ; Get the max y value
@@ -652,7 +555,6 @@ to set_habitat_params
 
   ; reach params
   set resolution item 0 (table:get paired_param_table "resolution")
-  set buffer item 0 (table:get paired_param_table "buffer")
   set pred_per_area item 0 (table:get paired_param_table "pred_per_area")
   set shelter_frac item 0 (table:get paired_param_table "shelter_frac")
   set reaction_distance item 0 (table:get paired_param_table "reaction_distance")
@@ -718,32 +620,26 @@ end
 ;; Set up the number of fish that get added to the model every day
 to set_daily_fish_counts
 
-  set fish_date_values but-first (map [n -> item fish_date_column n ] daily_fish_csv)
+  let fish_date_column (position "date" (item 0 daily_fish_csv))
+  let fish_date_values but-first (map [n -> item fish_date_column n ] daily_fish_csv)
   ; Get all things in the fish input file except date
   ; This is to make a table later on
-  set fish_wo_dates but-first (map [n -> but-first n] daily_fish_csv)
+  let fish_wo_dates but-first (map [n -> but-first n] daily_fish_csv)
   ; Combine the last to to make a paired list then a table
-  set paired_fish_list (map [ [ a b ] -> ( list a b ) ] fish_date_values fish_wo_dates)
-  set daily_number_values but-first (map [n -> item number_column n ] daily_fish_csv)
-  set daily_species_values but-first (map [n -> item species_column n ] daily_fish_csv)
-  set daily_ls_values but-first (map [n -> item lifestage_column n ] daily_fish_csv)
-  set daily_length_values but-first (map [n -> item length_column n ] daily_fish_csv)
-  set daily_sd_values but-first (map [n -> item length_sd_column n ] daily_fish_csv)
-  set fish_formated_dates (map [n -> (time:create-with-format n "yyyy-MM-dd")] fish_date_values)
-
+  set fish_list (map [ [ a b ] -> ( list a b ) ] fish_date_values fish_wo_dates)
 
   ; take off fish that arive before sim window
   loop [
     ; check if the list is empty
-    ifelse empty? paired_fish_list = false [
+    ifelse empty? fish_list = false [
       ; get the first on the list in the correct format
-      let check_day time:create-with-format item 0 (item 0 paired_fish_list) "yyyy-MM-dd"
+      let check_day time:create-with-format item 0 (item 0 fish_list) "yyyy-MM-dd"
 
       ; compare to the first day and if defore remove it
       ifelse time:is-before? check_day first_day [
 
         print (word "Fish set to arrive early. Removed day " check_day)
-        set paired_fish_list but-first paired_fish_list][stop]
+        set fish_list but-first fish_list][stop]
     ][stop]
   ]
 
@@ -818,10 +714,10 @@ to set_patch_flow_values
   ;; Take each line in the csv
   foreach (but-first flow_input_csv) [n ->
     ; Move over each patch using its location and value
-    ask patch ((item x_flow n) / (resolution)) ((item y_flow n) / (resolution)) [
+    ask patch ((item lat_column n) / (resolution)) ((item lon_column n) / (resolution)) [
       ; Set its x and y position, so that a map can later be made in R
-      set x_pos (item x_flow n)
-      set y_pos (item y_flow n)
+      set x_pos (item lat_column n)
+      set y_pos (item lon_column n)
       ; Set the area value
       set area (item area_column n)  ; area is in m2
       let counter 0
@@ -855,6 +751,7 @@ end
 ;; Assign each of the cells all its shade values
 to set_patch_shade_values
 
+  let month_column (position "month" (item 0 daily_input_csv))
   set month_values but-first (map [n -> item month_column n ] daily_input_csv)  ; Read in all the x positions
   ;; Assign all the patches list of depths to have -9999 to rep no data
   ask patches [
@@ -904,7 +801,6 @@ end
 to set_count_tabels
   ; update list of daily fish counts for detailed population output
   set death_temp_table table:make
-  set death_velocity_table table:make
   set death_stranding_table table:make
   set death_pred_table table:make
   set death_condition_table table:make
@@ -1030,7 +926,7 @@ to set_pred_params
 
   ; gape limitation params
   set a_gape (table:get paired_param_table "gape_a")
-  set B_gape (table:get paired_param_table "gape_b")
+  set b_gape (table:get paired_param_table "gape_b")
 
   ; temp vs pred activity params
   set pred_temperature_activity (table:get paired_param_table "area_pred_b")
@@ -1155,7 +1051,7 @@ to update_habitat
   foreach species_list [ next_species ->
     ; update list of daily fish counts for detailed population output
     table:put death_temp_table next_species 0
-    table:put death_velocity_table next_species 0
+
     table:put death_stranding_table next_species 0
     table:put death_pred_table next_species 0
     table:put death_condition_table next_species 0
@@ -1214,7 +1110,7 @@ end
 to set_shade
 
   ; get todays month value
-  set month (item ticks month_values)
+  let month (item ticks month_values)
   ask wet_patches [
     set pcolor black
     set shade item (month - 1) shades
@@ -1342,8 +1238,8 @@ to place_predators
     if length pred_length > 0 [
       ; set the patch's pred_length value to a random length from the list
       set pred_length item (random length pred_length) pred_length
-      ; Need to change to allow different values of a_gape and B_gape if we want different values for each pred species
-      set max_prey_length get-max-prey-length item 0 a_gape item 0 B_gape pred_length
+      ; Need to change to allow different values of a_gape and b_gape if we want different values for each pred species
+      set max_prey_length get-max-prey-length item 0 a_gape item 0 b_gape pred_length
     ]
     ;; End of pred counts and length calculations
 
@@ -1379,8 +1275,8 @@ to color_patches
 
   if background_display != "none" [
 
-    set max_cell_available_vel_shelter [cell_available_vel_shelter] of max-one-of patches [cell_available_vel_shelter] ; this is very ugly code (only used to color patches by max cell available shelter)
-    set max_encounter_prob [encounter_prob] of max-one-of patches [encounter_prob]
+    let max_cell_available_vel_shelter [cell_available_vel_shelter] of max-one-of patches [cell_available_vel_shelter] ; this is very ugly code (only used to color patches by max cell available shelter)
+    let max_encounter_prob [encounter_prob] of max-one-of patches [encounter_prob]
 
     ask patches [
       if today_velocity <= 0 [set today_velocity 0]
@@ -1434,15 +1330,15 @@ to hatch_fish
     ; check if today data exists in the first entry in the fish list
     ; and that the list is not empty
     let todays_fish_check false
-    ifelse empty? paired_fish_list = false [
-       set todays_fish_check position todays_date item 0 paired_fish_list
+    ifelse empty? fish_list = false [
+       set todays_fish_check position todays_date item 0 fish_list
     ][stop]
     ; if it doden't stop the loop
     if todays_fish_check = false [stop]
     ; if the dates match, make the first fish entry a entry to be added today for today
-    let todays_fish item 1 item 0 paired_fish_list
+    let todays_fish item 1 item 0 fish_list
     ; now take it out so it's not added again
-    set paired_fish_list but-first paired_fish_list
+    set fish_list but-first fish_list
 
     ; Add in fish based on life stage
     ;  if item (lifestage_column - 1) todays_fish = "adult" [
@@ -1580,12 +1476,12 @@ to update_fish
   if mass <= 0 [set mass .001] ; If mass is negative, set it to a very small number to calculate log mass in metabolic rate equation
 
   ; Cmax weight term
-  set fish_cmax_wt_term (item species_id cmax_a) * (mass ^ (1 + item species_id cmax_b))
+  let fish_cmax_wt_term (item species_id cmax_a) * (mass ^ (1 + item species_id cmax_b))
   ; Calculate cmax (g/d)
   set cmax fish_cmax_wt_term * item species_id cmax_temp_func
 
   ; Swim speed length term (convert form BL/s and come cm to m)
-  set max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
+  let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
   ; Calculate max swimm speed (BL/s)
   set max_swim_speed max_swim_l_term * item species_id max_swim_temp_func
 
@@ -1665,7 +1561,7 @@ to-report find_possible_destinations [fish move_dist]
 
           ; If this is the first time being visited or this path was less risky than an alternative
           if (has_visited? = false) or (path_survival < survival) [
-            let move_cost [path_to_here_cost] of cur_patch + calculate_move_cost cur_patch
+            let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
             if (move_cost < move_dist) [
               if (has_visited? = false) [
                 set dirty lput self dirty
@@ -1726,9 +1622,9 @@ to calculate_outmigration_probability
 
  ; Only evaluate probability if the individual isnt migrant
   if is_migrant = false [
-    set fish_smolting_prob_photoperiod (evaluate_logistic "smolt_photoperiod" species photoperiod)
+    let fish_smolting_prob_photoperiod (evaluate_logistic "smolt_photoperiod" species photoperiod)
 
-    set fish_smolting_prob_flength (evaluate_logistic "smolt_flength" species f_length)
+    let fish_smolting_prob_flength (evaluate_logistic "smolt_flength" species f_length)
 
 
     ;If the velocity experience list has less than 5 items, we take the average of those values
@@ -1752,7 +1648,7 @@ to calculate_outmigration_probability
     ]
 
     ; The probability of outmigrating increases as the difference in velocity between the current radius and the running average increases.
-    set fish_outmigration_prob_velocity (evaluate_logistic "outmigrate_velocity" species percent_change_velocity)
+    let fish_outmigration_prob_velocity (evaluate_logistic "outmigrate_velocity" species percent_change_velocity)
 
     ; Overall outmigration prob combines the probability of smolting due to photoperiod, the probability of smolting due to length, and the probability of migrating due to change in velocity
 
@@ -1853,7 +1749,7 @@ to-report find_pathable_destination_at_y [fish y_target move_dist]
             ; validate neighbor is wet
             if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
               let survival [path_survival] of cur_patch * calculate_patch_survival fish
-              let move_cost [path_to_here_cost] of cur_patch + calculate_move_cost cur_patch
+              let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
               let survival_score (1 - survival)
               let score (move_cost + y_diff_distance y_target) * survival_score
               ; If this is the first time being visited or this path was less risky than an alternative
@@ -1880,7 +1776,7 @@ end
 ;; Determines whether fish die and of what cause
 to survive
 
-  set previous_condition fish_condition
+  set start_condition fish_condition
 
  ; print "survive"
 
@@ -1893,7 +1789,7 @@ to survive
     (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
       is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
       ;is_smolt = false [table:put dead_nonsmolts_count_table species table:get dead_nonsmolts_count_table species + 1])
-    (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
     die
   ]
 
@@ -1912,7 +1808,7 @@ to survive
         (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
           is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
         ;is_smolt = false [table:put dead_nonsmolts_count_table species table:get dead_nonsmolts_count_table species + 1])
-        (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+        (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
         die
       ]
     ]
@@ -1928,7 +1824,7 @@ to survive
       table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
       (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
         is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
-      (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+      (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
       die
     ]
   ]
@@ -1944,7 +1840,7 @@ to survive
     table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
     (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
       is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
-    (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
     die
   ]
 
@@ -1958,7 +1854,7 @@ to survive
     table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
     (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
       is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
-    (ifelse is_migrant = false and daily_growth > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
     die
   ]
 
@@ -1984,11 +1880,11 @@ to calculate_energy_balance
     ; Choose between benthic and and drift feeding
     ifelse (item my_species_id benthic_fish) = 0 [
       ; Calculate the capture area of the fish
-      set capture_area (2 * fish_detect_dist) * min (list fish_detect_dist today_depth) ; m^2
+      let capture_area (2 * fish_detect_dist) * min (list fish_detect_dist today_depth) ; m^2
 
       ; Set up logistic equation to determine capture success
-      set ratio_vel_max_swim today_velocity / [max_swim_speed] of myself
-      set capture_success (evaluate_logistic "capture_success" fish_species ratio_vel_max_swim)
+      let ratio_vel_max_swim today_velocity / [max_swim_speed] of myself
+      let capture_success (evaluate_logistic "capture_success" fish_species ratio_vel_max_swim)
 
       ; Calculate daily intake as a daily rate, g/d
       set daily_intake capture_area * hab_drift_con * today_velocity * capture_success * 3600 * photoperiod
@@ -2212,7 +2108,7 @@ to-report find_possible_drift_destinations [fish max_dist]
       ask neighbors [
         ; validate neighbor is wet
         if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
-          let move_cost [path_to_here_cost] of cur_patch + calculate_move_cost cur_patch
+          let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
           ; If this is the first time being visited or this path was less risky than an alternative
           if (has_visited? = false) or (path_to_here_cost > move_cost) [
             if (has_visited? = false) [
@@ -2273,12 +2169,12 @@ to drift_downstream
   set color blue
 
   ; Set the distance a fish can disperse to be equal to 10 times the current radius (currently same as migration distance)
-  set dispersal_distance item species_id migration_max_dist / resolution
+  let dispersal_distance item species_id migration_max_dist / resolution
 
   ; Find all of the wet cells within the new area that the fish can disperse to
-  set open_cells_for_dispersal find_possible_drift_destinations self dispersal_distance
+  let open_cells_for_dispersal find_possible_drift_destinations self dispersal_distance
 
-  set all_downstream_cells open_cells_for_dispersal with [pycor < [ ycor ] of myself ]
+  let all_downstream_cells open_cells_for_dispersal with [pycor < [ ycor ] of myself ]
 
   ; Determine the number of random cells that the fish can evaluate for drifting
   let num_random_cells (([pycor] of self - reach_end) / dispersal_distance) * 100
@@ -2313,17 +2209,17 @@ to calculate_net_energy_of_drift_cells
   ask random_drift_downstream_cells [set distance_to_drifter distance myself]
 
   ; Sort the random patches by the distance to the fish
-  set sorted_distance_cells sort-on [distance_to_drifter] random_drift_downstream_cells
+  let sorted_distance_cells sort-on [distance_to_drifter] random_drift_downstream_cells
 
   ; can we take this out and use self below?
   let current_fish self
 
-  set closest_cell_with_pos_energy nobody
+  let closest_cell_with_pos_energy nobody
 
-  set no_cell_has_pos_energy FALSE
+  let no_cell_has_pos_energy FALSE
 
   while [closest_cell_with_pos_energy = nobody and no_cell_has_pos_energy = FALSE] [
-    set positive_energy_cell_count 0
+    let positive_energy_cell_count 0
     let n_index 0
 
     ; Feed in the random cells (in ascending order):
@@ -2334,7 +2230,7 @@ to calculate_net_energy_of_drift_cells
         ask n [
           ; For each of the random cells, find the patches in the radius
           ;set possible_wet_cells_in_radius patches in-radius ([patch_radius] of myself)
-          set all_net_energy []
+          let all_net_energy []
           ask current_fish [
             move-to n
             ;set wet_cells_in_radius possible_wet_cells_in_radius
@@ -2422,22 +2318,22 @@ end
 ;; Update the fish size
 to grow
 
-  set previous_condition fish_condition
+  set start_condition fish_condition
 
-  set daily_growth ([daily_net_energy] of destination) / item species_id energy_density
+  set change_mass ([daily_net_energy] of destination) / item species_id energy_density
 
 
-  ifelse daily_growth = 0.0 [ ; if daily growth is 0, set the percent daily growth to a very small number to avoid div by 0 error
+  ifelse change_mass = 0.0 [ ; if daily growth is 0, set the percent daily growth to a very small number to avoid div by 0 error
     ; This is the daily growth in percent body weight (column in output file)
-    set percent_daily_growth 0
+    set percent_change_mass 0
   ][
     ; This is the daily growth in percent body weight (column in output file)
-    set percent_daily_growth (daily_growth / mass) * 100
+    set percent_change_mass (change_mass / mass) * 100
   ]
 
   ; Calculate the fish's new weight
 
-  set new_mass mass + daily_growth
+  set new_mass mass + change_mass
 
   ; If the fish's mass is 0, the condition is 0
   if new_mass <= 0.0 [
@@ -2447,12 +2343,12 @@ to grow
 
   set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b)) ; g
 
-  set desired_length (new_mass / (item species_id length_mass_a)) ^ (1 / (item species_id length_mass_b)) ; cm
+  set healthy_length (new_mass / (item species_id length_mass_a)) ^ (1 / (item species_id length_mass_b)) ; cm
 
 
   ; If the new mass is greater than the healthy mass for its length, we set the new length to the desired length and new condition to 1
   ifelse new_mass > healthy_mass [
-   set new_length desired_length
+   set new_length healthy_length
    set new_condition 1.0
   ][ ; Otherwise, we divide the new mass by the healthy mass to get the new fish condition
    set new_length f_length ; The fish keeps its current length (cm)
@@ -2527,14 +2423,6 @@ to clear_patch_path_data
   set path_score -1
 end
 
-;; Calculate the cost to move to a new patch.
-to-report calculate_move_cost [from_patch]
-  ; assume the cost == the distance
-  ; calculate distance instead of using 1 to account for diagonals
-  ; todo - is this how cost should be calculated? maybe energy expenditure estimate?
-  report distance from_patch
-end
-
 ;; Calcuate mortality form predators
 to-report calc_pred_mortality [#survival_prob #encounter_prob #max_prey_length #prey_f_length #num_preds]
 
@@ -2573,8 +2461,7 @@ to-report calculate_patch_survival [fish]
   report fish_survival
 end
 
-;; Store values relevant for the pathfinding. Use the from_patch and the provided cost
-; to calculate values for myself.
+;; Store values relevant for the pathfinding. Use the from_patch and the provided cost to calculate values for myself.
 to store_pathfinding_patch_values [from_patch cost survival score]
   ; Set the path data for this patch (costs, previous patch, visited)
   set previous_patch from_patch
@@ -2647,7 +2534,7 @@ end
 ;; Saves the information of each destination cell every timestep (for cell_info_list csv)
 to save_destination_cell_info
 
-  set destination_cells [self] of patches with [ any? turtles-here and migrant_patch = false ]
+  let destination_cells [self] of patches with [ any? turtles-here and migrant_patch = false ]
 
   foreach destination_cells [[next_cell] ->
 
@@ -2675,24 +2562,24 @@ to save_destination_cell_info
 end
 
 ; a turtle (migrant) procedure saving information about the path it takes to migrate out of the river
-to save_migrant_path_info [migrant_path]
-
- set migrant_path_info_list lput ( csv:to-row (list
-    time:show tick_date "yyyy-MM-dd"
-    who
-    f_length
-    pathfinding_list_x
-    pathfinding_list_y
-    path_survival
-    wetted_area
-    today_velocity
-    today_depth
-    num_preds
-    cover_bonus
-    encounter_prob
-    survival_prob
-        )) migrant_path_info_list
-end
+;to save_migrant_path_info [migrant_path]
+;
+; set migrant_path_info_list lput ( csv:to-row (list
+;    time:show tick_date "yyyy-MM-dd"
+;    who
+;    f_length
+;    pathfinding_list_x
+;    pathfinding_list_y
+;    path_survival
+;    wetted_area
+;    today_velocity
+;    today_depth
+;    num_preds
+;    cover_bonus
+;    encounter_prob
+;    survival_prob
+;        )) migrant_path_info_list
+;end
 
 ;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
 to save_event [an_event_type]
@@ -2711,10 +2598,10 @@ to save_event [an_event_type]
         change_length
         start_mass
         mass
-        previous_condition
+        start_condition
         fish_condition
-        daily_growth
-        percent_daily_growth
+        change_mass
+        percent_change_mass
         max_swim_speed
         cmax
         [swim_speed] of destination
@@ -2758,7 +2645,7 @@ to save_detailed_population_info
     let current_set juveniles with [species = next_species]
     ;set total_daily_juveniles count juveniles ; the number of non-smolt and smolt individuals in the river that day
     set total_daily_juveniles count current_set ; the number of non-smolt and smolt individuals in the river that day (does not include migrants)(cumulative)
-    let rearing_juveniles count current_set with [daily_growth > 0 ]
+    let rearing_juveniles count current_set with [change_mass > 0 ]
     set total_daily_migrants table:get migrant_count_table next_species ; the number of individuals that turned into migrants that day or are currently migrating
     ;set total_daily_smolts table:get smolt_count_table next_species    ; the number of individuals that turned into smolts that day
     set total_daily_nonmigrants table:get nonmigrants_count_table next_species  ; the number of individuals that are nonmigrants at the beginning of that day (cumulative)
@@ -2770,9 +2657,9 @@ to save_detailed_population_info
     ]
     let rearing_growth_fra 0
     let rearing_growth_length 0
-    if any? current_set with [daily_growth > 0 ] [
-      set rearing_growth_fra mean [daily_growth / mass ] of current_set with [daily_growth > 0 ]
-      set rearing_growth_length mean [change_length] of current_set with [daily_growth > 0 ]
+    if any? current_set with [change_mass > 0 ] [
+      set rearing_growth_fra mean [change_mass / mass ] of current_set with [change_mass > 0 ]
+      set rearing_growth_length mean [change_length] of current_set with [change_mass > 0 ]
     ]
 
     ;  set mean_migrant_mass mean migrant_mass_list
@@ -2842,7 +2729,7 @@ end
 ;; Saves basic info about all cell
 to save_all_cell_info
 
-  set all_cells [self] of patches with [ wetted_fraction > 0 ]
+  let all_cells [self] of patches with [ wetted_fraction > 0 ]
 
   foreach all_cells [[next_cell] ->
 
@@ -2902,7 +2789,7 @@ to build_output_file_named [a_file_name]
     ; so these header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
 
-    set fish_events_list fput "time, Species, id, x_pos, y_pos, start length , length, length change, start mass, mass, previous_condition, condition, growth, percent_daily_growth, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
+    set fish_events_list fput "time, Species, id, x_pos, y_pos, start length , length, length change, start mass, mass, start_condition, condition, growth, percent_change_mass, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
 
     set fish_events_list fput (word "FHAST fish events output file, Created " date-and-time) fish_events_list
   ]
@@ -3197,7 +3084,7 @@ CHOOSER
 background_display
 background_display
 "veg" "wood" "depth" "velocity" "shade" "predator encounter prob" "wetted fraction" "available velocity shelter" "none"
-3
+4
 
 SWITCH
 14
@@ -3277,7 +3164,7 @@ INPUTBOX
 209
 473
 run_folder
-0
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String
