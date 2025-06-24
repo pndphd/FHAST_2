@@ -1,5 +1,5 @@
 ;##########################################################################################################
-;##### The FHAST program
+;##### The Fish Habitat Assesment and Simulation Tool (FHAST)
 ;##########################################################################################################
 
 ;##### Load Extensions #####################################################
@@ -18,7 +18,6 @@ globals [
 
   ;; General run setup variabels
   resolution          ; The grid resolution in meters
-  resolution_factor   ; A factor used to control how large the display can get
   area_column         ; The location index for area of a cell read in from the flow CSV
   reach_start         ; The upper most reach distance
   reach_end           ; The bottom reach distance
@@ -268,25 +267,25 @@ patches-own [
   cell_available_wet_area    ; Available wetted area in cell, (m^2)
 
   ;; Variabels used to assess cells
-  distance_to_drifter           ; Distance a patch is to a drifting fish
-  random_drift_downstream_cells ; the random cells selected for drif
-  count_fish_destination                 ; Total number of fish alive in a cell at the end of a timestep
-  swim_speed                 ; Swim speed of a certain fish in cell
-  active_metab_rate          ; AMR of a certain fish in cell
-  passive_metab_rate         ; RMR of a certain fish in cell
-  total_metab_rate           ; total metabolic rate
-  daily_intake               ; Drift intake (g/d), limited by cmax, drift availability etc
-  daily_energy_intake        ; Drift intake in J energy
-  daily_net_energy           ; Drift intake - total respiration (J/d)
-  total_net_energy_in_cell   ; Total net energy in the cell (g) (basically equal to the daily net energy, can be negative)
-  total_mort_risk_for_cell   ; Total probability of surviving all of the mortality risks in the cell (total_mort_risk_for_cell/total_net_energy_in_cell)
-  ratio_net_energy_risk      ; Ratio of total mortality risk to the net energy in the cell
-  consider_path_risk         ; Path survival multiplied by the ratio net energy to risk. Used by fish when selecting desination cells while taking into account path risk
-  fish_death_hightemp_prob          ; Probability of a fish surviving high temperature
-  fish_death_aq_pred_prob           ; Probability of a fish surviving predation by other fish
-  avg_weight_fish_in_destination         ; Average weight of live fish in a cell at the end of a timestep
-  avg_length_fish_in_destination         ; Average length of live fish in a cell at the end of a timestep
-  avg_condition_fish_in_destination      ; Average condition of live fish in a cell at the end of a timestp
+  distance_to_drifter                   ; Distance a patch is to a drifting fish
+  random_drift_downstream_cells         ; the random cells selected for drif
+  count_fish_destination                ; Total number of fish alive in a cell at the end of a timestep
+  swim_speed                            ; Swim speed of a certain fish in cell
+  active_metab_rate                     ; AMR of a certain fish in cell
+  passive_metab_rate                    ; RMR of a certain fish in cell
+  total_metab_rate                      ; total metabolic rate
+  daily_intake                          ; Drift intake (g/d), limited by cmax, drift availability etc
+  daily_energy_intake                   ; Drift intake in J energy
+  daily_net_energy                      ; Drift intake - total respiration (J/d)
+  total_net_energy_in_cell              ; Total net energy in the cell (g) (basically equal to the daily net energy, can be negative)
+  total_mort_risk_for_cell              ; Total probability of surviving all of the mortality risks in the cell (total_mort_risk_for_cell/total_net_energy_in_cell)
+  ratio_net_energy_risk                 ; Ratio of total mortality risk to the net energy in the cell
+  consider_path_risk                    ; Path survival multiplied by the ratio net energy to risk. Used by fish when selecting desination cells while taking into account path risk
+  fish_death_hightemp_prob              ; Probability of a fish surviving high temperature
+  fish_death_aq_pred_prob               ; Probability of a fish surviving predation by other fish
+  avg_weight_fish_in_destination        ; Average weight of live fish in a cell at the end of a timestep
+  avg_length_fish_in_destination        ; Average length of live fish in a cell at the end of a timestep
+  avg_condition_fish_in_destination     ; Average condition of live fish in a cell at the end of a timestp
 
   ;; Migration variables
   running_average_velocity              ; The mean velocity that the fish has experienced over the last 5 time steps
@@ -383,14 +382,16 @@ to-report make_table_from_csv [#csv_file]
   let paired_param_list (map [ [ a b ] -> ( list a b ) ] parameter_names parameter_values)
 
   report table:from-list paired_param_list
+
 end
 
 ;; A reporter to evalulate the logistic function
-to-report evaluate_logistic [ a_logistic_name a_species an_input ]
-  ; An observer reporter to report the value of a survival logistic
+to-report evaluate_logistic [ #a_logistic_name #a_species #an_input ]
 
-  let the_table (table:get (table:get fish_logistics_table a_species) a_logistic_name)
-  let Z (table:get the_table "logistic_a") + ((table:get the_table "logistic_b") * an_input)
+  ; An observer reporter to report the value of a survival logistic
+  let the_table (table:get (table:get fish_logistics_table #a_species) #a_logistic_name)
+  let Z (table:get the_table "logistic_a") + ((table:get the_table "logistic_b") * #an_input)
+
   ; Defensive programming to avoid over/underflow runtime errors
   if Z < -200 [ report 0.0 ]
   if Z >   35 [ report 1.0 ]
@@ -399,38 +400,65 @@ to-report evaluate_logistic [ a_logistic_name a_species an_input ]
 
 end
 
+;; Make the logistic table
+to create_logistic_with_table_and_params [a_table a_name x1 p1 x2 p2]
+  ; An observer reporter to initialize a logistic function.
+  ; p1 and p2 are the probabilities associated with inputs x1 and x2
+
+  ; For convenience in test output, make sure X1 is less than X2
+  ; This flips both relative to eachother and dose not change relatioships
+  if x1 > x2 [
+    let a_num x2
+    set x2 x1
+    set x1 a_num
+    set a_num p2
+    set p2 p1
+    set p1 a_num
+  ]
+
+  ; Calculate the internal parameters
+  let C ln (p1 / (1 - p1))
+  let D ln (p2 / (1 - p2))
+  let logistic_b (C - D) / (x1 - x2)
+  let logistic_a C - (logistic_b * x1)
+
+  let a_subtable table:make
+  table:put a_subtable "logistic_b" logistic_b
+  table:put a_subtable "logistic_a" logistic_a
+
+  table:put a_table a_name a_subtable
+
+end
+
 ;##### Setup Actions #######################################################
 ;; Run the setup actions whe setup button is presed
 to setup
 
-
- ; Basic reset procedure
+  ; Basic reset procedure
   clear-all                           ; Clear the entire space
   reset-ticks                         ; Reset time ticks
   set-default-shape turtles "dot"     ; Set the default turtel shape to dot
 
   ; Read in files and set resolution
-
   set habitat_params_csv csv:from-file word run_folder "/habitat.csv"                  ; Read in general habitat params
-  set_habitat_params                                                                  ; Sets numerous values including resolution and buffer
-  set resolution_factor 600                                                           ; Set the resolution factor
+  set_habitat_params                                                                   ; Sets numerous values including resolution and buffer
   set daily_input_csv csv:from-file word run_folder "/daily_input_file.csv"            ; Read in the daily flow and temperature
   set flow_input_csv csv:from-file
-    (word run_folder "/depth_velocity_data_input.csv")                            ; Read in the depth CSV
+    (word run_folder "/depth_velocity_data_input.csv")                                 ; Read in the depth CSV
   set shape_input_csv csv:from-file
-    (word run_folder "/shape_data_input.csv")                                     ; Read in the shape file
+    (word run_folder "/shape_data_input.csv")                                          ; Read in the shape file
   set daily_fish_csv csv:from-file word run_folder "/daily_fish_input.csv"             ; Read in the daily fish csv
   set fish_params_csv csv:from-file word run_folder "/fish_params_input.csv"           ; Read in the daily fish csv
   set pred_input_file_csv csv:from-file word run_folder "/predator_params_input.csv"   ; Read in the predator input csv
 
   ;; Get the indexes for the columns in each file
-  let date (position "date" (item 0 daily_input_csv))
   set flow_column (position "flow_cms" (item 0 daily_input_csv))
   set temp_column (position "temp_c" (item 0 daily_input_csv))
   set turbidity_column (position "turb_ntu" (item 0 daily_input_csv))
   set photoperiod_column (position "photoperiod" (item 0 daily_input_csv))
 
   ; Set the initial and end time
+  let date (position "date" (item 0 daily_input_csv))
   set first_day time:create-with-format item date (item 1 daily_input_csv) "yyyy-MM-dd"
   ; Get a zero day so ticaks line up with the first day
   let zero_day time:plus first_day -1.0 "days"
@@ -454,7 +482,6 @@ to setup
   ;; From the shape input file
   set x_shape (position "lat_dist" (item 0 shape_input_csv))
   set y_shape (position "dist" (item 0 shape_input_csv))
-
   set canopy_column (position "height" (item 0 shape_input_csv))
   set wood_column (position "wood" (item 0 shape_input_csv))
   set cover_column (position "cover_fra" (item 0 shape_input_csv))
@@ -466,33 +493,17 @@ to setup
   set gravel_column (position "gravel" (item 0 shape_input_csv))
   set ben_food_column (position "ben_food_fra" (item 0 shape_input_csv))
 
-  ; Initialize the cmax_tempfunction with an empty list
-  set cmax_temp_func n-values length species_list [1]
-
-  ; Initialize the cmax_tempfunction with an empty list
-  set max_swim_temp_func n-values length species_list [1]
-
   ;; Set the size of the world
   set_world_size
 
-  ;; Initialize patch data for pathfinding
-  ask patches  [
-    set has_visited? false
-    set previous_patch nobody
-    set path_to_here_cost -1
-    set path_survival -1
-    set fish_survival -1
-    set path_score -1
-  ]
-
-  ;; Initalize some global lists
+  ;; Initalize global lists
   set_lists
 
-  ;; Get all the flow values that we have input rasters for
+  ;; Set the world values that are the same for every cell
   set_temp_turbidity_flow_photoperiod
 
-  ;; Get the daily values from the fishh input
-  set_daily_fish_counts
+  ;; Set up the number of fish that get added to the model every day
+  set_daily_fish_additions
 
   ;; Set the fish parameters
   set_fish_parameters
@@ -520,25 +531,6 @@ to setup
 
   ;; Habitat rating pre-calculations
   set_partial_hab_rating
-
-  set pathfinding_dirty_patches no-patches
-
-end
-
-;; Set the size of the world
-to set_world_size
-
-  ; Get necessary information to set up world size
-  let x_values (map [n -> item lat_column n ] flow_input_csv)  ; Read in all the x positions
-  let y_values (map [n -> item lon_column n ] flow_input_csv)  ; Read in all the y positions
-  let x_max max x_values                                   ; Get the max x value
-  let x_min min x_values                                   ; Get the min x value
-  let y_max max y_values                                   ; Get the max y value
-
-  ; Resize the world and patchs
-  resize-world (x_min / (resolution)) (x_max / (resolution)) 0 (y_max / (resolution))
-  ; Set the patch size to be 1 or larger (if reasonable)
-  set-patch-size max (list 1 ((resolution / y_max) * resolution_factor))
 
 end
 
@@ -577,6 +569,18 @@ to set_habitat_params
   ; benthic velocity reduction parameters
   set ben_vel_height item 0 (table:get paired_param_table "ben_vel_height")
   set d84_size item 0 (table:get paired_param_table "d84_size")
+
+  ;; Initialize patch data for pathfinding
+  ask patches  [
+    set has_visited? false
+    set previous_patch nobody
+    set path_to_here_cost -1
+    set path_survival -1
+    set fish_survival -1
+    set path_score -1
+  ]
+
+  set pathfinding_dirty_patches no-patches
 
 end
 
@@ -617,8 +621,25 @@ to set_temp_turbidity_flow_photoperiod
 
 end
 
+;; Set the size of the world
+to set_world_size
+
+  ; Get necessary information to set up world size
+  let x_values (map [n -> item lat_column n ] flow_input_csv)  ; Read in all the x positions
+  let y_values (map [n -> item lon_column n ] flow_input_csv)  ; Read in all the y positions
+  let x_max max x_values                                   ; Get the max x value
+  let x_min min x_values                                   ; Get the min x value
+  let y_max max y_values                                   ; Get the max y value
+
+  ; Resize the world and patchs
+  resize-world (x_min / (resolution)) (x_max / (resolution)) 0 (y_max / (resolution))
+  ; Set the patch size to be 1 or larger (if reasonable)
+  set-patch-size max (list 1 ((resolution / y_max) * 2000 * zoom_factor))
+
+end
+
 ;; Set up the number of fish that get added to the model every day
-to set_daily_fish_counts
+to set_daily_fish_additions
 
   let fish_date_column (position "date" (item 0 daily_fish_csv))
   let fish_date_values but-first (map [n -> item fish_date_column n ] daily_fish_csv)
@@ -697,6 +718,12 @@ to set_fish_parameters
   set outmigrate_V9 (table:get paired_param_table "outmigrate_V9")
   set small_cover_length (table:get paired_param_table "small_cover_length")
   set migration_max_dist (table:get paired_param_table "migration_max_dist")
+
+  ; Initialize the cmax_tempfunction with an empty list
+  set cmax_temp_func n-values length species_list [1]
+
+  ; Initialize the cmax_tempfunction with an empty list
+  set max_swim_temp_func n-values length species_list [1]
 
 end
 
@@ -871,36 +898,6 @@ to build_logistic_functions
 
     table:put fish_logistics_table next_species the_species_table
   ]
-
-end
-
-;; Make the logistic table
-to create_logistic_with_table_and_params [a_table a_name x1 p1 x2 p2]
-  ; An observer reporter to initialize a logistic function.
-  ; p1 and p2 are the probabilities associated with inputs x1 and x2
-
-  ; For convenience in test output, make sure X1 is less than X2
-  ; This flips both relative to eachother and dose not change relatioships
-  if x1 > x2 [
-    let a_num x2
-    set x2 x1
-    set x1 a_num
-    set a_num p2
-    set p2 p1
-    set p1 a_num
-  ]
-
-  ; Calculate the internal parameters
-  let C ln (p1 / (1 - p1))
-  let D ln (p2 / (1 - p2))
-  let logistic_b (C - D) / (x1 - x2)
-  let logistic_a C - (logistic_b * x1)
-
-  let a_subtable table:make
-  table:put a_subtable "logistic_b" logistic_b
-  table:put a_subtable "logistic_a" logistic_a
-
-  table:put a_table a_name a_subtable
 
 end
 
@@ -2874,11 +2871,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-408
-629
+281
+223
 -1
 -1
-5.128205128205129
+1.7094017094017098
 1
 10
 1
@@ -3168,6 +3165,21 @@ C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String
+
+SLIDER
+11
+489
+207
+522
+zoom_factor
+zoom_factor
+0
+1
+0.1
+0.01
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 @#$#@#$#@
