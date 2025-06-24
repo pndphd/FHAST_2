@@ -9,7 +9,7 @@
 if (!exists("pass_arguments")){
   pass_arguments = NULL
   pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/test2/temporary/re_clip2_LAR_OHWM_18,500_cfs.shp"
-  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/ARCF_C3A_project_features_test2/ARCF_C3A_project_features_test2.shp"
+  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/ARCF_C3A_project_features_test2/ARCF_C3A_project_features_test3.shp"
   pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/test2"
 }
 
@@ -47,6 +47,10 @@ ml$df$ohwm = st_read(ml$path$ohwm) %>%
 message("Read OHWM: Done.\n")
 message("Read Footprint.\n")
 ml$df$footprint = st_read(ml$path$footprint) %>% 
+  rowwise() %>% 
+  mutate(Feature = ifelse('Feature' %in% names(.), Feature, "NONE"),
+         Project = ifelse('Project' %in% names(.), Project, "NONE")) %>% 
+  ungroup() %>% 
   rename_with(str_to_title, !matches("geometry")) %>% 
   select(Feature, Project) %>% 
   mutate(OHWM = FALSE)
@@ -58,8 +62,7 @@ message("Read Footprint: Done.\n")
 ml$df$lookup_table = ml$df$footprint %>% 
   select(Feature) %>% 
   st_drop_geometry() %>% 
-  distinct() %>% 
-  mutate(Type = 1:n())
+  distinct() 
 
 message("Calculate Summaries.\n")
 
