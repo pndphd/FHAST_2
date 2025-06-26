@@ -1417,41 +1417,33 @@ to rear_fish
         migrate
         survive
       ][
+
+        flag_drifters
+
+        if is_drifter [
+          ; The fish checks whether it will have any positive net energy in any of the search radius cells. If not, it can move to another farther area
+          drift_downstream
+          ; If there are valid drift destination, calculate the net energy of the cells in radius of the random valid drift destinations identified
+          if exit_status = 0 [
+            ; If there are radius cells within the random valid drift destinations identified (exit_status = 0), calculate net energy/mortality and select destination cell
+            calculate_net_energy_of_drift_cells
+          ]
+        ]
+
+
         ; If a fish decides not to migrate, it performs the following procedures in order
         ; If we set the fish to drift based on having no destination cells, skip this attempted move logic.
         ; The select_destination_cell funciton will in most cases set is_drifter to false which prevents
         ; the drift to avoid stranding behavior.
         calculate_energy_balance
         select_destination_cell
-        if not is_drifter [
-          ;calculate_energy_balance
-
-        ]
-        if is_drifter [
-          ; the fish checks whether it will have any positive net energy in any of the search radius cells. If not, it can move to another farther area
-          drift_downstream
-          ; If there are valid drift destination, calculate the net energy of the cells in radius of the random valid drift destinations identified
-          ifelse any? random_drift_downstream_cells = TRUE [
-            ifelse exit_status != 1 [
-              ; If there are radius cells within the random valid drift destinations identified (exit_status = 0), calculate net energy/mortality and select destination cell
-              calculate_net_energy_of_drift_cells
-
-              select_destination_cell
-            ][
-              ; If there are no radius cells within the random valid drift destinations identified that have positive net energy, exit the river
-              select_destination_cell
-            ]
-          ][
-            ; If there are no valid drift destinations, the fish either strands or exits the river (even if they aren't at the end of the reach)
-            select_destination_cell
-          ]
-        ]
 
         ; All non migrants check to see if yse respurces
         if exit_status != 1 or strand_status != 1 [
           ; If the fish have not stranded or exited the river, they grow and deplete destination resources
           deplete_destination_resources
         ]
+
 
         ; All fish go through the survive procedure
         survive
@@ -1462,6 +1454,19 @@ to rear_fish
     ]
   ]
 
+
+end
+
+to flag_drifters
+
+  ; if all of the cells in the radius have negative net energy values, the fish moves elsewhere in the reach to get out of crappy area
+  if all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false [
+
+    set is_drifter true
+    set drifter_history "drifting, no dests available"
+    table:put drifter_count_table species table:get drifter_count_table species + 1
+  ]
+
 end
 
 ;; Update the fish variables that change every time step (turbidity functions, etc)
@@ -1469,6 +1474,8 @@ to update_this_fish
 
   ; Re-set the fish in shelter variable to false
   set is_in_shelter false
+  set is_drifter false
+  set path_survival_list 1
 
   ; If mass is negative, set it to a very small number to calculate log mass in metabolic rate equation
   if mass <= 0 [set mass .001]
@@ -1503,8 +1510,7 @@ to update_this_fish
    ; set the distance that fish can detect/react to prey
    set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
 
-   ; Reset the path survival list (in case they move to two cells while drifting
-   set path_survival_list []
+
 
 end
 
@@ -1771,38 +1777,18 @@ to survive
     die
   ]
 
-  ; If fish has a path survival list because it's a drifter, we use the two values in the list to determine whether it dies
-  ifelse not empty? path_survival_list [
-
-    ;Compare each item in the path survival list to a random number to see if the fish dies in either path
-    foreach path_survival_list [n ->
-
-      if (random-float 1.0) > n [
-        table:put death_pred_table species table:get death_pred_table species + 1
-        save_event "died of predation"
-        set is_alive false
-        table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
-        (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
-          is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
-        ;is_smolt = false [table:put dead_nonsmolts_count_table species table:get dead_nonsmolts_count_table species + 1])
-        (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
-        die
-      ]
-    ]
-  ][
-    ; Now do survival for non drifters
-    ; If the fish is eaten in its destination cell or if the survival probability of the path is less than a random number
-    if (random-float 1.0) > [path_survival] of destination [
-      ; Fish died of fish predation
-      table:put death_pred_table species table:get death_pred_table species + 1
-      save_event "died of predation"
-      set is_alive false
-      table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
-      (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
-        is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
-      (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
-      die
-    ]
+  ; Now do survival for non drifters
+  ; If the fish is eaten in its destination cell or if the survival probability of the path is less than a random number
+  if (random-float 1.0) > ([path_survival] of destination * path_survival_list) [
+    ; Fish died of fish predation
+    table:put death_pred_table species table:get death_pred_table species + 1
+    save_event "died of predation"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
+      is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    die
   ]
 
   if (random-float 1.0) < ([fish_death_hightemp_prob] of destination) [
@@ -1943,7 +1929,7 @@ to select_destination_cell
 
     let destination_patch_path_survival fallback_migration_patch_path_survival
 
-    ask destination [ set path_survival destination_patch_path_survival]
+    ask destination [set path_survival destination_patch_path_survival]
 
     if is_drifter = true and ycor = reach_end [set drifter_history "no valid destinations or cells with pos net energy, drifted out of river"]
     if is_drifter = true and ycor != reach_end [set drifter_history "no valid destinations or cells with pos net energy, did not reach end"]
@@ -1955,76 +1941,24 @@ to select_destination_cell
     ; Each fish performs this in order of longest length to shortest length
     ; If the probability of surviving starvation is less than the randomly generated number, the fish selects cells with higher positive net energy regardless of risk
     ifelse (random-float 1.0) > fish_death_starv_survival_prob [
-
       set starving? true
-
-      ; if all of the cells in the radius have negative net energy values, the fish moves elsewhere in the reach to get out of crappy area
-      if all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false [
-
-        set is_drifter true
-        set drifter_history "drifting, no dests available"
-        table:put drifter_count_table species table:get drifter_count_table species + 1
-      ]
-
-      if any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = false [
-        set drifter_history "is starving, found dest"
-        set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell] ; If they do not become drifters, they select cell with higher net energy regardless of risk
-        move_fish destination
-        ; If they found a destination, turned drifter off
-        set is_drifter false
-      ]
-
-;      ; if ANY of the cells in the radius have positive net energy values, the fish select cell with higher net energy regardless of risk
-;      if any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true [
-;        ; print "was drifting, found dest"
-;        set drifter_history "was drifting, found dest"
-;        set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
-;
-;
-;        move_fish destination
-
-;      ]
-    ][ ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
+      set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
+    ][
+      ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
 
       set starving? false
-
-      if (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false) or (any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = false) [
-        ;print "was not drifting, found dest"
-        ask wet_cells_in_radius [
-          ifelse total_net_energy_in_cell = 0 [
-          set consider_path_risk path_survival
+      ask wet_cells_in_radius [
+        ifelse total_net_energy_in_cell = 0 [
+          set consider_path_risk 0
         ][
           ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
           set consider_path_risk total_net_energy_in_cell * path_survival
-          ]
         ]
-
-        set destination max-one-of wet_cells_in_radius [consider_path_risk]
-        set drifter_history "was not drifting, found dest"
-        move_fish destination
       ]
-
-      if (all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = true) or (any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true) [
-        ; print "was drifting, found dest"
-        ask wet_cells_in_radius [
-
-          ifelse total_net_energy_in_cell = 0 [
-            set consider_path_risk path_survival
-          ][
-            ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
-            set consider_path_risk  total_net_energy_in_cell * path_survival
-          ]
-        ]
-        set destination max-one-of wet_cells_in_radius [consider_path_risk]
-        set drifter_history "was drifting, found dest"
-        move_fish destination
-        set is_drifter false
-      ]
+      set destination max-one-of wet_cells_in_radius [consider_path_risk]
     ]
+    move_fish destination
   ]
-
-  ; If there is already a value in their path_survival_list, we add the second value to it
-  if not empty? path_survival_list [set path_survival_list lput ([path_survival] of destination) path_survival_list]
 
   ask destination [set migrant_patch false]  ; The destination cell's migrant_patch status is set to false
 
@@ -2114,7 +2048,6 @@ end
 
 ;; Procedure for drifters drifting downstream
 to drift_downstream
-
 
   ; Temporarily set the drifter's color to blue
   set color blue
@@ -2223,10 +2156,11 @@ to calculate_net_energy_of_drift_cells
     move-to closest_cell_with_pos_energy
 
     ; Reset path survival list for the drifters who move to two cells (this store the path survivals of the two paths)
-    set path_survival_list []
+    ;set path_survival_list []
 
     ;For the drifter fish, store the path survival probabilities
-    set path_survival_list lput [path_survival] of closest_cell_with_pos_energy path_survival_list
+    ;set path_survival_list lput [path_survival] of closest_cell_with_pos_energy path_survival_list
+    set path_survival_list [path_survival] of closest_cell_with_pos_energy
 
     ;Wet cells in radius become the valid patches in the radius of the closest cell
     ;set wet_cells_in_radius find_accessibel_destinations self patch_radius
