@@ -1970,20 +1970,18 @@ to select_destination_cell
         set drifter_history "is starving, found dest"
         set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell] ; If they do not become drifters, they select cell with higher net energy regardless of risk
         move_fish destination
-        ; If they found a destination, turned drifter off
-        set is_drifter false
       ]
 
-;      ; if ANY of the cells in the radius have positive net energy values, the fish select cell with higher net energy regardless of risk
-;      if any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true [
-;        ; print "was drifting, found dest"
-;        set drifter_history "was drifting, found dest"
-;        set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
-;
-;
-;        move_fish destination
+      ; if ANY of the cells in the radius have positive net energy values, the fish select cell with higher net energy regardless of risk
+      if any? wet_cells_in_radius with [total_net_energy_in_cell > 0] and is_drifter = true [
+        ; print "was drifting, found dest"
+        set drifter_history "was drifting, found dest"
+        set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
 
-;      ]
+
+        move_fish destination
+
+      ]
     ][ ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
 
       set starving? false
