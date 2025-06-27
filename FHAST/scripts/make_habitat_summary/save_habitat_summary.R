@@ -6,12 +6,12 @@
 
 # Save spatial average data
 write.csv(x = here(ml$path$output_folder, st_drop_geometry(ml$sum[[1]]$map)),
-          file = "habitat_map_data.csv",
+          file = here(ml$path$output_folder, "habitat_map_data.csv"),
           row.names = FALSE)
 
 # Save time average data
 write.csv(x = here(ml$path$output_folder, ml$sum[[1]]$day),
-          file = "habitat_daily_data.csv",
+          file = here(ml$path$output_folder, "habitat_daily_data.csv"),
           row.names = FALSE)
 
 # Write all the fish daily data sets
@@ -40,7 +40,7 @@ if (ml$var$adult_run == TRUE){
   
   # Write the adult energy used data
   write.csv(x = here(ml$path$output_folder, ml$df$adult_migration_energy_data),
-            file = "adult_migration_energy_data.csv",
+            file = here(ml$path$output_folder, "adult_migration_energy_data.csv"),
             row.names = FALSE)
 }
 
