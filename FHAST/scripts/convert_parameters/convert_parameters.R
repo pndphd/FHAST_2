@@ -97,6 +97,7 @@ if("wildcard" %in% ml$df$cover$class){
 }
 
 ##### Convert into usable formats ##############################################
+browser()
 # Fish Parameters: to named list with species as index
 ml$df$fish_parms = fish_parm_temp %>%
   # select species used in the run

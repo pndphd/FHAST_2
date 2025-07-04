@@ -155,10 +155,21 @@ globals [
   smolt_max_L9              ; Parameters for the logistic equation for the probability of smolting depending on flegnth- Length in which probability of smolting is 90 pct
   outmigrate_V1             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
   outmigrate_V9             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
+  spawn_v_int               ; Intercept parameter for the probablity of sapwning in a set velocity
+  spawn_v_slope             ; Slope parameter for the probablity of sapwning in a set velocity
+  spawn_v_quat              ; Quat parameter for the probablity of sapwning in a set velocity
+  spawn_d_int               ; Intercept parameter for the probablity of sapwning in a set depth
+  spawn_d_slope             ; Slope parameter for the probablity of sapwning in a set depth
+  spawn_d_quat              ; Quat parameter for the probablity of sapwning in a set depth
+  redd_area                 ; area taken up by a redd
+  guard_area                ; After a fish makes a redd what area does it guard
+  fecundity_int             ; The intercept of the fecundity equation #eggs = int * lenghch[cm]^slope
+  fecundity_slope           ; The slope of the fecundity equation #eggs = int * lenghch[cm]^slope
+
 
   ;; Fish equations
-  cmax_temp_func                    ; A list of cmax temperature functions for each species
-  max_swim_temp_func                ; A list of cmax temperature functions for each species
+  cmax_temp_func            ; A list of cmax temperature functions for each species
+  max_swim_temp_func        ; A list of cmax temperature functions for each species
 
   ;; Predator variables
   pred_input_file_csv        ; Input csv file with some default params for pred counts
@@ -303,6 +314,11 @@ patches-own [
   small_cover_bonus                     ; The "bonus" to survival in a predator-prey encounter provided by small cover
   survival_prob                         ; The probability a prey fish survives an encounter based on the cover bonus and pred success rate
   small_survival_prob                   ; The probability a small prey fish survives an encounter based on the cover bonus and pred success rate
+
+  ;; Reproduction
+  unguarded_area                        ; Area of the patch that is not guarded by a spawner
+  total_redd_area                       ; total area of redds with eggs still in them
+  spawn_suit                            ; Spawning sutibality based on V and D
 ]
 
 ;; Define agent variables
@@ -312,6 +328,7 @@ turtles-own [
   species_id   ; The assigned number for this species
   species      ; The species name
   fish_sex     ; Sex of fish
+  age          ; Age of redds
 
   ;; Physological parameters
   f_length             ; Fork length
@@ -358,12 +375,20 @@ turtles-own [
   fallback_drift_patch                    ; The patch a drifter is currently on
   fallback_drift_patch_path_survival      ; Path survival of the fallback_drift_patch
 
+  ;; Reproduction
+  is_guarding                             ; A flag indicating if the fish has spawned and is guarding a redd
+  guarded                                 ; Flag if a redd is guarded
+  area_of_redd                            ; Area of actual redd
+  egg_count                               ; The number of live eggs in a spawner or redd
+  dead_eggs                               ; The number of dead eggs in a spawner or redd
+
+
 ]
 
 ;##### Setup Breeds ########################################################
 breed [adults adult]
 breed [spawners spawner]
-breed [eggs egg]
+breed [redds redd]
 breed [juveniles juvenile]
 breed [migrants migrant]
 
@@ -719,6 +744,16 @@ to set_fish_parameters
   set outmigrate_V9 (table:get paired_param_table "outmigrate_V9")
   set small_cover_length (table:get paired_param_table "small_cover_length")
   set migration_max_dist (table:get paired_param_table "migration_max_dist")
+  set spawn_v_int (table:get paired_param_table "spawn_v_int")
+  set spawn_v_slope (table:get paired_param_table "spawn_v_slope")
+  set spawn_v_quat (table:get paired_param_table "spawn_v_quat")
+  set spawn_d_int (table:get paired_param_table "spawn_v_int")
+  set spawn_d_slope (table:get paired_param_table "spawn_v_slope")
+  set spawn_d_quat (table:get paired_param_table "spawn_v_quat")
+  set redd_area (table:get paired_param_table "redd_area")
+  set guard_area (table:get paired_param_table "guard_area")
+  set fecundity_int (table:get paired_param_table "fecundity_int")
+  set fecundity_slope (table:get paired_param_table "fecundity_slope")
 
   ; Initialize the cmax_tempfunction with an empty list
   set cmax_temp_func n-values length species_list [1]
@@ -736,9 +771,12 @@ to set_patch_flow_values
     set depths (map [n -> 0] flow_values)
     set velocities (map [n -> 0] flow_values)
     set wetted_fractions (map [n -> 0] flow_values)
+
+    ; Set initial spawn suit list
+    set spawn_suit (map [n -> 0] range length species_list)
   ]
 
-  ;; Populate each patch with depth data
+  ;; Populate each patch with depth and velocity data
   ;; Take each line in the csv
   foreach (but-first flow_input_csv) [n ->
     ; Move over each patch using its location and value
@@ -820,6 +858,9 @@ to set_patch_habitat_values
       set rock (item rock_column n)
       set cobble (item cobble_column n)
       set ben_food_fra (item ben_food_column n)
+
+      ; Set area for spawning
+      set unguarded_area area * (gravel + cobble)
     ]
   ]
 
@@ -979,6 +1020,7 @@ to go
   update_tabels_and_equations
   hatch_fish
   rear_fish
+  spawn_fish
 
   ; Save output info
   save_destination_cell_info
@@ -1014,7 +1056,7 @@ to set_habitat_velcoity_and_depth
   let flow_fraction (flow - low_flow) / (high_flow - low_flow)  ; Calculate the fraction of distance the flow is form the low flow
   set today_index position low_flow flow_values
 
-  ; Calculate the depth Velocity and wetted area for all patches
+  ; Calculate the depth Velocity and wetted area for all patches and the spawning sutability
   ask patches [
     set pcolor black
     ifelse ticks = 1 [
@@ -1026,17 +1068,27 @@ to set_habitat_velcoity_and_depth
     let high_depth (item (today_index + 1) depths)
     set today_depth (low_depth * (1 - flow_fraction) + high_depth * (flow_fraction))    ; Depth is in meters
     if today_depth <= 0 [set today_depth 0]
+
     ; Do the same for velotity
     set yesterday_velocity today_velocity
     let low_velocity  (item today_index velocities)
     let high_velocity (item (today_index + 1) velocities)
     set today_velocity (low_velocity * (1 - flow_fraction) + high_velocity * (flow_fraction))       ; Velocity is in m/s
+
     ; Do the same for wetted fraction
     let low_wetted  (item today_index wetted_fractions)
     let high_wetted (item (today_index + 1) wetted_fractions)
     set wetted_fraction (low_wetted * (1 - flow_fraction) + high_wetted * (flow_fraction))
     set wetted_area area * wetted_fraction
-    ; if today_velocity <= 0 [set today_velocity 0]
+
+    ; Spawning sutability
+    foreach (range length species_list) [n ->
+      ; set the spawning sutabiblit for each patch if no avaiable area set to 0
+      let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
+      let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
+      set spawn_suit replace-item n spawn_suit (v_suit * d_suit)
+
+    ]
   ]
 
   ; Make the list of wet patches
@@ -1224,7 +1276,7 @@ to color_patches
       (ifelse
         background_display = "depth" [
           if (today_depth > 0)[
-            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "YlGnBu" 9 today_depth 0 (max_depth)]
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "YlGnBu" 9 (gravel + cobble) 0 (1)]
         ]
         background_display = "velocity" [
           if (today_depth > 0)[
@@ -1326,33 +1378,48 @@ to hatch_fish
     set fish_list but-first fish_list
 
     ; Add in fish based on life stage
-    ;  if item (lifestage_column - 1) todays_fish = "adult" [
-    ;    create-adults (item (number_column - 1) todays_fish )[
-    ;      set species (item (species_column - 1) todays_fish )
-    ;      set species_id (position species species_list)
-    ;
-    ;      set f_length (item (length_column - 1) todays_fish ) ; fish length is in cm
-    ;      set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b))) ; mass is in g
-    ;      set fish_condition 1.0
-    ;
-    ;      set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
-    ;
-    ;      set size 2
-    ;      set shape "fish"
-    ;      set destination one-of wet_patches with [today_velocity < 100]  ; Place the turtle in a wet patch
-    ;      move-to destination
-    ;      set color red
-    ;      set exit_status 0
-    ;
-    ;     ; Memory lists
-    ;      set velocity_experience_list (list) ; A list of destination cell velocity fish experience each day
-    ;
-    ;      set is_in_shelter false        ; A boolean for whether trout is drift-feeding in velocity shelter
-    ;      set is_alive true
-    ;
-    ;      ;save_event "initialized"
-    ;    ]
-    ;  ]
+    if item (lifestage_column - 1) todays_fish = "adult" [
+      create-adults (item (number_column - 1) todays_fish )[
+        ; Chose who it will be displayed
+        set size 7
+        set color green
+        set shape "dot"
+
+        ; Set species info
+        set species (item (species_column - 1) todays_fish )
+        set species_id (position species species_list)
+
+        ; Set flags
+        set is_guarding 0
+
+        ; Set age
+        set age 0
+
+        ; Set lenght man mass
+        set f_length (item (length_column - 1) todays_fish ) ; fish length is in cm
+        set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b))) ; mass is in g
+        set fish_condition 1.0
+
+        ; Set the initial needed water depth is at least fish length (remember cm to m conversion)
+        let init_length f_length / 100
+
+        ; Set the max water velocity for first cell
+        let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
+        ; Calculate max swimm speed (m/s)
+        let init_swim_speed max_swim_l_term * item species_id max_swim_temp_func
+
+        ; Select the initial cell
+        set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length)]
+        pen-up
+        move-to destination
+        set exit_status 0
+
+        ; Memory lists
+        set is_alive true
+
+        save_event "adult_added"
+      ]
+    ]
 
     if item (lifestage_column - 1) todays_fish = "juvenile" [
       create-juveniles (item (number_column - 1) todays_fish )[
@@ -1371,19 +1438,21 @@ to hatch_fish
         set fish_condition 1.0
         set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
 
-        ; Set the initial needed water depth
-        let init_length f_length * 0.01
+        ; Set the initial needed water depth is at least fish length (remember cm to m conversion)
+        let init_length f_length / 100
 
         ; Set the max water velocity for first cell
         let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
-        ; Calculate max swimm speed (BL/s)
+        ; Calculate max swimm speed (m/s)
         let init_swim_speed max_swim_l_term * item species_id max_swim_temp_func
 
         ; Select the initial cell
         set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length) and frac_velocity_shelter > 0]
 
+        ; log the event
         save_event "hatch"
 
+        ; Move to spot
         pen-up
         move-to destination
         set exit_status 0
@@ -1401,14 +1470,15 @@ to hatch_fish
 
 end
 
+;##### Juvenile Rearing Acrtions ##########################################
 ;; Have the fish do rearing actions
 to rear_fish
 
-  foreach sort-on [-1 * f_length] turtles [
+  foreach sort-on [-1 * f_length] juveniles [
     next_fish -> ask next_fish [
 
       ; Each fish completes the following procedures in order of longest to shortest
-      update_this_fish
+      update_juvenile_fish
       find_inrange_destinations
       calculate_outmigration_probability
 
@@ -1456,7 +1526,7 @@ to rear_fish
 end
 
 ;; Update the fish variables that change every time step (turbidity functions, etc)
-to update_this_fish
+to update_juvenile_fish
 
   ; Re-set the fish in shelter variable to false
   set is_in_shelter false
@@ -1480,7 +1550,7 @@ to update_this_fish
   ; Calculate cmax (g/d)
   set cmax fish_cmax_wt_term * item species_id cmax_temp_func
 
-  ; Swim speed length term (convert form BL/s and come cm to m)
+  ; Swim speed length term (convert from BL/s and from cm to m)
   let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
   ; Calculate max swimm speed (BL/s)
   set max_swim_speed max_swim_l_term * item species_id max_swim_temp_func
@@ -1497,8 +1567,6 @@ to update_this_fish
    ; set the distance that fish can detect/react to prey
    set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
 
-
-
 end
 
 ;; Find all of the potential destination cells that the fish can choose to move to
@@ -1506,12 +1574,8 @@ to find_inrange_destinations
 
   ; Number of patches within the maximum distance that a fish can travel. Essentially the "radius" in cm converted to meters and divided by the resolutio
   set patch_radius (((item species_id move_dist_a) * (f_length ^ (item species_id move_dist_b)))) / resolution
-  set patch_radius max (list patch_radius 1)
-
   ; If the fish only has access to its current patch let it access its neighbors as well
-  if (patch_radius <= 1.0)[
-    set patch_radius 1.1
-  ]
+  set patch_radius max (list patch_radius 1.1)
 
   ; Find all of the reachable cells within the radius
   set wet_cells_in_radius find_accessibel_destinations self patch_radius
@@ -1519,8 +1583,10 @@ to find_inrange_destinations
   ; Calculate the mean water velocity in the radius
   set mean_velocity_in_radius mean [today_velocity] of wet_cells_in_radius
 
-  ; If it is the first time step, the first value in the velocity experience list is the mean velocity of the radius
-  set velocity_experience_list lput mean_velocity_in_radius velocity_experience_list
+  if breed = juveniles [
+    ; If it is the first time step, the first value in the velocity experience list is the mean velocity of the radius
+    set velocity_experience_list lput mean_velocity_in_radius velocity_experience_list
+  ]
 
 end
 
@@ -1764,7 +1830,7 @@ end
 to drift_downstream
 
   ; Temporarily set the drifter's color to blue
-  set color red
+  set color yellow
 
   ; Set the distance a fish can disperse to be equal to 10 times the current radius (currently same as migration distance)
   let dispersal_distance item species_id migration_max_dist / resolution
@@ -2297,6 +2363,154 @@ to grow
 
 end
 
+;##### Adult Spawning Acrtions ##########################################
+to spawn_fish
+  foreach sort-on [-1 * f_length] adults [
+    next_fish -> ask next_fish [
+
+      ; Get new weight and see if still alive
+      calculate_spawner_weight_loss
+
+      ; Make unspawned spawn
+      if is_guarding = 0 [
+        spawn
+      ]
+    ]
+  ]
+
+end
+
+to calculate_spawner_weight_loss
+
+  set active_metab_rate (calculate_metabolic temperature mass species_id today_velocity)
+
+  set change_mass (- active_metab_rate) / item species_id energy_density
+
+  set mass mass + change_mass
+
+  set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b))
+
+  set fish_condition mass / healthy_mass
+
+  ; Calculate mortality
+  ; Calculate the probability of surviving starvation based on K. This survival does not depend on the cell. It implements the linear condition mortality model.
+  ; The equation is algebraically equivalent to a line with survival = mort-condition-S-at-K5 at K = 0.5 and survival = 1.0 at K = 1.0
+  set fish_death_starv_survival_prob (evaluate_logistic "poor_condition" species fish_condition)
+
+  if (random-float 1.0) > (fish_death_starv_survival_prob) [
+    ; Fish died of poor condition
+    print word "died of poor condition at age: " age
+    table:put death_condition_table species table:get death_condition_table species + 1
+    save_event "adult died"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    print unguarded_area
+    set unguarded_area unguarded_area + item species_id guard_area
+    print unguarded_area
+
+    die
+  ]
+
+  set age age + 1
+
+end
+
+
+
+
+
+
+to spawn
+
+  ; Find possibel spots
+  find_inrange_destinations
+  ;with [unguarded_area ]
+
+  if any? wet_cells_in_radius[
+    set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
+    move-to destination
+    if [unguarded_area] of destination >= item species_id guard_area [
+      create_redd
+
+      ; Turn on guard flag
+      set is_guarding 1
+    ]
+  ]
+
+
+
+
+
+  ; !!!!!!!!!!!!!!! drifters are stranding
+
+  ; Filter spots based on protection of avaiabel gravel
+
+  ; Select spot based on score
+
+  ; Create a Redd
+
+  ; Damage other redds
+
+
+
+  ; use guarding resources
+
+
+end
+
+
+to create_redd
+  hatch-redds 1[
+    set size 1
+    set color red
+    set shape "circle"
+
+    ; Set species info
+    set species [species] of myself
+    set species_id [species_id] of myself
+    set age 0
+    set egg_count (item species_id fecundity_int) * f_length ^ (item species_id fecundity_slope)
+    set area_of_redd item species_id redd_area
+  ]
+
+  ; Remove unguarded area
+  ask patch-here[
+    set unguarded_area unguarded_area - item [species_id] of myself guard_area
+  ]
+
+  ; Superimpose
+  ask redds-here [
+    let overlap_fra 0
+
+    let dimenshion sqrt(area)
+    let x1 random-float dimenshion
+    let y1 random-float dimenshion
+    let x2 random-float dimenshion
+    let y2 random-float dimenshion
+    let d0 sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+    let r1 sqrt(area_of_redd / pi)
+    let r2 sqrt([item [species_id] of myself redd_area] of myself / pi)
+
+    if d0 <= abs(r1 - r2)[
+     set overlap_fra 1
+    ]
+    if d0 > abs(r1 - r2) and d0 < r1 + r2[
+      let overlap_1 r1 ^ 2 * acos((d0 ^ 2 + r1 ^ 2 - r2 ^ 2)/ 2 / d0 / r1) * pi / 180
+      let overlap_2 r2 ^ 2 * acos((d0 ^ 2 + r2 ^ 2 - r1 ^ 2)/ 2 / d0 / r2) * pi / 180
+      let overlap_3 -0.5 * sqrt((- r1 + r2 + d0) * (r1 - r2 + d0) * (r1 + r2 - d0) * (r1 + r2 + d0))
+      set overlap_fra (overlap_1 + overlap_2 + overlap_3) / area_of_redd
+    ]
+
+    let killed_eggs overlap_fra * egg_count
+    set dead_eggs dead_eggs + killed_eggs
+    set egg_count egg_count - killed_eggs
+
+  ]
+
+end
+
+
+
 ;##### Fish Pathfinding Functions ##########################################
 ; Clear all of the values used in the pathfinding algorithm
 to clear_patch_path_data
@@ -2363,8 +2577,19 @@ end
 
 ;; Makes checks on depth velocity and conncetion to see if the cell is valid for path finding
 to-report is_valid_destination [fish destinations]
-  let possible_swim_speed (set_swim_speed (item [species_id] of fish benthic_fish) cell_available_vel_shelter ([territory_size] of fish) today_velocity)
-  report (today_depth > 0  and (possible_swim_speed < [max_swim_speed] of fish) and (not table:has-key? destinations patch_identifier self) and cell_available_wet_area >= [territory_size] of fish)
+
+  ; Check for juveniles
+  if [breed] of fish = juveniles[
+    let possible_swim_speed (set_swim_speed (item [species_id] of fish benthic_fish) cell_available_vel_shelter ([territory_size] of fish) today_velocity)
+    report (today_depth > 0  and (possible_swim_speed < [max_swim_speed] of fish) and (not table:has-key? destinations patch_identifier self) and cell_available_wet_area >= [territory_size] of fish)
+  ]
+
+  ; Check for adults
+  if [breed] of fish = adults[
+    let output true
+    report output
+  ]
+
 end
 
 ;; Makes a lookup tabel for pathfinding cells
@@ -2741,11 +2966,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-408
-629
+396
+588
 -1
 -1
-5.128205128205129
+4.786324786324788
 1
 10
 1
@@ -3044,7 +3269,7 @@ zoom_factor
 zoom_factor
 0
 1
-0.3
+0.28
 0.01
 1
 NIL
