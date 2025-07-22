@@ -2740,6 +2740,7 @@ to save_detailed_population_info
 
     let total_daily_redds count current_redds
     let total_dead_eggs sum [dead_eggs] of current_redds
+    let total_alive_eggs sum [egg_count] of current_redds
 
     ;  set mean_migrant_mass mean migrant_mass_list
     ;  set mean_migrant_condition mean migrant_condition_list
@@ -2796,6 +2797,7 @@ to save_detailed_population_info
         (count_death_stranding * superind_ratio)
         (count_death_poorcond * superind_ratio)
         total_daily_redds
+
         total_dead_eggs
         temperature
         flow
