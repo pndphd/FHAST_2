@@ -38,8 +38,8 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   
   # Load the canopy cover zone file 
   # simplify it to speed up
-  if(ml$var$juvenile_run == TRUE){
-    # make attributes constant to supress warnings
+  if(ml$var$juvenile_run == TRUE && !is.na(ml$path$canopy)){
+    # make attributes constant to suppress warnings
     st_agr(ml$df$canopy) = "constant"
     st_agr(clip_mask) = "constant"
     
@@ -58,25 +58,28 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
       ungroup()
   } else {
     # Make a dummy shape for shade if just adults in the run 
-    shade_shape = ml$df$center_line %>% 
-      st_centroid() %>% 
-      mutate(height = 1) %>% 
-      select(height) %>% 
-      st_buffer(1, nQuadSegs = 2)
+    shade_shape = ml$df$top_marker %>%
+      mutate(height = ml$df$habitat_parms$resolution) %>%
+      select(height) %>%
+      st_buffer(ml$df$habitat_parms$resolution * 10, nQuadSegs = 2) 
   }
   
   # Make a list on months but in time format
   # also add in an arbitrary year and time
   times_list = as.list(paste0("2010-", seq(1,12,1), "-15 12:00:00"))
   
-  # calculate photo period
-  # ml$df$daily_input = calc_photo_period(shade_shape, daily_file)
-  
   # Run the function and combine all the shade layers by month
   result = future_map(times_list, ~make_shade_shape(shade_shape, .x)) %>% 
     future_map(~summarise(.x, shade = sum(shade)/sum(shade), do_union = TRUE)) %>% 
     future_map2(seq(1,12,1), ~rename(.x, !!paste0("shade_", .y) := shade))
 
+  # make all 0's if using dummy shade file
+  if(ml$var$juvenile_run == FALSE || is.na(ml$path$canopy)){
+    result2 = map2(.x = result,
+                   .y = paste0("shade_", seq(1,12)),
+                   .f = ~mutate(.x, {{.y}} := 0))
+  }
+  
   # save the files
   saveRDS(result, file = ml$path$shade_file)
 

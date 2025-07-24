@@ -81,7 +81,7 @@ grow_trees = function(shape = NULL,
   # add in a species column if not present
   # this will default to the default parameters
   cols <- c(species = "none")
-  if (years > 0){
+  if (years > 0 && !is.na(ml$path$tree_growth)){
     # Do the calculations
     new_canopy <- shape %>% 
       add_column(!!!cols[setdiff(names(cols), names(.))]) %>% 

@@ -206,9 +206,6 @@ class RunFHASTSimulation:
         # will be set False in run()
         self.first_start = True
 
-
-
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
@@ -319,19 +316,21 @@ class RunFHASTSimulation:
                 pred_param_file_path = QgsProviderRegistry.instance().decodeUri(actual_layer.dataProvider().name(), actual_layer.publicSource()); actual_layer.source()
 
             # Get path of Tree Growth File
-            mygroup = root.findGroup("Tree Growth")
-            layer_list= mygroup.findLayers()
-            if len(layer_list) == 0:
-                QMessageBox.information(None, "!!!ERROR!!!", "No Tree Growth File") 
-                self.iface.addVectorLayer(stop_program) 
+            tree_growth_file_path = " "
+            mygroup = root.findGroup("Tree Growth (Optional)")
+            if mygroup == None:
+                mygroup = root.findGroup("Tree Growth")
+            print(mygroup)
+            layer_list = mygroup.findLayers()
             for layer in layer_list:
                 actual_layer = layer.layer()
                 tree_growth_file_path = QgsProviderRegistry.instance().decodeUri(actual_layer.dataProvider().name(), actual_layer.publicSource()); actual_layer.source()
+                tree_growth_file_path = tree_growth_file_path['path']
 
             # Get path of Wildcard File
             wildcard_file_path = " "
             mygroup = root.findGroup("Wildcard File (Optional)")
-            layer_list= mygroup.findLayers()
+            layer_list = mygroup.findLayers()
             for layer in layer_list:
                 actual_layer = layer.layer()
                 wildcard_file_path = QgsProviderRegistry.instance().decodeUri(actual_layer.dataProvider().name(), actual_layer.publicSource()); actual_layer.source()
@@ -369,7 +368,6 @@ class RunFHASTSimulation:
             aoi_layer = " "
             mygroup = root.findGroup("Area of Interest (Optional)")
             layer_list= mygroup.findLayers()
-
             # If just one set it as aoi
             if len(layer_list) == 1:
                 for layer in layer_list:
@@ -384,14 +382,15 @@ class RunFHASTSimulation:
                 aoi_layer = results['OUTPUT']
 
             # Get path of Canopy File
-            mygroup = root.findGroup("Canopy File")
+            canopy_layer = " "
+            mygroup = root.findGroup("Canopy File (Optional)")
+            if mygroup == None:
+                mygroup = root.findGroup("Canopy File")
             layer_list= mygroup.findLayers()
-            if len(layer_list) == 0:
-                QMessageBox.information(None, "!!!ERROR!!!", "No Canopy File") 
-                self.iface.addVectorLayer(stop_program) 
-                       
-            for layer in layer_list:
-                canopy_layer = layer.layer().source()
+            if len(layer_list) > 0:
+                for layer in layer_list:
+                    canopy_layer = layer.layer().source()
+            
             # Get path of Flow Folder
             mygroup = root.findGroup("Depth or Velocity Example Raster")
             layer_list= mygroup.findLayers()
@@ -444,7 +443,7 @@ class RunFHASTSimulation:
                            grid_top_point + comma + top_point_layer + new_line +
                            cover + comma + cover_layer +  new_line +
                            canopy + comma + canopy_layer + new_line +
-                           tree_growth + comma + tree_growth_file_path['path'] + new_line +
+                           tree_growth + comma + tree_growth_file_path + new_line +
                            habitat_parameters + comma + hab_param_file_path['path'] + new_line +
                            interaction_parameters + comma + int_param_file_path['path'] + new_line +
                            predator_parameters + comma + pred_param_file_path['path'] + new_line +

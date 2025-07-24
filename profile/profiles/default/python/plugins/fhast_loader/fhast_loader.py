@@ -227,8 +227,8 @@ class FHASTLoader:
                              "Area of Interest (Optional)",
                              "Cover File",
                              "Wildcard File (Optional)",
-                             "Canopy File",
-                             "Tree Growth",
+                             "Canopy File (Optional)",
+                             "Tree Growth (Optional)",
                              "Depth or Velocity Example Raster",
                              "Environmental Input File",
                              "Fish Population File",
@@ -260,7 +260,7 @@ class FHASTLoader:
             int_param_file = QgsVectorLayer(self.dlg.interactions_parameters_file.filePath(), "int_table", "ogr")
 
             for group in root.findGroups():
-                if (group.name() == "Canopy File"):
+                if (group.name() == "Canopy File (Optional)"):
                     if (canopy_shape_file.isValid()):
                         QgsProject.instance().addMapLayer(canopy_shape_file)
                         layer = root.findLayer(canopy_shape_file.id())
@@ -302,7 +302,7 @@ class FHASTLoader:
                         clone = layer.clone()
                         group.insertChildNode(0, clone)
                         layer.parent().removeChildNode(layer)
-                if (group.name() == "Tree Growth"):
+                if (group.name() == "Tree Growth (Optional)"):
                     if (tg_file.isValid()):
                         QgsProject.instance().addMapLayer(tg_file)
                         layer = root.findLayer(tg_file.id())

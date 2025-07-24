@@ -9,8 +9,6 @@ source(here("scripts", "convert_parameters", "convert_parameters_functions.R"))
 # make a list of all the inputs that must exist
 input_paths = list(ml$path$center_line,
                    ml$path$top_marker,
-                   ml$path$canopy,
-                   ml$path$tree_growth,
                    ml$path$cover,
                    ml$path$daily,
                    ml$path$fish_pop,
@@ -32,8 +30,6 @@ ml$df$center_line = st_read(ml$path$center_line, quiet = TRUE) %>%
 ml$df$top_marker = st_read(ml$path$top_marker, quiet = TRUE) %>% 
   st_zm() %>% 
   st_transform(ml$var$crs)
-ml$df$canopy = st_read(ml$path$canopy, quiet = TRUE)
-tree_growth_parm_temp = read.csv(file = ml$path$tree_growth, sep = ",", header = TRUE)
 ml$df$daily = load_text_file(ml$path$daily)
 ml$df$fish_pop = read.csv(file = ml$path$fish_pop, sep = ",", header = TRUE) %>%
   mutate(date = mdy(date))
@@ -48,6 +44,7 @@ pred_parm_temp = read_csv(file = ml$path$predator,
 hab_parm_temp = load_text_file(ml$path$hab)
 int_parm_temp = load_text_file(ml$path$interaction)
 
+# load and reporject the AOI
 if (!is.na(ml$path$aoi)) {
   ml$df$aoi <- st_read(ml$path$aoi, quiet = TRUE) %>% 
     st_zm() %>% 
@@ -56,10 +53,19 @@ if (!is.na(ml$path$aoi)) {
 
 ##### Check and format shape files #############################################
 # Check that these are the same crs
-if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
-    !compareCRS(ml$df$canopy, ml$df$top_marker) |
-    !compareCRS(ml$df$canopy, ml$df$cover)){
-  stop('The CRSs of aome shape files are not the same.')
+if (is.na(ml$path$canopy)){
+  if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
+      !compareCRS(ml$df$cover, ml$df$top_marker)){
+    stop('The CRSs of aome shape files are not the same.')
+    }
+} else {
+  ml$df$canopy = st_read(ml$path$canopy, quiet = TRUE)
+  if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
+      !compareCRS(ml$df$canopy, ml$df$top_marker) |
+      !compareCRS(ml$df$canopy, ml$df$cover)){
+    stop('The CRSs of aome shape files are not the same.')
+    }
+
 }
 
 # Check the the center line is one object
@@ -97,7 +103,6 @@ if("wildcard" %in% ml$df$cover$class){
 }
 
 ##### Convert into usable formats ##############################################
-browser()
 # Fish Parameters: to named list with species as index
 ml$df$fish_parms = fish_parm_temp %>%
   # select species used in the run
@@ -112,19 +117,20 @@ ml$df$fish_parms = fish_parm_temp %>%
 rm(fish_parm_temp)
 
 # Tree Growth Parameters: pivot longer and wider to format
-ml$df$tree_growth_parms = tree_growth_parm_temp %>%
-  pivot_longer(cols = !starts_with("species"), names_to = c ("item")) %>%
-  pivot_wider(names_from = "species") %>%
-  rename(species = item) %>%
-  mutate(species = str_replace(species, "[.]", " "),
-         d_max = as.numeric(d_max),
-         h_max = as.numeric(h_max),
-         g = as.numeric(g),
-         a = as.numeric(a),
-         b = as.numeric(b),
-         c = as.numeric(c),
-         d = as.numeric(d))
-rm(tree_growth_parm_temp)
+if(!is.na(ml$path$tree_growth)){
+  ml$df$tree_growth_parms = read.csv(file = ml$path$tree_growth, sep = ",", header = TRUE) %>%
+    pivot_longer(cols = !starts_with("species"), names_to = c ("item")) %>%
+    pivot_wider(names_from = "species") %>%
+    rename(species = item) %>%
+    mutate(species = str_replace(species, "[.]", " "),
+           d_max = as.numeric(d_max),
+           h_max = as.numeric(h_max),
+           g = as.numeric(g),
+           a = as.numeric(a),
+           b = as.numeric(b),
+           c = as.numeric(c),
+           d = as.numeric(d))
+}
 
 # Habitat Parameters: convert logistic parameters to slope and intercept
 turbidity_params <- convert_logistic_parameters(

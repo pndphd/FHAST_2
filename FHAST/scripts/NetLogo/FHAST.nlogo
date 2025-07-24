@@ -2740,6 +2740,7 @@ to save_detailed_population_info
 
     let total_daily_redds count current_redds
     let total_dead_eggs sum [dead_eggs] of current_redds
+    let total_alive_eggs sum [egg_count] of current_redds
 
     ;  set mean_migrant_mass mean migrant_mass_list
     ;  set mean_migrant_condition mean migrant_condition_list
@@ -2796,6 +2797,7 @@ to save_detailed_population_info
         (count_death_stranding * superind_ratio)
         (count_death_poorcond * superind_ratio)
         total_daily_redds
+        total_alive_eggs
         total_dead_eggs
         temperature
         flow
@@ -2845,7 +2847,7 @@ to build_output_file_named [a_file_name]
     if file-exists? detailed_population_outfile_name [ file-delete detailed_population_outfile_name ]
     ; These header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
-    set detailed_population_list fput "time, Species, juveniles, rearers, mean_length, mean_energy, mean_rearing_mass_growth_fra, mean_rearing_growth_length, migrants, nonmigrants, drifters, dead_fish, dead_migrants, dead_nonmigrants, dead_rearers, predation_deaths, high_t_deaths, stranding_deaths, poor_condition_deaths, total_redds, dead_eggs temperature, flow, photoperiod" detailed_population_list
+    set detailed_population_list fput "time, Species, juveniles, rearers, mean_length, mean_energy, mean_rearing_mass_growth_fra, mean_rearing_growth_length, migrants, nonmigrants, drifters, dead_fish, dead_migrants, dead_nonmigrants, dead_rearers, predation_deaths, high_t_deaths, stranding_deaths, poor_condition_deaths, total_redds, total_alive_eggs, dead_eggs, temperature, flow, photoperiod" detailed_population_list
     set detailed_population_list fput (word "FHAST detailed population output file, Created " date-and-time) detailed_population_list
   ]
   ;; Create the destination cell info output file.

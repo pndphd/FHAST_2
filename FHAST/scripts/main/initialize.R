@@ -74,13 +74,29 @@ if (!is.na(ml$string$aoi) && length(ml$string$aoi) > 0 && nzchar(ml$string$aoi))
 }
 
 # Get the wildcard path
-ml$string$wild <- ml$df$config_data["wildcard", ]
+ml$string$wild = ml$df$config_data["wildcard", ]
 # Checking length is not sufficient (ml$string$aoi can be an array containing a
 # single empty string), so the nzchar check is also needed.
 if (!is.na(ml$string$wild) && length(ml$string$wild) > 0 && nzchar(ml$string$wild)) {
   ml$path$wild = get_path(ml$path$base_folder, ml$string$wild)
 } else {
   ml$path$wild = NA
+}
+
+# Get the canopy path
+ml$string$canopy = ml$df$config_data["canopy", ]
+if (!is.na(ml$string$canopy) && length(ml$string$canopy) > 0 && nzchar(ml$string$canopy)) {
+  ml$path$canopy = get_path(ml$path$base_folder, ml$string$canopy)
+} else {
+  ml$path$canopy = NA
+}
+
+# Get the tree growth path
+ml$string$tree_growth <- ml$df$config_data["tree growth", ]
+if (!is.na(ml$string$tree_growth) && length(ml$string$tree_growth) > 0 && nzchar(ml$string$tree_growth)) {
+  ml$path$tree_growth = get_path(ml$path$base_folder, ml$string$tree_growth)
+} else {
+  ml$path$tree_growth = NA
 }
 
 ##### CPU handling #####
