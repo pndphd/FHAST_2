@@ -1093,7 +1093,7 @@ to set_habitat_velcoity_and_depth
   ]
 
   ; Make the list of wet patches
-  set wet_patches patches with [today_depth > 0]
+  set wet_patches patches with [wetted_area > 0 and today_depth > 0]
 
   ; Ask patches to update their depleted variables (velocity shelter availability, available hiding places, and drift)
   ask wet_patches [
@@ -2957,11 +2957,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-396
-588
+535
+1032
 -1
 -1
-4.786324786324788
+8.547008547008549
 1
 10
 1
@@ -3260,7 +3260,7 @@ zoom_factor
 zoom_factor
 0
 1
-0.28
+0.5
 0.01
 1
 NIL
