@@ -38,7 +38,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   
   # Load the canopy cover zone file 
   # simplify it to speed up
-  if(ml$var$juvenile_run == TRUE && !is.na(ml$path$canopy)){
+  if(ml$var$juvenile_run == TRUE && !(ml$path$canopy == "no_canopy")){
     # make attributes constant to suppress warnings
     st_agr(ml$df$canopy) = "constant"
     st_agr(clip_mask) = "constant"
@@ -74,8 +74,8 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
     future_map2(seq(1,12,1), ~rename(.x, !!paste0("shade_", .y) := shade))
 
   # make all 0's if using dummy shade file
-  if(ml$var$juvenile_run == FALSE || is.na(ml$path$canopy)){
-    result2 = map2(.x = result,
+  if(ml$var$juvenile_run == FALSE || ml$path$canopy == "no_canopy"){
+    result = map2(.x = result,
                    .y = paste0("shade_", seq(1,12)),
                    .f = ~mutate(.x, {{.y}} := 0))
   }

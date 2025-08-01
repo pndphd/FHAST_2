@@ -54,7 +54,7 @@ make_map_plot <- function() {
               size = 5, label.size = 1, color = "black")
   
   # If there is an AOI add it in
-  if (!is.na(ml$path$aoi)) {
+  if (!(ml$path$aoi == "no_aoi")) {
     map_plot <- map_plot +
       geom_sf(data = ml$df$aoi, aes(color = "AOI"), fill = NA, size = 2)
   }

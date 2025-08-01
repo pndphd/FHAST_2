@@ -27,6 +27,11 @@ cell_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "cell_info_ou
 #   mutate(date = ymd(time))%>% 
 #   select(-time)
 
+adult_event_data_temp <- read.csv(file = here(ml$path$output_temp_folder, "adult_events_output.csv"),
+                                  skip = 1) %>%
+  mutate(date = ymd(time))%>%
+  select(-time)
+
 ##### Pre-calculations #########################################################
 
 # do some general calculations
@@ -144,6 +149,8 @@ write.csv(cell_data_temp,
           file = here(ml$path$output_folder, "abm_cell_info_output.csv"))
 # write.csv(event_data_temp,
 #           file = here(ml$path$output_folder, "abm_events_output.csv"))
+write.csv(adult_event_data_temp,
+          file = here(ml$path$output_folder, "abm_adult_output.csv"))
 
 # Clean up
 rm(plot_list,

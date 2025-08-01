@@ -45,7 +45,7 @@ hab_parm_temp = load_text_file(ml$path$hab)
 int_parm_temp = load_text_file(ml$path$interaction)
 
 # load and reporject the AOI
-if (!is.na(ml$path$aoi)) {
+if (!ml$path$aoi == "no_aoi") {
   ml$df$aoi <- st_read(ml$path$aoi, quiet = TRUE) %>% 
     st_zm() %>% 
     st_transform(ml$var$crs)
@@ -53,7 +53,7 @@ if (!is.na(ml$path$aoi)) {
 
 ##### Check and format shape files #############################################
 # Check that these are the same crs
-if (is.na(ml$path$canopy)){
+if (ml$path$canopy == "no_canopy"){
   if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
       !compareCRS(ml$df$cover, ml$df$top_marker)){
     stop('The CRSs of aome shape files are not the same.')
@@ -117,7 +117,7 @@ ml$df$fish_parms = fish_parm_temp %>%
 rm(fish_parm_temp)
 
 # Tree Growth Parameters: pivot longer and wider to format
-if(!is.na(ml$path$tree_growth)){
+if(!(ml$path$tree_growth == "no_growth")){
   ml$df$tree_growth_parms = read.csv(file = ml$path$tree_growth, sep = ",", header = TRUE) %>%
     pivot_longer(cols = !starts_with("species"), names_to = c ("item")) %>%
     pivot_wider(names_from = "species") %>%

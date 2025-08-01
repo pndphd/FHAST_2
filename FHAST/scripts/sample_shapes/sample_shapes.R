@@ -57,7 +57,7 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
  
   
   # Add in the AOI
-  if(is.na(ml$path$aoi)){
+  if(ml$path$aoi == "no_aoi"){
     ml$df$shape_data = sampeled_shapes %>%
       mutate(aoi = 1) %>% 
       st_as_sf(sf_column_name = "geometry") 

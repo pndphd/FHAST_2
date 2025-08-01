@@ -13,7 +13,7 @@ plot_width = 5
 set.seed(6806665)
 
 # Uncomment for development to pick a specific file and run from IDE
-config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
+# config_file_name = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/spawning_runs/input_data/configure_files/100_adults.txt"
 ################################################################################
 
 ##### Run the initialization scripts #####
@@ -39,14 +39,12 @@ source(here("scripts","main","run_model.R"))
 ##### Run NetLogo #####
 # Shut off futures for this
 # and only run if juvenile are present
-if(ml$var$juvenile_run == TRUE){
-  message("Starting NetLogo run.\n")
-  future::plan(strategy = sequential)
-  source(here("scripts", "netlogo", "NetLogo_Controller.R"))
-  run_netlogo_model(ml$path$output_temp_folder)
-  future::plan(strategy = multisession,
-               workers = pick_num_cores())
-}
+message("Starting NetLogo run.\n")
+future::plan(strategy = sequential)
+source(here("scripts", "netlogo", "NetLogo_Controller.R"))
+run_netlogo_model(ml$path$output_temp_folder)
+future::plan(strategy = multisession,
+             workers = pick_num_cores())
 
 ##### Run the post processing scripts #####
 source(here("scripts","main","run_post.R"))

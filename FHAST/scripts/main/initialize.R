@@ -54,8 +54,6 @@ ml$path$fish_parms = get_path(ml$path$base_folder, ml$df$config_data["fish param
 ml$path$center_line = get_path(ml$path$base_folder, ml$df$config_data["grid centerline", ])
 ml$path$top_marker = get_path(ml$path$base_folder, ml$df$config_data["grid top point", ])
 ml$path$cover = get_path(ml$path$base_folder, ml$df$config_data["cover", ])
-ml$path$canopy = get_path(ml$path$base_folder, ml$df$config_data["canopy", ])
-ml$path$tree_growth = get_path(ml$path$base_folder, ml$df$config_data["tree growth", ])
 ml$path$hab = get_path(ml$path$base_folder, ml$df$config_data["habitat parameters", ])
 ml$path$interaction = get_path(ml$path$base_folder, ml$df$config_data["interaction parameters", ])
 ml$path$predator = get_path(ml$path$base_folder, ml$df$config_data["predator parameters", ])
@@ -70,7 +68,7 @@ ml$string$aoi = ml$df$config_data["aoi", ]
 if (!is.na(ml$string$aoi) && length(ml$string$aoi) > 0 && nzchar(ml$string$aoi)) {
   ml$path$aoi = get_path(ml$path$base_folder, ml$string$aoi)
 } else {
-  ml$path$aoi = NA
+  ml$path$aoi = "no_aoi"
 }
 
 # Get the wildcard path
@@ -80,7 +78,7 @@ ml$string$wild = ml$df$config_data["wildcard", ]
 if (!is.na(ml$string$wild) && length(ml$string$wild) > 0 && nzchar(ml$string$wild)) {
   ml$path$wild = get_path(ml$path$base_folder, ml$string$wild)
 } else {
-  ml$path$wild = NA
+  ml$path$wild = "no_wild"
 }
 
 # Get the canopy path
@@ -88,7 +86,7 @@ ml$string$canopy = ml$df$config_data["canopy", ]
 if (!is.na(ml$string$canopy) && length(ml$string$canopy) > 0 && nzchar(ml$string$canopy)) {
   ml$path$canopy = get_path(ml$path$base_folder, ml$string$canopy)
 } else {
-  ml$path$canopy = NA
+  ml$path$canopy = "no_canopy"
 }
 
 # Get the tree growth path
@@ -96,7 +94,7 @@ ml$string$tree_growth <- ml$df$config_data["tree growth", ]
 if (!is.na(ml$string$tree_growth) && length(ml$string$tree_growth) > 0 && nzchar(ml$string$tree_growth)) {
   ml$path$tree_growth = get_path(ml$path$base_folder, ml$string$tree_growth)
 } else {
-  ml$path$tree_growth = NA
+  ml$path$tree_growth = "no_growth"
 }
 
 ##### CPU handling #####

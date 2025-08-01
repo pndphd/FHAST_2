@@ -166,7 +166,6 @@ globals [
   fecundity_int             ; The intercept of the fecundity equation #eggs = int * lenghch[cm]^slope
   fecundity_slope           ; The slope of the fecundity equation #eggs = int * lenghch[cm]^slope
 
-
   ;; Fish equations
   cmax_temp_func            ; A list of cmax temperature functions for each species
   max_swim_temp_func        ; A list of cmax temperature functions for each species
@@ -218,12 +217,14 @@ globals [
 
   ;; Other global variables/inernal data structures
   fish_events_outfile_name          ; String with name of fish events output file; set in build_output_files
+  adult_events_outfile_name         ; String with name of adult events output file; set in build_output_files
   cell_info_outfile_name            ; String with name of cell info output file; set in build_output_files
   detailed_population_outfile_name  ; String with name of detailed population output file; set in build_output_files
   all_cell_outfile_name
   path_info_outfile_name
   cell_info_list                    ; List of all destination cell information (number of total fish alive in each destination, number of dead fish in each destination) per time step that can be written the the cell info outputs file
   fish_events_list                  ; List of all individual fish-related events (mortality, smolting, migrating) that can be written the the fish events outputs file
+  adult_events_list                 ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
   detailed_population_list          ; List of all summary fish-related info per day (total migrating, total smolting) that can be written to the detailed population output file
   all_cell_attributes_list
   migrant_path_info_list
@@ -614,16 +615,18 @@ end
 to set_lists
 
   ; Observer procedure that initializes global variables.
-  set detailed_population_outfile_name "d-p-o-n" ; String with temporary name of detailed population output file; reset in build_output_file
-  set fish_events_outfile_name "f-e-o-n" ; String with temporary name of fish events output file; reset in build_output_file
-  set cell_info_outfile_name "c-i-o-n"   ; String with temporary name of destination cell info output file; reset in build_output_file
-  set all_cell_outfile_name "a-c-o-n" ; String with temporary name of all cell info output file; reset in build_output_file
+  set detailed_population_outfile_name "d-p-o-n"    ; String with temporary name of detailed population output file; reset in build_output_file
+  set fish_events_outfile_name "f-e-o-n"            ; String with temporary name of fish events output file; reset in build_output_file
+  set adult_events_outfile_name "a-e-o-n"           ; String with temporary name of fish events output file; reset in build_output_file
+  set cell_info_outfile_name "c-i-o-n"              ; String with temporary name of destination cell info output file; reset in build_output_file
+  set all_cell_outfile_name "a-c-o-n"               ; String with temporary name of all cell info output file; reset in build_output_file
 
   ; Set up lists to track events
-  set fish_events_list (list)    ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
-  set cell_info_list (list)    ; List keeping track of destination cell-related info including the number of fish in a destination cell at every time step, number of dead fish at a destination cell at every time step etc
-  set detailed_population_list (list) ; List keeping track of summary fish-related info per day including the total number of fish that died per day, total alive, total migrating, etc
-  set all_cell_attributes_list (list) ; ; List keeping track of all cell info per day (for mapping and testing purposes)
+  set fish_events_list (list)           ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set adult_events_list (list)          ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set cell_info_list (list)             ; List keeping track of destination cell-related info including the number of fish in a destination cell at every time step, number of dead fish at a destination cell at every time step etc
+  set detailed_population_list (list)   ; List keeping track of summary fish-related info per day including the total number of fish that died per day, total alive, total migrating, etc
+  set all_cell_attributes_list (list)   ; List keeping track of all cell info per day (for mapping and testing purposes)
 
 end
 
@@ -1088,7 +1091,10 @@ to set_habitat_velcoity_and_depth
       let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
       let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
       set spawn_suit replace-item n spawn_suit (v_suit * d_suit)
-
+      ; If there is insufficent substrate fo a redd set to 0
+      if (area * (gravel + cobble)) < item n redd_area [
+        set spawn_suit replace-item n spawn_suit 0
+      ]
     ]
   ]
 
@@ -2400,9 +2406,9 @@ to calculate_spawner_weight_loss
 
   if (random-float 1.0) > (fish_death_starv_survival_prob) [
     ; Fish died of poor condition
-    print word "died of poor condition at age: " age
+    ; print word "died of poor condition at age: " age
     table:put death_condition_table species table:get death_condition_table species + 1
-    save_event "adult died"
+    save_adult_event "adult died"
     set is_alive false
     table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
     set unguarded_area unguarded_area + item species_id guard_area
@@ -2417,14 +2423,13 @@ to spawn
 
   ; Find possibel spots
   find_inrange_destinations
-  ;with [unguarded_area ]
 
   if any? wet_cells_in_radius[
     set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
     move-to destination
     if [unguarded_area] of destination >= item species_id guard_area [
       create_redd
-      save_event "spawn"
+      save_adult_event "spawn"
 
       ; Turn on guard flag
       set is_guarding 1
@@ -2435,6 +2440,7 @@ to spawn
 end
 
 to create_redd
+
   hatch-redds 1 [
     set size 1
     set color red
@@ -2469,6 +2475,7 @@ to create_redd
     if d0 <= abs(r1 - r2)[
      set overlap_fra 1
     ]
+
     if d0 > abs(r1 - r2) and d0 < r1 + r2[
       let overlap_1 r1 ^ 2 * acos((d0 ^ 2 + r1 ^ 2 - r2 ^ 2)/ 2 / d0 / r1) * pi / 180
       let overlap_2 r2 ^ 2 * acos((d0 ^ 2 + r2 ^ 2 - r1 ^ 2)/ 2 / d0 / r2) * pi / 180
@@ -2660,7 +2667,7 @@ end
 to save_event [an_event_type]
 
   ; an-event-type is a character string that says what event happened.
-  if breed = juveniles or breed = migrants or breed = adults [
+  if breed = juveniles or breed = migrants [
     set fish_events_list lput (
       csv:to-row ( list
         time:show tick_date "yyyy-MM-dd"
@@ -2709,6 +2716,32 @@ to save_event [an_event_type]
       )
     )
     fish_events_list
+  ]
+
+end
+
+;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
+to save_adult_event [an_event_type]
+
+  ; an-event-type is a character string that says what event happened.
+  if breed = adults [
+    set adult_events_list lput (
+      csv:to-row (list
+        time:show tick_date "yyyy-MM-dd"
+        species
+        who
+        an_event_type
+        age
+        [x_pos] of destination
+        [y_pos] of destination
+        temperature
+        flow
+        turbidity
+        [today_velocity] of destination
+        [today_depth] of destination
+      )
+    )
+    adult_events_list
   ]
 
 end
@@ -2872,9 +2905,24 @@ to build_output_file_named [a_file_name]
     ; so these header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
 
-    set fish_events_list fput "time, Species, id, x_pos, y_pos, start length , length, length change, start mass, mass, start_condition, condition, growth, percent_change_mass, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
+    set fish_events_list fput "time, species, id, x_pos, y_pos, start length , length, length change, start mass, mass, start_condition, condition, growth, percent_change_mass, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
 
     set fish_events_list fput (word "FHAST fish events output file, Created " date-and-time) fish_events_list
+  ]
+
+  ; Create the adult events output file.
+  if a_file_name = "a-e-o-n" [ ; This is the value of the uninitialized file name
+
+    set adult_events_outfile_name (word run_folder "/adult_events_output.csv")
+
+    if file-exists? adult_events_outfile_name [ file-delete adult_events_outfile_name ]
+    ; There can be events on the fish-events-list when file is created (from fish initialization)
+    ; so these header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+
+    set adult_events_list fput "time, species, id, event, age, x_pos, y_pos, temperature, flow, turbidity, velocity, depth" adult_events_list
+
+    set adult_events_list fput (word "FHAST fish events output file, Created " date-and-time) adult_events_list
   ]
 
   ; Create output file for recording attributes of all cells in the model (for mapping and testing purposes)
@@ -2936,6 +2984,19 @@ to update_output
     set fish_events_list (list)                ; Clear the event list
   ]
 
+  ; Update detailed adult events output file
+  ifelse adult_events_output? [
+    if not empty? adult_events_list [
+      if adult_events_outfile_name = "a-e-o-n" [ build_output_file_named adult_events_outfile_name ]
+      file-open adult_events_outfile_name
+      foreach adult_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+      file-close
+      set adult_events_list (list)                ; Clear the event list
+    ]
+  ][
+    set adult_events_list (list)                ; Clear the event list
+  ]
+
   ; Update detailed cell events output file
   ifelse cell_info_output? [
     if not empty? cell_info_list [
@@ -2957,11 +3018,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-535
-1032
+260
+1417
 -1
 -1
-8.547008547008549
+1.0
 1
 10
 1
@@ -2971,10 +3032,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--22
-14
+-20
+20
 0
-117
+1392
 1
 1
 1
@@ -2982,10 +3043,10 @@ ticks
 30.0
 
 BUTTON
-14
-238
-78
-272
+12
+333
+76
+367
 setup
 setup
 NIL
@@ -2999,10 +3060,10 @@ NIL
 1
 
 BUTTON
-97
-238
-196
-309
+95
+333
+194
+404
 go
 go
 T
@@ -3202,10 +3263,10 @@ PENS
 "poor condition " 1.0 0 -10141563 true "" "plot sum table:values death_condition_table"
 
 BUTTON
-13
-274
-78
-308
+11
+369
+76
+403
 step
 go
 NIL
@@ -3219,10 +3280,10 @@ NIL
 1
 
 SWITCH
-13
-318
-201
-351
+11
+413
+199
+446
 all_cell_output?
 all_cell_output?
 1
@@ -3230,10 +3291,10 @@ all_cell_output?
 -1000
 
 SWITCH
-4
-361
-210
-394
+2
+456
+208
+489
 migrant_path_info_output?
 migrant_path_info_output?
 1
@@ -3241,30 +3302,41 @@ migrant_path_info_output?
 -1000
 
 INPUTBOX
-7
-413
-209
-473
+5
+508
+207
+568
 run_folder
-C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
+C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\spawning_runs\\outputs\\100_adults_outputs\\temporary
 1
 0
 String
 
 SLIDER
-11
-489
-207
-522
+9
+584
+205
+617
 zoom_factor
 zoom_factor
 0
 1
-0.5
+0.63
 0.01
 1
 NIL
 HORIZONTAL
+
+SWITCH
+12
+237
+190
+270
+adult_events_output?
+adult_events_output?
+0
+1
+-1000
 
 @#$#@#$#@
 @#$#@#$#@
