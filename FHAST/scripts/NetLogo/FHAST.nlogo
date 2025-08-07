@@ -750,9 +750,9 @@ to set_fish_parameters
   set spawn_v_int (table:get paired_param_table "spawn_v_int")
   set spawn_v_slope (table:get paired_param_table "spawn_v_slope")
   set spawn_v_quat (table:get paired_param_table "spawn_v_quat")
-  set spawn_d_int (table:get paired_param_table "spawn_v_int")
-  set spawn_d_slope (table:get paired_param_table "spawn_v_slope")
-  set spawn_d_quat (table:get paired_param_table "spawn_v_quat")
+  set spawn_d_int (table:get paired_param_table "spawn_d_int")
+  set spawn_d_slope (table:get paired_param_table "spawn_d_slope")
+  set spawn_d_quat (table:get paired_param_table "spawn_d_quat")
   set redd_area (table:get paired_param_table "redd_area")
   set guard_area (table:get paired_param_table "guard_area")
   set fecundity_int (table:get paired_param_table "fecundity_int")
@@ -1090,7 +1090,7 @@ to set_habitat_velcoity_and_depth
       ; set the spawning sutabiblit for each patch if no avaiable area set to 0
       let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
       let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
-      set spawn_suit replace-item n spawn_suit (v_suit * d_suit)
+      set spawn_suit replace-item n spawn_suit (d_suit * v_suit)
       ; If there is insufficent substrate fo a redd set to 0
       if (area * (gravel + cobble)) < item n redd_area [
         set spawn_suit replace-item n spawn_suit 0
@@ -1416,7 +1416,10 @@ to hatch_fish
         let init_swim_speed max_swim_l_term * item species_id max_swim_temp_func
 
         ; Select the initial cell
-        set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length)]
+        ;set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length)]
+        ;check here
+        set destination rnd:weighted-one-of wet_patches [item [species_id] of myself spawn_suit]
+
         pen-up
         move-to destination
         set exit_status 0
@@ -2427,6 +2430,7 @@ to spawn
   if any? wet_cells_in_radius[
     set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
     move-to destination
+
     if [unguarded_area] of destination >= item species_id guard_area [
       create_redd
       save_adult_event "spawn"
@@ -3307,7 +3311,7 @@ INPUTBOX
 207
 568
 run_folder
-C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\spawning_runs\\outputs\\100_adults_outputs\\temporary
+C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\spawning_runs\\outputs\\500-42-400_adults_outputs\\temporary
 1
 0
 String
