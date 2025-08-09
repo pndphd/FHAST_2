@@ -23,6 +23,7 @@ if(NROW(ml$df$fish_schedule) < NROW(load_fish_timeseries(ml$df$fish_pop))){
 # Get flags to check what runs to do
 ml$var$juvenile_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "juvenile"))>0, T ,F)
 ml$var$adult_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "adult"))>0, T ,F)
+ml$var$spawner_run = ifelse(NROW(filter(ml$df$fish_schedule, lifestage == "spawner"))>0, T ,F)
 
 # Get all the fish combos
 ml$df$fish_combos = ml$df$fish_schedule %>% 

@@ -106,6 +106,7 @@ globals [
   species_column        ; The column the lists the species of fish
   lifestage_column      ; The column that lists the life stage
   length_column         ; The column the gives the fish lenght
+  sd_column             ; The column for sd of lenght
 
   ;; Fish variables
   fish_params_csv           ; A csv with the individual species parameters
@@ -155,6 +156,7 @@ globals [
   smolt_max_L9              ; Parameters for the logistic equation for the probability of smolting depending on flegnth- Length in which probability of smolting is 90 pct
   outmigrate_V1             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
   outmigrate_V9             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
+  spawn_flag                ; variabel to turn on or fll the spawning part (i.e. add or don't add adults)
   spawn_v_int               ; Intercept parameter for the probablity of sapwning in a set velocity
   spawn_v_slope             ; Slope parameter for the probablity of sapwning in a set velocity
   spawn_v_quat              ; Quat parameter for the probablity of sapwning in a set velocity
@@ -217,14 +219,14 @@ globals [
 
   ;; Other global variables/inernal data structures
   fish_events_outfile_name          ; String with name of fish events output file; set in build_output_files
-  adult_events_outfile_name         ; String with name of adult events output file; set in build_output_files
+  spawner_events_outfile_name         ; String with name of adult events output file; set in build_output_files
   cell_info_outfile_name            ; String with name of cell info output file; set in build_output_files
   detailed_population_outfile_name  ; String with name of detailed population output file; set in build_output_files
   all_cell_outfile_name
   path_info_outfile_name
   cell_info_list                    ; List of all destination cell information (number of total fish alive in each destination, number of dead fish in each destination) per time step that can be written the the cell info outputs file
   fish_events_list                  ; List of all individual fish-related events (mortality, smolting, migrating) that can be written the the fish events outputs file
-  adult_events_list                 ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
+  spawner_events_list                 ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
   detailed_population_list          ; List of all summary fish-related info per day (total migrating, total smolting) that can be written to the detailed population output file
   all_cell_attributes_list
   migrant_path_info_list
@@ -382,12 +384,9 @@ turtles-own [
   area_of_redd                            ; Area of actual redd
   egg_count                               ; The number of live eggs in a spawner or redd
   dead_eggs                               ; The number of dead eggs in a spawner or redd
-
-
 ]
 
 ;##### Setup Breeds ########################################################
-breed [adults adult]
 breed [spawners spawner]
 breed [redds redd]
 breed [juveniles juvenile]
@@ -499,6 +498,7 @@ to setup
   set number_column (position "number" (item 0 daily_fish_csv))
   set species_column (position "species" (item 0 daily_fish_csv))
   set length_column (position "length" (item 0 daily_fish_csv))
+  set sd_column (position "length_sd" (item 0 daily_fish_csv))
   set lifestage_column (position "lifestage" (item 0 daily_fish_csv))
 
   ;; From the flow inputs
@@ -617,13 +617,13 @@ to set_lists
   ; Observer procedure that initializes global variables.
   set detailed_population_outfile_name "d-p-o-n"    ; String with temporary name of detailed population output file; reset in build_output_file
   set fish_events_outfile_name "f-e-o-n"            ; String with temporary name of fish events output file; reset in build_output_file
-  set adult_events_outfile_name "a-e-o-n"           ; String with temporary name of fish events output file; reset in build_output_file
+  set spawner_events_outfile_name "a-e-o-n"           ; String with temporary name of fish events output file; reset in build_output_file
   set cell_info_outfile_name "c-i-o-n"              ; String with temporary name of destination cell info output file; reset in build_output_file
   set all_cell_outfile_name "a-c-o-n"               ; String with temporary name of all cell info output file; reset in build_output_file
 
   ; Set up lists to track events
   set fish_events_list (list)           ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
-  set adult_events_list (list)          ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set spawner_events_list (list)          ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
   set cell_info_list (list)             ; List keeping track of destination cell-related info including the number of fish in a destination cell at every time step, number of dead fish at a destination cell at every time step etc
   set detailed_population_list (list)   ; List keeping track of summary fish-related info per day including the total number of fish that died per day, total alive, total migrating, etc
   set all_cell_attributes_list (list)   ; List keeping track of all cell info per day (for mapping and testing purposes)
@@ -672,11 +672,18 @@ to set_daily_fish_additions
 
   let fish_date_column (position "date" (item 0 daily_fish_csv))
   let fish_date_values but-first (map [n -> item fish_date_column n ] daily_fish_csv)
+  let fish_lifestages but-first (map [n -> item lifestage_column n ] daily_fish_csv)
   ; Get all things in the fish input file except date
   ; This is to make a table later on
   let fish_wo_dates but-first (map [n -> but-first n] daily_fish_csv)
   ; Combine the last to to make a paired list then a table
   set fish_list (map [ [ a b ] -> ( list a b ) ] fish_date_values fish_wo_dates)
+
+  ifelse member? "spawner" fish_lifestages [
+    set spawn_flag true
+  ][
+    set spawn_flag false
+  ]
 
   ; take off fish that arive before sim window
   loop [
@@ -747,16 +754,19 @@ to set_fish_parameters
   set outmigrate_V9 (table:get paired_param_table "outmigrate_V9")
   set small_cover_length (table:get paired_param_table "small_cover_length")
   set migration_max_dist (table:get paired_param_table "migration_max_dist")
-  set spawn_v_int (table:get paired_param_table "spawn_v_int")
-  set spawn_v_slope (table:get paired_param_table "spawn_v_slope")
-  set spawn_v_quat (table:get paired_param_table "spawn_v_quat")
-  set spawn_d_int (table:get paired_param_table "spawn_d_int")
-  set spawn_d_slope (table:get paired_param_table "spawn_d_slope")
-  set spawn_d_quat (table:get paired_param_table "spawn_d_quat")
-  set redd_area (table:get paired_param_table "redd_area")
-  set guard_area (table:get paired_param_table "guard_area")
-  set fecundity_int (table:get paired_param_table "fecundity_int")
-  set fecundity_slope (table:get paired_param_table "fecundity_slope")
+  ; only read these if spawners in system
+  if spawn_flag [
+    set spawn_v_int (table:get paired_param_table "spawn_v_int")
+    set spawn_v_slope (table:get paired_param_table "spawn_v_slope")
+    set spawn_v_quat (table:get paired_param_table "spawn_v_quat")
+    set spawn_d_int (table:get paired_param_table "spawn_d_int")
+    set spawn_d_slope (table:get paired_param_table "spawn_d_slope")
+    set spawn_d_quat (table:get paired_param_table "spawn_d_quat")
+    set redd_area (table:get paired_param_table "redd_area")
+    set guard_area (table:get paired_param_table "guard_area")
+    set fecundity_int (table:get paired_param_table "fecundity_int")
+    set fecundity_slope (table:get paired_param_table "fecundity_slope")
+  ]
 
   ; Initialize the cmax_tempfunction with an empty list
   set cmax_temp_func n-values length species_list [1]
@@ -1085,15 +1095,17 @@ to set_habitat_velcoity_and_depth
     set wetted_fraction (low_wetted * (1 - flow_fraction) + high_wetted * (flow_fraction))
     set wetted_area area * wetted_fraction
 
-    ; Spawning sutability
-    foreach (range length species_list) [n ->
-      ; set the spawning sutabiblit for each patch if no avaiable area set to 0
-      let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
-      let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
-      set spawn_suit replace-item n spawn_suit (d_suit * v_suit)
-      ; If there is insufficent substrate fo a redd set to 0
-      if (area * (gravel + cobble)) < item n redd_area [
-        set spawn_suit replace-item n spawn_suit 0
+    ; Spawning sutability only run is spawn_flag = true
+    if spawn_flag [
+      foreach (range length species_list) [n ->
+        ; set the spawning sutabiblit for each patch if no avaiable area set to 0
+        let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
+        let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
+        set spawn_suit replace-item n spawn_suit (d_suit * v_suit)
+        ; If there is insufficent substrate fo a redd set to 0
+        if (area * (gravel + cobble)) < item n redd_area [
+          set spawn_suit replace-item n spawn_suit 0
+        ]
       ]
     ]
   ]
@@ -1385,8 +1397,9 @@ to hatch_fish
     set fish_list but-first fish_list
 
     ; Add in fish based on life stage
-    if item (lifestage_column - 1) todays_fish = "adult" [
-      create-adults (item (number_column - 1) todays_fish )[
+    ; Only run spawner if they are present in the system
+    if item (lifestage_column - 1) todays_fish = "spawner" and spawn_flag [
+      create-spawners (item (number_column - 1) todays_fish )[
         ; Chose who it will be displayed
         set size 7
         set color green
@@ -1403,9 +1416,13 @@ to hatch_fish
         set age 0
 
         ; Set lenght man mass
-        set f_length (item (length_column - 1) todays_fish ) ; fish length is in cm
+        ; Defensive programing to make sure we dont have a random fish that is too small
+        let f_min_length (item (length_column - 1) todays_fish ) / 10
+        set f_length random-normal (item (length_column - 1) todays_fish ) (item (sd_column - 1) todays_fish )
+        set f_length max list f_length f_min_length
         set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b))) ; mass is in g
         set fish_condition 1.0
+        set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b))
 
         ; Set the initial needed water depth is at least fish length (remember cm to m conversion)
         let init_length f_length / 100
@@ -1427,7 +1444,7 @@ to hatch_fish
         ; Memory lists
         set is_alive true
 
-        save_event "adult_added"
+        save_event "spawner_added"
       ]
     ]
 
@@ -1443,7 +1460,10 @@ to hatch_fish
         set species_id (position species species_list)
 
         ; Set size and territory size
-        set f_length (item (length_column - 1) todays_fish ) ; fish length is in cm
+        ; Defensive programing to make sure we dont have a random fish that is too small
+        let f_min_length (item (length_column - 1) todays_fish ) / 10
+        set f_length random-normal (item (length_column - 1) todays_fish ) (item (sd_column - 1) todays_fish )
+        set f_length max list f_length f_min_length
         set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b)))
         set fish_condition 1.0
         set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
@@ -2147,6 +2167,7 @@ to select_destination_cell
     ; Destination should be set to the fallback migration patch
     move_fish destination
 
+
     let destination_patch_path_survival fallback_drift_patch_path_survival
 
     ask destination [set path_survival destination_patch_path_survival]
@@ -2162,6 +2183,7 @@ to select_destination_cell
     ; If the probability of surviving starvation is less than the randomly generated number, the fish selects cells with higher positive net energy regardless of risk
     ifelse (random-float 1.0) > fish_death_starv_survival_prob [
       set starving? true
+
       set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
     ][
       ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
@@ -2175,9 +2197,12 @@ to select_destination_cell
           set consider_path_risk total_net_energy_in_cell * path_survival
         ]
       ]
+
       set destination max-one-of wet_cells_in_radius [consider_path_risk]
     ]
+
     move_fish destination
+
   ]
 
   ask destination [set migrant_patch false]  ; The destination cell's migrant_patch status is set to false
@@ -2375,7 +2400,7 @@ end
 
 ;##### Adult Spawning Acrtions ##########################################
 to spawn_fish
-  foreach sort-on [-1 * f_length] adults [
+  foreach sort-on [-1 * f_length] spawners [
     next_fish -> ask next_fish [
 
       ; Get new weight and see if still alive
@@ -2392,15 +2417,17 @@ end
 
 to calculate_spawner_weight_loss
 
+  ; Set the metabolic rate
   set active_metab_rate (calculate_metabolic temperature mass species_id today_velocity)
 
+  ; Calculate loss of mass
   set change_mass (- active_metab_rate) / item species_id energy_density
 
+  ; Set the new mass
   set mass mass + change_mass
 
-  set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b))
-
-  set fish_condition mass / healthy_mass
+  ; Set the new fish condition
+   set fish_condition mass / healthy_mass
 
   ; Calculate mortality
   ; Calculate the probability of surviving starvation based on K. This survival does not depend on the cell. It implements the linear condition mortality model.
@@ -2410,14 +2437,19 @@ to calculate_spawner_weight_loss
   if (random-float 1.0) > (fish_death_starv_survival_prob) [
     ; Fish died of poor condition
     ; print word "died of poor condition at age: " age
+
+    ; free up the guarded area
+    set unguarded_area unguarded_area + item species_id guard_area
+
+    ; Kill the fish and log it's death
     table:put death_condition_table species table:get death_condition_table species + 1
-    save_adult_event "adult died"
+    save_spawner_event "spawner died"
     set is_alive false
     table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
-    set unguarded_area unguarded_area + item species_id guard_area
     die
   ]
 
+  ; Age the fish 1 day
   set age age + 1
 
 end
@@ -2427,20 +2459,22 @@ to spawn
   ; Find possibel spots
   find_inrange_destinations
 
+  ; Move to a place if valid cells exist
   if any? wet_cells_in_radius[
     set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
     move-to destination
 
+    ; if unguarded area make  redd
     if [unguarded_area] of destination >= item species_id guard_area [
       create_redd
-      save_adult_event "spawn"
+      save_spawner_event "spawn"
 
       ; Turn on guard flag
       set is_guarding 1
     ]
   ]
 
-  ; !!!!!!!!!!!!!!! drifters are stranding
+  ; NOTE! drifters are stranding
 end
 
 to create_redd
@@ -2467,6 +2501,7 @@ to create_redd
   ask redds-here [
     let overlap_fra 0
 
+    ; place 2 random points in a square and get distance to chak if superimposition
     let dimenshion sqrt(area)
     let x1 random-float dimenshion
     let y1 random-float dimenshion
@@ -2476,10 +2511,12 @@ to create_redd
     let r1 sqrt(area_of_redd / pi)
     let r2 sqrt([item [species_id] of myself redd_area] of myself / pi)
 
+    ; if total overlap
     if d0 <= abs(r1 - r2)[
      set overlap_fra 1
     ]
 
+    ; partial overlap
     if d0 > abs(r1 - r2) and d0 < r1 + r2[
       let overlap_1 r1 ^ 2 * acos((d0 ^ 2 + r1 ^ 2 - r2 ^ 2)/ 2 / d0 / r1) * pi / 180
       let overlap_2 r2 ^ 2 * acos((d0 ^ 2 + r2 ^ 2 - r1 ^ 2)/ 2 / d0 / r2) * pi / 180
@@ -2487,6 +2524,7 @@ to create_redd
       set overlap_fra (overlap_1 + overlap_2 + overlap_3) / area_of_redd
     ]
 
+    ; Kill the amount of eggs based on overlap
     let killed_eggs overlap_fra * egg_count
     set dead_eggs dead_eggs + killed_eggs
     set egg_count egg_count - killed_eggs
@@ -2499,7 +2537,7 @@ end
 to develope_redds
   ask redds [
 
-
+; comming soon!
 
   ]
 
@@ -2579,7 +2617,7 @@ to-report is_valid_destination [fish destinations]
   ]
 
   ; Check for adults
-  if [breed] of fish = adults[
+  if [breed] of fish = spawners[
     let output true
     report output
   ]
@@ -2725,11 +2763,11 @@ to save_event [an_event_type]
 end
 
 ;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
-to save_adult_event [an_event_type]
+to save_spawner_event [an_event_type]
 
   ; an-event-type is a character string that says what event happened.
-  if breed = adults [
-    set adult_events_list lput (
+  if breed = spawners [
+    set spawner_events_list lput (
       csv:to-row (list
         time:show tick_date "yyyy-MM-dd"
         species
@@ -2745,7 +2783,7 @@ to save_adult_event [an_event_type]
         [today_depth] of destination
       )
     )
-    adult_events_list
+    spawner_events_list
   ]
 
 end
@@ -2917,16 +2955,16 @@ to build_output_file_named [a_file_name]
   ; Create the adult events output file.
   if a_file_name = "a-e-o-n" [ ; This is the value of the uninitialized file name
 
-    set adult_events_outfile_name (word run_folder "/adult_events_output.csv")
+    set spawner_events_outfile_name (word run_folder "/adult_events_output.csv")
 
-    if file-exists? adult_events_outfile_name [ file-delete adult_events_outfile_name ]
+    if file-exists? spawner_events_outfile_name [ file-delete spawner_events_outfile_name ]
     ; There can be events on the fish-events-list when file is created (from fish initialization)
     ; so these header lines must be put at the *start* of the list. Use fput with header
     ; lines in reverse order.
 
-    set adult_events_list fput "time, species, id, event, age, x_pos, y_pos, temperature, flow, turbidity, velocity, depth" adult_events_list
+    set spawner_events_list fput "time, species, id, event, age, x_pos, y_pos, temperature, flow, turbidity, velocity, depth" spawner_events_list
 
-    set adult_events_list fput (word "FHAST fish events output file, Created " date-and-time) adult_events_list
+    set spawner_events_list fput (word "FHAST fish events output file, Created " date-and-time) spawner_events_list
   ]
 
   ; Create output file for recording attributes of all cells in the model (for mapping and testing purposes)
@@ -2989,16 +3027,16 @@ to update_output
   ]
 
   ; Update detailed adult events output file
-  ifelse adult_events_output? [
-    if not empty? adult_events_list [
-      if adult_events_outfile_name = "a-e-o-n" [ build_output_file_named adult_events_outfile_name ]
-      file-open adult_events_outfile_name
-      foreach adult_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+  ifelse spawner_events_output? [
+    if not empty? spawner_events_list [
+      if spawner_events_outfile_name = "a-e-o-n" [ build_output_file_named spawner_events_outfile_name ]
+      file-open spawner_events_outfile_name
+      foreach spawner_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
       file-close
-      set adult_events_list (list)                ; Clear the event list
+      set spawner_events_list (list)                ; Clear the event list
     ]
   ][
-    set adult_events_list (list)                ; Clear the event list
+    set spawner_events_list (list)                ; Clear the event list
   ]
 
   ; Update detailed cell events output file
@@ -3022,11 +3060,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-260
-1417
+291
+985
 -1
 -1
-1.0
+1.991869918699187
 1
 10
 1
@@ -3036,10 +3074,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--20
-20
+-22
+14
 0
-1392
+492
 1
 1
 1
@@ -3311,7 +3349,7 @@ INPUTBOX
 207
 568
 run_folder
-C:\\Users\\pndph\\Documents\\Research\\Projects\\FHAST\\Work\\spawning_runs\\outputs\\500-42-400_adults_outputs\\temporary
+C:\\Users\\pndph\\Desktop\\Temp\\large_hydro_steelhead_outputs\\temporary
 1
 0
 String
@@ -3325,7 +3363,7 @@ zoom_factor
 zoom_factor
 0
 1
-0.63
+0.49
 0.01
 1
 NIL
@@ -3334,10 +3372,10 @@ HORIZONTAL
 SWITCH
 12
 237
-190
+209
 270
-adult_events_output?
-adult_events_output?
+spawner_events_output?
+spawner_events_output?
 0
 1
 -1000

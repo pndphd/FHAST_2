@@ -24,7 +24,8 @@ run_netlogo_model <- function(run_folder_path) {
                               idfinal=NA_character_,
                               idrunnum=NA_character_,
                               variables = list(),
-                              constants = list(run_folder = deparse(run_folder_path)),
+                              constants = list(run_folder = deparse(run_folder_path),
+                                               "draw_fish_movements?" = "FALSE"),
                               metrics = c("count turtles"))
   nl@simdesign <- simdesign_simple(nl=nl,
                                    nseeds=1)

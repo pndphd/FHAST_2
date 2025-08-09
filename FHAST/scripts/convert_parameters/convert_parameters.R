@@ -56,14 +56,14 @@ if (!ml$path$aoi == "no_aoi") {
 if (ml$path$canopy == "no_canopy"){
   if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
       !compareCRS(ml$df$cover, ml$df$top_marker)){
-    stop('The CRSs of aome shape files are not the same.')
+    stop('The CRSs of some shape files are not the same.')
     }
 } else {
   ml$df$canopy = st_read(ml$path$canopy, quiet = TRUE)
   if (!compareCRS(ml$df$center_line, ml$df$top_marker) |
       !compareCRS(ml$df$canopy, ml$df$top_marker) |
       !compareCRS(ml$df$canopy, ml$df$cover)){
-    stop('The CRSs of aome shape files are not the same.')
+    stop('The CRSs of some shape files are not the same.')
     }
 
 }
