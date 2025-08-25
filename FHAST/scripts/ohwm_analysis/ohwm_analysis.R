@@ -128,11 +128,11 @@ message("Calculate Summaries: Done.\n")
 ##### Make plot ################################################################
 
 message("Make Plots.\n")
+
 plot_data = ml$df$footprint_in %>%
   left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>%
   rowwise() %>%
-  mutate(Feature = paste0(Type, ": ", Feature),
-         Feature = ifelse(str_length(Feature) > 45,
+  mutate(Feature = ifelse(str_length(Feature) > 45,
                           paste0(str_sub(Feature, 1, 45), "..."),
                           Feature))
 
@@ -143,24 +143,8 @@ ml$plot$output_map = ggplot(plot_data) +
         legend.direction ='vertical') +
   geom_sf(aes(fill = factor(Feature)), color = "black") +
   geom_sf(data = ml$df$footprint_out_dis, fill = "white") +
+  facet_wrap(.~ Type, ncol = 1)
   labs(color = "test")
-
-# plot_data = ml$df$footprint_in %>%
-#   left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>%
-#   rowwise() %>%
-#   mutate(Feature = ifelse(str_length(Feature) > 45,
-#                           paste0(str_sub(Feature, 1, 45), "..."),
-#                           Feature))
-# 
-# ml$plot$output_map = ggplot(plot_data) +
-#   theme_classic(base_size = 20) +
-#   theme(axis.text.x = element_text(angle = 90),
-#         legend.position = "top",
-#         legend.direction ='vertical') +
-#   geom_sf(aes(fill = factor(Feature)), color = "black") +
-#   geom_sf(data = ml$df$footprint_out_dis, fill = "white") +
-#   facet_wrap(.~ Type, ncol = 1)
-#   labs(color = "test")
 
 if (NROW(ml$df$footprint_in) > 12){
   ml$plot$output_map = ml$plot$output_map +
@@ -176,7 +160,7 @@ if (NROW(ml$df$footprint_in) > 12){
 
 ggsave(here(ml$path$output_folder, "ohwm_map.png"),
        ml$plot$output_map,
-       height = 14 + length(unique(ml$df$footprint_in$Feature))/12,
+       height = 7 * length(unique(ml$df$footprint_in$Type)) + length(unique(ml$df$footprint_in$Feature))/12,
        width = 7,
        units = "in",
        device = "png")
