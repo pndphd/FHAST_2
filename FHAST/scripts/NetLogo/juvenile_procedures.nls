@@ -1,0 +1,902 @@
+;#########################################################################
+; This defines procedures for juveniles
+;#########################################################################
+
+;##### Juvenile Rearing Acrtions ##########################################
+;; Have the fish do rearing actions
+to rear_fish
+
+  foreach sort-on [-1 * f_length] juveniles [
+    next_fish -> ask next_fish [
+
+      ; Each fish completes the following procedures in order of longest to shortest
+      update_juvenile_fish
+      find_inrange_destinations
+      calculate_outmigration_probability
+
+      ; If ready to migrate migrate otherwise find best cell to rear and grow
+      ifelse is_migrant [
+        migrate
+      ][
+
+        ; Flag fish as drifters
+        flag_drifters
+
+        ; Peform drifter actions
+        if is_drifter [
+          ; The fish checks whether it will have any positive net energy in any of the search radius cells. If not, it can move to another farther area
+          drift_downstream
+          ; If there are valid drift destination, calculate the net energy of the cells in radius of the random valid drift destinations identified
+          if exit_status = 0 [
+            ; If there are radius cells within the random valid drift destinations identified (exit_status = 0), calculate net energy/mortality and select destination cell
+            calculate_net_energy_of_drift_cells
+          ]
+        ]
+
+        ; If a fish decides not to migrate, it performs the following procedures in order
+        ; If we set the fish to drift based on having no destination cells, skip this attempted move logic.
+        ; The select_destination_cell funciton will in most cases set is_drifter to false which prevents
+        ; the drift to avoid stranding behavior.
+        calculate_energy_balance
+        select_destination_cell
+
+        ; All non migrants check to see if yse respurces
+        if exit_status != 1 or strand_status != 1 [
+          ; If the fish have not stranded or exited the river, they grow and deplete destination resources
+          deplete_destination_resources
+        ]
+
+        ; All non migrants grow
+        grow
+      ]
+
+      ; All fish go through the survive procedure
+      survive
+    ]
+  ]
+
+end
+
+;; Update the fish variables that change every time step (turbidity functions, etc)
+to update_juvenile_fish
+
+  ; Re-set the fish in shelter variable to false
+  set is_in_shelter false
+  set is_drifter false
+  set path_survival_list 1
+  set color blue
+
+  ; If mass is negative, set it to a very small number to calculate log mass in metabolic rate equation
+  if mass <= 0 [set mass .001]
+
+  ; Calculate the probability of surviving starvation based on K. This survival does not depend on the cell. It implements the linear condition mortality model.
+  ; The equation is algebraically equivalent to a line with survival = mort-condition-S-at-K5 at K = 0.5 and survival = 1.0 at K = 1.0
+  set fish_death_starv_survival_prob (evaluate_logistic "poor_condition" species fish_condition)
+
+  ; Calculate the probability of death from high temp (the logistic calculates probability of surviving the risk, so we subtract from 1)
+  set fish_death_hightemp_prob (evaluate_logistic "high_temperature" species temperature)
+  set fish_death_hightemp_prob 1 - fish_death_hightemp_prob
+
+  ; Cmax weight term
+  let fish_cmax_wt_term (item species_id cmax_a) * (mass ^ (1 + item species_id cmax_b))
+  ; Calculate cmax (g/d)
+  set cmax fish_cmax_wt_term * item species_id cmax_temp_func
+
+  ; Swim speed length term (convert from BL/s and from cm to m)
+  let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
+  ; Calculate max swimm speed (BL/s)
+  set max_swim_speed max_swim_l_term * item species_id max_swim_temp_func
+
+  ; Update the turbidity function
+  ifelse turbidity <= item species_id turbid_threshold [
+    set fish_turbid_function 1.0
+  ][
+    set fish_turbid_function (item species_id turbid_min) + (1.0 - (item species_id turbid_min)) *
+    exp ((item species_id turbid_exp) * (turbidity - (item species_id turbid_threshold)))
+    ;show fish_turbid_function
+  ]
+
+   ; set the distance that fish can detect/react to prey
+   set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
+
+end
+
+;; Find all of the potential destination cells that the fish can choose to move to
+to find_inrange_destinations
+
+  ; Number of patches within the maximum distance that a fish can travel. Essentially the "radius" in cm converted to meters and divided by the resolutio
+  set patch_radius (((item species_id move_dist_a) * (f_length ^ (item species_id move_dist_b)))) / resolution
+  ; If the fish only has access to its current patch let it access its neighbors as well
+  set patch_radius max (list patch_radius 1.1)
+
+  ; Find all of the reachable cells within the radius
+  set wet_cells_in_radius find_accessibel_destinations self patch_radius
+
+  ; Calculate the mean water velocity in the radius
+  set mean_velocity_in_radius mean [today_velocity] of wet_cells_in_radius
+
+  if breed = juveniles [
+    ; If it is the first time step, the first value in the velocity experience list is the mean velocity of the radius
+    set velocity_experience_list lput mean_velocity_in_radius velocity_experience_list
+  ]
+
+end
+
+;; Find possible destinations the fish can swim to within the given move_dist.
+to-report find_accessibel_destinations [fish move_dist]
+
+  ; This minimizes the predation risk along a path and limits total distance travelled by the provided move distance.
+  ; This also handles stranding by having fish stuck on a dry patch use yesterday's water levels for valid pathing decisions.
+  ; If the results are just the current patch, than the fish has stranded.
+  ask pathfinding_dirty_patches [
+    clear_patch_path_data
+  ]
+  let destinations table:make
+  ; We start looking for valid destinations with the fish's current location.
+  let to_visit (list [patch-here] of fish)
+  ask [patch-here] of fish [
+    set has_visited? true
+    set path_to_here_cost 0
+    set path_survival 1
+  ]
+  let dirty (list[patch-here] of fish)
+  ; Check if the fish is trying to avoid stranding or not
+  let avoiding_stranding [today_depth] of [patch-here] of fish <= 0
+  while [length to_visit > 0] [
+    ; Pull the patch we're looking at off the to_visit list.
+    let cur_patch first to_visit
+    set to_visit but-first to_visit
+    ask cur_patch [
+      ask neighbors [
+        ; validate neighbor is wet
+        if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
+          let survival [path_survival] of cur_patch * calculate_patch_survival fish
+
+          ; If this is the first time being visited or this path was less risky than an alternative
+          if (has_visited? = false) or (path_survival < survival) [
+            let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
+            if (move_cost < move_dist) [
+              if (has_visited? = false) [
+                set dirty lput self dirty
+              ]
+              store_pathfinding_patch_values cur_patch move_cost survival 0
+              ; If we've moved too far, don't bother adding to the to_visit list, but
+              ; if we still have distance the fish can travel than keep going.
+              set to_visit lput self to_visit
+              ; If we're in stranding logic we might be evaluating patches that aren't currently wet.
+              ; Make sure a patch is wet before considering it a valid destination.
+              ; Also chack to make sure there is area fo the fish
+              ; and (pycor < [ ycor ] of fish) may add in later?
+              if (is_valid_destination fish destinations) [
+                ; If all checks pass (including depth and having available area), mark as a potential destination.
+                table:put destinations patch_identifier self self
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  ; Check if the fish had no options to move otherwise make the tabel
+  let cur_patch [patch-here] of fish
+  ifelse (table:length destinations = 0) [
+    ; This fish has nowhere to go and is stuck, have them attempt drifting using previous days depths.
+    ask fish [set is_drifter true]
+    ; We're expected to return something, so even if we're stranding add the current patch
+    table:put destinations patch_identifier cur_patch cur_patch
+  ] [
+    ; Make sure the current patch is an option to avoid fish shifting back and forth between adjacent patches.
+    if ([is_valid_destination fish destinations] of cur_patch) [
+      ask cur_patch [
+        set path_survival calculate_patch_survival fish
+      ]
+      table:put destinations patch_identifier cur_patch cur_patch
+    ]
+  ]
+  set pathfinding_dirty_patches patch-set dirty
+  report patch-set table_to_value_list destinations
+end
+
+;; Calculate the probability of a fish migrating, dependent on changes in velocity, photoperiod, and length
+to calculate_outmigration_probability
+
+ ; Only evaluate probability if the individual isnt migrant
+  if is_migrant = false [
+    let fish_smolting_prob_photoperiod (evaluate_logistic "smolt_photoperiod" species photoperiod)
+
+    let fish_smolting_prob_flength (evaluate_logistic "smolt_flength" species f_length)
+
+
+    ;If the velocity experience list has less than 5 items, we take the average of those values
+    ifelse length velocity_experience_list <= 5 [
+      set running_average_velocity  mean velocity_experience_list
+    ][
+      ; Calculate the running average of the mean velocity that the fish has experienced in its radius the last 5 time steps
+      let running_average_velocity_sublist  sublist velocity_experience_list (length velocity_experience_list - 6) (length velocity_experience_list - 1)
+      set running_average_velocity mean running_average_velocity_sublist
+    ]
+
+    let percent_change_velocity 0
+    ; Avoid divide by zero error. Check if running_average_velocity is 0 first, and if so, percent_change_velocity will be 0.
+    if running_average_velocity != 0 [
+      ; Calculate the percent change from the running average to the current radius velocity
+      set percent_change_velocity ( mean_velocity_in_radius - running_average_velocity) / running_average_velocity
+
+      ; If the change is negative (velocity decreased) then we set it to zero so the outmigration probability is 0
+      if percent_change_velocity < 0 [set percent_change_velocity 0]
+    ]
+
+    ; The probability of outmigrating increases as the difference in velocity between the current radius and the running average increases.
+    let fish_outmigration_prob_velocity (evaluate_logistic "outmigrate_velocity" species percent_change_velocity)
+
+    ; Overall outmigration prob combines the probability of smolting due to photoperiod, the probability of smolting due to length, and the probability of migrating due to change in velocity
+    set overall_outmigration_prob max (list fish_outmigration_prob_velocity (fish_smolting_prob_photoperiod * fish_smolting_prob_flength))
+
+    if ((random-float 1.0) < overall_outmigration_prob) [
+      set is_migrant true
+    ]
+  ]
+
+  if is_migrant = false [table:put nonmigrants_count_table species table:get nonmigrants_count_table species + 1]
+
+end
+
+;; Migrate to new cell
+to migrate
+
+ ; Set max migration distance (currently 24 km) in patches
+ let max_migration_distance (item species_id migration_max_dist) / resolution
+
+ set destination find_acceiisble_migration_destination self reach_end max_migration_distance
+
+ move_fish destination
+
+ ask destination [set migrant_patch true] ; Set the destination's to identify itself as a migrant patch (this is so we don't include these cells as destination cells for the output files)
+
+ save_event "migrated"
+
+ table:put migrant_count_table species table:get migrant_count_table species + 1
+
+end
+
+;; Find possible a pathable destination at the specified y of length up to the move_dist.
+to-report find_acceiisble_migration_destination [fish y_target move_dist]
+  ask pathfinding_dirty_patches [
+    clear_patch_path_data
+  ]
+  ; We start looking for valid destinations with the fish's current location.
+  let to_visit (list [patch-here] of fish)
+  ask [patch-here] of fish [
+    set has_visited? true
+    set path_to_here_cost 0
+    set path_survival 1
+    set path_score 0
+  ]
+  let dirty (list[patch-here] of fish)
+  let path_destination [patch-here] of fish
+  ; Check if the fish is trying to avoid stranding or not
+  let avoiding_stranding [today_depth] of [patch-here] of fish <= 0
+  while [length to_visit > 0] [
+    ; Pull the patch we're looking at off the to_visit list.
+    let cur_patch first to_visit
+    set to_visit but-first to_visit
+    ask cur_patch [
+      ifelse path_to_here_cost > move_dist [
+        if [today_depth] of previous_patch > 0 and [cell_available_wet_area] of previous_patch >= [territory_size] of fish [
+          ; We've reached the max distance we can travel. Assume we're along a good path towards the target and return
+          ; the previous patch (less than the max_dist) as the destination.
+          set path_destination previous_patch
+          set to_visit (list)
+        ]
+      ][
+        ifelse pycor = y_target and today_depth > 0 and cell_available_wet_area >= [territory_size] of fish [
+          ; We've found our destination, clear the to visit list and save it so we can return it.
+          set path_destination self
+          set to_visit (list)
+        ][
+          ask neighbors [
+            ; validate neighbor is wet
+            if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
+              let survival [path_survival] of cur_patch * calculate_patch_survival fish
+              let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
+              let survival_score (1 - survival)
+              let score (move_cost + y_diff_distance y_target) * survival_score
+              ; If this is the first time being visited or this path was less risky than an alternative
+              if (has_visited? = false) or (path_score > score) [
+                if (has_visited? = false) [
+                  set dirty lput self dirty
+                ]
+                store_pathfinding_patch_values cur_patch move_cost survival score
+                ; If we've moved too far, don't bother adding to the to_visit list, but
+                ; if we still have distance the fish can travel than keep going.
+                set to_visit insert_sorted_path_score to_visit
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  set pathfinding_dirty_patches patch-set dirty
+  report path_destination
+
+end
+
+;; Flag all fish who have nowhere to go
+to flag_drifters
+
+  ; if all of the cells in the radius have negative net energy values, the fish moves elsewhere in the reach to get out of crappy area
+  if all? wet_cells_in_radius [total_net_energy_in_cell <= 0] and is_drifter = false [
+
+    set is_drifter true
+    set drifter_history "drifting, no dests available"
+    table:put drifter_count_table species table:get drifter_count_table species + 1
+  ]
+
+end
+
+;; Move the fish
+to move_fish [target]
+  if draw_fish_movements? [
+    ; Draw the path taken to get to the destination.
+    let curpatch target
+    ; The patches know the path the fish took to this location in reverse, so we
+    ; actually start at the destination and draw backwards before jumping back to
+    ; the end.
+    move-to target
+    pen-down
+    while [curpatch != nobody] [
+      move-to curpatch
+      set curpatch [previous_patch] of curpatch
+    ]
+    pen-up
+  ]
+
+  ; Move to the destination.
+  move-to target
+
+end
+
+;; Procedure for drifters drifting downstream
+to drift_downstream
+
+  ; Temporarily set the drifter's color to blue
+  set color yellow
+
+  ; Set the distance a fish can disperse to be equal to 10 times the current radius (currently same as migration distance)
+  let dispersal_distance item species_id migration_max_dist / resolution
+
+  ; Find all of the wet cells within the new area that the fish can disperse to
+  let open_cells_for_dispersal find_possible_drift_destinations self dispersal_distance
+
+  let all_downstream_cells open_cells_for_dispersal with [pycor < [ ycor ] of myself ]
+
+  ; Determine the number of random cells that the fish can evaluate for drifting
+  let num_random_cells (([pycor] of self - reach_end) / dispersal_distance) * 100
+
+  ; Select random "num_random_cells" number of cells downstream, or whatever amount there is
+  ifelse count all_downstream_cells >= num_random_cells [
+  set random_drift_downstream_cells n-of num_random_cells all_downstream_cells
+  ][
+    ; There are less cells than the number want, so just take them all.
+    set random_drift_downstream_cells all_downstream_cells
+   ]
+
+  ; If there are no valid cells that the fish can drift to, it drifts out of the river or strands
+  if any? random_drift_downstream_cells = FALSE [
+
+    ; This formerly marked fish as stranded, but that's now handled in the drift function.
+
+    let max_migration_distance (item species_id migration_max_dist) / resolution
+
+    ; If there is no downstream cell to move to, the drifter exits out of the river
+    set destination fallback_drift_patch
+
+    set exit_status 1
+  ]
+
+end
+
+;; Find all possible drift destinations for the fish. Anything reachable by today's depth
+; (or yesterday's depth if avoiding stranding) and downstream are considered valid
+; destinations (within the move_dist).
+; This calculates predation risk, but doesn't try to minimize it.
+to-report find_possible_drift_destinations [fish max_dist]
+  ask pathfinding_dirty_patches [
+    clear_patch_path_data
+  ]
+  let destinations table:make
+  ; We start looking for valid destinations with the fish's current location.
+  let to_visit (list [patch-here] of fish)
+  ask [patch-here] of fish [
+    set has_visited? true
+    set path_to_here_cost 0
+    set path_survival 1
+  ]
+  let dirty (list[patch-here] of fish)
+  ; Check if the fish is trying to avoid stranding or not
+  let avoiding_stranding [today_depth] of [patch-here] of fish <= 0
+  let reached_end false
+  set fallback_drift_patch [patch-here] of fish
+  while [length to_visit > 0] [
+    ; Pull the patch we're looking at off the to_visit list.
+    let cur_patch first to_visit
+    set to_visit but-first to_visit
+    ask cur_patch [
+      ask neighbors [
+        ; validate neighbor is wet
+        if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
+          let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
+          ; If this is the first time being visited or this path was less risky than an alternative
+          if (has_visited? = false) or (path_to_here_cost > move_cost) [
+            if (has_visited? = false) [
+              set dirty lput self dirty
+            ]
+            let survival [path_survival] of cur_patch * calculate_patch_survival fish
+            store_pathfinding_patch_values cur_patch move_cost survival 0
+            ; If we've moved too far, don't bother adding to the to_visit list, but
+            ; if we still have distance the fish can travel than keep going.
+            set to_visit lput self to_visit
+            if pycor = reach_end [
+              set reached_end true
+            ]
+            ; If we're in stranding logic we might be evaluating patches that aren't currently wet.
+            ; Make sure a patch is wet before considering it a valid destination.
+            ; Also chack to make sure there is area fo the fish
+            if pycor < [ ycor ] of fish and ((pycor = reach_end and today_depth > 0) or is_valid_destination fish destinations) [
+              ; If all checks pass (including depth and having available area), mark as a potential destination.
+              table:put destinations patch_identifier self self
+              if (pycor < [pycor] of [fallback_drift_patch] of fish) and move_cost < max_dist [
+                let current_patch self
+                ask fish [
+                  set fallback_drift_patch current_patch
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  set fallback_drift_patch_path_survival [path_survival] of fallback_drift_patch
+
+  if (table:length destinations = 0) [
+    ifelse reached_end [
+      ; Fish drifted out of river
+      ask fish [set exit_status 1]
+    ][
+      ifelse avoiding_stranding [
+        ; This fish has nowhere to go and is stuck. They are stranded.
+        ask fish [set strand_status 1]
+      ][]
+    ]
+    let cur_patch [patch-here] of fish
+    ; We're expected to return something, so even if we're stranding add the current patch
+    table:put destinations patch_identifier cur_patch cur_patch
+  ]
+  set pathfinding_dirty_patches patch-set dirty
+  report patch-set table_to_value_list destinations
+end
+
+;; Calculate the net energy in a drift cell
+to calculate_net_energy_of_drift_cells
+
+  ; Find the distance between these random cells and the fish
+  ask random_drift_downstream_cells [set distance_to_drifter distance myself]
+
+  ; Sort the random patches by the distance to the fish
+  let sorted_distance_cells sort-on [distance_to_drifter] random_drift_downstream_cells
+
+  ; get the current fish
+  let current_fish self
+
+  let closest_cell_with_pos_energy nobody
+
+  let no_cell_has_pos_energy FALSE
+
+  while [closest_cell_with_pos_energy = nobody and no_cell_has_pos_energy = FALSE] [
+    let positive_energy_cell_count 0
+    let n_index 0
+
+    ; Feed in the random cells (in ascending order):
+    foreach sorted_distance_cells [n ->
+
+    while [positive_energy_cell_count = 0 and no_cell_has_pos_energy = FALSE] [
+        ; While there are no positive net energy cells in radius and we haven't reached the end of the list, keep going
+        ask n [
+          ; For each of the random cells, find the patches in the radius
+          ;set possible_wet_cells_in_radius patches in-radius ([patch_radius] of myself)
+          let all_net_energy []
+          ask current_fish [
+            move-to n
+            ;set wet_cells_in_radius possible_wet_cells_in_radius
+            set wet_cells_in_radius find_accessibel_destinations self patch_radius
+            calculate_energy_balance
+            set all_net_energy max [total_net_energy_in_cell] of wet_cells_in_radius
+          ]
+
+          ifelse all_net_energy > 0 [
+            ; If there is a radius cell with positive net intake, we can exit the loop
+            set positive_energy_cell_count 1
+            ; If any of the element in the list is positive, we have found a cell with positive net energy
+            set closest_cell_with_pos_energy n
+          ][
+            set positive_energy_cell_count 0
+            set closest_cell_with_pos_energy nobody
+            ifelse length sorted_distance_cells = n_index + 1 [
+              ; If we have reached the end of the random drift cells
+              set no_cell_has_pos_energy TRUE
+            ][
+              set n item (n_index + 1) sorted_distance_cells
+              set n_index n_index + 1
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  ifelse closest_cell_with_pos_energy = nobody [
+    ; If there are no cells with positive net energy, the drifter exits out of the river
+
+    ; Set max migration distance in patches
+    ;let max_migration_distance (item species_id migration_max_dist) / resolution
+    set destination fallback_drift_patch
+    set exit_status 1
+  ][
+    ; Fish moves to closest drift cell
+    move-to closest_cell_with_pos_energy
+
+    ; Reset path survival list for the drifters who move to two cells (this store the path survivals of the two paths)
+    ;set path_survival_list []
+
+    ;For the drifter fish, store the path survival probabilities
+    ;set path_survival_list lput [path_survival] of closest_cell_with_pos_energy path_survival_list
+    set path_survival_list [path_survival] of closest_cell_with_pos_energy
+
+    ;Wet cells in radius become the valid patches in the radius of the closest cell
+    ;set wet_cells_in_radius find_accessibel_destinations self patch_radius
+
+    ; Calculate the mean water velocity in the radius
+    set mean_velocity_in_radius mean [today_velocity] of wet_cells_in_radius
+
+    set velocity_experience_list lput mean_velocity_in_radius velocity_experience_list
+  ]
+
+end
+
+;; Calculates the energy benefits of each cell in the search radius
+to calculate_energy_balance
+
+  ask wet_cells_in_radius  [
+
+    let fish_species [species] of myself
+    let my_species_id [species_id] of myself
+
+    ; Calculate the swim speed (m/s) of the fish in each cell if it were to drift feed (dependent on whether there are velocity shelters)
+    ; Set swimming velocity
+    set swim_speed (set_swim_speed item my_species_id benthic_fish cell_available_vel_shelter [territory_size] of myself today_velocity)
+
+    ; Choose between benthic and and drift feeding
+    ifelse (item my_species_id benthic_fish) = 0 [
+      ; Calculate the capture area of the fish
+      let capture_area (2 * fish_detect_dist) * min (list fish_detect_dist today_depth) ; m^2
+
+      ; Set up logistic equation to determine capture success
+      let ratio_vel_max_swim today_velocity / [max_swim_speed] of myself
+      let capture_success (evaluate_logistic "capture_success" fish_species ratio_vel_max_swim)
+
+      ; Calculate daily intake as a daily rate, g/d
+      set daily_intake capture_area * hab_drift_con * today_velocity * capture_success * 3600 * photoperiod
+    ][
+      ; Calculate the fish width assuming it has a density of water
+      let f_width sqrt([mass] of myself / [f_length] of myself)
+      let n_steps (item my_species_id feeding_speed) * [f_length] of myself / f_width * (3600 * (24 - photoperiod))
+      set daily_intake pi * n_steps * f_width ^ 2 / ln(n_steps) / 1e4 *  hab_ben_con
+    ]
+
+    set active_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id swim_speed)
+    set passive_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id 0)
+
+    ifelse (item my_species_id benthic_fish) = 0 [
+      set total_metab_rate (active_metab_rate * (photoperiod) + passive_metab_rate * (24 - photoperiod)) / 24
+    ][
+      set total_metab_rate (active_metab_rate * (24 - photoperiod) + passive_metab_rate * (photoperiod)) / 24
+    ]
+
+    ; Use cmax to limit intake
+    if daily_intake > [cmax] of myself [set daily_intake [cmax] of myself]
+
+    ifelse (item my_species_id benthic_fish) = 0 [
+      ; Calculate energy obtained each cell (J/d)
+      set daily_energy_intake daily_intake * hab_drift_ene
+    ][
+      ; limit based on avaiable food
+      if daily_intake > cell_available_ben [ set daily_intake cell_available_ben ]
+      ; Calculate energy obtained each cell (J/d)
+      set daily_energy_intake daily_intake * hab_ben_ene
+    ]
+
+    ; Calculate net energy intake by subtracting the metabolic rate (J/d)
+    set daily_net_energy daily_energy_intake - total_metab_rate
+
+    set total_net_energy_in_cell precision (daily_net_energy) 2 ; Value can be negative since daily net energy can be negative
+
+  ]
+
+end
+
+;; Calculate the swim speed accounting for benthic effects or shelter
+to-report set_swim_speed [#benthic_flag #shelter #territory #velocity]
+  ifelse (#benthic_flag) = 0 [
+      ifelse (#shelter) > (#territory) [ ; If there are velocity shelters in its cell, the speed is reduced
+        report #velocity *  shelter_frac  ; Swim speed is in m/s
+      ][
+        ; Otherwise, the speed is the velocity of the cell
+        report #velocity ; Swim speed is in m/s
+      ]
+    ][
+      ; The fish is benthic so experiences a reduced velocity
+      ; 0.07 is a constant representing between 5 and 10%
+      ; 0.41 is Von Karman constant
+      ; 30 and 3.5 are also fitted constants
+      report (0.07 * #velocity / 0.41 * ln (ben_vel_height / d84_size * 30 / 3.5))
+    ]
+end
+
+;; Calculate the metabolic rate
+to-report calculate_metabolic [#temperature #mass #specise_id #swim_speed]
+  let log_total_metab_rate item #specise_id met_int +
+    item #specise_id met_lm * ln #mass +
+    item #specise_id met_lt * ln #temperature +
+    item #specise_id met_v * #swim_speed +
+    item #specise_id met_lm_lt * ln #mass * ln #temperature +
+    item #specise_id met_t * #temperature +
+    item #specise_id met_lm_t * ln #mass * #temperature +
+    item #specise_id met_sqv * sqrt(#swim_speed)
+
+  report exp log_total_metab_rate
+end
+
+;; Cell selection strategy for movement
+to select_destination_cell
+
+  ; If the drifter is going to exit the system (due to there not being valid destination cells downstream of its position, or no cell with positive net energy), it selects one of the furthest cell downstream
+  ifelse exit_status = 1 [
+
+    ; Destination should be set to the fallback migration patch
+    move_fish destination
+
+
+    let destination_patch_path_survival fallback_drift_patch_path_survival
+
+    ask destination [set path_survival destination_patch_path_survival]
+
+    if is_drifter = true and ycor = reach_end [set drifter_history "no valid destinations or cells with pos net energy, drifted out of river"]
+    if is_drifter = true and ycor != reach_end [set drifter_history "no valid destinations or cells with pos net energy, did not reach end"]
+
+    table:put drifter_count_table species table:get drifter_count_table species + 1
+
+  ][
+
+    ; Each fish performs this in order of longest length to shortest length
+    ; If the probability of surviving starvation is less than the randomly generated number, the fish selects cells with higher positive net energy regardless of risk
+    ifelse (random-float 1.0) > fish_death_starv_survival_prob [
+      set starving? true
+
+      set destination max-one-of wet_cells_in_radius [total_net_energy_in_cell]
+    ][
+      ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
+
+      set starving? false
+      ask wet_cells_in_radius [
+        ifelse total_net_energy_in_cell = 0 [
+          set consider_path_risk 0
+        ][
+          ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
+          set consider_path_risk total_net_energy_in_cell * path_survival
+        ]
+      ]
+
+      set destination max-one-of wet_cells_in_radius [consider_path_risk]
+    ]
+
+    move_fish destination
+
+  ]
+
+  ask destination [set migrant_patch false]  ; The destination cell's migrant_patch status is set to false
+
+end
+
+;; Remove resources form cells
+to deplete_destination_resources
+
+; Deplete the food resources and the shelter resources in the desination cell
+
+  if (item species_id benthic_fish) = 0 [  ; for some reason, I can't set is_in_shelter to true within the code block above, so I have it here for now
+      if (cell_available_vel_shelter) >= (territory_size) [
+      set is_in_shelter true ]
+  ]
+
+  ask destination [
+    ; If there are velocity shelters for the fish to use, and it's not benthic we remove the shelter from available shelter
+    ifelse (item [species_id] of myself benthic_fish) = 0 [
+      if (cell_available_vel_shelter) >= ([territory_size] of myself) [
+        set cell_available_vel_shelter cell_available_vel_shelter - ([territory_size] of myself * superind_ratio)
+      ]
+      if (cell_available_wet_area) >= ([territory_size] of myself) [
+        set cell_available_wet_area cell_available_wet_area - ([territory_size] of myself * superind_ratio)
+      ]
+    ][
+      if (cell_available_ben) >= (daily_intake) [
+        set cell_available_ben max list (cell_available_ben - daily_intake * superind_ratio) 0
+      ]
+    ]
+  ]
+end
+
+;; Determines whether fish die and of what cause
+to survive
+
+  set start_condition fish_condition
+
+  if strand_status = 1 [
+    table:put death_stranding_table species table:get death_stranding_table species + 1
+    save_event "died of stranding"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
+      is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
+      ;is_smolt = false [table:put dead_nonsmolts_count_table species table:get dead_nonsmolts_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    die
+  ]
+
+  ; Now do survival for non drifters
+  ; If the fish is eaten in its destination cell or if the survival probability of the path is less than a random number
+  if (random-float 1.0) > ([path_survival] of destination * path_survival_list) [
+    ; Fish died of fish predation
+    table:put death_pred_table species table:get death_pred_table species + 1
+    save_event "died of predation"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
+      is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    die
+  ]
+
+  if (random-float 1.0) < ([fish_death_hightemp_prob] of destination) [
+    ; Fish died of high temperature
+    ; print "died of high temperature"
+
+    table:put death_temp_table species table:get death_temp_table species + 1
+    save_event "died of high temp"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
+      is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    die
+  ]
+
+  if (random-float 1.0) > (fish_death_starv_survival_prob) [
+    ; Fish died of poor condition
+    ;print "died of poor condition"
+    table:put death_condition_table species table:get death_condition_table species + 1
+    save_event "died of poor condition"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    (ifelse is_migrant = false [table:put dead_nonmigrants_count_table species table:get dead_nonmigrants_count_table species + 1]
+      is_migrant = true [table:put dead_migrants_count_table species table:get dead_migrants_count_table species + 1])
+    (ifelse is_migrant = false and change_mass > 0 [table:put dead_rearing_count_table species table:get dead_rearing_count_table species + 1])
+    die
+  ]
+
+  if is_migrant = true and ycor = reach_end [
+    save_event "migrant exited river"
+    die
+  ]
+
+end
+
+;; Update the fish size
+to grow
+
+  set start_condition fish_condition
+
+  set change_mass ([daily_net_energy] of destination) / item species_id energy_density
+
+
+  ifelse change_mass = 0.0 [ ; if daily growth is 0, set the percent daily growth to a very small number to avoid div by 0 error
+    ; This is the daily growth in percent body weight (column in output file)
+    set percent_change_mass 0
+  ][
+    ; This is the daily growth in percent body weight (column in output file)
+    set percent_change_mass (change_mass / mass) * 100
+  ]
+
+  ; Calculate the fish's new weight
+
+  set new_mass mass + change_mass
+
+  ; If the fish's mass is 0, the condition is 0
+  if new_mass <= 0.0 [
+    set new_condition 0
+    set new_mass 0.0
+  ]
+
+  set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b)) ; g
+
+  set healthy_length (new_mass / (item species_id length_mass_a)) ^ (1 / (item species_id length_mass_b)) ; cm
+
+
+  ; If the new mass is greater than the healthy mass for its length, we set the new length to the desired length and new condition to 1
+  ifelse new_mass > healthy_mass [
+   set new_length healthy_length
+   set new_condition 1.0
+  ][ ; Otherwise, we divide the new mass by the healthy mass to get the new fish condition
+   set new_length f_length ; The fish keeps its current length (cm)
+   set new_condition new_mass / healthy_mass
+  ]
+
+  set start_mass mass
+  set mass new_mass
+  set start_length f_length
+  set change_length new_length - f_length
+  set f_length new_length
+  set fish_condition new_condition
+
+  ; set territory size (if benthif fish size is f_lenght^2)
+  ifelse item species_id benthic_fish = 0 [
+    set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
+  ][
+    set territory_size (f_length ^ 2) / 1e4
+  ]
+
+    if is_alive = true [
+    ifelse is_migrant = true [
+      save_event "alive_migrant" ][
+      ifelse is_drifter = true [
+        save_event "drifter_alive"][
+        save_event "alive"]
+       ask destination [
+        set count_fish_destination count turtles-here
+        set avg_weight_fish_in_destination mean [mass] of turtles-here
+        set avg_length_fish_in_destination mean [f_length] of turtles-here
+        set avg_condition_fish_in_destination mean [fish_condition] of turtles-here
+      ]
+    ]
+  ]
+
+  ; If the drifter has reached the end of the reach and hasn't died, it is removed from the system but doesnt get added to the dead count
+  if exit_status = 1 and ycor = reach_end [die]
+
+;    print "###########################################"
+;
+;    show word "start length" start_length
+;    show word "length" f_length
+;    show word "start mass" start_mass
+;    show word "mass" mass
+;    show word "cmax" cmax
+;    show word "cmax temp func" cmax_temp_func
+;    show word "cmax wt term" fish_cmax_wt_term
+;    show word "photoperiod" photoperiod
+;    show word "velocity" [today_velocity] of destination
+;    show word "swim speed" [swim_speed] of destination
+;    show word "depth" [today_depth] of destination
+;    show word "turbidity" [turbidity] of destination
+;    show word "temperature" temperature
+;    show word "active metab" active_metab_rate
+;    show word "passive metab" passive_metab_rate
+;    show word "daily intake" [daily_intake] of destination
+;    show word "daily energy intake" [daily_energy_intake] of destination
+;    show word "net energy intake" [daily_net_energy] of destination
+;
+;    print "###########################################"
+
+end

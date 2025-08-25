@@ -1,0 +1,397 @@
+;#########################################################################
+; This loads extenshions, defines variables, and breeds
+;#########################################################################
+
+;##### Load Extensions #####################################################
+extensions [
+  csv      ; The extenshion the allows for csv IO
+  palette  ; Allows the use of more palets like ColorBrewer
+  time     ; Use the LogoTime extenshion to tract dates/time
+  table    ; Allows for use of tables instead of lists for speed reasons
+  rnd      ; For random draws
+  profiler ; includes primitives that measure how many times the procedures are called during a run and how long each call takes
+]
+
+;##### Define Variables #####################################################
+;; Define global variables
+globals [
+
+  ;; General run setup variabels
+  resolution          ; The grid resolution in meters
+  area_column         ; The location index for area of a cell read in from the flow CSV
+  reach_start         ; The upper most reach distance
+  reach_end           ; The bottom reach distance
+  top_patches         ; The patches that are closest to the top and are wet
+  lat_column          ; The location index for the x position of a cell read in from the flow CSV
+  lon_column          ; The location index for the y position of a cell read in from the flow CSV
+
+  ;; Internal parameter variables
+  species_list                   ; A list of species names
+  fish_logistics_table           ; A table of logistic functions for survival, by species
+  pathfinding_dirty_patches      ; patch-set of patches that have pathfinding data that need to be cleared.
+
+  ;; Time variables
+  first_day           ; Pointless time variabel to initalize
+  last_day            ; Time varible for the last day in the simulation
+  tick_date           ; Variable to track date
+
+  ;; Daily input variabels
+  daily_input_csv          ; The daily flow and temperature data
+  flow_column              ; The location index for the flow from the daily CSV
+  turbidity_column         ; The column that gives the turbidity values
+  temp_column              ; The location index for the temperature from the daily CSV
+  photoperiod_column       ; The column that has the information on photoperiod
+  daily_flow_values        ; The complete list of daily flow values
+  daily_turbidity_values   ; The complete list of daily turbidity values
+  daily_temp_values        ; The complete list of daily temp values
+  daily_photoperiod_values ; The complete list of daily photoperiod values
+  flow                     ; The daily flow value
+  turbidity                ; The daily turbidity
+  temperature              ; The daily temperature value
+  photoperiod              ; Daily photoperiod (day length) in hours
+  month_values             ; What month each day is in
+
+  ;; Habitat and interaction params
+  habitat_params_csv ; csv file with a variety of habitat params, including foods, predator density, resolution, buffer, etc.
+  hab_drift_con      ; Availability of drift food in reach, (g/m^3)
+  hab_ben_con        ; The econcentration of benthic food (g/m^2)
+  hab_ben_ene        ; The energy density of the benthic food (J/g)
+  hab_drift_ene      ; The energy density of the drift food (J/g)
+  superind_ratio     ; how many fish each agent represents
+  pred_per_area      ; The concentration of prerdators
+  reaction_distance  ; The radius of the area covered by the predators
+  t_area_effect      ; The extent to which temeprature can increase the predation effective ares
+  d84_size           ; The grain size of the bed for the law of the wall calculation
+  ben_vel_height     ; The height off the bed where the velocity is experienced by the benthic fish
+  shelter_frac       ; Fraction of the cells velocity experienced by a fish in cover
+
+  ;; Percentt cover to distance to cover conversion
+  int_pct_cover               ; the intercept of the percent cover to distance to cover relation
+  sqrt_pct_cover              ; the sqrt root parameter of the percent cover to distance to cover relation
+  pct_cover                   ; the the single poser parameter of the percent cover to distance to cover relation
+  sqrt_pct_cover_x_pct_cover  ; the the 2/3 parameter of the percent cover to distance to cover relation
+
+  ;; Distance to cover to prey safety conversion
+  dis_to_cover_par  ; the logistic parameter slop to convert distance to cover to survival benefit
+  dis_to_cover_int  ; the logistic parameter intercept to convert distance to cover to survival benefit
+
+  ;; Turbidity model params
+  turb_int              ; the logistic parameter slope to convert turbidity to survival benefit
+  turb_slope            ; the logistic parameter intercept to convert turbidity to survival benefit
+  turb_survival_bonus   ; bonus to fish survival against preds due to turbidity updates dailys
+
+  ;; Flow raster variabels
+  flow_input_csv      ; The variabel to hole the flow csv
+  flow_values         ; The list of flow values for which we have rasters
+  today_index         ; The flow index for each day
+  wet_patches         ; A list of patches that have water in them each day
+  max_depth           ; The max depth listed in any raster
+  max_velocity        ; The max velcoity listed in any raster
+
+  ;; Shape file variables
+  shape_input_csv     ; The variabel to hole the shape csv
+  x_shape             ; The location index for the x position of a cell read in from the shape CSV
+  y_shape             ; The location index for the y position of a cell read in from the shape CSV
+  wood_column         ; The column that has the information on percent wood
+  cover_column        ; The column that has the cover fraction
+  small_cover_column  ; The column that has the small cover fraction
+  veg_column          ; The column that has the information on percent vegetation
+  fine_column         ; The column that has the information on percent fine sediment
+  gravel_column       ; The column that has the information on percent spawning gravel
+  cobble_column       ; The column that has the information on percent large cobble
+  rock_column         ; The column that has the information on percent rock or bedrock
+  ben_food_column     ; The column that has the information on fraction of area that has benthic food
+  canopy_column       ; The column that has the information on percent canopy cover
+
+  ;; Daily Fish input variables
+  daily_fish_csv        ; The column that gives the number of fish per day
+  fish_list             ; The dates and lists paired
+  number_column         ; The column that gives the number of fish
+  species_column        ; The column the lists the species of fish
+  lifestage_column      ; The column that lists the life stage
+  length_column         ; The column the gives the fish lenght
+  sd_column             ; The column for sd of lenght
+
+  ;; Fish variables
+  fish_params_csv           ; A csv with the individual species parameters
+  benthic_fish              ; Is the fish a benthic fish
+  move_dist_a               ; Multiplier for maximum movement distance (unitless)
+  move_dist_b               ; Exponent for maximum movement distance (unitless)
+  length_mass_a             ; Site-specific length-weight relationship for fish in good condition
+  length_mass_b             ; Site-specific length-weight relationship for fish in good condition
+  territory_a               ; The intercept of the fish territory size equation
+  territory_b               ; The slope of the fish territory size equation
+  met_int                   ; intercept for metabolic rate equation
+  met_lm                    ; log mass term for metabolic rate equation
+  met_lt                    ; log temperature term for metabolic rate equation
+  met_v                     ; log speed term for metabolic rate equation
+  met_lm_lt                 ; log mass * log temperature term for metabolic rate equation
+  met_t                     ; temperature term for metabolic rate equation
+  met_lm_t                  ; log mass * temperature term for metabolic rate equation
+  met_sqv                   ; the smolt flag factor for metabolic rate equation
+  cmax_a                    ; Allometric constant in cMax equation (unitless)
+  cmax_b                    ; Allometric exponent in cMax equation (unitless)
+  cmax_c                    ; First parameter for the cmax temperature relation (C)
+  cmax_d                    ; Second parameter for the cmax temperature relation (C)
+  feeding_speed             ; The feeding spped for benthic fish (bl/s)
+  fish_detect_dist          ; Distance over which fish can see or attack (cm)
+  react_dist_a              ; Intercept in equation for detection distance (cm) (CHANGED TO M)
+  react_dist_b              ; Multiplier in equation for detection distance (unitless)
+  turbid_threshold          ; Highest turbidity that causes no reduction in detection distance (NTU)
+  turbid_min                ; Minimum value of the turbidity function (unitless)
+  turbid_exp                ; Multiplier in exponential term for the turbidity function (unitless)
+  fish_turbid_function      ; The value of the turbidity function changes each day
+  capture_V1                ; Ratio of cell velocity to fish’s maximum swim speed at which capture success is 0.1 (unitless)
+  capture_V9                ; Ratio of cell velocity to fish’s maximum swim speed at which capture success is 0.9 (unitless)
+  energy_density            ; The ratio (J/g) between net energy intake and change in weight
+  small_cover_length        ; The lenght below which fish can us small cover
+  migration_max_dist        ; The maximum distance (in m) that a fish can migrate
+  mort_condition_K1         ; Part of relationship between survival and condition (K); Fish condition factor K at which survival is 10 pct (unitless)
+  mort_condition_K9         ; Part of relationship between survival and condition (K); Fish condition factor K at which survival is 90 pct (unitless)
+  mort_high_temp_T1         ; Parameters for the logistic equation for high temp
+  mort_high_temp_T9         ; Parameters for the logistic equation for high temp
+  ucrit_a                   ; Parameters for max swimm speed vs lenght (this is the intercept)
+  ucrit_b                   ; Parameters for max swimm speed vs lenght (this is the slope)
+  ucrit_c                   ; Parameters for the max swimm speed temperature beta-sigmoid function (C)
+  ucrit_d                   ; Parameters for the max swimm speed temperature beta-sigmoid function (C)
+  smolt_P1                  ; Parameters for the logistic equation for the probability of smolting depending on photoperiod- Photoperiod where probability of being in the "smolting window" is 10 pct
+  smolt_P9                  ; Parameters for the logistic equation for the probability of smolting depending on photoperiod- Photoperiod where probability of being in the "smolting window" is 90 pct
+  smolt_max_L1              ; Parameters for the logistic equation for the probability of smolting depending on flength- Length in which probability of smolting is 10 pct
+  smolt_max_L9              ; Parameters for the logistic equation for the probability of smolting depending on flegnth- Length in which probability of smolting is 90 pct
+  outmigrate_V1             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
+  outmigrate_V9             ; Parameters for the logistic equation for the probability of outmigrating depending on the increase in mean velocity from running average velocity -
+  spawn_flag                ; variabel to turn on or fll the spawning part (i.e. add or don't add adults)
+  spawn_v_int               ; Intercept parameter for the probablity of sapwning in a set velocity
+  spawn_v_slope             ; Slope parameter for the probablity of sapwning in a set velocity
+  spawn_v_quat              ; Quat parameter for the probablity of sapwning in a set velocity
+  spawn_d_int               ; Intercept parameter for the probablity of sapwning in a set depth
+  spawn_d_slope             ; Slope parameter for the probablity of sapwning in a set depth
+  spawn_d_quat              ; Quat parameter for the probablity of sapwning in a set depth
+  redd_area                 ; area taken up by a redd
+  guard_area                ; After a fish makes a redd what area does it guard
+  fecundity_int             ; The intercept of the fecundity equation #eggs = int * lenghch[cm]^slope
+  fecundity_slope           ; The slope of the fecundity equation #eggs = int * lenghch[cm]^slope
+
+  ;; Fish equations
+  cmax_temp_func            ; A list of cmax temperature functions for each species
+  max_swim_temp_func        ; A list of cmax temperature functions for each species
+
+  ;; Predator variables
+  pred_input_file_csv        ; Input csv file with some default params for pred counts
+  total_preds                ; The total number of predators in the system
+  pred_species               ; A list of the species of predators
+  num_pred_species           ; The number of predators
+  ; glm for habitat rating for predators
+  int_glm                    ; A prameter for predatror intercept
+  shade_glm                  ; A prameter for how the predators react to shade
+  veg_glm                    ; A prameter for how the predators react to vegetation
+  wood_glm                   ; A prameter for how the predators react to wood
+  depth_glm                  ; A prameter for how the predators react to depth
+  velocity_glm               ; A prameter for how the predators react to velocity
+  substrate_glm              ; A prameter for how the predators react to substrate
+  ; params for log-normal distribution
+  meanlog                    ; Parameter for fish lenght distributions
+  sdlog                      ; Parameters fo rfish lenght distribution
+  ; gape limitation params
+  a_gape                     ; intercept fo the gape limitation of a predator
+  b_gape                     ; slope for the gape limitation of a predator
+  ; temp vs pred activity params
+  pred_temperature_activity  ; the temperature logistic function for predator space coverage slope
+  int_temp                   ; the temperature logistic function for predator space coverage intercept
+
+  ;; End of simulation outputs
+  death_temp_table               ; A list of 1s representing deaths caused by temperature
+  death_stranding_table          ; A list of 1s representing deaths caused by stranding
+  death_pred_table               ; A list of 1s representing deaths caused by predation
+  death_condition_table          ; A list of 1s representing deaths caused by poor condition
+  nonmigrants_count_table        ; A list of 1s representing nonsmolts that day
+  migrant_count_table            ; A list of 1s representing migrants that day
+  drifter_count_table            ; A list of 1s representing drifters that day
+
+  ;; Daily outputs
+  dead_fish_count_table         ; A list of 1s representing all of the dead fish (includes smolts and nonsmolts) that day
+  dead_migrants_count_table     ; A list of 1s representing all of the dead migrants that day
+  dead_nonmigrants_count_table  ; A list of 1s representing all of the dead nonsmolts that day
+  dead_rearing_count_table      ; A list of 1s representing all of the dead nonsmolts with positive growth that day
+  total_daily_juveniles         ; Total number of juveniles (smolts and nonsmolts) at any given timestep
+  total_daily_dead_fish         ; Total number of dead fish (smolts and nonsmolts) at any given timestep
+  total_daily_dead_migrants     ; Total number of dead migrants at any given timestep
+  total_daily_dead_nonmigrants  ; Total number of dead nonsmolts at any given timestep
+  total_daily_migrants          ; Total number of migrants at any given timestep
+  total_daily_nonmigrants       ; Total number of non smolting fish at any given timestep (not including migrating fish)
+  total_daily_drifters          ; Total number of fish drifting at any given timestep
+
+  ;; Other global variables/inernal data structures
+  fish_events_outfile_name          ; String with name of fish events output file; set in build_output_files
+  spawner_events_outfile_name         ; String with name of adult events output file; set in build_output_files
+  cell_info_outfile_name            ; String with name of cell info output file; set in build_output_files
+  detailed_population_outfile_name  ; String with name of detailed population output file; set in build_output_files
+  all_cell_outfile_name
+  path_info_outfile_name
+  cell_info_list                    ; List of all destination cell information (number of total fish alive in each destination, number of dead fish in each destination) per time step that can be written the the cell info outputs file
+  fish_events_list                  ; List of all individual fish-related events (mortality, smolting, migrating) that can be written the the fish events outputs file
+  spawner_events_list                 ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
+  detailed_population_list          ; List of all summary fish-related info per day (total migrating, total smolting) that can be written to the detailed population output file
+  all_cell_attributes_list
+  migrant_path_info_list
+]
+
+;; Define patch variables
+patches-own [
+
+  ;; Geometry variabels
+  x_pos  ; equal to "lat_dist" in the flow and shapefile input files
+  y_pos  ; equal to "distance" in the flow and shapefile input files
+
+  ;; Flow releated variables
+  area                ; The true area of the patch (not the area displayed here) (CHANGED TO M)
+  wetted_fraction     ; the fraction of the area that is wetted
+  wetted_fractions    ; the list of fraction of the area that is wetted
+  wetted_area         ; the total area wetted (CHANGED TO M)
+  depths              ; A list of all the depths at the set flows in the cell
+  today_depth         ; The depth of the patch on this day (CHANGED TO M)
+  yesterday_depth     ; The depth of the patch on the previous day. (CHANGED TO M)
+  velocities          ; A list of all the velocities at the set flows in the cell
+  today_velocity      ; The velocity of the patch on this day
+  yesterday_velocity  ; The velocity of the patch on the previous day.
+
+  ;; Shape file releated variables
+  veg                       ; the fraction of the area that is covered with vegetation
+  wood                      ; the fraction of the area that is covered with wood
+  fine                      ; the fraction of the area that is covered with fine sediment
+  gravel                    ; the fraction of the area that is covered with gravel
+  cobble                    ; the fraction of the area that is cobble
+  rock                      ; the fraction of the area that is rock
+  shades                    ; All the shade values a call can have
+  shade                     ; The shade fraction of a cell
+  ben_food_fra              ; The fraction of the cell area that has benthic food
+  frac_velocity_shelter     ; The fraction of a cell with velocity shelters (the wood + veg sum)
+
+  ;; Parameters for valid patch logic for fish
+  has_visited?        ; Used to identify if the pathfinding has visited the patch
+  path_to_here_cost   ; Used to store the cost to move to this patch for pathfinding
+  path_survival       ; Used to store the predation risk along this path
+  fish_survival       ; Survival for current fish in this path
+  previous_patch      ; The previous patch in the path from pathfinding
+  path_score          ; Score evaluating how good of a patch this is for the next step of the migration pathing
+
+  ;; Track resources
+  cell_available_ben         ; Availability of denthic food in, g
+  cell_available_vel_shelter ; Available area of velocity shelter in cell, (m^2)
+  cell_available_wet_area    ; Available wetted area in cell, (m^2)
+
+  ;; Variabels used to assess cells
+  distance_to_drifter                   ; Distance a patch is to a drifting fish
+  random_drift_downstream_cells         ; the random cells selected for drif
+  count_fish_destination                ; Total number of fish alive in a cell at the end of a timestep
+  swim_speed                            ; Swim speed of a certain fish in cell
+  active_metab_rate                     ; AMR of a certain fish in cell
+  passive_metab_rate                    ; RMR of a certain fish in cell
+  total_metab_rate                      ; total metabolic rate
+  daily_intake                          ; Drift intake (g/d), limited by cmax, drift availability etc
+  daily_energy_intake                   ; Drift intake in J energy
+  daily_net_energy                      ; Drift intake - total respiration (J/d)
+  total_net_energy_in_cell              ; Total net energy in the cell (g) (basically equal to the daily net energy, can be negative)
+  total_mort_risk_for_cell              ; Total probability of surviving all of the mortality risks in the cell (total_mort_risk_for_cell/total_net_energy_in_cell)
+  ratio_net_energy_risk                 ; Ratio of total mortality risk to the net energy in the cell
+  consider_path_risk                    ; Path survival multiplied by the ratio net energy to risk. Used by fish when selecting desination cells while taking into account path risk
+  fish_death_hightemp_prob              ; Probability of a fish surviving high temperature
+  avg_weight_fish_in_destination        ; Average weight of live fish in a cell at the end of a timestep
+  avg_length_fish_in_destination        ; Average length of live fish in a cell at the end of a timestep
+  avg_condition_fish_in_destination     ; Average condition of live fish in a cell at the end of a timestp
+
+  ;; Migration variables
+  running_average_velocity              ; The mean velocity that the fish has experienced over the last 5 time steps
+  migrant_patch                         ; Identifies the patch as having a migrant juvenile in it at any given timestep
+
+  ;; Predator-related parameters
+  substrate                             ; A binary value used by the predator model
+  hab_rating                            ; Rating of habitat quality for predators
+  partial_hab_rating                    ; Part of the hab rating calc is done at set up to save time
+  adj_hab_rating                        ; hab_rating weighted by the amount of wetted area in a patch
+  num_preds                             ; Number of predators in a patch
+  pred_length                           ; Mean length of predators in a cell
+  max_prey_length                       ; Largest prey size that a given predator can consume based on its length
+  encounter_prob                        ; Probability of encountering a predator in a cell
+  cover                                 ; Total cover available to prey for predator avoidance
+  small_cover                           ; Total cover available to small prey for predator avoidance
+  distance_to_cover                     ; Average distance a fish needs to travel to reach cover in a patch
+  distance_to_small_cover               ; Average distance a small fish needs to travel to reach cover in a patch
+  cover_bonus                           ; The "bonus" to survival in a predator-prey encounter provided by cover
+  small_cover_bonus                     ; The "bonus" to survival in a predator-prey encounter provided by small cover
+  survival_prob                         ; The probability a prey fish survives an encounter based on the cover bonus and pred success rate
+  small_survival_prob                   ; The probability a small prey fish survives an encounter based on the cover bonus and pred success rate
+
+  ;; Reproduction
+  unguarded_area                        ; Area of the patch that is not guarded by a spawner
+  total_redd_area                       ; total area of redds with eggs still in them
+  spawn_suit                            ; Spawning sutibality based on V and D
+]
+
+;; Define agent variables
+turtles-own [
+
+  ;; Species
+  species_id   ; The assigned number for this species
+  species      ; The species name
+  fish_sex     ; Sex of fish
+  age          ; Age of redds
+
+  ;; Physological parameters
+  f_length             ; Fork length
+  start_length         ; Fork length at beginning of time step
+  new_length           ; Used in "grow" procedure - equal to previous length + change in length
+  change_length        ; Change in fork length
+  healthy_length       ; Length for a healthy individual of weight
+  mass                 ; Mass
+  start_mass           ; Mass at beginning of time step
+  new_mass             ; Used in "grow" procedure - equal to previous mass + growth
+  change_mass          ; Growth per day (g)
+  percent_change_mass  ; Percent that the daily growth is of its mass
+  healthy_mass         ; Mass for a healthy condition factor
+  fish_condition       ; Condition factor K (values 0 - 1, fish condition)
+  start_condition      ; Condition before the fish grows (condition at the beginning of timestep that drives habitat selection)
+  new_condition        ; Used in "grow" procedure
+
+  ;; Metabolic calcualtions
+  max_swim_speed       ; Maximum sustainable swim speed for a fish
+  cmax                 ; Maximum daily consumption rate as limited by its physiology (g/d)
+  energy_intake        ; J/d
+
+  ;; Habitat interactions
+  is_in_shelter        ; If the fish is using shelter
+  is_smolt             ; If the fish has undergone smoltification (depending on photoperiod and size)
+  is_migrant           ; If the fish has decided to migrate (depending on change in flow)
+  is_alive             ; If the fish is alive
+  is_drifter           ; A boolean for whether fish is drifting downstream due to crappy habitat
+  starving?            ; A booleam for whether the fish is starving (true if random number greater than prob of starving)
+  drifter_history      ; String showing whether drifter was only a drifter for one timestep
+  exit_status          ; If the fish is exiting this turn
+  strand_status        ; If the fish is getting stranded this turn
+
+  ;; Movement
+  patch_radius                            ; Radius (in cells) representing where the fish can move in one time step
+  territory_size                          ; The fish territory size
+  destination                             ; The cell that the fish moves to by the end of the time step
+  wet_cells_in_radius                     ; The cells that are in a fish's radius
+  mean_velocity_in_radius                 ; The mean velocity that the fish experiences in its radius
+  fish_death_starv_survival_prob          ; Probability of suriviving starvation from poor condition
+  overall_outmigration_prob               ; Overall probability of outmigrating due to changes in velocity, length, and photoperiod
+  velocity_experience_list                ; List of mean radius cell velocity fish experience each day
+  path_survival_list                      ; A list of path survival probabilities for drifter fish (should only have max two elements inside)
+  fallback_drift_patch                    ; The patch a drifter is currently on
+  fallback_drift_patch_path_survival      ; Path survival of the fallback_drift_patch
+
+  ;; Reproduction
+  is_guarding                             ; A flag indicating if the fish has spawned and is guarding a redd
+  guarded                                 ; Flag if a redd is guarded
+  area_of_redd                            ; Area of actual redd
+  egg_count                               ; The number of live eggs in a spawner or redd
+  dead_eggs                               ; The number of dead eggs in a spawner or redd
+]
+
+;##### Setup Breeds ########################################################
+breed [spawners spawner]
+breed [redds redd]
+breed [juveniles juvenile]
+breed [migrants migrant]

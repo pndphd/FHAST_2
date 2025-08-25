@@ -1,0 +1,148 @@
+;#########################################################################
+; This defines procedures for spawners
+;#########################################################################
+
+;##### Adult Spawning Acrtions ##########################################
+to spawn_fish
+  foreach sort-on [-1 * f_length] spawners [
+    next_fish -> ask next_fish [
+
+      ; Get new weight and see if still alive
+      calculate_spawner_weight_loss
+
+      ; Make unspawned spawn
+      if is_guarding = 0 [
+        spawn
+      ]
+    ]
+  ]
+
+end
+
+to calculate_spawner_weight_loss
+
+  ; Set the metabolic rate
+  set active_metab_rate (calculate_metabolic temperature mass species_id today_velocity)
+
+  ; Calculate loss of mass
+  set change_mass (- active_metab_rate) / item species_id energy_density
+
+  ; Set the new mass
+  set mass mass + change_mass
+
+  ; Set the new fish condition
+   set fish_condition mass / healthy_mass
+
+  ; Calculate mortality
+  ; Calculate the probability of surviving starvation based on K. This survival does not depend on the cell. It implements the linear condition mortality model.
+  ; The equation is algebraically equivalent to a line with survival = mort-condition-S-at-K5 at K = 0.5 and survival = 1.0 at K = 1.0
+  set fish_death_starv_survival_prob (evaluate_logistic "poor_condition" species fish_condition)
+
+  if (random-float 1.0) > (fish_death_starv_survival_prob) [
+    ; Fish died of poor condition
+    ; print word "died of poor condition at age: " age
+
+    ; free up the guarded area
+    set unguarded_area unguarded_area + item species_id guard_area
+
+    ; Kill the fish and log it's death
+    table:put death_condition_table species table:get death_condition_table species + 1
+    save_spawner_event "spawner died"
+    set is_alive false
+    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
+    die
+  ]
+
+  ; Age the fish 1 day
+  set age age + 1
+
+end
+
+to spawn
+
+  ; Find possibel spots
+  find_inrange_destinations
+
+  ; Move to a place if valid cells exist
+  if any? wet_cells_in_radius[
+    set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
+    move-to destination
+
+    ; if unguarded area make  redd
+    if [unguarded_area] of destination >= item species_id guard_area [
+      create_redd
+      save_spawner_event "spawn"
+
+      ; Turn on guard flag
+      set is_guarding 1
+    ]
+  ]
+
+  ; NOTE! drifters are stranding
+end
+
+to create_redd
+
+  hatch-redds 1 [
+    set size 1
+    set color red
+    set shape "circle"
+
+    ; Set species info
+    set species [species] of myself
+    set species_id [species_id] of myself
+    set age 0
+    set egg_count (item species_id fecundity_int) * f_length ^ (item species_id fecundity_slope)
+    set area_of_redd item species_id redd_area
+  ]
+
+  ; Remove unguarded area
+  ask patch-here[
+    set unguarded_area unguarded_area - item [species_id] of myself guard_area
+  ]
+
+  ; Superimpose
+  ask redds-here [
+    let overlap_fra 0
+
+    ; place 2 random points in a square and get distance to chak if superimposition
+    let dimenshion sqrt(area)
+    let x1 random-float dimenshion
+    let y1 random-float dimenshion
+    let x2 random-float dimenshion
+    let y2 random-float dimenshion
+    let d0 sqrt((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
+    let r1 sqrt(area_of_redd / pi)
+    let r2 sqrt([item [species_id] of myself redd_area] of myself / pi)
+
+    ; if total overlap
+    if d0 <= abs(r1 - r2)[
+     set overlap_fra 1
+    ]
+
+    ; partial overlap
+    if d0 > abs(r1 - r2) and d0 < r1 + r2[
+      let overlap_1 r1 ^ 2 * acos((d0 ^ 2 + r1 ^ 2 - r2 ^ 2)/ 2 / d0 / r1) * pi / 180
+      let overlap_2 r2 ^ 2 * acos((d0 ^ 2 + r2 ^ 2 - r1 ^ 2)/ 2 / d0 / r2) * pi / 180
+      let overlap_3 -0.5 * sqrt((- r1 + r2 + d0) * (r1 - r2 + d0) * (r1 + r2 - d0) * (r1 + r2 + d0))
+      set overlap_fra (overlap_1 + overlap_2 + overlap_3) / area_of_redd
+    ]
+
+    ; Kill the amount of eggs based on overlap
+    let killed_eggs overlap_fra * egg_count
+    set dead_eggs dead_eggs + killed_eggs
+    set egg_count egg_count - killed_eggs
+
+  ]
+
+end
+
+;##### Redd Development ####################################################
+to develope_redds
+  ask redds [
+
+; comming soon!
+
+  ]
+
+end

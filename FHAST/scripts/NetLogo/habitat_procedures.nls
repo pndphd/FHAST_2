@@ -1,0 +1,460 @@
+;#########################################################################
+; This defines the procedures the habitat runs each day
+;#########################################################################
+
+;; Updates variables that change daily (flow, depth, velocity, temperature, turbidity, food predator-related variables  in each cell)
+to set_habitat_velcoity_and_depth
+
+  ; Set today's reach temperature
+  set temperature (item ticks daily_temp_values)
+
+  ; Set today's reach turbidity
+  set turbidity (item ticks daily_turbidity_values)
+
+  ; Set today's photoperiod and convert to hours with * 24
+  set photoperiod ((item ticks daily_photoperiod_values)) * 24
+
+  ; Caclulate and set today's flow values for the reach (depth and velocity)
+  set flow (item ticks daily_flow_values)
+  if flow > max flow_values [
+  ; Check if it is outside the range of flows
+    user-message "The daily flow value is greater than the raster input files.\nThe program will halt."
+  ]
+  if flow <= 0 [
+  ; Check if it is outside the range of flows
+    user-message "There is no flow in the system.\nAll your fish are dead.\nThe program will halt."
+  ]
+  let high_flow min filter [i -> i >= flow] flow_values     ; Find the closest flow in flow_values which is greater than or equal to the current daily value
+  let low_flow  max filter [i -> i < flow]  flow_values     ; Find the closest flow in flow_values which is less than the current daily value
+  let flow_fraction (flow - low_flow) / (high_flow - low_flow)  ; Calculate the fraction of distance the flow is form the low flow
+  set today_index position low_flow flow_values
+
+  ; Calculate the depth Velocity and wetted area for all patches and the spawning sutability
+  ask patches [
+    set pcolor black
+    ifelse ticks = 1 [
+      set yesterday_depth 1
+    ][
+      set yesterday_depth today_depth
+    ]
+    let low_depth  (item today_index depths)
+    let high_depth (item (today_index + 1) depths)
+    set today_depth (low_depth * (1 - flow_fraction) + high_depth * (flow_fraction))    ; Depth is in meters
+    if today_depth <= 0 [set today_depth 0]
+
+    ; Do the same for velotity
+    set yesterday_velocity today_velocity
+    let low_velocity  (item today_index velocities)
+    let high_velocity (item (today_index + 1) velocities)
+    set today_velocity (low_velocity * (1 - flow_fraction) + high_velocity * (flow_fraction))       ; Velocity is in m/s
+
+    ; Do the same for wetted fraction
+    let low_wetted  (item today_index wetted_fractions)
+    let high_wetted (item (today_index + 1) wetted_fractions)
+    set wetted_fraction (low_wetted * (1 - flow_fraction) + high_wetted * (flow_fraction))
+    set wetted_area area * wetted_fraction
+
+    ; Spawning sutability only run is spawn_flag = true
+    if spawn_flag [
+      foreach (range length species_list) [n ->
+        ; set the spawning sutabiblit for each patch if no avaiable area set to 0
+        let v_suit (1 + exp(-(item n spawn_v_int + item n spawn_v_slope * today_velocity + item n spawn_v_quat * today_velocity ^ 2))) ^ (-1)
+        let d_suit (1 + exp(-(item n spawn_d_int + item n spawn_d_slope * today_depth + item n spawn_d_quat * today_depth ^ 2))) ^ (-1)
+        set spawn_suit replace-item n spawn_suit (d_suit * v_suit)
+        ; If there is insufficent substrate fo a redd set to 0
+        if (area * (gravel + cobble)) < item n redd_area [
+          set spawn_suit replace-item n spawn_suit 0
+        ]
+      ]
+    ]
+  ]
+
+  ; Make the list of wet patches
+  set wet_patches patches with [wetted_area > 0 and today_depth > 0]
+
+  ; Ask patches to update their depleted variables (velocity shelter availability, available hiding places, and drift)
+  ask wet_patches [
+    set frac_velocity_shelter veg + wood  ; the fraction of the cell that has velocity shelter is the sum of the fraction covered by vegetation and wood
+    set cell_available_vel_shelter (wetted_area * frac_velocity_shelter)   ; available velocity shelter per cell (m^2)
+    set cell_available_wet_area wetted_area   ; available velocity shelter per cell (m^2)
+    set cell_available_ben  wetted_area * hab_ben_con * ben_food_fra ; available drift food in g/m3
+  ]
+
+end
+
+;; This will set some boundaries of the reach based on flow
+to set_boundaries
+
+  set reach_start max [pycor] of wet_patches             ; Get the highest patch distance value
+  set reach_end min [pycor] of wet_patches               ; Get the lowest patch distance value
+  set top_patches wet_patches with [pycor = reach_start] ; Get the highest patchs that are wet
+
+end
+
+;; Set the shade value of each cell
+to set_shade
+
+  ; get todays month value
+  let month (item ticks month_values)
+  ask wet_patches [
+    set pcolor black
+    set shade item (month - 1) shades
+  ]
+
+end
+
+;; Calculate distance to cover based on percent cover
+to set_dist_to_cover_values
+
+  ask wet_patches [
+    let patch_width sqrt wetted_area
+    set distance_to_cover (int_pct_cover + sqrt_pct_cover * (sqrt cover) + pct_cover * cover + sqrt_pct_cover_x_pct_cover * (cover ^ 1.5)) * patch_width
+    set distance_to_small_cover (int_pct_cover + sqrt_pct_cover * (sqrt small_cover) + pct_cover * small_cover + sqrt_pct_cover_x_pct_cover * (small_cover ^ 1.5)) * patch_width
+  ]
+
+end
+
+;; Calculate the bonus to prey fish from cover in a patch
+to set_cover_bonus
+
+  ask wet_patches [
+    ifelse cover > 0 [
+      let exponent -1 * (dis_to_cover_int + dis_to_cover_par * distance_to_cover)
+      set cover_bonus 1 / (1 + exp exponent)
+    ][
+      set cover_bonus 0
+    ]
+
+    ifelse small_cover > 0 [
+      let exponent -1 * (dis_to_cover_int + dis_to_cover_par * distance_to_small_cover)
+      set cover_bonus 1 / (1 + exp exponent)
+    ][
+      set small_cover_bonus 0
+    ]
+  ]
+
+end
+
+;; Calculate the probability of prey survivng a predator encounter based on amount of cover, turbidity, and pred success rate
+to set_turb_bonus
+
+  ask wet_patches [
+    set survival_prob  (1 - ((1 - turb_survival_bonus) * (1 - cover_bonus)))
+    set small_survival_prob  (1 - ((1 - turb_survival_bonus) * (1 - small_cover_bonus)))
+  ]
+
+end
+
+;; Determine the number of predators in each patch
+to set_predators
+
+  ; calculate the total number of predators in the reach on that time tick
+  let total_wetted_area (sum [wetted_area] of wet_patches)
+  set total_preds round (total_wetted_area * pred_per_area )
+
+  ;; Calculate habitat ratings for each patch and predator species
+  ask wet_patches [
+    ; only do calculations if there is water in a patch
+    ;ifelse (wetted_area > 0)
+    ;[
+      ; set an empty list to save habitat ratings for each species
+      set hab_rating []
+
+      set adj_hab_rating []
+
+      ; a binary version of shade used by the model
+      let shade_binary shade
+      ifelse (shade_binary >= 0.5) [set shade_binary 1] [set shade_binary 0]
+
+      ; calculate the habitat rating for each predator species
+      foreach (range num_pred_species) [ n ->
+        let exponent -1 * (item n partial_hab_rating + item n shade_glm * shade_binary + item n depth_glm * today_depth + item n velocity_glm * today_velocity)
+        let model_prediction 1 / (1 + exp exponent)
+        ; values < 0.5 indicate predictions of predator absence, so vals are set to 0
+        ;ifelse (model_prediction < 0.5) [set model_prediction 0] [set model_prediction model_prediction]
+        set hab_rating lput model_prediction hab_rating
+        set adj_hab_rating lput (model_prediction * wetted_area) adj_hab_rating
+      ]
+  ]
+
+  ;; Calculate number of predators of each species and predator length
+  ; Calculate the total hab rating across all patches for each predator
+  ; used for calculating the number of predators in each cell
+  let total_hab_rating []
+  let all_wetted_vals ([wetted_area] of wet_patches)
+  ; calculate the sum of wetted_area * hab_rating for each species across all patches
+  ; used for weighting hab_rating values to predict the number of predators
+  foreach (range num_pred_species) [n ->
+    ; restructures the habitat ratings into a list of lists in which each sublist contains all values for a particular species
+    ; initially, the sublists contain values for all species in each patch rather than all values for each species across all patches
+    let hab_list (map [x -> item n x] ([adj_hab_rating] of wet_patches))
+    set total_hab_rating lput (sum hab_list) total_hab_rating
+  ]
+
+  ask wet_patches [
+    set num_preds []
+    set pred_length []
+    foreach (range num_pred_species) [n ->
+      ; use the total preds in the system, patch habitat rating, and wetted area to calculate actual predator numbers
+      let temp_pred_num 0
+      if item n total_hab_rating > 0 [
+        set temp_pred_num round (item n adj_hab_rating / item n total_hab_rating * total_preds)
+      ]
+
+      ; draw predator lengths from a log-normal distribution
+      ;let mu item 0 butfirst item n butfirst pred_length_dist_params
+      ; let sigma item 1 butfirst item n butfirst pred_length_dist_params
+      ; filter predators that are above 15 cm
+      let pred_length_list filter [i -> i >= 15] (n-values temp_pred_num [x -> exp random-normal item n meanlog item n sdlog ])
+
+      ifelse (length pred_length_list > 0) [
+        set pred_length lput pred_length_list pred_length
+        set num_preds lput length pred_length_list num_preds
+      ][
+        set pred_length lput 0 pred_length
+        set num_preds lput 0 num_preds
+      ]
+    ]
+
+    ; combine the list-of-lists for pred_length into a single list
+    set pred_length filter [i -> i > 0] (flatten pred_length)
+    ; calculate pred_length as the average of all predator lengths across all species
+    if length pred_length > 0 [
+      ; set the patch's pred_length value to a random length from the list
+      set pred_length item (random length pred_length) pred_length
+      ; Need to change to allow different values of a_gape and b_gape if we want different values for each pred species
+      set max_prey_length exp (item 0 a_gape + item 0 b_gape * (pred_length ^ 2))
+    ]
+
+    ;; Calculate proportional patch area occupied by predators
+    set encounter_prob []
+    foreach (range num_pred_species) [n ->
+      ; calculate the effect of temperature on predator activity
+      let exponent -1 * (item n int_temp + temperature * item n pred_temperature_activity)
+      let pred_temperature_effect 1 / (1 + exp exponent)
+      ; encounter_prob is simply the area occupied by predators divided by the wetted area of the patch
+      set encounter_prob lput ((item n num_preds) * (reaction_distance + t_area_effect * pred_temperature_effect) / wetted_area) encounter_prob
+    ]
+    ; probability of encounter across all predator species
+    set encounter_prob sum encounter_prob
+  ]
+
+end
+
+;; Set the color of the cells/patches based on user input (right now colored by depth)
+to color_patches
+
+  if background_display != "none" [
+
+    let max_cell_available_vel_shelter [cell_available_vel_shelter] of max-one-of patches [cell_available_vel_shelter] ; this is very ugly code (only used to color patches by max cell available shelter)
+    let max_encounter_prob [encounter_prob] of max-one-of patches [encounter_prob]
+
+    ask patches [
+      if today_velocity <= 0 [set today_velocity 0]
+      (ifelse
+        background_display = "depth" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "YlGnBu" 9 (gravel + cobble) 0 (1)]
+        ]
+        background_display = "velocity" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "YlOrRd" 9 today_velocity 0 (max_velocity)]
+        ]
+        background_display = "wood" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "Oranges" 9 wood 0 1]
+        ]
+        background_display = "veg" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "PuRd" 9 veg 0 1]
+        ]
+        background_display = "shade" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "BuGn" 9 shade 0 1]
+        ]
+        background_display = "wetted fraction" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "Blues" 9 wetted_fraction 0 1]
+        ]
+        background_display = "predator encounter prob" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Divergent" "RdYlBu" 9 encounter_prob 0 (max_encounter_prob)]
+        ]
+        background_display = "available velocity shelter" [
+          if (today_depth > 0)[
+            set pcolor palette:scale-gradient palette:scheme-colors "Sequential" "Purples" 9 cell_available_vel_shelter 0 (max_cell_available_vel_shelter) ]
+
+        ]
+      )
+    ]
+  ]
+
+end
+
+;; Update output tabel tallies for the day and equations
+to update_tabels_and_equations
+
+  ; Set up the daily counters for fish information
+  foreach species_list [ next_species ->
+    ; update list of daily fish counts for detailed population output
+    table:put death_temp_table next_species 0
+
+    table:put death_stranding_table next_species 0
+    table:put death_pred_table next_species 0
+    table:put death_condition_table next_species 0
+
+    ; List of various fish variables recorded per day
+    ;table:put smolt_count_table next_species 0
+    table:put nonmigrants_count_table next_species 0
+    table:put migrant_count_table next_species 0
+    table:put drifter_count_table next_species 0
+
+    table:put dead_fish_count_table next_species 0
+    table:put dead_migrants_count_table next_species 0
+    ;table:put dead_smolts_count_table next_species 0
+    table:put dead_nonmigrants_count_table next_species 0
+    table:put dead_rearing_count_table next_species 0
+  ]
+
+  ; Update intermediate variables that depend on temperature
+  set turb_survival_bonus 1 / (1 + exp (-1 * (turb_int + turb_slope * turbidity) ) )
+
+  ; Update the temperature cmax ans swimm speed fuinction for each fish species
+  foreach species_list [ next_species ->
+    let index (position next_species species_list)
+    let c_par item index (cmax_c)
+    let d_par item index (cmax_d)
+    ; Use the beta sigmoid function for cmax temp
+    set cmax_temp_func replace-item index cmax_temp_func ((1 + (c_par - temperature) / (c_par - d_par)) * (temperature / c_par) ^ (c_par / (c_par - d_par)))
+
+    let e_par item index (ucrit_c)
+    let f_par item index (ucrit_d)
+    ; Use the beta sigmoid function for cmax temp
+    set max_swim_temp_func replace-item index max_swim_temp_func ((1 + (e_par - temperature) / (e_par - f_par)) * (temperature / e_par) ^ (e_par / (e_par - f_par)))
+  ]
+
+end
+
+;; Add new fish to the reach (currently, only chinook juveniles are added, for testing)
+to hatch_fish
+
+  loop [
+    ; get todays date
+    let todays_date time:show tick_date "yyyy-MM-dd"
+
+    ; check if today data exists in the first entry in the fish list
+    ; and that the list is not empty
+    let todays_fish_check false
+    ifelse empty? fish_list = false [
+       set todays_fish_check position todays_date item 0 fish_list
+    ][stop]
+    ; if it doden't stop the loop
+    if todays_fish_check = false [stop]
+    ; if the dates match, make the first fish entry a entry to be added today for today
+    let todays_fish item 1 item 0 fish_list
+    ; now take it out so it's not added again
+    set fish_list but-first fish_list
+
+    ; Add in fish based on life stage
+    ; Only run spawner if they are present in the system
+    if item (lifestage_column - 1) todays_fish = "spawner" and spawn_flag [
+      create-spawners (item (number_column - 1) todays_fish )[
+        ; Chose who it will be displayed
+        set size 7
+        set color green
+        set shape "dot"
+
+        ; Set species info
+        set species (item (species_column - 1) todays_fish )
+        set species_id (position species species_list)
+
+        ; Set flags
+        set is_guarding 0
+
+        ; Set age
+        set age 0
+
+        ; Set lenght man mass
+        ; Defensive programing to make sure we dont have a random fish that is too small
+        let f_min_length (item (length_column - 1) todays_fish ) / 10
+        set f_length random-normal (item (length_column - 1) todays_fish ) (item (sd_column - 1) todays_fish )
+        set f_length max list f_length f_min_length
+        set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b))) ; mass is in g
+        set fish_condition 1.0
+        set healthy_mass (item species_id length_mass_a) * (f_length ^ (item species_id length_mass_b))
+
+        ; Set the initial needed water depth is at least fish length (remember cm to m conversion)
+        let init_length f_length / 100
+
+        ; Set the max water velocity for first cell
+        let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
+        ; Calculate max swimm speed (m/s)
+        let init_swim_speed max_swim_l_term * item species_id max_swim_temp_func
+
+        ; Select the initial cell
+        ;set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length)]
+        ;check here
+        set destination rnd:weighted-one-of wet_patches [item [species_id] of myself spawn_suit]
+
+        pen-up
+        move-to destination
+        set exit_status 0
+
+        ; Memory lists
+        set is_alive true
+
+        save_event "spawner_added"
+      ]
+    ]
+
+    if item (lifestage_column - 1) todays_fish = "juvenile" [
+      create-juveniles (item (number_column - 1) todays_fish )[
+        ; Chose who it will be displayed
+        set size 2
+        set color blue
+        set shape "dot"
+
+        ; Set species info
+        set species (item (species_column - 1) todays_fish )
+        set species_id (position species species_list)
+
+        ; Set size and territory size
+        ; Defensive programing to make sure we dont have a random fish that is too small
+        let f_min_length (item (length_column - 1) todays_fish ) / 10
+        set f_length random-normal (item (length_column - 1) todays_fish ) (item (sd_column - 1) todays_fish )
+        set f_length max list f_length f_min_length
+        set mass (item species_id (length_mass_a)) * (f_length ^ (item species_id (length_mass_b)))
+        set fish_condition 1.0
+        set territory_size (item species_id territory_a) * f_length ^ (item species_id territory_b)
+
+        ; Set the initial needed water depth is at least fish length (remember cm to m conversion)
+        let init_length f_length / 100
+
+        ; Set the max water velocity for first cell
+        let max_swim_l_term ((item species_id ucrit_a) / f_length + (item species_id ucrit_b)) * f_length / 100
+        ; Calculate max swimm speed (m/s)
+        let init_swim_speed max_swim_l_term * item species_id max_swim_temp_func
+
+        ; Select the initial cell
+        set destination one-of wet_patches with [(today_velocity < init_swim_speed) and (today_depth > init_length) and frac_velocity_shelter > 0]
+
+        ; log the event
+        save_event "hatch"
+
+        ; Move to spot
+        pen-up
+        move-to destination
+        set exit_status 0
+
+        ; Memory lists
+        set velocity_experience_list (list) ; A list of destination cell velocity fish experience each day
+        set is_in_shelter false             ; A boolean for whether trout is drift-feeding in velocity shelter.
+        set is_migrant false                ; A boolean for whether fish has migrated
+        set is_alive true                   ; A boolean for whether fish is alive
+        set is_drifter false                ; A boolean for whether fish is drifting downstream due to crappy habitat
+        set starving? []
+      ]
+    ]
+  ]
+
+end

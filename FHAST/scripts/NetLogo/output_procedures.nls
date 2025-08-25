@@ -1,0 +1,384 @@
+;#########################################################################
+; This defines putput making procedures
+;#########################################################################
+
+;; Saves the information of each destination cell every timestep (for cell_info_list csv)
+to save_destination_cell_info
+
+  let destination_cells [self] of patches with [ any? turtles-here and migrant_patch = false ]
+
+  foreach destination_cells [[next_cell] ->
+
+    set cell_info_list lput (
+      csv:to-row ( list
+        time:show tick_date "yyyy-MM-dd"
+        next_cell
+        [x_pos] of next_cell
+        [y_pos] of next_cell
+        ([count_fish_destination] of next_cell * superind_ratio)
+        [avg_weight_fish_in_destination] of next_cell
+        [avg_length_fish_in_destination] of next_cell
+        [avg_condition_fish_in_destination] of next_cell
+        [today_velocity] of next_cell
+        [today_depth] of next_cell
+        [total_net_energy_in_cell] of next_cell
+        [total_mort_risk_for_cell] of next_cell
+        [path_survival] of next_cell
+      )
+    )
+    cell_info_list
+  ]
+
+end
+
+;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
+to save_event [an_event_type]
+
+  ; an-event-type is a character string that says what event happened.
+  if breed = juveniles or breed = migrants [
+    set fish_events_list lput (
+      csv:to-row ( list
+        time:show tick_date "yyyy-MM-dd"
+        species
+        who
+        [x_pos] of destination
+        [y_pos] of destination
+        start_length
+        f_length
+        change_length
+        start_mass
+        mass
+        start_condition
+        fish_condition
+        change_mass
+        percent_change_mass
+        max_swim_speed
+        cmax
+        [swim_speed] of destination
+        ;fish_smolting_prob_photoperiod
+        overall_outmigration_prob
+        [cell_available_wet_area] of destination
+        is_in_shelter
+        [encounter_prob] of destination
+        is_drifter
+        drifter_history
+        is_migrant
+        starving?
+        an_event_type
+        temperature
+        flow
+        turbidity
+        photoperiod
+        [today_velocity] of destination
+        [today_depth] of destination
+        [distance_to_cover] of destination
+        [cell_available_vel_shelter] of destination
+        [passive_metab_rate] of destination
+        [active_metab_rate] of destination
+        [total_metab_rate] of destination
+        [daily_intake] of destination
+        [daily_energy_intake] of destination
+        [total_net_energy_in_cell] of destination
+        [path_survival] of destination
+        [path_survival] of destination
+      )
+    )
+    fish_events_list
+  ]
+
+end
+
+;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
+to save_spawner_event [an_event_type]
+
+  ; an-event-type is a character string that says what event happened.
+  if breed = spawners [
+    set spawner_events_list lput (
+      csv:to-row (list
+        time:show tick_date "yyyy-MM-dd"
+        species
+        who
+        an_event_type
+        age
+        [x_pos] of destination
+        [y_pos] of destination
+        temperature
+        flow
+        turbidity
+        [today_velocity] of destination
+        [today_depth] of destination
+      )
+    )
+    spawner_events_list
+  ]
+
+end
+
+;; Saves detailed summary info of the population every timestep ( total number fish migrating, total number dead fish etc)
+to save_detailed_population_info
+
+  foreach species_list [ next_species ->
+    let current_juveniles juveniles with [species = next_species]
+    let current_redds redds with [species = next_species]
+    ;set total_daily_juveniles count juveniles ; the number of non-smolt and smolt individuals in the river that day
+    set total_daily_juveniles count current_juveniles ; the number of non-smolt and smolt individuals in the river that day (does not include migrants)(cumulative)
+    let rearing_juveniles count current_juveniles with [change_mass > 0 ]
+    set total_daily_migrants table:get migrant_count_table next_species ; the number of individuals that turned into migrants that day or are currently migrating
+    ;set total_daily_smolts table:get smolt_count_table next_species    ; the number of individuals that turned into smolts that day
+    set total_daily_nonmigrants table:get nonmigrants_count_table next_species  ; the number of individuals that are nonmigrants at the beginning of that day (cumulative)
+    let mean_length 0
+    let mean_energy 0
+    if  any? current_juveniles = true [
+      set mean_length mean [f_length] of current_juveniles
+      set mean_energy mean [daily_net_energy] of current_juveniles
+    ]
+    let rearing_growth_fra 0
+    let rearing_growth_length 0
+    if any? current_juveniles with [change_mass > 0 ] [
+      set rearing_growth_fra mean [change_mass / mass ] of current_juveniles with [change_mass > 0 ]
+      set rearing_growth_length mean [change_length] of current_juveniles with [change_mass > 0 ]
+    ]
+
+    let total_daily_redds count current_redds
+    let total_dead_eggs sum [dead_eggs] of current_redds
+    let total_alive_eggs sum [egg_count] of current_redds
+
+    ;  set mean_migrant_mass mean migrant_mass_list
+    ;  set mean_migrant_condition mean migrant_condition_list
+    ;
+    ;  set mean_smolt_length mean smolt_length_list
+    ;  set mean_smolt_mass mean smolt_mass_list
+    ;  set mean_smolt_condition mean smolt_condition_list
+    ;
+    ;  set mean_nonsmolt_length mean nonsmolt_length_list
+    ;  set mean_nonsmolt_mass mean nonsmolt_mass_list
+    ;  set mean_nonsmolt_condition mean nonsmolt_condition_list
+
+    set total_daily_dead_fish table:get dead_fish_count_table next_species ; the number of individuals (smolts and nonsmolts) that have died that day
+    set total_daily_dead_migrants table:get dead_migrants_count_table next_species ; the number of migrants that have died that day
+    ;set total_daily_dead_smolts table:get dead_smolts_count_table next_species ; the number of smolts that have died that day
+    let total_daily_dead_rearers table:get dead_rearing_count_table next_species ; the number of smolts that have died that day
+    set total_daily_dead_nonmigrants table:get dead_nonmigrants_count_table next_species ; the number of nonsmolts that have died that day
+    set total_daily_drifters table:get drifter_count_table next_species  ; the number of individuals that turned into drifters that day (can be smolts or nonsmolts)
+    let count_death_predation table:get death_pred_table next_species
+    let count_death_hightemp table:get death_temp_table next_species
+    let count_death_stranding table:get death_stranding_table next_species
+    let count_death_poorcond table:get death_condition_table next_species
+
+    set detailed_population_list lput (
+      csv:to-row (list
+        time:show tick_date "yyyy-MM-dd"
+        next_species
+        (total_daily_juveniles * superind_ratio)   ;this includes smolts
+        (rearing_juveniles * superind_ratio)
+        mean_length
+        mean_energy
+        rearing_growth_fra
+        rearing_growth_length
+        (total_daily_migrants * superind_ratio)
+        ;      mean_migrant_length
+        ;      mean_migrant_mass
+        ;      mean_migrant_condition
+        ;(total_daily_smolts * superind_ratio)
+        ;      mean_smolt_length
+        ;      mean_smolt_mass
+        ;      mean_smolt_condition
+        (total_daily_nonmigrants * superind_ratio)
+        ;      mean_nonsmolt_length
+        ;      mean_nonsmolt_mass
+        ;      mean_nonsmolt_condition
+        (total_daily_drifters * superind_ratio)
+        (total_daily_dead_fish * superind_ratio)
+        (total_daily_dead_migrants * superind_ratio)
+        ;(total_daily_dead_smolts * superind_ratio)
+        (total_daily_dead_nonmigrants * superind_ratio)
+        (total_daily_dead_rearers * superind_ratio)
+        (count_death_predation * superind_ratio)
+        (count_death_hightemp * superind_ratio)
+        (count_death_stranding * superind_ratio)
+        (count_death_poorcond * superind_ratio)
+        total_daily_redds
+        total_alive_eggs
+        total_dead_eggs
+        temperature
+        flow
+        photoperiod
+      )
+    )
+    detailed_population_list
+  ]
+
+end
+
+;; Saves basic info about all cell
+to save_all_cell_info
+
+  let all_cells [self] of patches with [ wetted_fraction > 0 ]
+
+  foreach all_cells [[next_cell] ->
+
+  set all_cell_attributes_list lput (
+      csv:to-row (list
+        time:show tick_date "yyyy-MM-dd"
+        next_cell
+        [x_pos] of next_cell
+        [y_pos] of next_cell
+        [today_velocity] of next_cell
+        [today_depth] of next_cell
+        [wetted_fraction] of next_cell
+        [encounter_prob] of next_cell
+      )
+    )
+    all_cell_attributes_list
+
+  ]
+
+end
+
+;; An observer procedure to initialize an output file.
+to build_output_file_named [a_file_name]
+
+  ; The parameter a_file_name is the global variable for the file name.
+
+  ;; Create the detailed population output file.
+  if a_file_name = "d-p-o-n" [ ; This is the value of the uninitialized file name
+
+    set detailed_population_outfile_name (word run_folder "/detailed_pop_output.csv")
+
+    if file-exists? detailed_population_outfile_name [ file-delete detailed_population_outfile_name ]
+    ; These header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+    set detailed_population_list fput "time, Species, juveniles, rearers, mean_length, mean_energy, mean_rearing_mass_growth_fra, mean_rearing_growth_length, migrants, nonmigrants, drifters, dead_fish, dead_migrants, dead_nonmigrants, dead_rearers, predation_deaths, high_t_deaths, stranding_deaths, poor_condition_deaths, total_redds, total_alive_eggs, dead_eggs, temperature, flow, photoperiod" detailed_population_list
+    set detailed_population_list fput (word "FHAST detailed population output file, Created " date-and-time) detailed_population_list
+  ]
+  ;; Create the destination cell info output file.
+  if a_file_name = "c-i-o-n" [ ; This is the value of the uninitialized file name
+
+    set cell_info_outfile_name (word run_folder "/cell_info_output.csv")
+
+    if file-exists? cell_info_outfile_name [ file-delete cell_info_outfile_name ]
+    ; These header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+    set cell_info_list fput "time, cell, x_pos, y_pos, fish_count, mean_fish_mass, mean_fish_length, mean_fish_condition, velocity, depth, food, survival_prob, prob_of_predation" cell_info_list
+    set cell_info_list fput (word "FHAST destination cell info output file, Created " date-and-time) cell_info_list
+  ]
+
+  ; Create the fish events output file.
+  if a_file_name = "f-e-o-n" [ ; This is the value of the uninitialized file name
+
+    set fish_events_outfile_name (word run_folder "/events_output.csv")
+
+    if file-exists? fish_events_outfile_name [ file-delete fish_events_outfile_name ]
+    ; There can be events on the fish-events-list when file is created (from fish initialization)
+    ; so these header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+
+    set fish_events_list fput "time, species, id, x_pos, y_pos, start length , length, length change, start mass, mass, start_condition, condition, growth, percent_change_mass, max_swim_speed, cmax, swim_speed, overall_outmigration_prob, cell_available_wet_area, in_shelter, encounter_prob, fis_drifter, drifter_history, is_migrant, starving?, event, temperature, flow, turbidity, photoperiod, velocity, depth, distance_to_cover, available_velocity_shelter, capture_area, capture_success, fish_turbid_function, fish_detect_distance, passive_metab_rate, active_metab_rate, total_metab_rate, daily_intake, daily_energy_intake, total_net_energy, path_survival, prob_of_surviving_predation_of_destination" fish_events_list
+
+    set fish_events_list fput (word "FHAST fish events output file, Created " date-and-time) fish_events_list
+  ]
+
+  ; Create the adult events output file.
+  if a_file_name = "a-e-o-n" [ ; This is the value of the uninitialized file name
+
+    set spawner_events_outfile_name (word run_folder "/adult_events_output.csv")
+
+    if file-exists? spawner_events_outfile_name [ file-delete spawner_events_outfile_name ]
+    ; There can be events on the fish-events-list when file is created (from fish initialization)
+    ; so these header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+
+    set spawner_events_list fput "time, species, id, event, age, x_pos, y_pos, temperature, flow, turbidity, velocity, depth" spawner_events_list
+
+    set spawner_events_list fput (word "FHAST fish events output file, Created " date-and-time) spawner_events_list
+  ]
+
+  ; Create output file for recording attributes of all cells in the model (for mapping and testing purposes)
+  if a_file_name = "a-c-o-n"  [ ; This is the value of the uninitialized file name
+
+     set all_cell_outfile_name (word run_folder "/all_cell_output.csv")
+
+     if file-exists? all_cell_outfile_name [ file-delete all_cell_outfile_name ]
+     ; These header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+    set all_cell_attributes_list fput "time, cell_id, x_pos, y_pos, velocity, depth, wetted_fraction, encounter_prob, velocity, depth, cover_bonus" all_cell_attributes_list
+    set all_cell_attributes_list fput (word "FHAST all cell output file, Created " date-and-time) all_cell_attributes_list
+  ]
+
+end
+
+;; Updates all output files
+to update_output
+
+  ; Output files are created when first used, instead of in setup,
+  ; to keep new output files from being created if setup is executed but go is not.
+  ifelse all_cell_output? [
+    if not empty? all_cell_attributes_list [
+      if all_cell_outfile_name = "a-c-o-n" [ build_output_file_named all_cell_outfile_name ]
+      file-open all_cell_outfile_name
+      foreach all_cell_attributes_list [ next -> file-print next ]  ; Write each detail to the file
+      file-close
+      set all_cell_attributes_list (list)                ; Clear the list
+    ]
+  ][
+    set all_cell_attributes_list (list)                ; Clear the list
+  ]
+
+  ; The following outputs are produced each tick
+
+  ; Update detailed population output file
+  ifelse detailed_population_output? [
+    if not empty? detailed_population_list [
+      if detailed_population_outfile_name = "d-p-o-n" [ build_output_file_named detailed_population_outfile_name ]
+      file-open detailed_population_outfile_name
+      foreach detailed_population_list [ next -> file-print next ]  ; Write each detail to the file
+      file-close
+      set detailed_population_list (list)                ; Clear the list
+    ]
+  ][
+    set detailed_population_list (list)                ; Clear the list
+  ]
+
+  ; Update detailed fish events output file
+  ifelse fish_events_output? [
+    if not empty? fish_events_list [
+      if fish_events_outfile_name = "f-e-o-n" [ build_output_file_named fish_events_outfile_name ]
+      file-open fish_events_outfile_name
+      foreach fish_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+      file-close
+      set fish_events_list (list)                ; Clear the event list
+    ]
+  ][
+    set fish_events_list (list)                ; Clear the event list
+  ]
+
+  ; Update detailed adult events output file
+  ifelse spawner_events_output? [
+    if not empty? spawner_events_list [
+      if spawner_events_outfile_name = "a-e-o-n" [ build_output_file_named spawner_events_outfile_name ]
+      file-open spawner_events_outfile_name
+      foreach spawner_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+      file-close
+      set spawner_events_list (list)                ; Clear the event list
+    ]
+  ][
+    set spawner_events_list (list)                ; Clear the event list
+  ]
+
+  ; Update detailed cell events output file
+  ifelse cell_info_output? [
+    if not empty? cell_info_list [
+      if cell_info_outfile_name = "c-i-o-n" [ build_output_file_named cell_info_outfile_name ]
+      file-open cell_info_outfile_name
+      foreach cell_info_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+      file-close
+      set cell_info_list (list)                ; Clear the event list
+    ]
+  ][
+    set cell_info_list (list)                ; Clear the event list
+  ]
+
+  ; Just to be safe & tidy
+  file-close-all
+
+end

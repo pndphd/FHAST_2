@@ -1,0 +1,610 @@
+;#########################################################################
+; This defines some general user functions and runs the setup procedures
+;#########################################################################
+
+;##### Define Repeated Use Functions #####################################
+;; Make a tabel for the CSV fish params inputs
+to-report make_table_from_csv [#csv_file]
+
+  let parameter_names (map [n -> item 0 n ] #csv_file)
+  let parameter_values  (map [n -> but-first n] #csv_file)
+  ; Combine the last to to make a paired list then a table
+  let paired_param_list (map [ [ a b ] -> ( list a b ) ] parameter_names parameter_values)
+
+  report table:from-list paired_param_list
+
+end
+
+;; A reporter to evalulate the logistic function
+to-report evaluate_logistic [ #a_logistic_name #a_species #an_input ]
+
+  ; An observer reporter to report the value of a survival logistic
+  let the_table (table:get (table:get fish_logistics_table #a_species) #a_logistic_name)
+  let Z (table:get the_table "logistic_a") + ((table:get the_table "logistic_b") * #an_input)
+
+  ; Defensive programming to avoid over/underflow runtime errors
+  if Z < -200 [ report 0.0 ]
+  if Z >   35 [ report 1.0 ]
+
+  report (exp Z) / (1.0 + exp Z)   ; Calculating exp(Z) twice does not slow execution
+
+end
+
+;; Make the logistic table
+to create_logistic_with_table_and_params [#a_table #a_name #x1 #p1 #x2 #p2]
+  ; An observer reporter to initialize a logistic function.
+  ; p1 and p2 are the probabilities associated with inputs x1 and x2
+
+  ; For convenience in test output, make sure X1 is less than X2
+  ; This flips both relative to eachother and dose not change relatioships
+  if #x1 > #x2 [
+    let #a_num #x2
+    set #x2 #x1
+    set #x1 #a_num
+    set #a_num #p2
+    set #p2 #p1
+    set #p1 #a_num
+  ]
+
+  ; Calculate the internal parameters
+  let C ln (#p1 / (1 - #p1))
+  let D ln (#p2 / (1 - #p2))
+  let logistic_b (C - D) / (#x1 - #x2)
+  let logistic_a C - (logistic_b * #x1)
+
+  let a_subtable table:make
+  table:put a_subtable "logistic_b" logistic_b
+  table:put a_subtable "logistic_a" logistic_a
+
+  table:put #a_table #a_name a_subtable
+
+end
+
+;; Flatten a list of lists
+to-report flatten [#list]
+  set #list fput 0 #list ;; and a sacrificial scalar to the front of the list
+  set #list ( reduce [ [ a b ] -> ( sentence a b) ] #list )
+  report but-first #list ;; remove the sacrificial scalar before reporting
+end
+
+;##### Setup Actions #####################################################
+to setup
+
+  ; Basic reset procedure
+  clear-all                           ; Clear the entire space
+  reset-ticks                         ; Reset time ticks
+  set-default-shape turtles "dot"     ; Set the default turtel shape to dot
+
+  ; Read in files and set resolution
+  set habitat_params_csv csv:from-file word run_folder "/habitat.csv"                  ; Read in general habitat params
+  set_habitat_params                                                                   ; Sets numerous values including resolution and buffer
+  set daily_input_csv csv:from-file word run_folder "/daily_input_file.csv"            ; Read in the daily flow and temperature
+  set flow_input_csv csv:from-file
+    (word run_folder "/depth_velocity_data_input.csv")                                 ; Read in the depth CSV
+  set shape_input_csv csv:from-file
+    (word run_folder "/shape_data_input.csv")                                          ; Read in the shape file
+  set daily_fish_csv csv:from-file word run_folder "/daily_fish_input.csv"             ; Read in the daily fish csv
+  set fish_params_csv csv:from-file word run_folder "/fish_params_input.csv"           ; Read in the daily fish csv
+  set pred_input_file_csv csv:from-file word run_folder "/predator_params_input.csv"   ; Read in the predator input csv
+
+  ;; Get the indexes for the columns in each file
+  set flow_column (position "flow_cms" (item 0 daily_input_csv))
+  set temp_column (position "temp_c" (item 0 daily_input_csv))
+  set turbidity_column (position "turb_ntu" (item 0 daily_input_csv))
+  set photoperiod_column (position "photoperiod" (item 0 daily_input_csv))
+
+  ; Set the initial and end time
+  let date (position "date" (item 0 daily_input_csv))
+  set first_day time:create-with-format item date (item 1 daily_input_csv) "yyyy-MM-dd"
+  ; Get a zero day so ticaks line up with the first day
+  let zero_day time:plus first_day -1.0 "days"
+  set last_day time:create-with-format item date (item (length daily_input_csv - 1) daily_input_csv) "yyyy-MM-dd"
+  set tick_date (time:anchor-to-ticks zero_day 1 "days")
+
+  ;; For the fish parameters
+  set species_list but-first (item 0 fish_params_csv)
+
+  ;; From the fish daily input file
+  set number_column (position "number" (item 0 daily_fish_csv))
+  set species_column (position "species" (item 0 daily_fish_csv))
+  set length_column (position "length" (item 0 daily_fish_csv))
+  set sd_column (position "length_sd" (item 0 daily_fish_csv))
+  set lifestage_column (position "lifestage" (item 0 daily_fish_csv))
+
+  ;; From the flow inputs
+  set lat_column (position "lat_dist" (item 0 flow_input_csv)) ;shows which column lat_dist is in csv, and then which element is first in the column
+  set lon_column (position "dist" (item 0 flow_input_csv))
+  set area_column (position "area" (item 0 flow_input_csv))
+
+  ;; From the shape input file
+  set x_shape (position "lat_dist" (item 0 shape_input_csv))
+  set y_shape (position "dist" (item 0 shape_input_csv))
+  set canopy_column (position "height" (item 0 shape_input_csv))
+  set wood_column (position "wood" (item 0 shape_input_csv))
+  set cover_column (position "cover_fra" (item 0 shape_input_csv))
+  set small_cover_column (position "small_cover_fra" (item 0 shape_input_csv))
+  set veg_column (position "veg" (item 0 shape_input_csv))
+  set fine_column (position "fine" (item 0 shape_input_csv))
+  set rock_column (position "rock" (item 0 shape_input_csv))
+  set cobble_column (position "cobble" (item 0 shape_input_csv))
+  set gravel_column (position "gravel" (item 0 shape_input_csv))
+  set ben_food_column (position "ben_food_fra" (item 0 shape_input_csv))
+
+  ;; Set the size of the world
+  set_world_size
+
+  ;; Initalize global lists
+  set_lists
+
+  ;; Set the world values that are the same for every cell
+  set_temp_turbidity_flow_photoperiod
+
+  ;; Set up the number of fish that get added to the model every day
+  set_daily_fish_additions
+
+  ;; Set the fish parameters
+  set_fish_parameters
+
+  ;; Set each patch flow values
+  set_patch_flow_values
+
+  ;; Set each patch shade values
+  set_patch_shade_values
+
+  ;; Set each patches values from the shape file
+  set_patch_habitat_values
+
+  ;; Set the count tables for the print out
+  set_count_tabels
+
+  ;; Set substrate values to patches for predators
+  set_substrate_values
+
+  ;; Build the logistic functions for the fish
+  build_logistic_functions
+
+  ;; Load in model parameters for predators
+  set_pred_params
+
+  ;; Habitat rating pre-calculations
+  set_partial_hab_rating
+
+end
+
+;; Setup habitat parameters
+to set_habitat_params
+  let paired_param_table make_table_from_csv habitat_params_csv
+
+  ; feeding params
+  set hab_drift_con item 0 (table:get paired_param_table "hab_drift_con")
+  set hab_ben_con item 0 (table:get paired_param_table "hab_bentic_con")
+  set hab_ben_ene item 0 (table:get paired_param_table "hab_bentic_ene")
+  set hab_drift_ene item 0 (table:get paired_param_table "hab_drift_ene")
+  set superind_ratio item 0 (table:get paired_param_table "superind_ratio")
+
+  ; reach params
+  set resolution item 0 (table:get paired_param_table "resolution")
+  set pred_per_area item 0 (table:get paired_param_table "pred_per_area")
+  set shelter_frac item 0 (table:get paired_param_table "shelter_frac")
+  set reaction_distance item 0 (table:get paired_param_table "reaction_distance")
+  set t_area_effect item 0 (table:get paired_param_table "t_area_effect")
+
+  ; pct cover to distance to cover conversion
+  set int_pct_cover item 0 (table:get paired_param_table "int_pct_cover")
+  set sqrt_pct_cover item 0 (table:get paired_param_table "sqrt_pct_cover")
+  set pct_cover item 0 (table:get paired_param_table "pct_cover")
+  set sqrt_pct_cover_x_pct_cover item 0 (table:get paired_param_table "sqrt_pct_cover_x_pct_cover")
+
+  ; dis to cover to prey safety conversion
+  set dis_to_cover_par item 0 (table:get paired_param_table "dis_to_cover_m")
+  set dis_to_cover_int item 0 (table:get paired_param_table "dis_to_cover_int")
+
+  ; turbidity survival bonus params
+  set turb_int item 0 (table:get paired_param_table "turbidity_int")
+  set turb_slope item 0 (table:get paired_param_table "turbidity_slope")
+
+  ; benthic velocity reduction parameters
+  set ben_vel_height item 0 (table:get paired_param_table "ben_vel_height")
+  set d84_size item 0 (table:get paired_param_table "d84_size")
+
+  ;; Initialize patch data for pathfinding
+  ask patches  [
+    set has_visited? false
+    set previous_patch nobody
+    set path_to_here_cost -1
+    set path_survival -1
+    set fish_survival -1
+    set path_score -1
+  ]
+
+  set pathfinding_dirty_patches no-patches
+
+end
+
+;; Initialize some global lists
+to set_lists
+
+  ; Observer procedure that initializes global variables.
+  set detailed_population_outfile_name "d-p-o-n"    ; String with temporary name of detailed population output file; reset in build_output_file
+  set fish_events_outfile_name "f-e-o-n"            ; String with temporary name of fish events output file; reset in build_output_file
+  set spawner_events_outfile_name "a-e-o-n"           ; String with temporary name of fish events output file; reset in build_output_file
+  set cell_info_outfile_name "c-i-o-n"              ; String with temporary name of destination cell info output file; reset in build_output_file
+  set all_cell_outfile_name "a-c-o-n"               ; String with temporary name of all cell info output file; reset in build_output_file
+
+  ; Set up lists to track events
+  set fish_events_list (list)           ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set spawner_events_list (list)          ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set cell_info_list (list)             ; List keeping track of destination cell-related info including the number of fish in a destination cell at every time step, number of dead fish at a destination cell at every time step etc
+  set detailed_population_list (list)   ; List keeping track of summary fish-related info per day including the total number of fish that died per day, total alive, total migrating, etc
+  set all_cell_attributes_list (list)   ; List keeping track of all cell info per day (for mapping and testing purposes)
+
+end
+
+;; Set the world values that are the same for every cell
+to set_temp_turbidity_flow_photoperiod
+
+  ; Get the temperature, turbidity, and photoperiod values from the daily input
+  set daily_temp_values but-first (map [n -> item temp_column n ] daily_input_csv)
+  set daily_turbidity_values  but-first (map [n -> item turbidity_column n ] daily_input_csv)
+  set daily_photoperiod_values but-first (map [n -> item photoperiod_column n ] daily_input_csv)
+
+  ; Get the flow values from the daily input
+  set daily_flow_values but-first (map [n -> item flow_column n ] daily_input_csv)  ; Read in all the x positions
+  let flow_header item 0 flow_input_csv
+
+  ; Get the first row of the CSV
+  let flow_columns filter [ s -> member? "mean.D" s ] flow_header    ; Get only column headders with mean in the name
+  let flow_values_str map [ s -> remove "mean.D" s ] flow_columns    ; Take out the prefix
+  set flow_values map [ s -> read-from-string s ] flow_values_str    ; Covnert the strings to number values
+  set flow_values insert-item 0 flow_values 0.0                      ; Add zero to the start
+
+end
+
+;; Set the size of the world
+to set_world_size
+
+  ; Get necessary information to set up world size
+  let x_values (map [n -> item lat_column n ] flow_input_csv)  ; Read in all the x positions
+  let y_values (map [n -> item lon_column n ] flow_input_csv)  ; Read in all the y positions
+  let x_max max x_values                                   ; Get the max x value
+  let x_min min x_values                                   ; Get the min x value
+  let y_max max y_values                                   ; Get the max y value
+
+  ; Resize the world and patchs
+  resize-world (x_min / (resolution)) (x_max / (resolution)) 0 (y_max / (resolution))
+  ; Set the patch size to be 1 or larger (if reasonable)
+  set-patch-size max (list 1 ((resolution / y_max) * 2000 * zoom_factor))
+
+end
+
+;; Set up the number of fish that get added to the model every day
+to set_daily_fish_additions
+
+  let fish_date_column (position "date" (item 0 daily_fish_csv))
+  let fish_date_values but-first (map [n -> item fish_date_column n ] daily_fish_csv)
+  let fish_lifestages but-first (map [n -> item lifestage_column n ] daily_fish_csv)
+  ; Get all things in the fish input file except date
+  ; This is to make a table later on
+  let fish_wo_dates but-first (map [n -> but-first n] daily_fish_csv)
+  ; Combine the last to to make a paired list then a table
+  set fish_list (map [ [ a b ] -> ( list a b ) ] fish_date_values fish_wo_dates)
+
+  ifelse member? "spawner" fish_lifestages [
+    set spawn_flag true
+  ][
+    set spawn_flag false
+  ]
+
+  ; take off fish that arive before sim window
+  loop [
+    ; check if the list is empty
+    ifelse empty? fish_list = false [
+      ; get the first on the list in the correct format
+      let check_day time:create-with-format item 0 (item 0 fish_list) "yyyy-MM-dd"
+
+      ; compare to the first day and if defore remove it
+      ifelse time:is-before? check_day first_day [
+
+        print (word "Fish set to arrive early. Removed day " check_day)
+        set fish_list but-first fish_list][stop]
+    ][stop]
+  ]
+
+end
+
+;; Set up the parameter values for the fish
+to set_fish_parameters
+
+  let paired_param_table make_table_from_csv fish_params_csv
+
+  set benthic_fish (table:get paired_param_table "benthic_fish")
+  set cmax_a (table:get paired_param_table "cmax_a")
+  set cmax_b (table:get paired_param_table "cmax_b")
+  set cmax_c (table:get paired_param_table "cmax_c")
+  set cmax_d (table:get paired_param_table "cmax_d")
+  set feeding_speed (table:get paired_param_table "feeding_speed")
+  set react_dist_a (table:get paired_param_table "react_dist_a")
+  set react_dist_b (table:get paired_param_table "react_dist_b")
+  set turbid_threshold (table:get paired_param_table "turbid_threshold")
+  set turbid_min (table:get paired_param_table "turbid_min")
+  set turbid_exp (table:get paired_param_table "turbid_exp")
+  set energy_density (table:get paired_param_table "energy_density")
+  set territory_a (table:get paired_param_table "territory_a")
+  set territory_b (table:get paired_param_table "territory_b")
+  set length_mass_a (table:get paired_param_table "length_mass_a")
+  set length_mass_b (table:get paired_param_table "length_mass_b")
+  set capture_V1 (table:get paired_param_table "capture_V1")
+  set capture_V9 (table:get paired_param_table "capture_V9")
+  set met_int (table:get paired_param_table "met_int")
+  set met_lm (table:get paired_param_table "met_lm")
+  set met_lt (table:get paired_param_table "met_lt")
+  set met_v (table:get paired_param_table "met_v")
+  set met_lm_lt (table:get paired_param_table "met_lm_lt")
+  set met_t (table:get paired_param_table "met_t")
+  set met_lm_t (table:get paired_param_table "met_lm_t")
+  set met_sqv (table:get paired_param_table "met_sqv")
+  set turbid_threshold (table:get paired_param_table "turbid_threshold")
+  set turbid_min (table:get paired_param_table "turbid_min")
+  set turbid_exp (table:get paired_param_table "turbid_exp")
+  set ucrit_a (table:get paired_param_table "ucrit_a")
+  set ucrit_b (table:get paired_param_table "ucrit_b")
+  set ucrit_c (table:get paired_param_table "ucrit_c")
+  set ucrit_d (table:get paired_param_table "ucrit_d")
+  set move_dist_a (table:get paired_param_table "move_dist_a")
+  set move_dist_b (table:get paired_param_table "move_dist_b")
+  set mort_high_temp_T1 (table:get paired_param_table "mort_high_temp_T1")
+  set mort_high_temp_T9 (table:get paired_param_table "mort_high_temp_T9")
+  set mort_condition_K1 (table:get paired_param_table "mort_condition_K1")
+  set mort_condition_K9 (table:get paired_param_table "mort_condition_K9")
+  set smolt_P1 (table:get paired_param_table "smolt_P1")
+  set smolt_P9 (table:get paired_param_table "smolt_P9")
+  set smolt_max_L1 (table:get paired_param_table "smolt_max_L1")
+  set smolt_max_L9 (table:get paired_param_table "smolt_max_L9")
+  set outmigrate_V1 (table:get paired_param_table "outmigrate_V1")
+  set outmigrate_V9 (table:get paired_param_table "outmigrate_V9")
+  set small_cover_length (table:get paired_param_table "small_cover_length")
+  set migration_max_dist (table:get paired_param_table "migration_max_dist")
+  ; only read these if spawners in system
+  if spawn_flag [
+    set spawn_v_int (table:get paired_param_table "spawn_v_int")
+    set spawn_v_slope (table:get paired_param_table "spawn_v_slope")
+    set spawn_v_quat (table:get paired_param_table "spawn_v_quat")
+    set spawn_d_int (table:get paired_param_table "spawn_d_int")
+    set spawn_d_slope (table:get paired_param_table "spawn_d_slope")
+    set spawn_d_quat (table:get paired_param_table "spawn_d_quat")
+    set redd_area (table:get paired_param_table "redd_area")
+    set guard_area (table:get paired_param_table "guard_area")
+    set fecundity_int (table:get paired_param_table "fecundity_int")
+    set fecundity_slope (table:get paired_param_table "fecundity_slope")
+  ]
+
+  ; Initialize the cmax_tempfunction with an empty list
+  set cmax_temp_func n-values length species_list [1]
+
+  ; Initialize the cmax_tempfunction with an empty list
+  set max_swim_temp_func n-values length species_list [1]
+
+end
+
+;; Assign each of the cells all its flow values
+to set_patch_flow_values
+
+  ;; Assign all the patches list of depths to have -9999 to rep no data
+  ask patches [
+    set depths (map [n -> 0] flow_values)
+    set velocities (map [n -> 0] flow_values)
+    set wetted_fractions (map [n -> 0] flow_values)
+
+    ; Set initial spawn suit list
+    set spawn_suit (map [n -> 0] range length species_list)
+  ]
+
+  ;; Populate each patch with depth and velocity data
+  ;; Take each line in the csv
+  foreach (but-first flow_input_csv) [n ->
+    ; Move over each patch using its location and value
+    ask patch ((item lat_column n) / (resolution)) ((item lon_column n) / (resolution)) [
+      ; Set its x and y position, so that a map can later be made in R
+      set x_pos (item lat_column n)
+      set y_pos (item lon_column n)
+      ; Set the area value
+      set area (item area_column n)  ; area is in m2
+      let counter 0
+      ; Assign all the flow values and an index for them
+      foreach but-first flow_values [m ->
+        ; Use the flow values combined with the data type to get the depth values
+        let m_column (position (word "mean.D" m) (item 0 flow_input_csv)) ; Gives the row (position) of meanD1,2,3... of the first item of flow_input
+        let depth_input (item m_column n)
+        set depths (replace-item counter depths max list depth_input 0) ; Replace the depth place holder with the actual or depth zero if - depth
+        set max_depth max (list depth_input max_depth)       ; Check to see if this is a new max depth
+        ; Use the flow values combined with the data type to get the velocity values
+        let p_column (position (word "mean.V" m) (item 0 flow_input_csv))
+        let velocity_input (item p_column n)
+        set velocities (replace-item counter velocities max list velocity_input 0) ; Replace the depth place holder with the actual or depth zero if - depth
+        set max_velocity max (list velocity_input max_velocity)       ; Check to see if this is a new max depth
+        ; Use the flow values combined with the data type to get the wetted fraction
+        let q_column (position (word "wetd.D" m) (item 0 flow_input_csv))
+        let wetted_input (item q_column n)
+        set wetted_fractions (replace-item counter wetted_fractions max list wetted_input 0) ; replace the depth place holder with the actual or depth zero if - depth
+        set counter counter + 1
+      ]
+      set depths insert-item 0 depths 0.0  ; Add zero to the start
+      set velocities insert-item 0 velocities 0.0  ; Add zero to the start
+    ]
+  ]
+
+  set today_index floor (length flow_values / 2)     ; "floor" finds largest number less than or equal to the length of "flow_values/2"; Set the index to a starting value
+
+end
+
+;; Assign each of the cells all its shade values
+to set_patch_shade_values
+
+  let month_column (position "month" (item 0 daily_input_csv))
+  set month_values but-first (map [n -> item month_column n ] daily_input_csv)  ; Read in all the x positions
+  ;; Assign all the patches list of depths to have -9999 to rep no data
+  ask patches [
+    set shades (map [n -> 0] (range 1 13))
+  ]
+  ;; Populate each patch with depth data
+  ;; Take each line in the csv
+  foreach (but-first shape_input_csv) [n ->
+    ; Move over each patch using its location and value
+    ask patch ((item x_shape n) / (resolution)) ((item y_shape n) / (resolution)) [
+      ; Set the area value
+      let counter 0
+      ; Assign all the flow values and an index for them
+      foreach (range 1 13) [m ->
+        ; Use the flow values combined with the data type to get the depth values
+        let m_column (position (word "shade_" m) (item 0 shape_input_csv))
+        let shade_input (item m_column n)
+        set shades (replace-item counter shades max list shade_input 0) ; Replace the depth place holder with the actual or depth zero if - depth
+        set counter counter + 1
+      ]
+    ]
+  ]
+
+end
+
+;; Assign each of the cells all of the values associated with shapefiles (also in this section, the lists for mortality count and visit counts are initialized), and set whether they have a migrant in them to 'false'
+to set_patch_habitat_values
+
+  ;; Now do the same but for the shapes
+  foreach (but-first shape_input_csv) [n ->
+    ask patch ((item x_shape n) / (resolution)) ((item y_shape n) / (resolution)) [
+      set wood (item wood_column n) ; Used for relief for predation
+      set cover (item cover_column n)
+      set small_cover (item small_cover_column n)
+      set gravel (item gravel_column n)
+      set veg (item veg_column n) ; Used for cover relief for predation
+      set fine (item fine_column n)
+      set rock (item rock_column n)
+      set cobble (item cobble_column n)
+      set ben_food_fra (item ben_food_column n)
+
+      ; Set area for spawning
+      set unguarded_area area * (gravel + cobble)
+    ]
+  ]
+
+end
+
+;; set up the tabels to track counts of types of fish
+to set_count_tabels
+  ; update list of daily fish counts for detailed population output
+  set death_temp_table table:make
+  set death_stranding_table table:make
+  set death_pred_table table:make
+  set death_condition_table table:make
+
+  ; List of various fish variables recorded per day
+  ;set smolt_count_table table:make
+  set nonmigrants_count_table table:make
+  set migrant_count_table table:make
+  set drifter_count_table table:make
+
+  set dead_fish_count_table table:make
+  set dead_migrants_count_table table:make
+  ;set dead_smolts_count_table table:make
+  set dead_nonmigrants_count_table table:make
+  set dead_rearing_count_table table:make
+end
+
+;; To set substrate values to patches for predators
+to set_substrate_values
+
+  ask patches [
+    set substrate (gravel + cobble + rock)
+    ifelse (substrate >= fine and substrate > 0) [
+      set substrate 1
+    ][
+      set substrate 0
+    ]
+  ]
+
+end
+
+;; Bulid the logistic function
+to build_logistic_functions
+
+  ; An observer procedure to create logistic functions used in survival and other fish functions.
+  ; Logistic functions are stored in a table; they can differ among species.
+  ; Create the table.
+  set fish_logistics_table table:make
+
+  ; Build a table of functions for each species.
+  foreach species_list [ next_species ->
+    let the_species_table table:make
+    let the_spp_index position next_species species_list
+
+    ; Poor condition
+    create_logistic_with_table_and_params the_species_table
+    "poor_condition" (item the_spp_index mort_condition_K1) 0.1 (item the_spp_index mort_condition_K9) 0.9
+
+    ; Capture success for drift feeding
+    create_logistic_with_table_and_params the_species_table
+    "capture_success" (item the_spp_index capture_V1) 0.1 (item the_spp_index capture_V9) 0.9
+
+    ; High temperature
+    create_logistic_with_table_and_params the_species_table
+    "high_temperature" (item the_spp_index mort_high_temp_T1) 0.1 (item the_spp_index mort_high_temp_T9) 0.9
+
+    ; Probability of smolting depending on fork length
+    create_logistic_with_table_and_params the_species_table
+    "smolt_flength" (item the_spp_index smolt_max_L1) 0.1 (item the_spp_index smolt_max_L9) 0.9
+
+    ; Probability of being in the "smolting window" depending on photoperiod
+    create_logistic_with_table_and_params the_species_table
+    "smolt_photoperiod" (item the_spp_index smolt_P1) 0.1 (item the_spp_index smolt_P9) 0.9
+
+    ; Probability of outmigrating given the percent increase in mean velocity of the search radius from the mean running average velocity of search radius throughout the last 5 days
+    create_logistic_with_table_and_params the_species_table
+    "outmigrate_velocity" (item the_spp_index outmigrate_V1) 0.1 (item the_spp_index outmigrate_V9) 0.9
+
+    table:put fish_logistics_table next_species the_species_table
+  ]
+
+end
+
+;; set the predation parameters
+to set_pred_params
+  let paired_param_table make_table_from_csv pred_input_file_csv
+
+  set pred_species (table:get paired_param_table "term")
+  set num_pred_species length pred_species
+
+  ; glm for habitat rating
+  set int_glm (table:get paired_param_table "int")
+  set shade_glm (table:get paired_param_table "shade")
+  set veg_glm (table:get paired_param_table "veg")
+  set wood_glm (table:get paired_param_table "wood")
+  set depth_glm (table:get paired_param_table "depth")
+  set velocity_glm (table:get paired_param_table "velocity")
+  set substrate_glm (table:get paired_param_table "substrate")
+
+  ; params for log-normal distribution
+  set meanlog (table:get paired_param_table "pred_length_mean")
+  set sdlog (table:get paired_param_table "pred_length_sd")
+
+  ; gape limitation params
+  set a_gape (table:get paired_param_table "gape_a")
+  set b_gape (table:get paired_param_table "gape_b")
+
+  ; temp vs pred activity params
+  set pred_temperature_activity (table:get paired_param_table "area_pred_b")
+  set int_temp (table:get paired_param_table "area_pred_a")
+
+end
+
+;; Does part of the habitat rating calculation for variables that do not change during the time steps
+to set_partial_hab_rating
+
+  ask patches [
+    set partial_hab_rating []
+    foreach range length pred_species [n ->
+      set partial_hab_rating lput (item n int_glm + item n wood_glm * wood + item n veg_glm * veg + item n substrate_glm * substrate) partial_hab_rating
+    ]
+  ]
+
+end
+

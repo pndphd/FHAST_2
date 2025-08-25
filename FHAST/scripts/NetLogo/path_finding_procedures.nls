@@ -1,0 +1,134 @@
+;#########################################################################
+; This defines pathfinding procedures
+;#########################################################################
+
+; Clear all of the values used in the pathfinding algorithm
+to clear_patch_path_data
+  set has_visited? false
+  set previous_patch nobody
+  set path_to_here_cost -1
+  set path_survival -1
+  set fish_survival -1
+  set path_score -1
+end
+
+;; Calcuate the survival chances of this patch. Used to determine what patches are options
+to-report calculate_patch_survival [fish]
+  if (fish_survival = -1) [
+    ifelse [f_length] of fish > (item [species_id] of fish small_cover_length) [
+      set fish_survival 1 - (calc_pred_mortality survival_prob encounter_prob max_prey_length [f_length] of fish num_preds)
+    ][
+      set fish_survival 1 - (calc_pred_mortality small_survival_prob encounter_prob max_prey_length [f_length] of fish num_preds)
+    ]
+  ]
+  report fish_survival
+end
+
+;; Calcuate mortality form predators
+to-report calc_pred_mortality [#survival_prob #encounter_prob #max_prey_length #prey_f_length #num_preds]
+
+  ; mortality is 0 if fork length is too big for predators
+  ; f_length is in cm but the model that calcs max_prey_length uses mm
+  if #max_prey_length < (#prey_f_length) [
+    report 0
+  ]
+
+  ifelse #encounter_prob <= 1 [
+    ; this will be the output in most cases with relatively low predator density
+    report #encounter_prob * (1 - #survival_prob)
+  ][
+    ; allow for multiple encounters in patches with encounter_prob > 1
+    ; find the most appropriate value to act as an encounter rate
+    ; prevents absurdly high numbers from being used
+    let new_enc_num (min (list (#encounter_prob) (sum #num_preds)))
+    ; integer value of the new enc number determines how many encounters a prey fish is guaranteed to have in high enc prob patches
+    let guaranteed_num_encounters floor new_enc_num
+    ; any leftover decimal-point value can be used to factor in an additional potential encounter with prob of occurring equal to the decimal value
+    let potential_extra_encounter new_enc_num - guaranteed_num_encounters
+
+    report 1 - (#survival_prob ^ (guaranteed_num_encounters + 1) * potential_extra_encounter + (1 - potential_extra_encounter) * #survival_prob ^ guaranteed_num_encounters)
+  ]
+end
+
+;; Store values relevant for the pathfinding. Use the from_patch and the provided cost to calculate values for myself.
+to store_pathfinding_patch_values [from_patch cost survival score]
+  ; Set the path data for this patch (costs, previous patch, visited)
+  set previous_patch from_patch
+  set path_to_here_cost cost
+  set has_visited? true
+  set path_survival survival
+  set path_score score
+end
+
+;; Gives the patch an identifier based on it lat and long
+to-report patch_identifier [loc]
+  report (word [pxcor] of loc " " [pycor] of loc)
+end
+
+;; Makes checks on depth velocity and conncetion to see if the cell is valid for path finding
+to-report is_valid_destination [fish destinations]
+
+  ; Check for juveniles
+  if [breed] of fish = juveniles[
+    let possible_swim_speed (set_swim_speed (item [species_id] of fish benthic_fish) cell_available_vel_shelter ([territory_size] of fish) today_velocity)
+    report (today_depth > 0  and (possible_swim_speed < [max_swim_speed] of fish) and (not table:has-key? destinations patch_identifier self) and cell_available_wet_area >= [territory_size] of fish)
+  ]
+
+  ; Check for adults
+  if [breed] of fish = spawners[
+    let output true
+    report output
+  ]
+
+end
+
+;; Makes a lookup tabel for pathfinding cells
+to-report table_to_value_list [my_table]
+  let keys table:keys my_table
+  let values (list)
+  foreach keys [ [value] -> set values lput table:get my_table value values ]
+  report values
+end
+
+;; Used in migration finding
+to-report binary_search_insert_index_path_score [my_list]
+  let L 0
+  let R length my_list - 1
+  let m 0
+  while [L <= R] [
+    set m floor((L + R) / 2)
+    let score_middle [path_score] of item m my_list
+    ifelse score_middle < path_score [
+      set L m + 1
+    ][
+      ifelse score_middle > path_score [
+        set R m - 1
+      ][
+        report m + 1
+      ]
+    ]
+  ]
+  ifelse m > 0 [
+    report m + 1
+  ][
+    report 0
+  ]
+end
+
+;; Used in migration finding
+to-report insert_sorted_path_score [my_list]
+  ; binary search to find location to insert
+  let index binary_search_insert_index_path_score my_list
+  ; insert value into list and return
+  report insert-item index my_list self
+end
+
+;; Used in migration finding
+to-report y_diff_distance [y_target]
+  let y_diff pycor - y_target
+  ifelse y_diff >= 0[
+    report y_diff
+  ][
+    report (- y_diff)
+  ]
+end
