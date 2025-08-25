@@ -8,9 +8,9 @@
 
 if (!exists("pass_arguments")){
   pass_arguments = NULL
-  pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/test2/temporary/re_clip2_LAR_OHWM_18,500_cfs.shp"
-  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/ARCF_C3A_project_features_test2/ARCF_C3A_project_features_test3.shp"
-  pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/test2"
+  pass_arguments[2] = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/FHAST_deploy/example_data_test/ohwm/ohwm_polygon.shp"
+  pass_arguments[3] = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/FHAST_deploy/example_data_test/ohwm/project_polygon.shp"
+  pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/test"
 }
 
 ################################################################################
@@ -46,13 +46,25 @@ ml$df$ohwm = st_read(ml$path$ohwm) %>%
   select(geometry)
 message("Read OHWM: Done.\n")
 message("Read Footprint.\n")
+
+# Check for the 3 necessary columns
+names = colnames(st_read(ml$path$footprint))
+if(!("Feature" %in% names & "Type" %in% names & "Project" %in% names)){
+  message("\n\n!!!ERROR!!!
+  The project footprint file is missing one of the three necessary columns.
+  They are: Feature, Type, and Project.")
+
+  stop()
+}
+
 ml$df$footprint = st_read(ml$path$footprint) %>% 
   rowwise() %>% 
   mutate(Feature = ifelse('Feature' %in% names(.), Feature, "NONE"),
+         Type = ifelse('Feature' %in% names(.), Type, "NONE"),
          Project = ifelse('Project' %in% names(.), Project, "NONE")) %>% 
   ungroup() %>% 
   rename_with(str_to_title, !matches("geometry")) %>% 
-  select(Feature, Project) %>% 
+  select(Feature, Project, Type) %>% 
   mutate(OHWM = FALSE)
 message("Read Footprint: Done.\n")
  
@@ -60,7 +72,7 @@ message("Read Footprint: Done.\n")
 
 # make feature lookup table
 ml$df$lookup_table = ml$df$footprint %>% 
-  select(Feature) %>% 
+  select(Feature, Type) %>% 
   st_drop_geometry() %>% 
   distinct() 
 
@@ -86,11 +98,12 @@ ml$df$footprint_processed = ml$df$footprint_out %>%
 # Make a summary tabel
 ml$table$summary = ml$df$footprint_processed %>% 
   st_drop_geometry() %>% 
-  group_by(Feature, Project, OHWM) %>% 
+  group_by(Feature, Project, OHWM, Type) %>% 
   summarise(Area = as.numeric(round(sum(area),2))) %>% 
   filter(Area != 0) %>% 
-  left_join(ml$df$lookup_table, by = "Feature") %>% 
+  left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>% 
   mutate(Feature = str_to_title(Feature),
+         Type = str_to_title(Type),
          OHWM = ifelse(OHWM, "Inside", "Outside"))
 
 # get the percent of total footprint in the ohwm
@@ -115,24 +128,55 @@ message("Calculate Summaries: Done.\n")
 ##### Make plot ################################################################
 
 message("Make Plots.\n")
+plot_data = ml$df$footprint_in %>%
+  left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>%
+  rowwise() %>%
+  mutate(Feature = paste0(Type, ": ", Feature),
+         Feature = ifelse(str_length(Feature) > 45,
+                          paste0(str_sub(Feature, 1, 45), "..."),
+                          Feature))
 
-ml$plot$output_map = ggplot(data = ml$df$footprint_in %>% 
-                              left_join(ml$df$lookup_table, by = "Feature") %>%
-                              rowwise() %>% 
-                              mutate(Feature = ifelse(str_length(Feature) > 45,
-                                                      paste0(str_sub(Feature, 1, 45), "..."),
-                                                      Feature))) +
+ml$plot$output_map = ggplot(plot_data) +
   theme_classic(base_size = 20) +
   theme(axis.text.x = element_text(angle = 90),
         legend.position = "top",
         legend.direction ='vertical') +
   geom_sf(aes(fill = factor(Feature)), color = "black") +
-  scale_fill_viridis_d(name = "Feature") +
-  geom_sf(data = ml$df$footprint_out_dis, fill = "white") 
+  geom_sf(data = ml$df$footprint_out_dis, fill = "white") +
+  labs(color = "test")
+
+# plot_data = ml$df$footprint_in %>%
+#   left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>%
+#   rowwise() %>%
+#   mutate(Feature = ifelse(str_length(Feature) > 45,
+#                           paste0(str_sub(Feature, 1, 45), "..."),
+#                           Feature))
+# 
+# ml$plot$output_map = ggplot(plot_data) +
+#   theme_classic(base_size = 20) +
+#   theme(axis.text.x = element_text(angle = 90),
+#         legend.position = "top",
+#         legend.direction ='vertical') +
+#   geom_sf(aes(fill = factor(Feature)), color = "black") +
+#   geom_sf(data = ml$df$footprint_out_dis, fill = "white") +
+#   facet_wrap(.~ Type, ncol = 1)
+#   labs(color = "test")
+
+if (NROW(ml$df$footprint_in) > 12){
+  ml$plot$output_map = ml$plot$output_map +
+    scale_fill_viridis_d(name = "Feature") 
+} else {
+  ml$plot$output_map = ml$plot$output_map +
+    scale_fill_manual(name = "Feature",
+                      values = c("#88CCEE", "#CC6677", "#DDCC77",
+                                 "#117733", "#332288", "#AA4499",
+                                 "#44AA99", "#999933", "#882255",
+                                 "#661100", "#6699CC", "#888888"))
+}
 
 ggsave(here(ml$path$output_folder, "ohwm_map.png"),
        ml$plot$output_map,
-       height = 7 + length(unique(ml$df$footprint_in$Feature))/12,
+       height = 14 + length(unique(ml$df$footprint_in$Feature))/12,
        width = 7,
        units = "in",
        device = "png")
