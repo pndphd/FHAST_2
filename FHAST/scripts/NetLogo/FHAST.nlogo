@@ -61,8 +61,8 @@ end
 GRAPHICS-WINDOW
 211
 15
-528
-1012
+526
+1003
 -1
 -1
 8.376068376068378
@@ -350,7 +350,7 @@ INPUTBOX
 207
 568
 run_folder
-C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_small_outputs\\temporary
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_spawn_outputs\\temporary
 1
 0
 String

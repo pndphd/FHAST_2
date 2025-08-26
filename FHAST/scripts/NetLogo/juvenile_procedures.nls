@@ -339,6 +339,7 @@ end
 
 ;; Move the fish
 to move_fish [target]
+
   if draw_fish_movements? [
     ; Draw the path taken to get to the destination.
     let curpatch target
@@ -670,7 +671,6 @@ to select_destination_cell
     ; Destination should be set to the fallback migration patch
     move_fish destination
 
-
     let destination_patch_path_survival fallback_drift_patch_path_survival
 
     ask destination [set path_survival destination_patch_path_survival]
@@ -703,7 +703,7 @@ to select_destination_cell
 
       set destination max-one-of wet_cells_in_radius [consider_path_risk]
     ]
-
+    
     move_fish destination
 
   ]

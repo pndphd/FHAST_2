@@ -66,7 +66,8 @@ to spawn
   ; Move to a place if valid cells exist
   if any? wet_cells_in_radius[
     set destination rnd:weighted-one-of wet_cells_in_radius [item [species_id] of myself spawn_suit]
-    move-to destination
+    ;move-to destination
+    move_fish destination
 
     ; if unguarded area make  redd
     if [unguarded_area] of destination >= item species_id guard_area [
