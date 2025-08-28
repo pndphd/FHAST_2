@@ -360,7 +360,7 @@ to hatch_fish
     if item (lifestage_column - 1) todays_fish = "spawner" and spawn_flag [
       create-spawners (item (number_column - 1) todays_fish )[
         ; Chose who it will be displayed
-        set size 7
+        set size 2
         set color green
         set shape "dot"
 

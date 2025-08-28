@@ -72,8 +72,9 @@ gc()
 
 ##### Get the averages both temporal and spatial (for aoi and non aoi) #####
 # Get the summaries of the daily data
+
 ml$sum = ml$df$fish_combos %>% 
-  pmap(.f=~make_data_summary(..., dl = ml)) %>%
+  future_pmap(.f=~make_data_summary(..., dl = ml)) %>%
   setNames(map(., ~paste0(.x$species, "-", .x$lifestage))) 
 
 # Format adult migration data 

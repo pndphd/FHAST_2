@@ -2,6 +2,94 @@
 ; This defines pathfinding procedures
 ;#########################################################################
 
+;; Find possible destinations the fish can swim to within the given move_dist.
+to-report find_accessibel_destinations [fish move_dist]
+
+  ; This minimizes the predation risk along a path and limits total distance travelled by the provided move distance.
+  ; This also handles stranding by having fish stuck on a dry patch use yesterday's water levels for valid pathing decisions.
+  ; If the results are just the current patch, than the fish has stranded.
+  ask pathfinding_dirty_patches [
+    clear_patch_path_data
+  ]
+  let destinations table:make
+  ; We start looking for valid destinations with the fish's current location.
+  let to_visit (list [patch-here] of fish)
+  ask [patch-here] of fish [
+    set has_visited? true
+    set path_to_here_cost 0
+    set path_survival 1
+  ]
+  let dirty (list[patch-here] of fish)
+  ; Check if the fish is trying to avoid stranding or not
+  let avoiding_stranding [today_depth] of [patch-here] of fish <= 0
+  while [length to_visit > 0] [
+    ; Pull the patch we're looking at off the to_visit list.
+    let cur_patch first to_visit
+    set to_visit but-first to_visit
+    ask cur_patch [
+      ask neighbors [
+        ; validate neighbor is wet
+        if (today_depth > 0 or (avoiding_stranding and yesterday_depth > 0)) [
+          let survival [path_survival] of cur_patch * calculate_patch_survival fish
+
+          ; If this is the first time being visited or this path was less risky than an alternative
+          if (has_visited? = false) or (path_survival < survival) [
+            let move_cost [path_to_here_cost] of cur_patch + distance cur_patch
+            if (move_cost < move_dist) [
+              if (has_visited? = false) [
+                set dirty lput self dirty
+              ]
+              store_pathfinding_patch_values cur_patch move_cost survival 0
+              ; If we've moved too far, don't bother adding to the to_visit list, but
+              ; if we still have distance the fish can travel than keep going.
+              set to_visit lput self to_visit
+              ; If we're in stranding logic we might be evaluating patches that aren't currently wet.
+              ; Make sure a patch is wet before considering it a valid destination.
+              ; Also chack to make sure there is area fo the fish
+              ; and (pycor < [ ycor ] of fish) may add in later?
+              if (is_valid_destination fish destinations) [
+                ; If all checks pass (including depth and having available area), mark as a potential destination.
+                table:put destinations patch_identifier self self
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+
+  ; Check if the fish had no options to move otherwise make the tabel
+  let cur_patch [patch-here] of fish
+  ifelse (table:length destinations = 0) [
+    ; This fish has nowhere to go and is stuck, have them attempt drifting using previous days depths.
+    ask fish [
+      if breed = juveniles [
+         set is_drifter true
+      ]
+      if breed = spawners [
+        ; Kill the fish and log it's death
+        set strand_status 1
+      ]
+    ]
+    ; We're expected to return something, so even if we're stranding add the current patch
+    table:put destinations patch_identifier cur_patch cur_patch
+  ] [
+    ; Make sure the current patch is an option to avoid fish shifting back and forth between adjacent patches.
+    if ([is_valid_destination fish destinations] of cur_patch) [
+      ask cur_patch [
+        set path_survival calculate_patch_survival fish
+      ]
+      table:put destinations patch_identifier cur_patch cur_patch
+    ]
+  ]
+  set pathfinding_dirty_patches patch-set dirty
+  report patch-set table_to_value_list destinations
+end
+
+;#########################################################################
+; Generic pathfinding procedures
+;#########################################################################
+
 ; Clear all of the values used in the pathfinding algorithm
 to clear_patch_path_data
   set has_visited? false

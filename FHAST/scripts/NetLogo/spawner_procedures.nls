@@ -46,10 +46,8 @@ to calculate_spawner_weight_loss
     set unguarded_area unguarded_area + item species_id guard_area
 
     ; Kill the fish and log it's death
-    table:put death_condition_table species table:get death_condition_table species + 1
-    save_spawner_event "spawner died"
+    save_spawner_event "starved"
     set is_alive false
-    table:put dead_fish_count_table species table:get dead_fish_count_table species + 1
     die
   ]
 
@@ -62,6 +60,14 @@ to spawn
 
   ; Find possibel spots
   find_inrange_destinations
+  
+  if strand_status = 1 [
+    print (word who ": " wet_cells_in_radius)
+    ; Kill the fish and log it's death
+    save_spawner_event "stranded"
+    set is_alive false
+    die       
+  ]
 
   ; Move to a place if valid cells exist
   if any? wet_cells_in_radius[
@@ -79,7 +85,6 @@ to spawn
     ]
   ]
 
-  ; NOTE! drifters are stranding
 end
 
 to create_redd

@@ -16,6 +16,7 @@ if (ml$var$juvenile_run == TRUE){
 }
 
 # Write the main data file
+ml$df$full_habitat = NULL
 saveRDS(ml, here(ml$path$output_folder, "master_data_list.rds"))
 
 # make the html doc

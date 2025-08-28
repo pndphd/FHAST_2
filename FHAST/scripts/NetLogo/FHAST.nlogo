@@ -6,7 +6,7 @@
 __includes [
   "define.nls"
   "setup.nls"
-  "habitat_procedures.nls"
+  "habitat_and_hatch_procedures.nls"
   "juvenile_procedures.nls"
   "spawner_procedures.nls"
   "path_finding_procedures.nls"
@@ -61,8 +61,8 @@ end
 GRAPHICS-WINDOW
 211
 15
-526
-1003
+528
+1012
 -1
 -1
 8.376068376068378

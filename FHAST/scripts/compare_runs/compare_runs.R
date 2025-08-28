@@ -7,8 +7,8 @@
 
 if (!exists("pass_arguments")){
   pass_arguments = NULL
-  pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs"
-  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_2_outputs"
+  pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_small_outputs"
+  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_small_2_outputs"
   pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/compare"
 }
 
@@ -94,9 +94,9 @@ ml$df$daily_input = subtract_dfs(ml_a$df$daily_input, ml_b$df$daily_input)
 ml$df$full_grid = subtract_group_data(ml_a$df$full_grid,
                                       ml_b$df$full_grid,
                                       groups = c("geometry"))
-ml$df$full_habitat = subtract_group_data(ml_a$df$full_habitat,
-                                         ml_b$df$full_habitat,
-                                         groups = c("date", "geometry"))
+# ml$df$full_habitat = subtract_group_data(ml_a$df$full_habitat,
+#                                          ml_b$df$full_habitat,
+#                                          groups = c("date", "geometry"))
 
 ml$sum = map2(ml_a$sum, ml_b$sum, ~map2(.x, .y, ~subtract_sum(.x, .y)))
 
