@@ -40,7 +40,6 @@ make_shade_shape = function(shape_file_in,
   adjusted_times = times_seq[-c(1,length(times_seq))]
   
   make_1_day_shade = function(time_in, location_in, shape_in){
-
     # calculate the solar angel
     solar_pos = solarpos(
       crds = st_coordinates(location_in),
@@ -65,7 +64,7 @@ make_shade_shape = function(shape_file_in,
 
   output = map_dfr(adjusted_times,
                    ~make_1_day_shade(.x, location, shape_file_in))
-  
+
   return(output)
 }
 

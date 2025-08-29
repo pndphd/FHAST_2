@@ -68,10 +68,12 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   # also add in an arbitrary year and time
   times_list = as.list(paste0("2010-", seq(1,12,1), "-15 12:00:00"))
   
+
   # Run the function and combine all the shade layers by month
   result = future_map(times_list, ~make_shade_shape(shade_shape, .x)) %>% 
     future_map(~summarise(.x, shade = sum(shade)/sum(shade), do_union = TRUE)) %>% 
-    future_map2(seq(1,12,1), ~rename(.x, !!paste0("shade_", .y) := shade))
+    map2(seq(1,12,1), ~rename(.x, !!paste0("shade_", .y) := shade))
+
 
   # make all 0's if using dummy shade file
   if(ml$var$juvenile_run == FALSE || ml$path$canopy == "no_canopy"){
@@ -87,8 +89,8 @@ if (!compare_last_run_hashes(hash_storage, input_output_file_paths)) {
   rm(simplfly_tolarence, 
      result,
      clip_mask,
-     times_list, 
-     shade_shape)
+     shade_shape,
+     times_list)
 }
 
 ##### Load and save the outputs #####
@@ -102,7 +104,7 @@ walk(.x = seq(1,12,1),
 rm(hash_storage,
    input_output_file_paths,
    simplfly_tolarence)
-
+toc()
 ################################################################################
 # End
 ################################################################################
