@@ -9,6 +9,7 @@ __includes [
   "habitat_and_hatch_procedures.nls"
   "juvenile_procedures.nls"
   "spawner_procedures.nls"
+  "redd_procedures.nls"
   "path_finding_procedures.nls"
   "output_procedures.nls"
 ]
@@ -50,7 +51,7 @@ to go
   hatch_fish
   rear_fish
   spawn_fish
-  develope_redds
+  incubate_redds
 
   ; Save output info
   save_destination_cell_info
@@ -378,6 +379,17 @@ SWITCH
 270
 spawner_events_output?
 spawner_events_output?
+0
+1
+-1000
+
+SWITCH
+12
+279
+187
+312
+redd_events_output?
+redd_events_output?
 0
 1
 -1000

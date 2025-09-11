@@ -114,6 +114,31 @@ to save_spawner_event [an_event_type]
 
 end
 
+;; A turtle procedure to save events for the fish output files (events include mortality, initialization, smolting etc)
+to save_redd_event [an_event_type]
+
+  ; an-event-type is a character string that says what event happened.
+  if breed = redds [
+    set redd_events_list lput (
+      csv:to-row (list
+        time:show tick_date "yyyy-MM-dd"
+        species
+        who
+        an_event_type
+        age
+        [x_pos] of destination
+        [y_pos] of destination
+        egg_count
+        dead_eggs
+        superimposed_eggs
+        hatched_eggs
+      )
+    )
+    redd_events_list
+  ]
+
+end
+
 ;; Saves detailed summary info of the population every timestep ( total number fish migrating, total number dead fish etc)
 to save_detailed_population_info
 
@@ -290,7 +315,22 @@ to build_output_file_named [a_file_name]
 
     set spawner_events_list fput "time, species, id, event, age, x_pos, y_pos, temperature, flow, turbidity, velocity, depth" spawner_events_list
 
-    set spawner_events_list fput (word "FHAST fish events output file, Created " date-and-time) spawner_events_list
+    set spawner_events_list fput (word "FHAST spawner events output file, Created " date-and-time) spawner_events_list
+  ]
+  
+  ; Create the redd events output file.
+  if a_file_name = "r-e-o-n" [ ; This is the value of the uninitialized file name
+
+    set redd_events_outfile_name (word run_folder "/redd_events_output.csv")
+
+    if file-exists? redd_events_outfile_name [ file-delete redd_events_outfile_name ]
+    ; There can be events on the fish-events-list when file is created (from fish initialization)
+    ; so these header lines must be put at the *start* of the list. Use fput with header
+    ; lines in reverse order.
+
+    set redd_events_list fput "time, species, id, event, age, x_pos, y_pos, egg_count, dead_eggs, superimposed_eggs, hatched_eggs" redd_events_list
+
+    set redd_events_list fput (word "FHAST redd events output file, Created " date-and-time) redd_events_list
   ]
 
   ; Create output file for recording attributes of all cells in the model (for mapping and testing purposes)
@@ -363,6 +403,19 @@ to update_output
     ]
   ][
     set spawner_events_list (list)                ; Clear the event list
+  ]
+  
+  ; Update detailed redd events output file
+  ifelse redd_events_output? [
+    if not empty? redd_events_list [
+      if redd_events_outfile_name = "r-e-o-n" [ build_output_file_named redd_events_outfile_name ]
+      file-open redd_events_outfile_name
+      foreach redd_events_list [ next_cell -> file-print next_cell ]  ; Write each cell event to the file
+      file-close
+      set redd_events_list (list)                ; Clear the event list
+    ]
+  ][
+    set redd_events_list (list)                ; Clear the event list
   ]
 
   ; Update detailed cell events output file

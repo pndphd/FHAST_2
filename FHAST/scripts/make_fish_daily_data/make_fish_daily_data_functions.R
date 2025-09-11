@@ -38,7 +38,8 @@ load_fish_timeseries <- function(input_file_in) {
     # change to account for super individuals
     mutate(date = format(date, "%m/%d/%Y"),
            cum_sum = floor(cumsum(number)/ml$df$habitat_parms$superind_ratio),
-           number = ifelse(lifestage == "adult", number,
+           number = ifelse(lifestage == "adult" | lifestage == "spawner",
+                           number,
                            cum_sum-lag(cum_sum, default = 0))) %>% 
     ungroup() %>% 
     select(-cum_sum)

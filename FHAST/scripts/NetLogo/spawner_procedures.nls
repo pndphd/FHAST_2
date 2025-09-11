@@ -89,6 +89,7 @@ end
 
 to create_redd
 
+  ; Make a redd
   hatch-redds 1 [
     set size 1
     set color red
@@ -98,7 +99,10 @@ to create_redd
     set species [species] of myself
     set species_id [species_id] of myself
     set age 0
-    set egg_count (item species_id fecundity_int) * f_length ^ (item species_id fecundity_slope)
+    set redd_maturity 0
+    set egg_count floor ((item species_id fecundity_int) * f_length ^ (item species_id fecundity_slope))
+    set dead_eggs 0
+    set superimposed_eggs 0 
     set area_of_redd item species_id redd_area
   ]
 
@@ -135,20 +139,19 @@ to create_redd
     ]
 
     ; Kill the amount of eggs based on overlap
-    let killed_eggs overlap_fra * egg_count
+    let killed_eggs ceiling (overlap_fra * egg_count)
+    set superimposed_eggs superimposed_eggs + killed_eggs
     set dead_eggs dead_eggs + killed_eggs
     set egg_count egg_count - killed_eggs
+    
+    if egg_count <= 0.0 [
+      save_redd_event "redd empty"
+      die
+    ]
+
 
   ]
 
 end
 
-;##### Redd Development ####################################################
-to develope_redds
-  ask redds [
 
-; comming soon!
-
-  ]
-
-end

@@ -227,13 +227,15 @@ to set_lists
   ; Observer procedure that initializes global variables.
   set detailed_population_outfile_name "d-p-o-n"    ; String with temporary name of detailed population output file; reset in build_output_file
   set fish_events_outfile_name "f-e-o-n"            ; String with temporary name of fish events output file; reset in build_output_file
-  set spawner_events_outfile_name "a-e-o-n"           ; String with temporary name of fish events output file; reset in build_output_file
+  set spawner_events_outfile_name "a-e-o-n"         ; String with temporary name of fish events output file; reset in build_output_file
+  set redd_events_outfile_name "r-e-o-n"            ; String with temporary name of fish events output file; reset in build_output_file
   set cell_info_outfile_name "c-i-o-n"              ; String with temporary name of destination cell info output file; reset in build_output_file
   set all_cell_outfile_name "a-c-o-n"               ; String with temporary name of all cell info output file; reset in build_output_file
 
   ; Set up lists to track events
   set fish_events_list (list)           ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
-  set spawner_events_list (list)          ; List keeping track of individual fish-related events including whether the fish died, smolted, migrated etc
+  set spawner_events_list (list)        ; List keeping track of individual spawner-related events 
+  set redd_events_list (list)           ; List keeping track of individual redd-related events 
   set cell_info_list (list)             ; List keeping track of destination cell-related info including the number of fish in a destination cell at every time step, number of dead fish at a destination cell at every time step etc
   set detailed_population_list (list)   ; List keeping track of summary fish-related info per day including the total number of fish that died per day, total alive, total migrating, etc
   set all_cell_attributes_list (list)   ; List keeping track of all cell info per day (for mapping and testing purposes)

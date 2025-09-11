@@ -224,14 +224,16 @@ globals [
 
   ;; Other global variables/inernal data structures
   fish_events_outfile_name          ; String with name of fish events output file; set in build_output_files
-  spawner_events_outfile_name         ; String with name of adult events output file; set in build_output_files
+  spawner_events_outfile_name       ; String with name of adult events output file; set in build_output_files
+  redd_events_outfile_name          ; String with name of redd events output file; set in build_output_files
   cell_info_outfile_name            ; String with name of cell info output file; set in build_output_files
   detailed_population_outfile_name  ; String with name of detailed population output file; set in build_output_files
   all_cell_outfile_name
   path_info_outfile_name
   cell_info_list                    ; List of all destination cell information (number of total fish alive in each destination, number of dead fish in each destination) per time step that can be written the the cell info outputs file
   fish_events_list                  ; List of all individual fish-related events (mortality, smolting, migrating) that can be written the the fish events outputs file
-  spawner_events_list                 ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
+  spawner_events_list               ; List of all individual redd-related deaths that can be written the the redd events outputs file
+  redd_events_list                  ; List of all individual adult-related events (spawn) that can be written the the adult events outputs file
   detailed_population_list          ; List of all summary fish-related info per day (total migrating, total smolting) that can be written to the detailed population output file
   all_cell_attributes_list
   migrant_path_info_list
@@ -389,6 +391,9 @@ turtles-own [
   area_of_redd                            ; Area of actual redd
   egg_count                               ; The number of live eggs in a spawner or redd
   dead_eggs                               ; The number of dead eggs in a spawner or redd
+  superimposed_eggs                       ; The number of superimposed eggs in a spawner or redd
+  redd_maturity                           ; Used to track egg developement
+  hatched_eggs                            ; Track the number of hatched eggs 
 ]
 
 ;##### Setup Breeds ########################################################
