@@ -10,6 +10,7 @@ extensions [
   table    ; Allows for use of tables instead of lists for speed reasons
   rnd      ; For random draws
   profiler ; includes primitives that measure how many times the procedures are called during a run and how long each call takes
+  vid      ; for video recording
 ]
 
 ;##### Define Variables #####################################################

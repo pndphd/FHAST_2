@@ -23,6 +23,7 @@ to go
   if time:is-equal? tick_date last_day = TRUE [
     show (word "Simulation finished in " timer " seconds.")
     update_output
+
     stop
   ]
 
