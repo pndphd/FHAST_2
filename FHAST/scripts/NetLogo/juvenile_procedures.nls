@@ -501,18 +501,21 @@ to calculate_energy_balance
     let fish_species [species] of myself
     let my_species_id [species_id] of myself
 
-    let counter -1
+    ; to allow search feeding, i.e. feeding in slow water
+    ; we will loop over the feeding calculation and see if it increasing water velocity adds net energy 
+    ; if it does this will act as an active search feeding approximation 
+    let counter 0
     let loop? true
-    let old_daily_net_energy -1e23
+    let old_daily_net_energy 0
     set daily_net_energy -1e23
     let swim_velocity today_velocity
     while [loop?] [
       ; Calculate the swim speed (m/s) of the fish in each cell if it were to drift feed (dependent on whether there are velocity shelters)
       ; Set swimming velocity
-      ifelse counter = -1 [
+      ifelse counter = 0 [
         set swim_speed (set_swim_speed item my_species_id benthic_fish cell_available_vel_shelter [territory_size] of myself swim_velocity)
       ] [
-        set swim_speed today_velocity
+        set swim_speed swim_velocity
       ]      
       
       ; Choose between benthic and and drift feeding
@@ -556,10 +559,13 @@ to calculate_energy_balance
       ]
       
       ; Calculate net energy intake by subtracting the metabolic rate (J/d)
+      ; save the old energy
       set old_daily_net_energy daily_net_energy
       set daily_net_energy daily_energy_intake - total_metab_rate
+      ; Add i cm/s to the vater velocity for the next check
       set swim_velocity swim_velocity + 0.01
       set counter counter + 1
+      ; if increasing the velocity decreases the energy then we have found the correct energy
       if old_daily_net_energy >= daily_net_energy [
        set daily_net_energy old_daily_net_energy
        set loop? false
