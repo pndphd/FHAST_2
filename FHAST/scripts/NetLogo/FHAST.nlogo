@@ -273,7 +273,7 @@ CHOOSER
 background_display
 background_display
 "veg" "wood" "depth" "velocity" "shade" "predator encounter prob" "wetted fraction" "available velocity shelter" "none"
-2
+3
 
 SWITCH
 14
@@ -352,7 +352,7 @@ INPUTBOX
 207
 568
 run_folder
-C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_spawn_outputs\\temporary
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String

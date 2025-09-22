@@ -501,52 +501,70 @@ to calculate_energy_balance
     let fish_species [species] of myself
     let my_species_id [species_id] of myself
 
-    ; Calculate the swim speed (m/s) of the fish in each cell if it were to drift feed (dependent on whether there are velocity shelters)
-    ; Set swimming velocity
-    set swim_speed (set_swim_speed item my_species_id benthic_fish cell_available_vel_shelter [territory_size] of myself today_velocity)
-
-    ; Choose between benthic and and drift feeding
-    ifelse (item my_species_id benthic_fish) = 0 [
-      ; Calculate the capture area of the fish
-      let capture_area (2 * fish_detect_dist) * min (list fish_detect_dist today_depth) ; m^2
-
-      ; Set up logistic equation to determine capture success
-      let ratio_vel_max_swim today_velocity / [max_swim_speed] of myself
-      let capture_success (evaluate_logistic "capture_success" fish_species ratio_vel_max_swim)
-
-      ; Calculate daily intake as a daily rate, g/d
-      set daily_intake capture_area * hab_drift_con * today_velocity * capture_success * 3600 * photoperiod
-    ][
-      ; Calculate the fish width assuming it has a density of water
-      let f_width sqrt([mass] of myself / [f_length] of myself)
-      let n_steps (item my_species_id feeding_speed) * [f_length] of myself / f_width * (3600 * (24 - photoperiod))
-      set daily_intake pi * n_steps * f_width ^ 2 / ln(n_steps) / 1e4 *  hab_ben_con
+    let counter -1
+    let loop? true
+    let old_daily_net_energy -1e23
+    set daily_net_energy -1e23
+    let swim_velocity today_velocity
+    while [loop?] [
+      ; Calculate the swim speed (m/s) of the fish in each cell if it were to drift feed (dependent on whether there are velocity shelters)
+      ; Set swimming velocity
+      ifelse counter = -1 [
+        set swim_speed (set_swim_speed item my_species_id benthic_fish cell_available_vel_shelter [territory_size] of myself swim_velocity)
+      ] [
+        set swim_speed today_velocity
+      ]      
+      
+      ; Choose between benthic and and drift feeding
+      ifelse (item my_species_id benthic_fish) = 0 [
+        ; Calculate the capture area of the fish
+        let capture_area (2 * fish_detect_dist) * min (list fish_detect_dist today_depth) ; m^2
+        
+        ; Set up logistic equation to determine capture success
+        let ratio_vel_max_swim swim_velocity / [max_swim_speed] of myself
+        let capture_success (evaluate_logistic "capture_success" fish_species ratio_vel_max_swim)
+        
+        ; Calculate daily intake as a daily rate, g/d
+        set daily_intake capture_area * hab_drift_con * swim_velocity * capture_success * 3600 * photoperiod
+      ][
+        ; Calculate the fish width assuming it has a density of water
+        let f_width sqrt([mass] of myself / [f_length] of myself)
+        let n_steps (item my_species_id feeding_speed) * [f_length] of myself / f_width * (3600 * (24 - photoperiod))
+        set daily_intake pi * n_steps * f_width ^ 2 / ln(n_steps) / 1e4 *  hab_ben_con
+      ]
+      
+      set active_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id swim_speed)
+      set passive_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id 0)
+      
+      ifelse (item my_species_id benthic_fish) = 0 [
+        set total_metab_rate (active_metab_rate * (photoperiod) + passive_metab_rate * (24 - photoperiod)) / 24
+      ][
+        set total_metab_rate (active_metab_rate * (24 - photoperiod) + passive_metab_rate * (photoperiod)) / 24
+      ]
+      
+      ; Use cmax to limit intake
+      if daily_intake > [cmax] of myself [set daily_intake [cmax] of myself]
+      
+      ifelse (item my_species_id benthic_fish) = 0 [
+        ; Calculate energy obtained each cell (J/d)
+        set daily_energy_intake daily_intake * hab_drift_ene
+      ][
+        ; limit based on avaiable food
+        if daily_intake > cell_available_ben [ set daily_intake cell_available_ben ]
+        ; Calculate energy obtained each cell (J/d)
+        set daily_energy_intake daily_intake * hab_ben_ene
+      ]
+      
+      ; Calculate net energy intake by subtracting the metabolic rate (J/d)
+      set old_daily_net_energy daily_net_energy
+      set daily_net_energy daily_energy_intake - total_metab_rate
+      set swim_velocity swim_velocity + 0.01
+      set counter counter + 1
+      if old_daily_net_energy >= daily_net_energy [
+       set daily_net_energy old_daily_net_energy
+       set loop? false
+      ]
     ]
-
-    set active_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id swim_speed)
-    set passive_metab_rate (calculate_metabolic temperature [mass] of myself my_species_id 0)
-
-    ifelse (item my_species_id benthic_fish) = 0 [
-      set total_metab_rate (active_metab_rate * (photoperiod) + passive_metab_rate * (24 - photoperiod)) / 24
-    ][
-      set total_metab_rate (active_metab_rate * (24 - photoperiod) + passive_metab_rate * (photoperiod)) / 24
-    ]
-
-    ; Use cmax to limit intake
-    if daily_intake > [cmax] of myself [set daily_intake [cmax] of myself]
-
-    ifelse (item my_species_id benthic_fish) = 0 [
-      ; Calculate energy obtained each cell (J/d)
-      set daily_energy_intake daily_intake * hab_drift_ene
-    ][
-      ; limit based on avaiable food
-      if daily_intake > cell_available_ben [ set daily_intake cell_available_ben ]
-      ; Calculate energy obtained each cell (J/d)
-      set daily_energy_intake daily_intake * hab_ben_ene
-    ]
-
-    ; Calculate net energy intake by subtracting the metabolic rate (J/d)
-    set daily_net_energy daily_energy_intake - total_metab_rate
 
     set total_net_energy_in_cell precision (daily_net_energy) 2 ; Value can be negative since daily net energy can be negative
 
