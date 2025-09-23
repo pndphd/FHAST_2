@@ -35,7 +35,7 @@ source(here("scripts","main","run_setup.R"))
 
 ##### Run the calculation scripts #####
 source(here("scripts","main","run_model.R"))
-
+tic()
 ##### Run NetLogo #####
 # Shut off futures for this
 # and only run if juvenile are present
@@ -48,7 +48,7 @@ future::plan(strategy = multisession,
 
 ##### Run the post processing scripts #####
 source(here("scripts","main","run_post.R"))
-
+toc()
 ################################################################################
 # End
 ################################################################################
