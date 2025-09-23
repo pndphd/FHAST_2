@@ -331,7 +331,7 @@ get_bined_results = function(df = NULL,
 
 ##### do the predator calculations #####
 calc_all_preds = function(p_id, dl, fish_length){
-  
+
   pred_habitat = dl$df$full_habitat
   # Get the pred and prey length
   pred_length = exp(dl$df$pred_parm$pred_length_mean[[p_id]])
@@ -353,7 +353,8 @@ calc_all_preds = function(p_id, dl, fish_length){
              dl$df$pred_parm$pred_glm_velocity[[p_id]] * velocity +
              dl$df$pred_parm$pred_glm_substrate[[p_id]] * substrate,
            # Calculate the habitat rating
-           hab_rating = 1 / (1 + exp(-input))* ifelse(wetted_area > 0, 1, 0)) %>% 
+           hab_rating = 1 / (1 + exp(-input)) *
+             ifelse(wetted_area > 0, 1, 0)) %>% 
     group_by(date) %>% 
     mutate(# Place predators
       predators = replace_na(round((hab_rating * wetted_area) /

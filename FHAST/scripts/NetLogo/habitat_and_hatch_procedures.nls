@@ -154,27 +154,24 @@ to set_predators
 
   ;; Calculate habitat ratings for each patch and predator species
   ask wet_patches [
-    ; only do calculations if there is water in a patch
-    ;ifelse (wetted_area > 0)
-    ;[
-      ; set an empty list to save habitat ratings for each species
-      set hab_rating []
+    ; set an empty list to save habitat ratings for each species
+    set hab_rating []
 
-      set adj_hab_rating []
+    set adj_hab_rating []
 
-      ; a binary version of shade used by the model
-      let shade_binary shade
-      ifelse (shade_binary >= 0.5) [set shade_binary 1] [set shade_binary 0]
+    ; a binary version of shade used by the model
+    let shade_binary shade
+    ifelse (shade_binary >= 0.5) [set shade_binary 1] [set shade_binary 0]
 
-      ; calculate the habitat rating for each predator species
-      foreach (range num_pred_species) [ n ->
-        let exponent -1 * (item n partial_hab_rating + item n shade_glm * shade_binary + item n depth_glm * today_depth + item n velocity_glm * today_velocity)
-        let model_prediction 1 / (1 + exp exponent)
-        ; values < 0.5 indicate predictions of predator absence, so vals are set to 0
-        ;ifelse (model_prediction < 0.5) [set model_prediction 0] [set model_prediction model_prediction]
-        set hab_rating lput model_prediction hab_rating
-        set adj_hab_rating lput (model_prediction * wetted_area) adj_hab_rating
-      ]
+    ; calculate the habitat rating for each predator species
+    foreach (range num_pred_species) [ n ->
+      let exponent -1 * (item n partial_hab_rating + item n shade_glm * shade_binary + item n depth_glm * today_depth + item n velocity_glm * today_velocity)
+      let model_prediction 1 / (1 + exp exponent)
+      ; values < 0.5 indicate predictions of predator absence, so vals are set to 0
+      ;ifelse (model_prediction < 0.5) [set model_prediction 0] [set model_prediction model_prediction]
+      set hab_rating lput model_prediction hab_rating
+      set adj_hab_rating lput (model_prediction * wetted_area) adj_hab_rating
+    ]
   ]
 
   ;; Calculate number of predators of each species and predator length
