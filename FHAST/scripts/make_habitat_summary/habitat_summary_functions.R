@@ -260,10 +260,10 @@ make_data_summary = function(..., dl){
              -drift_eaten, -ben_eaten, -ben_avaiable, -intake_ben_energy,
              -intake_drift_energy, -small_cover_fra)
   }
-
+browser()
 
   # Correct for search feeding in low velocity water 
-  dl$df$full_habitat =seq(0.00, max_swim_speed, 0.05) %>% 
+  dl$df$full_habitat =seq(0.00, max_swim_speed, 0.1) %>% 
     map_df(~calc_hab_and_feed(dl$df$full_habitat, .x)) %>% 
     group_by(lat_dist, dist, date) %>% 
     filter(net_energy == max(net_energy)) %>% 
