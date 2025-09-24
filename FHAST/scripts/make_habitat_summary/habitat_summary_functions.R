@@ -261,13 +261,15 @@ make_data_summary = function(..., dl){
              -intake_drift_energy, -small_cover_fra)
   }
 
+
   # Correct for search feeding in low velocity water 
-  dl$df$full_habitat =seq(0.00, max_swim_speed, 0.01) %>% 
+  dl$df$full_habitat =seq(0.00, max_swim_speed, 0.05) %>% 
     map_df(~calc_hab_and_feed(dl$df$full_habitat, .x)) %>% 
     group_by(lat_dist, dist, date) %>% 
     filter(net_energy == max(net_energy)) %>% 
     ungroup()
   gc()
+
   
   average_map_full = dl$df$full_habitat %>% 
     select(-date) %>% 

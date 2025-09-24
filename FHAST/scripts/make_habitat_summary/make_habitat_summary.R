@@ -74,7 +74,8 @@ gc()
 # Get the summaries of the daily data
 
 ml$sum = ml$df$fish_combos %>% 
-  future_pmap(.f=~make_data_summary(..., dl = ml)) %>%
+  pmap(.f=~make_data_summary(..., dl = ml)) %>%
+  # !!!!!!!! future_pmap(.f=~make_data_summary(..., dl = ml)) %>%
   setNames(map(., ~paste0(.x$species, "-", .x$lifestage))) 
 
 # Format adult migration data 
