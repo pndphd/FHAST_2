@@ -49,10 +49,14 @@ message("Read Footprint.\n")
 
 # Check for the 3 necessary columns
 names = colnames(st_read(ml$path$footprint))
-if(!("Feature" %in% names & "Type" %in% names & "Project" %in% names)){
+if(!("Feature" %in% names &
+     "Type" %in% names &
+     "Project" %in% names &
+     "Started" %in% names &
+     "Completed" %in% names)){
   message("\n\n!!!ERROR!!!
   The project footprint file is missing one of the three necessary columns.
-  They are: Feature, Type, and Project.")
+  They are: Feature, Type, Project, Started, and Year_completed.")
 
   stop()
 }
@@ -61,10 +65,12 @@ ml$df$footprint = st_read(ml$path$footprint) %>%
   rowwise() %>% 
   mutate(Feature = ifelse('Feature' %in% names(.), Feature, "NONE"),
          Type = ifelse('Feature' %in% names(.), Type, "NONE"),
-         Project = ifelse('Project' %in% names(.), Project, "NONE")) %>% 
+         Project = ifelse('Project' %in% names(.), Project, "NONE"),
+         Type = ifelse('Started' %in% names(.), Type, "NONE"),
+         Project = ifelse('Completed' %in% names(.), Project, "NONE")) %>% 
   ungroup() %>% 
   rename_with(str_to_title, !matches("geometry")) %>% 
-  select(Feature, Project, Type) %>% 
+  select(Feature, Project, Type, Started, Completed) %>% 
   mutate(OHWM = FALSE)
 message("Read Footprint: Done.\n")
  
@@ -72,7 +78,7 @@ message("Read Footprint: Done.\n")
 
 # make feature lookup table
 ml$df$lookup_table = ml$df$footprint %>% 
-  select(Feature, Type) %>% 
+  select(Feature, Type, Started, Completed) %>% 
   st_drop_geometry() %>% 
   distinct() 
 
@@ -98,10 +104,10 @@ ml$df$footprint_processed = ml$df$footprint_out %>%
 # Make a summary tabel
 ml$table$summary = ml$df$footprint_processed %>% 
   st_drop_geometry() %>% 
-  group_by(Feature, Project, OHWM, Type) %>% 
+  group_by(Feature, Project, OHWM, Type, Started, Completed) %>% 
   summarise(Area = as.numeric(round(sum(area),2))) %>% 
   filter(Area != 0) %>% 
-  left_join(ml$df$lookup_table, by = c("Feature", "Type")) %>% 
+  left_join(ml$df$lookup_table, by = c("Feature", "Type", "Started", "Completed")) %>% 
   mutate(Feature = str_to_title(Feature),
          Type = str_to_title(Type),
          OHWM = ifelse(OHWM, "Inside", "Outside"))
