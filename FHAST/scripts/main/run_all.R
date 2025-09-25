@@ -15,7 +15,7 @@ set.seed(6806665)
 # Uncomment for development to pick a specific file and run from IDE
 config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
 ################################################################################
-tic()
+
 ##### Run the initialization scripts #####
 # install and load the here package if necessary
 if(!require(c("here"), character.only = T)){install.packages(package)}
@@ -45,7 +45,7 @@ source(here("scripts", "netlogo", "NetLogo_Controller.R"))
 run_netlogo_model(ml$path$output_temp_folder)
 future::plan(strategy = multisession,
              workers = pick_num_cores())
-
+tic()
 ##### Run the post processing scripts #####
 source(here("scripts","main","run_post.R"))
 toc()
