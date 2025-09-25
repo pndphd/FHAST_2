@@ -282,7 +282,7 @@ make_data_summary = function(..., dl){
   dl$df$full_habitat =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
     map_df(~calc_hab_and_feed(test3, .x)) %>% 
     bind_rows(test3) %>% 
-    group_by(dist, lat_dist, date) %>% 
+    group_by(geometry) %>% 
     filter(net_energy == max(net_energy)) %>% 
     ungroup()
   gc()
