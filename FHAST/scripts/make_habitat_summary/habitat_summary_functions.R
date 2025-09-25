@@ -254,22 +254,50 @@ make_data_summary = function(..., dl){
                          intake_drift_energy * (1 - pl$benthic_fish[id])) * feeding_flag,
       net_energy = energy_intake - fish_met_j_per_day) %>% 
       # Remove the temportay columns
-      select(-ben_food_fra, -shelter_fraction,
-             -experienced_vel, -fish_met_j_per_day_active, -fish_met_j_per_day_passive,
-             -cmax, -turbidity_fun, -detection_dist, -capture_area, -capture_success,
-             -drift_eaten, -ben_eaten, -ben_avaiable, -intake_ben_energy,
-             -intake_drift_energy, -small_cover_fra)
+      select(!any_of(c( "shelter_fraction",
+             "experienced_vel", "fish_met_j_per_day_active", "fish_met_j_per_day_passive",
+             "cmax", "turbidity_fun", "detection_dist", "capture_area", "capture_success",
+             "drift_eaten", "ben_eaten", "ben_avaiable", "intake_ben_energy",
+             "intake_drift_energy")))
   }
-browser()
-
-  # Correct for search feeding in low velocity water 
-  dl$df$full_habitat =seq(0.00, max_swim_speed, 0.1) %>% 
-    map_df(~calc_hab_and_feed(dl$df$full_habitat, .x)) %>% 
-    group_by(lat_dist, dist, date) %>% 
+# browser()
+# 
+# 
+# tic()
+#   # Correct for search feeding in low velocity water 
+# 
+#   test3 = calc_hab_and_feed(dl$df$full_habitat, 0) %>% 
+#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>% 
+#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>%
+#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>% 
+#     group_by(dist, lat_dist, date) %>% 
+#     filter(net_energy == max(net_energy)) %>% 
+#     ungroup()
+#   gc()
+#   toc()
+#   
+#   tic()
+  
+  test3 = calc_hab_and_feed(dl$df$full_habitat, 0)
+  dl$df$full_habitat =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
+    map_df(~calc_hab_and_feed(test3, .x)) %>% 
+    bind_rows(test3) %>% 
+    group_by(dist, lat_dist, date) %>% 
     filter(net_energy == max(net_energy)) %>% 
     ungroup()
   gc()
+# toc()
 
+# tic()
+# # Correct for search feeding in low velocity water 
+# 
+#   habitat3 =seq(0.0, 3/4*max_swim_speed, length.out = 4) %>% 
+#     map_df(~calc_hab_and_feed(dl$df$full_habitat, .x)) %>% 
+#     group_by(dist, lat_dist, date) %>% 
+#     filter(net_energy == max(net_energy)) %>% 
+#     ungroup()
+# gc()
+# toc()
   
   average_map_full = dl$df$full_habitat %>% 
     select(-date) %>% 
