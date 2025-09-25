@@ -29,7 +29,7 @@ if (exists("pass_arguments")){
     preview_flag = TRUE
   }
 }
-
+tic()
 ##### Run the setup scripts #####
 source(here("scripts","main","run_setup.R"))
 
@@ -45,7 +45,7 @@ source(here("scripts", "netlogo", "NetLogo_Controller.R"))
 run_netlogo_model(ml$path$output_temp_folder)
 future::plan(strategy = multisession,
              workers = pick_num_cores())
-tic()
+
 ##### Run the post processing scripts #####
 source(here("scripts","main","run_post.R"))
 toc()

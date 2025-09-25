@@ -66,7 +66,7 @@ get_swim_speed_model_params <- function(fish_parms, fish_index){
 # Runs through the main swim speed param function for all species 
 get_swim_speed_parameters_for_all_species <- function(fish_parms){
   fish_ids <- 1:length(fish_parms$specie)
-  future_map(fish_ids, 
+  map(fish_ids, 
              get_swim_speed_model_params, 
              fish_parms = fish_parms) %>% 
     pmap(c)

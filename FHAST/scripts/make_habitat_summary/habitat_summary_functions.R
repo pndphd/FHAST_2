@@ -7,7 +7,7 @@ get_daily_data <- function(... ,
                            v_d_data,
                            dl,
                            sig_figs) {
-  
+
   # get todays variabel values
   current = list(...)
 
@@ -73,12 +73,13 @@ get_daily_data <- function(... ,
                                                        todays_adults)
     }
   } else {migration_data <- NA}
-  
+
   return(list(v_and_d = mid_flow_df, mig_data = migration_data))
 }
 
 ##### Makes dataframe with info on each cell at each flow #####
 make_cell_data <- function(dl){
+
   habitat_temp <- dl$df$sampeled_grid %>%
     # remove some unneeded columns
     select(-starts_with("mig_path_"),
@@ -86,15 +87,15 @@ make_cell_data <- function(dl){
            -mean.correction_factor) %>% 
     left_join(select(dl$df$shape_data, dist, lat_dist, aoi),
               by = c("dist", "lat_dist"))
-  
+
   # Make the data just one depth, vel and wetted area per flow per cell
   input_variables <- c("mean.D", "mean.V", "wetd.")
   output_variables <- c("depth", "velocity", "wetted_fraction")
-  spread_data <- future_map2(
+  spread_data <- map2(
     input_variables, output_variables,
     ~ spread_flows(habitat_temp, .x, .y)) %>%
     reduce(left_join, by = c("lat_dist", "dist", "flow"))
-  
+
   #construct a data frame with all possible flows over the model area
   habitat <- habitat_temp %>%
     select(-starts_with("mean.D"),
@@ -184,7 +185,7 @@ make_data_summary = function(..., dl){
     rm(pred_results)
     gc()
   }
-  
+
   # Do the calculation for habitat and feeding
   calc_hab_and_feed = function(df, add){
 
@@ -272,6 +273,7 @@ make_data_summary = function(..., dl){
     select(!any_of(c("ben_food_fra", "small_cover_fra")))
   rm(min_habitat)
   gc()
+
 
 ##### Make average of data #####  
   average_map_full = dl$df$full_habitat %>% 
