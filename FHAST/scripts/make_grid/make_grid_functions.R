@@ -36,6 +36,7 @@ buffer_lines = function(shape, distance, resolution){
 # Make a function to get large buffers used to tell left from right
 make_large_buffer = function(distances = NULL,
                                  line = NULL){
+
   large_buffer = c(-max(distances), max(distances)) %>% 
     map(~buffer_side(line, .x)) %>% 
     do.call(rbind, .) %>% 
@@ -43,7 +44,7 @@ make_large_buffer = function(distances = NULL,
     filter(st_is(., c("POLYGON","MULTIPOLYGON"))) %>% 
     # Select minimal columns
     select(geometry, left_or_right)
-  
+
   return(large_buffer)
 }
 

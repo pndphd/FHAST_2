@@ -29,7 +29,7 @@ ml$df$pred_parm = read_csv(file = ml$path$predator,
 # Make a list with one item being the daily habitat data 
 # and the second being the migration data
 daily_data_sets = ml$df$daily_input %>% 
-  pmap(.f = ~get_daily_data(..., 
+  pmap(.f = ~get_daily_data(...,
                             v_d_data = v_d_data,
                             dl = ml,
                             sig_figs = 10)) 
@@ -75,7 +75,6 @@ gc()
 
 ml$sum = ml$df$fish_combos %>% 
   pmap(.f=~make_data_summary(..., dl = ml)) %>%
-  # !!!!!!!! future_pmap(.f=~make_data_summary(..., dl = ml)) %>%
   setNames(map(., ~paste0(.x$species, "-", .x$lifestage))) 
 
 # Format adult migration data 

@@ -13,7 +13,7 @@ plot_width = 5
 set.seed(6806665)
 
 # Uncomment for development to pick a specific file and run from IDE
-config_file_name = "C:/Users/pndph/Desktop/Temp/large_dist_chinook_outputs/config.txt"
+config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
 ################################################################################
 
 ##### Run the initialization scripts #####
@@ -29,7 +29,7 @@ if (exists("pass_arguments")){
     preview_flag = TRUE
   }
 }
-tic()
+
 ##### Run the setup scripts #####
 source(here("scripts","main","run_setup.R"))
 
@@ -48,7 +48,7 @@ future::plan(strategy = multisession,
 
 ##### Run the post processing scripts #####
 source(here("scripts","main","run_post.R"))
-toc()
+
 ################################################################################
 # End
 ################################################################################
