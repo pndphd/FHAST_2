@@ -7,7 +7,7 @@ get_daily_data <- function(... ,
                            v_d_data,
                            dl,
                            sig_figs) {
-  
+
   # get todays variabel values
   current = list(...)
 
@@ -73,12 +73,13 @@ get_daily_data <- function(... ,
                                                        todays_adults)
     }
   } else {migration_data <- NA}
-  
+
   return(list(v_and_d = mid_flow_df, mig_data = migration_data))
 }
 
 ##### Makes dataframe with info on each cell at each flow #####
 make_cell_data <- function(dl){
+
   habitat_temp <- dl$df$sampeled_grid %>%
     # remove some unneeded columns
     select(-starts_with("mig_path_"),
@@ -86,15 +87,15 @@ make_cell_data <- function(dl){
            -mean.correction_factor) %>% 
     left_join(select(dl$df$shape_data, dist, lat_dist, aoi),
               by = c("dist", "lat_dist"))
-  
+
   # Make the data just one depth, vel and wetted area per flow per cell
   input_variables <- c("mean.D", "mean.V", "wetd.")
   output_variables <- c("depth", "velocity", "wetted_fraction")
-  spread_data <- future_map2(
+  spread_data <- map2(
     input_variables, output_variables,
     ~ spread_flows(habitat_temp, .x, .y)) %>%
     reduce(left_join, by = c("lat_dist", "dist", "flow"))
-  
+
   #construct a data frame with all possible flows over the model area
   habitat <- habitat_temp %>%
     select(-starts_with("mean.D"),
@@ -155,6 +156,14 @@ make_data_summary = function(..., dl){
   # Check if the fish feeds
   feeding_flag = ifelse(ls == "adult" & pl$adult_feeding[id] == 0, 0, 1)
   
+  # Calculate max swim speed temperature function value
+  max_swim_speed_temp = calc_beta_sig(parm_A = pl$ucrit_c[id],
+                                      parm_B = pl$ucrit_d[id],
+                                      temp = dl$df$full_habitat$temp[1])
+  # Calculate the max swim speed
+  max_swim_speed = (pl$ucrit_a[id] / fish_length + pl$ucrit_b[id]) *
+    max_swim_speed_temp * fish_length / 100
+  
   # calculate the wall factor reduction in velocity
   wall_factor = ifelse(pl$benthic_fish[id] == 0, 1,
                        # all the following hard coded constants from the
@@ -178,23 +187,23 @@ make_data_summary = function(..., dl){
   }
 
   # Do the calculation for habitat and feeding
-  dl$df$full_habitat = dl$df$full_habitat %>% 
-    mutate(# Set if they use small cover
+  calc_hab_and_feed = function(df, add){
+
+    df = mutate(df, velocity = velocity + add)
+    
+    output = df %>%
+      mutate(# Set if they use small cover
       cover_fra = if(pl$small_cover_length[id] >= fish_length) small_cover_fra else cover_fra,
-      # Calculate max swim speed temperature function value
-      max_swim_speed_temp = calc_beta_sig(parm_A = pl$ucrit_c[id],
-                                          parm_B = pl$ucrit_d[id],
-                                          temp = temp),
-      # Calculate the max swim speed
-      max_swim_speed = (pl$ucrit_a[id] / fish_length + pl$ucrit_b[id]) *
-        max_swim_speed_temp * fish_length / 100,
       # Reduce velocity for benthic fish and in cover fish if habitat is available
       benthic_flag = pl$benthic_fish[id], 
       shelter_fraction = if_else(fish_length^2/1e4 < wetted_area*cover_fra & pl$benthic_fish[id] == 0,
                                  dl$df$habitat_parms$shelter_frac,
                                  1),
-      experienced_vel = wall_factor*velocity*shelter_fraction,
-      # Calculate teh active and passive metabolic rate
+      experienced_vel = wall_factor*velocity*shelter_fraction) %>% 
+      # Remove places where the velocity is higher than Ucrit
+      filter(experienced_vel <= max_swim_speed,
+             depth > 0) %>% 
+      mutate(# Calculate teh active and passive metabolic rate
       fish_met_j_per_day_active = calc_met(params = pl,
                                            fish_index = id,
                                            length = fish_length,
@@ -211,8 +220,6 @@ make_data_summary = function(..., dl){
                                     fish_met_j_per_day_passive * (1 - photoperiod),
                                   fish_met_j_per_day_active * (1 - photoperiod) +
                                     fish_met_j_per_day_passive * (photoperiod)),
-      # Remove places where the velocity is higher than Ucrit
-      fish_met_j_per_day = ifelse(experienced_vel>max_swim_speed | depth <= 0, NA, fish_met_j_per_day),
       # Calculate cmax
       cmax = pl$cmax_a[id] * fish_mass^(1 + pl$cmax_b[id]) *
         calc_beta_sig(parm_A = pl$cmax_c[id],
@@ -247,15 +254,28 @@ make_data_summary = function(..., dl){
       energy_intake = (intake_ben_energy *pl$benthic_fish[id] + 
                          intake_drift_energy * (1 - pl$benthic_fish[id])) * feeding_flag,
       net_energy = energy_intake - fish_met_j_per_day) %>% 
-    # Remove the temportay columns
-    select(-ben_food_fra, -max_swim_speed_temp, -max_swim_speed, -shelter_fraction,
-           -experienced_vel, -fish_met_j_per_day_active, -fish_met_j_per_day_passive,
-           -cmax, -turbidity_fun, -detection_dist, -capture_area, -capture_success,
-           -drift_eaten, -ben_eaten, -ben_avaiable, -intake_ben_energy,
-           -intake_drift_energy, -small_cover_fra)
+      # Remove the temportay columns
+      select(!any_of(c( "shelter_fraction",
+             "experienced_vel", "fish_met_j_per_day_active", "fish_met_j_per_day_passive",
+             "cmax", "turbidity_fun", "detection_dist", "capture_area", "capture_success",
+             "drift_eaten", "ben_eaten", "ben_avaiable", "intake_ben_energy",
+             "intake_drift_energy")))
+  }
 
-  # Make the average map
+  # Now correct for search feeding by seeing if swiming can get you more food
+  min_habitat = calc_hab_and_feed(dl$df$full_habitat, 0)
+  dl$df$full_habitat =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
+    map_df(~calc_hab_and_feed(min_habitat, .x)) %>% 
+    bind_rows(min_habitat) %>% 
+    group_by(geometry) %>% 
+    filter(net_energy == max(net_energy)) %>% 
+    ungroup() %>% 
+    select(!any_of(c("ben_food_fra", "small_cover_fra")))
+  rm(min_habitat)
+  gc()
 
+
+##### Make average of data #####  
   average_map_full = dl$df$full_habitat %>% 
     select(-date) %>% 
     group_by(lat_dist, dist, geometry) %>% 

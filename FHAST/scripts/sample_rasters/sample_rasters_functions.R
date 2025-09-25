@@ -96,7 +96,6 @@ sample_grid = function(stack = NULL,
 
   
   if(type_letter == "D"){
-    
     wetter_area = stack %>%
       exact_extract(grid,
                     fun = NULL,
