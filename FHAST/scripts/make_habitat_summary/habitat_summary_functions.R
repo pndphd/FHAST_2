@@ -260,45 +260,20 @@ make_data_summary = function(..., dl){
              "drift_eaten", "ben_eaten", "ben_avaiable", "intake_ben_energy",
              "intake_drift_energy")))
   }
-# browser()
-# 
-# 
-# tic()
-#   # Correct for search feeding in low velocity water 
-# 
-#   test3 = calc_hab_and_feed(dl$df$full_habitat, 0) %>% 
-#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>% 
-#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>%
-#     bind_rows(calc_hab_and_feed(.,1/4*max_swim_speed)) %>% 
-#     group_by(dist, lat_dist, date) %>% 
-#     filter(net_energy == max(net_energy)) %>% 
-#     ungroup()
-#   gc()
-#   toc()
-#   
-#   tic()
-  
-  test3 = calc_hab_and_feed(dl$df$full_habitat, 0)
+
+  # Now correct for search feeding by seeing if swiming can get you more food
+  min_habitat = calc_hab_and_feed(dl$df$full_habitat, 0)
   dl$df$full_habitat =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
-    map_df(~calc_hab_and_feed(test3, .x)) %>% 
-    bind_rows(test3) %>% 
+    map_df(~calc_hab_and_feed(min_habitat, .x)) %>% 
+    bind_rows(min_habitat) %>% 
     group_by(geometry) %>% 
     filter(net_energy == max(net_energy)) %>% 
-    ungroup()
+    ungroup() %>% 
+    select(!any_of(c("ben_food_fra", "small_cover_fra")))
+  rm(min_habitat)
   gc()
-# toc()
 
-# tic()
-# # Correct for search feeding in low velocity water 
-# 
-#   habitat3 =seq(0.0, 3/4*max_swim_speed, length.out = 4) %>% 
-#     map_df(~calc_hab_and_feed(dl$df$full_habitat, .x)) %>% 
-#     group_by(dist, lat_dist, date) %>% 
-#     filter(net_energy == max(net_energy)) %>% 
-#     ungroup()
-# gc()
-# toc()
-  
+##### Make average of data #####  
   average_map_full = dl$df$full_habitat %>% 
     select(-date) %>% 
     group_by(lat_dist, dist, geometry) %>% 

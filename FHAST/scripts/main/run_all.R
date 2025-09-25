@@ -13,7 +13,7 @@ plot_width = 5
 set.seed(6806665)
 
 # Uncomment for development to pick a specific file and run from IDE
-config_file_name = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_outputs/config.txt"
+config_file_name = "C:/Users/pndph/Desktop/Temp/large_dist_chinook_outputs/config.txt"
 ################################################################################
 
 ##### Run the initialization scripts #####
