@@ -82,11 +82,14 @@ Contributions
     CJ: GUI coding, pathfinding algorithm
     KK: Food availability research, feeding algorithm research
  
-  Notes
+Notes
     -Using NetLogo 6.2.2 with vid extension disabled (removes log4*.jar files)
 
+Citation
+    Dudley, Peter N., Jesse A. Black, Stephanie G. Diaz, Ted W. Hermann, Chris John,
+    Kwanmok Kim. FHAST: Fish Habitat Assessment and Simulation Tool. V2.1.4, 
+    Released 2025. https://github.com/pndphd/FHAST_2.
 
-    
-  
+
 "
 }
