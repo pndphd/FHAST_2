@@ -11,7 +11,7 @@
 simplfly_tolarence = ml$df$habitat_parms$resolution/2
 
 # Set a different validity check then the default one... for some reason
-rgeos::set_RGEOS_CheckValidity(2L)
+# rgeos::set_RGEOS_CheckValidity(2L)
 
 ##### Load functions #####
 # Load Libraries and some base parameters

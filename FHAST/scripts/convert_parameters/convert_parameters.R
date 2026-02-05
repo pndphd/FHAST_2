@@ -104,6 +104,13 @@ if("wildcard" %in% ml$df$cover$class){
 
 ##### Convert into usable formats ##############################################
 # Fish Parameters: to named list with species as index
+# CHeck for NA's
+if (NROW(fish_parm_temp) != NROW(na.omit(fish_parm_temp)))
+  stop('There is missing data in your fish parameter file.\n
+       Make sure all parameters have a value.\n
+       If they  are not used use a 0 or 1 as a place holder.')
+
+
 ml$df$fish_parms = fish_parm_temp %>%
   # select species used in the run
   # the 1 ensures the names are kept

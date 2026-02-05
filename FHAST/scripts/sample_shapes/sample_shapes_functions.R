@@ -61,7 +61,7 @@ sample_all_shapes <- function(grid = NULL,
                               column_name = NULL,
                               output_name = NULL) {
   output <- future_pmap(
-    .l = list(shape_files, column_name, output_name),
+    .l = list(shape_file, column_name, output_name),
     .f = ~ sample_shape_with_grid(grid, ...),
     .options = furrr_options(seed = TRUE)
   ) %>%

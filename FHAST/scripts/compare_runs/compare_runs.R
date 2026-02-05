@@ -7,9 +7,10 @@
 
 if (!exists("pass_arguments")){
   pass_arguments = NULL
-  pass_arguments[2] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_small_outputs"
-  pass_arguments[3] = "C:/Users/pndph/Desktop/Temp/small_dist_chinook_small_2_outputs"
-  pass_arguments[1] = "C:/Users/pndph/Desktop/Temp/compare"
+  pass_arguments[2] = "C:/Users/pndph/Desktop/temp/small_dist_chinook_outputs"
+  pass_arguments[3] = "C:/Users/pndph/Desktop/temp/small_dist_chinook_2_outputs"
+  # this needs to exist already (Qgis makes it)
+  pass_arguments[1] = "C:/Users/pndph/Desktop/temp/test_2"
 }
 
 ################################################################################
@@ -67,13 +68,19 @@ file_names = c("daily_input.txt",
                "predator_input.txt")
 
 walk(file_names,
-      ~merge_inputs(ml_a$path$output_temp_folder,
-                  ml_b$path$output_temp_folder,
-                  ml$path$output_folder,
-                  file_name = .x))
+     ~merge_inputs(here(run_a, "temporary"),
+                   here(run_b, "temporary"),
+                   ml$path$output_folder,
+                   file_name = .x))
 
-merge_inputs(ml_a$path$output_folder,
-             ml_b$path$output_folder,
+# walk(file_names,
+#       ~merge_inputs(ml_a$path$output_temp_folder,
+#                   ml_b$path$output_temp_folder,
+#                   ml$path$output_folder,
+#                   file_name = .x))
+
+merge_inputs(run_a,
+             run_b,
              ml$path$output_folder,
              file_name = "input_file.txt")
 
@@ -123,7 +130,8 @@ if (ml$var$juvenile_run == 1){
   ml$df$detailed_data_list = map2(ml_a$df$detailed_data_list,
                                   ml_b$df$detailed_data_list,
                                   ~subtract_group_data(.x, .y,
-                                                      groups = c("date", "Species")))
+                                                      groups = c("date", "Species")) %>% 
+                                    mutate(run_day = 1:n()))
 }
 
 message("Format Datasets: Done.\n")

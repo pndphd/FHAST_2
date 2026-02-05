@@ -27,10 +27,15 @@ suppressMessages(ggsave(filename =here(ml$path$output_folder, "migration_map.png
 # Migration energy use
 ml$plot$migration_energy_hist = ggplot(data = ml$df$adult_migration_energy_data) +
   theme_classic(base_size = 20) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  labs(x = "Species", y = "Energy Used (kJ)") +
-  geom_bar(aes(x = species, y = energy_cost),
-           stat = "identity", position = position_dodge()) 
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  geom_density(aes(x = energy_cost/1000,
+                   y=after_stat(scaled),
+                   color = species)) +
+  labs(x = "Energy Cost (kJ)") +
+  scale_color_manual(values = ml$df$palette)
+
 
 
 suppressMessages(ggsave(filename =here(ml$path$output_folder, "migration_energy_hist.png"),

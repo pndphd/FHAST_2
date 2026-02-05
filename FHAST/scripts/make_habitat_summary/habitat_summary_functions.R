@@ -485,7 +485,7 @@ make_summary_stats_cutoff = function(df){
            Item = str_remove(Item, pattern = "_below.*"),
            Item = str_replace(Item, "_", " "),
            Value = round(Value,3)) %>% 
-    relocate(matches("Item", "D_Cutoff")) %>% 
+    # relocate(matches("Item", "D_Cutoff")) %>% 
     pivot_wider(names_from = V_Cutoff, values_from = Value) %>% 
     arrange(Item, D_Cutoff) %>% 
     rename(" " = D_Cutoff)

@@ -206,7 +206,8 @@ get_paths_and_costs <- function(hab_df,
                                      get(str_replace(cur_column(), "swim_speed", "cell_length"))
       )),
     ) %>%
-    .[, c("from", "to", "energy_cost")]
+    .[, c("from", "to", "energy_cost")] %>% 
+    filter(energy_cost >= 0)
 
   # build graph and calculate distances 
 
@@ -233,8 +234,8 @@ get_paths_and_costs <- function(hab_df,
 
   paths <- get_paths(prepped_df, g, from, to, weights)
 
-  
-  data.table(
+
+   data.table(
     date = date, 
     species = species, 
     energy_cost = list(distance_vector),

@@ -4,8 +4,11 @@
 
 ##### Subtract two data fromes numeric columns #################################
 subtract_dfs = function(df_1, df_2){
-
   min_size = min(NCOL(df_1), NROW(df_2))
+  # return dummy if different number of rows
+  if(NROW(df_1) != NROW(df_2)){
+    return(df_1)
+  }
   if(min_size > 1){
     df_1_num = df_1 %>% 
       select(where(is.numeric)) %>% 
@@ -26,6 +29,7 @@ subtract_dfs = function(df_1, df_2){
 
 ##### Subtract the sum tables ##################################################
 subtract_sum = function(df_1, df_2){
+
   if("geometry" %in% colnames(df_1)){
     df = subtract_group_data(df_1, df_2, "geometry")
   } else {
@@ -52,20 +56,13 @@ subtract_group_data = function(df_1, df_2, groups){
 ##### Merge the dault mighration energy use data ###############################
 merge_adult_energy = function(df_1, df_2){
 
-  df_1_avg =  df_1 %>% 
-    group_by(species) %>% 
-    summarise(energy_cost = mean(energy_cost, na.rm = TRUE)) %>% 
-    ungroup()
-  
+  # Merge the two date set by labeling
+  df_1_lab =  df_1 %>% 
+   mutate(species = paste0(species, "_1"))  
+
   df_out =  df_2 %>% 
-    group_by(species) %>% 
-    summarise(energy_cost = mean(energy_cost, na.rm = TRUE)) %>% 
-    ungroup() %>% 
-    mutate_if(is.numeric, ~ . * -1) %>% 
-    bind_rows(df_1_avg) %>% 
-    group_by(species) %>% 
-    summarise(energy_cost = sum(energy_cost, na.rm = TRUE)) %>% 
-    ungroup()
+    mutate(species = paste0(species, "_2")) %>%
+    bind_rows(df_1_lab) 
   
   return(df_out)
 }

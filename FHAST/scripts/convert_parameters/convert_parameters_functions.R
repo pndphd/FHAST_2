@@ -87,7 +87,7 @@ get_cost_of_travel <- function(swim_speed_m_per_s,
                                fish_index,
                                temperature_C,
                                ratio) {
-  
+
   anaerobic_fuel_recovery_parameter <- 1.82
   length = fish_parms$eg_adult_length[fish_index] 
   seconds_per_day <- 86400

@@ -28,7 +28,7 @@ ml$plot$cover_cutoff_map_1 = ggplot(data = ml_a$sum[[1]]$map) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(alpha = "Cover", fill = "Group") +
   geom_sf(aes(fill = factor(below_group), 
-              alpha = ml_a$sum[[1]]$map$cover_fra), lwd = 0) +
+              alpha = cover_fra), color = NA) +
   scale_fill_manual(values = c(ml$df$palette[3],
                                ml$df$palette[1],
                                ml$df$palette[2],
@@ -36,13 +36,14 @@ ml$plot$cover_cutoff_map_1 = ggplot(data = ml_a$sum[[1]]$map) +
                     labels = c("1" = "Below D",
                                "0" = "Below None",
                                "11" = "Below Both",
-                               "10" = "Below V"))
+                               "10" = "Below V")) +
+  scale_alpha(range = c(0, 1))
 ml$plot$cover_cutoff_map_2 = ggplot(data = ml_b$sum[[1]]$map) +
   theme_classic(base_size = ml_a$var$selected_base_size) +
   theme(axis.text.x = element_text(angle = 90)) +
   labs(alpha = "Cover", fill = "Group") +
   geom_sf(aes(fill = factor(below_group), 
-              alpha = ml_b$sum[[1]]$map$cover_fra), lwd = 0) +
+              alpha = cover_fra), color = NA) +
   scale_fill_manual(values = c(ml$df$palette[3],
                                ml$df$palette[1],
                                ml$df$palette[2],
@@ -50,10 +51,11 @@ ml$plot$cover_cutoff_map_2 = ggplot(data = ml_b$sum[[1]]$map) +
                     labels = c("1" = "Below D",
                                "0" = "Below None",
                                "11" = "Below Both",
-                               "10" = "Below V"))
+                               "10" = "Below V")) +
+ guides(alpha = "none")
 
-ml$plot$cover_cutoff_map = ml$plot$cover_cutoff_map_1 +
-  ml$plot$cover_cutoff_map_2 +
+ml$plot$cover_cutoff_map = (ml$plot$cover_cutoff_map_1 +
+  ml$plot$cover_cutoff_map_2) +
   plot_layout(guides = "collect") +
   plot_layout(ncol = 1)
 
