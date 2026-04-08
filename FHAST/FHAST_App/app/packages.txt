@@ -53,4 +53,8 @@ viridis
 patchwork
 leaflet
 
+# Net logo
 nlrx
+
+# package for fitting
+lme4
