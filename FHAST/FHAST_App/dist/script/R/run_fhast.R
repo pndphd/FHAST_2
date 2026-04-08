@@ -23,9 +23,9 @@ message('working path:\n', paste('...', appwd))
 # utility function for ensuring that a package is installed
 ensure = function(package, repo = 'http://cran.rstudio.com', load = FALSE) {
   # uncomment below to install new package
-  if (!(package %in% rownames(installed.packages()))) {
-    install.packages(package, repo = repo, lib = applibpath)
-  }
+  # if (!(package %in% rownames(installed.packages()))) {
+  #   install.packages(package, repo = repo, lib = applibpath)
+  # }
   if (load) {
     library(package, character.only = TRUE)
   }

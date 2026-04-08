@@ -348,6 +348,4 @@ class OHWMOverlap:
             # Run FHAST
             os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + new_ohwm_f + " " + new_footprint_f + quote_string)
             
-            pass
-
-         
+            pass       

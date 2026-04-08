@@ -56,5 +56,5 @@ leaflet
 # Net logo
 nlrx
 
-# package for fitting
-lme4
+# Fitting
+minpack.lm

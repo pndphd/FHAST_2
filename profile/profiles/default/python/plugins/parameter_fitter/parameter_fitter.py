@@ -218,6 +218,12 @@ class ParameterFitter:
 
             # Get the path of this script
             file_path = str(pathlib.Path(__file__).parent.resolve())
+
+            # Get the output folder path
+            folder_path = self.dlg.output_folder.filePath()
+            if len(folder_path) == 0:
+                QMessageBox.information(None, "!!!ERROR!!!", "No Output Folder Selected") 
+                self.iface.addVectorLayer(stop_program) 
             
             # get the data file
             data_path = self.dlg.input_file.filePath()
@@ -237,9 +243,10 @@ class ParameterFitter:
             quote_string = "\""
             cd_command = "cd "
             new_path_f = data_path.replace("\\","/")
+            new_folder_f = folder_path.replace("\\","/")
             fhast_run = ".\FHAST_App\dist\R-Portable\App\R-Portable\\bin\Rscript.exe --vanilla \".\FHAST_app\dist\script\R\\run_param.R\" \"" + new_path_f + "\""
 
             # Run FHAST
-            os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + model_type + quote_string)
+            os.system(start_command + quote_string + cd_command + file_path + "\..\..\..\..\..\..\FHAST & " + fhast_run + " " + model_type + " " + new_folder_f +quote_string)
             
             pass

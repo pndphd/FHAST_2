@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>768</width>
-    <height>259</height>
+    <height>302</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>175</x>
-     <y>200</y>
+     <y>250</y>
      <width>156</width>
      <height>27</height>
     </rect>
@@ -45,17 +45,18 @@
      <x>350</x>
      <y>25</y>
      <width>376</width>
-     <height>201</height>
+     <height>251</height>
     </rect>
    </property>
    <property name="html">
     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600;&quot;&gt;Parameter Fitter&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Data File:&lt;/span&gt; in this drop-down menu select a CSV file with eh data. Column headers must be &lt;span style=&quot; font-style:italic;&quot;&gt;x&lt;/span&gt; for the independent variable and &lt;span style=&quot; font-style:italic;&quot;&gt;y&lt;/span&gt; for the dependent variable. &lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Model Type:&lt;/span&gt; Select the type of equation you want to fit the data to. Options are beta sigmoid, logistic, log normal, reciprocal, power, or linear. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Data File:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; in this drop-down menu select a CSV file with eh data. Column headers must be &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;x&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; for the independent variable and &lt;/span&gt;&lt;span style=&quot; font-size:12pt; font-style:italic;&quot;&gt;y&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; for the dependent variable. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Model Type:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; Select the type of equation you want to fit the data to. Options are beta sigmoid, logistic, log normal, reciprocal, power, or linear. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Output Folder:&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt; Select the output folder where the report will go.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -128,6 +129,29 @@ p, li { white-space: pre-wrap; }
      <string>Linear</string>
     </property>
    </item>
+  </widget>
+  <widget class="QgsFileWidget" name="output_folder">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>200</y>
+     <width>301</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>25</x>
+     <y>175</y>
+     <width>101</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Output Folder</string>
+   </property>
   </widget>
  </widget>
  <customwidgets>
