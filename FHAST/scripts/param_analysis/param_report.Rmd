@@ -36,12 +36,20 @@ kable(table_output,
 ```
 
 \newpage
-## Figures Outputs
+## Figure Outputs
 
 ```{r print_figure, echo = FALSE, out.width = "100%", fig.align="center"}
 knitr::include_graphics(here(pass_arguments[3], "fhast_parameter_fit.png"),  error = FALSE)
 ```
 
 **Fig. `r (n = n + 1)`** The data and fit for the `r str_to_lower(str_replace(pass_arguments[2], "_", " "))` parameter fitting. <br><br><br><br>
+
+## Fit Summary
+
+```{r print_summary, echo = FALSE, out.width = "100%", fig.align="center"}
+display
+```
+
+**Fig. `r (n = n + 1)`** The standard R summary for the `r str_to_lower(str_replace(pass_arguments[2], "_", " "))` parameter fitting. <br><br><br><br>
 
 </font>

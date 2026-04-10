@@ -8,8 +8,8 @@
 
 if (!exists("pass_arguments")){
   pass_arguments = NULL
-  pass_arguments[1] = "C:/Users/pndph/Desktop/temp/logistic.csv"
-  pass_arguments[2] = "Logistic"
+  pass_arguments[1] = "C:/Users/pndph/Desktop/temp/beta_sigmoid.csv"
+  pass_arguments[2] = "Beta_Sigmoid"
   pass_arguments[3] = "C:/Users/pndph/Desktop/temp"
 }
 
@@ -67,11 +67,11 @@ switch(pass_arguments[2],
          guess_B = guess_A/2
          
          # Fit the data
-         bs_fit = nlsLM(y ~ 1*(1+(A-(x))/(A-B))*((x)/A)^(A/(A-B)),
+         model_fit = nlsLM(y ~ 1*(1+(A-(x))/(A-B))*((x)/A)^(A/(A-B)),
                          data = parameter_data,
                          start = list(A = guess_A, B = guess_B))
-         bs_A_set = bs_fit$m$getPars()["A"]
-         bs_B_set = bs_fit$m$getPars()["B"]
+         bs_A_set = model_fit$m$getPars()["A"]
+         bs_B_set = model_fit$m$getPars()["B"]
          
          # Make the tabluar output
         table_output = data.frame(Parameter = c("A", "B"),
@@ -81,8 +81,11 @@ switch(pass_arguments[2],
          fit_predict = data.frame(x = seq(min(c(parameter_data$x,0)),
                                          max(parameter_data$x),
                                          length.out = 100)) %>%
-           mutate(predict = predict(bs_fit,
+           mutate(predict = predict(model_fit,
                                     newdata = .))
+         
+         # Make a display object for the model
+         display = summary(model_fit)
    
        },
        ##### Linear #####
@@ -91,9 +94,9 @@ switch(pass_arguments[2],
          # Get initial guess and some plotting values
 
          # Fit the data
-         lin_fit = lm(y ~ x, data = parameter_data)
-         lin_A_set = lin_fit$coefficients[1]
-         lin_B_set = lin_fit$coefficients[2]
+         model_fit = lm(y ~ x, data = parameter_data)
+         lin_A_set = model_fit$coefficients[1]
+         lin_B_set = model_fit$coefficients[2]
          
          # Make the tabluar output
          table_output = data.frame(Parameter = c("Intercept", "Slope"),
@@ -103,17 +106,20 @@ switch(pass_arguments[2],
          fit_predict = data.frame(x = seq(min(c(parameter_data$x,0)),
                                           max(parameter_data$x),
                                           length.out = 100)) %>%
-           mutate(predict = predict(lin_fit,
+           mutate(predict = predict(model_fit,
                                     newdata = .))
+         
+         # Make a display object for the model
+         display = summary(model_fit)
          
        },
        ##### Log-Normal #####
        Log_Normal={
          
          # Fit the data
-         ln_fit = fitdistr(parameter_data$x, "lognormal")
-         ln_mean = ln_fit$estimate["meanlog"]
-         ln_sd = ln_fit$estimate["sdlog"]
+         model_fit = fitdistr(parameter_data$x, "lognormal")
+         ln_mean = model_fit$estimate["meanlog"]
+         ln_sd = model_fit$estimate["sdlog"]
          
          # Make the tabluar output
          table_output = data.frame(Parameter = c("Mean", "SD"),
@@ -140,6 +146,8 @@ switch(pass_arguments[2],
                   y = y/max(y)) %>% 
            select(x, y)
          
+         # Make a display object for the model
+         display = print(model_fit)
          
        },
        ##### Inverse #####
@@ -150,11 +158,11 @@ switch(pass_arguments[2],
          guess_B = min(parameter_data$y)
          
          # Fit the data
-         i_fit = nlsLM(y ~ (A/x) + B,
+         model_fit = nlsLM(y ~ (A/x) + B,
                         data = parameter_data,
                         start = list(A = guess_A, B = guess_B))
-         i_A_set = i_fit$m$getPars()["A"]
-         i_B_set = i_fit$m$getPars()["B"]
+         i_A_set = model_fit$m$getPars()["A"]
+         i_B_set = model_fit$m$getPars()["B"]
          
          # Make the tabluar output
          table_output = data.frame(Parameter = c("A", "B"),
@@ -164,9 +172,11 @@ switch(pass_arguments[2],
          fit_predict = data.frame(x = seq(min(parameter_data$x),
                                           max(parameter_data$x),
                                           length.out = 100)) %>%
-           mutate(predict = predict(i_fit,
+           mutate(predict = predict(model_fit,
                                     newdata = .))
          
+         # Make a display object for the model
+         display = summary(model_fit)
        },
        ##### Power #####
        Power={
@@ -176,11 +186,11 @@ switch(pass_arguments[2],
          guess_B = 1
          
          # Fit the data
-         i_fit = nlsLM(y ~ A*x^B,
+         model_fit = nlsLM(y ~ A*x^B,
                        data = parameter_data,
                        start = list(A = guess_A, B = guess_B))
-         i_A_set = i_fit$m$getPars()["A"]
-         i_B_set = i_fit$m$getPars()["B"]
+         i_A_set = model_fit$m$getPars()["A"]
+         i_B_set = model_fit$m$getPars()["B"]
          
          # Make the tabluar output
          table_output = data.frame(Parameter = c("A", "B"),
@@ -190,8 +200,11 @@ switch(pass_arguments[2],
          fit_predict = data.frame(x = seq(min(parameter_data$x),
                                           max(parameter_data$x),
                                           length.out = 100)) %>%
-           mutate(predict = predict(i_fit,
+           mutate(predict = predict(model_fit,
                                     newdata = .))
+         
+         # Make a display object for the model
+         display = summary(model_fit)
          
        },
        ##### Logistic #####
@@ -201,14 +214,14 @@ switch(pass_arguments[2],
          parameter_data = arrange(parameter_data, x)
          
          # Fit the data
-         l_fit = glm(parameter_data$y ~ parameter_data$x,
+         model_fit = glm(parameter_data$y ~ parameter_data$x,
                             family=quasibinomial(logit),
                             data=parameter_data)
-         l_A_set = l_fit$coefficients[1]
-         l_B_set = l_fit$coefficients[2]
+         l_A_set = model_fit$coefficients[1]
+         l_B_set = model_fit$coefficients[2]
          
-         l_10_set = -(log(1/0.1-1)+l_fit[[1]][1])/l_fit[[1]][2]
-         l_90_set = -(log(1/0.9-1)+l_fit[[1]][1])/l_fit[[1]][2]
+         l_10_set = -(log(1/0.1-1)+model_fit[[1]][1])/model_fit[[1]][2]
+         l_90_set = -(log(1/0.9-1)+model_fit[[1]][1])/model_fit[[1]][2]
          
          # Make the tabluar output
          table_output = data.frame(Parameter = c("A", "B", "X10", "X90"),
@@ -217,15 +230,13 @@ switch(pass_arguments[2],
          
          # Add in predictions for plotting
          fit_predict = parameter_data %>%  
-           mutate(y = predict.glm(l_fit,
+           mutate(y = predict.glm(model_fit,
                                   type = "response")) %>% 
            rename(predict = y)
          
-         
-         # Get initial guess and some plotting values
-         guess_A = 1 
-         guess_B = 1
-         
+         # Make a display object for the model
+         display = summary(model_fit)
+
        },
        {
          # If no valid model type set stop program
@@ -273,6 +284,7 @@ rmarkdown::render(input = here("scripts", "param_analysis", "param_report.Rmd"),
                   output_file = here(pass_arguments[3], "fhast_parameter_report.html"),
                   quiet = TRUE)
 
+file.remove(here(pass_arguments[3], "fhast_parameter_fit.png"))
 message("Make Parameter report: Done./n")
 
 message("!!! PARAMETER ESTIMATION COMPLETE !!!\n")
