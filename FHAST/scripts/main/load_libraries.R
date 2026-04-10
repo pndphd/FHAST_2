@@ -22,6 +22,7 @@ packages = c(
   "R.utils",
   
   # Data manipulate libraries
+  "MASS",
   "tibble",
   "dplyr",
   "tidyr",

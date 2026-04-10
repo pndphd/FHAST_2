@@ -52,6 +52,7 @@ ggplot2
 viridis
 patchwork
 leaflet
+rmarkdown
 
 # Net logo
 nlrx

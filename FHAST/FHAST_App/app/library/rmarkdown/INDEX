@@ -38,6 +38,9 @@ metadata                The YAML metadata of the current R Markdown
                         document
 odt_document            Convert to an OpenDocument Text (ODT) document
 output_format           Define an R Markdown output format
+output_format_dependency
+                        Define and merge an R Markdown's output format
+                        dependency
 output_metadata         The output metadata object
 paged_table             Create a table in HTML with support for paging
                         rows and columns

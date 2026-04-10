@@ -60,7 +60,7 @@ and we can easily figure out how many white spaces are needed for each row:
 
 ```{r}
 (s = z[, 2] - z[, 1] - 1)
-(s = mapply(highr:::spaces, s))
+(s = strrep(' ', s))
 paste(s, d$text, sep = '')
 ```
 
@@ -71,7 +71,7 @@ paste all pieces together (suppose we highlight for LaTeX):
 m = highr:::cmd_latex[d$token, ]
 cbind(d, m)
 # use standard markup if tokens do not exist in the table
-m[is.na(m[, 1]), ] = highr:::cmd_latex['STANDARD', ]
+m[is.na(m[, 1]), ] = highr:::cmd_latex['DEFAULT', ]
 paste(s, m[, 1], d$text, m[, 2], sep = '', collapse = '')
 ```
 

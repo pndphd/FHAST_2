@@ -53,6 +53,7 @@ navbar_html	navbar_html
 navbar_links_html	navbar_html
 odt_document	odt_document
 output_format	output_format
+output_format_dependency	output_format_dependency
 output_metadata	output_metadata
 paged_table	paged_table
 pandoc_args	pandoc_args
@@ -66,6 +67,7 @@ pandoc_include_args	pandoc_args
 pandoc_latex_engine_args	pandoc_args
 pandoc_lua_filter_args	pandoc_args
 pandoc_metadata_arg	pandoc_args
+pandoc_metadata_file_arg	pandoc_args
 pandoc_options	pandoc_options
 pandoc_path_arg	pandoc_path_arg
 pandoc_self_contained_html	pandoc_self_contained_html
@@ -96,6 +98,5 @@ site_config	render_site
 site_generator	render_site
 site_resources	site_resources
 slidy_presentation	slidy_presentation
-tufte_handout	tufte_handout
 word_document	word_document
 yaml_front_matter	yaml_front_matter

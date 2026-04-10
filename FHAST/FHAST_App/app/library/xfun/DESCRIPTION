@@ -36,10 +36,6 @@ Author: Yihui Xie [aut, cre, cph] (ORCID:
 Maintainer: Yihui Xie <xie@yihui.name>
 Repository: CRAN
 Date/Publication: 2026-03-20 16:50:02 UTC
-Built: R 4.5.3; x86_64-w64-mingw32; 2026-03-28 18:48:33 UTC; windows
+Built: R 4.2.0; x86_64-w64-mingw32; 2026-04-10 00:25:17 UTC; windows
+ExperimentalWindowsRuntime: ucrt
 Archs: x64
-RemoteType: standard
-RemotePkgRef: xfun
-RemoteRef: xfun
-RemoteRepos: https://cran.rstudio.com
-RemoteSha: 0.57

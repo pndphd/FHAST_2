@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -358,19 +359,19 @@ or <code>\pagebreak</code> command in a new line to include a pagebreak
 in any of these formats: <code>pdf_document()</code>,
 <code>html_document()</code>, <code>word_document()</code> and
 <code>odt_document()</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Header 1</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Some text</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>\newpage</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu"># Header 2 on a new page</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Some other text</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>\pagebreak</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu"># Header 3 on a third page</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu"># Header 1</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>Some text</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>\newpage</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="fu"># Header 2 on a new page</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>Some other text</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>\pagebreak</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="fu"># Header 3 on a third page</span></span></code></pre></div>
 <p>rmarkdown will convert those commands in the correct output format
 syntax using a <a href="#lua-filter">Lua filter</a> during pandoc
 conversion.</p>
@@ -387,7 +388,7 @@ any restriction about the version of pandoc.</p>
 <p>A <code>\newpage</code> or <code>\pagebreak</code> command in a
 rmarkdown document with output as HTML will be converted by default in
 this html code with inline style using CSS rule <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/page-break-after"><code>page-break-after</code></a></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">style</span><span class="ot">=</span><span class="st">&quot;page-break-after: always;&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">&quot;page-break-after: always;&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
 <p>This will always insert a pagebreak after this div.</p>
 <p>To get more flexibility, you can use a HTML class and some custom CSS
 instead of an inline style. You need to add a metadata field
@@ -395,33 +396,33 @@ instead of an inline style. You need to add a metadata field
 class.</p>
 <p>Then you can control the behavior using custom CSS as in this
 example</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document: default</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="an">newpage_html_class:</span><span class="co"> page-break</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="in">```{css, echo = FALSE}</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="in">// display the pagebreak only when printing the html page</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="in">@media all {</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">    .page-break { display: none; }</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="in">@media print {</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="in">    .page-break { display: block; break-after: page; }</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu"># Header 1</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>Some text</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>\newpage</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu"># Header 2 on a new page</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>Some other text</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">  html_document: default</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="an">newpage_html_class:</span><span class="co"> page-break</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="in">```{css, echo = FALSE}</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="in">// display the pagebreak only when printing the html page</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="in">@media all {</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="in">    .page-break { display: none; }</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="in">@media print {</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="in">    .page-break { display: block; break-after: page; }</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="fu"># Header 1</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>Some text</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>\newpage</span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="fu"># Header 2 on a new page</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>Some other text</span></code></pre></div>
 <p><code>\newpage</code> will be converted here to</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;div</span> <span class="er">class</span><span class="ot">=</span><span class="st">&quot;page-break&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> class</span><span class="op">=</span><span class="st">&quot;page-break&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
 <p>and the style will be applied to this class from the CSS included in
 the chunk.</p>
 <p>This customisation can also be achieved by setting the environnement
@@ -431,8 +432,7 @@ example)</p>
 <p>Let’s note that in this example we use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/break-after"><code>break-after</code></a>
 property instead of <code>page-break-after</code> as it is recommended
 now to use the former which is the replacement. The latter is kept
-around for <a href="https://caniuse.com/#search=page-break">compatibility reason with
-browsers</a>.</p>
+around for compatibility reason with browsers.</p>
 </div>
 <div id="word" class="section level3">
 <h3>Using with Word documents</h3>
@@ -440,19 +440,19 @@ browsers</a>.</p>
 rmarkdown document with output as Word document will be converted in a
 pagebreak for word document. Manually, this would mean adding this in
 your rmarkdown</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{=openxml}</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="in">&lt;w:p&gt;&lt;w:r&gt;&lt;w:br w:type=&quot;page&quot;/&gt;&lt;/w:r&gt;&lt;/w:p&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="in">```{=openxml}</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="in">&lt;w:p&gt;&lt;w:r&gt;&lt;w:br w:type=&quot;page&quot;/&gt;&lt;/w:r&gt;&lt;/w:p&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="in">```</span></span></code></pre></div>
 <p>For example, using the pagebreak feature, this will add the first
 header in the second page of the work document</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> word_document</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>\newpage</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu"># First Header</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="an">output:</span><span class="co"> word_document</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>\newpage</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="fu"># First Header</span></span></code></pre></div>
 </div>
 <div id="odt" class="section level3">
 <h3>Using with ODT documents</h3>
@@ -467,16 +467,16 @@ documentation</a> on how to create a style).</p>
 <code>PANDOC_NEWPAGE_ODT_STYLE</code> environment variable (as in <a href="#html">html document</a>).</p>
 <p>As the previous one, this example will lead to a two pages document,
 with first header on the second page.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">  odt_document:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    reference_odt: reference.odt</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>\newpage</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu"># First Header</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">  odt_document:</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">    reference_odt: reference.odt</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>\newpage</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu"># First Header</span></span></code></pre></div>
 </div>
 </div>
 <div id="number-sections" class="section level2">
@@ -488,20 +488,20 @@ html and pdf). The rmarkdown package adds
 <code>number_sections.lua</code> to support this feature in other
 formats (e.g., docx, odt, and so on). Users do not have to know which
 formats use the Pandoc’s feature or the Lua filter.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">  md_document:</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">    number_sections: true # implemented by Lua filter</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">  html_document</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">    number_sections: true # implemented by Pandoc</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu"># First Header</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## A Header Belonging the First Header</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu"># Second Header</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="an">title:</span><span class="co"> My main title</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="an">output:</span><span class="co"> </span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">  md_document:</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">    number_sections: true # implemented by Lua filter</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">  html_document</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">    number_sections: true # implemented by Pandoc</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="fu"># First Header</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">## A Header Belonging the First Header</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="fu"># Second Header</span></span></code></pre></div>
 <p>In general, numbers and titles of sections are separated by a space.
 An exception is the <code>word_document</code> function, which separates
 them by a tab in order to be consistent with Pandoc’s number sections
@@ -517,11 +517,11 @@ works with Pandoc 2.1+ (shipped in RStudio &gt;= 1.2).</p>
 <p>Pandoc supports a syntax called <a href="https://pandoc.org/MANUAL.html#divs-and-spans">Fenced Divs</a>
 that allows to create <code>&lt;div&gt;</code> in HTML. For example, the
 syntax is</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>::: {#special .sidebar}</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Here is a paragraph.</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>And another.</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>::: {#special .sidebar}</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>Here is a paragraph.</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>And another.</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>:::</span></code></pre></div>
 <p>By default, this special syntax will be ignored in LaTeX conversion
 for PDF output and the content of the block will be used as-is. However,
 this syntax could be used to create LaTeX environment.</p>
@@ -529,15 +529,15 @@ this syntax could be used to create LaTeX environment.</p>
 allow any Fenced Divs to be converted as a LaTeX environment
 (<code>\begin{env}</code> … <code>\end{env}</code>) when desired by
 adding a special attribute.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>::: {.verbatim data-latex=&quot;&quot;}</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>We show some _verbatim_ text here.</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>::: {.verbatim data-latex=&quot;&quot;}</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>We show some _verbatim_ text here.</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>:::</span></code></pre></div>
 <p>Its LaTeX output will be:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">verbatim</span>}</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="vs">We show some \emph{verbatim} text here.</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">verbatim</span>}</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="kw">\begin</span>{<span class="ex">verbatim</span>}</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="vs">We show some \emph{verbatim} text here.</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="kw">\end</span>{<span class="ex">verbatim</span>}</span></code></pre></div>
 <p>This feature we call <em>Custom blocks</em> is documented in details
-in the <a href="https://bookdown.org/yihui/rmarkdown-cookbook/custom-blocks.html">R
+in the <a href="https://yihui.org/rmarkdown-cookbook/custom-blocks.html">R
 Markdown Cookbook</a></p>
 </div>
 <div id="lua-filter" class="section level2">
@@ -548,13 +548,13 @@ in markdown to be compatible with several output documents is one of
 them. You can find some more informations about Lua filters in <a href="https://pandoc.org/lua-filters.html">pandoc’s documentation</a>
 and also some examples in <a href="https://github.com/pandoc/lua-filters">a collection of Lua filters
 for pandoc</a>. These examples, and any other Lua filters, can be use in
-your Rmarkdown document directly by adding <a href="https://bookdown.org/yihui/rmarkdown/html-document.html#pandoc-arguments">a
-pandoc argument</a> in yaml header</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>output:</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  html_document:</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    pandoc_args: [&quot;--lua-filter=filter.lua&quot;]</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>---</span></code></pre></div>
+your Rmarkdown document directly by adding <a href="https://yihui.org/rmarkdown/html-document.html">a pandoc
+argument</a> in yaml header</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>---</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>output:</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  html_document:</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    pandoc_args: [&quot;--lua-filter=filter.lua&quot;]</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>---</span></code></pre></div>
 <p>You can also use a special helper using a <code>!expr</code> syntax
 for yaml in your header</p>
 <p>The package <a href="https://github.com/crsh/rmdfiltr">rmdfiltr</a>
@@ -570,29 +570,31 @@ is useful to create filters using R.</p>
 <p>If you want to create a format that uses a special filter, you can
 add it as a pandoc option if the output format.</p>
 <p>Either by modifying an existing format:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>custom_format <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  base_format <span class="ot">&lt;-</span> rmarkdown<span class="sc">::</span><span class="fu">html_document</span>(...)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prepending a new Lua filter to html_document() ones</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  base_format<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    rmarkdown<span class="sc">::</span><span class="fu">pandoc_path_arg</span>(<span class="st">&quot;new.lua&quot;</span>), </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    base_format<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  base_format</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(<span class="fu">custom_format</span>()<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;new.lua&quot;       &quot;pagebreak.lua&quot; &quot;latex-div.lua&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>custom_format <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>  base_format <span class="ot">&lt;-</span> rmarkdown<span class="sc">::</span><span class="fu">html_document</span>(...)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="co"># prepending a new Lua filter to html_document() ones</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  base_format<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>    rmarkdown<span class="sc">::</span><span class="fu">pandoc_path_arg</span>(<span class="st">&quot;new.lua&quot;</span>), </span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>    base_format<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>  base_format</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>}</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="fu">basename</span>(<span class="fu">custom_format</span>()<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; [1] &quot;new.lua&quot;           &quot;pagebreak.lua&quot;     &quot;latex-div.lua&quot;    </span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; [4] &quot;table-classes.lua&quot;</span></span></code></pre></div>
 <p>Or by creating a new format :</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>custom_format <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">toc =</span> <span class="cn">TRUE</span>, ...) {</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  rmarkdown<span class="sc">::</span><span class="fu">output_format</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">knitr =</span> rmarkdown<span class="sc">::</span><span class="fu">knitr_options</span>(),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># a new filter will be appended to base_format ones</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">pandoc =</span> rmarkdown<span class="sc">::</span><span class="fu">pandoc_options</span>(<span class="at">to =</span> <span class="st">&quot;html&quot;</span>, <span class="at">lua_filters =</span> <span class="st">&quot;new.lua&quot;</span>),</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">base_format =</span> rmarkdown<span class="sc">::</span><span class="fu">html_document</span>(<span class="at">toc =</span> toc, ...)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(<span class="fu">custom_format</span>()<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pagebreak.lua&quot; &quot;latex-div.lua&quot; &quot;new.lua&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>custom_format <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">toc =</span> <span class="cn">TRUE</span>, ...) {</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  rmarkdown<span class="sc">::</span><span class="fu">output_format</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">knitr =</span> rmarkdown<span class="sc">::</span><span class="fu">knitr_options</span>(),</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="co"># a new filter will be appended to base_format ones</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>    <span class="at">pandoc =</span> rmarkdown<span class="sc">::</span><span class="fu">pandoc_options</span>(<span class="at">to =</span> <span class="st">&quot;html&quot;</span>, <span class="at">lua_filters =</span> <span class="st">&quot;new.lua&quot;</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">base_format =</span> rmarkdown<span class="sc">::</span><span class="fu">html_document</span>(<span class="at">toc =</span> toc, ...)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>}</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="fu">basename</span>(<span class="fu">custom_format</span>()<span class="sc">$</span>pandoc<span class="sc">$</span>lua_filters)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; [1] &quot;pagebreak.lua&quot;     &quot;latex-div.lua&quot;     &quot;table-classes.lua&quot;</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; [4] &quot;new.lua&quot;</span></span></code></pre></div>
 <p>As this is an advanced feature, if you want to go further, we
 encourage you to look at the examples of formats in packages such as
 <strong>rmarkdown</strong>, <strong>bookdown</strong> or
