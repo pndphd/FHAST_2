@@ -8,8 +8,8 @@
 
 if (!exists("pass_arguments")){
   pass_arguments = NULL
-  pass_arguments[1] = "C:/Users/pndph/Desktop/temp/beta_sigmoid.csv"
-  pass_arguments[2] = "Beta_Sigmoid"
+  pass_arguments[1] = "C:/Users/pndph/Desktop/temp/metabolic.csv"
+  pass_arguments[2] = "Metabolic"
   pass_arguments[3] = "C:/Users/pndph/Desktop/temp"
 }
 
@@ -45,13 +45,33 @@ if(NCOL(parameter_data) == 1){
   y_lab = NULL
   parameter_data = parameter_data %>% 
     rename(x = 1) 
-} else {
+} else if(NCOL(parameter_data) == 2) {
   x_lab = names(parameter_data)[1]
   y_lab = names(parameter_data)[2]
   parameter_data = parameter_data %>% 
     rename(x = 1, y = 2) 
+} else if(NCOL(parameter_data) == 4) {
+  e_lab = names(parameter_data)[1]
+  m_lab = names(parameter_data)[2]
+  t_lab = names(parameter_data)[2]
+  v_lab = names(parameter_data)[2]
+  parameter_data = parameter_data %>% 
+    rename(e = 1, m = 2, t = 3, v = 4) 
+} else if(NCOL(parameter_data) == 7) {
+  parameter_data = parameter_data %>% 
+    rename(presence_absence = 1,
+           depth = 2,
+           velocity = 3,
+           vegetation = 4,
+           woody_debris = 5,
+           substrate = 6,
+           shade = 7) 
+} else {
+  message(paste0("!!!!!!!!!!!\n",
+                 "!!!ERROR!!! Incorect Data Structure.\n",
+                 "!!!!!!!!!!!\n"))
+  stop()
 }
-
 
 message("Read Data: Done./n")
 
@@ -214,9 +234,9 @@ switch(pass_arguments[2],
          parameter_data = arrange(parameter_data, x)
          
          # Fit the data
-         model_fit = glm(parameter_data$y ~ parameter_data$x,
-                            family=quasibinomial(logit),
-                            data=parameter_data)
+         model_fit = glm(y ~ x,
+                         family=quasibinomial(logit),
+                         data=parameter_data)
          l_A_set = model_fit$coefficients[1]
          l_B_set = model_fit$coefficients[2]
          
@@ -238,6 +258,141 @@ switch(pass_arguments[2],
          display = summary(model_fit)
 
        },
+       ##### Metabolic #####
+       Metabolic={
+         
+
+         # Fit the data
+         model_1_fit = glm(log(e) ~ 
+                             log(m) +
+                             log(t) +
+                             v +
+                             I(log(m) * log(t)),
+                           data=parameter_data)
+         model_2_fit = glm(log(e) ~ 
+                             log(m) +
+                             t +
+                             v +
+                             I(log(m) * log(t)),
+                           data=parameter_data)
+         model_3_fit = glm(log(e) ~ 
+                             log(m) +
+                             log(t) +
+                             sqrt(v)+
+                             I(log(m) * log(t)),
+                           data=parameter_data)
+         model_4_fit = glm(log(e) ~ 
+                             log(m) +
+                             log(t) +
+                             v +
+                             I(log(m) * t),
+                           data=parameter_data)
+         model_5_fit = glm(log(e) ~ 
+                             log(m) +
+                             t +
+                             sqrt(v) +
+                             I(log(m) * log(t)),
+                           data=parameter_data)
+         model_6_fit = glm(log(e) ~ 
+                             log(m) +
+                             t +
+                             sqrt(v) +
+                             I(log(m) * t),
+                           data=parameter_data)
+         model_7_fit = glm(log(e) ~ 
+                             log(m) +
+                             t +
+                             v +
+                             I(log(m) * t),
+                           data=parameter_data)
+         model_8_fit = glm(log(e) ~ 
+                             log(m) +
+                             log(t) +
+                             sqrt(v) +
+                             I(log(m) * t),
+                           data=parameter_data)
+         
+         # put in a list to use a map call later
+         model_fits = list(model_1_fit,
+                           model_2_fit, 
+                           model_3_fit,
+                           model_4_fit,
+                           model_5_fit,
+                           model_6_fit,
+                           model_7_fit,
+                           model_8_fit)
+         
+         # Make the tabluar output
+         table_output = model_fits %>% 
+           map2_df(seq(1,8),~ data.frame(Values = .x$coefficients,
+                            Model = paste("Model", .y),
+                            Parameter = names(.x$coefficients))) %>%
+           mutate(Values = round(Values, 3)) %>%
+           pivot_wider(names_from = Parameter, values_from = Values) %>% 
+           cbind(data.frame(AIC = map(model_fits, AIC) %>% unlist())) %>% 
+           arrange(AIC) %>% 
+           rename(intecept = "(Intercept)",
+                  "log(m) * log(t)"="I(log(m) * log(t))",
+                  "log(m) * t" = "I(log(m) * t)")
+         
+         # Make a display object for the model
+         display = list(summary(model_1_fit),
+                        summary(model_2_fit),
+                        summary(model_3_fit),
+                        summary(model_4_fit),
+                        summary(model_5_fit),
+                        summary(model_6_fit),
+                        summary(model_7_fit),
+                        summary(model_8_fit))
+         
+        display =  walk(display, ~print(.x))
+         
+         
+       },
+       
+       ##### Predator #####
+       Predator={
+
+         # up sample to get same number of P/A
+         parameter_data_max = parameter_data %>%
+           group_by(presence_absence) %>%
+           mutate(n = n()) %>%
+           ungroup() %>%
+           filter(n == max(n))
+
+         parameter_data_sampeled = parameter_data %>%
+           group_by(presence_absence) %>%
+           mutate(n = n()) %>%
+           ungroup() %>%
+           filter(n == min(n)) %>%
+           sample_n(NROW(parameter_data_max), replace = TRUE) %>%
+           bind_rows(parameter_data_max) %>% 
+           select(-n)
+         
+         
+         # Fit the data
+         model_fit = glm(presence_absence ~
+                           depth +
+                           velocity +
+                           vegetation +
+                           woody_debris +
+                           substrate +
+                           shade,
+                         family="binomial",
+                         data=parameter_data_sampeled)
+                         
+         # Make the tabular output
+         table_output = data.frame(Parameter = names(model_fit$coefficients),
+                      Estimate = round(model_fit$coefficients, 3)) %>% 
+             mutate(Parameter = str_replace(Parameter,"_", " ")) %>% 
+             pivot_wider(names_from = Parameter, values_from = Estimate) %>% 
+             rename(intecept = "(Intercept)")
+                         
+         
+         # Make a display object for the model
+         display = summary(model_fit)
+         
+       },
        {
          # If no valid model type set stop program
          message(paste0("!!!!!!!!!!!\n",
@@ -254,26 +409,36 @@ message("Fit Data: Done./n")
 message("Make Plot./n")
 
 # Make the plot
-plot_fit = ggplot(parameter_data, aes(x = x)) +
-  theme_classic(base_size = 25) +
-  theme(legend.title = element_blank())+
-  labs(y = y_lab, x = x_lab) +
-  geom_path(data = fit_predict, aes(y = predict, x = x),
-            color = "black", linewidth = 0.5) +
-  geom_point(aes(y = y),
-             shape = 1,
-             stroke = 1.5,
-             size = 5) 
-print(plot_fit)
-
-# Save the plot 
-ggsave(here(pass_arguments[3], "fhast_parameter_fit.png"),
-       plot_fit,
-       height = 7,
-       width = 7,
-       units = "in",
-       device = "png",
-       dpi = 300)
+if(pass_arguments[2] == "Metabolic" | pass_arguments[2] == "Predator"){
+  plot_fit = NULL
+  # Save the plot 
+  ggsave(here(pass_arguments[3], "fhast_parameter_fit.png"),
+         plot_fit,
+         height = 0.1,
+         width = 0.1,
+         units = "in",
+         device = "png",
+         dpi = 300)
+} else {
+  plot_fit = ggplot(parameter_data, aes(x = x)) +
+    theme_classic(base_size = 25) +
+    theme(legend.title = element_blank())+
+    labs(y = y_lab, x = x_lab) +
+    geom_path(data = fit_predict, aes(y = predict, x = x),
+              color = "black", linewidth = 0.5) +
+    geom_point(aes(y = y),
+               shape = 1,
+               stroke = 1.5,
+               size = 5) 
+  # Save the plot 
+  ggsave(here(pass_arguments[3], "fhast_parameter_fit.png"),
+         plot_fit,
+         height = 7,
+         width = 7,
+         units = "in",
+         device = "png",
+         dpi = 300)
+}
 
 message("Make Plot: Done./n")
 

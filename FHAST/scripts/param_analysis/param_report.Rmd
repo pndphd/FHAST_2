@@ -38,7 +38,7 @@ kable(table_output,
 \newpage
 ## Figure Outputs
 
-```{r print_figure, echo = FALSE, out.width = "100%", fig.align="center"}
+```{r print_figure, echo = FALSE, fig.align="center"}
 knitr::include_graphics(here(pass_arguments[3], "fhast_parameter_fit.png"),  error = FALSE)
 ```
 
