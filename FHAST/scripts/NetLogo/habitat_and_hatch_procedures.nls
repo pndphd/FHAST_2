@@ -150,7 +150,10 @@ to set_predators
 
   ; calculate the total number of predators in the reach on that time tick
   let total_wetted_area (sum [wetted_area] of wet_patches)
-  set total_preds round (total_wetted_area * pred_per_area )
+  
+  foreach (range num_pred_species) [ n ->
+   set total_preds replace-item n total_preds round (total_wetted_area * item n pred_per_area )
+  ]
 
   ;; Calculate habitat ratings for each patch and predator species
   ask wet_patches [
@@ -195,7 +198,7 @@ to set_predators
       ; use the total preds in the system, patch habitat rating, and wetted area to calculate actual predator numbers
       let temp_pred_num 0
       if item n total_hab_rating > 0 [
-        set temp_pred_num round (item n adj_hab_rating / item n total_hab_rating * total_preds)
+        set temp_pred_num round (item n adj_hab_rating / item n total_hab_rating * item n total_preds)
       ]
 
       ; draw predator lengths from a log-normal distribution

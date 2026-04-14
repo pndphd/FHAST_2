@@ -184,7 +184,6 @@ to set_habitat_params
 
   ; reach params
   set resolution item 0 (table:get paired_param_table "resolution")
-  set pred_per_area item 0 (table:get paired_param_table "pred_per_area")
   set shelter_frac item 0 (table:get paired_param_table "shelter_frac")
   set reaction_distance item 0 (table:get paired_param_table "reaction_distance")
   set t_area_effect item 0 (table:get paired_param_table "t_area_effect")
@@ -587,7 +586,11 @@ to set_pred_params
   ; params for log-normal distribution
   set meanlog (table:get paired_param_table "pred_length_mean")
   set sdlog (table:get paired_param_table "pred_length_sd")
-
+  
+  ; parms for the number/density of preds
+  set pred_per_area (table:get paired_param_table "pred_per_area")
+  set total_preds (table:get paired_param_table "pred_per_area")
+	
   ; gape limitation params
   set a_gape (table:get paired_param_table "gape_a")
   set b_gape (table:get paired_param_table "gape_b")

@@ -39,7 +39,7 @@ ml$df$full_habitat = daily_data_sets %>%
   map_df(.f = ~.x$v_and_d) %>%
   group_by(date) %>% 
   # Add in variable to calculate inundation and total predators
-  mutate(reach_preds = round(ml$df$habitat_parms$pred_per_area * sum(wetted_area)),
+  mutate(reach_preds = round(sum(ml$df$pred_parm$pred_per_area) * sum(wetted_area)),
          wetted = ifelse(wetted_area > 0, 1, 0)) %>% 
   ungroup() 
 

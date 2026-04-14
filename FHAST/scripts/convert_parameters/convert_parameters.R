@@ -161,7 +161,6 @@ ml$df$habitat_parms <- tibble(
   dep_cutoff = hab_parm_temp["depth cutoff", ],
   resolution = hab_parm_temp["resolution", ],
   buffer = hab_parm_temp["buffer", ],
-  pred_per_area = hab_parm_temp["predators per area", ],
   veg_growth_years = hab_parm_temp["vegetation growth years", ],
   # from the interaction file
   shelter_frac = int_parm_temp["cover velocity fraction", ],
