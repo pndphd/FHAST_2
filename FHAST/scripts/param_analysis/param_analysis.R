@@ -322,6 +322,10 @@ switch(pass_arguments[2],
                            model_7_fit,
                            model_8_fit)
          
+         # Get RMSPE
+         ape = map_df(model_fits,
+                        ~data.frame(ape = 100 * mean(abs(parameter_data$e - exp(predict(.x)))/parameter_data$e)))
+         
          # Make the tabluar output
          table_output = model_fits %>% 
            map2_df(seq(1,8),~ data.frame(Values = .x$coefficients,
@@ -329,11 +333,13 @@ switch(pass_arguments[2],
                             Parameter = names(.x$coefficients))) %>%
            mutate(Values = round(Values, 3)) %>%
            pivot_wider(names_from = Parameter, values_from = Values) %>% 
-           cbind(data.frame(AIC = map(model_fits, AIC) %>% unlist())) %>% 
+           cbind(data.frame(AIC = map(model_fits, AIC) %>% unlist())) %>%
+           bind_cols(ape) %>% 
            arrange(AIC) %>% 
            rename(intecept = "(Intercept)",
                   "log(m) * log(t)"="I(log(m) * log(t))",
-                  "log(m) * t" = "I(log(m) * t)")
+                  "log(m) * t" = "I(log(m) * t)",
+                  "absolute percent error" =  "ape") 
          
          # Make a display object for the model
          display = list(summary(model_1_fit),
@@ -386,7 +392,7 @@ switch(pass_arguments[2],
                       Estimate = round(model_fit$coefficients, 3)) %>% 
              mutate(Parameter = str_replace(Parameter,"_", " ")) %>% 
              pivot_wider(names_from = Parameter, values_from = Estimate) %>% 
-             rename(intecept = "(Intercept)")
+             rename(intecept = "(Intercept)") 
                          
          
          # Make a display object for the model

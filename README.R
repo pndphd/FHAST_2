@@ -1,7 +1,5 @@
 if (FALSE) {
 "
-
-  
 --------------------------------------------------------------------------------  
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -23,13 +21,17 @@ if (FALSE) {
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  
 -------------------------------------------------------------------------------- 
 
-Version 2.1.4-beta (Sharp Scale) 2025-09-25
+Version 2.2.0 (Sharp Scale) 2026-04-16
+
+2.2.0
+Added in parameter fitting plugin
+moved predator density form a habitat file input to a predator file input 
 
 2.1.4-beta
 Added in columns “Started” and “Completed” as required to the OHWM plugin. 
 Changed the salmonid feeding algorithm to allow for search feeding. See section Feeding: Search in this document for details. 
 
-2.1.4-beta
+2.1.3-beta
 Changed formatting in the OHWM plugin report.
 
 2.1.2-beta
@@ -89,7 +91,6 @@ Citation
     Dudley, Peter N., Jesse A. Black, Stephanie G. Diaz, Ted W. Hermann, Chris John,
     Kwanmok Kim. FHAST: Fish Habitat Assessment and Simulation Tool. V2.1.4, 
     Released 2025. https://github.com/pndphd/FHAST_2.
-
 
 "
 }
