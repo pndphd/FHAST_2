@@ -83,19 +83,19 @@ switch(pass_arguments[2],
        Beta_Sigmoid={
          
          # Get initial guess and some plotting values
-         guess_A = mean(parameter_data$x)
-         guess_B = guess_A/2
+         guess_C = mean(parameter_data$x)
+         guess_D = guess_C/2
          
          # Fit the data
-         model_fit = nlsLM(y ~ 1*(1+(A-(x))/(A-B))*((x)/A)^(A/(A-B)),
+         model_fit = nlsLM(y ~ 1*(1+(C-(x))/(C-D))*((x)/C)^(C/(C-D)),
                          data = parameter_data,
-                         start = list(A = guess_A, B = guess_B))
-         bs_A_set = model_fit$m$getPars()["A"]
-         bs_B_set = model_fit$m$getPars()["B"]
+                         start = list(C = guess_C, D = guess_D))
+         bs_C_set = model_fit$m$getPars()["C"]
+         bs_D_set = model_fit$m$getPars()["D"]
          
          # Make the tabluar output
-        table_output = data.frame(Parameter = c("A", "B"),
-                                  Estimate = c(bs_A_set, bs_B_set))
+        table_output = data.frame(Parameter = c("C", "D"),
+                                  Estimate = c(bs_C_set, bs_D_set))
          
          # Make the fitted data set for plotting
          fit_predict = data.frame(x = seq(min(c(parameter_data$x,0)),
@@ -244,7 +244,7 @@ switch(pass_arguments[2],
          l_90_set = -(log(1/0.9-1)+model_fit[[1]][1])/model_fit[[1]][2]
          
          # Make the tabluar output
-         table_output = data.frame(Parameter = c("A", "B", "X10", "X90"),
+         table_output = data.frame(Parameter = c("A", "B", "p1", "p9"),
                                    Estimate = c(l_A_set, l_B_set, l_10_set, l_90_set),
                                    Type = c( "Classic", "Calssic", "Model Input", "Model Input"))
          
