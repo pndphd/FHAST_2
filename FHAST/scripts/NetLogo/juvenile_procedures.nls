@@ -613,6 +613,7 @@ end
 ;; Cell selection strategy for movement
 to select_destination_cell
 
+  
   ; If the drifter is going to exit the system (due to there not being valid destination cells downstream of its position, or no cell with positive net energy), it selects one of the furthest cell downstream
   ifelse exit_status = 1 [
 
@@ -640,14 +641,38 @@ to select_destination_cell
       ; If the probability of surviving starvation is greater than the randomly generated number, the fish selects cells that maximize net energy to nonstarvation risks ratio
 
       set starving? false
+      let current_species item species_id species_list
       ask wet_cells_in_radius [
-        ifelse total_net_energy_in_cell = 0 [
-          set consider_path_risk 0
-        ][
-          ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
-          set consider_path_risk total_net_energy_in_cell * path_survival
+        
+        ; Set the cells selection score      
+        set consider_path_risk path_survival
+                
+        ;Fish takes into account the net energy-risk ratio AND actual path risk (prob of surviving along the path) in selecting a destination:
+        let test_mass [mass] of myself + total_net_energy_in_cell / item [species_id] of myself energy_density
+        
+        ; Get the healthy mass
+        let test_h_mass (item [species_id] of myself length_mass_a) * ([f_length] of myself ^ (item [species_id] of myself length_mass_b)) ; g
+        
+        ; Get the healthy length
+        let test_h_length (test_mass / (item [species_id] of myself length_mass_a)) ^ (1 / (item [species_id] of myself length_mass_b)) ; cm
+        
+        
+        ; If the new mass is greater than the healthy mass for its length, we set the new length to the desired length and new condition to 1
+        let test_condition 1.0
+        ifelse test_mass > test_h_mass [
+          let test_n_length test_h_length
+          set test_condition 1.0
+        ][ ; Otherwise, we divide the new mass by the healthy mass to get the new fish condition
+          let test_n_length [f_length] of myself ; The fish keeps its current length (cm)
+          set test_condition test_mass / test_h_mass
         ]
-      ]
+        
+        ; Calc the strvation survival        
+        let test_fish_death_starv (evaluate_logistic "poor_condition" [species] of myself test_condition)
+        
+        ; Set the cells selection score      
+        set consider_path_risk test_fish_death_starv * path_survival
+     ]
 
       set destination max-one-of wet_cells_in_radius [consider_path_risk]
     ]
