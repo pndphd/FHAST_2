@@ -4,13 +4,13 @@
 
 ##### Inputs #####
 # Enter your output file to amend on you computer 
-output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/compare.csv"
+output_file = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/compare.csv"
 
 # Do you want to write the outputs
-write = TRUE
+write = FALSE
 
 # Do you want to run FAHST (FLASE will just read in existing outputs and do post processing)
-run = TRUE
+run = FALSE
 
 # Write in the parameters you are using. they will be noted in the output file 
 # The base area for predators
@@ -25,8 +25,8 @@ food = 0.022
 base_wood = 0.05
 # the number of fish you are putting in
 fish_number = 10000
-# the lenghts 
-length = rep(c(5,7),6)
+# the lengths 
+length = NA
   
 ##### Load Libraries ######
 library(tidyverse)
@@ -35,47 +35,47 @@ library(broom)
 
 ##### List the File names #####
 # any of th ebelow list you want to remove
-remove = c(100)
+remove = c(1000)
 
 # list of input files to run
 file_names = c(
 
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_3.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_4.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_5.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_6.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_7.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_8.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_9.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_10.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/michel_2015_11.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_3.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_4.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_5.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_6.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_7.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_8.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sandstorm_2020_9.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/singer_2012_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/singer_2012_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/singer_2012_3.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/singer_2012_4.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sommer_2001_1998.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/sommer_2001_1999.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_3.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_4.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_5.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2013_6.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2014_1.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2014_2.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2014_3.txt",
-  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con/steel_2020_2014_4.txt"
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_7.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_8.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_9.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_10.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_11.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_7.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_8.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sandstorm_2020_9.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/singer_2012_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/singer_2012_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/singer_2012_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/singer_2012_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sommer_2001_1998.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/sommer_2001_1999.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_4.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_5.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2013_6.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2014_1.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2014_2.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2014_3.txt",
+  "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/steel_2020_2014_4.txt"
   
   #American
   # "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/american_river_cal/satter_2001_1.txt",
@@ -132,7 +132,7 @@ compare_values = compare_values[-remove]
 
 ##### Run the Sims #####
 run_multi = function(file_name){
-  ml$path$config_file <<- file_name
+  pass_arguments <<- c(file_name, 0)
   source(here("scripts","main","run_all.R"))
 }
 
@@ -182,7 +182,7 @@ survival_data = map_df(file_names, ~get_survival(.x,
 
 temp_data = map_df(file_names, ~get_temperature(.x,
                                                 add = "_outputs",
-                                                file = "daily_input_filed.csv",
+                                                file = "daily_input_file.csv",
                                                 column = "temp_c",
                                                 fish_input = 10000))
 
@@ -247,10 +247,10 @@ slopes = data_base %>%
 
 labeled = data_base %>% 
   mutate(author = str_sub(name,
-                          str_locate(name, "ar_con/")[2]+7,
-                          str_locate(name, "ar_con/")[2]+10))
+                          str_locate(name, "ar_con_cs/")[2]+7,
+                          str_locate(name, "ar_con_cs/")[2]+10))
 
-plot = ggplot(labeled %>% filter(run == 14 | run == 21) ,
+plot = ggplot(labeled %>% filter(run == 24 | run == 21) ,
               aes(x = field_data,
                   y = d_value, 
                   color = factor(run))) +
