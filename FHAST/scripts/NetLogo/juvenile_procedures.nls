@@ -667,11 +667,12 @@ to select_destination_cell
           set test_condition test_mass / test_h_mass
         ]
         
-        ; Calc the strvation survival        
-        let test_fish_death_starv (evaluate_logistic "poor_condition" [species] of myself test_condition)
+        ; Calc the strvation survival 
+        let test_fish_surv_starv (evaluate_logistic "poor_condition" [species] of myself test_condition)
+
         
         ; Set the cells selection score      
-        set consider_path_risk test_fish_death_starv * path_survival
+        set consider_path_risk test_fish_surv_starv * path_survival
      ]
 
       set destination max-one-of wet_cells_in_radius [consider_path_risk]

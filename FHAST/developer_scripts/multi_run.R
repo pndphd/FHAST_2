@@ -250,7 +250,7 @@ labeled = data_base %>%
                           str_locate(name, "ar_con_cs/")[2]+7,
                           str_locate(name, "ar_con_cs/")[2]+10))
 
-plot = ggplot(labeled %>% filter(run == 24 | run == 21) ,
+plot = ggplot(labeled %>% filter(run == 21 | run == 25) ,
               aes(x = field_data,
                   y = d_value, 
                   color = factor(run))) +
