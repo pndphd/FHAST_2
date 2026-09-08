@@ -10,26 +10,7 @@ run_multi = function(file_name,
                      variable_names,
                      variable_values){
 
-  # file_name = "C:/Users/pndph/Documents/Research/Projects/FHAST/Work/calibration/sacramento_above_ar_con_cs/michel_2015_1.csv"
-  # variable_names = c("temperature predator area baseline",
-  #                    "temperature predator area effect",
-  #                    "pred_per_area",
-  #                    "drift food density",
-  #                    "wood",
-  #                    "number",
-  #                    "length",
-  #                    "file") 
-  # 
-  # # List of the variable values you want to overwrite for each run
-  # variable_values = c(0.18,
-  #                     0.08,
-  #                     0.03,
-  #                     0.022,
-  #                     0.05,
-  #                     10000,
-  #                     16.4,
-  #                     "test.csv") 
-
+  message("running: ", file_name)
   ##### Setup ##################################################################
   # The log to track input values
   input_log = data.frame(name = basename(file_name))
@@ -393,7 +374,7 @@ get_growth = function(name, add, file, column_1, column_2, fish_input){
             weight = sum(weighted)) %>%
     mutate(growth_rate = weight/rearers)
   output = data.frame(name =basename(name),
-                      g_value = data$growth_rate)
+                      modeled_growth = data$growth_rate)
 }
 
 ################################################################################

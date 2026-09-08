@@ -151,8 +151,15 @@ to set_predators
   ; calculate the total number of predators in the reach on that time tick
   let total_wetted_area (sum [wetted_area] of wet_patches)
   
+  ; make a blank list to hold possibel predator lenghts
+  ; later we will make 1000 pulls and filter form mion predation length
+  let temp_pred_num_master n-values num_pred_species [ n-values 1000 [ 0 ] ]
+  let min_pred_size 20
+  
   foreach (range num_pred_species) [ n ->
    set total_preds replace-item n total_preds round (total_wetted_area * item n pred_per_area )
+   ; make 1000 pulls and filter form mion predation length
+   set temp_pred_num_master replace-item n temp_pred_num_master filter [i -> i >= min_pred_size] (n-values 1000 [x -> exp random-normal item n meanlog item n sdlog ])
   ]
 
   ;; Calculate habitat ratings for each patch and predator species
@@ -205,7 +212,7 @@ to set_predators
       ;let mu item 0 butfirst item n butfirst pred_length_dist_params
       ; let sigma item 1 butfirst item n butfirst pred_length_dist_params
       ; filter predators that are above 15 cm
-      let pred_length_list filter [i -> i >= 15] (n-values temp_pred_num [x -> exp random-normal item n meanlog item n sdlog ])
+      let pred_length_list (n-values temp_pred_num [x -> one-of item n temp_pred_num_master])
 
       ifelse (length pred_length_list > 0) [
         set pred_length lput pred_length_list pred_length
