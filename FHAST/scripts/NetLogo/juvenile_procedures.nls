@@ -87,17 +87,19 @@ to update_juvenile_fish
   ; Calculate max swimm speed (BL/s)
   set max_swim_speed max_swim_l_term * item species_id max_swim_temp_func
 
-  ; Update the turbidity function
-  ifelse turbidity <= item species_id turbid_threshold [
-    set fish_turbid_function 1.0
-  ][
-    set fish_turbid_function (item species_id turbid_min) + (1.0 - (item species_id turbid_min)) *
-    exp ((item species_id turbid_exp) * (turbidity - (item species_id turbid_threshold)))
-    ;show fish_turbid_function
+  if item species_id benthic_fish = 0 [
+    ; Update the turbidity function
+    ifelse turbidity <= item species_id turbid_threshold [
+      set fish_turbid_function 1.0
+    ][
+      set fish_turbid_function (item species_id turbid_min) + (1.0 - (item species_id turbid_min)) *
+      exp ((item species_id turbid_exp) * (turbidity - (item species_id turbid_threshold)))
+      ;show fish_turbid_function
+    ]
+    print "HI!!!!!!!!!!!!!!!!!!!!!!!!"
+    ; set the distance that fish can detect/react to prey
+    set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
   ]
-
-   ; set the distance that fish can detect/react to prey
-   set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
 
 end
 

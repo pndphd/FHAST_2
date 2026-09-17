@@ -9,6 +9,33 @@ values = expand.grid("temperature predator area baseline" = c(120,240,360),
                    "wood" = c(0.05),
                    "number" = 10000)
 
+##### Inputs ###################################################################
+# Enter your output file
+# This is a CSV file to which this script will append your results 
+output_file = "../../../calibration/sacramento_above_ar_con_cs/compare.csv"
+input_file = "../../../calibration/sacramento_above_ar_con_cs/input_files_list.csv"
+
+
+
+# List of the variable you want to overwrite for each run
+# They will not be over ridden in the input file permanently, just for this run
+# variable_names = c("temperature predator area baseline",
+#                    "temperature predator area effect",
+#                    "pred_per_area",
+#                    "drift food density",
+#                    "wood",
+#                    "number")
+
+# List of the variable values you want to overwrite for each run
+# variable_values = c(240,
+#                     240,
+#                     0.05,
+#                     0.019,
+#                     0.04,
+#                     10000)
+
+
+
 # Do you want to write the outputs
 write = FALSE
 
@@ -23,31 +50,7 @@ source("developer_scripts/load_libraries_ect.R")
 source("developer_scripts/multi_run_functions.R")
 
 run_batch = function(number){
-  ##### Inputs ###################################################################
-  # Enter your output file
-  # This is a CSV file to which this script will append your results 
-  output_file = "../../../calibration/sacramento_above_ar_con_cs/compare.csv"
-  input_file = "../../../calibration/sacramento_above_ar_con_cs/input_files_list.csv"
-  
 
-  
-  # List of the variable you want to overwrite for each run
-  # They will not be over ridden in the input file permanently, just for this run
-  variable_names = c("temperature predator area baseline",
-                     "temperature predator area effect",
-                     "pred_per_area",
-                     "drift food density",
-                     "wood",
-                     "number")
-  
-  # List of the variable values you want to overwrite for each run
-  # variable_values = c(240,
-  #                     240,
-  #                     0.05,
-  #                     0.019,
-  #                     0.04,
-  #                     10000)
-  
   variable_values = as.numeric(values[number,])
   message( number, " of ", NROW(values))
   
@@ -123,46 +126,73 @@ run_batch = function(number){
                   row.names = FALSE)
     }
   }
-  
-  ##### Make Plots ###############################################################
-  data_base = read.csv(output_file)
-  old_data = read.csv(here(dirname(output_file), "compare_pre_update.csv" )) %>% 
-    filter(best == 1)
-  
-  summary = data_base %>%
-    mutate(percent_diff = abs(modeled_survival - field_survival)/field_survival) %>%
-    group_by(run) %>%
-    summarise(percent_diff = mean(percent_diff, na.rm = T))
-  
-  slopes = data_base %>%
-    group_by(run) %>%
-    nest() %>%
-    mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>%
-                         tidy)) %>%
-    unnest(model) %>%
-    filter(term == 'field_survival')
-  
-  # Plot survial vs temp
-  
-  # Plot the 1:1 survival plot
-  plot = ggplot(data_base,
-                aes(x = field_survival,
-                    y = modeled_survival,
-                    # color = modeled_temperature)) +
-                     color = pred_per_area)) +
-    theme_classic() +
-    theme(legend.position = "top") +
-    geom_abline(intercept = 0, slope = 1) +
-    coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
-    geom_point(size = 4, shape = 1) +
-    # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
-    # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
-    scale_color_viridis_c() +
-    labs(x = "Filed Survival",
-         y = "Model Survival")
-  print(plot)
 }
 
-# Run the loop
+###### Run the loop ############################################################
 walk(seq(1, number_of_runs), ~run_batch(.x))
+
+##### Make Plots ###############################################################
+data_base = read.csv(output_file)
+old_data = read.csv(here(dirname(output_file), "compare_pre_update.csv" )) %>% 
+  filter(best == 1)
+
+summary = data_base %>%
+  mutate(percent_diff = abs(modeled_survival - field_survival)/field_survival) %>%
+  group_by(run) %>%
+  summarise(percent_diff = mean(percent_diff, na.rm = T))
+
+slopes = data_base %>%
+  group_by(run) %>%
+  nest() %>%
+  mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>%
+                       tidy)) %>%
+  unnest(model) %>%
+  filter(term == 'field_survival')
+
+# Plot survial vs temp
+
+# Plot the 1:1 survival plot
+plot = ggplot(data_base %>% filter(run > 60),
+              aes(x = field_survival,
+                  y = modeled_survival)) +
+                  # color = modeled_temperature)) +
+                  # color = temperature_predator_area_effect)) +
+  theme_classic() +
+  theme(legend.position = "top") +
+  geom_abline(intercept = 0, slope = 1) +
+  coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
+  geom_point(size = 4, shape = 1, alpha = 0.2) +
+  geom_point(data = data_base %>% filter(run == 27), shape = 1, color = "red") +
+  geom_point(data = data_base %>% filter(run == 119), shape = 1, color = "blue") +
+  # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
+  # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
+  # scale_color_viridis_c() +
+  labs(x = "Filed Survival",
+       y = "Model Survival")
+print(plot)
+
+##### Make summary statistics ##################################################
+data_base = read.csv(output_file)
+summary = data_base %>% 
+  # filter(run > 60) %>% 
+  mutate(percent_diff = abs(modeled_survival - field_survival)/field_survival) %>% 
+  group_by(run) %>% 
+  summarise(percent_diff = mean(percent_diff, na.rm = T))
+
+slopes = data_base %>% 
+  group_by(run) %>% 
+  nest() %>% 
+  mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>% 
+                       tidy)) %>% 
+  unnest(model) %>% 
+  filter(term == 'field_survival')
+
+labeled = data_base %>% 
+  mutate(author = str_sub(name,
+                          str_locate(name, "ar_con_gs/")[2]+7,
+                          str_locate(name, "ar_con_gs/")[2]+10))
+
+
+
+
 ##### END ######################################################################

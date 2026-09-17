@@ -241,6 +241,7 @@ to set_predators
       let pred_temperature_effect 1 / (1 + exp exponent)
       ; encounter_prob is simply the area occupied by predators divided by the wetted area of the patch
       set encounter_prob lput ((item n num_preds) * (reaction_distance + t_area_effect * pred_temperature_effect) / wetted_area) encounter_prob
+     
     ]
     ; probability of encounter across all predator species
     set encounter_prob sum encounter_prob
