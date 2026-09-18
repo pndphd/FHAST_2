@@ -30,6 +30,14 @@ ml$path$base_folder = dirname(ml$path$config_file)
 # Read in the main input file file to get cores used
 ml$df$config_data = load_text_file(ml$path$config_file)
 
+# Check file exists
+if(is.null(ml$df$config_data)){
+  message(paste0("!!!!!!!!!!!\n",
+                 "!!!ERROR!!! The configuration file does not exist.\n",
+                 "!!!!!!!!!!!\n"))
+  stop()
+}
+
 # Get the run name
 ml$var$run_name = ifelse(is.na(ml$df$config_data["run name", ]),
                          str_replace_all(paste0("none_given_", Sys.time()), ":", "-"),

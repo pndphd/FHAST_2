@@ -96,7 +96,6 @@ to update_juvenile_fish
       exp ((item species_id turbid_exp) * (turbidity - (item species_id turbid_threshold)))
       ;show fish_turbid_function
     ]
-    print "HI!!!!!!!!!!!!!!!!!!!!!!!!"
     ; set the distance that fish can detect/react to prey
     set fish_detect_dist ((item species_id react_dist_a) + (item species_id react_dist_b * f_length)) * fish_turbid_function ; meters
   ]

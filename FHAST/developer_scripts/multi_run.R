@@ -26,8 +26,8 @@ run_batch = function(number){
   ##### Inputs ###################################################################
   # Enter your output file
   # This is a CSV file to which this script will append your results 
-  output_file = "../../calibration/sacramento_above_ar_con_gs/compare.csv"
-  input_file = "../../calibration/sacramento_above_ar_con_gs/input_files_list.csv"
+  output_file = "../../../calibration/sacramento_above_ar_con_gs/compare.csv"
+  input_file = "../../../calibration/sacramento_above_ar_con_gs/input_files_list.csv"
   
   
   # List of the variable you want to overwrite for each run
