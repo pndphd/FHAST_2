@@ -63,11 +63,11 @@ end
 GRAPHICS-WINDOW
 211
 15
-239
-1642
+527
+1008
 -1
 -1
-1.0
+4.974619289340101
 1
 10
 1
@@ -77,10 +77,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--10
-10
+-37
+24
 0
-1625
+197
 1
 1
 1
@@ -352,7 +352,7 @@ INPUTBOX
 207
 568
 run_folder
-C:\\Users\\pndph\\Desktop\\temp\\michel_2015_5_outputs\\temporary
+C:\\Users\\pndph\\Desktop\\Temp\\small_dist_chinook_outputs\\temporary
 1
 0
 String
