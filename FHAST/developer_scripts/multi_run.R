@@ -1,12 +1,19 @@
 ################################################################################
 # This script runs multiple FHAST runs 
 ################################################################################
+
+##### Inputs ###################################################################
+# Enter your output file
+# This is a CSV file to which this script will append your results 
+output_file = "../../calibration/sacramento_above_ar_con_gs/compare.csv"
+input_file = "../../calibration/sacramento_above_ar_con_gs/input_files_list.csv"
+
 # Make a grid of all variables
 values = expand.grid("temperature predator area baseline" = c(200),
                      "temperature predator area effect" = c(200),
                      "pred_per_area" = c(0.05),
                      "benthic food density" = c(0.1, 0.2, 0.4, 0.87, 1),
-                     "wood" = c(0.5))
+                     "wood" = c(0.05))
 
 
 # Do you want to write the outputs
@@ -23,11 +30,7 @@ source("developer_scripts/load_libraries_ect.R")
 source("developer_scripts/multi_run_functions.R")
 
 run_batch = function(number){
-  ##### Inputs ###################################################################
-  # Enter your output file
-  # This is a CSV file to which this script will append your results 
-  output_file = "../../../calibration/sacramento_above_ar_con_gs/compare.csv"
-  input_file = "../../../calibration/sacramento_above_ar_con_gs/input_files_list.csv"
+
   
   
   # List of the variable you want to overwrite for each run
@@ -161,7 +164,11 @@ plot = ggplot(data_base %>% filter(run > 60),
   coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
   geom_point(size = 4, shape = 1, alpha = 0.2) +
   geom_point(data = data_base %>% filter(run == 27), shape = 1, color = "red") +
-  geom_point(data = data_base %>% filter(run == 119), shape = 1, color = "blue") +
+  geom_point(data = data_base %>% filter(run == max(run)),
+             size = 4,
+             stroke = 2,
+             shape = 1,
+             color = "blue") +
   # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
   # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
   # scale_color_viridis_c() +

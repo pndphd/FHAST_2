@@ -264,14 +264,19 @@ make_data_summary = function(..., dl){
 
   # Now correct for search feeding by seeing if swiming can get you more food
   min_habitat = calc_hab_and_feed(dl$df$full_habitat, 0)
-  dl$df$full_habitat =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
-    map_df(~calc_hab_and_feed(min_habitat, .x)) %>% 
-    bind_rows(min_habitat) %>% 
-    group_by(geometry) %>% 
-    filter(net_energy == max(net_energy)) %>% 
-    ungroup() %>% 
+  if(pl$benthic_fish != 1){
+    full_habitat_tmp =seq(1/4*max_swim_speed, 3/4*max_swim_speed, length.out = 4) %>% 
+      map_df(~calc_hab_and_feed(min_habitat, .x)) %>% 
+      bind_rows(min_habitat) %>% 
+      group_by(geometry) %>% 
+      filter(net_energy == max(net_energy)) %>% 
+      ungroup() 
+  } else {
+    full_habitat_tmp = min_habitat
+  }
+  dl$df$full_habitat = full_habitat_tmp %>% 
     select(!any_of(c("ben_food_fra", "small_cover_fra")))
-  rm(min_habitat)
+  rm(min_habitat, full_habitat_tmp)
   gc()
 
 

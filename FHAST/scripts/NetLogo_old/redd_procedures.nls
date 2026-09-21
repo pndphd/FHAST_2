@@ -1,0 +1,51 @@
+;#########################################################################
+; This defines procedures for spawners
+;#########################################################################
+
+;##### Adult Spawning Acrtions ##########################################
+to incubate_redds
+  foreach sort-on [-1 * f_length] redds [
+    next_fish -> ask next_fish [
+
+      ; Kill off some eggs
+      kill_eggs
+
+      ; Develope the redd 
+      develope_redd
+      
+      ; Hatch Fish
+      redd_emerge
+      
+      ; Age the redd 1 day
+      set age age + 1
+    ]
+  ]
+
+end
+
+to kill_eggs
+  let fraction_killed 0.1
+  let eggs_killed ceiling (egg_count * fraction_killed)
+  set egg_count egg_count - eggs_killed
+  set dead_eggs dead_eggs + eggs_killed
+  
+  if egg_count <= 0.0 [
+    save_redd_event "redd empty"
+    die
+  ]
+  
+end
+
+to develope_redd
+  let daily_development today_depth / temperature 
+  set redd_maturity redd_maturity + daily_development 
+end
+
+to redd_emerge
+  if redd_maturity >= 1.0 [
+    set hatched_eggs egg_count
+    set egg_count 0
+    save_redd_event "redd empty"
+    die
+  ]
+end
