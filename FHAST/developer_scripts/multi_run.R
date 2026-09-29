@@ -5,14 +5,14 @@
 ##### Inputs ###################################################################
 # Enter your output file
 # This is a CSV file to which this script will append your results 
-output_file = "../../calibration/sacramento_above_ar_con_gs/compare.csv"
-input_file = "../../calibration/sacramento_above_ar_con_gs/input_files_list.csv"
+output_file = "../../calibration/american_river_cal/compare.csv"
+input_file = "../../calibration/american_river_cal/input_files_list.csv"
 
 # Make a grid of all variables
-values = expand.grid("temperature predator area baseline" = c(200),
-                     "temperature predator area effect" = c(200),
+values = expand.grid("temperature predator area baseline" = c(50),
+                     "temperature predator area effect" = c(50),
                      "pred_per_area" = c(0.05),
-                     "benthic food density" = c(0.1, 0.2, 0.4, 0.87, 1),
+                     "drift food density" = seq(0.0011, 0.0019, 0.0001),
                      "wood" = c(0.05))
 
 
@@ -31,8 +31,6 @@ source("developer_scripts/multi_run_functions.R")
 
 run_batch = function(number){
 
-  
-  
   # List of the variable you want to overwrite for each run
   # They will not be over ridden in the input file permanently, just for this run
   # variable_names = c("temperature predator area baseline",
@@ -108,7 +106,9 @@ run_batch = function(number){
       
       # Give the run a number
       run = max(read.csv(output_file)$run) + 1
-      compare = mutate(compare, run = run)
+      compare = mutate(compare,
+                       run = run,
+                       best = 0)
       
       #Append the data
       write.table(x = compare,
@@ -119,7 +119,9 @@ run_batch = function(number){
                   append = TRUE)
     }else {
       # Make a new compare file
-      compare = mutate(compare, run = 1)
+      compare = mutate(compare, 
+                       run = 1,
+                       best = 0)
       write.table(x = compare,
                   file = output_file,
                   sep = ",",
@@ -142,13 +144,13 @@ summary = data_base %>%
   group_by(run) %>%
   summarise(percent_diff = mean(percent_diff, na.rm = T))
 
-slopes = data_base %>%
-  group_by(run) %>%
-  nest() %>%
-  mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>%
-                       tidy)) %>%
-  unnest(model) %>%
-  filter(term == 'field_survival')
+# slopes = data_base %>%
+#   group_by(run) %>%
+#   nest() %>%
+#   mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>%
+#                        tidy)) %>%
+#   unnest(model) %>%
+#   filter(term == 'field_survival')
 
 # Plot survial vs temp
 
@@ -162,18 +164,59 @@ plot = ggplot(data_base %>% filter(run > 60),
   theme(legend.position = "top") +
   geom_abline(intercept = 0, slope = 1) +
   coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
-  geom_point(size = 4, shape = 1, alpha = 0.2) +
-  geom_point(data = data_base %>% filter(run == 27), shape = 1, color = "red") +
-  geom_point(data = data_base %>% filter(run == max(run)),
+  geom_point(size = 4, shape = 1, alpha = 0.1) +
+  geom_point(data = data_base %>% filter(run == 121),
              size = 4,
              stroke = 2,
              shape = 1,
+             alpha = 0.5,
+             color = "red") +
+  geom_point(data = data_base %>% filter(run == 119),
+             size = 4,
+             stroke = 2,
+             shape = 1,
+             alpha = 0.5,
              color = "blue") +
   # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
   # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
   # scale_color_viridis_c() +
   labs(x = "Filed Survival",
        y = "Model Survival")
+print(plot)
+
+# Plot the growth plot
+plot = ggplot(data_base,
+              aes(x = modeled_growth,
+                  y = run)) +
+  # color = modeled_temperature)) +
+  # color = temperature_predator_area_effect)) +
+  theme_classic() +
+  theme(legend.position = "top") +
+  # coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
+  geom_point(size = 4, shape = 1, alpha = 0.2) +
+  geom_vline(xintercept = c(0.13, 0.19)) +
+  # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
+  # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
+  # scale_color_viridis_c() +
+  labs(x = "Filed Growth Rate (cm/day)",
+       y = "Run")
+print(plot)
+
+# Plot the survival no comaper plot
+plot = ggplot(data_base,
+              aes(x = modeled_survival,
+                  y = run)) +
+  # color = modeled_temperature)) +
+  # color = temperature_predator_area_effect)) +
+  theme_classic() +
+  theme(legend.position = "top") +
+  # coord_cartesian(xlim = c(0,1), ylim = c(0,1))+
+  geom_point(size = 4, shape = 1, alpha = 0.2) +
+  # geom_point(data = old_data, aes(x = field_data , y = d_value), shape = 4)+
+  # coord_cartesian(xlim = c(0.5, 1), ylim = c(0.5, 1)) +
+  # scale_color_viridis_c() +
+  labs(x = "Survival",
+       y = "Run")
 print(plot)
 
 ##### Make summary statistics ##################################################
@@ -184,13 +227,13 @@ summary = data_base %>%
   group_by(run) %>% 
   summarise(percent_diff = mean(percent_diff, na.rm = T))
 
-slopes = data_base %>% 
-  group_by(run) %>% 
-  nest() %>% 
-  mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>% 
-                       tidy)) %>% 
-  unnest(model) %>% 
-  filter(term == 'field_survival')
+# slopes = data_base %>% 
+#   group_by(run) %>% 
+#   nest() %>% 
+#   mutate(model = map(data, ~lm(modeled_survival ~ field_survival, data = .x) %>% 
+#                        tidy)) %>% 
+#   unnest(model) %>% 
+#   filter(term == 'field_survival')
 
 labeled = data_base %>% 
   mutate(author = str_sub(name,
